@@ -44,17 +44,7 @@ drop policy if exists "Admins can view profiles" on profiles;
 create policy "Admins can view profiles" on profiles
   for select using (is_admin());
 
--- ── Helper: atomically bump a resource's download counter ───────────────
--- Called by /api/resources/[id]/download via the service-role client after
--- an RLS-respecting visibility check has already passed.
-create or replace function increment_resource_downloads(resource_id uuid)
-returns void
-language sql
-security definer
-set search_path = public
-as $$
-  update resources set download_count = download_count + 1 where id = resource_id;
-$$;
+
 
 -- ═════════════════════════════════════════════════════════════════════
 -- SITE CONTENT — editable through the Admin Dashboard instead of code
@@ -198,6 +188,19 @@ create table if not exists resources (
   updated_at timestamptz not null default now()
 );
 create index if not exists idx_resources_visibility on resources(visibility);
+
+create or replace function increment_resource_downloads(resource_id uuid)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update resources
+  set download_count = download_count + 1
+  where id = resource_id;
+$$;
+
+-- PATIENT APPOINTMENTS
 
 -- ═════════════════════════════════════════════════════════════════════
 -- PATIENT APPOINTMENTS  (public insert, admin-only read)
