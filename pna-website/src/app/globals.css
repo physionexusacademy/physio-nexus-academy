@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-heading: "Cambria", Georgia, "Times New Roman", serif;
+  --font-body: "Calibri", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-navy-900 font-body antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-navy-800;
+  }
+
+  /* Visible focus states for keyboard navigation */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid #01828b;
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .container-content {
+    @apply mx-auto max-w-content px-5 sm:px-8 lg:px-10;
+  }
+
+  .section-padding {
+    @apply py-14 sm:py-20;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-grey-300 bg-white px-3.5 py-2.5 text-sm text-navy-800 placeholder:text-navy-300 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500;
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-navy-700;
+  }
+}
+
+/* Respect reduced-motion preference site-wide */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
