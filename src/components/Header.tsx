@@ -72,7 +72,7 @@ export function Header() {
       <div
         aria-hidden={!open}
         className={cn(
-          "fixed inset-0 top-20 z-40 bg-white transition-transform duration-300 lg:hidden",
+          "absolute left-0 right-0 top-full z-[60] h-[calc(100dvh-5rem)] bg-white transition-transform duration-300 lg:hidden",
           open ? "translate-x-0" : "translate-x-full"
         )}
       >
