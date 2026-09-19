@@ -3,7 +3,7 @@ import { createTestimonial, toggleTestimonialStatus, deleteTestimonial } from ".
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminTestimonialsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: testimonials } = await supabase
     .from("testimonials")
     .select("*")

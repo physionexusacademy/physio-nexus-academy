@@ -8,7 +8,7 @@ function slugify(input: string) {
 }
 
 export async function createPost(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const title = String(formData.get("title") ?? "");
   const status = String(formData.get("status") ?? "draft");
 
@@ -27,7 +27,7 @@ export async function createPost(formData: FormData) {
 export async function togglePostStatus(formData: FormData) {
   const id = String(formData.get("id"));
   const nextStatus = String(formData.get("next_status"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from("blog_posts")
     .update({
@@ -42,7 +42,7 @@ export async function togglePostStatus(formData: FormData) {
 
 export async function deletePost(formData: FormData) {
   const id = String(formData.get("id"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("blog_posts").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/updates");

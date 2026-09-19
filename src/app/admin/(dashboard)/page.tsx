@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 async function count(table: string, filter?: Record<string, string>) {
-  const supabase = createClient();
+  const supabase = await createClient();
   let query = supabase.from(table).select("*", { count: "exact", head: true });
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {

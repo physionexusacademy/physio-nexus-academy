@@ -4,13 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Gallery",
-  description: "Workshop photos, educational events and academy media from Physio Nexus Academy.",
+  description:
+    "Workshop photos, educational events and academy media from Physio Nexus Academy.",
 };
 
 export const revalidate = 60;
 
 export default async function GalleryPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: items } = await supabase
     .from("gallery_items")
     .select("*")
@@ -19,8 +20,12 @@ export default async function GalleryPage() {
 
   return (
     <div className="container-content section-padding">
-      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Gallery</p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Workshop &amp; Academy Media</h1>
+      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
+        Gallery
+      </p>
+      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+        Workshop &amp; Academy Media
+      </h1>
       <p className="mt-4 max-w-2xl text-navy-600">
         Photos from workshops, educational events and academy activities.
       </p>
@@ -33,7 +38,10 @@ export default async function GalleryPage() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {items?.map((item) => (
-          <div key={item.id} className="relative aspect-square overflow-hidden rounded-lg bg-grey-100">
+          <div
+            key={item.id}
+            className="relative aspect-square overflow-hidden rounded-lg bg-grey-100"
+          >
             <Image
               src={item.image_url}
               alt={item.caption || "Physio Nexus Academy gallery photo"}

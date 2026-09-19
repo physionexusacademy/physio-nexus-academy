@@ -1,3 +1,14 @@
+run = "npm run dev -- -H 0.0.0.0 -p 3000"
+modules = ["nodejs-20"]
 [nix]
 channel = "stable-25_05"
 packages = ["unzip"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[deployment]
+deploymentTarget = "cloudrun"
+build = "npm run build"
+run = "npm run start -- -H 0.0.0.0 -p 3000"

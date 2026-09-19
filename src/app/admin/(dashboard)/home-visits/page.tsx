@@ -5,7 +5,7 @@ import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 const statuses = ["New", "Contacted", "Confirmed", "Completed", "Cancelled"];
 
 export default async function AdminHomeVisitsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: requests } = await supabase
     .from("home_visit_requests")
     .select("*")

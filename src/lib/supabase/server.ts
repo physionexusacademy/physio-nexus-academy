@@ -2,10 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 // Used inside Server Components, Server Actions and Route Handlers.
-// Reads/writes the auth session via the Next.js cookie store so the admin
-// session persists across requests.
-export function createClient() {
-  const cookieStore = cookies();
+export async function createClient() {
+  const cookieStore = await cookies();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,8 +19,8 @@ export function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Called from a Server Component with no request context —
-            // safe to ignore because middleware.ts refreshes the session.
+            // Safe to ignore when cookies cannot be written
+            // from a Server Component.
           }
         },
       },

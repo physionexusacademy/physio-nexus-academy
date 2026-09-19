@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function UpdatesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: posts } = await supabase
     .from("blog_posts")
     .select("*")

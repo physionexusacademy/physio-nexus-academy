@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function registerForWorkshop(values: {
   workshopId: string;
@@ -12,7 +12,7 @@ export async function registerForWorkshop(values: {
   city: string;
   groupRegistration: boolean;
 }) {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("workshop_registrations")
     .insert({

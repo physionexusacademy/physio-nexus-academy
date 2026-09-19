@@ -10,7 +10,7 @@ import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 import { siteConfig } from "@/lib/site-config";
 
 export default async function AdminSettingsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const [{ data: founder }, { data: qualifications }, { data: settings }, { data: aboutSection }] =
     await Promise.all([
       supabase.from("founder_profile").select("*").eq("id", 1).single(),

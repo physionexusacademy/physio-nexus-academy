@@ -3,7 +3,7 @@ import { createResource, deleteResource, updateResourceVisibility } from "./acti
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminResourcesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: resources } = await supabase
     .from("resources")
     .select("*")

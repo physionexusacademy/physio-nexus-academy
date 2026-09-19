@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function updateFounderProfile(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const messageBody = String(formData.get("message_body") ?? "")
     .split("\n")
     .map((line) => line.trim())
@@ -40,7 +40,7 @@ export async function updateFounderProfile(formData: FormData) {
 }
 
 export async function addQualification(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("qualifications").insert({
     title: formData.get("title"),
     issuer: formData.get("issuer") || null,
@@ -53,7 +53,7 @@ export async function addQualification(formData: FormData) {
 
 export async function deleteQualification(formData: FormData) {
   const id = String(formData.get("id"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("qualifications").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/settings");
@@ -62,7 +62,7 @@ export async function deleteQualification(formData: FormData) {
 export async function updateSiteSetting(formData: FormData) {
   const key = String(formData.get("key"));
   const value = String(formData.get("value"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from("site_settings")
     .upsert({ key, value: JSON.stringify(value), updated_at: new Date().toISOString() });
@@ -71,7 +71,7 @@ export async function updateSiteSetting(formData: FormData) {
 }
 
 export async function updateAboutContent(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const content = {
     purpose: formData.get("purpose"),
     vision: formData.get("vision"),

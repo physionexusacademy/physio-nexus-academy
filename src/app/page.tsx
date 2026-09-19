@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/server";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const [
     { data: workshopRows },
     { data: resourceRows },
@@ -87,22 +87,38 @@ export default async function HomePage() {
               {siteConfig.tagline}
             </p>
             <p className="mt-5 max-w-lg text-base text-grey-200 sm:text-lg">
-              Practical physiotherapy education, hands-on workshops and a clear pathway to
-              patient care — built for students, professionals and patients alike.
+              Practical physiotherapy education, hands-on workshops and a clear
+              pathway to patient care — built for students, professionals and
+              patients alike.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button href="/workshops" size="lg">
                 Explore Workshops
               </Button>
-              <Button href="/appointment" variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <Button
+                href="/appointment"
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white/10"
+              >
                 Book Appointment
               </Button>
             </div>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Button href="/home-visit" variant="secondary" size="md" className="bg-white/10 hover:bg-white/20">
+              <Button
+                href="/home-visit"
+                variant="secondary"
+                size="md"
+                className="bg-white/10 hover:bg-white/20"
+              >
                 Request Home Visit
               </Button>
-              <Button href="/resources" variant="secondary" size="md" className="bg-white/10 hover:bg-white/20">
+              <Button
+                href="/resources"
+                variant="secondary"
+                size="md"
+                className="bg-white/10 hover:bg-white/20"
+              >
                 Browse Resources
               </Button>
             </div>
@@ -120,7 +136,9 @@ export default async function HomePage() {
               />
             </div>
             <div className="absolute -bottom-5 left-1/2 w-[92%] -translate-x-1/2 rounded-xl bg-white p-4 text-center shadow-lg">
-              <p className="font-heading text-sm font-semibold text-navy-800">{founder.name}</p>
+              <p className="font-heading text-sm font-semibold text-navy-800">
+                {founder.name}
+              </p>
               <p className="text-xs text-navy-500">{founder.role}</p>
             </div>
           </div>
@@ -146,12 +164,18 @@ export default async function HomePage() {
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold sm:text-3xl">Featured Workshops</h2>
+              <h2 className="text-2xl font-bold sm:text-3xl">
+                Featured Workshops
+              </h2>
               <p className="mt-2 max-w-xl text-navy-500">
-                Hands-on clinical workshops connecting theory with real practice.
+                Hands-on clinical workshops connecting theory with real
+                practice.
               </p>
             </div>
-            <Link href="/workshops" className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700">
+            <Link
+              href="/workshops"
+              className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
+            >
               View all workshops <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -172,7 +196,9 @@ export default async function HomePage() {
                   <div className="mt-4 flex items-center gap-2 text-xs text-navy-400">
                     <MapPin className="h-3.5 w-3.5" />
                     {w.city || "City TBA"} •{" "}
-                    {w.start_date ? new Date(w.start_date).toLocaleDateString() : "Date TBA"}
+                    {w.start_date
+                      ? new Date(w.start_date).toLocaleDateString()
+                      : "Date TBA"}
                   </div>
                 </Link>
               ))}
@@ -189,7 +215,9 @@ export default async function HomePage() {
       <section className="section-padding bg-grey-50">
         <div className="container-content grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
-            <h2 className="text-2xl font-bold sm:text-3xl">About Physio Nexus Academy</h2>
+            <h2 className="text-2xl font-bold sm:text-3xl">
+              About Physio Nexus Academy
+            </h2>
             <p className="mt-4 text-navy-600">{about.purpose}</p>
             <Button href="/about" variant="outline" className="mt-6">
               Learn more about PNA
@@ -197,11 +225,15 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="font-heading font-semibold text-navy-800">Our Vision</h3>
+              <h3 className="font-heading font-semibold text-navy-800">
+                Our Vision
+              </h3>
               <p className="mt-2 text-sm text-navy-500">{about.vision}</p>
             </div>
             <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="font-heading font-semibold text-navy-800">Our Mission</h3>
+              <h3 className="font-heading font-semibold text-navy-800">
+                Our Mission
+              </h3>
               <p className="mt-2 text-sm text-navy-500">{about.mission}</p>
             </div>
           </div>
@@ -223,7 +255,9 @@ export default async function HomePage() {
           <div>
             <h2 className="text-2xl font-bold sm:text-3xl">Meet the Founder</h2>
             <p className="mt-1 font-semibold text-teal-600">{founder.name}</p>
-            <p className="mt-1 text-sm text-navy-500">{siteConfig.founder.credentialsShort}</p>
+            <p className="mt-1 text-sm text-navy-500">
+              {siteConfig.founder.credentialsShort}
+            </p>
             <p className="mt-4 text-navy-600">{founder.intro}</p>
             <Button href="/founder" variant="outline" className="mt-6">
               View full founder profile
@@ -255,19 +289,29 @@ export default async function HomePage() {
       <section className="section-padding">
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className="text-2xl font-bold sm:text-3xl">Featured Books &amp; Resources</h2>
-            <Link href="/resources" className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700">
+            <h2 className="text-2xl font-bold sm:text-3xl">
+              Featured Books &amp; Resources
+            </h2>
+            <Link
+              href="/resources"
+              className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
+            >
               Browse library <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
           {featuredResources ? (
             <div className="mt-8 grid gap-5 sm:grid-cols-3">
               {featuredResources.map((r) => (
-                <div key={r.id} className="flex items-start gap-3 rounded-xl border border-grey-200 p-5">
+                <div
+                  key={r.id}
+                  className="flex items-start gap-3 rounded-xl border border-grey-200 p-5"
+                >
                   <BookOpen className="h-6 w-6 flex-shrink-0 text-teal-500" />
                   <div>
                     <p className="font-medium text-navy-800">{r.title}</p>
-                    <p className="text-xs uppercase tracking-wide text-navy-400">{r.access_type}</p>
+                    <p className="text-xs uppercase tracking-wide text-navy-400">
+                      {r.access_type}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -283,15 +327,20 @@ export default async function HomePage() {
       {/* Testimonials */}
       <section className="section-padding bg-grey-50">
         <div className="container-content">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">What People Say</h2>
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">
+            What People Say
+          </h2>
           {testimonials ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-3">
               {testimonials.map((t) => (
                 <div key={t.id} className="rounded-xl bg-white p-6 shadow-sm">
                   <Quote className="h-6 w-6 text-teal-300" />
-                  <p className="mt-3 text-sm italic text-navy-500">{t.content}</p>
+                  <p className="mt-3 text-sm italic text-navy-500">
+                    {t.content}
+                  </p>
                   <p className="mt-4 text-sm font-semibold text-navy-700">
-                    — {t.name}{t.role ? `, ${t.role}` : ""}
+                    — {t.name}
+                    {t.role ? `, ${t.role}` : ""}
                   </p>
                 </div>
               ))}
@@ -311,10 +360,20 @@ export default async function HomePage() {
             Ready to learn, apply and grow with Physio Nexus Academy?
           </h2>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button href="/workshops" variant="secondary" size="lg" className="bg-white text-teal-700 hover:bg-grey-100">
+            <Button
+              href="/workshops"
+              variant="secondary"
+              size="lg"
+              className="bg-white text-teal-700 hover:bg-grey-100"
+            >
               Explore Workshops
             </Button>
-            <Button href="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+            <Button
+              href="/contact"
+              variant="outline"
+              size="lg"
+              className="border-white text-white hover:bg-white/10"
+            >
               Get in Touch
             </Button>
           </div>

@@ -6,7 +6,7 @@ async function login(formData: FormData) {
   "use server";
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
@@ -15,15 +15,17 @@ async function login(formData: FormData) {
   redirect("/admin");
 }
 
-export default function AdminLoginPage({
+export default async function AdminLoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
+  const params = await searchParams;
+
   const errorMessage =
-    searchParams.error === "not-authorized"
+    params.error === "not-authorized"
       ? "Your account is signed in but is not registered as an admin. Contact the academy owner to be added to the profiles table."
-      : searchParams.error;
+      : params.error;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-navy-800 px-4">
@@ -36,20 +38,28 @@ export default function AdminLoginPage({
             height={56}
             className="h-14 w-14 object-contain"
           />
-          <h1 className="mt-4 font-heading text-lg font-bold text-navy-800">Admin Dashboard</h1>
+          <h1 className="mt-4 font-heading text-lg font-bold text-navy-800">
+            Admin Dashboard
+          </h1>
           <p className="text-sm text-navy-400">Physio Nexus Academy</p>
         </div>
 
         <form action={login} className="mt-6 space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-navy-700">Email</label>
+            <label className="mb-1.5 block text-sm font-medium text-navy-700">
+              Email
+            </label>
             <input name="email" type="email" required className="input" />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-navy-700">Password</label>
+            <label className="mb-1.5 block text-sm font-medium text-navy-700">
+              Password
+            </label>
             <input name="password" type="password" required className="input" />
           </div>
-          {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
+          {errorMessage && (
+            <p className="text-sm text-red-600">{errorMessage}</p>
+          )}
           <button
             type="submit"
             className="w-full rounded-md bg-teal-500 py-2.5 text-sm font-semibold text-white hover:bg-teal-600"

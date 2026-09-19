@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function addGalleryItem(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const file = formData.get("image") as File | null;
   if (!file || file.size === 0) throw new Error("Please choose an image.");
 
@@ -25,7 +25,7 @@ export async function addGalleryItem(formData: FormData) {
 
 export async function deleteGalleryItem(formData: FormData) {
   const id = String(formData.get("id"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("gallery_items").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/gallery");

@@ -10,15 +10,19 @@ function toCsvRow(values: (string | number | boolean | null)[]) {
     .join(",");
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const supabase = createClient();
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const supabase = await createClient();
 
   // RLS ensures this route only returns data if the caller's session is an
   // authenticated admin — no need to re-check role here.
   const { data: registrations, error } = await supabase
     .from("workshop_registrations")
     .select("*")
-    .eq("workshop_id", params.id)
+    .eq("workshop_id", id)
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -50,7 +54,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
       r.group_registration,
       r.payment_status,
       r.created_at,
-    ])
+    ]),
   );
 
   const csv = [header, ...rows].join("\n");

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function FounderPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const [{ data: founderRow }, { data: qualifications }] = await Promise.all([
     supabase.from("founder_profile").select("*").eq("id", 1).maybeSingle(),
     supabase.from("qualifications").select("*").order("sort_order", { ascending: true }),

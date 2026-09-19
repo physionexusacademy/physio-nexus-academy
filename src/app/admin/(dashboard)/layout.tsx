@@ -33,7 +33,7 @@ const navItems = [
 
 async function signOut() {
   "use server";
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/admin/login");
 }
@@ -43,7 +43,7 @@ export default async function AdminDashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

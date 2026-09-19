@@ -5,7 +5,7 @@ import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 import { Download } from "lucide-react";
 
 export default async function AdminWorkshopsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: workshops } = await supabase
     .from("workshops")
     .select("*")

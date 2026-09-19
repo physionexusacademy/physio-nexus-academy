@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function submitAppointment(values: {
   fullName: string;
@@ -14,7 +14,7 @@ export async function submitAppointment(values: {
   preferredTime: string;
   appointmentType: "in-person" | "online";
 }) {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("appointments")
     .insert({

@@ -3,7 +3,7 @@ import { markMessageRead, deleteMessage } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminMessagesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: messages } = await supabase
     .from("contact_messages")
     .select("*")

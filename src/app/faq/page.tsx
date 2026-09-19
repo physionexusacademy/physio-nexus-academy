@@ -49,7 +49,7 @@ const fallbackGroups = [
 ];
 
 export default async function FaqPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: faqs } = await supabase
     .from("faqs")
     .select("*")

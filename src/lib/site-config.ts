@@ -25,7 +25,7 @@ export const siteConfig = {
   contact: {
     phoneDisplay: "0348 900 9028",
     phoneRaw: "923489009028", // international format, used to build the WhatsApp link
-    email: "PLACEHOLDER — add verified academy email",
+    email: "physionexusacademypk@gmail.com",
     address: "PLACEHOLDER — add verified public address (optional)",
     hours: "PLACEHOLDER — add operating hours",
     social: {
@@ -38,7 +38,8 @@ export const siteConfig = {
 
   founder: {
     name: "Dr. Sajjad Raza PT",
-    credentialsShort: "DPT, MPhil Physical Therapy Scholar, AHPC Licensed Physiotherapist",
+    credentialsShort:
+      "DPT, MPhil Physical Therapy Scholar, AHPC Licensed Physiotherapist",
     role: "Founder and Main Instructor, Physio Nexus Academy",
     academicFocus:
       "Physical Therapy with an MSK / musculoskeletal emphasis at postgraduate level.",

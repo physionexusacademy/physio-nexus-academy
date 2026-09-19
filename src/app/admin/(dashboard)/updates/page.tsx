@@ -3,7 +3,7 @@ import { createPost, togglePostStatus, deletePost } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminUpdatesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: posts } = await supabase
     .from("blog_posts")
     .select("*")

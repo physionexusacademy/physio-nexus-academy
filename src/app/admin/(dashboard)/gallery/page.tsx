@@ -4,7 +4,7 @@ import { addGalleryItem, deleteGalleryItem } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminGalleryPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: items } = await supabase
     .from("gallery_items")
     .select("*")

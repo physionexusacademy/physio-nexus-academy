@@ -19,7 +19,7 @@ async function uploadFile(
 }
 
 export async function createResource(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const coverFile = formData.get("cover") as File | null;
   const pdfFile = formData.get("file") as File | null;
 
@@ -54,7 +54,7 @@ export async function createResource(formData: FormData) {
 
 export async function deleteResource(formData: FormData) {
   const id = String(formData.get("id"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("resources").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/resources");
@@ -63,7 +63,7 @@ export async function deleteResource(formData: FormData) {
 export async function updateResourceVisibility(formData: FormData) {
   const id = String(formData.get("id"));
   const visibility = String(formData.get("visibility"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from("resources")
     .update({ visibility, updated_at: new Date().toISOString() })

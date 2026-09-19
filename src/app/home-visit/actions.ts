@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function submitHomeVisit(values: {
   fullName: string;
@@ -14,7 +14,7 @@ export async function submitHomeVisit(values: {
   accessibilityNotes?: string;
   specialInstructions?: string;
 }) {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("home_visit_requests")
     .insert({

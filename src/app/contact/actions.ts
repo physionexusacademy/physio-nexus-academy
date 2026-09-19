@@ -1,13 +1,13 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function submitContactMessage(values: {
   name: string;
   email: string;
   message: string;
 }) {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const { error } = await supabase.from("contact_messages").insert({
     name: values.name,
     email: values.email,

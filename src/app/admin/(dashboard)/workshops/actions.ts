@@ -41,7 +41,7 @@ async function uploadPoster(supabase: ReturnType<typeof createClient>, file: Fil
 }
 
 export async function createWorkshop(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const title = String(formData.get("title") ?? "");
   const posterFile = formData.get("poster") as File | null;
   const posterUrl = await uploadPoster(supabase, posterFile);
@@ -73,7 +73,7 @@ export async function createWorkshop(formData: FormData) {
 }
 
 export async function updateWorkshop(id: string, formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const title = String(formData.get("title") ?? "");
   const posterFile = formData.get("poster") as File | null;
   const posterUrl = await uploadPoster(supabase, posterFile);
@@ -107,7 +107,7 @@ export async function updateWorkshop(id: string, formData: FormData) {
 
 export async function deleteWorkshop(formData: FormData) {
   const id = String(formData.get("id"));
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("workshops").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/workshops");
