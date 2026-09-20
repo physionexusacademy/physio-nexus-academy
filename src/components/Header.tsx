@@ -73,7 +73,7 @@ export function Header() {
         aria-hidden={!open}
         className={cn(
           "absolute left-0 right-0 top-full z-[60] h-[calc(100dvh-5rem)] bg-white transition-transform duration-300 lg:hidden",
-          open ? "translate-x-0" : "translate-x-full"
+          open ? "visible translate-x-0" : "invisible pointer-events-none translate-x-full"
         )}
       >
         <nav className="flex h-full flex-col gap-1 overflow-y-auto p-5" aria-label="Mobile navigation">
