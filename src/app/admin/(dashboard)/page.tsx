@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 async function count(table: string, filter?: Record<string, string>) {
   const supabase = await createAdminClient();
-  let query = supabase.from(table).select("*", { count: "exact", head: true });
+  let query = supabase.from(table).select("*", { count: "exact" });
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
       query = query.eq(key, value);
