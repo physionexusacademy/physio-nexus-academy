@@ -11,6 +11,7 @@ import { submitHomeVisit } from "./actions";
 const schema = z.object({
   fullName: z.string().min(2, "Please enter your full name"),
   phone: z.string().min(7, "Please enter a valid phone / WhatsApp number"),
+  email: z.string().email("Please enter a valid email address"),
   city: z.string().min(2, "Please enter your city"),
   area: z.string().min(2, "Please enter your area / neighborhood"),
   address: z.string().min(5, "Please enter the full visit address"),
@@ -72,6 +73,9 @@ export function HomeVisitForm() {
         <Field label="Phone / WhatsApp number" error={errors.phone?.message}>
           <input {...register("phone")} className="input" />
         </Field>
+            <Field label="Email address" error={errors.email?.message}>
+              <input {...register("email")} type="email" className="input" />
+            </Field>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
