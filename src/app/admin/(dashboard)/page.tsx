@@ -28,21 +28,12 @@ async function count(table: string, filter?: Record<string, string>) {
 }
 
 export default async function AdminOverviewPage() {
-  const [
-    upcomingWorkshops,
-    registrations,
-    newAppointments,
-    newHomeVisits,
-    resources,
-    newMessages,
-  ] = await Promise.all([
-    count("workshops", { status: "published" }),
-    count("workshop_registrations"),
-    count("appointments", { status: "New" }),
-    count("home_visit_requests", { status: "New" }),
-    count("resources"),
-    count("contact_messages", { status: "New" }),
-  ]);
+  const upcomingWorkshops = await count("workshops", { status: "published" });
+  const registrations = await count("workshop_registrations");
+  const newAppointments = await count("appointments", { status: "New" });
+  const newHomeVisits = await count("home_visit_requests", { status: "New" });
+  const resources = await count("resources");
+  const newMessages = await count("contact_messages", { status: "New" });
 
   const cards = [
     { label: "Published Workshops", value: upcomingWorkshops, href: "/admin/workshops" },
