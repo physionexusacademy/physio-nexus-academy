@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -12,6 +12,68 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const handleTouchStart = (event: TouchEvent) => {
+      if (
+        event.touches.length !== 1 ||
+        (window.visualViewport?.scale ?? 1) > 1.05
+      ) {
+        touchStart.current = null;
+        return;
+      }
+
+      const touch = event.touches[0];
+      touchStart.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+      };
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (!touchStart.current || event.changedTouches.length !== 1) return;
+
+      const touch = event.changedTouches[0];
+
+      const dx = touch.clientX - touchStart.current.x;
+      const dy = touch.clientY - touchStart.current.y;
+
+      touchStart.current = null;
+
+      // Ignore short or mostly vertical swipes
+      if (
+        Math.abs(dx) < 70 ||
+        Math.abs(dx) <= Math.abs(dy) * 1.25
+      ) {
+        return;
+      }
+
+      // Right → Left = OPEN
+      if (dx < 0 && !open) {
+        setOpen(true);
+      }
+
+      // Left → Right = CLOSE
+      if (dx > 0 && open) {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+
+    window.addEventListener("touchend", handleTouchEnd, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [open]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-grey-200 bg-white/95 backdrop-blur-sm">
