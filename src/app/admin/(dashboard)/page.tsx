@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 type OverviewTable =
   | "workshops"
@@ -7,19 +8,33 @@ type OverviewTable =
   | "appointments"
   | "home_visit_requests";
 
-async function count(table: OverviewTable) {
+async function count(table: OverviewTable, allowAdminFallback = false) {
   try {
-    const supabase = createAdminClient();
-    const { count: total, error } = await supabase
-      .from(table)
-      .select("*", { count: "exact", head: true });
+    const supabase = await createClient();
+    const { data, error } = await supabase.from(table).select("id");
 
     if (error) {
+      if (allowAdminFallback && error.code === "42501") {
+        console.warn("ADMIN_OVERVIEW_AUTH_FALLBACK", { table, error });
+
+        const adminSupabase = createAdminClient();
+        const { data: adminData, error: adminError } = await adminSupabase
+          .from(table)
+          .select("id");
+
+        if (!adminError) {
+          return adminData?.length ?? 0;
+        }
+
+        console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error: adminError });
+        return 0;
+      }
+
       console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error });
       return 0;
     }
 
-    return total ?? 0;
+    return data?.length ?? 0;
   } catch (error) {
     console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error });
     return 0;
@@ -30,8 +45,8 @@ export default async function AdminOverviewPage() {
   const [workshops, resources, appointments, homeVisits] = await Promise.all([
     count("workshops"),
     count("resources"),
-    count("appointments"),
-    count("home_visit_requests"),
+    count("appointments", true),
+    count("home_visit_requests", true),
   ]);
 
   const cards = [
