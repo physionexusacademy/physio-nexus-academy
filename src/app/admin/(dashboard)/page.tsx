@@ -12,8 +12,16 @@ async function count(table: string, filter?: Record<string, string>) {
   const { count: total, error } = await query;
 
   if (error) {
-    console.error(`Dashboard count failed for ${table}:`, error.message);
-    throw new Error(`Dashboard count failed for ${table}: ${error.message}`);
+    const diagnostic = {
+      table,
+      message: error.message || "(empty message)",
+      code: error.code || null,
+      details: error.details || null,
+      hint: error.hint || null,
+    };
+
+    console.error("DASHBOARD_COUNT_ERROR", diagnostic);
+    throw new Error(`Dashboard count failed for ${table}: ${JSON.stringify(diagnostic)}`);
   }
 
   return total ?? 0;
