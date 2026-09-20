@@ -17,6 +17,14 @@ export function Header() {
 
   useEffect(() => {
     const handleTouchStart = (event: TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+
+      // Let horizontally scrollable areas handle their own swipe.
+      // This prevents the mobile menu from opening while scrolling tables.
+      if (target?.closest(".overflow-x-auto, [data-horizontal-scroll]")) {
+        touchStart.current = null;
+        return;
+      }
       if (
         event.touches.length !== 1 ||
         (window.visualViewport?.scale ?? 1) > 1.05
