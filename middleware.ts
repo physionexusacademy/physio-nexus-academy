@@ -47,10 +47,10 @@ export async function middleware(request: NextRequest) {
     // profile row (created manually per README "Creating the first admin").
     const { data: profile } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, role")
       .eq("id", user.id)
       .maybeSingle();
-    if (!profile) {
+    if (!profile || !["owner", "admin"].includes(profile.role)) {
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("error", "not-authorized");
       return NextResponse.redirect(loginUrl);
@@ -58,7 +58,17 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isLoginRoute && user) {
-    return NextResponse.redirect(new URL("/admin", request.url));
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id, role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile && ["owner", "admin"].includes(profile.role)) {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
+
+    return response;
   }
 
   return response;

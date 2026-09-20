@@ -31,11 +31,15 @@ create table if not exists profiles (
 create or replace function is_admin()
 returns boolean
 language sql
+stable
 security definer
 set search_path = public
 as $$
   select exists (
-    select 1 from profiles where id = auth.uid()
+    select 1
+    from profiles
+    where id = auth.uid()
+      and role in ('owner', 'admin')
   );
 $$;
 
@@ -405,7 +409,23 @@ create policy "Admin delete workshops" on workshops
 -- workshop_registrations — public can insert only, admin can read/manage
 drop policy if exists "Public insert registrations" on workshop_registrations;
 create policy "Public insert registrations" on workshop_registrations
-  for insert with check (true);
+  for insert
+  to anon, authenticated
+  with check (
+    status = 'New'
+    and admin_notes is null
+    and (
+      (
+        payment_status = 'unpaid'
+        and transaction_ref is null
+      )
+      or
+      (
+        payment_status = 'pending'
+        and length(trim(coalesce(transaction_ref, ''))) > 0
+      )
+    )
+  );
 drop policy if exists "Admin manage registrations" on workshop_registrations;
 create policy "Admin manage registrations" on workshop_registrations
   for select using (is_admin());
