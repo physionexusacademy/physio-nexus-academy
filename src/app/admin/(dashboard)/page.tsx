@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 async function count(table: string, filter?: Record<string, string>) {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   let query = supabase.from(table).select("*", { count: "exact", head: true });
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
