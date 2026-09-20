@@ -1,47 +1,44 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-async function count(table: string, filter?: Record<string, string>) {
-  const supabase = await createAdminClient();
-  let query = supabase.from(table).select("*", { count: "exact" });
-  if (filter) {
-    for (const [key, value] of Object.entries(filter)) {
-      query = query.eq(key, value);
+type OverviewTable =
+  | "workshops"
+  | "resources"
+  | "appointments"
+  | "home_visit_requests";
+
+async function count(table: OverviewTable) {
+  try {
+    const supabase = createAdminClient();
+    const { count: total, error } = await supabase
+      .from(table)
+      .select("*", { count: "exact", head: true });
+
+    if (error) {
+      console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error });
+      return 0;
     }
+
+    return total ?? 0;
+  } catch (error) {
+    console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error });
+    return 0;
   }
-  const { count: total, error } = await query;
-
-  if (error) {
-    const diagnostic = {
-      table,
-      message: error.message || "(empty message)",
-      code: error.code || null,
-      details: error.details || null,
-      hint: error.hint || null,
-    };
-
-    console.error("DASHBOARD_COUNT_ERROR", diagnostic);
-    throw new Error(`Dashboard count failed for ${table}: ${JSON.stringify(diagnostic)}`);
-  }
-
-  return total ?? 0;
 }
 
 export default async function AdminOverviewPage() {
-  const upcomingWorkshops = await count("workshops", { status: "published" });
-  const registrations = await count("workshop_registrations");
-  const newAppointments = await count("appointments", { status: "New" });
-  const newHomeVisits = await count("home_visit_requests", { status: "New" });
-  const resources = await count("resources");
-  const newMessages = await count("contact_messages", { status: "New" });
+  const [workshops, resources, appointments, homeVisits] = await Promise.all([
+    count("workshops"),
+    count("resources"),
+    count("appointments"),
+    count("home_visit_requests"),
+  ]);
 
   const cards = [
-    { label: "Published Workshops", value: upcomingWorkshops, href: "/admin/workshops" },
-    { label: "Workshop Registrations", value: registrations, href: "/admin/workshops" },
-    { label: "New Appointment Requests", value: newAppointments, href: "/admin/appointments" },
-    { label: "New Home Visit Requests", value: newHomeVisits, href: "/admin/home-visits" },
-    { label: "Resources in Library", value: resources, href: "/admin/resources" },
-    { label: "New Contact Messages", value: newMessages, href: "/admin/messages" },
+    { label: "Total Workshops", value: workshops, href: "/admin/workshops" },
+    { label: "Total Resources", value: resources, href: "/admin/resources" },
+    { label: "Total Patient Appointments", value: appointments, href: "/admin/appointments" },
+    { label: "Total Home Visit Requests", value: homeVisits, href: "/admin/home-visits" },
   ];
 
   return (
