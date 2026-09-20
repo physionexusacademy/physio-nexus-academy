@@ -153,10 +153,13 @@ create table if not exists workshop_registrations (
   group_registration boolean default false,
   payment_status text not null default 'unpaid' check (payment_status in ('unpaid','pending','paid','waived')),
   transaction_ref text,
+  status text not null default 'New' check (status in ('New','Contacted','Confirmed','Completed','Cancelled')),
+  admin_notes text,
   consent boolean not null default false,
   created_at timestamptz not null default now()
 );
 create index if not exists idx_registrations_workshop on workshop_registrations(workshop_id);
+create index if not exists idx_workshop_registrations_status on workshop_registrations(status);
 
 -- ═════════════════════════════════════════════════════════════════════
 -- COURSES (future-ready)

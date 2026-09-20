@@ -126,13 +126,23 @@ export default async function AdminWorkshopsPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <a
-                    href={`/admin/workshops/${w.id}/export`}
-                    className="flex items-center gap-1 text-xs font-semibold text-teal-600 hover:underline"
-                  >
-                    <Download className="h-3.5 w-3.5" /> Export CSV
-                  </a>
-                </td>
+  <div className="flex flex-col items-start gap-2">
+    <Link
+      href={`/admin/workshops/${w.id}/registrations`}
+      className="text-xs font-semibold text-navy-700 hover:text-teal-600 hover:underline"
+    >
+      Manage Registrations
+    </Link>
+
+    <a
+      href={`/admin/workshops/${w.id}/export`}
+      className="flex items-center gap-1 text-xs font-semibold text-teal-600 hover:underline"
+    >
+      <Download className="h-3.5 w-3.5" />
+      Export CSV
+    </a>
+  </div>
+</td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex justify-end gap-3">
                     <Link href={`/admin/workshops/${w.id}`} className="text-xs font-semibold text-navy-600 hover:underline">

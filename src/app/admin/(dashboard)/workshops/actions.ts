@@ -28,7 +28,7 @@ function toNullableDate(value: FormDataEntryValue | null) {
   return str === "" ? null : str;
 }
 
-async function uploadPoster(supabase: ReturnType<typeof createClient>, file: File | null) {
+async function uploadPoster(supabase: Awaited<ReturnType<typeof createClient>>, file: File | null) {
   if (!file || file.size === 0) return null;
   const ext = file.name.split(".").pop();
   const path = `posters/${Date.now()}.${ext}`;
@@ -110,5 +110,62 @@ export async function deleteWorkshop(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.from("workshops").delete().eq("id", id);
   if (error) throw new Error(error.message);
+  revalidatePath("/admin/workshops");
+}
+
+export async function updateWorkshopRegistration(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  const workshopId = String(formData.get("workshop_id") ?? "").trim();
+  const status = String(formData.get("status") ?? "New").trim();
+  const paymentStatus = String(
+    formData.get("payment_status") ?? "unpaid"
+  ).trim();
+  const transactionRef =
+    String(formData.get("transaction_ref") ?? "").trim() || null;
+  const adminNotes =
+    String(formData.get("admin_notes") ?? "").trim() || null;
+
+  const allowedStatuses = [
+    "New",
+    "Contacted",
+    "Confirmed",
+    "Completed",
+    "Cancelled",
+  ];
+
+  const allowedPaymentStatuses = [
+    "unpaid",
+    "pending",
+    "paid",
+    "waived",
+  ];
+
+  if (!id || !workshopId) {
+    throw new Error("Registration ID or Workshop ID is missing");
+  }
+
+  if (!allowedStatuses.includes(status)) {
+    throw new Error("Invalid registration status");
+  }
+
+  if (!allowedPaymentStatuses.includes(paymentStatus)) {
+    throw new Error("Invalid payment status");
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("workshop_registrations")
+    .update({
+      status,
+      payment_status: paymentStatus,
+      transaction_ref: transactionRef,
+      admin_notes: adminNotes,
+    })
+    .eq("id", id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`/admin/workshops/${workshopId}/registrations`);
   revalidatePath("/admin/workshops");
 }
