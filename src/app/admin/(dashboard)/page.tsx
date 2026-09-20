@@ -9,7 +9,13 @@ async function count(table: string, filter?: Record<string, string>) {
       query = query.eq(key, value);
     }
   }
-  const { count: total } = await query;
+  const { count: total, error } = await query;
+
+  if (error) {
+    console.error(`Dashboard count failed for ${table}:`, error.message);
+    throw new Error(`Dashboard count failed for ${table}: ${error.message}`);
+  }
+
   return total ?? 0;
 }
 
