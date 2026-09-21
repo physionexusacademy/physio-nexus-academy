@@ -153,6 +153,19 @@ export function Header() {
         )}
       >
         <nav className="flex h-full flex-col gap-1 overflow-y-auto p-5" aria-label="Mobile navigation">
+          <a
+  href="https://thecpdregister.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="mb-3 rounded-xl border border-grey-200 bg-grey-50 px-4 py-3"
+>
+  <p className="text-xs font-bold uppercase tracking-wide text-teal-600">
+    Approved CPD Provider
+  </p>
+  <p className="mt-1 text-xs font-semibold text-navy-800">
+    The CPD Group · #791052
+  </p>
+</a>
           {mainNav.map((item) => (
             <Link
               key={item.href}
