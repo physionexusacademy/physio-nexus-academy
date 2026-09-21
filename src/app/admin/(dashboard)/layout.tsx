@@ -47,7 +47,13 @@ export default async function AdminDashboardLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+if (!user) redirect("/admin/login");
 
+const { data: isAdmin, error: adminError } = await supabase.rpc("is_admin");
+
+if (adminError || !isAdmin) {
+  redirect("/admin/login?error=not-authorized");
+}
   return (
     <div className="flex min-h-screen bg-grey-50">
       <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-grey-200 bg-navy-800 text-white lg:flex">
