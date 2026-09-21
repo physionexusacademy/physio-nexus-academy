@@ -144,7 +144,51 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      {/* CPD Approved Provider */}
+      <section className="border-b border-grey-200 bg-white py-6 sm:py-8">
+        <div className="container-content">
+          <div className="flex flex-col items-center gap-5 rounded-2xl border border-grey-200 bg-grey-50 p-5 text-center shadow-sm sm:flex-row sm:justify-between sm:text-left">
+            
+            <div className="flex flex-col items-center gap-4 sm:flex-row">
+              <Image
+                src="/cpd-approved-provider.png"
+                alt="The CPD Group Approved Provider - Physio Nexus Academy #791052"
+                width={310}
+                height={110}
+                className="h-auto w-full max-w-[280px] object-contain sm:max-w-[310px]"
+              />
 
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-teal-600">
+                  Official Recognition
+                </p>
+
+                <h2 className="mt-1 text-xl font-bold text-navy-800 sm:text-2xl">
+                  Approved CPD Provider
+                </h2>
+
+                <p className="mt-1 text-sm text-grey-600">
+                  Physio Nexus Academy is an Approved CPD Provider with The CPD Group.
+                </p>
+
+                <p className="mt-1 text-sm font-semibold text-navy-800">
+                  Provider No. #791052
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://thecpdregister.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center justify-center rounded-lg bg-navy-800 px-5 py-3 text-sm font-semibold text-white transition hover:bg-navy-700"
+            >
+              Verify Provider
+            </a>
+
+          </div>
+        </div>
+      </section>
       {/* Trust strip */}
       <section className="border-b border-grey-200 bg-grey-50">
         <div className="container-content grid grid-cols-2 gap-4 py-6 sm:grid-cols-4">
