@@ -95,9 +95,15 @@ export function Header() {
             className="h-11 w-11 object-contain"
             priority
           />
-          <span className="font-heading text-lg font-semibold leading-tight text-navy-800 sm:text-xl">
-            Physio Nexus Academy
-          </span>
+         <div className="flex flex-col">
+  <span className="font-heading text-lg font-semibold leading-tight text-navy-800 sm:text-xl">
+    Physio Nexus Academy
+  </span>
+
+  <span className="hidden text-[10px] font-semibold uppercase tracking-wide text-teal-600 lg:block">
+    Approved CPD Provider · #791052
+  </span>
+</div>
         </Link>
 
         {/* Desktop nav */}
