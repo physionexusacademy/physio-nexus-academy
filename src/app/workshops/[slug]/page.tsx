@@ -47,17 +47,14 @@ export async function generateMetadata({
   const description = getWorkshopDescription(workshop);
   const canonicalUrl = `${siteUrl}/workshops/${slug}`;
   const image =
-    typeof workshop.poster_image_url === "string" &&
-    workshop.poster_image_url.trim().length > 0
+    typeof workshop.poster_image_url === "string" && workshop.poster_image_url.trim()
       ? workshop.poster_image_url.trim()
       : undefined;
 
   return {
     title,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title,
       description,
@@ -84,8 +81,45 @@ export default async function WorkshopDetailPage({
 
   if (!workshop) notFound();
 
+  const url = `${siteUrl}/workshops/${slug}`;
+  const description = getWorkshopDescription(workshop);
+  const image =
+    typeof workshop.poster_image_url === "string" && workshop.poster_image_url.trim()
+      ? workshop.poster_image_url.trim()
+      : undefined;
+  const eventJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: workshop.title,
+    description,
+    url,
+    ...(workshop.start_date ? { startDate: workshop.start_date } : {}),
+    ...(workshop.end_date ? { endDate: workshop.end_date } : {}),
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    ...(image ? { image: [image] } : {}),
+    ...(workshop.city || workshop.venue
+      ? {
+          location: {
+            "@type": "Place",
+            ...(workshop.venue ? { name: workshop.venue } : {}),
+            ...(workshop.city ? { address: { "@type": "PostalAddress", addressLocality: workshop.city } } : {}),
+          },
+        }
+      : {}),
+    organizer: {
+      "@type": "EducationalOrganization",
+      name: "Physio Nexus Academy",
+      url: siteUrl,
+    },
+    ...(workshop.registration_status !== "closed"
+      ? { offers: { "@type": "Offer", url, availability: "https://schema.org/InStock" } }
+      : {}),
+  };
+
   return (
     <div className="container-content section-padding">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd).replace(/</g, "\\u003c") }} />
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
