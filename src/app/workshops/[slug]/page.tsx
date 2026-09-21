@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CalendarDays, MapPin, Users, Award } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -5,12 +6,22 @@ import { RegistrationForm } from "./RegistrationForm";
 
 export const revalidate = 60;
 
-export default async function WorkshopDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
+const siteUrl = "https://physionexusacademy.com";
+
+function getWorkshopDescription(workshop: {
+  summary?: string | null;
+  description?: string | null;
 }) {
-  const { slug } = await params;
+  const source = workshop.summary?.trim() || workshop.description?.trim();
+
+  if (!source) {
+    return "Explore this physiotherapy workshop from Physio Nexus Academy.";
+  }
+
+  return source.replace(/\s+/g, " ").slice(0, 160).trim();
+}
+
+async function getPublishedWorkshop(slug: string) {
   const supabase = await createClient();
   const { data: workshop } = await supabase
     .from("workshops")
@@ -18,6 +29,58 @@ export default async function WorkshopDetailPage({
     .eq("slug", slug)
     .eq("status", "published")
     .single();
+
+  return workshop;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const workshop = await getPublishedWorkshop(slug);
+
+  if (!workshop) notFound();
+
+  const title = `${workshop.title} | Physio Nexus Academy`;
+  const description = getWorkshopDescription(workshop);
+  const canonicalUrl = `${siteUrl}/workshops/${slug}`;
+  const image =
+    typeof workshop.poster_image_url === "string" &&
+    workshop.poster_image_url.trim().length > 0
+      ? workshop.poster_image_url.trim()
+      : undefined;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      ...(image ? { images: [image] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
+  };
+}
+
+export default async function WorkshopDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const workshop = await getPublishedWorkshop(slug);
 
   if (!workshop) notFound();
 
