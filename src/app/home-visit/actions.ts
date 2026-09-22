@@ -27,7 +27,7 @@ async function sendEmail({
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: \`Bearer ${apiKey}\`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -50,7 +50,7 @@ async function sendEmail({
 export async function submitHomeVisit(values: {
   fullName: string;
   phone: string;
-  email: string;
+  email?: string;
   city: string;
   area: string;
   address: string;
@@ -83,14 +83,14 @@ export async function submitHomeVisit(values: {
 
   const referenceId = data.reference_id as string;
 
-  const adminMessage = `
+  const adminMessage = \`
 New Home Visit Request – Physio Nexus Academy
 
 Reference ID: ${referenceId}
 
 Patient Name: ${values.fullName}
 Phone: ${values.phone}
-Email: ${values.email}
+Email: ${values.email || "Not provided"}
 City: ${values.city}
 Area / Neighborhood: ${values.area}
 
@@ -110,9 +110,19 @@ Special Instructions:
 ${values.specialInstructions || "None provided"}
 
 This home visit request has also been saved in the PNA database.
-`.trim();
+\`.trim();
 
-  const patientMessage = `
+  const emailTasks: Promise<void>[] = [
+    sendEmail({
+      to: ADMIN_EMAIL,
+      subject: \`New Home Visit Request – ${values.fullName}\`,
+      text: adminMessage,
+      replyTo: values.email || undefined,
+    }),
+  ];
+
+  if (values.email) {
+    const patientMessage = \`
 Dear ${values.fullName},
 
 Thank you for contacting Physio Nexus Academy.
@@ -132,21 +142,18 @@ Regards,
 Physio Nexus Academy
 LEARN • APPLY • TRANSFORM LIVES
 physionexusacademy.com
-`.trim();
+\`.trim();
 
-  await Promise.allSettled([
-    sendEmail({
-      to: ADMIN_EMAIL,
-      subject: `New Home Visit Request – ${values.fullName}`,
-      text: adminMessage,
-      replyTo: values.email,
-    }),
-    sendEmail({
-      to: values.email,
-      subject: `Home Visit Request Received – ${referenceId}`,
-      text: patientMessage,
-    }),
-  ]);
+    emailTasks.push(
+      sendEmail({
+        to: values.email,
+        subject: \`Home Visit Request Received – ${referenceId}\`,
+        text: patientMessage,
+      }),
+    );
+  }
+
+  await Promise.allSettled(emailTasks);
 
   return referenceId;
 }
