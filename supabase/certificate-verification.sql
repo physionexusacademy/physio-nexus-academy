@@ -14,7 +14,7 @@ as $$
     'PNA-' ||
     to_char(current_date, 'YY') ||
     '-' ||
-    upper(substr(replace(uuid_generate_v4()::text, '-', ''), 1, 10));
+    upper(substr(replace(uuid_generate_v4()::text, '-', ''), 1, 16));
 $$;
 
 create table if not exists certificates (
