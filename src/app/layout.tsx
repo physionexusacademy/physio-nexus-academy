@@ -55,8 +55,8 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="overflow-x-hidden">
-      <body className="flex min-h-screen w-full max-w-full flex-col overflow-x-hidden">
+    <html lang="en" className="overflow-x-clip">
+      <body className="flex min-h-screen w-full max-w-full flex-col overflow-x-clip">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
