@@ -4,18 +4,49 @@ import { Building2, Home, ShieldCheck } from "lucide-react";
 import { HomeVisitForm } from "./HomeVisitForm";
 
 export const metadata: Metadata = {
-  title: "Request Home Visit",
-  description: "Request an eligible physiotherapy home visit from Physio Nexus Academy.",
+  title: "Physiotherapy Home Visit Service",
+  description:
+    "Request a physiotherapy home visit from Physio Nexus Academy. Choose your area, preferred date and time, then share essential patient details for confirmation.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/home-visit",
+  },
 };
 
 export default function HomeVisitPage() {
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "https://physionexusacademy.com/home-visit#service",
+    name: "Physiotherapy Home Visit Service",
+    serviceType: "Physiotherapy home visit",
+    url: "https://physionexusacademy.com/home-visit",
+    description:
+      "A physiotherapy home visit request pathway for patients in service areas where Physio Nexus Academy confirms availability.",
+    provider: {
+      "@type": "EducationalOrganization",
+      "@id": "https://physionexusacademy.com/#organization",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+  };
+
   return (
     <div className="container-content section-padding max-w-3xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(serviceJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="text-center">
         <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Patient Services</p>
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Request a Home Visit</h1>
+        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+          Physiotherapy Home Visit Service
+        </h1>
         <p className="mx-auto mt-4 max-w-2xl text-navy-600">
-          Tell us your area, preferred time and essential patient details. We will contact you to confirm whether a visit is available.
+          Request a home physiotherapy visit by sharing your area, preferred date and time,
+          and essential patient details. Our team will contact you to confirm service
+          availability before any visit is finalized.
         </p>
       </div>
 
@@ -38,6 +69,15 @@ export default function HomeVisitPage() {
           <p className="mt-1 text-sm text-navy-500">You are requesting this service.</p>
         </div>
       </div>
+
+      <section className="mt-8 rounded-2xl border border-grey-200 bg-grey-50 p-5 sm:p-6">
+        <h2 className="text-xl font-bold text-navy-800">How a home physiotherapy visit request works</h2>
+        <ol className="mt-4 grid gap-4 text-sm text-navy-600 sm:grid-cols-3">
+          <li><span className="font-semibold text-teal-700">1. Choose location &amp; time.</span><br />Tell us your city, area and preferred appointment slot.</li>
+          <li><span className="font-semibold text-teal-700">2. Share patient details.</span><br />Add contact information, address and a brief condition summary.</li>
+          <li><span className="font-semibold text-teal-700">3. Receive confirmation.</span><br />Our team confirms service-area and schedule availability before the visit.</li>
+        </ol>
+      </section>
 
       <div className="mt-8">
         <HomeVisitForm />
