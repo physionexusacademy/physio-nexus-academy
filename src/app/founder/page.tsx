@@ -5,12 +5,17 @@ import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Founder — Dr. Sajjad Raza PT",
+  title: "Physiotherapy Instructor in Pakistan — Dr. Sajjad Raza PT",
   description:
-    "Professional profile, qualifications and certifications of Dr. Sajjad Raza PT, Founder and Main Instructor of Physio Nexus Academy.",
+    "Meet Dr. Sajjad Raza PT, physiotherapy educator, clinical workshop instructor and Founder of Physio Nexus Academy in Pakistan.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/founder",
+  },
 };
 
 export const revalidate = 60;
+
+const siteUrl = "https://physionexusacademy.com";
 
 export default async function FounderPage() {
   const supabase = await createClient();
@@ -37,8 +42,55 @@ export default async function FounderPage() {
     ? qualifications
     : siteConfig.qualifications.map((q, i) => ({ id: `fallback-${i}`, title: q.title }));
 
+  const founderUrl = `${siteUrl}/founder`;
+  const founderImage =
+    typeof founder.photo === "string" && founder.photo.startsWith("http")
+      ? founder.photo
+      : `${siteUrl}${founder.photo}`;
+
+  const profileJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${founderUrl}#profile`,
+    url: founderUrl,
+    name: `${founder.name} — Physiotherapy Instructor & Clinical Educator`,
+    mainEntity: {
+      "@type": "Person",
+      "@id": `${founderUrl}#person`,
+      name: founder.name,
+      url: founderUrl,
+      image: founderImage,
+      jobTitle: "Physiotherapy Instructor and Founder",
+      description:
+        "Physiotherapy educator, clinical workshop instructor and Founder of Physio Nexus Academy.",
+      worksFor: {
+        "@type": "EducationalOrganization",
+        "@id": "https://physionexusacademy.com/#organization",
+        name: "Physio Nexus Academy",
+        url: siteUrl,
+      },
+      knowsAbout: [
+        "Physiotherapy education",
+        "Musculoskeletal physiotherapy",
+        "Clinical skills training",
+        "Manual therapy",
+        "Physiotherapy research support",
+      ],
+      hasCredential: quals.map((q) => ({
+        "@type": "EducationalOccupationalCredential",
+        name: q.title,
+      })),
+    },
+  };
+
   return (
     <div className="container-content section-padding">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(profileJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="grid gap-10 lg:grid-cols-[300px_1fr]">
         <div>
           <div className="overflow-hidden rounded-xl shadow-lg">
@@ -51,7 +103,12 @@ export default async function FounderPage() {
               priority
             />
           </div>
-          <h1 className="mt-5 font-heading text-xl font-bold text-navy-800">{founder.name}</h1>
+          <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-teal-600">
+            Physiotherapy Instructor &amp; Clinical Educator
+          </p>
+          <h1 className="mt-2 font-heading text-2xl font-bold text-navy-800">
+            {founder.name}
+          </h1>
           <p className="mt-1 text-sm text-teal-600">{founder.role}</p>
           <p className="mt-3 text-sm text-navy-500">{founder.credentialsShort}</p>
         </div>
@@ -66,6 +123,18 @@ export default async function FounderPage() {
               hands-on clinical workshops, contributes to academic and research support, and
               guides physiotherapy students and professionals through practical,
               evidence-informed learning.
+            </p>
+          </section>
+
+          <section className="mt-10">
+            <h2 className="text-xl font-bold text-navy-800">
+              Physiotherapy Teaching &amp; Clinical Education
+            </h2>
+            <p className="mt-3 text-navy-600">
+              Through Physio Nexus Academy, {founder.name} supports physiotherapy students and
+              professionals with practical clinical education, hands-on workshops, research
+              guidance and evidence-informed learning. The focus is on making clinical concepts
+              easier to understand and apply in real physiotherapy practice.
             </p>
           </section>
 
