@@ -105,7 +105,7 @@ if (adminError || !isAdmin) {
               </button>
             </form>
           </div>
-          <nav className="flex gap-1 overflow-x-auto px-3 pb-3">
+          <nav className="flex flex-wrap gap-2 px-3 pb-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
