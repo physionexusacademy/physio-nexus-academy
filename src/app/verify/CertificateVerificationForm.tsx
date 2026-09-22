@@ -81,11 +81,11 @@ export function CertificateVerificationForm() {
             id="certificate-id"
             value={certificateId}
             onChange={(event) => setCertificateId(event.target.value.toUpperCase())}
-            placeholder="PNA-26-XXXXXXXXXX"
+            placeholder="PNA-26-XXXXXXXXXXXXXXXX"
             autoComplete="off"
             spellCheck={false}
             className="input flex-1 uppercase tracking-wide"
-            maxLength={17}
+            maxLength={23}
             required
           />
           <button
