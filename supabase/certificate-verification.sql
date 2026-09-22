@@ -40,6 +40,10 @@ create index if not exists idx_certificates_participant_name on certificates(par
 
 alter table certificates enable row level security;
 
+-- Table privileges are still required; RLS policies below enforce admin-only access.
+grant select, insert, update, delete on table certificates to authenticated;
+revoke all on table certificates from anon;
+
 drop policy if exists "Admin read certificates" on certificates;
 create policy "Admin read certificates" on certificates
   for select using (is_admin());
