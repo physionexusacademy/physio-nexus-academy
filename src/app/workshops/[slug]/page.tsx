@@ -49,7 +49,7 @@ export async function generateMetadata({
   const image =
     typeof workshop.poster_image_url === "string" && workshop.poster_image_url.trim()
       ? workshop.poster_image_url.trim()
-      : undefined;
+      : `${siteUrl}/images/pna-logo.png`;
 
   return {
     title,
@@ -60,13 +60,13 @@ export async function generateMetadata({
       description,
       url: canonicalUrl,
       type: "website",
-      ...(image ? { images: [image] } : {}),
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      ...(image ? { images: [image] } : {}),
+      images: [image],
     },
   };
 }
@@ -86,7 +86,62 @@ export default async function WorkshopDetailPage({
   const image =
     typeof workshop.poster_image_url === "string" && workshop.poster_image_url.trim()
       ? workshop.poster_image_url.trim()
+      : `${siteUrl}/images/pna-logo.png`;
+
+  const hasRegularFee =
+    workshop.regular_fee !== null &&
+    workshop.regular_fee !== undefined &&
+    workshop.regular_fee !== "";
+  const hasEarlyBirdFee =
+    workshop.early_bird_fee !== null &&
+    workshop.early_bird_fee !== undefined &&
+    workshop.early_bird_fee !== "";
+
+  const regularFee = hasRegularFee ? Number(workshop.regular_fee) : null;
+  const earlyBirdFee = hasEarlyBirdFee ? Number(workshop.early_bird_fee) : null;
+  const earlyBirdDeadline = workshop.early_bird_deadline
+    ? new Date(`${workshop.early_bird_deadline}T23:59:59+05:00`)
+    : null;
+  const earlyBirdActive =
+    earlyBirdFee !== null &&
+    earlyBirdDeadline !== null &&
+    !Number.isNaN(earlyBirdDeadline.getTime()) &&
+    earlyBirdDeadline.getTime() >= Date.now();
+
+  const currentPrice =
+    earlyBirdActive && earlyBirdFee !== null
+      ? earlyBirdFee
+      : regularFee !== null
+        ? regularFee
+        : earlyBirdFee;
+
+  const offer =
+    workshop.registration_status !== "closed" &&
+    currentPrice !== null &&
+    Number.isFinite(currentPrice)
+      ? {
+          "@type": "Offer",
+          url,
+          price: currentPrice,
+          priceCurrency: "PKR",
+          availability: "https://schema.org/InStock",
+          ...(workshop.created_at ? { validFrom: workshop.created_at } : {}),
+          ...(earlyBirdActive && workshop.early_bird_deadline
+            ? { validThrough: workshop.early_bird_deadline }
+            : {}),
+        }
       : undefined;
+
+  const performers =
+    Array.isArray(workshop.instructors) && workshop.instructors.length
+      ? workshop.instructors
+          .filter((name: unknown): name is string => typeof name === "string" && name.trim().length > 0)
+          .map((name: string) => ({
+            "@type": "Person",
+            name: name.trim(),
+          }))
+      : [];
+
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -97,13 +152,21 @@ export default async function WorkshopDetailPage({
     ...(workshop.end_date ? { endDate: workshop.end_date } : {}),
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    ...(image ? { image: [image] } : {}),
+    image: [image],
     ...(workshop.city || workshop.venue
       ? {
           location: {
             "@type": "Place",
             ...(workshop.venue ? { name: workshop.venue } : {}),
-            ...(workshop.city ? { address: { "@type": "PostalAddress", addressLocality: workshop.city } } : {}),
+            ...(workshop.city
+              ? {
+                  address: {
+                    "@type": "PostalAddress",
+                    addressLocality: workshop.city,
+                    addressCountry: "PK",
+                  },
+                }
+              : {}),
           },
         }
       : {}),
@@ -112,9 +175,8 @@ export default async function WorkshopDetailPage({
       name: "Physio Nexus Academy",
       url: siteUrl,
     },
-    ...(workshop.registration_status !== "closed"
-      ? { offers: { "@type": "Offer", url, availability: "https://schema.org/InStock" } }
-      : {}),
+    ...(performers.length ? { performer: performers } : {}),
+    ...(offer ? { offers: offer } : {}),
   };
 
   return (
