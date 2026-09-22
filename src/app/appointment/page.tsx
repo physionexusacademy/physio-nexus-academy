@@ -5,19 +5,49 @@ import { AppointmentForm } from "./AppointmentForm";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Book Appointment",
-  description: "Request a physiotherapy consultation appointment with Physio Nexus Academy.",
+  title: "Physiotherapy Appointment & Consultation",
+  description:
+    "Request a physiotherapy appointment or consultation with Physio Nexus Academy. Choose in-person or online consultation, then select your preferred date and time.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/appointment",
+  },
 };
 
 export default function AppointmentPage() {
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "https://physionexusacademy.com/appointment#service",
+    name: "Physiotherapy Appointment & Consultation",
+    serviceType: "Physiotherapy consultation",
+    url: "https://physionexusacademy.com/appointment",
+    description:
+      "A physiotherapy consultation appointment request pathway with in-person and online options subject to confirmation.",
+    provider: {
+      "@type": "EducationalOrganization",
+      "@id": "https://physionexusacademy.com/#organization",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+  };
+
   return (
     <div className="container-content section-padding max-w-3xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(serviceJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="text-center">
         <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Patient Services</p>
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Book an Appointment</h1>
+        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+          Physiotherapy Appointment &amp; Consultation
+        </h1>
         <p className="mx-auto mt-4 max-w-2xl text-navy-600">
-          Choose the service you need, select a preferred time, and share only the essential details.
-          Our team will contact you to confirm availability.
+          Request an in-person or online physiotherapy consultation, choose your preferred
+          date and time, and share only the essential details. Our team will contact you to
+          confirm availability.
         </p>
       </div>
 
