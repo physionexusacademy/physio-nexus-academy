@@ -14,11 +14,11 @@ as $$
     'PNA-' ||
     to_char(current_date, 'YY') ||
     '-' ||
-    upper(substr(replace(uuid_generate_v4()::text, '-', ''), 1, 16));
+    upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 16));
 $$;
 
 create table if not exists certificates (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   certificate_id text not null unique default generate_certificate_id(),
   participant_name text not null check (length(trim(participant_name)) > 0),
   workshop_id uuid not null references workshops(id) on delete restrict,
