@@ -68,8 +68,8 @@ export function Footer() {
               physionexusacademypk@gmail.com
             </span>
             <span className="flex items-center gap-2 text-grey-300">
-              <MapPin className="h-4 w-4 text-teal-300" /> Service cities — to
-              be added
+              <MapPin className="h-4 w-4 text-teal-300" /> Home visit service
+              areas confirmed on request
             </span>
           </div>
         </div>
