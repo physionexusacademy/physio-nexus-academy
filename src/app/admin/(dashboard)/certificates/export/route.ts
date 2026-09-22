@@ -22,7 +22,7 @@ export async function GET() {
   const { data: certificates, error } = await supabase
     .from("certificates")
     .select(
-      "certificate_id, participant_name, status, issued_at, workshops(title, start_date, end_date, cpd_hours)"
+      "certificate_id, participant_name, status, issued_at, workshops(title, start_date, end_date, contact_hours)"
     )
     .order("issued_at", { ascending: false });
 
@@ -52,7 +52,7 @@ export async function GET() {
         workshop?.title ?? "",
         workshop?.start_date ?? "",
         workshop?.end_date ?? "",
-        workshop?.cpd_hours ?? "",
+        workshop?.contact_hours ?? "",
         certificate.status,
         certificate.issued_at,
       ]
