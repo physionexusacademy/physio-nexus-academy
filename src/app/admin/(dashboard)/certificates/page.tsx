@@ -76,7 +76,7 @@ export default async function AdminCertificatesPage({
       <div className="min-w-0 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-navy-800">Certificates</h1>
-          <p className="mt-1 text-sm text-navy-400">
+          <p className="mt-1 max-w-full break-words text-sm leading-6 text-navy-400">
             Generate, view and manage PNA certificate verification records.
           </p>
         </div>
@@ -225,7 +225,104 @@ export default async function AdminCertificatesPage({
         </div>
       </form>
 
-      <div className="mt-5 w-full max-w-full overflow-x-auto rounded-xl border border-grey-200 bg-white">
+      <div className="mt-5 space-y-3 md:hidden">
+        {filtered.map((certificate) => {
+          const relatedWorkshop = workshopsById.get(certificate.workshop_id);
+
+          return (
+            <article
+              key={certificate.id}
+              className="min-w-0 rounded-xl border border-grey-200 bg-white p-4"
+            >
+              <div className="grid gap-3">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-navy-400">
+                    Participant
+                  </p>
+                  <p className="mt-1 break-words font-semibold text-navy-800">
+                    {certificate.participant_name}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-navy-400">
+                    Certificate ID
+                  </p>
+                  <code className="mt-1 block break-all rounded bg-grey-50 px-2 py-2 text-xs font-semibold text-navy-700">
+                    {certificate.certificate_id}
+                  </code>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-navy-400">
+                    Workshop
+                  </p>
+                  <p className="mt-1 break-words text-sm text-navy-600">
+                    {relatedWorkshop?.title ?? "—"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-wide text-navy-400">
+                      Date
+                    </p>
+                    <p className="mt-1 text-sm text-navy-600">
+                      {formatWorkshopDate(
+                        relatedWorkshop?.start_date ?? null,
+                        relatedWorkshop?.end_date ?? null
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-wide text-navy-400">
+                      Contact Hours
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-navy-700">
+                      {relatedWorkshop?.contact_hours ?? "—"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 border-t border-grey-100 pt-3">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      certificate.status === "valid"
+                        ? "bg-teal-50 text-teal-700"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    {certificate.status}
+                  </span>
+
+                  <form action={updateCertificateStatus}>
+                    <input type="hidden" name="id" value={certificate.id} />
+                    <input
+                      type="hidden"
+                      name="status"
+                      value={certificate.status === "valid" ? "revoked" : "valid"}
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-md border border-grey-200 px-3 py-2 text-xs font-semibold text-navy-700"
+                    >
+                      {certificate.status === "valid" ? "Revoke" : "Reactivate"}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+
+        {filtered.length === 0 && (
+          <div className="rounded-xl border border-grey-200 bg-white px-4 py-8 text-center text-navy-400">
+            No certificate records found.
+          </div>
+        )}
+      </div>
+
+      <div className="mt-5 hidden w-full max-w-full overflow-x-auto rounded-xl border border-grey-200 bg-white md:block">
         <table className="w-full min-w-[900px] text-sm">
           <thead>
             <tr className="border-b border-grey-200 text-left text-xs uppercase tracking-wide text-navy-400">
