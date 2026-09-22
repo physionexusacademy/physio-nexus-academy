@@ -4,24 +4,55 @@ import { siteConfig } from "@/lib/site-config";
 import { AlertTriangle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Patient Services",
+  title: "Physiotherapy Services & Patient Appointments",
   description:
-    "Physiotherapy consultation and appointment pathway offered by Physio Nexus Academy.",
+    "Explore physiotherapy consultation, appointment and home visit request pathways from Physio Nexus Academy.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/patient-services",
+  },
 };
 
 export default function PatientServicesPage() {
+  const servicesJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Physio Nexus Academy Physiotherapy Services",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        url: "https://physionexusacademy.com/appointment",
+        name: "Physiotherapy Appointment & Consultation",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        url: "https://physionexusacademy.com/home-visit",
+        name: "Physiotherapy Home Visit Service",
+      },
+    ],
+  };
+
   return (
     <div className="container-content section-padding max-w-3xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(servicesJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Patient Services</p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Physiotherapy Consultation Pathway</h1>
+      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+        Physiotherapy Services &amp; Patient Appointments
+      </h1>
 
       <p className="mt-4 text-navy-600">
         Physio Nexus Academy provides a clear pathway for patients seeking physiotherapy
-        guidance and consultation. Submitting a request below is the first step — our team
-        will follow up to confirm details.
+        consultation, appointment support and home visit requests. Submitting a request is
+        the first step — our team will follow up to confirm availability and details.
       </p>
 
-      <h2 className="mt-8 text-xl font-bold">General Service Categories</h2>
+      <h2 className="mt-8 text-xl font-bold">Physiotherapy Service Options</h2>
       <ul className="mt-3 list-disc space-y-2 pl-5 text-navy-600">
         <li>Musculoskeletal (MSK) consultation and guidance.</li>
         <li>In-person consultation requests.</li>
