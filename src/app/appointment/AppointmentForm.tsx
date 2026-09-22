@@ -86,7 +86,7 @@ export function AppointmentForm() {
 
   if (status === "success") {
     const whatsappMessage = encodeURIComponent(
-      \`Hello Physio Nexus Academy, I submitted an appointment request. Reference ID: ${referenceId}\`,
+      `Hello Physio Nexus Academy, I submitted an appointment request. Reference ID: ${referenceId}`,
     );
 
     return (
@@ -105,7 +105,7 @@ export function AppointmentForm() {
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <a
-            href={\`https://wa.me/923489009028?text=${whatsappMessage}\`}
+            href={`https://wa.me/923489009028?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#20bd5a]"
@@ -128,14 +128,14 @@ export function AppointmentForm() {
           {[1, 2].map((item) => (
             <div key={item} className="flex flex-1 items-center gap-3">
               <div
-                className={\`flex h-9 w-9 flex-none items-center justify-center rounded-full text-sm font-bold ${
+                className={`flex h-9 w-9 flex-none items-center justify-center rounded-full text-sm font-bold ${
                   step >= item ? "bg-teal-500 text-white" : "bg-grey-100 text-navy-400"
-                }\`}
+                }`}
               >
                 {item}
               </div>
               <div className="min-w-0">
-                <p className={\`text-sm font-semibold ${step >= item ? "text-navy-800" : "text-navy-400"}\`}>
+                <p className={`text-sm font-semibold ${step >= item ? "text-navy-800" : "text-navy-400"}`}>
                   {item === 1 ? "Choose time" : "Your details"}
                 </p>
                 <p className="hidden text-xs text-navy-400 sm:block">
@@ -155,11 +155,11 @@ export function AppointmentForm() {
                 <button
                   type="button"
                   onClick={() => setValue("appointmentType", "in-person", { shouldValidate: true })}
-                  className={\`rounded-xl border p-4 text-left transition ${
+                  className={`rounded-xl border p-4 text-left transition ${
                     appointmentType === "in-person"
                       ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500"
                       : "border-grey-200 bg-white hover:border-teal-300"
-                  }\`}
+                  }`}
                 >
                   <Building2 className="h-6 w-6 text-teal-600" />
                   <span className="mt-3 block font-semibold text-navy-800">In-person consultation</span>
@@ -168,11 +168,11 @@ export function AppointmentForm() {
                 <button
                   type="button"
                   onClick={() => setValue("appointmentType", "online", { shouldValidate: true })}
-                  className={\`rounded-xl border p-4 text-left transition ${
+                  className={`rounded-xl border p-4 text-left transition ${
                     appointmentType === "online"
                       ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500"
                       : "border-grey-200 bg-white hover:border-teal-300"
-                  }\`}
+                  }`}
                 >
                   <Video className="h-6 w-6 text-teal-600" />
                   <span className="mt-3 block font-semibold text-navy-800">Online consultation</span>
@@ -193,11 +193,11 @@ export function AppointmentForm() {
                     key={slot.value}
                     type="button"
                     onClick={() => setValue("preferredTime", slot.value, { shouldValidate: true })}
-                    className={\`rounded-xl border px-4 py-3 text-left transition ${
+                    className={`rounded-xl border px-4 py-3 text-left transition ${
                       preferredTime === slot.value
                         ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500"
                         : "border-grey-200 bg-white hover:border-teal-300"
-                    }\`}
+                    }`}
                   >
                     <Clock3 className="h-5 w-5 text-teal-600" />
                     <span className="mt-2 block text-sm font-semibold text-navy-800">{slot.label}</span>
