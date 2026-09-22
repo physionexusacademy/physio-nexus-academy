@@ -4,19 +4,55 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { siteConfig } from "@/lib/site-config";
 
-const organizationJsonLd = {
+const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
+
+const siteJsonLd = {
   "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  name: "Physio Nexus Academy",
-  url: "https://physionexusacademy.com",
-  logo: "https://physionexusacademy.com/images/pna-logo.png",
-  description:
-    "Physio Nexus Academy offers physiotherapy education, workshops, learning resources, research support and professional development.",
-  founder: {
-    "@type": "Person",
-    name: "Dr. Sajjad Raza PT",
-  },
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://physionexusacademy.com/#organization",
+      name: "Physio Nexus Academy",
+      alternateName: "PNA",
+      url: "https://physionexusacademy.com",
+      logo: "https://physionexusacademy.com/images/pna-logo.png",
+      image: "https://physionexusacademy.com/images/pna-logo.png",
+      description:
+        "Physio Nexus Academy provides physiotherapy education, clinical workshops, learning resources, research support and patient-service pathways.",
+      email: siteConfig.contact.email,
+      telephone: `+${siteConfig.contact.phoneRaw}`,
+      founder: {
+        "@type": "Person",
+        "@id": "https://physionexusacademy.com/founder#person",
+        name: siteConfig.founder.name,
+        url: "https://physionexusacademy.com/founder",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        telephone: `+${siteConfig.contact.phoneRaw}`,
+        email: siteConfig.contact.email,
+        availableLanguage: ["English", "Urdu"],
+      },
+      areaServed: {
+        "@type": "Country",
+        name: "Pakistan",
+      },
+      ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://physionexusacademy.com/#website",
+      url: "https://physionexusacademy.com",
+      name: "Physio Nexus Academy",
+      publisher: {
+        "@id": "https://physionexusacademy.com/#organization",
+      },
+      inLanguage: "en-PK",
+    },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -61,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(siteJsonLd).replace(/</g, "\\u003c"),
           }}
         />
         <a
