@@ -4,6 +4,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Building2,
+  CalendarDays,
+  CheckCircle2,
+  Clock3,
+  MessageCircle,
+  Video,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { submitAppointment } from "./actions";
@@ -25,8 +35,16 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
+type Step = 1 | 2;
+
+const timeSlots = [
+  { value: "morning", label: "Morning", hint: "9 AM – 12 PM" },
+  { value: "afternoon", label: "Afternoon", hint: "12 PM – 4 PM" },
+  { value: "evening", label: "Evening", hint: "4 PM – 8 PM" },
+] as const;
 
 export function AppointmentForm() {
+  const [step, setStep] = useState<Step>(1);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [referenceId, setReferenceId] = useState<string | null>(null);
 
@@ -35,10 +53,24 @@ export function AppointmentForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
+    watch,
+    trigger,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { appointmentType: "in-person" },
+    defaultValues: {
+      appointmentType: "in-person",
+      preferredTime: "",
+    },
   });
+
+  const appointmentType = watch("appointmentType");
+  const preferredTime = watch("preferredTime");
+
+  const goToDetails = async () => {
+    const valid = await trigger(["appointmentType", "preferredDate", "preferredTime"]);
+    if (valid) setStep(2);
+  };
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -46,121 +78,214 @@ export function AppointmentForm() {
       setReferenceId(ref);
       setStatus("success");
       reset();
+      setStep(1);
     } catch {
       setStatus("error");
     }
   };
 
   if (status === "success") {
+    const whatsappMessage = encodeURIComponent(
+      \`Hello Physio Nexus Academy, I submitted an appointment request. Reference ID: ${referenceId}\`,
+    );
+
     return (
-      <div className="rounded-xl border border-teal-200 bg-teal-50 p-6 text-center" role="status" aria-live="polite">
-        <p className="font-heading text-lg font-semibold text-teal-800">Request received</p>
-        <p className="mt-2 text-sm text-teal-700">
-          Your reference ID is <span className="font-mono">{referenceId}</span>. Our team will
-          contact you shortly to confirm your appointment.
+      <div
+        className="rounded-2xl border border-teal-200 bg-gradient-to-b from-teal-50 to-white p-6 text-center shadow-sm sm:p-8"
+        role="status"
+        aria-live="polite"
+      >
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+          <CheckCircle2 className="h-7 w-7" />
+        </span>
+        <p className="mt-4 font-heading text-2xl font-semibold text-navy-800">Request received</p>
+        <p className="mt-2 text-sm leading-6 text-navy-600">
+          Your reference ID is <span className="font-mono font-semibold text-navy-800">{referenceId}</span>.
+          Our team will contact you shortly to confirm the appointment.
         </p>
-        <Button className="mt-4" onClick={() => setStatus("idle")}>
-          Submit another request
-        </Button>
+        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+          <a
+            href={\`https://wa.me/923489009028?text=${whatsappMessage}\`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#20bd5a]"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Confirm on WhatsApp
+          </a>
+          <Button variant="outline" onClick={() => setStatus("idle")}>
+            Submit another request
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Full name" error={errors.fullName?.message}>
-          <input {...register("fullName")} className="input" />
-        </Field>
-        <Field label="Age (optional)" error={errors.age?.message}>
-          <input {...register("age")} className="input" />
-        </Field>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+      <div className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm sm:p-7">
+        <div className="mb-7 flex items-center gap-3">
+          {[1, 2].map((item) => (
+            <div key={item} className="flex flex-1 items-center gap-3">
+              <div
+                className={\`flex h-9 w-9 flex-none items-center justify-center rounded-full text-sm font-bold ${
+                  step >= item ? "bg-teal-500 text-white" : "bg-grey-100 text-navy-400"
+                }\`}
+              >
+                {item}
+              </div>
+              <div className="min-w-0">
+                <p className={\`text-sm font-semibold ${step >= item ? "text-navy-800" : "text-navy-400"}\`}>
+                  {item === 1 ? "Choose time" : "Your details"}
+                </p>
+                <p className="hidden text-xs text-navy-400 sm:block">
+                  {item === 1 ? "Visit type, date & slot" : "Contact & concern"}
+                </p>
+              </div>
+              {item === 1 && <div className="hidden h-px flex-1 bg-grey-200 sm:block" />}
+            </div>
+          ))}
+        </div>
+
+        {step === 1 ? (
+          <div className="space-y-6">
+            <div>
+              <p className="label">Appointment type</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => setValue("appointmentType", "in-person", { shouldValidate: true })}
+                  className={\`rounded-xl border p-4 text-left transition ${
+                    appointmentType === "in-person"
+                      ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500"
+                      : "border-grey-200 bg-white hover:border-teal-300"
+                  }\`}
+                >
+                  <Building2 className="h-6 w-6 text-teal-600" />
+                  <span className="mt-3 block font-semibold text-navy-800">In-person consultation</span>
+                  <span className="mt-1 block text-sm text-navy-500">Meet the physiotherapy team in person.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setValue("appointmentType", "online", { shouldValidate: true })}
+                  className={\`rounded-xl border p-4 text-left transition ${
+                    appointmentType === "online"
+                      ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500"
+                      : "border-grey-200 bg-white hover:border-teal-300"
+                  }\`}
+                >
+                  <Video className="h-6 w-6 text-teal-600" />
+                  <span className="mt-3 block font-semibold text-navy-800">Online consultation</span>
+                  <span className="mt-1 block text-sm text-navy-500">Request a remote consultation if available.</span>
+                </button>
+              </div>
+            </div>
+
+            <Field label="Preferred date" error={errors.preferredDate?.message}>
+              <input {...register("preferredDate")} type="date" className="input min-h-12" />
+            </Field>
+
+            <div>
+              <p className="label">Preferred time</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {timeSlots.map((slot) => (
+                  <button
+                    key={slot.value}
+                    type="button"
+                    onClick={() => setValue("preferredTime", slot.value, { shouldValidate: true })}
+                    className={\`rounded-xl border px-4 py-3 text-left transition ${
+                      preferredTime === slot.value
+                        ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500"
+                        : "border-grey-200 bg-white hover:border-teal-300"
+                    }\`}
+                  >
+                    <Clock3 className="h-5 w-5 text-teal-600" />
+                    <span className="mt-2 block text-sm font-semibold text-navy-800">{slot.label}</span>
+                    <span className="block text-xs text-navy-400">{slot.hint}</span>
+                  </button>
+                ))}
+              </div>
+              {errors.preferredTime && (
+                <p className="mt-1 text-xs text-red-600" role="alert">
+                  {errors.preferredTime.message}
+                </p>
+              )}
+            </div>
+
+            <Button type="button" size="lg" onClick={goToDetails} className="w-full sm:w-auto">
+              Continue
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Full name" error={errors.fullName?.message}>
+                <input {...register("fullName")} autoComplete="name" className="input min-h-12" />
+              </Field>
+              <Field label="Phone / WhatsApp number" error={errors.phone?.message}>
+                <input
+                  {...register("phone")}
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="e.g. 0348 9009028"
+                  className="input min-h-12"
+                />
+              </Field>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="City / area" error={errors.city?.message}>
+                <input {...register("city")} autoComplete="address-level2" className="input min-h-12" />
+              </Field>
+              <Field label="Email (optional)" error={errors.email?.message}>
+                <input {...register("email")} type="email" autoComplete="email" className="input min-h-12" />
+              </Field>
+            </div>
+
+            <Field label="What would you like help with?" error={errors.reason?.message}>
+              <textarea
+                {...register("reason")}
+                rows={4}
+                placeholder="Briefly describe your pain, injury or reason for consultation."
+                className="input"
+              />
+            </Field>
+
+            <label className="flex items-start gap-3 rounded-xl bg-grey-50 p-4 text-sm text-navy-600">
+              <input type="checkbox" {...register("consent")} className="mt-0.5 h-4 w-4 accent-teal-600" />
+              <span>
+                I consent to Physio Nexus Academy using these details to contact me about this appointment request.
+                {errors.consent && (
+                  <span className="mt-1 block text-xs text-red-600">{errors.consent.message}</span>
+                )}
+              </span>
+            </label>
+
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+              <Button type="button" variant="outline" size="lg" onClick={() => setStep(1)} className="w-full sm:w-auto">
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </Button>
+              <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto">
+                {isSubmitting ? "Submitting..." : "Book Appointment"}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Gender (optional)" error={errors.gender?.message}>
-          <select {...register("gender")} className="input">
-            <option value="">Prefer not to say</option>
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other</option>
-          </select>
-        </Field>
-        <Field label="Phone / WhatsApp number" error={errors.phone?.message}>
-          <input {...register("phone")} className="input" />
-        </Field>
-      </div>
-
-      <Field label="Email (optional)" error={errors.email?.message}>
-        <input {...register("email")} type="email" className="input" />
-      </Field>
-
-      <Field label="City / area" error={errors.city?.message}>
-        <input {...register("city")} className="input" />
-      </Field>
-
-      <Field label="Reason for consultation / main complaint" error={errors.reason?.message}>
-        <textarea {...register("reason")} rows={4} className="input" />
-      </Field>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Preferred date" error={errors.preferredDate?.message}>
-          <input {...register("preferredDate")} type="date" className="input" />
-        </Field>
-        <Field label="Preferred time slot" error={errors.preferredTime?.message}>
-          <select {...register("preferredTime")} className="input">
-            <option value="">Select a time slot</option>
-            <option value="morning">Morning</option>
-            <option value="afternoon">Afternoon</option>
-            <option value="evening">Evening</option>
-          </select>
-        </Field>
-      </div>
-
-      <Field label="Appointment type" error={errors.appointmentType?.message}>
-        <select {...register("appointmentType")} className="input">
-          <option value="in-person">In-person</option>
-          <option value="online">Online consultation (if enabled)</option>
-        </select>
-      </Field>
-
-      <div>
-        <label htmlFor="attachment" className="mb-1.5 block text-sm font-medium text-navy-700">
-          Attach a relevant report or image (optional)
-        </label>
-        <input
-          id="attachment"
-          type="file"
-          accept=".pdf,.jpg,.jpeg,.png"
-          className="block w-full text-sm text-navy-500"
-        />
-        <p className="mt-1.5 text-xs text-navy-400">
-          PDF, JPG or PNG, up to 5MB. Please avoid sharing sensitive personal details you are
-          not comfortable transmitting online.
-        </p>
-      </div>
-
-      <label className="flex items-start gap-2.5 text-sm text-navy-600">
-        <input type="checkbox" {...register("consent")} className="mt-0.5 h-4 w-4" />
-        <span>
-          I consent to Physio Nexus Academy using these details to contact me about this
-          appointment request.
-          {errors.consent && (
-            <span className="mt-1 block text-xs text-red-600">{errors.consent.message}</span>
-          )}
-        </span>
-      </label>
-
-      <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto">
-        {isSubmitting ? "Submitting..." : "Submit Appointment Request"}
-      </Button>
 
       {status === "error" && (
-        <p className="text-sm text-red-600" role="alert">
-          Something went wrong submitting your request. Please try again or contact us directly.
+        <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+          Something went wrong submitting your request. Please try again or contact us on WhatsApp.
         </p>
       )}
+
+      <div className="flex items-start gap-3 rounded-xl bg-navy-50 p-4 text-sm text-navy-600">
+        <CalendarDays className="mt-0.5 h-5 w-5 flex-none text-teal-600" />
+        <p>This is a request only. Your appointment is confirmed after our team contacts you.</p>
+      </div>
     </form>
   );
 }
-
