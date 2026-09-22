@@ -2,7 +2,10 @@
 -- PNA CERTIFICATE VERIFICATION SYSTEM
 -- Apply once in Supabase SQL Editor before enabling the UI.
 -- Public users cannot list certificate records; exact-ID verification only.
+-- Contact hours are stored separately from any CPD-accreditation hours.
 -- ═════════════════════════════════════════════════════════════════════
+
+alter table workshops add column if not exists contact_hours numeric;
 
 create or replace function generate_certificate_id()
 returns text
@@ -74,7 +77,7 @@ as $$
     w.title as workshop_title,
     w.start_date,
     w.end_date,
-    w.cpd_hours as contact_hours,
+    w.contact_hours as contact_hours,
     c.status
   from certificates c
   join workshops w on w.id = c.workshop_id
