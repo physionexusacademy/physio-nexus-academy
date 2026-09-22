@@ -68,8 +68,8 @@ export default async function AdminWorkshopsPage() {
             <input name="early_bird_fee" type="number" step="0.01" className="input" />
           </div>
           <div>
-            <label className="label">CPD / contact hours</label>
-            <input name="cpd_hours" type="number" step="0.5" className="input" />
+            <label className="label">Contact hours</label>
+            <input name="contact_hours" type="number" step="0.5" className="input" />
           </div>
           <div>
             <label className="label">Seat limit</label>

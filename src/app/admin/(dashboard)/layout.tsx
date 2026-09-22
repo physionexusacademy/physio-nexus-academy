@@ -13,6 +13,7 @@ import {
   HelpCircle,
   Inbox,
   Settings,
+  FileBadge2,
   LogOut,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -20,6 +21,7 @@ import { createClient } from "@/lib/supabase/server";
 const navItems = [
   { label: "Overview", href: "/admin", icon: LayoutDashboard },
   { label: "Workshops", href: "/admin/workshops", icon: CalendarDays },
+  { label: "Certificates", href: "/admin/certificates", icon: FileBadge2 },
   { label: "Resources", href: "/admin/resources", icon: BookOpen },
   { label: "Appointments", href: "/admin/appointments", icon: Stethoscope },
   { label: "Home Visits", href: "/admin/home-visits", icon: HomeIcon },
@@ -55,7 +57,7 @@ if (adminError || !isAdmin) {
   redirect("/admin/login?error=not-authorized");
 }
   return (
-    <div className="flex min-h-screen bg-grey-50">
+    <div className="flex min-h-screen w-full max-w-full overflow-x-hidden bg-grey-50">
       <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-grey-200 bg-navy-800 text-white lg:flex">
         <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
           <Image
@@ -92,7 +94,7 @@ if (adminError || !isAdmin) {
         </div>
       </aside>
 
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         {/* Mobile top bar + horizontally scrollable nav */}
         <div className="border-b border-grey-200 bg-white lg:hidden">
           <div className="flex items-center justify-between px-4 py-3">
@@ -103,7 +105,7 @@ if (adminError || !isAdmin) {
               </button>
             </form>
           </div>
-          <nav className="flex gap-1 overflow-x-auto px-3 pb-3">
+          <nav className="flex flex-wrap gap-2 px-3 pb-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -116,7 +118,7 @@ if (adminError || !isAdmin) {
             ))}
           </nav>
         </div>
-        <main className="p-5 sm:p-8">{children}</main>
+        <main className="min-w-0 max-w-full overflow-x-hidden p-4 sm:p-8">{children}</main>
       </div>
     </div>
   );

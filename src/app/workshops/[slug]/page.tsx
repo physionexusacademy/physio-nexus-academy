@@ -150,10 +150,10 @@ export default async function WorkshopDetailPage({
                 {workshop.seat_limit} seats
               </span>
             )}
-            {workshop.cpd_hours && (
+            {workshop.contact_hours && (
               <span className="flex items-center gap-2">
-                <Award className="h-4 w-4 text-teal-500" /> {workshop.cpd_hours}{" "}
-                CPD hours
+                <Award className="h-4 w-4 text-teal-500" /> {workshop.contact_hours}{" "}
+                Contact hours
               </span>
             )}
           </div>

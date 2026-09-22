@@ -154,6 +154,7 @@ export const mainNav = [
   { label: "About PNA", href: "/about" },
   { label: "Founder", href: "/founder" },
   { label: "Workshops", href: "/workshops" },
+  { label: "Verify Certificate", href: "/verify" },
   { label: "Courses", href: "/courses" },
   { label: "Books & Resources", href: "/resources" },
   { label: "Research Support", href: "/research" },

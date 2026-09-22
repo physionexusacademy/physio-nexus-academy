@@ -126,6 +126,7 @@ create table if not exists workshops (
   venue text,
   map_link text,
   cpd_hours numeric,
+  contact_hours numeric,
   regular_fee numeric,
   early_bird_fee numeric,
   early_bird_deadline date,

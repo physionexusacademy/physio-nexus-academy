@@ -126,12 +126,12 @@ export default async function EditWorkshopPage({
           />
         </div>
         <div>
-          <label className="label">CPD / contact hours</label>
+          <label className="label">Contact hours</label>
           <input
-            name="cpd_hours"
+            name="contact_hours"
             type="number"
             step="0.5"
-            defaultValue={w.cpd_hours ?? ""}
+            defaultValue={w.contact_hours ?? ""}
             className="input"
           />
         </div>
