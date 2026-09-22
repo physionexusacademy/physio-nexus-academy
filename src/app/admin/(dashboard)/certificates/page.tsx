@@ -35,24 +35,24 @@ export default async function AdminCertificatesPage({
   const params = await searchParams;
   const supabase = await createClient();
 
-  const [{ data: workshops }, { data: certificates, error }] = await Promise.all([
+  const [
+    { data: workshops, error: workshopsError },
+    { data: certificates, error: certificatesError },
+  ] = await Promise.all([
     supabase
       .from("workshops")
       .select("id, title, start_date, end_date, contact_hours")
       .order("start_date", { ascending: false }),
     supabase
       .from("certificates")
-      .select(
-        "id, certificate_id, participant_name, status, issued_at, workshop_id, workshops(id, title, start_date, end_date, contact_hours)"
-      )
+      .select("id, certificate_id, participant_name, status, issued_at, workshop_id")
       .order("issued_at", { ascending: false }),
   ]);
 
-  if (error) {
-    throw new Error(
-      "Certificates could not be loaded. Apply the certificate-verification Supabase migration first."
-    );
-  }
+  const loadError = workshopsError ?? certificatesError;
+  const workshopsById = new Map(
+    (workshops ?? []).map((workshop) => [workshop.id, workshop])
+  );
 
   const q = (params.q ?? "").trim().toLowerCase();
   const workshopFilter = params.workshop ?? "";
@@ -88,6 +88,12 @@ export default async function AdminCertificatesPage({
           Export CSV
         </a>
       </div>
+
+      {loadError && (
+        <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          Certificate data could not be loaded: {loadError.message}
+        </div>
+      )}
 
       <div className="mt-6 grid gap-5 xl:grid-cols-2">
         <details className="rounded-xl border border-grey-200 bg-white p-5" open>
@@ -234,9 +240,7 @@ export default async function AdminCertificatesPage({
           </thead>
           <tbody>
             {filtered.map((certificate) => {
-              const relatedWorkshop = Array.isArray(certificate.workshops)
-                ? certificate.workshops[0]
-                : certificate.workshops;
+              const relatedWorkshop = workshopsById.get(certificate.workshop_id);
 
               return (
                 <tr
