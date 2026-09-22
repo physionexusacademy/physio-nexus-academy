@@ -72,8 +72,8 @@ export default async function AdminCertificatesPage({
   });
 
   return (
-    <div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="min-w-0 max-w-full overflow-x-hidden">
+      <div className="min-w-0 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-navy-800">Certificates</h1>
           <p className="mt-1 text-sm text-navy-400">
@@ -95,8 +95,8 @@ export default async function AdminCertificatesPage({
         </div>
       )}
 
-      <div className="mt-6 grid gap-5 xl:grid-cols-2">
-        <details className="rounded-xl border border-grey-200 bg-white p-5" open>
+      <div className="mt-6 grid min-w-0 gap-5 xl:grid-cols-2">
+        <details className="min-w-0 rounded-xl border border-grey-200 bg-white p-4 sm:p-5" open>
           <summary className="cursor-pointer font-semibold text-navy-700">
             + Generate certificates from names
           </summary>
@@ -154,7 +154,7 @@ export default async function AdminCertificatesPage({
           </form>
         </details>
 
-        <details className="rounded-xl border border-grey-200 bg-white p-5">
+        <details className="min-w-0 rounded-xl border border-grey-200 bg-white p-4 sm:p-5">
           <summary className="cursor-pointer font-semibold text-navy-700">
             Generate from completed registrations
           </summary>
@@ -194,7 +194,7 @@ export default async function AdminCertificatesPage({
 
       <form
         method="get"
-        className="mt-6 grid gap-3 rounded-xl border border-grey-200 bg-white p-4 sm:grid-cols-4"
+        className="mt-6 grid min-w-0 gap-3 rounded-xl border border-grey-200 bg-white p-4 sm:grid-cols-4"
       >
         <input
           name="q"
@@ -225,7 +225,7 @@ export default async function AdminCertificatesPage({
         </div>
       </form>
 
-      <div className="mt-5 overflow-x-auto rounded-xl border border-grey-200 bg-white">
+      <div className="mt-5 w-full max-w-full overflow-x-auto rounded-xl border border-grey-200 bg-white">
         <table className="w-full min-w-[900px] text-sm">
           <thead>
             <tr className="border-b border-grey-200 text-left text-xs uppercase tracking-wide text-navy-400">
