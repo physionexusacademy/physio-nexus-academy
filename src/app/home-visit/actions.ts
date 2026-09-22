@@ -27,7 +27,7 @@ async function sendEmail({
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: \`Bearer ${apiKey}\`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -83,7 +83,7 @@ export async function submitHomeVisit(values: {
 
   const referenceId = data.reference_id as string;
 
-  const adminMessage = \`
+  const adminMessage = `
 New Home Visit Request – Physio Nexus Academy
 
 Reference ID: ${referenceId}
@@ -110,19 +110,19 @@ Special Instructions:
 ${values.specialInstructions || "None provided"}
 
 This home visit request has also been saved in the PNA database.
-\`.trim();
+`.trim();
 
   const emailTasks: Promise<void>[] = [
     sendEmail({
       to: ADMIN_EMAIL,
-      subject: \`New Home Visit Request – ${values.fullName}\`,
+      subject: `New Home Visit Request – ${values.fullName}`,
       text: adminMessage,
       replyTo: values.email || undefined,
     }),
   ];
 
   if (values.email) {
-    const patientMessage = \`
+    const patientMessage = `
 Dear ${values.fullName},
 
 Thank you for contacting Physio Nexus Academy.
@@ -142,12 +142,12 @@ Regards,
 Physio Nexus Academy
 LEARN • APPLY • TRANSFORM LIVES
 physionexusacademy.com
-\`.trim();
+`.trim();
 
     emailTasks.push(
       sendEmail({
         to: values.email,
-        subject: \`Home Visit Request Received – ${referenceId}\`,
+        subject: `Home Visit Request Received – ${referenceId}`,
         text: patientMessage,
       }),
     );
