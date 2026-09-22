@@ -115,6 +115,11 @@ export default async function WorkshopDetailPage({
         ? regularFee
         : earlyBirdFee;
 
+  const regularOfferValidFrom =
+    !earlyBirdActive && workshop.early_bird_deadline
+      ? `${workshop.early_bird_deadline}T23:59:59+05:00`
+      : workshop.created_at;
+
   const offer =
     workshop.registration_status !== "closed" &&
     currentPrice !== null &&
@@ -125,14 +130,14 @@ export default async function WorkshopDetailPage({
           price: currentPrice,
           priceCurrency: "PKR",
           availability: "https://schema.org/InStock",
-          ...(workshop.created_at ? { validFrom: workshop.created_at } : {}),
+          ...(regularOfferValidFrom ? { validFrom: regularOfferValidFrom } : {}),
           ...(earlyBirdActive && workshop.early_bird_deadline
-            ? { validThrough: workshop.early_bird_deadline }
+            ? { validThrough: `${workshop.early_bird_deadline}T23:59:59+05:00` }
             : {}),
         }
       : undefined;
 
-  const performers =
+  const instructorPerformers =
     Array.isArray(workshop.instructors) && workshop.instructors.length
       ? workshop.instructors
           .filter((name: unknown): name is string => typeof name === "string" && name.trim().length > 0)
@@ -141,6 +146,17 @@ export default async function WorkshopDetailPage({
             name: name.trim(),
           }))
       : [];
+
+  const performers =
+    instructorPerformers.length > 0
+      ? instructorPerformers
+      : [
+          {
+            "@type": "Organization",
+            name: "Physio Nexus Academy",
+            url: siteUrl,
+          },
+        ];
 
   const eventJsonLd = {
     "@context": "https://schema.org",
@@ -175,7 +191,7 @@ export default async function WorkshopDetailPage({
       name: "Physio Nexus Academy",
       url: siteUrl,
     },
-    ...(performers.length ? { performer: performers } : {}),
+    performer: performers,
     ...(offer ? { offers: offer } : {}),
   };
 
