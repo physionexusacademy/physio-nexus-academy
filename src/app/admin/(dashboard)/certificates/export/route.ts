@@ -19,16 +19,26 @@ export async function GET() {
     return new Response("Forbidden", { status: 403 });
   }
 
-  const { data: certificates, error } = await supabase
-    .from("certificates")
-    .select(
-      "certificate_id, participant_name, status, issued_at, workshops(title, start_date, end_date, contact_hours)"
-    )
-    .order("issued_at", { ascending: false });
+  const [
+    { data: certificates, error: certificatesError },
+    { data: workshops, error: workshopsError },
+  ] = await Promise.all([
+    supabase
+      .from("certificates")
+      .select("certificate_id, participant_name, status, issued_at, workshop_id")
+      .order("issued_at", { ascending: false }),
+    supabase
+      .from("workshops")
+      .select("id, title, start_date, end_date, contact_hours"),
+  ]);
 
-  if (error) {
+  if (certificatesError || workshopsError) {
     return new Response("Could not export certificates.", { status: 500 });
   }
+
+  const workshopsById = new Map(
+    (workshops ?? []).map((workshop) => [workshop.id, workshop])
+  );
 
   const rows = [
     [
@@ -42,9 +52,7 @@ export async function GET() {
       "Issued At",
     ].map(csvEscape).join(","),
     ...(certificates ?? []).map((certificate) => {
-      const workshop = Array.isArray(certificate.workshops)
-        ? certificate.workshops[0]
-        : certificate.workshops;
+      const workshop = workshopsById.get(certificate.workshop_id);
 
       return [
         certificate.participant_name,
