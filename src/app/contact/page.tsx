@@ -39,8 +39,8 @@ export default function ContactPage() {
             </p>
           </div>
           <p className="mt-6 text-xs text-navy-400">
-            A map/location block will appear here once a verified public address
-            is provided.
+            Home visit availability varies by service area. Contact us to confirm
+            coverage and appointment availability for your location.
           </p>
         </div>
 
