@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const CERTIFICATE_ID_PATTERN = /^PNA-\d{2}-[A-F0-9]{10}$/;
+const CERTIFICATE_ID_PATTERN = /^PNA-\d{2}-[A-F0-9]{16}$/;
 
 export async function POST(request: Request) {
   let body: { certificateId?: unknown };
