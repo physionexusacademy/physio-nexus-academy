@@ -38,12 +38,12 @@ export default async function AdminCertificatesPage({
   const [{ data: workshops }, { data: certificates, error }] = await Promise.all([
     supabase
       .from("workshops")
-      .select("id, title, start_date, end_date, cpd_hours")
+      .select("id, title, start_date, end_date, contact_hours")
       .order("start_date", { ascending: false }),
     supabase
       .from("certificates")
       .select(
-        "id, certificate_id, participant_name, status, issued_at, workshop_id, workshops(id, title, start_date, end_date, cpd_hours)"
+        "id, certificate_id, participant_name, status, issued_at, workshop_id, workshops(id, title, start_date, end_date, contact_hours)"
       )
       .order("issued_at", { ascending: false }),
   ]);
@@ -261,7 +261,7 @@ export default async function AdminCertificatesPage({
                     )}
                   </td>
                   <td className="px-4 py-3 text-navy-500">
-                    {relatedWorkshop?.cpd_hours ?? "—"}
+                    {relatedWorkshop?.contact_hours ?? "—"}
                   </td>
                   <td className="px-4 py-3">
                     <span
