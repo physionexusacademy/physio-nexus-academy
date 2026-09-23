@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [{
+      source: '/:path*',
+      has: [{ type: 'host', value: 'www.physionexusacademy.com' }],
+      destination: 'https://physionexusacademy.com/:path*',
+      permanent: true,
+    }];
+  },
   images: {
     remotePatterns: [
       {
