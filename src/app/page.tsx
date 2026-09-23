@@ -7,9 +7,9 @@ import { siteConfig } from "@/lib/site-config";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Education, Workshops & Patient Services in Pakistan",
+  title: { absolute: "Physio Nexus Academy | Physiotherapy Workshops & Patient Services" },
   description:
-    "Physio Nexus Academy provides physiotherapy education, instructor-led clinical workshops, learning resources, patient appointments and home visit request pathways in Pakistan.",
+    "Explore Physio Nexus Academy (PNA): physiotherapy workshops, courses, books and resources, research support, patient appointments and home visit requests in Pakistan.",
   alternates: {
     canonical: "https://physionexusacademy.com",
   },
