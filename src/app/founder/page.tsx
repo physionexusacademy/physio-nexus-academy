@@ -3,6 +3,8 @@ import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
+import { Button } from "@/components/ui/Button";
+import { trainingHistory } from "@/lib/training-history";
 
 export const metadata: Metadata = {
   title: "Physiotherapy Instructor in Pakistan — Dr. Sajjad Raza PT",
@@ -41,6 +43,17 @@ export default async function FounderPage() {
   const quals = qualifications?.length
     ? qualifications
     : siteConfig.qualifications.map((q, i) => ({ id: `fallback-${i}`, title: q.title }));
+
+  const selectedTraining = trainingHistory
+    .filter((item) =>
+      [
+        "advanced-myofascial-therapy-mastery-shahdadpur-2026",
+        "cupping-therapy-workshop-hyderabad-2025",
+        "sciatica-hands-on-workshop-hyderabad-2025",
+        "two-month-physiotherapy-internship-hyderabad-2025",
+      ].includes(item.slug),
+    )
+    .slice(0, 4);
 
   const founderUrl = `${siteUrl}/founder`;
   const founderImage =
@@ -136,6 +149,41 @@ export default async function FounderPage() {
               guidance and evidence-informed learning. The focus is on making clinical concepts
               easier to understand and apply in real physiotherapy practice.
             </p>
+          </section>
+
+          <section className="mt-10">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-teal-600">
+                  Training Experience
+                </p>
+                <h2 className="mt-1 text-xl font-bold text-navy-800">
+                  Selected Workshops &amp; Clinical Training
+                </h2>
+              </div>
+              <Button href="/training" variant="outline" size="md">
+                View Full Archive
+              </Button>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {selectedTraining.map((item) => (
+                <a
+                  key={item.slug}
+                  href={`/training/${item.slug}`}
+                  className="rounded-xl border border-grey-200 p-4 transition hover:border-teal-300 hover:bg-teal-50"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide text-teal-600">
+                    {item.category}
+                  </p>
+                  <h3 className="mt-1 font-heading font-semibold text-navy-800">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-navy-500">
+                    {item.displayDate} · {item.city}
+                  </p>
+                </a>
+              ))}
+            </div>
           </section>
 
           <section className="mt-10">
