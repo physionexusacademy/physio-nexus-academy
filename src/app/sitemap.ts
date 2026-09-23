@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { trainingHistory } from "@/lib/training-history";
 
 const routes = [
   "",
   "/about",
   "/founder",
   "/workshops",
+  "/training",
   "/verify",
   "/courses",
   "/resources",
@@ -52,5 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     });
 
-  return [...staticRoutes, ...workshopRoutes];
+  const trainingRoutes: MetadataRoute.Sitemap = trainingHistory.map((item) => ({
+    url: `${base}/training/${encodeURIComponent(item.slug)}`,
+    ...(item.date ? { lastModified: new Date(item.date) } : {}),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...workshopRoutes, ...trainingRoutes];
 }
