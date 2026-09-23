@@ -173,6 +173,7 @@ export const footerLinks = {
   ],
   students: [
     { label: "Workshops", href: "/workshops" },
+    { label: "Training Archive", href: "/training" },
     { label: "Courses / Learning", href: "/courses" },
     { label: "Books & Resources", href: "/resources" },
     { label: "Research Support", href: "/research" },
