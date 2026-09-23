@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { InstallApp } from "@/components/InstallApp";
 import { siteConfig } from "@/lib/site-config";
 
 const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
@@ -80,7 +81,9 @@ export const metadata: Metadata = {
       "Physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
     images: ["/images/pna-logo.png"],
   },
-  icons: { icon: "/images/pna-logo.png" },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "PNA", statusBarStyle: "default" },
+  icons: { icon: "/images/pna-logo.png", apple: "/images/pna-logo.png" },
 };
 
 export const viewport = {
@@ -88,6 +91,7 @@ export const viewport = {
   initialScale: 1,
   minimumScale: 1,
   userScalable: true,
+  themeColor: "#102A43",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -107,6 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <Header />
+        <InstallApp />
         <main id="main-content" className="flex-1">
           {children}
         </main>
