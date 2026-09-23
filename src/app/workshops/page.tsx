@@ -97,6 +97,23 @@ export default async function WorkshopsPage() {
           </div>
         ))}
       </div>
+
+      <section className="mt-14 rounded-2xl border border-grey-200 bg-grey-50 p-6 sm:p-8">
+        <p className="text-xs font-semibold uppercase tracking-wider text-teal-600">
+          Professional Portfolio
+        </p>
+        <h2 className="mt-2 text-2xl font-bold text-navy-800">
+          Past Workshops &amp; Clinical Training
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-navy-600">
+          Explore documented workshops, internship programs and clinical training
+          activities from the professional portfolio of Physio Nexus Academy and
+          Dr. Sajjad Raza PT.
+        </p>
+        <Button href="/training" variant="outline" className="mt-5">
+          View Training Archive
+        </Button>
+      </section>
     </div>
   );
 }
