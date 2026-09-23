@@ -56,8 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const trainingRoutes: MetadataRoute.Sitemap = trainingHistory.map((item) => ({
     url: `${base}/training/${encodeURIComponent(item.slug)}`,
-    ...(item.date ? { lastModified: new Date(item.date) } : {}),
-    changeFrequency: "monthly",
+    changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
 
