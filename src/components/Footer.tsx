@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { MessageCircle, Mail, MapPin, Star } from "lucide-react";
 import { footerLinks, siteConfig, whatsappLink } from "@/lib/site-config";
 
 function FooterColumn({
@@ -77,6 +77,15 @@ export function Footer() {
               {" · "}
               <Link href="/locations/hyderabad" className="hover:text-white">Hyderabad</Link>
             </p>
+            <a
+              href={siteConfig.contact.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm font-semibold text-teal-200 hover:text-white"
+            >
+              <Star className="h-4 w-4" />
+              Leave an honest Google review
+            </a>
           </div>
         </div>
 

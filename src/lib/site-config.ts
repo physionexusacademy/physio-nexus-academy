@@ -28,6 +28,7 @@ export const siteConfig = {
     address: "Raja Ghazanfar Ali Khan Road, Saddar, Karachi 74400, Pakistan",
     hours: "Appointments and workshops by confirmed schedule",
     serviceAreas: ["Karachi", "Hyderabad"],
+    googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJEyXEA0A-bG8RCrIF9nIJv3A",
     social: {
       facebook: "",
       instagram: "https://www.instagram.com/physionexusacademy/",

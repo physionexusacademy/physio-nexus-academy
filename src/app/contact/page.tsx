@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { MessageCircle, Mail, MapPin, Star } from "lucide-react";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { ContactForm } from "./ContactForm";
 
@@ -77,6 +77,22 @@ export default function ContactPage() {
             </Link>
             . Home visits and appointment times are confirmed before booking.
           </p>
+
+          <div className="mt-6 rounded-xl border border-grey-200 bg-grey-50 p-4">
+            <p className="text-sm font-semibold text-navy-800">Already attended a PNA workshop or used our service?</p>
+            <p className="mt-1 text-sm text-navy-500">
+              Share your honest experience on Google. Reviews help future students and patients make informed decisions.
+            </p>
+            <a
+              href={siteConfig.contact.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700"
+            >
+              <Star className="h-4 w-4" />
+              Leave a Google review
+            </a>
+          </div>
         </div>
 
         <ContactForm />
