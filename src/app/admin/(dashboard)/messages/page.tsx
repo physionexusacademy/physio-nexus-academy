@@ -1,13 +1,21 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { markMessageRead, deleteMessage } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminMessagesPage() {
-  const supabase = await createClient();
-  const { data: messages } = await supabase
+  await requireAdmin();
+
+  const supabase = createAdminClient();
+  const { data: messages, error } = await supabase
     .from("contact_messages")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("ADMIN_MESSAGES_READ_ERROR", error);
+    throw new Error("Unable to load messages.");
+  }
 
   return (
     <div>

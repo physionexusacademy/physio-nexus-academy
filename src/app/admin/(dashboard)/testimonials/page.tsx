@@ -1,13 +1,21 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createTestimonial, toggleTestimonialStatus, deleteTestimonial } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function AdminTestimonialsPage() {
-  const supabase = await createClient();
-  const { data: testimonials } = await supabase
+  await requireAdmin();
+
+  const supabase = createAdminClient();
+  const { data: testimonials, error } = await supabase
     .from("testimonials")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("ADMIN_TESTIMONIALS_READ_ERROR", error);
+    throw new Error("Unable to load testimonials.");
+  }
 
   return (
     <div>
