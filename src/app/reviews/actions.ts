@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
+const FALLBACK_EMAIL = "notifications@physionexusacademy.com";
 
 async function sendEmail({
   to,
@@ -15,12 +16,12 @@ async function sendEmail({
   subject: string;
   text: string;
   replyTo?: string;
-}) {
+}): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
 
   if (!apiKey) {
-    console.error("RESEND_API_KEY is missing");
-    return;
+    console.error("PNA_REVIEW_EMAIL_ERROR", { reason: "RESEND_API_KEY is missing" });
+    return false;
   }
 
   try {
@@ -40,10 +41,17 @@ async function sendEmail({
     });
 
     if (!response.ok) {
-      console.error("Resend review email failed:", await response.text());
+      console.error("PNA_REVIEW_EMAIL_ERROR", {
+        status: response.status,
+        body: await response.text(),
+      });
+      return false;
     }
+
+    return true;
   } catch (error) {
-    console.error("Resend review email error:", error);
+    console.error("PNA_REVIEW_EMAIL_ERROR", { error });
+    return false;
   }
 }
 
@@ -55,7 +63,7 @@ export async function submitReview(values: {
   website?: string;
 }) {
   // Honeypot: bots that fill this hidden field get a harmless success response.
-  if (values.website) return { ok: true };
+  if (values.website) return { ok: true, storedAs: "honeypot" as const };
 
   const name = values.name.trim();
   const email = values.email?.trim() || "";
@@ -78,14 +86,62 @@ export async function submitReview(values: {
     writtenFeedback || `Rated Physio Nexus Academy ${rating}/5 stars.`;
 
   const supabase = createAdminClient();
-  const { error } = await supabase.from("testimonials").insert({
+
+  let storedAs: "testimonial" | "message" | "email-only" = "email-only";
+
+  const { error: testimonialError } = await supabase.from("testimonials").insert({
     name,
     role: `Website review · ${rating}/5`,
     content,
     status: "draft",
   });
 
-  if (error) throw new Error(error.message);
+  if (!testimonialError) {
+    storedAs = "testimonial";
+  } else {
+    console.error("PNA_REVIEW_TESTIMONIAL_INSERT_ERROR", {
+      code: testimonialError.code,
+      message: testimonialError.message,
+      details: testimonialError.details,
+      hint: testimonialError.hint,
+    });
+
+    const fallbackMessage = [
+      `[WEBSITE REVIEW | ${rating}/5]`,
+      `Reviewer: ${name}`,
+      `Reviewer email: ${email || "Not provided"}`,
+      "",
+      "Feedback:",
+      writtenFeedback || "No written feedback — star rating only.",
+      "",
+      "This review was saved in Messages because the Testimonials insert failed.",
+    ].join("\n");
+
+    const { error: fallbackError } = await supabase.from("contact_messages").insert({
+      name: `Website Review — ${name}`,
+      email: email || FALLBACK_EMAIL,
+      message: fallbackMessage,
+      status: "New",
+    });
+
+    if (!fallbackError) {
+      storedAs = "message";
+    } else {
+      console.error("PNA_REVIEW_FALLBACK_INSERT_ERROR", {
+        code: fallbackError.code,
+        message: fallbackError.message,
+        details: fallbackError.details,
+        hint: fallbackError.hint,
+      });
+    }
+  }
+
+  const storageLabel =
+    storedAs === "testimonial"
+      ? "Saved as DRAFT in Admin → Testimonials."
+      : storedAs === "message"
+        ? "Saved in Admin → Messages as a fallback because Testimonials storage failed."
+        : "Database storage failed; this email is the recovery copy.";
 
   const adminMessage = `
 New Website Review – Physio Nexus Academy
@@ -97,20 +153,18 @@ Email: ${email || "Not provided"}
 Feedback:
 ${writtenFeedback || "No written feedback — star rating only."}
 
-The review has been saved as DRAFT in the PNA Admin Dashboard.
-Review it before publishing publicly on the website.
+Storage status:
+${storageLabel}
 
 Google reviews are separate and can only affect the Google Business Profile after the reviewer submits directly on Google.
 `.trim();
 
-  const emailTasks: Promise<void>[] = [
-    sendEmail({
-      to: ADMIN_EMAIL,
-      subject: `New Website Review – ${rating}★ – ${name}`,
-      text: adminMessage,
-      replyTo: email || undefined,
-    }),
-  ];
+  const adminEmailSent = await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `New Website Review – ${rating}★ – ${name}`,
+    text: adminMessage,
+    replyTo: email || undefined,
+  });
 
   if (email) {
     const reviewerMessage = `
@@ -120,7 +174,7 @@ Thank you for sharing your feedback with Physio Nexus Academy.
 
 Your website rating: ${rating}/5
 
-Your feedback has been received. Website submissions are reviewed before they may appear publicly.
+Your feedback has been received by the PNA team and will be reviewed before it may appear publicly.
 
 If you would also like your feedback to affect our Google Business Profile rating, please submit a separate review on Google using the Google Review button on our Reviews & Feedback page.
 
@@ -130,16 +184,17 @@ LEARN • APPLY • TRANSFORM LIVES
 physionexusacademy.com
 `.trim();
 
-    emailTasks.push(
-      sendEmail({
-        to: email,
-        subject: "Thank you for your feedback – Physio Nexus Academy",
-        text: reviewerMessage,
-      }),
-    );
+    // Reviewer acknowledgement is best-effort and must not make the submission fail.
+    await sendEmail({
+      to: email,
+      subject: "Thank you for your feedback – Physio Nexus Academy",
+      text: reviewerMessage,
+    });
   }
 
-  await Promise.allSettled(emailTasks);
+  if (storedAs === "email-only" && !adminEmailSent) {
+    throw new Error("Review could not be stored or emailed.");
+  }
 
-  return { ok: true };
+  return { ok: true, storedAs };
 }
