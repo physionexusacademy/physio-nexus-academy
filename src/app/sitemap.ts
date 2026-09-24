@@ -17,6 +17,7 @@ const routes = [
   "/gallery",
   "/updates",
   "/contact",
+  "/reviews",
   "/faq",
   "/locations/karachi",
   "/locations/hyderabad",
