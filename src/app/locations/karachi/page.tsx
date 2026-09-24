@@ -1,0 +1,155 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { MapPin, Stethoscope, GraduationCap, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { siteConfig } from "@/lib/site-config";
+
+const siteUrl = "https://physionexusacademy.com";
+const pageUrl = `${siteUrl}/locations/karachi`;
+
+export const metadata: Metadata = {
+  title: "Physiotherapy Home Visits & Workshops in Karachi",
+  description:
+    "Physio Nexus Academy provides physiotherapy home-visit requests, appointment support and hands-on physiotherapy workshops in Karachi, Pakistan.",
+  alternates: {
+    canonical: pageUrl,
+  },
+  openGraph: {
+    title: "Physiotherapy Services & Workshops in Karachi | Physio Nexus Academy",
+    description:
+      "Explore physiotherapy home visits, appointment support and clinical skills workshops from Physio Nexus Academy in Karachi.",
+    url: pageUrl,
+    type: "website",
+  },
+};
+
+export default function KarachiLocationPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${pageUrl}#physiotherapy-services`,
+        name: "Physiotherapy Services in Karachi",
+        serviceType: "Physiotherapy appointment and home visit services",
+        url: pageUrl,
+        provider: {
+          "@id": `${siteUrl}/#organization`,
+        },
+        areaServed: {
+          "@type": "City",
+          name: "Karachi",
+        },
+        availableChannel: {
+          "@type": "ServiceChannel",
+          serviceUrl: `${siteUrl}/home-visit`,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Karachi",
+            item: pageUrl,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="container-content section-padding max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
+        Karachi
+      </p>
+      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+        Physiotherapy Services &amp; Workshops in Karachi
+      </h1>
+      <p className="mt-4 max-w-3xl text-navy-600">
+        Physio Nexus Academy supports patients and physiotherapy learners in Karachi
+        through appointment requests, home-visit requests and scheduled hands-on
+        clinical workshops. Availability is confirmed before each appointment or visit.
+      </p>
+
+      <div className="mt-8 grid gap-5 md:grid-cols-2">
+        <section className="rounded-2xl border border-grey-200 bg-white p-6 shadow-sm">
+          <Stethoscope className="h-6 w-6 text-teal-600" />
+          <h2 className="mt-3 text-xl font-bold text-navy-800">
+            Physiotherapy Home Visits in Karachi
+          </h2>
+          <p className="mt-3 text-sm leading-6 text-navy-600">
+            Patients can request a physiotherapy home visit by sharing their Karachi
+            area, preferred date and time, and a brief condition summary. The team
+            confirms coverage and schedule availability before finalizing the visit.
+          </p>
+          <Button href="/home-visit" className="mt-5">
+            Request a Home Visit
+          </Button>
+        </section>
+
+        <section className="rounded-2xl border border-grey-200 bg-white p-6 shadow-sm">
+          <GraduationCap className="h-6 w-6 text-teal-600" />
+          <h2 className="mt-3 text-xl font-bold text-navy-800">
+            Physiotherapy Workshops in Karachi
+          </h2>
+          <p className="mt-3 text-sm leading-6 text-navy-600">
+            PNA schedules practical physiotherapy workshops covering clinical skills
+            and evidence-informed techniques. Current dates, venues, instructors and
+            registration details are published on the workshops page.
+          </p>
+          <Button href="/workshops" variant="outline" className="mt-5">
+            View Workshops
+          </Button>
+        </section>
+      </div>
+
+      <section className="mt-8 rounded-2xl bg-grey-50 p-6 sm:p-8">
+        <div className="flex items-start gap-3">
+          <MapPin className="mt-1 h-5 w-5 flex-none text-teal-600" />
+          <div>
+            <h2 className="text-xl font-bold text-navy-800">Karachi Contact Address</h2>
+            <p className="mt-2 text-navy-600">{siteConfig.contact.address}</p>
+            <p className="mt-2 text-sm text-navy-500">
+              Appointments and workshop schedules are confirmed in advance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-bold text-navy-800">
+          Physio Nexus Academy in Karachi
+        </h2>
+        <p className="mt-3 leading-7 text-navy-600">
+          Physio Nexus Academy was founded by{" "}
+          <Link href="/founder" className="font-semibold text-teal-600 hover:underline">
+            {siteConfig.founder.name}
+          </Link>
+          . The academy combines physiotherapy education, professional workshops,
+          research support and patient-service pathways within one platform.
+        </p>
+        <Link
+          href="/contact"
+          className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
+        >
+          Contact PNA in Karachi <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+    </div>
+  );
+}
