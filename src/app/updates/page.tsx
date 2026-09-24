@@ -3,8 +3,12 @@ import { CalendarDays } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Updates",
-  description: "Announcements, workshop news and educational posts from Physio Nexus Academy.",
+  title: "Physiotherapy Workshop News & Academy Updates",
+  description:
+    "Read Physio Nexus Academy announcements, physiotherapy workshop news, training updates and educational posts.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/updates",
+  },
 };
 
 export const revalidate = 60;
@@ -17,10 +21,33 @@ export default async function UpdatesPage() {
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
+  const updatesJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": "https://physionexusacademy.com/updates#collection",
+    url: "https://physionexusacademy.com/updates",
+    name: "Physio Nexus Academy Updates",
+    description:
+      "Physiotherapy workshop announcements, training updates and educational posts from Physio Nexus Academy.",
+    isPartOf: {
+      "@id": "https://physionexusacademy.com/#website",
+    },
+  };
+
   return (
     <div className="container-content section-padding max-w-2xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(updatesJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Updates</p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Academy Updates</h1>
+      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Physiotherapy Workshop News &amp; Academy Updates</h1>
+      <p className="mt-4 text-navy-600">
+        Follow workshop announcements, professional training activities and educational
+        updates from Physio Nexus Academy.
+      </p>
 
       {!posts?.length && (
         <p className="mt-10 rounded-xl border border-grey-200 bg-grey-50 p-8 text-center text-navy-400">
