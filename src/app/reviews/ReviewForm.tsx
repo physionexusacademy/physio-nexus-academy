@@ -68,7 +68,7 @@ export function ReviewForm({ googleReviewUrl }: { googleReviewUrl: string }) {
       >
         <h2 className="text-xl font-bold text-teal-900">Thank you for your feedback</h2>
         <p className="mt-2 text-sm leading-6 text-teal-800">
-          Your website review has been received, saved for admin review and sent to the PNA team by email.
+          Your website review has been received by the PNA team and queued for admin review.
         </p>
         <p className="mt-3 text-sm leading-6 text-teal-800">
           A Google review is submitted separately. If you want your rating to affect our Google Business Profile,
