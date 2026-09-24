@@ -1,15 +1,23 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { updateHomeVisitStatus, deleteHomeVisit } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 const statuses = ["New", "Contacted", "Confirmed", "Completed", "Cancelled"];
 
 export default async function AdminHomeVisitsPage() {
-  const supabase = await createClient();
-  const { data: requests } = await supabase
+  await requireAdmin();
+
+  const supabase = createAdminClient();
+  const { data: requests, error } = await supabase
     .from("home_visit_requests")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("ADMIN_HOME_VISITS_READ_ERROR", error);
+    throw new Error("Unable to load home visit requests.");
+  }
 
   return (
     <div>
