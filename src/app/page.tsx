@@ -15,7 +15,10 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
+// Render the homepage on each request so Cloudflare/OpenNext cannot serve a stale
+// route-cache entry after deployments. The data is still fetched server-side.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   const supabase = await createClient();
