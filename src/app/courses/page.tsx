@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Courses & Learning",
   description: "Short courses and structured learning modules from Physio Nexus Academy.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/courses",
+  },
 };
 
 export default function CoursesPage() {
