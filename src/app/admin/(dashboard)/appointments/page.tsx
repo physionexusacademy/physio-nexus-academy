@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { updateAppointmentStatus, deleteAppointment } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
@@ -13,11 +14,18 @@ const statusColor: Record<string, string> = {
 };
 
 export default async function AdminAppointmentsPage() {
-  const supabase = await createClient();
-  const { data: appointments } = await supabase
+  await requireAdmin();
+
+  const supabase = createAdminClient();
+  const { data: appointments, error } = await supabase
     .from("appointments")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("ADMIN_APPOINTMENTS_READ_ERROR", error);
+    throw new Error("Unable to load appointment requests.");
+  }
 
   return (
     <div>
