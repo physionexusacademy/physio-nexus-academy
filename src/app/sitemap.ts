@@ -9,7 +9,6 @@ const routes = [
   "/workshops",
   "/training",
   "/verify",
-  "/courses",
   "/resources",
   "/research",
   "/patient-services",
@@ -23,7 +22,6 @@ const routes = [
   "/locations/hyderabad",
   "/legal/privacy",
   "/legal/terms",
-  "/legal/refund",
   "/legal/disclaimer",
 ];
 
