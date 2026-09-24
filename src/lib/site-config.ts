@@ -21,16 +21,16 @@ export const siteConfig = {
   brandPersonality:
     "Credible, modern, scientific, educational, clinically professional, welcoming, practical and growth-oriented.",
 
-  // PLACEHOLDER — replace with verified details before launch
   contact: {
     phoneDisplay: "0348 900 9028",
     phoneRaw: "923489009028", // international format, used to build the WhatsApp link
     email: "physionexusacademypk@gmail.com",
-    address: "PLACEHOLDER — add verified public address (optional)",
-    hours: "PLACEHOLDER — add operating hours",
+    address: "Raja Ghazanfar Ali Khan Road, Saddar, Karachi 74400, Pakistan",
+    hours: "Appointments and workshops by confirmed schedule",
+    serviceAreas: ["Karachi", "Hyderabad"],
     social: {
       facebook: "",
-      instagram: "",
+      instagram: "https://www.instagram.com/physionexusacademy/",
       linkedin: "",
       youtube: "",
     },
