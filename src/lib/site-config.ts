@@ -171,6 +171,7 @@ export const footerLinks = {
     { label: "Founder", href: "/founder" },
     { label: "Gallery", href: "/gallery" },
     { label: "Updates", href: "/updates" },
+    { label: "Reviews & Feedback", href: "/reviews" },
   ],
   students: [
     { label: "Workshops", href: "/workshops" },
