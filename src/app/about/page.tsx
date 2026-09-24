@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "About PNA",
+  title: "About Physio Nexus Academy | Founder & Mission",
   description:
-    "Learn about Physio Nexus Academy's story, purpose, vision, mission and operating model.",
+    "Learn about Physio Nexus Academy, founded and led by Dr. Sajjad Raza PT, including its purpose, vision, mission and physiotherapy education model in Pakistan.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/about",
+  },
 };
 
 export const revalidate = 60;
@@ -39,6 +43,26 @@ export default async function AboutPage() {
         bridge the gap between physiotherapy theory and real clinical practice.{" "}
         {siteConfig.operatingModel}
       </p>
+
+      <section className="mt-8 rounded-xl border border-grey-200 bg-grey-50 p-6">
+        <p className="text-xs font-semibold uppercase tracking-wider text-teal-600">
+          Founder &amp; Leadership
+        </p>
+        <h2 className="mt-2 text-xl font-bold text-navy-800">
+          Founded and led by {siteConfig.founder.name}
+        </h2>
+        <p className="mt-3 text-navy-600">
+          {siteConfig.founder.name} is the Founder and Main Instructor of Physio
+          Nexus Academy, leading its physiotherapy education, hands-on clinical
+          workshops and professional learning initiatives.
+        </p>
+        <Link
+          href="/founder"
+          className="mt-4 inline-flex text-sm font-semibold text-teal-600 hover:text-teal-700"
+        >
+          View the founder profile →
+        </Link>
+      </section>
 
       <h2 className="mt-10 text-xl font-bold">Purpose</h2>
       <p className="mt-3 text-navy-600">{content.purpose}</p>
