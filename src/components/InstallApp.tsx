@@ -65,16 +65,12 @@ export function InstallApp() {
   };
 
   return (
-    <div className="bg-white py-3">
-      <div className="container-content flex justify-center sm:justify-end">
-        <button
-          type="button"
-          className="rounded-lg bg-navy-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-700"
-          onClick={handleInstall}
-        >
-          Install PNA App
-        </button>
-      </div>
-    </div>
+    <button
+      type="button"
+      className="rounded-lg bg-navy-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-700"
+      onClick={handleInstall}
+    >
+      Install PNA App
+    </button>
   );
 }
