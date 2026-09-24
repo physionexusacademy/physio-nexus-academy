@@ -21,14 +21,11 @@ const siteJsonLd = {
       logo: "https://physionexusacademy.com/images/pna-logo.png",
       image: "https://physionexusacademy.com/images/pna-logo.png",
       description:
-        "Physio Nexus Academy provides physiotherapy education, clinical workshops, learning resources, research support and patient-service pathways.",
+        "Physio Nexus Academy provides physiotherapy education, clinical workshops, learning resources, research support and patient-service pathways in Pakistan.",
       email: siteConfig.contact.email,
       telephone: `+${siteConfig.contact.phoneRaw}`,
       founder: {
-        "@type": "Person",
         "@id": "https://physionexusacademy.com/founder#person",
-        name: siteConfig.founder.name,
-        url: "https://physionexusacademy.com/founder",
       },
       contactPoint: {
         "@type": "ContactPoint",
@@ -42,6 +39,29 @@ const siteJsonLd = {
         name: "Pakistan",
       },
       ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
+    },
+    {
+      "@type": "Person",
+      "@id": "https://physionexusacademy.com/founder#person",
+      name: siteConfig.founder.name,
+      url: "https://physionexusacademy.com/founder",
+      image: `https://physionexusacademy.com${siteConfig.founder.photo}`,
+      jobTitle: "Founder and Main Instructor",
+      description:
+        "Physiotherapy educator, clinical workshop instructor and Founder of Physio Nexus Academy in Pakistan.",
+      worksFor: {
+        "@id": "https://physionexusacademy.com/#organization",
+      },
+      affiliation: {
+        "@id": "https://physionexusacademy.com/#organization",
+      },
+      knowsAbout: [
+        "Physiotherapy education",
+        "Musculoskeletal physiotherapy",
+        "Clinical skills training",
+        "Manual therapy",
+        "Physiotherapy research support",
+      ],
     },
     {
       "@type": "WebSite",
@@ -63,11 +83,11 @@ export const metadata: Metadata = {
     template: "%s | Physio Nexus Academy",
   },
   description:
-    "Physio Nexus Academy provides physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
+    "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
   openGraph: {
     title: "Physio Nexus Academy",
     description:
-      "Physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
+      "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
     siteName: "Physio Nexus Academy",
     url: "https://physionexusacademy.com",
     locale: "en_PK",
@@ -78,7 +98,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Physio Nexus Academy",
     description:
-      "Physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
+      "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training and learning resources in Pakistan.",
     images: ["/images/pna-logo.png"],
   },
   manifest: "/manifest.webmanifest",
