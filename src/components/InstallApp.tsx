@@ -1,5 +1,7 @@
 "use client";
 
+// Homepage-only PWA install control. Keep this component button-only.
+
 import { useEffect, useState } from "react";
 
 type InstallPrompt = Event & {
