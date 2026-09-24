@@ -69,7 +69,7 @@ export function InstallApp() {
   return (
     <button
       type="button"
-      className="rounded-lg bg-navy-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-700"
+      className="rounded-lg bg-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-600"
       onClick={handleInstall}
     >
       Install PNA App
