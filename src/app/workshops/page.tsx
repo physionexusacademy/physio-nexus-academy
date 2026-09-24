@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Workshops",
+  title: "Physiotherapy Workshops in Pakistan | Karachi & Hyderabad",
   description:
-    "Upcoming, ongoing and past physiotherapy workshops from Physio Nexus Academy.",
+    "Explore hands-on physiotherapy workshops from Physio Nexus Academy, including clinical skills training in Karachi, Hyderabad and other cities in Pakistan.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/workshops",
+  },
 };
 
 export const revalidate = 60; // re-fetch published workshops at most once a minute
@@ -29,7 +33,18 @@ export default async function WorkshopsPage() {
       </h1>
       <p className="mt-4 max-w-2xl text-navy-600">
         Hands-on physiotherapy workshops connecting theory with real clinical
-        application.
+        application in Karachi, Hyderabad and other cities where PNA schedules training.
+      </p>
+      <p className="mt-3 text-sm text-navy-500">
+        Browse location information for{" "}
+        <Link href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+          Karachi
+        </Link>{" "}
+        and{" "}
+        <Link href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+          Hyderabad
+        </Link>
+        .
       </p>
 
       {!workshops?.length && (

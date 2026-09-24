@@ -19,6 +19,8 @@ const routes = [
   "/updates",
   "/contact",
   "/faq",
+  "/locations/karachi",
+  "/locations/hyderabad",
   "/legal/privacy",
   "/legal/terms",
   "/legal/refund",

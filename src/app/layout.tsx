@@ -24,6 +24,14 @@ const siteJsonLd = {
         "Physio Nexus Academy provides physiotherapy education, clinical workshops, learning resources, research support and patient-service pathways in Pakistan.",
       email: siteConfig.contact.email,
       telephone: `+${siteConfig.contact.phoneRaw}`,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Raja Ghazanfar Ali Khan Road, Saddar",
+        addressLocality: "Karachi",
+        addressRegion: "Sindh",
+        postalCode: "74400",
+        addressCountry: "PK",
+      },
       founder: {
         "@id": "https://physionexusacademy.com/founder#person",
       },
@@ -34,10 +42,20 @@ const siteJsonLd = {
         email: siteConfig.contact.email,
         availableLanguage: ["English", "Urdu"],
       },
-      areaServed: {
-        "@type": "Country",
-        name: "Pakistan",
-      },
+      areaServed: [
+        {
+          "@type": "Country",
+          name: "Pakistan",
+        },
+        {
+          "@type": "City",
+          name: "Karachi",
+        },
+        {
+          "@type": "City",
+          name: "Hyderabad",
+        },
+      ],
       ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
     },
     {

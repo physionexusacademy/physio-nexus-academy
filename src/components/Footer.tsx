@@ -67,10 +67,16 @@ export function Footer() {
               <Mail className="h-4 w-4 text-teal-300" />{" "}
               physionexusacademypk@gmail.com
             </span>
-            <span className="flex items-center gap-2 text-grey-300">
-              <MapPin className="h-4 w-4 text-teal-300" /> Home visit service
-              areas confirmed on request
+            <span className="flex items-start gap-2 text-grey-300">
+              <MapPin className="mt-0.5 h-4 w-4 flex-none text-teal-300" />{" "}
+              {siteConfig.contact.address}
             </span>
+            <p className="text-xs text-grey-300">
+              Service areas:{" "}
+              <Link href="/locations/karachi" className="hover:text-white">Karachi</Link>
+              {" · "}
+              <Link href="/locations/hyderabad" className="hover:text-white">Hyderabad</Link>
+            </p>
           </div>
         </div>
 

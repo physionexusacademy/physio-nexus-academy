@@ -28,6 +28,10 @@ export default function HomeVisitPage() {
       name: "Physio Nexus Academy",
       url: "https://physionexusacademy.com",
     },
+    areaServed: [
+      { "@type": "City", name: "Karachi" },
+      { "@type": "City", name: "Hyderabad" },
+    ],
   };
 
   return (
@@ -45,8 +49,19 @@ export default function HomeVisitPage() {
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-navy-600">
           Request a home physiotherapy visit by sharing your area, preferred date and time,
-          and essential patient details. Our team will contact you to confirm service
-          availability before any visit is finalized.
+          and essential patient details. Current service coverage includes Karachi and Hyderabad,
+          subject to team and schedule confirmation before any visit is finalized.
+        </p>
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-navy-500">
+          See local information for{" "}
+          <Link href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+            Karachi physiotherapy services
+          </Link>{" "}
+          or{" "}
+          <Link href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+            Hyderabad physiotherapy services
+          </Link>
+          .
         </p>
       </div>
 
