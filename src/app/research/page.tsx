@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
-  title: "Research & Academic Support",
+  title: "Physiotherapy Research & Academic Support",
   description:
-    "Ethical research guidance, academic mentoring, literature and methodology support from Physio Nexus Academy.",
+    "Ethical physiotherapy research guidance, literature review support, methodology mentoring and academic guidance from Physio Nexus Academy.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/research",
+  },
 };
 
 export default function ResearchPage() {
