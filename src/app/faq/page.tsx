@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "FAQ",
+  title: "Physiotherapy Workshops & Services FAQ",
   description:
-    "Frequently asked questions about Physio Nexus Academy's physiotherapy workshops, CPD development, appointments and learning resources in Pakistan.",
+    "Frequently asked questions about Physio Nexus Academy physiotherapy workshops, CPD development, appointments, home visits and learning resources in Pakistan.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/faq",
+  },
 };
 
 export const revalidate = 60;
