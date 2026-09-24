@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import { MessageCircle, Mail } from "lucide-react";
+import Link from "next/link";
+import { MessageCircle, Mail, MapPin } from "lucide-react";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { ContactForm } from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact Physio Nexus Academy | Karachi & Hyderabad",
   description:
-    "Contact Physio Nexus Academy for workshops, resources or general enquiries.",
+    "Contact Physio Nexus Academy for physiotherapy workshops, patient appointments, home visits and general enquiries in Karachi, Hyderabad and across Pakistan.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/contact",
+  },
 };
 
 export default function ContactPage() {
@@ -33,14 +37,25 @@ export default function ContactPage() {
               <MessageCircle className="h-5 w-5 text-teal-500" />{" "}
               {siteConfig.contact.phoneDisplay}
             </a>
-            <p className="flex items-center gap-3 text-navy-400">
-              <Mail className="h-5 w-5 text-teal-500" />{" "}
-              physionexusacademypk@gmail.com
+            <p className="flex items-start gap-3 text-navy-500">
+              <Mail className="mt-0.5 h-5 w-5 text-teal-500" />{" "}
+              {siteConfig.contact.email}
+            </p>
+            <p className="flex items-start gap-3 text-navy-500">
+              <MapPin className="mt-0.5 h-5 w-5 flex-none text-teal-500" />{" "}
+              {siteConfig.contact.address}
             </p>
           </div>
-          <p className="mt-6 text-xs text-navy-400">
-            Home visit availability varies by service area. Contact us to confirm
-            coverage and appointment availability for your location.
+          <p className="mt-6 text-sm text-navy-500">
+            Current service areas include{" "}
+            <Link href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+              Karachi
+            </Link>{" "}
+            and{" "}
+            <Link href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+              Hyderabad
+            </Link>
+            . Home visits and appointment times are confirmed before booking.
           </p>
         </div>
 
