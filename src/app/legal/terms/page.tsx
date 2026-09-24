@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata: Metadata = { title: "Terms of Use" };
+export const metadata: Metadata = {
+  title: "Terms of Use",
+  description: "Terms for using the Physio Nexus Academy website, educational resources, workshop registration and patient-service request pathways.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/legal/terms",
+  },
+};
 
 export default function TermsPage() {
   return (

@@ -3,9 +3,12 @@ import { BookOpen, Download, Lock, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Books & Resources",
+  title: "Physiotherapy Books, Notes & Learning Resources",
   description:
-    "Books, manuals, notes and PDFs from Physio Nexus Academy for physiotherapy learners.",
+    "Explore physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy for students and professionals.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/resources",
+  },
 };
 
 export const revalidate = 60;
@@ -25,8 +28,32 @@ export default async function ResourcesPage() {
     .eq("visibility", "Public")
     .order("created_at", { ascending: false });
 
+  const resourcesJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": "https://physionexusacademy.com/resources#collection",
+    url: "https://physionexusacademy.com/resources",
+    name: "Physiotherapy Learning Resource Library",
+    description:
+      "Physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy.",
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: (resources ?? []).map((resource, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: resource.title,
+      })),
+    },
+  };
+
   return (
     <div className="container-content section-padding">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(resourcesJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
         Books & Resources
       </p>
@@ -34,7 +61,8 @@ export default async function ResourcesPage() {
         Learning Resource Library
       </h1>
       <p className="mt-4 max-w-2xl text-navy-600">
-        Books, review notes, manuals and PDFs for physiotherapy learners.
+        Explore physiotherapy books, review notes, manuals and educational PDFs
+        designed to support students and professionals with practical, evidence-informed learning.
       </p>
 
       {!resources?.length && (

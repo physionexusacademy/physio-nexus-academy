@@ -14,8 +14,28 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const contactJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": "https://physionexusacademy.com/contact#page",
+    url: "https://physionexusacademy.com/contact",
+    name: "Contact Physio Nexus Academy",
+    about: {
+      "@id": "https://physionexusacademy.com/#organization",
+    },
+    mainEntity: {
+      "@id": "https://physionexusacademy.com/#organization",
+    },
+  };
+
   return (
     <div className="container-content section-padding">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(contactJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
         Contact
       </p>

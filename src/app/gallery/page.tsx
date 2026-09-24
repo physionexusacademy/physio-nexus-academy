@@ -3,9 +3,12 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Gallery",
+  title: "Physiotherapy Workshop Gallery | Physio Nexus Academy",
   description:
-    "Workshop photos, educational events and academy media from Physio Nexus Academy.",
+    "View documented physiotherapy workshops, educational events and clinical training activities from Physio Nexus Academy.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/gallery",
+  },
 };
 
 export const revalidate = 60;
@@ -18,8 +21,24 @@ export default async function GalleryPage() {
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
+  const galleryJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    "@id": "https://physionexusacademy.com/gallery#gallery",
+    url: "https://physionexusacademy.com/gallery",
+    name: "Physio Nexus Academy Workshop Gallery",
+    description:
+      "Documented physiotherapy workshops, educational events and clinical training activities from Physio Nexus Academy.",
+  };
+
   return (
     <div className="container-content section-padding">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(galleryJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
         Gallery
       </p>
@@ -27,7 +46,8 @@ export default async function GalleryPage() {
         Workshop &amp; Academy Media
       </h1>
       <p className="mt-4 max-w-2xl text-navy-600">
-        Photos from workshops, educational events and academy activities.
+        Explore documented photos from physiotherapy workshops, educational events,
+        clinical training and academy activities in Pakistan.
       </p>
 
       {!items?.length && (

@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata: Metadata = { title: "Refund & Cancellation Policy" };
+export const metadata: Metadata = {
+  title: "Refund & Cancellation Policy",
+  alternates: {
+    canonical: "https://physionexusacademy.com/legal/refund",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function RefundPage() {
   return (
@@ -17,10 +26,11 @@ export default function RefundPage() {
         Patients may cancel or reschedule an appointment or home-visit request by contacting
         the academy directly. Specific cancellation windows will be confirmed by our team.
       </p>
-      <h2>Placeholder Notice</h2>
+      <h2>Policy Status</h2>
       <p>
-        This policy is an initial template and must be finalized with real workshop fee and
-        payment terms before paid registration goes live.
+        Paid online registration is not currently enabled. Detailed refund windows,
+        transfer rules and payment-specific terms will be published before paid online
+        registration is introduced.
       </p>
     </LegalPage>
   );

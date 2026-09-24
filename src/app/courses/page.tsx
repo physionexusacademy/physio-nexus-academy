@@ -6,18 +6,22 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://physionexusacademy.com/courses",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function CoursesPage() {
   return (
     <div className="container-content section-padding max-w-2xl">
       <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Courses / Learning</p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Structured Learning, Coming Soon</h1>
+      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Physiotherapy Courses &amp; Structured Learning</h1>
       <p className="mt-4 text-navy-600">
-        Physio Nexus Academy is developing short courses and structured learning modules for
-        physiotherapy students and professionals. This page — and its database structure — is
-        built to expand into full course listings, enrollment and progress tracking (see
-        "Optional Future-Ready Modules" in the project README) without rebuilding the site.
+        Physio Nexus Academy is developing structured physiotherapy learning modules for
+        students and professionals. Course enrollment is not open yet, so this page is kept
+        out of search results until real course listings, learning outcomes and enrollment
+        details are published.
       </p>
       <p className="mt-4 text-navy-600">
         In the meantime, explore our{" "}
