@@ -540,6 +540,41 @@ create policy "Admin delete research requests" on research_support_requests
   for delete using (is_admin());
 
 -- ═════════════════════════════════════════════════════════════════════
+-- POSTGREST SQL PRIVILEGES
+-- RLS policies above remain the authorization layer. These GRANTs are also
+-- required because Postgres table privileges are checked before RLS.
+-- ═════════════════════════════════════════════════════════════════════
+
+grant usage on schema public to anon, authenticated, service_role;
+
+grant all privileges on all tables in schema public to service_role;
+
+grant select, insert, update, delete on all tables in schema public to authenticated;
+
+grant select on table
+  public.site_settings,
+  public.founder_profile,
+  public.qualifications,
+  public.editable_page_sections,
+  public.workshops,
+  public.courses,
+  public.resource_categories,
+  public.resources,
+  public.gallery_items,
+  public.blog_posts,
+  public.testimonials,
+  public.faqs
+to anon;
+
+grant insert on table
+  public.workshop_registrations,
+  public.appointments,
+  public.home_visit_requests,
+  public.contact_messages,
+  public.research_support_requests
+to anon;
+
+-- ═════════════════════════════════════════════════════════════════════
 -- SEED DATA — so the site isn't empty on first deploy
 -- ═════════════════════════════════════════════════════════════════════
 
