@@ -155,6 +155,7 @@ export const mainNav = [
   { label: "About PNA", href: "/about" },
   { label: "Founder", href: "/founder" },
   { label: "Workshops", href: "/workshops" },
+  { label: "Knowledge Hub", href: "/knowledge-hub" },
   { label: "Verify Certificate", href: "/verify" },
   { label: "Courses", href: "/courses" },
   { label: "Books & Resources", href: "/resources" },
@@ -174,6 +175,8 @@ export const footerLinks = {
     { label: "Reviews & Feedback", href: "/reviews" },
   ],
   students: [
+    { label: "Knowledge Hub", href: "/knowledge-hub" },
+    { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
     { label: "Workshops", href: "/workshops" },
     { label: "Training Archive", href: "/training" },
     { label: "Courses / Learning", href: "/courses" },
