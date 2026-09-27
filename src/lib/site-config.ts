@@ -152,18 +152,12 @@ export const whatsappLink = (message?: string) => {
 
 export const mainNav = [
   { label: "Home", href: "/" },
-  { label: "About PNA", href: "/about" },
-  { label: "Founder", href: "/founder" },
+  { label: "Learn", href: "/knowledge-hub" },
   { label: "Workshops", href: "/workshops" },
-  { label: "Knowledge Hub", href: "/knowledge-hub" },
+  { label: "Resources", href: "/resources" },
+  { label: "Patient Care", href: "/patient-services" },
   { label: "Verify Certificate", href: "/verify" },
-  { label: "Courses", href: "/courses" },
-  { label: "Books & Resources", href: "/resources" },
-  { label: "Research Support", href: "/research" },
-  { label: "Patient Services", href: "/patient-services" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Updates", href: "/updates" },
-  { label: "Contact", href: "/contact" },
+  { label: "About PNA", href: "/about" },
 ];
 
 export const footerLinks = {
