@@ -61,10 +61,10 @@ export default async function AdminQuizResultsPage() {
             </tr>
           </thead>
           <tbody>
-            {(attempts ?? []).map((attempt, index) => (
+            {currentAttempts.map((attempt) => { const rank = completed.findIndex((item) => item.id === attempt.id); return (
               <tr key={attempt.id} className="border-t border-grey-100">
                 <td className="px-4 py-3 text-navy-500">
-                  {attempt.status === "submitted" ? index + 1 : "—"}
+                  {attempt.status === "submitted" && rank >= 0 ? rank + 1 : "—"}
                 </td>
                 <td className="px-4 py-3 font-medium text-navy-800">{attempt.full_name}</td>
                 <td className="px-4 py-3 text-navy-500">{attempt.email}</td>
@@ -77,12 +77,12 @@ export default async function AdminQuizResultsPage() {
                 <td className="px-4 py-3 text-navy-500">{attempt.status}</td>
                 <td className="px-4 py-3 text-xs text-navy-400">{attempt.quiz_id}</td>
               </tr>
-            ))}
+            ); })}
           </tbody>
         </table>
       </div>
 
-      {!attempts?.length ? (
+      {!currentAttempts.length ? (
         <p className="mt-6 rounded-xl border border-grey-200 bg-white p-8 text-center text-navy-400">
           No quiz attempts yet.
         </p>
