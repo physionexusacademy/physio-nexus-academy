@@ -14,6 +14,7 @@ import {
   Inbox,
   Settings,
   FileBadge2,
+  Trophy,
   LogOut,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -22,6 +23,7 @@ const navItems = [
   { label: "Overview", href: "/admin", icon: LayoutDashboard },
   { label: "Workshops", href: "/admin/workshops", icon: CalendarDays },
   { label: "Certificates", href: "/admin/certificates", icon: FileBadge2 },
+  { label: "Quiz Results", href: "/admin/quiz-results", icon: Trophy },
   { label: "Resources", href: "/admin/resources", icon: BookOpen },
   { label: "Appointments", href: "/admin/appointments", icon: Stethoscope },
   { label: "Home Visits", href: "/admin/home-visits", icon: HomeIcon },

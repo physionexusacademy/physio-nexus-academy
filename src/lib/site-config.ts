@@ -152,17 +152,12 @@ export const whatsappLink = (message?: string) => {
 
 export const mainNav = [
   { label: "Home", href: "/" },
-  { label: "About PNA", href: "/about" },
-  { label: "Founder", href: "/founder" },
+  { label: "Learn", href: "/knowledge-hub" },
   { label: "Workshops", href: "/workshops" },
+  { label: "Resources", href: "/resources" },
+  { label: "Patient Care", href: "/patient-services" },
   { label: "Verify Certificate", href: "/verify" },
-  { label: "Courses", href: "/courses" },
-  { label: "Books & Resources", href: "/resources" },
-  { label: "Research Support", href: "/research" },
-  { label: "Patient Services", href: "/patient-services" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Updates", href: "/updates" },
-  { label: "Contact", href: "/contact" },
+  { label: "About PNA", href: "/about" },
 ];
 
 export const footerLinks = {
@@ -174,6 +169,8 @@ export const footerLinks = {
     { label: "Reviews & Feedback", href: "/reviews" },
   ],
   students: [
+    { label: "Knowledge Hub", href: "/knowledge-hub" },
+    { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
     { label: "Workshops", href: "/workshops" },
     { label: "Training Archive", href: "/training" },
     { label: "Courses / Learning", href: "/courses" },
