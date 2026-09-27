@@ -108,7 +108,7 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
-          {mainNav.slice(0, 8).map((item) => (
+          {mainNav.filter((item) => item.href !== "/").map((item) => (
             <Link
               key={item.href}
               href={item.href}
