@@ -4,6 +4,15 @@ export type KnowledgeSection = {
   bullets?: string[];
 };
 
+export type KnowledgeLevel = "Foundation" | "Clinical" | "Advanced";
+
+export type KnowledgeReference = {
+  title: string;
+  organization: string;
+  year?: string;
+  url: string;
+};
+
 export type KnowledgeSpecialty =
   | "Musculoskeletal (MSK)"
   | "Neurological"
@@ -23,6 +32,9 @@ export type KnowledgeArticle = {
   specialty: KnowledgeSpecialty;
   category: string;
   audience: "Students" | "Professionals" | "Patients" | "All";
+  level?: KnowledgeLevel;
+  learningObjectives?: string[];
+  references?: KnowledgeReference[];
   readTime: string;
   publishedAt: string;
   updatedAt?: string;
@@ -324,7 +336,21 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       "A practical introduction to task-specific training, repetition, intensity, gait practice and functional goal setting after stroke.",
     category: "Stroke Rehabilitation",
     audience: "Students",
-    readTime: "7 min read",
+    level: "Advanced",
+    learningObjectives: [
+      "Connect stroke impairments to functional goals and task-specific practice.",
+      "Understand why rehabilitation dose, repetition and progression matter.",
+      "Relate multidisciplinary rehabilitation intensity to practical physiotherapy planning.",
+    ],
+    references: [
+      {
+        title: "Stroke rehabilitation in adults (NG236)",
+        organization: "NICE",
+        year: "2023",
+        url: "https://www.nice.org.uk/guidance/ng236/chapter/Recommendations",
+      },
+    ],
+    readTime: "9 min read",
     publishedAt: "2026-09-27",
     sections: [
       {
@@ -370,7 +396,13 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       "Understand exercise training, monitoring, pacing and education in cardiac rehabilitation without getting lost in terminology.",
     category: "Cardiac Rehabilitation",
     audience: "Students",
-    readTime: "7 min read",
+    level: "Clinical",
+    learningObjectives: [
+      "Identify the major components of cardiac rehabilitation.",
+      "Connect exercise monitoring to safe progression.",
+      "Recognize symptoms that should trigger reassessment rather than exercise progression.",
+    ],
+    readTime: "8 min read",
     publishedAt: "2026-09-27",
     sections: [
       {
@@ -495,7 +527,21 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       "Falls are usually multifactorial. A good assessment considers strength, balance, gait, environment, vision, medications and confidence.",
     category: "Falls Prevention",
     audience: "All",
-    readTime: "7 min read",
+    level: "Advanced",
+    learningObjectives: [
+      "Use a multifactorial model rather than a single balance test to think about falls.",
+      "Connect examination findings to individualized fall-prevention intervention.",
+      "Recognize the role of progressive balance and strength training within broader risk management.",
+    ],
+    references: [
+      {
+        title: "Physical Therapy Management of Fall Risk in Community-Dwelling Older Adults",
+        organization: "APTA Geriatrics",
+        year: "2025",
+        url: "https://www.apta.org/patient-care/evidence-based-practice-resources/cpgs/physical-therapy-management-of-fall-risk-in-community-dwelling-older-adults",
+      },
+    ],
+    readTime: "9 min read",
     publishedAt: "2026-09-27",
     sections: [
       {
@@ -538,7 +584,27 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       "Pelvic floor physiotherapy is more than 'Kegels'. Assessment considers strength, relaxation, coordination, symptoms and function.",
     category: "Pelvic Health",
     audience: "All",
-    readTime: "6 min read",
+    level: "Clinical",
+    learningObjectives: [
+      "Differentiate pelvic floor strengthening from relaxation and coordination needs.",
+      "Understand why assessment should confirm contraction and relaxation ability.",
+      "Relate symptoms and goals to individualized pelvic floor muscle training.",
+    ],
+    references: [
+      {
+        title: "Pelvic floor dysfunction: prevention and non-surgical management (NG210)",
+        organization: "NICE",
+        year: "2021",
+        url: "https://www.nice.org.uk/guidance/ng210/chapter/Recommendations",
+      },
+      {
+        title: "Urinary incontinence and pelvic organ prolapse in women: management (NG123)",
+        organization: "NICE",
+        year: "2019, updated",
+        url: "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
+      },
+    ],
+    readTime: "8 min read",
     publishedAt: "2026-09-27",
     sections: [
       {
@@ -622,7 +688,13 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       "Learn what randomized controlled trials and observational studies can tell you — and why one design is not automatically best for every research question.",
     category: "Research Methods",
     audience: "Students",
-    readTime: "7 min read",
+    level: "Clinical",
+    learningObjectives: [
+      "Match common study designs to the questions they are best suited to answer.",
+      "Separate study design hierarchy from actual methodological quality.",
+      "Recognize common threats to interpretation such as bias, confounding and measurement quality.",
+    ],
+    readTime: "8 min read",
     publishedAt: "2026-09-27",
     sections: [
       {
