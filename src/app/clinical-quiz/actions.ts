@@ -34,14 +34,21 @@ export async function startWeeklyQuiz(values: {
   const fullName = values.fullName.trim();
 
   if (fullName.length < 2 || fullName.length > 80) {
-    throw new Error("Please enter your full name.");
+    return { ok: false as const, error: "Please enter your full name." };
   }
 
   if (!values.consent) {
-    throw new Error("Please confirm the quiz participation notice.");
+    return { ok: false as const, error: "Please confirm the quiz participation notice." };
   }
 
-  const { email, emailKey } = normalizeGmail(values.email);
+  let normalized;
+  try {
+    normalized = normalizeGmail(values.email);
+  } catch {
+    return { ok: false as const, error: "Please enter a valid Gmail address." };
+  }
+
+  const { email, emailKey } = normalized;
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -59,7 +66,10 @@ export async function startWeeklyQuiz(values: {
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("This Gmail has already been used for this week's quiz.");
+      return {
+        ok: false as const,
+        error: "This Gmail has already been used for this week's quiz.",
+      };
     }
 
     console.error("PNA_QUIZ_START_ERROR", {
@@ -67,15 +77,21 @@ export async function startWeeklyQuiz(values: {
       message: error.message,
       details: error.details,
     });
-    throw new Error("The quiz could not be started. Please try again.");
+    return {
+      ok: false as const,
+      error: "The quiz could not be started. Please try again.",
+    };
   }
 
   return {
-    attemptId: data.id as string,
-    quizId: currentQuiz.id,
-    title: currentQuiz.title,
-    timePerQuestionSeconds: currentQuiz.timePerQuestionSeconds,
-    questions: getPublicQuestions(),
+    ok: true as const,
+    quiz: {
+      attemptId: data.id as string,
+      quizId: currentQuiz.id,
+      title: currentQuiz.title,
+      timePerQuestionSeconds: currentQuiz.timePerQuestionSeconds,
+      questions: getPublicQuestions(),
+    },
   };
 }
 
