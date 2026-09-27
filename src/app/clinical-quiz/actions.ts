@@ -70,17 +70,11 @@ export async function startWeeklyQuiz(values: {
     throw new Error("The quiz could not be started. Please try again.");
   }
 
-  const startedAtMs = new Date(data.started_at).getTime();
-  const expiresAt = new Date(
-    startedAtMs + currentQuiz.timeLimitSeconds * 1000
-  ).toISOString();
-
   return {
     attemptId: data.id as string,
     quizId: currentQuiz.id,
     title: currentQuiz.title,
-    timeLimitSeconds: currentQuiz.timeLimitSeconds,
-    expiresAt,
+    timePerQuestionSeconds: currentQuiz.timePerQuestionSeconds,
     questions: getPublicQuestions(),
   };
 }
@@ -112,14 +106,16 @@ export async function submitWeeklyQuiz(values: {
   const now = Date.now();
   const startedAtMs = new Date(attempt.started_at).getTime();
   const elapsedMs = Math.max(0, now - startedAtMs);
-  const hardLimitMs = currentQuiz.timeLimitSeconds * 1000 + NETWORK_GRACE_MS;
+  const totalLimitMs =
+    currentQuiz.timePerQuestionSeconds * currentQuiz.questions.length * 1000;
+  const hardLimitMs = totalLimitMs + NETWORK_GRACE_MS;
 
   if (elapsedMs > hardLimitMs) {
     await supabase
       .from("quiz_attempts")
       .update({
         score: 0,
-        elapsed_ms: currentQuiz.timeLimitSeconds * 1000,
+        elapsed_ms: totalLimitMs,
         status: "expired",
         submitted_at: new Date().toISOString(),
       })
@@ -130,7 +126,7 @@ export async function submitWeeklyQuiz(values: {
       expired: true,
       score: 0,
       total: currentQuiz.questions.length,
-      elapsedMs: currentQuiz.timeLimitSeconds * 1000,
+      elapsedMs: totalLimitMs,
       explanations: currentQuiz.questions.map((question) => ({
         id: question.id,
         correctValue: question.correctValue,
@@ -145,7 +141,7 @@ export async function submitWeeklyQuiz(values: {
 
   const rankedElapsedMs = Math.min(
     elapsedMs,
-    currentQuiz.timeLimitSeconds * 1000
+    totalLimitMs
   );
 
   const { error: updateError } = await supabase
