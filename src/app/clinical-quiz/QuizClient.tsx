@@ -188,20 +188,17 @@ export function QuizClient() {
             <label htmlFor="quiz-email" className="label">
               Gmail address
             </label>
-            <div className="relative">
-              <Mail className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-navy-300" />
-              <input
-                id="quiz-email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="input pl-10"
-                required
-                autoComplete="email"
-                placeholder="yourname@gmail.com"
-                pattern="[A-Za-z0-9._%+\-]+@gmail\.com"
-              />
-            </div>
+            <input
+              id="quiz-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="input"
+              required
+              autoComplete="email"
+              placeholder="yourname@gmail.com"
+              pattern="[A-Za-z0-9._%+\-]+@gmail\.com"
+            />
             <p className="mt-1.5 text-xs leading-5 text-navy-400">
               One Gmail can enter this weekly quiz only once. Gmail dots and +aliases
               are treated as the same account.
