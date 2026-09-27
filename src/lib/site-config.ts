@@ -153,11 +153,11 @@ export const whatsappLink = (message?: string) => {
 export const mainNav = [
   { label: "Home", href: "/" },
   { label: "Learn", href: "/knowledge-hub" },
+  { label: "Case Lab", href: "/case-lab" },
   { label: "Workshops", href: "/workshops" },
   { label: "Resources", href: "/resources" },
   { label: "Patient Care", href: "/patient-services" },
   { label: "Verify Certificate", href: "/verify" },
-  { label: "About PNA", href: "/about" },
 ];
 
 export const footerLinks = {
@@ -170,6 +170,7 @@ export const footerLinks = {
   ],
   students: [
     { label: "Knowledge Hub", href: "/knowledge-hub" },
+    { label: "Clinical Case Lab", href: "/case-lab" },
     { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
     { label: "Workshops", href: "/workshops" },
     { label: "Training Archive", href: "/training" },
