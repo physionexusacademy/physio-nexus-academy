@@ -6,8 +6,7 @@ import {
   ChevronRight,
   Clock3,
   LockKeyhole,
-  Mail,
-  XCircle,
+   XCircle,
 } from "lucide-react";
 import { startWeeklyQuiz, submitWeeklyQuiz } from "./actions";
 
@@ -59,12 +58,19 @@ export function QuizClient() {
 
     try {
       const started = await startWeeklyQuiz({ fullName, email, consent });
-      setQuiz(started);
+
+      if (!started.ok) {
+        setError(started.error);
+        return;
+      }
+
+      const quizData = started.quiz;
+      setQuiz(quizData);
       setAnswers({});
       setCurrentIndex(0);
       setResult(null);
-      setSecondsLeft(started.timePerQuestionSeconds);
-      setQuestionDeadline(Date.now() + started.timePerQuestionSeconds * 1000);
+      setSecondsLeft(quizData.timePerQuestionSeconds);
+      setQuestionDeadline(Date.now() + quizData.timePerQuestionSeconds * 1000);
       submittingRef.current = false;
       advancingRef.current = false;
     } catch (err) {
