@@ -34,18 +34,18 @@ export async function startWeeklyQuiz(values: {
   const fullName = values.fullName.trim();
 
   if (fullName.length < 2 || fullName.length > 80) {
-    return { ok: false as const, error: "Please enter your full name." };
+    return { quiz: null, error: "Please enter your full name." };
   }
 
   if (!values.consent) {
-    return { ok: false as const, error: "Please confirm the quiz participation notice." };
+    return { quiz: null, error: "Please confirm the quiz participation notice." };
   }
 
   let normalized;
   try {
     normalized = normalizeGmail(values.email);
   } catch {
-    return { ok: false as const, error: "Please enter a valid Gmail address." };
+    return { quiz: null, error: "Please enter a valid Gmail address." };
   }
 
   const { email, emailKey } = normalized;
@@ -67,7 +67,7 @@ export async function startWeeklyQuiz(values: {
   if (error) {
     if (error.code === "23505") {
       return {
-        ok: false as const,
+        quiz: null,
         error: "This Gmail has already been used for this week's quiz.",
       };
     }
@@ -78,13 +78,12 @@ export async function startWeeklyQuiz(values: {
       details: error.details,
     });
     return {
-      ok: false as const,
+      quiz: null,
       error: "The quiz could not be started. Please try again.",
     };
   }
 
   return {
-    ok: true as const,
     quiz: {
       attemptId: data.id as string,
       quizId: currentQuiz.id,
@@ -92,6 +91,7 @@ export async function startWeeklyQuiz(values: {
       timePerQuestionSeconds: currentQuiz.timePerQuestionSeconds,
       questions: getPublicQuestions(),
     },
+    error: null,
   };
 }
 
