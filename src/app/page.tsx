@@ -5,13 +5,17 @@ import {
   ArrowRight,
   BookOpen,
   Brain,
+  BrainCircuit,
   CalendarDays,
-  GraduationCap,
+  FileBadge2,
+  FlaskConical,
   HeartPulse,
   Home,
+  LibraryBig,
   MapPin,
   Quote,
   Stethoscope,
+  Trophy,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
@@ -30,36 +34,70 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const audiencePaths = [
+const portalActions = [
   {
-    title: "I am a Student",
-    description: "Build clinical understanding with articles, quizzes, courses and practical resources.",
-    icon: GraduationCap,
-    links: [
-      { label: "Knowledge Hub", href: "/knowledge-hub" },
-      { label: "Weekly Quiz", href: "/clinical-quiz" },
-      { label: "Courses", href: "/courses" },
-    ],
+    title: "Knowledge Hub",
+    description: "Study MSK, Neuro, Cardio, Pediatrics, Sports and more by specialty and level.",
+    href: "/knowledge-hub",
+    icon: LibraryBig,
+    tone: "from-cyan-500 to-teal-600",
+    soft: "bg-cyan-50 border-cyan-100",
   },
   {
-    title: "I am a Physiotherapist",
-    description: "Find workshops, advanced clinical learning, research support and professional resources.",
-    icon: Stethoscope,
-    links: [
-      { label: "Workshops", href: "/workshops" },
-      { label: "Research Support", href: "/research" },
-      { label: "Resources", href: "/resources" },
-    ],
+    title: "Clinical Case Lab",
+    description: "Work through symptoms, differential diagnosis, reasoning and treatment planning.",
+    href: "/case-lab",
+    icon: BrainCircuit,
+    tone: "from-violet-500 to-indigo-600",
+    soft: "bg-violet-50 border-violet-100",
   },
   {
-    title: "I need Physiotherapy",
-    description: "Choose the right patient pathway without searching through the rest of the site.",
+    title: "Weekly Clinical Quiz",
+    description: "Timed clinical questions with a weekly leaderboard and top scorers.",
+    href: "/clinical-quiz",
+    icon: Trophy,
+    tone: "from-amber-500 to-orange-500",
+    soft: "bg-amber-50 border-amber-100",
+  },
+  {
+    title: "Workshops & CPD",
+    description: "Find hands-on workshops, practical training and CPD learning opportunities.",
+    href: "/workshops",
+    icon: CalendarDays,
+    tone: "from-orange-500 to-rose-500",
+    soft: "bg-orange-50 border-orange-100",
+  },
+  {
+    title: "Books & Resources",
+    description: "Open practical physiotherapy learning material, books, PDFs and study resources.",
+    href: "/resources",
+    icon: BookOpen,
+    tone: "from-emerald-500 to-teal-600",
+    soft: "bg-emerald-50 border-emerald-100",
+  },
+  {
+    title: "Research Support",
+    description: "Research methods, evidence summaries and academic learning support.",
+    href: "/research",
+    icon: FlaskConical,
+    tone: "from-fuchsia-500 to-violet-600",
+    soft: "bg-fuchsia-50 border-fuchsia-100",
+  },
+  {
+    title: "Patient Care",
+    description: "Book physiotherapy, request a home visit or explore patient services.",
+    href: "/patient-services",
     icon: HeartPulse,
-    links: [
-      { label: "Book Appointment", href: "/appointment" },
-      { label: "Request Home Visit", href: "/home-visit" },
-      { label: "Patient Services", href: "/patient-services" },
-    ],
+    tone: "from-rose-500 to-pink-600",
+    soft: "bg-rose-50 border-rose-100",
+  },
+  {
+    title: "Verify Certificate",
+    description: "Check a PNA certificate quickly using its verification ID.",
+    href: "/verify",
+    icon: FileBadge2,
+    tone: "from-indigo-500 to-sky-600",
+    soft: "bg-indigo-50 border-indigo-100",
   },
 ] as const;
 
@@ -94,11 +132,15 @@ export default async function HomePage() {
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
   const featuredResources = resourceRows?.length ? resourceRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
-  const latestArticles = knowledgeArticles.slice(0, 3);
+  const latestArticles = knowledgeArticles
+    .filter((article) => article.level === "Advanced" || article.updatedAt)
+    .slice(0, 3);
 
   return (
     <>
-      <section className="relative overflow-hidden bg-navy-800 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-navy-900 via-navy-800 to-teal-800 text-white">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 left-1/3 h-72 w-72 rounded-full bg-violet-500/10 blur-3xl" />
         <div className="container-content grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-20">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-teal-300">
@@ -133,8 +175,8 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-grey-300">
+              <Link href="/case-lab" className="hover:text-white">Clinical Case Lab →</Link>
               <Link href="/clinical-quiz" className="hover:text-white">Weekly Clinical Quiz →</Link>
-              <Link href="/resources" className="hover:text-white">Books & Resources →</Link>
               <Link href="/verify" className="hover:text-white">Verify Certificate →</Link>
             </div>
           </div>
@@ -162,45 +204,51 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-grey-50">
+      <section className="section-padding bg-gradient-to-b from-grey-50 via-white to-cyan-50/40">
         <div className="container-content">
-          <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-teal-600">
-              Start Here
-            </p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              What brings you to PNA today?
-            </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-navy-500">
-              Choose your path and go directly to the part of the website that matters to you.
-            </p>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-widest text-teal-700">
+                PNA Portal
+              </p>
+              <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
+                What do you want to do today?
+              </h2>
+              <p className="mt-3 max-w-2xl text-navy-500">
+                Every major part of the academy has its own clear entry point.
+              </p>
+            </div>
+            <Link
+              href="/about"
+              className="text-sm font-semibold text-navy-500 hover:text-teal-700"
+            >
+              About PNA →
+            </Link>
           </div>
 
-          <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {audiencePaths.map((path) => {
-              const Icon = path.icon;
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {portalActions.map((action) => {
+              const Icon = action.icon;
               return (
-                <div
-                  key={path.title}
-                  className="rounded-2xl border border-grey-200 bg-white p-6 shadow-sm"
+                <Link
+                  key={action.href}
+                  href={action.href}
+                  className={"group relative overflow-hidden rounded-3xl border p-5 transition hover:-translate-y-1 hover:shadow-xl " + action.soft}
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
-                    <Icon className="h-6 w-6" />
-                  </span>
-                  <h3 className="mt-4 text-xl font-semibold text-navy-800">{path.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-navy-500">{path.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {path.links.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="rounded-full border border-grey-200 px-3 py-2 text-xs font-semibold text-navy-700 transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
+                  <div className={"absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br opacity-20 blur-2xl " + action.tone} />
+                  <div className="relative">
+                    <span className={"flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-md " + action.tone}>
+                      <Icon className="h-6 w-6" />
+                    </span>
+                    <h3 className="mt-4 text-lg font-bold text-navy-800">{action.title}</h3>
+                    <p className="mt-2 min-h-[72px] text-sm leading-6 text-navy-600">
+                      {action.description}
+                    </p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-navy-700">
+                      Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -295,7 +343,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-grey-50">
+      <section className="section-padding bg-gradient-to-b from-violet-50/60 via-white to-cyan-50/50">
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -393,7 +441,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-navy-800 text-white">
+      <section className="section-padding bg-gradient-to-br from-emerald-800 via-teal-800 to-navy-800 text-white">
         <div className="container-content">
           <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
             <div>

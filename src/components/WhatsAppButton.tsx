@@ -9,7 +9,7 @@ export function WhatsAppButton() {
       rel="noopener noreferrer"
       aria-label="Chat with Physio Nexus Academy on WhatsApp"
       title="Chat with us on WhatsApp"
-      className="fixed bottom-5 right-4 z-[90] inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition duration-200 hover:scale-105 hover:bg-[#20bd5a] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/30 sm:bottom-6 sm:right-6"
+      className="fixed bottom-20 right-4 z-[90] inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition duration-200 hover:scale-105 hover:bg-[#20bd5a] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/30 sm:bottom-20 sm:right-6 lg:bottom-6"
     >
       <svg
         viewBox="0 0 32 32"
