@@ -315,6 +315,345 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
     ],
   },
+
+  {
+    slug: "stroke-rehabilitation-principles",
+    specialty: "Neurological",
+    title: "Stroke Rehabilitation: Core Principles Every Physiotherapy Student Should Know",
+    excerpt:
+      "A practical introduction to task-specific training, repetition, intensity, gait practice and functional goal setting after stroke.",
+    category: "Stroke Rehabilitation",
+    audience: "Students",
+    readTime: "7 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "What rehabilitation is trying to achieve",
+        paragraphs: [
+          "Stroke rehabilitation aims to improve meaningful activity and participation, not simply isolated movement. Physiotherapy commonly focuses on mobility, transfers, balance, gait, upper-limb use, endurance and confidence with daily tasks.",
+        ],
+      },
+      {
+        heading: "Task-specific practice",
+        paragraphs: [
+          "Practice should resemble the activity the person wants to improve. Repeated sit-to-stand, stepping, walking, reaching and balance tasks are usually more transferable than exercises performed without a functional goal.",
+        ],
+      },
+      {
+        heading: "Repetition and progression",
+        bullets: [
+          "Use enough repetitions to create a training effect.",
+          "Increase difficulty gradually as control improves.",
+          "Change speed, distance, support or task complexity when appropriate.",
+          "Monitor fatigue, blood pressure, symptoms and safety.",
+        ],
+      },
+      {
+        heading: "Gait and balance",
+        paragraphs: [
+          "Walking rehabilitation may combine overground practice, treadmill work, strengthening, balance training and assistive devices when needed. The exact mix depends on impairment, recovery stage and the person's goals.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "A strong stroke program is goal-directed, repetitive, progressive and functional. The best exercise is usually the one that safely trains the activity the person needs to regain.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "cardiac-rehabilitation-basics",
+    specialty: "Cardiopulmonary",
+    title: "Cardiac Rehabilitation: A Simple Physiotherapy Overview",
+    excerpt:
+      "Understand exercise training, monitoring, pacing and education in cardiac rehabilitation without getting lost in terminology.",
+    category: "Cardiac Rehabilitation",
+    audience: "Students",
+    readTime: "7 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "What cardiac rehabilitation includes",
+        paragraphs: [
+          "Cardiac rehabilitation is a structured program that commonly combines supervised exercise, risk-factor education, lifestyle support and symptom monitoring for people recovering from or living with cardiovascular disease.",
+        ],
+      },
+      {
+        heading: "The physiotherapy role",
+        bullets: [
+          "Assess exercise tolerance and functional capacity.",
+          "Prescribe and progress aerobic and resistance exercise.",
+          "Teach pacing, warm-up and cool-down strategies.",
+          "Monitor symptoms and vital signs where appropriate.",
+          "Reinforce safe activity and self-management.",
+        ],
+      },
+      {
+        heading: "Exercise progression",
+        paragraphs: [
+          "Exercise is usually progressed through duration, frequency and intensity rather than by making sudden large jumps. The person should be able to recover appropriately and should not ignore new chest pain, marked breathlessness, dizziness or other concerning symptoms.",
+        ],
+      },
+      {
+        heading: "Why monitoring matters",
+        paragraphs: [
+          "Heart rate, blood pressure, symptoms, perceived exertion and oxygen saturation may be used depending on the clinical setting and diagnosis. Monitoring helps the clinician judge whether the current exercise dose is appropriate.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "pediatric-developmental-milestones-clinical-use",
+    specialty: "Pediatrics",
+    title: "Developmental Milestones: How Physiotherapists Use Them Clinically",
+    excerpt:
+      "Milestones are guides, not rigid deadlines. Learn how pediatric physiotherapists use them to understand movement development and identify concerns.",
+    category: "Development",
+    audience: "All",
+    readTime: "6 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "Milestones are a pattern, not a race",
+        paragraphs: [
+          "Children develop at different rates. Milestones help clinicians observe the sequence and quality of emerging skills, but a single late milestone does not automatically mean that a child has a disorder.",
+        ],
+      },
+      {
+        heading: "What physiotherapists observe",
+        bullets: [
+          "Head and trunk control.",
+          "Rolling and transitional movements.",
+          "Sitting balance.",
+          "Crawling or other floor mobility.",
+          "Standing and walking.",
+          "Symmetry, movement quality and use of both sides of the body.",
+        ],
+      },
+      {
+        heading: "When broader assessment is useful",
+        paragraphs: [
+          "A child may need closer assessment when there is clear loss of previously acquired skills, persistent asymmetry, unusual stiffness or floppiness, major difficulty with age-expected mobility, or concerns raised by caregivers or the healthcare team.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "Pediatric assessment looks beyond the age at which a skill appears. Movement quality, symmetry, environment, participation and the child's overall development are equally important.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "return-to-sport-after-injury",
+    specialty: "Sports",
+    title: "Return to Sport After Injury: More Than Being Pain-Free",
+    excerpt:
+      "Returning to sport should combine symptom control, strength, capacity, sport-specific testing and confidence rather than relying on time alone.",
+    category: "Return to Sport",
+    audience: "All",
+    readTime: "7 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "Pain-free is not the finish line",
+        paragraphs: [
+          "An athlete may feel much better before strength, power, endurance and movement capacity have fully recovered. Return-to-sport decisions should therefore consider function as well as symptoms.",
+        ],
+      },
+      {
+        heading: "Key areas to check",
+        bullets: [
+          "Range of motion relevant to the sport.",
+          "Strength and power.",
+          "Balance and control.",
+          "Running, jumping, cutting or throwing demands when relevant.",
+          "Tolerance to repeated training loads.",
+          "Confidence and readiness to perform.",
+        ],
+      },
+      {
+        heading: "Build exposure gradually",
+        paragraphs: [
+          "A useful progression is to move from rehabilitation exercise to controlled sport drills, then partial training, full training and finally competition. Each stage should be tolerated before the next one is added.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "Return to sport is a process rather than a single test. Time, symptoms, objective capacity and sport-specific demands should all be considered together.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "falls-risk-older-adults-physiotherapy",
+    specialty: "Geriatrics",
+    title: "Falls in Older Adults: What Physiotherapy Assessment Should Look For",
+    excerpt:
+      "Falls are usually multifactorial. A good assessment considers strength, balance, gait, environment, vision, medications and confidence.",
+    category: "Falls Prevention",
+    audience: "All",
+    readTime: "7 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "Falls rarely have one cause",
+        paragraphs: [
+          "A fall can reflect a combination of reduced strength, impaired balance, slower reactions, unsafe footwear, environmental hazards, visual problems, medication effects or acute illness.",
+        ],
+      },
+      {
+        heading: "What a physiotherapy screen may include",
+        bullets: [
+          "Recent falls and near-falls.",
+          "Sit-to-stand ability.",
+          "Walking speed and gait quality.",
+          "Static and dynamic balance.",
+          "Lower-limb strength.",
+          "Use and fit of walking aids.",
+          "Confidence and fear of falling.",
+        ],
+      },
+      {
+        heading: "Intervention principles",
+        paragraphs: [
+          "Exercise programs commonly emphasize progressive balance training, strengthening and task practice. Home-environment changes and multidisciplinary review may also be needed when non-physical risk factors are present.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "Effective falls prevention is usually individualized. The goal is not only fewer falls, but safer mobility, better confidence and greater participation.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "pelvic-floor-rehabilitation-basics",
+    specialty: "Women's & Pelvic Health",
+    title: "Pelvic Floor Rehabilitation: The Basics",
+    excerpt:
+      "Pelvic floor physiotherapy is more than 'Kegels'. Assessment considers strength, relaxation, coordination, symptoms and function.",
+    category: "Pelvic Health",
+    audience: "All",
+    readTime: "6 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "What the pelvic floor does",
+        paragraphs: [
+          "The pelvic floor contributes to continence, support of pelvic organs, pressure management and sexual function. It must be able to contract, relax and coordinate with breathing and movement.",
+        ],
+      },
+      {
+        heading: "Why strengthening is not always the answer",
+        paragraphs: [
+          "Some people need strengthening, while others have difficulty relaxing or coordinating the pelvic floor. Treatment should match the assessment rather than automatically prescribing repeated contractions.",
+        ],
+      },
+      {
+        heading: "What rehabilitation may include",
+        bullets: [
+          "Pelvic floor awareness and coordination.",
+          "Breathing and pressure-management strategies.",
+          "Strength or endurance training when indicated.",
+          "Relaxation and down-training when indicated.",
+          "Gradual return to lifting, exercise and daily activity.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "Pelvic health rehabilitation should be individualized and respectful. Symptoms such as persistent pelvic pain, urinary or bowel changes, or postpartum concerns may benefit from assessment by a suitably trained clinician.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "progressive-overload-in-rehabilitation",
+    specialty: "Exercise & Rehabilitation",
+    title: "Progressive Overload in Rehabilitation: How to Progress Exercise Safely",
+    excerpt:
+      "Rehabilitation improves when the body is challenged enough to adapt, then given time to recover. Progression should be planned, not random.",
+    category: "Exercise Prescription",
+    audience: "Students",
+    readTime: "6 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "The basic idea",
+        paragraphs: [
+          "Progressive overload means gradually increasing the challenge placed on the body so that strength, endurance, mobility or skill can continue to improve.",
+        ],
+      },
+      {
+        heading: "Ways to progress an exercise",
+        bullets: [
+          "Increase resistance.",
+          "Increase repetitions or sets.",
+          "Increase range of motion.",
+          "Increase time under tension.",
+          "Increase speed or power when appropriate.",
+          "Reduce external support.",
+          "Make the task more specific to the person's goal.",
+        ],
+      },
+      {
+        heading: "Progress one variable at a time",
+        paragraphs: [
+          "Changing several variables at once makes it harder to know what caused a flare-up or improvement. Small planned changes make exercise response easier to monitor.",
+        ],
+      },
+      {
+        heading: "Use response to guide the next dose",
+        paragraphs: [
+          "Exercise should be challenging enough to create adaptation but not so aggressive that recovery becomes difficult. Symptoms during and after training, movement quality and performance can all help guide progression.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "rct-vs-observational-study",
+    specialty: "Research & Evidence",
+    title: "RCT vs Observational Study: A Simple Research Guide",
+    excerpt:
+      "Learn what randomized controlled trials and observational studies can tell you — and why one design is not automatically best for every research question.",
+    category: "Research Methods",
+    audience: "Students",
+    readTime: "7 min read",
+    publishedAt: "2026-09-27",
+    sections: [
+      {
+        heading: "Randomized controlled trial",
+        paragraphs: [
+          "In an RCT, eligible participants are randomly allocated to intervention groups. Randomization helps reduce systematic differences between groups and is especially useful when studying treatment effects.",
+        ],
+      },
+      {
+        heading: "Observational study",
+        paragraphs: [
+          "In observational research, the investigator observes exposures or outcomes without assigning treatment. Cross-sectional, cohort and case-control designs are common examples.",
+        ],
+      },
+      {
+        heading: "What each design is good for",
+        bullets: [
+          "RCT: treatment efficacy or comparative intervention questions.",
+          "Cohort study: prognosis, risk and change over time.",
+          "Case-control study: exploring possible exposures linked with an outcome.",
+          "Cross-sectional study: prevalence, characteristics and associations at one point in time.",
+        ],
+      },
+      {
+        heading: "Do not judge quality by design name alone",
+        paragraphs: [
+          "A poorly conducted RCT can be less useful than a carefully designed observational study. Always examine sampling, bias, measurement quality, missing data and whether the conclusions match the methods.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getKnowledgeArticle(slug: string) {
