@@ -438,46 +438,123 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "cardiac-rehabilitation-basics",
     specialty: "Cardiopulmonary",
-    title: "Cardiac Rehabilitation: A Simple Physiotherapy Overview",
+    title: "Cardiac Rehabilitation: From Screening to Exercise Progression",
     excerpt:
-      "Understand exercise training, monitoring, pacing and education in cardiac rehabilitation without getting lost in terminology.",
+      "A clinical-level guide to the structure of cardiac rehabilitation, baseline assessment, aerobic and resistance training, monitoring, progression, warning symptoms and outcome measurement.",
     category: "Cardiac Rehabilitation",
     audience: "Students",
     level: "Clinical",
     learningObjectives: [
-      "Identify the major components of cardiac rehabilitation.",
-      "Connect exercise monitoring to safe progression.",
-      "Recognize symptoms that should trigger reassessment rather than exercise progression.",
+      "Explain the core components of a modern cardiac rehabilitation programme.",
+      "Structure a physiotherapy assessment around symptoms, functional capacity, haemodynamic response and risk.",
+      "Use FITT principles, perceived exertion and symptom response to guide exercise prescription and progression.",
+      "Recognize findings that require modification, reassessment or medical escalation rather than routine progression.",
     ],
-    readTime: "8 min read",
+    references: [
+      {
+        title: "Core Components of Cardiac Rehabilitation Programs: 2024 Update",
+        organization: "American Heart Association / AACVPR",
+        year: "2024",
+        url: "https://professional.heart.org/en/science-news/core-components-of-cardiac-rehabilitation-programs-2024-update",
+      },
+      {
+        title: "What is Cardiac Rehabilitation?",
+        organization: "American Heart Association",
+        url: "https://www.heart.org/en/health-topics/cardiac-rehab/what-is-cardiac-rehabilitation/",
+      },
+    ],
+    readTime: "14 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "What cardiac rehabilitation includes",
+        heading: "1. Cardiac rehabilitation is secondary prevention, not just supervised walking",
         paragraphs: [
-          "Cardiac rehabilitation is a structured program that commonly combines supervised exercise, risk-factor education, lifestyle support and symptom monitoring for people recovering from or living with cardiovascular disease.",
+          "Modern cardiac rehabilitation is a structured, multidisciplinary secondary-prevention programme. Exercise is one major component, but high-quality programmes also address patient assessment, cardiovascular risk factors, nutrition, body composition, psychosocial health, physical activity behaviour and measurable outcomes.",
+          "For the physiotherapist, this means the exercise session should sit inside a wider clinical plan. A patient who can cycle for 15 minutes may still need blood-pressure review, education about activity pacing, support for fear of exertion, resistance training, functional goals and coordination with the wider cardiac team.",
         ],
       },
       {
-        heading: "The physiotherapy role",
+        heading: "2. Start with a baseline clinical picture",
+        paragraphs: [
+          "Before progressing exercise, establish what the person can currently tolerate and what limits them. Review the cardiac diagnosis and procedure history, current symptoms, relevant comorbidities, medications, resting observations, mobility, habitual activity, functional goals and any previous exercise response.",
+          "The assessment should answer a practical question: what level of activity can this person perform safely today, and what evidence will tell us that the next dose is appropriate?",
+        ],
         bullets: [
-          "Assess exercise tolerance and functional capacity.",
-          "Prescribe and progress aerobic and resistance exercise.",
-          "Teach pacing, warm-up and cool-down strategies.",
-          "Monitor symptoms and vital signs where appropriate.",
-          "Reinforce safe activity and self-management.",
+          "Resting heart rate and blood pressure where clinically indicated.",
+          "Current chest discomfort, breathlessness, palpitations, dizziness, fatigue or unusual exercise intolerance.",
+          "Functional mobility and exercise capacity using an appropriate test for the setting.",
+          "Musculoskeletal limitations that could change the mode of exercise.",
+          "Confidence, fear of exertion and barriers to adherence.",
+          "Medication effects that may alter heart-rate response or symptom interpretation.",
         ],
       },
       {
-        heading: "Exercise progression",
+        heading: "3. Aerobic prescription: think FITT plus response",
         paragraphs: [
-          "Exercise is usually progressed through duration, frequency and intensity rather than by making sudden large jumps. The person should be able to recover appropriately and should not ignore new chest pain, marked breathlessness, dizziness or other concerning symptoms.",
+          "Aerobic exercise prescription can be organized using frequency, intensity, time and type, but the numbers should never be separated from the patient's clinical response. Walking, cycling and other rhythmic large-muscle activities are common choices because intensity can be adjusted and monitored.",
+          "Heart rate can be useful, but it is not always sufficient on its own. Rate-limiting medication, rhythm disturbance, autonomic impairment or a poor chronotropic response can make perceived exertion and symptoms especially important.",
+        ],
+        bullets: [
+          "Frequency: build regular exposure across the week rather than relying on occasional hard sessions.",
+          "Intensity: use the prescribed clinical target, perceived exertion and symptom response together.",
+          "Time: begin with a tolerable duration; intervals may be useful when continuous exercise is not yet tolerated.",
+          "Type: select a mode the person can perform safely and is likely to continue.",
         ],
       },
       {
-        heading: "Why monitoring matters",
+        heading: "4. Resistance training belongs in cardiac rehabilitation",
         paragraphs: [
-          "Heart rate, blood pressure, symptoms, perceived exertion and oxygen saturation may be used depending on the clinical setting and diagnosis. Monitoring helps the clinician judge whether the current exercise dose is appropriate.",
+          "Resistance exercise can support strength, physical function and independence when appropriately prescribed. The starting load should allow controlled technique and normal breathing without excessive strain. Progression is usually gradual and guided by tolerance, movement quality and the programme's medical criteria.",
+          "Teach the patient to avoid breath-holding and unnecessary Valsalva-type straining. The aim is not to reproduce a gym competition environment; it is to rebuild useful strength safely and confidently.",
+        ],
+      },
+      {
+        heading: "5. Monitoring: what are you actually watching for?",
+        paragraphs: [
+          "Monitoring is not a ritual. Each variable should help answer whether exercise is being tolerated as expected. Depending on the person and setting, this may include heart rate, blood pressure, rhythm information, oxygen saturation, perceived exertion, dyspnoea and recovery time.",
+          "A normal-looking heart rate does not overrule concerning symptoms. New or increasing chest pressure, presyncope or syncope, marked unexplained breathlessness, sustained palpitations, abnormal haemodynamic response or sudden deterioration should trigger reassessment according to the local medical pathway.",
+        ],
+      },
+      {
+        heading: "6. Progression: change one meaningful variable at a time",
+        paragraphs: [
+          "A common progression strategy is to establish consistent tolerance first, then increase duration, frequency or intensity according to the goal and clinical response. Increasing every variable together makes it difficult to identify what caused a problem.",
+          "For a deconditioned patient, adding several minutes of walking may be more useful than immediately making the same short bout much harder. For someone who already tolerates duration well, intensity or task specificity may become the next priority.",
+        ],
+      },
+      {
+        heading: "7. Outcome measures should match the goal",
+        bullets: [
+          "Exercise capacity or walking tests when the goal is endurance.",
+          "Sit-to-stand or other functional tasks when lower-limb function is limiting daily activity.",
+          "Symptoms and perceived exertion at a standardized workload.",
+          "Physical-activity behaviour and confidence, not only supervised-session performance.",
+          "Programme adherence and meaningful patient goals.",
+        ],
+      },
+      {
+        heading: "8. Clinical reasoning example",
+        paragraphs: [
+          "A patient after coronary revascularization can walk for 10 minutes but stops because of fear, not because of chest symptoms or physiological intolerance. Simply prescribing more minutes may not solve the real barrier. Education, graded exposure, monitoring feedback and a clear home plan may be more important than changing the exercise mode.",
+          "Contrast this with a patient whose exercise is limited by new exertional chest pressure. That presentation requires reassessment rather than motivational coaching or routine progression.",
+        ],
+      },
+      {
+        heading: "9. Common mistakes",
+        bullets: [
+          "Treating cardiac rehabilitation as exercise only.",
+          "Using heart rate as the only intensity marker in every patient.",
+          "Progressing load despite new warning symptoms.",
+          "Ignoring resistance training and functional strength.",
+          "Failing to document the patient's actual response and recovery.",
+          "Giving a generic home programme without addressing adherence barriers.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "Cardiac rehabilitation is safest and most effective when exercise prescription, monitoring and progression are individualized inside a broader secondary-prevention programme. The therapist should always be able to explain why today's dose is appropriate, what response is expected and what finding would make the plan change.",
         ],
       },
     ],
@@ -485,41 +562,108 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "pediatric-developmental-milestones-clinical-use",
     specialty: "Pediatrics",
-    title: "Developmental Milestones: How Physiotherapists Use Them Clinically",
+    title: "Pediatric Motor Development: Milestones, Movement Quality and Clinical Reasoning",
     excerpt:
-      "Milestones are guides, not rigid deadlines. Learn how pediatric physiotherapists use them to understand movement development and identify concerns.",
+      "A clinical guide to using developmental milestones without reducing pediatric assessment to a checklist: movement quality, symmetry, red flags, family concerns and when deeper assessment is needed.",
     category: "Development",
-    audience: "All",
-    readTime: "6 min read",
+    audience: "Students",
+    level: "Clinical",
+    learningObjectives: [
+      "Use developmental milestones as reference points rather than rigid pass-or-fail deadlines.",
+      "Assess movement quality, symmetry, variability and participation alongside milestone timing.",
+      "Recognize developmental patterns that should trigger broader neurological or pediatric assessment.",
+      "Explain why standardized assessment tools are more informative than milestone age alone.",
+    ],
+    references: [
+      {
+        title: "Early Detection of Cerebral Palsy Care Pathway",
+        organization: "American Academy for Cerebral Palsy and Developmental Medicine",
+        url: "https://www.aacpdm.org/publications/care-pathways/early-detection-of-cerebral-palsy",
+      },
+      {
+        title: "Developmental Milestones",
+        organization: "Centers for Disease Control and Prevention",
+        url: "https://www.cdc.gov/ncbddd/actearly/milestones/index.html",
+      },
+    ],
+    readTime: "13 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "Milestones are a pattern, not a race",
+        heading: "1. A milestone is a reference point, not the whole examination",
         paragraphs: [
-          "Children develop at different rates. Milestones help clinicians observe the sequence and quality of emerging skills, but a single late milestone does not automatically mean that a child has a disorder.",
+          "Developmental milestones help clinicians describe when common skills tend to emerge, but they should not be used as a rigid race between children. A child can reach a skill later than another child and still show a healthy developmental pattern, while another child may achieve a milestone on time but use a persistently asymmetric or inefficient strategy that deserves attention.",
+          "The physiotherapist therefore asks two questions: has the skill emerged, and how is the child performing it?",
         ],
       },
       {
-        heading: "What physiotherapists observe",
+        heading: "2. Observe the quality of movement",
         bullets: [
-          "Head and trunk control.",
-          "Rolling and transitional movements.",
-          "Sitting balance.",
-          "Crawling or other floor mobility.",
-          "Standing and walking.",
-          "Symmetry, movement quality and use of both sides of the body.",
+          "Symmetry: does the child consistently use one side differently from the other?",
+          "Variability: can the child solve a movement task in more than one way?",
+          "Postural control: how are head, trunk and pelvis organized during movement?",
+          "Selective control: can the child move one body segment without excessive mass-pattern movement?",
+          "Transitions: how does the child move between lying, sitting, kneeling, standing and walking?",
+          "Participation: does the movement limitation actually restrict play, exploration or family routines?",
         ],
       },
       {
-        heading: "When broader assessment is useful",
+        heading: "3. Build the developmental history",
         paragraphs: [
-          "A child may need closer assessment when there is clear loss of previously acquired skills, persistent asymmetry, unusual stiffness or floppiness, major difficulty with age-expected mobility, or concerns raised by caregivers or the healthcare team.",
+          "Ask about pregnancy and birth history, prematurity, neonatal complications, feeding, vision and hearing concerns, previous developmental progress, regression, family observations and the child's opportunity to move and play.",
+          "Corrected age is important when interpreting early development in children born preterm. The clinical picture should also consider medical and environmental factors rather than assigning every delay to a neuromotor disorder.",
+        ],
+      },
+      {
+        heading: "4. Red flags are patterns, not a single late skill",
+        paragraphs: [
+          "Loss of an acquired skill is more concerning than simply acquiring a new skill later than expected. Persistent marked asymmetry, unusual stiffness or floppiness, poor head control beyond the expected developmental window, early strong hand preference, abnormal movement repertoire or a cluster of delays may justify further assessment.",
+          "Parental concern should be taken seriously. Families observe the child across many more hours and contexts than the clinician sees in one appointment.",
+        ],
+      },
+      {
+        heading: "5. When cerebral palsy is a concern",
+        paragraphs: [
+          "For infants at risk of cerebral palsy, specialist pathways combine neurological examination with validated tools rather than waiting for a traditional milestone delay to become obvious. The AACPDM early-detection pathway highlights combinations of General Movements Assessment, neuroimaging and age-appropriate standardized motor assessment in high-risk infants.",
+          "The important clinical lesson is that early detection should be active and evidence-based. 'Wait and see' is not a neutral strategy when a high-risk pattern is already present.",
+        ],
+      },
+      {
+        heading: "6. Standardized measures add structure",
+        paragraphs: [
+          "A standardized tool helps document motor ability, compare performance over time and communicate findings with the wider team. The choice depends on age, diagnosis, clinical setting and the question being asked.",
+          "The score is useful, but the therapist should still document how the child performs the task, what assistance is needed and whether the change is meaningful in daily life.",
+        ],
+      },
+      {
+        heading: "7. Treatment should target participation, not a milestone chart",
+        paragraphs: [
+          "Therapy is more meaningful when it helps the child access play, mobility, family routines and age-appropriate participation. Practice can be embedded into transitions, reaching, floor mobility, standing, walking and play rather than delivered as isolated exercises only.",
+          "Parent coaching is central: a short clinic session cannot replace the learning opportunities available throughout the child's normal day.",
+        ],
+      },
+      {
+        heading: "8. Clinical reasoning example",
+        paragraphs: [
+          "A 10-month-old child is not yet crawling. If the child moves around efficiently by bottom-shuffling, uses both sides symmetrically, transitions independently, has good trunk control and continues to gain skills, the absence of crawling alone may be less concerning.",
+          "If the same child shows persistent unilateral fisting, clear asymmetry, poor sitting reactions and little developmental progression, the reasoning changes. The concern comes from the pattern, not from the single missing milestone.",
+        ],
+      },
+      {
+        heading: "9. Common mistakes",
+        bullets: [
+          "Treating milestone tables as diagnostic tests.",
+          "Ignoring corrected age in premature infants.",
+          "Focusing on skill timing while missing abnormal movement quality.",
+          "Waiting for severe delay before acting on a high-risk neurological pattern.",
+          "Designing therapy around isolated exercises without family goals or play.",
         ],
       },
       {
         heading: "Clinical takeaway",
         paragraphs: [
-          "Pediatric assessment looks beyond the age at which a skill appears. Movement quality, symmetry, environment, participation and the child's overall development are equally important.",
+          "Pediatric physiotherapy assessment combines milestone timing with movement quality, symmetry, standardized assessment, developmental history and participation. The strongest clinical reasoning comes from recognizing patterns over time, not checking a single box.",
         ],
       },
     ],
@@ -527,41 +671,116 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "return-to-sport-after-injury",
     specialty: "Sports",
-    title: "Return to Sport After Injury: More Than Being Pain-Free",
+    title: "Return to Sport After Injury: A Criterion-Based Decision Process",
     excerpt:
-      "Returning to sport should combine symptom control, strength, capacity, sport-specific testing and confidence rather than relying on time alone.",
+      "Return to sport is a continuum from participation to full performance. Learn how symptoms, capacity, sport demands, psychology and risk are combined in a defensible clinical decision.",
     category: "Return to Sport",
-    audience: "All",
-    readTime: "7 min read",
+    audience: "Students",
+    level: "Advanced",
+    learningObjectives: [
+      "Describe return to participation, return to sport and return to performance as different stages.",
+      "Build a return-to-sport plan around criteria rather than time alone.",
+      "Match rehabilitation testing to the actual physical and psychological demands of the sport.",
+      "Recognize why shared decision-making and risk tolerance matter at the final stages of rehabilitation.",
+    ],
+    references: [
+      {
+        title: "2016 Consensus statement on return to sport from the First World Congress in Sports Physical Therapy, Bern",
+        organization: "British Journal of Sports Medicine",
+        year: "2016",
+        url: "https://bjsm.bmj.com/content/50/14/853",
+      },
+    ],
+    readTime: "14 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "Pain-free is not the finish line",
+        heading: "1. Return to sport is a continuum",
         paragraphs: [
-          "An athlete may feel much better before strength, power, endurance and movement capacity have fully recovered. Return-to-sport decisions should therefore consider function as well as symptoms.",
+          "The Bern consensus describes return to sport as a process rather than a single clearance moment. A useful framework separates return to participation, return to sport and return to performance.",
+          "An athlete may be back in modified training but not ready for unrestricted competition. Another may have returned to competition but still be below pre-injury performance. Calling both situations simply 'returned' hides clinically important differences.",
         ],
       },
       {
-        heading: "Key areas to check",
+        heading: "2. Start by defining the destination",
+        paragraphs: [
+          "Return criteria depend on the actual sport, position, level and role. A recreational runner, a football winger and a competitive powerlifter do not require the same capacity even if they share the same diagnosis.",
+          "Before testing readiness, define what successful return means for this athlete: full training, match minutes, unrestricted cutting, sprinting, throwing volume, competition performance or another specific goal.",
+        ],
+      },
+      {
+        heading: "3. Time is context, not the only criterion",
+        paragraphs: [
+          "Biological healing time matters, but time alone does not prove readiness. The athlete may still have deficits in strength, power, endurance, reactive control, confidence or sport-specific load tolerance.",
+          "The opposite is also true: passing one functional test early does not overrule tissue-healing constraints or medical restrictions. Return decisions combine time, biology, capacity and context.",
+        ],
+      },
+      {
+        heading: "4. Build a demand profile",
         bullets: [
-          "Range of motion relevant to the sport.",
-          "Strength and power.",
-          "Balance and control.",
-          "Running, jumping, cutting or throwing demands when relevant.",
-          "Tolerance to repeated training loads.",
-          "Confidence and readiness to perform.",
+          "What are the peak running, sprinting or change-of-direction demands?",
+          "Does the sport require jumping, landing, tackling, throwing or contact?",
+          "How long must high performance be repeated before fatigue changes technique?",
+          "What is the athlete's position-specific workload?",
+          "What environmental or competition factors increase risk?",
         ],
       },
       {
-        heading: "Build exposure gradually",
+        heading: "5. Test the qualities that matter",
         paragraphs: [
-          "A useful progression is to move from rehabilitation exercise to controlled sport drills, then partial training, full training and finally competition. Each stage should be tolerated before the next one is added.",
+          "Range of motion, strength and simple hop tests can be useful, but the test battery should reflect the sport. A low-demand test should not be used to justify return to a high-demand environment.",
+          "Where relevant, assess strength, rate of force development, hop or jump performance, running exposure, deceleration, cutting, repeated efforts, fatigue response and sport-specific skill. Interpretation should include movement strategy and symptoms, not only a percentage score.",
         ],
       },
       {
-        heading: "Clinical takeaway",
+        heading: "6. Exposure progression",
         paragraphs: [
-          "Return to sport is a process rather than a single test. Time, symptoms, objective capacity and sport-specific demands should all be considered together.",
+          "A practical progression often moves from rehabilitation exercise to controlled sport drills, then modified training, full training and competition. The athlete should tolerate each stage before the next stage is added.",
+          "Load can be progressed through volume, intensity, speed, complexity, unpredictability, contact and fatigue. Increasing all of these simultaneously removes the ability to identify which demand exceeded capacity.",
+        ],
+      },
+      {
+        heading: "7. Psychological readiness is part of readiness",
+        paragraphs: [
+          "Fear of reinjury, low confidence and hesitation can alter movement and participation. Psychological readiness should be discussed openly rather than assumed from physical test scores.",
+          "Graded exposure to feared but necessary sport tasks can be integrated into rehabilitation while preserving safety and objective progression.",
+        ],
+      },
+      {
+        heading: "8. Shared decision-making and risk tolerance",
+        paragraphs: [
+          "Return-to-sport decisions involve the athlete, clinicians and relevant performance staff. Different stakeholders may tolerate different levels of risk, especially when competition pressure is high.",
+          "The clinician's role is to make the known risks and uncertainties explicit, document the athlete's current capacity and protect health when participation would be unsafe.",
+        ],
+      },
+      {
+        heading: "9. Example progression",
+        bullets: [
+          "Stage 1: pain and swelling controlled; restore basic range and strength.",
+          "Stage 2: rebuild force capacity and general conditioning.",
+          "Stage 3: introduce running, jumping or sport-specific patterns.",
+          "Stage 4: increase speed, reactive demand and repeated efforts.",
+          "Stage 5: modified team or sport training.",
+          "Stage 6: unrestricted training with adequate recovery.",
+          "Stage 7: competition exposure and return-to-performance monitoring.",
+        ],
+      },
+      {
+        heading: "10. Common mistakes",
+        bullets: [
+          "Clearing an athlete because the calendar date has arrived.",
+          "Using one test as a universal pass/fail decision.",
+          "Ignoring fatigue and repeated-effort capacity.",
+          "Skipping the transition through training before competition.",
+          "Ignoring confidence, fear and athlete preference.",
+          "Failing to document the specific sport demands used to justify clearance.",
+        ],
+      },
+      {
+        heading: "Advanced takeaway",
+        paragraphs: [
+          "A defensible return-to-sport decision is criterion-based, sport-specific and shared. The question is not 'Is the injury healed?' but 'Does the athlete currently have enough biological, physical and psychological capacity for the demands and risk of the next stage?'",
         ],
       },
     ],
@@ -687,42 +906,137 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "progressive-overload-in-rehabilitation",
     specialty: "Exercise & Rehabilitation",
-    title: "Progressive Overload in Rehabilitation: How to Progress Exercise Safely",
+    title: "Progressive Overload in Rehabilitation: Dose, Adaptation and Clinical Progression",
     excerpt:
-      "Rehabilitation improves when the body is challenged enough to adapt, then given time to recover. Progression should be planned, not random.",
+      "A clinical guide to choosing load, reps, sets, frequency and progression using goals, RPE/RIR, tissue response and the difference between strength, hypertrophy, power and endurance.",
     category: "Exercise Prescription",
     audience: "Students",
-    readTime: "6 min read",
+    level: "Advanced",
+    learningObjectives: [
+      "Explain progressive overload as a principle of adaptation rather than simply adding weight.",
+      "Match resistance-training variables to strength, hypertrophy, power, endurance and functional goals.",
+      "Use RPE, repetitions in reserve and symptom response to individualize load when percentage-based prescription is impractical.",
+      "Progress or regress exercise without changing multiple variables blindly.",
+    ],
+    references: [
+      {
+        title: "Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults",
+        organization: "American College of Sports Medicine",
+        year: "2026",
+        url: "https://acsm.org/resistance-training-guidelines-update-2026/",
+      },
+      {
+        title: "5 Things to Know About Creating an Effective Resistance Training Plan",
+        organization: "American College of Sports Medicine",
+        year: "2026",
+        url: "https://acsm.org/effective-resistance-training-program-infographic/",
+      },
+    ],
+    readTime: "15 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "The basic idea",
+        heading: "1. Progressive overload is an adaptation principle",
         paragraphs: [
-          "Progressive overload means gradually increasing the challenge placed on the body so that strength, endurance, mobility or skill can continue to improve.",
+          "The body adapts when training demand is high enough to challenge current capacity and recovery is sufficient. Once the same task becomes easy, the training stimulus may no longer be large enough to continue producing the desired adaptation.",
+          "Overload does not mean 'add weight every session'. It means progressively increasing the relevant demand: force, volume, speed, range, duration, complexity, frequency or task specificity.",
         ],
       },
       {
-        heading: "Ways to progress an exercise",
+        heading: "2. Start with the goal: what are you trying to adapt?",
+        paragraphs: [
+          "A strength programme, an endurance programme and a power programme may use the same exercise with very different prescriptions. The clinical mistake is choosing sets and reps from habit rather than from the patient's goal.",
+        ],
         bullets: [
-          "Increase resistance.",
-          "Increase repetitions or sets.",
-          "Increase range of motion.",
-          "Increase time under tension.",
-          "Increase speed or power when appropriate.",
-          "Reduce external support.",
-          "Make the task more specific to the person's goal.",
+          "Strength: prioritize the ability to produce high force.",
+          "Hypertrophy: prioritize sufficient weekly training volume and effort.",
+          "Power: develop force quickly, using appropriate loads and high movement intent.",
+          "Muscular endurance: improve repeated-force capacity over time.",
+          "Functional rehabilitation: transfer the gained capacity into the task the patient actually needs.",
         ],
       },
       {
-        heading: "Progress one variable at a time",
+        heading: "3. What current ACSM guidance adds",
         paragraphs: [
-          "Changing several variables at once makes it harder to know what caused a flare-up or improvement. Small planned changes make exercise response easier to monitor.",
+          "The 2026 ACSM position stand emphasizes that consistent resistance training matters more than complicated programming for most healthy adults. It also reinforces goal-specific prescription rather than a one-size-fits-all routine.",
+          "For healthy adults, ACSM highlights heavier loading for maximal strength, greater weekly volume for hypertrophy, and moderate loads moved with high concentric intent for power. Rehabilitation populations may need modified starting points based on pathology, irritability, surgery, age, comorbidity and current capacity.",
         ],
       },
       {
-        heading: "Use response to guide the next dose",
+        heading: "4. RPE and repetitions in reserve",
         paragraphs: [
-          "Exercise should be challenging enough to create adaptation but not so aggressive that recovery becomes difficult. Symptoms during and after training, movement quality and performance can all help guide progression.",
+          "Percentage of one-repetition maximum can be useful, but it is not always practical in clinical rehabilitation. Rating of perceived exertion and repetitions in reserve provide flexible ways to judge how difficult a set was.",
+          "If a patient completes a set and could comfortably perform many more repetitions, the load may be too low for a strength-focused goal. If every set reaches uncontrolled technique or complete failure, the programme may be unnecessarily fatiguing.",
+        ],
+      },
+      {
+        heading: "5. The progression toolbox",
+        bullets: [
+          "Resistance: increase external load.",
+          "Volume: increase repetitions or sets.",
+          "Range: train through a greater safe range of motion.",
+          "Tempo: alter time under tension or movement speed.",
+          "Frequency: add another weekly exposure when recovery allows.",
+          "Support: reduce hand support or external assistance.",
+          "Stability demand: change base of support only when it serves the goal.",
+          "Velocity: increase movement speed when power or sport demand requires it.",
+          "Specificity: make the task look more like the patient's real activity.",
+        ],
+      },
+      {
+        heading: "6. Change one important variable, then observe",
+        paragraphs: [
+          "Changing load, sets, frequency and range at the same time can turn progression into guesswork. A more clinical approach is to change one major variable, observe performance and recovery, then decide whether the next exposure should progress, stay the same or regress.",
+          "This is especially useful in painful or post-operative rehabilitation, where the response over the next day or two may be as informative as the response during the session.",
+        ],
+      },
+      {
+        heading: "7. Symptom response: pain is information, not an automatic stop signal",
+        paragraphs: [
+          "Some rehabilitation programmes allow mild, tolerable symptoms during exercise, while others require stricter protection because of tissue healing or medical risk. The acceptable response therefore depends on diagnosis, stage, irritability and the treating team's precautions.",
+          "A useful reasoning framework is to monitor symptom intensity, movement quality, whether symptoms settle after the exercise, and whether function is worse at the next meaningful time point. Persistent escalation suggests the dose needs review.",
+        ],
+      },
+      {
+        heading: "8. Progression example: knee extensor weakness",
+        paragraphs: [
+          "Suppose a patient can perform three sets of 10 sit-to-stands from a high chair with good control and low effort. Instead of immediately adding many more repetitions, the therapist might lower the chair slightly or add external resistance if the goal is strength.",
+          "If the same patient cannot maintain knee control after six repetitions, adding load is not the next step. The current task may need fewer repetitions, more rest or a simpler starting position so useful force can be produced with quality.",
+        ],
+      },
+      {
+        heading: "9. Regression is not failure",
+        bullets: [
+          "Reduce load when technique deteriorates.",
+          "Reduce range when the current range exceeds tissue tolerance.",
+          "Increase external support when balance limits the target muscle stimulus.",
+          "Reduce volume during symptom flare or inadequate recovery.",
+          "Use intervals or shorter bouts when endurance limits quality.",
+        ],
+      },
+      {
+        heading: "10. Common mistakes",
+        bullets: [
+          "Using 3 × 10 for every goal and every patient.",
+          "Progressing because the calendar changed rather than because capacity changed.",
+          "Confusing instability with useful overload.",
+          "Chasing fatigue instead of the target adaptation.",
+          "Ignoring sleep, recovery, nutrition, disease status or total weekly load.",
+          "Stopping progression indefinitely because the patient once had pain.",
+        ],
+      },
+      {
+        heading: "11. Clinical decision rule",
+        paragraphs: [
+          "Ask four questions after each training block: Was the target tissue or task challenged? Was technique acceptable? Was the response tolerable during and after the session? Has performance improved enough that the same dose is no longer challenging?",
+          "If the answer to the first three is yes and the fourth shows adaptation, progression is reasonable. If quality or recovery is poor, hold or regress before adding more demand.",
+        ],
+      },
+      {
+        heading: "Advanced takeaway",
+        paragraphs: [
+          "Progressive overload is not a recipe. It is a feedback loop: define the adaptation, choose a measurable dose, observe performance and recovery, then adjust one meaningful variable. That is what turns exercise prescription into clinical reasoning.",
         ],
       },
     ],
