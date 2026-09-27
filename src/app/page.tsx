@@ -453,30 +453,6 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section className="section-padding">
-        <div className="container-content grid gap-6 rounded-2xl border border-grey-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-[auto_1fr_auto] lg:items-center">
-          <Image
-            src={siteConfig.founder.photo}
-            alt={siteConfig.founder.name}
-            width={96}
-            height={96}
-            className="h-20 w-20 rounded-full object-cover"
-          />
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-600">About PNA</p>
-            <h2 className="mt-1 text-xl font-bold text-navy-800">
-              Led by {siteConfig.founder.name}
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-500">
-              Physio Nexus Academy focuses on practical physiotherapy education, professional development and accessible patient-care pathways.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button href="/about" variant="outline">About PNA</Button>
-            <Button href="/founder" variant="secondary">Founder Profile</Button>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
