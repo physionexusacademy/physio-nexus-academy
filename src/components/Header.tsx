@@ -107,7 +107,7 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-4 lg:flex" aria-label="Main navigation">
           {mainNav.filter((item) => item.href !== "/").map((item) => (
             <Link
               key={item.href}
@@ -123,7 +123,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <Button href="/appointment" variant="outline" size="md">
             <Calendar className="h-4 w-4" /> Book Appointment
           </Button>
