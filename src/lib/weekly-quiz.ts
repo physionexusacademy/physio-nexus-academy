@@ -9,8 +9,8 @@ export type WeeklyQuizQuestion = {
 export const currentQuiz = {
   id: "pna-weekly-001",
   title: "Weekly Clinical Challenge #1",
-  subtitle: "5 questions · 30 seconds total",
-  timeLimitSeconds: 30,
+  subtitle: "5 questions · 30 seconds per question",
+  timePerQuestionSeconds: 30,
   questions: [
     {
       id: "q1",
