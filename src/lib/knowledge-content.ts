@@ -250,38 +250,120 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "central-sensitization-explained",
     specialty: "Pain Science",
-    title: "Central Sensitization: Why Pain Can Become More Sensitive",
+    title: "Central Sensitization and Nociplastic Pain: Clinical Reasoning Beyond 'Pain = Damage'",
     excerpt:
-      "Pain intensity is not always a direct measure of tissue damage. Central sensitization helps explain why the nervous system may become more responsive to sensory input.",
+      "A deeper pain-science lesson on sensitization, nociplastic pain, allodynia, hyperalgesia, clinical inference and how these concepts change rehabilitation planning.",
     category: "Pain Science",
-    audience: "All",
-    readTime: "6 min read",
+    audience: "Students",
+    level: "Advanced",
+    learningObjectives: [
+      "Define sensitization, central sensitization and nociplastic pain using current IASP terminology.",
+      "Explain why clinical signs can suggest sensitization without directly measuring central nervous system neurons.",
+      "Differentiate nociceptive, neuropathic and nociplastic pain mechanisms while recognizing that mixed presentations are common.",
+      "Translate pain-mechanism reasoning into communication, pacing, graded activity and rehabilitation decisions.",
+    ],
+    references: [
+      {
+        title: "IASP Pain Terminology",
+        organization: "International Association for the Study of Pain",
+        url: "https://www.iasp-pain.org/resources/terminology/",
+      },
+      {
+        title: "The concept of nociplastic pain—where to from here?",
+        organization: "International Association for the Study of Pain / PAIN",
+        year: "2024",
+        url: "https://www.iasp-pain.org/publications/pain-research-forum/papers-of-the-week/paper/the-concept-of-nociplastic-pain-where-to-from-here/",
+      },
+    ],
+    readTime: "14 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "Pain is protective, not a damage meter",
+        heading: "1. Start with the language",
         paragraphs: [
-          "Pain is an experience produced by the nervous system when the body interprets threat. Tissue injury can contribute to pain, but pain severity and tissue damage do not always match one-to-one.",
+          "IASP defines sensitization as increased responsiveness of nociceptive neurons to normal input and/or recruitment of a response to normally subthreshold input. Central sensitization specifically refers to increased responsiveness of nociceptive neurons in the central nervous system.",
+          "This distinction matters because central sensitization is a neurophysiological phenomenon. In routine clinical practice, we do not directly measure central nociceptive neuron firing; we infer altered sensitivity from the broader pattern of symptoms and examination findings.",
         ],
       },
       {
-        heading: "What central sensitization means",
+        heading: "2. Nociplastic pain is related, but not identical",
         paragraphs: [
-          "Central sensitization refers to increased responsiveness of neurons in the central nervous system to sensory input. In clinical pain discussions, the term is used to help explain features such as disproportionate sensitivity, pain spreading beyond the original area or pain provoked by normally less-painful stimuli.",
+          "Nociplastic pain is a mechanistic descriptor for pain arising from altered nociception when the presentation is not adequately explained by clear tissue damage activating peripheral nociceptors or by a lesion/disease of the somatosensory system.",
+          "A person can have mixed mechanisms. For example, osteoarthritis-related nociceptive input may coexist with widespread hypersensitivity and sleep disturbance. Avoid forcing every patient into a single mechanism box.",
         ],
       },
       {
-        heading: "What it does not mean",
+        heading: "3. Clinical features that may raise suspicion",
         bullets: [
-          "It does not mean the pain is imaginary.",
-          "It does not mean every persistent pain problem is caused by central sensitization.",
-          "It does not replace a proper assessment for tissue injury, neurological disease or other pathology.",
+          "Pain distribution broader than a single local tissue pattern.",
+          "Allodynia: pain in response to normally non-painful stimuli.",
+          "Hyperalgesia: an exaggerated response to a painful stimulus.",
+          "Symptoms disproportionate to the expected local tissue behaviour.",
+          "Multiple areas of pain or variable symptom distribution.",
+          "Poor sleep, fatigue, cognitive symptoms or heightened sensitivity to other sensory inputs in some patients.",
         ],
       },
       {
-        heading: "Why it matters in rehabilitation",
+        heading: "4. What these signs do not prove",
         paragraphs: [
-          "When pain sensitivity is high, rehabilitation may need to combine education, graded activity, sleep and lifestyle support, pacing and progressive exercise rather than relying only on a local tissue treatment.",
+          "Tenderness, widespread pain or a high pain score does not by itself prove central sensitization. Fear, poor sleep, acute inflammation, neuropathic pain, systemic illness and other factors can also alter sensitivity and behaviour.",
+          "The reasoning must remain differential: first ask whether there is a specific pathology, neurological lesion, inflammatory disorder or other condition that better explains the presentation.",
+        ],
+      },
+      {
+        heading: "5. Why pain intensity can exceed apparent tissue damage",
+        paragraphs: [
+          "Pain is influenced by nociceptive input, previous experience, threat, attention, context, sleep, mood and the state of the nervous system. This does not make pain 'psychological' or imaginary. It means pain is a protective output shaped by multiple systems.",
+          "This also explains why imaging severity and pain severity often do not map perfectly to each other. Imaging findings can still matter, but they should be interpreted in the context of history, examination and function.",
+        ],
+      },
+      {
+        heading: "6. Assessment: think pattern, not one special test",
+        bullets: [
+          "Map the pain distribution and variability.",
+          "Ask about sleep, fatigue, activity tolerance and recovery.",
+          "Screen neurological signs when neuropathic mechanisms are possible.",
+          "Look for local nociceptive drivers that may still be modifiable.",
+          "Assess fear, avoidance and confidence where relevant.",
+          "Track function and participation, not only pain intensity.",
+        ],
+      },
+      {
+        heading: "7. Rehabilitation implications",
+        paragraphs: [
+          "When sensitivity is high, aggressive tissue-focused treatment can become counterproductive if it repeatedly confirms the message that the body is fragile. Rehabilitation often works better when it combines understandable pain education, graded activity, exercise, pacing and restoration of valued function.",
+          "This does not mean ignoring local tissue impairments. Strength, mobility and conditioning still matter; the difference is that the plan is framed around improving capacity and reducing threat rather than repeatedly searching for a single painful structure.",
+        ],
+      },
+      {
+        heading: "8. Graded activity is not 'do less forever'",
+        paragraphs: [
+          "Pacing is useful when it creates a repeatable baseline from which activity can gradually expand. The goal is not permanent avoidance of symptoms, but a controlled return to meaningful activity with enough recovery to permit progression.",
+          "A flare does not automatically mean damage occurred. The therapist should examine whether the progression was too large, recovery was inadequate, another stressor changed the response or a different pathology needs reconsideration.",
+        ],
+      },
+      {
+        heading: "9. Communication matters",
+        bullets: [
+          "Validate the pain experience without equating pain intensity with tissue destruction.",
+          "Avoid language such as 'your spine is worn out' or 'your nervous system is broken'.",
+          "Explain that sensitivity can change and capacity can be retrained.",
+          "Use the patient's own goals to guide progression.",
+          "Be clear when uncertainty exists rather than inventing a structural explanation.",
+        ],
+      },
+      {
+        heading: "10. Clinical reasoning example",
+        paragraphs: [
+          "A patient with persistent low-back pain reports pain spreading to multiple regions, sensitivity to light pressure, poor sleep, fatigue and avoidance of activity after repeated reassurance that imaging shows no dangerous pathology. A purely local manual-therapy strategy may miss the larger problem.",
+          "A stronger plan may combine graded strengthening and walking exposure, sleep and activity education, confidence-building, symptom monitoring and treatment of any specific local impairments that remain relevant.",
+        ],
+      },
+      {
+        heading: "Advanced takeaway",
+        paragraphs: [
+          "Central sensitization is a neurophysiological concept inferred clinically, while nociplastic pain is a pain-mechanism descriptor. The practical value of both concepts is not in labelling the patient; it is in recognizing when a narrow tissue-only model fails to explain the presentation and when rehabilitation needs to target sensitivity, capacity, behaviour and function together.",
         ],
       },
     ],
@@ -289,45 +371,128 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "sciatica-red-flags-when-to-seek-care",
     specialty: "Musculoskeletal (MSK)",
-    title: "Sciatica and Back Pain: Red Flags That Need Urgent Assessment",
+    title: "Low Back Pain and Sciatica: Assessment, Red Flags and Evidence-Informed Management",
     excerpt:
-      "Most back and leg pain is not an emergency, but certain symptoms need prompt medical assessment. Learn the major warning signs in simple language.",
-    category: "Patient Education",
-    audience: "Patients",
-    readTime: "5 min read",
+      "A clinical guide to differentiating uncomplicated low-back pain and radicular symptoms from serious pathology, deciding when imaging matters, and planning evidence-informed rehabilitation.",
+    category: "Spine & Radicular Pain",
+    audience: "Students",
+    level: "Clinical",
+    learningObjectives: [
+      "Separate common low-back pain and sciatica presentations from features suggesting serious pathology.",
+      "Explain why routine imaging is usually unnecessary in non-specialist care.",
+      "Use history, neurological examination and function to guide referral and rehabilitation.",
+      "Describe the role of self-management, exercise, manual therapy and psychosocial factors in evidence-informed care.",
+    ],
+    references: [
+      {
+        title: "Low back pain and sciatica in over 16s: assessment and management (NG59)",
+        organization: "NICE",
+        url: "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      },
+      {
+        title: "Suspected neurological conditions: recognition and referral (NG127)",
+        organization: "NICE",
+        url: "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      },
+    ],
+    readTime: "14 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "Most cases are not emergencies",
+        heading: "1. First decide whether this is a routine MSK presentation",
         paragraphs: [
-          "Back pain with leg symptoms can occur for many reasons. Many presentations improve with appropriate conservative care, but a small number of symptoms can signal a condition that needs urgent medical assessment.",
+          "Most episodes of low-back pain are not caused by dangerous pathology. The first job is therefore not to identify the exact painful spinal structure; it is to decide whether the presentation fits common mechanical or radicular pain, or whether features suggest infection, fracture, cancer, inflammatory disease or serious neurological compromise.",
+          "This triage decision changes everything: a routine rehabilitation plan is appropriate only after important red flags have been considered in context.",
         ],
       },
       {
-        heading: "Seek urgent medical care if back or leg pain is accompanied by",
+        heading: "2. Sciatica is a symptom pattern, not an imaging diagnosis",
+        paragraphs: [
+          "Sciatica usually refers to leg pain related to irritation or compromise of a lumbosacral nerve root. Symptoms may include radiating pain, paraesthesia, sensory change, weakness or altered reflexes.",
+          "The clinical picture should be built from symptom distribution and neurological examination. Imaging findings such as disc bulges are common and should not automatically be assumed to explain the patient's symptoms.",
+        ],
+      },
+      {
+        heading: "3. Red flags that need urgent thinking",
         bullets: [
-          "New difficulty starting or controlling urination or bowel movements.",
-          "New numbness around the groin, inner thighs or saddle area.",
-          "Rapidly worsening weakness in one or both legs.",
-          "Major trauma, especially in an older adult or someone with known bone fragility.",
-          "Fever or marked systemic illness with severe back pain.",
+          "New bladder or bowel dysfunction with back/leg symptoms.",
+          "New saddle or perineal sensory disturbance.",
+          "Rapidly progressive or severe neurological weakness.",
+          "Major trauma or fracture risk, including bone fragility.",
+          "History or features raising concern for malignancy, infection or systemic disease.",
+          "Constitutional illness, fever or unexplained deterioration when clinically relevant.",
         ],
       },
       {
-        heading: "Why these symptoms matter",
+        heading: "4. Cauda equina pattern: do not manage as routine physiotherapy",
         paragraphs: [
-          "Some combinations of bladder, bowel, saddle-sensation and neurological symptoms can be associated with serious compression of the nerves in the lower spine. These presentations should not be managed only with home exercises or routine physiotherapy advice.",
+          "The combination of severe low-back or leg symptoms with new bladder, bowel or sexual dysfunction and/or perineal numbness requires immediate assessment through an appropriate emergency pathway. The physiotherapist's role is recognition and escalation, not trialling a routine exercise programme first.",
         ],
       },
       {
-        heading: "What to do",
+        heading: "5. Neurological examination",
+        bullets: [
+          "Myotomal strength relevant to the suspected nerve root.",
+          "Dermatomal or clinically meaningful sensory testing.",
+          "Reflexes where appropriate.",
+          "Neural mechanosensitivity tests interpreted alongside the rest of the examination.",
+          "Walking, heel/toe function and functional weakness.",
+          "Change over time: stable mild deficit is different from rapidly progressive weakness.",
+        ],
+      },
+      {
+        heading: "6. Imaging: ask whether the result will change management",
         paragraphs: [
-          "If any major red-flag symptom is new or worsening, seek urgent in-person medical assessment. For non-urgent back or leg pain, a physiotherapist can assess movement, neurological signs, function and appropriate rehabilitation options.",
+          "NICE advises against routine imaging in non-specialist settings for low-back pain with or without sciatica. Imaging is more useful when serious pathology is suspected or when a specialist decision depends on the result.",
+          "A scan can identify anatomy, but it does not replace clinical reasoning. The key question is not 'Can we see a disc change?' but 'Does the imaging finding fit the symptoms and alter the treatment pathway?'",
+        ],
+      },
+      {
+        heading: "7. Self-management and activity",
+        paragraphs: [
+          "Education should support continued normal activity as far as possible, reduce unnecessary fear and explain the expected course. Prolonged avoidance can contribute to deconditioning and loss of confidence.",
+          "Exercise should be selected according to the person's needs, preferences and capabilities rather than because one universal exercise is believed to 'put the disc back'.",
+        ],
+      },
+      {
+        heading: "8. Manual therapy: an adjunct, not the entire plan",
+        paragraphs: [
+          "NICE allows manual therapy as part of a package that includes exercise, with or without a psychological approach. That wording is important: passive treatment should not replace active rehabilitation, education and restoration of function.",
+        ],
+      },
+      {
+        heading: "9. Psychosocial obstacles can change recovery",
+        paragraphs: [
+          "Fear of movement, low confidence, catastrophizing, work concerns and previous failed treatment can influence disability and recovery. These factors do not make the pain imaginary; they are part of the clinical context and may justify a combined physical and psychologically informed rehabilitation approach.",
+        ],
+      },
+      {
+        heading: "10. Clinical reasoning example",
+        paragraphs: [
+          "A patient with unilateral leg pain, reduced ankle reflex and sensory change that fit a nerve-root pattern but no progressive weakness or bladder/bowel symptoms may be managed conservatively with education, activity and individualized exercise while monitoring neurological status.",
+          "A second patient with similar pain but new urinary difficulty and saddle numbness belongs on an urgent referral pathway. The leg-pain label is the same, but the management is completely different because the risk profile is different.",
+        ],
+      },
+      {
+        heading: "11. Common mistakes",
+        bullets: [
+          "Ordering imaging simply because pain is severe.",
+          "Using one positive neural tension test as the diagnosis.",
+          "Ignoring progression of weakness.",
+          "Giving bed rest or excessive activity restriction without a clear reason.",
+          "Using passive treatment indefinitely without functional progression.",
+          "Missing psychosocial barriers that are maintaining disability.",
+        ],
+      },
+      {
+        heading: "Clinical takeaway",
+        paragraphs: [
+          "Good spine care begins with triage, then neurological and functional reasoning, then an active management plan. The therapist should know what would make them continue conservative care, what would make them modify it and what would make them urgently escalate.",
         ],
       },
     ],
   },
-
   {
     slug: "stroke-rehabilitation-principles",
     specialty: "Neurological",
@@ -788,16 +953,17 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "falls-risk-older-adults-physiotherapy",
     specialty: "Geriatrics",
-    title: "Falls in Older Adults: What Physiotherapy Assessment Should Look For",
+    title: "Falls in Older Adults: Assessment, Risk Stratification and Physiotherapy Management",
     excerpt:
-      "Falls are usually multifactorial. A good assessment considers strength, balance, gait, environment, vision, medications and confidence.",
+      "A multifactorial, advanced guide to fall-risk assessment, balance and gait testing, progressive exercise, environmental contributors, confidence and clinical escalation.",
     category: "Falls Prevention",
-    audience: "All",
+    audience: "Students",
     level: "Advanced",
     learningObjectives: [
-      "Use a multifactorial model rather than a single balance test to think about falls.",
-      "Connect examination findings to individualized fall-prevention intervention.",
-      "Recognize the role of progressive balance and strength training within broader risk management.",
+      "Use a multifactorial model rather than a single balance test to assess fall risk.",
+      "Connect examination findings to individualized balance, strength, gait and environmental interventions.",
+      "Recognize when medication, cardiovascular, neurological or visual contributors require wider-team input.",
+      "Design progression that challenges balance safely instead of prescribing generic low-level exercise.",
     ],
     references: [
       {
@@ -806,38 +972,100 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         year: "2025",
         url: "https://www.apta.org/patient-care/evidence-based-practice-resources/cpgs/physical-therapy-management-of-fall-risk-in-community-dwelling-older-adults",
       },
+      {
+        title: "Physical activity and sedentary behaviour: a brief to support older people",
+        organization: "World Health Organization",
+        year: "2022",
+        url: "https://www.who.int/publications/b/67181",
+      },
     ],
-    readTime: "9 min read",
+    readTime: "14 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "Falls rarely have one cause",
+        heading: "1. A fall is an event; fall risk is a system problem",
         paragraphs: [
-          "A fall can reflect a combination of reduced strength, impaired balance, slower reactions, unsafe footwear, environmental hazards, visual problems, medication effects or acute illness.",
+          "Falls often emerge from several interacting factors: lower-limb weakness, impaired balance reactions, gait variability, reduced vision, medication effects, footwear, environmental hazards, fear, cognition or acute illness.",
+          "Because the causes are multifactorial, one test cannot represent the entire risk profile. The purpose of assessment is to identify modifiable contributors and the situations in which the person is most likely to lose stability.",
         ],
       },
       {
-        heading: "What a physiotherapy screen may include",
+        heading: "2. History is part of the balance assessment",
         bullets: [
-          "Recent falls and near-falls.",
-          "Sit-to-stand ability.",
-          "Walking speed and gait quality.",
-          "Static and dynamic balance.",
-          "Lower-limb strength.",
-          "Use and fit of walking aids.",
-          "Confidence and fear of falling.",
+          "Number of falls and near-falls in the past year.",
+          "Where and when the falls happened.",
+          "What the person was doing immediately before the fall.",
+          "Dizziness, syncope, palpitations or loss of consciousness.",
+          "Use of walking aids and whether they were being used at the time.",
+          "Fear of falling and activity restriction.",
+          "Medication changes, acute illness and visual problems.",
         ],
       },
       {
-        heading: "Intervention principles",
+        heading: "3. Examine the movement system",
         paragraphs: [
-          "Exercise programs commonly emphasize progressive balance training, strengthening and task practice. Home-environment changes and multidisciplinary review may also be needed when non-physical risk factors are present.",
+          "Assessment should sample the capacities needed in daily life: rising from a chair, initiating gait, turning, changing speed, stepping over obstacles, reaching outside the base of support and recovering from perturbation.",
+          "Static standing alone may look good even when the patient becomes unstable during turning or dual-task walking. Testing should therefore reflect the situations in which the patient actually falls or feels unsafe.",
         ],
       },
       {
-        heading: "Clinical takeaway",
+        heading: "4. Outcome measures: choose them for a reason",
+        bullets: [
+          "Timed mobility tests can quantify transfer and walking efficiency.",
+          "Sit-to-stand tests can reflect lower-limb functional strength.",
+          "Walking-speed measures help track mobility change.",
+          "Structured balance scales can document multidimensional balance performance.",
+          "Patient-reported fear or confidence measures can capture avoidance that performance tests miss.",
+        ],
+      },
+      {
+        heading: "5. Balance training must actually challenge balance",
         paragraphs: [
-          "Effective falls prevention is usually individualized. The goal is not only fewer falls, but safer mobility, better confidence and greater participation.",
+          "Exercises that are easy enough to perform automatically may not provide enough stimulus. Balance training can be progressed by narrowing the base of support, reducing hand support, changing surface or visual input, adding reaching or stepping, increasing speed, introducing turns or adding safe dual-task demands.",
+          "Challenge must remain controlled. The therapist should manipulate the difficulty while preserving an environment in which loss of balance can be safely managed.",
+        ],
+      },
+      {
+        heading: "6. Strength and power matter",
+        paragraphs: [
+          "Repeated chair rise, stair control and protective stepping all require lower-limb force. Progressive resistance exercise can therefore be an important component of fall-prevention programmes when weakness is present.",
+          "For some older adults, speed of force production is also relevant because a protective step must occur quickly. Power-oriented progression may be appropriate once a safe strength base and medical suitability are established.",
+        ],
+      },
+      {
+        heading: "7. Walking aids: prescribe and train, do not just hand one over",
+        paragraphs: [
+          "An aid that is the wrong height, poorly sequenced or abandoned indoors may not reduce risk. Check fit, hand placement, turning, thresholds, stairs where relevant and whether the person can use the device under real-life conditions.",
+        ],
+      },
+      {
+        heading: "8. The home and the wider team",
+        paragraphs: [
+          "Loose rugs, poor lighting, cluttered pathways and difficult bathroom transfers may be modifiable. Medication review, vision assessment, cardiovascular review or neurological assessment may also be needed when the history suggests contributors outside physiotherapy.",
+        ],
+      },
+      {
+        heading: "9. Clinical reasoning example",
+        paragraphs: [
+          "An older adult performs well on quiet standing but reports repeated falls when turning quickly at night. The meaningful assessment should therefore include turning, low-light/environmental factors, footwear, urgency, medication and gait under divided attention rather than repeating static balance practice alone.",
+        ],
+      },
+      {
+        heading: "10. Common mistakes",
+        bullets: [
+          "Using one screening score as the entire diagnosis.",
+          "Prescribing balance exercises that never become challenging.",
+          "Ignoring medication, syncope or vision-related contributors.",
+          "Failing to ask about near-falls.",
+          "Focusing on fear reduction without rebuilding physical capacity.",
+          "Progressing unsafely without an appropriate guarding strategy.",
+        ],
+      },
+      {
+        heading: "Advanced takeaway",
+        paragraphs: [
+          "Falls prevention is individualized risk reduction. Assessment should identify why this person falls in this context, and treatment should progressively train the exact capacities that are modifiable while coordinating non-physiotherapy contributors with the wider team.",
         ],
       },
     ],
@@ -845,16 +1073,17 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "pelvic-floor-rehabilitation-basics",
     specialty: "Women's & Pelvic Health",
-    title: "Pelvic Floor Rehabilitation: The Basics",
+    title: "Pelvic Floor Rehabilitation: Assessment, Coordination and Individualized Training",
     excerpt:
-      "Pelvic floor physiotherapy is more than 'Kegels'. Assessment considers strength, relaxation, coordination, symptoms and function.",
+      "A clinical guide to pelvic-floor function, contraction and relaxation, symptom patterns, supervised training, pressure management, progression and common mistakes.",
     category: "Pelvic Health",
-    audience: "All",
+    audience: "Students",
     level: "Clinical",
     learningObjectives: [
-      "Differentiate pelvic floor strengthening from relaxation and coordination needs.",
-      "Understand why assessment should confirm contraction and relaxation ability.",
-      "Relate symptoms and goals to individualized pelvic floor muscle training.",
+      "Explain the roles of the pelvic floor in continence, support, pressure management and sexual function.",
+      "Differentiate weakness from overactivity, poor relaxation and coordination problems.",
+      "Understand why supervised pelvic-floor muscle training begins with assessment of contraction and relaxation.",
+      "Integrate breathing, pressure management and functional progression into rehabilitation.",
     ],
     references: [
       {
@@ -866,39 +1095,89 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       {
         title: "Urinary incontinence and pelvic organ prolapse in women: management (NG123)",
         organization: "NICE",
-        year: "2019, updated",
         url: "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
       },
     ],
-    readTime: "8 min read",
+    readTime: "13 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "What the pelvic floor does",
+        heading: "1. The pelvic floor must contract, relax and coordinate",
         paragraphs: [
-          "The pelvic floor contributes to continence, support of pelvic organs, pressure management and sexual function. It must be able to contract, relax and coordinate with breathing and movement.",
+          "The pelvic floor contributes to continence, pelvic-organ support, pressure management and sexual function. Function depends not only on strength but also on timing, endurance, relaxation and coordination with breathing and trunk activity.",
+          "A patient can therefore have pelvic-floor symptoms despite having muscles that feel 'tight' or strong. The question is not simply whether the muscles can contract; it is whether they can perform the right action at the right time.",
         ],
       },
       {
-        heading: "Why strengthening is not always the answer",
+        heading: "2. Symptoms do not tell you the muscle state automatically",
         paragraphs: [
-          "Some people need strengthening, while others have difficulty relaxing or coordinating the pelvic floor. Treatment should match the assessment rather than automatically prescribing repeated contractions.",
+          "Urinary leakage may reflect weakness or poor timing, but pelvic pain, urgency or difficulty emptying can coexist with overactivity or poor relaxation. Symptoms should guide assessment rather than trigger an automatic strengthening programme.",
         ],
       },
       {
-        heading: "What rehabilitation may include",
+        heading: "3. What assessment is trying to establish",
         bullets: [
-          "Pelvic floor awareness and coordination.",
-          "Breathing and pressure-management strategies.",
-          "Strength or endurance training when indicated.",
-          "Relaxation and down-training when indicated.",
-          "Gradual return to lifting, exercise and daily activity.",
+          "Can the patient identify and perform a pelvic-floor contraction?",
+          "Can the patient fully relax after contraction?",
+          "Is there pain, guarding or breath-holding?",
+          "How is endurance across repeated contractions?",
+          "Does coughing, lifting or impact reveal a timing problem?",
+          "Are bowel, bladder, prolapse, sexual or pain symptoms present?",
+          "What functional activities matter most to the patient?",
+        ],
+      },
+      {
+        heading: "4. Supervised training should be individualized",
+        paragraphs: [
+          "NICE recommends that pelvic-floor muscle training programmes be supervised by an appropriately trained physiotherapist or healthcare professional and tailored to the person's ability to contract and relax, discomfort, needs and goals.",
+          "This supports a key clinical principle: the prescription comes after confirming what the patient can actually do.",
+        ],
+      },
+      {
+        heading: "5. Strength, endurance and timing are different targets",
+        paragraphs: [
+          "A programme designed for force production may differ from one designed for endurance or pre-contraction before a cough. The therapist should identify the functional deficit and select the contraction pattern accordingly.",
+          "Quality matters. Repeated compensatory gluteal, abdominal or breath-holding strategies can make the exercise look successful while the target coordination remains poor.",
+        ],
+      },
+      {
+        heading: "6. When relaxation is the priority",
+        paragraphs: [
+          "For a patient with pain, guarding or difficulty relaxing, more forceful contractions may be the wrong direction. Down-training may include awareness, diaphragmatic breathing, comfortable positions, graded exposure and learning to reduce unnecessary pelvic-floor activation.",
+        ],
+      },
+      {
+        heading: "7. Pressure management",
+        paragraphs: [
+          "Breathing and pelvic-floor function interact with abdominal pressure during lifting, coughing and exercise. Rehabilitation may therefore include coordinated exhalation, trunk strategy and graded exposure to the actual task that provokes symptoms.",
+          "The goal is not to teach permanent bracing. It is to help the patient manage pressure efficiently while returning to normal activity.",
+        ],
+      },
+      {
+        heading: "8. Progression back to function",
+        bullets: [
+          "Move from awareness to reliable contraction and relaxation.",
+          "Build endurance or force according to the deficit.",
+          "Add functional positions such as standing.",
+          "Integrate coughing, lifting or impact when relevant.",
+          "Progress toward the patient's real activity, sport or occupational goal.",
+        ],
+      },
+      {
+        heading: "9. Common mistakes",
+        bullets: [
+          "Prescribing 'Kegels' before assessing relaxation ability.",
+          "Using the same set/rep prescription for every symptom.",
+          "Ignoring bowel, sexual or pain symptoms because the referral says 'incontinence'.",
+          "Teaching constant bracing.",
+          "Failing to progress from isolated contractions into real tasks.",
         ],
       },
       {
         heading: "Clinical takeaway",
         paragraphs: [
-          "Pelvic health rehabilitation should be individualized and respectful. Symptoms such as persistent pelvic pain, urinary or bowel changes, or postpartum concerns may benefit from assessment by a suitably trained clinician.",
+          "Pelvic-floor rehabilitation is a coordination problem before it is a repetition problem. Good treatment identifies whether the main need is strength, endurance, timing, relaxation or functional integration, then progresses that target toward the patient's symptoms and goals.",
         ],
       },
     ],
@@ -1044,45 +1323,111 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "rct-vs-observational-study",
     specialty: "Research & Evidence",
-    title: "RCT vs Observational Study: A Simple Research Guide",
+    title: "RCT vs Observational Study: Design, Bias and What the Results Can Actually Tell You",
     excerpt:
-      "Learn what randomized controlled trials and observational studies can tell you — and why one design is not automatically best for every research question.",
+      "A clinical research lesson on randomization, confounding, cohort and case-control designs, cross-sectional studies, risk of bias, causal claims and choosing the right design for the question.",
     category: "Research Methods",
     audience: "Students",
-    level: "Clinical",
+    level: "Advanced",
     learningObjectives: [
-      "Match common study designs to the questions they are best suited to answer.",
-      "Separate study design hierarchy from actual methodological quality.",
-      "Recognize common threats to interpretation such as bias, confounding and measurement quality.",
+      "Match randomized and observational designs to treatment, prognosis, prevalence and association questions.",
+      "Explain how randomization reduces confounding and why it does not automatically guarantee a high-quality trial.",
+      "Recognize major sources of bias in randomized and observational studies.",
+      "Avoid making causal claims from designs that primarily establish association.",
     ],
-    readTime: "8 min read",
+    references: [
+      {
+        title: "Cochrane Handbook Chapter 8: Assessing risk of bias in a randomized trial",
+        organization: "Cochrane",
+        year: "2024",
+        url: "https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-08",
+      },
+    ],
+    readTime: "15 min read",
     publishedAt: "2026-09-27",
+    updatedAt: "2026-09-27",
     sections: [
       {
-        heading: "Randomized controlled trial",
+        heading: "1. Start with the research question",
         paragraphs: [
-          "In an RCT, eligible participants are randomly allocated to intervention groups. Randomization helps reduce systematic differences between groups and is especially useful when studying treatment effects.",
+          "Study design should follow the question. If the question asks whether an intervention causes better outcomes than another treatment, a well-conducted randomized controlled trial is often appropriate. If the question asks about prevalence, prognosis, risk factors or naturally occurring exposure, an observational design may be more suitable.",
+          "There is no universal 'best study design' independent of the question.",
         ],
       },
       {
-        heading: "Observational study",
+        heading: "2. What randomization is trying to achieve",
         paragraphs: [
-          "In observational research, the investigator observes exposures or outcomes without assigning treatment. Cross-sectional, cohort and case-control designs are common examples.",
+          "Random allocation aims to create groups that are, on average, similar in known and unknown prognostic factors before treatment. This reduces confounding when estimating the effect of an intervention.",
+          "Randomization does not automatically solve poor measurement, high dropout, deviations from the assigned intervention, selective reporting or weak statistical analysis.",
         ],
       },
       {
-        heading: "What each design is good for",
+        heading: "3. Allocation concealment and blinding are different",
+        paragraphs: [
+          "Allocation concealment protects the randomization process before a participant enters a group; blinding reduces knowledge of group assignment after allocation. They address different risks of bias.",
+          "In physiotherapy trials, therapist and participant blinding is often difficult or impossible, which makes blinded outcome assessment, standardized procedures and transparent reporting even more important.",
+        ],
+      },
+      {
+        heading: "4. Observational designs answer different questions",
         bullets: [
-          "RCT: treatment efficacy or comparative intervention questions.",
-          "Cohort study: prognosis, risk and change over time.",
-          "Case-control study: exploring possible exposures linked with an outcome.",
-          "Cross-sectional study: prevalence, characteristics and associations at one point in time.",
+          "Cross-sectional study: measures variables at one time point; useful for prevalence and associations.",
+          "Cohort study: follows groups over time; useful for prognosis, incidence and exposure-outcome relationships.",
+          "Case-control study: starts with outcome status and looks backward for exposures; useful for uncommon outcomes.",
+          "Case series/report: describes clinical observations; useful for hypothesis generation but weak for causal inference.",
         ],
       },
       {
-        heading: "Do not judge quality by design name alone",
+        heading: "5. Confounding: the central challenge in observational treatment comparisons",
         paragraphs: [
-          "A poorly conducted RCT can be less useful than a carefully designed observational study. Always examine sampling, bias, measurement quality, missing data and whether the conclusions match the methods.",
+          "In routine care, treatment is not assigned randomly. Sicker patients may receive one treatment while healthier patients receive another. If outcome differences are later observed, the treatment and baseline prognosis are entangled.",
+          "Statistical adjustment can reduce measured confounding, but unmeasured confounding may remain. This is why association should not automatically be translated into causation.",
+        ],
+      },
+      {
+        heading: "6. Risk of bias in an RCT",
+        paragraphs: [
+          "Cochrane's RoB 2 framework examines bias arising from the randomization process, deviations from intended interventions, missing outcome data, outcome measurement and selection of the reported result.",
+          "The important lesson is that 'randomized' is the beginning of appraisal, not the end.",
+        ],
+      },
+      {
+        heading: "7. Statistical significance is not clinical importance",
+        paragraphs: [
+          "A very small difference can be statistically significant in a large sample but clinically trivial. Conversely, a clinically important effect may fail to reach statistical significance in an underpowered study.",
+          "Interpret the effect size, confidence interval, measurement properties, harms, feasibility and the patient's priorities rather than reading the p-value alone.",
+        ],
+      },
+      {
+        heading: "8. External validity: can this study inform your patient?",
+        paragraphs: [
+          "A trial may be internally rigorous but include a narrow population that differs from your patient in age, comorbidity, severity or setting. Applicability requires comparing the study population and intervention dose with the real clinical context.",
+        ],
+      },
+      {
+        heading: "9. Example: two studies, two different conclusions",
+        paragraphs: [
+          "An observational study finds that patients who receive more physiotherapy visits have worse outcomes. A causal interpretation would be misleading if patients with more severe problems simply required more visits.",
+          "An RCT comparing two treatment doses can address the intervention effect more directly, but its result is still only trustworthy if randomization, follow-up, measurement and reporting are sound.",
+        ],
+      },
+      {
+        heading: "10. A quick appraisal sequence",
+        bullets: [
+          "What exact question was the study designed to answer?",
+          "Was the design appropriate for that question?",
+          "Who was included and how were they selected?",
+          "How were exposure/intervention and outcomes measured?",
+          "What major sources of bias or confounding remain?",
+          "How large and precise is the effect?",
+          "Are the conclusions stronger than the methods justify?",
+          "Does the result apply to my clinical population?",
+        ],
+      },
+      {
+        heading: "Advanced takeaway",
+        paragraphs: [
+          "Evidence hierarchy is useful, but methodological quality and question-design fit matter more than the study label alone. Strong clinical appraisal asks not 'Is this an RCT?' but 'How credible is this estimate, what biases remain, and what claim can this design legitimately support?'",
         ],
       },
     ],
