@@ -8,7 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export const metadata: Metadata = {
   title: "Weekly Clinical Quiz",
   description:
-    "Take the Physio Nexus Academy weekly physiotherapy clinical reasoning quiz. One Gmail, one attempt, 30 seconds total, with weekly top scorers.",
+    "Take the Physio Nexus Academy weekly physiotherapy clinical reasoning quiz. One Gmail, one attempt, 30 seconds per question, with weekly top scorers.",
   alternates: {
     canonical: "https://physionexusacademy.com/clinical-quiz",
   },
@@ -88,7 +88,7 @@ export default async function ClinicalQuizPage() {
             <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">Time</p>
             <p className="mt-1 inline-flex items-center gap-1.5 font-semibold text-navy-800">
               <Clock3 className="h-4 w-4 text-teal-600" />
-              30 seconds total
+              30 seconds per question
             </p>
           </div>
           <div className="rounded-xl border border-grey-200 bg-grey-50 p-4">
