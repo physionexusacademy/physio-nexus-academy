@@ -331,16 +331,17 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "stroke-rehabilitation-principles",
     specialty: "Neurological",
-    title: "Stroke Rehabilitation: Core Principles Every Physiotherapy Student Should Know",
+    title: "Stroke Rehabilitation: From Impairment to Task-Specific Recovery",
     excerpt:
-      "A practical introduction to task-specific training, repetition, intensity, gait practice and functional goal setting after stroke.",
+      "An advanced clinical guide to goal setting, rehabilitation intensity, task-specific practice, gait retraining, progression and outcome measurement after stroke.",
     category: "Stroke Rehabilitation",
     audience: "Students",
     level: "Advanced",
     learningObjectives: [
-      "Connect stroke impairments to functional goals and task-specific practice.",
-      "Understand why rehabilitation dose, repetition and progression matter.",
-      "Relate multidisciplinary rehabilitation intensity to practical physiotherapy planning.",
+      "Translate stroke impairments into functional activity and participation goals.",
+      "Plan task-specific rehabilitation using repetition, challenge and progressive practice.",
+      "Understand how rehabilitation intensity and multidisciplinary input influence programme design.",
+      "Select outcome measures that reflect mobility, balance and functional goals.",
     ],
     references: [
       {
@@ -350,40 +351,86 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         url: "https://www.nice.org.uk/guidance/ng236/chapter/Recommendations",
       },
     ],
-    readTime: "9 min read",
+    readTime: "14 min read",
     publishedAt: "2026-09-27",
     sections: [
       {
-        heading: "What rehabilitation is trying to achieve",
+        heading: "1. Start with function, not the impairment list",
         paragraphs: [
-          "Stroke rehabilitation aims to improve meaningful activity and participation, not simply isolated movement. Physiotherapy commonly focuses on mobility, transfers, balance, gait, upper-limb use, endurance and confidence with daily tasks.",
+          "After stroke, weakness, altered tone, sensory loss, reduced selective motor control, balance impairment and fatigue may all be present. These findings matter, but rehabilitation becomes clinically meaningful when they are connected to activities the person needs to recover: rolling, transfers, standing, walking, stair negotiation, reaching, self-care and community mobility.",
+          "A useful treatment plan therefore moves from impairment → activity limitation → participation goal. For example, reduced ankle dorsiflexion is not treated only because range is limited; it is treated because it may affect foot clearance, step length, walking safety or confidence.",
         ],
       },
       {
-        heading: "Task-specific practice",
+        heading: "2. Build goals that can guide treatment dose",
         paragraphs: [
-          "Practice should resemble the activity the person wants to improve. Repeated sit-to-stand, stepping, walking, reaching and balance tasks are usually more transferable than exercises performed without a functional goal.",
+          "Goals should describe what the person needs to do, under what conditions and with what level of assistance. 'Improve balance' is too vague to guide progression. 'Stand unsupported for 2 minutes to complete grooming' or 'walk 20 metres with a stick and supervision' gives the therapist a functional target.",
+          "Goal difficulty should be reviewed frequently because rapid change can occur in early rehabilitation and plateaus may require a different strategy rather than simply repeating the same exercise.",
         ],
       },
       {
-        heading: "Repetition and progression",
+        heading: "3. Rehabilitation intensity is a clinical variable",
+        paragraphs: [
+          "NICE recommends needs-based multidisciplinary rehabilitation after stroke for at least 3 hours a day on at least 5 days of the week when the person is able and willing to participate at that level. This is multidisciplinary therapy time, not 3 hours of physiotherapy alone.",
+          "Intensity should still be individualized. Severe fatigue, medical instability, cognition, communication, mood, pain and cardiopulmonary tolerance can change how the available therapy time is distributed and how much active practice is realistic.",
+        ],
+      },
+      {
+        heading: "4. Task-specific practice: train the task you want to improve",
+        paragraphs: [
+          "If the goal is sit-to-stand, the programme needs repeated sit-to-stand practice. If the goal is walking, the patient needs meaningful stepping and walking practice. Strengthening and impairment-based exercise can support recovery, but they should connect back to the target task.",
+          "Task practice can be graded by changing seat height, hand support, walking speed, distance, surface, direction changes, obstacle complexity, dual-task demand or the amount of physical assistance.",
+        ],
         bullets: [
-          "Use enough repetitions to create a training effect.",
-          "Increase difficulty gradually as control improves.",
-          "Change speed, distance, support or task complexity when appropriate.",
-          "Monitor fatigue, blood pressure, symptoms and safety.",
+          "Increase repetition before making the task unnecessarily complicated.",
+          "Keep the task challenging enough to require adaptation but safe enough to permit quality practice.",
+          "Use feedback strategically; too much constant feedback can make the patient dependent on the therapist.",
+          "Track whether gains transfer to real activities outside the treatment session.",
         ],
       },
       {
-        heading: "Gait and balance",
+        heading: "5. Gait rehabilitation is more than 'walking the patient'",
         paragraphs: [
-          "Walking rehabilitation may combine overground practice, treadmill work, strengthening, balance training and assistive devices when needed. The exact mix depends on impairment, recovery stage and the person's goals.",
+          "Gait analysis should identify the specific problem limiting safe and efficient mobility. Reduced stance control, poor foot clearance, asymmetrical loading, short step length, slow speed, fear, reduced endurance or turning difficulty may require different treatment priorities.",
+          "Overground walking, treadmill-based practice, strengthening, balance training and assistive devices can all be useful depending on the presentation. The therapist should be able to explain why each component is included and what measurable change is expected.",
         ],
       },
       {
-        heading: "Clinical takeaway",
+        heading: "6. Measure what matters",
         paragraphs: [
-          "A strong stroke program is goal-directed, repetitive, progressive and functional. The best exercise is usually the one that safely trains the activity the person needs to regain.",
+          "Outcome measures should match the treatment goal and the patient's current ability. A single measure rarely captures the entire recovery picture.",
+        ],
+        bullets: [
+          "Walking speed can reflect functional mobility and change over time.",
+          "Timed transfer or mobility tests can track task efficiency.",
+          "Balance measures help quantify postural control and fall-related limitations.",
+          "Walking endurance measures can reveal capacity that a short gait test misses.",
+          "Level of assistance and device use should be documented alongside the numerical score.",
+        ],
+      },
+      {
+        heading: "7. Progression should change the problem the patient has to solve",
+        paragraphs: [
+          "Progression is not only adding repetitions. A patient may need less hand support, a lower chair, faster walking, greater distance, more variable surfaces, obstacle negotiation or community-relevant tasks. Progression should mirror the real-world demands that currently limit independence.",
+          "If performance deteriorates sharply with added challenge, reduce one variable and rebuild quality rather than allowing repeated poor practice.",
+        ],
+      },
+      {
+        heading: "8. Clinical reasoning checkpoint",
+        bullets: [
+          "What is the patient's highest-priority functional goal?",
+          "Which impairment is genuinely limiting that task?",
+          "How much active practice is the patient receiving?",
+          "Is the task challenging enough to drive change?",
+          "Is there objective evidence of improvement?",
+          "Are fatigue, cognition, communication, mood or medical factors limiting the planned dose?",
+          "Can the patient perform the improved skill outside the therapy environment?",
+        ],
+      },
+      {
+        heading: "Advanced takeaway",
+        paragraphs: [
+          "High-level stroke rehabilitation is not a collection of neurological techniques. It is a structured process of identifying the functional problem, selecting the limiting factors that are modifiable, delivering sufficient meaningful practice, measuring change and progressively increasing real-world task demand.",
         ],
       },
     ],
