@@ -132,7 +132,9 @@ export default async function HomePage() {
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
   const featuredResources = resourceRows?.length ? resourceRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
-  const latestArticles = knowledgeArticles.slice(0, 3);
+  const latestArticles = knowledgeArticles
+    .filter((article) => article.level === "Advanced" || article.updatedAt)
+    .slice(0, 3);
 
   return (
     <>
