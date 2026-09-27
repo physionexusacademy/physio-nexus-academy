@@ -75,8 +75,8 @@ export default async function ClinicalQuizPage() {
         </div>
 
         <p className="mt-5 leading-7 text-navy-600">
-          Five clinical questions, one Gmail per attempt and only 30 seconds for the complete
-          quiz. The timer begins after you press Start Quiz.
+          Five clinical questions, one Gmail per attempt, and 30 seconds for each question.
+          Each question gets a fresh timer after you press Start Quiz.
         </p>
 
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
