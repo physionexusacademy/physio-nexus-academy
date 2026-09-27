@@ -6,7 +6,7 @@ import {
   ChevronRight,
   Clock3,
   LockKeyhole,
-   XCircle,
+  XCircle,
 } from "lucide-react";
 import { startWeeklyQuiz, submitWeeklyQuiz } from "./actions";
 
@@ -59,8 +59,8 @@ export function QuizClient() {
     try {
       const started = await startWeeklyQuiz({ fullName, email, consent });
 
-      if (!started.ok) {
-        setError(started.error);
+      if (!started.quiz) {
+        setError(started.error ?? "Unable to start the quiz.");
         return;
       }
 
