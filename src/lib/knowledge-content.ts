@@ -4,10 +4,23 @@ export type KnowledgeSection = {
   bullets?: string[];
 };
 
+export type KnowledgeSpecialty =
+  | "Musculoskeletal (MSK)"
+  | "Neurological"
+  | "Cardiopulmonary"
+  | "Pediatrics"
+  | "Sports"
+  | "Geriatrics"
+  | "Women's & Pelvic Health"
+  | "Pain Science"
+  | "Exercise & Rehabilitation"
+  | "Research & Evidence";
+
 export type KnowledgeArticle = {
   slug: string;
   title: string;
   excerpt: string;
+  specialty: KnowledgeSpecialty;
   category: string;
   audience: "Students" | "Professionals" | "Patients" | "All";
   readTime: string;
@@ -16,9 +29,67 @@ export type KnowledgeArticle = {
   sections: KnowledgeSection[];
 };
 
+export const knowledgeSpecialties: Array<{
+  name: KnowledgeSpecialty;
+  slug: string;
+  description: string;
+}> = [
+  {
+    name: "Musculoskeletal (MSK)",
+    slug: "msk",
+    description: "Spine, joints, soft tissue, manual therapy, common MSK conditions and clinical reasoning.",
+  },
+  {
+    name: "Neurological",
+    slug: "neuro",
+    description: "Stroke, spinal cord injury, Parkinson's disease, balance, gait and neurorehabilitation.",
+  },
+  {
+    name: "Cardiopulmonary",
+    slug: "cardio",
+    description: "Cardiac rehabilitation, respiratory physiotherapy, airway clearance and exercise tolerance.",
+  },
+  {
+    name: "Pediatrics",
+    slug: "pediatrics",
+    description: "Development, cerebral palsy, clubfoot, pediatric assessment and rehabilitation.",
+  },
+  {
+    name: "Sports",
+    slug: "sports",
+    description: "Sports injuries, return-to-sport, load management, rehabilitation and performance.",
+  },
+  {
+    name: "Geriatrics",
+    slug: "geriatrics",
+    description: "Falls, frailty, osteoporosis, mobility, balance and healthy aging.",
+  },
+  {
+    name: "Women's & Pelvic Health",
+    slug: "womens-health",
+    description: "Pelvic health, pregnancy, postpartum rehabilitation and related physiotherapy topics.",
+  },
+  {
+    name: "Pain Science",
+    slug: "pain-science",
+    description: "Pain mechanisms, central sensitization, persistent pain and patient education.",
+  },
+  {
+    name: "Exercise & Rehabilitation",
+    slug: "exercise-rehab",
+    description: "Exercise prescription, mobility, strengthening, progression and rehabilitation planning.",
+  },
+  {
+    name: "Research & Evidence",
+    slug: "research",
+    description: "Research methods, outcome measures, evidence summaries and critical appraisal.",
+  },
+];
+
 export const knowledgeArticles: KnowledgeArticle[] = [
   {
     slug: "trigger-point-vs-tender-point",
+    specialty: "Musculoskeletal (MSK)",
     title: "Trigger Point vs Tender Point: What Is the Difference?",
     excerpt:
       "A simple clinical explanation of trigger points, tender points, taut bands and muscle spasm — and why the terms should not be used interchangeably.",
@@ -71,6 +142,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   },
   {
     slug: "direct-vs-indirect-myofascial-release",
+    specialty: "Musculoskeletal (MSK)",
     title: "Direct vs Indirect Myofascial Release — Explained Simply",
     excerpt:
       "Direct MFR works into a perceived tissue barrier, while indirect MFR follows the tissues toward relative ease. Here is the concept without the confusing jargon.",
@@ -119,6 +191,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   },
   {
     slug: "dry-needling-vs-acupuncture",
+    specialty: "Musculoskeletal (MSK)",
     title: "Dry Needling vs Acupuncture: Similar Needle, Different Framework",
     excerpt:
       "Both use thin filiform needles, but their assessment models, treatment rationale, training pathways and clinical context are not identical.",
@@ -164,6 +237,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   },
   {
     slug: "central-sensitization-explained",
+    specialty: "Pain Science",
     title: "Central Sensitization: Why Pain Can Become More Sensitive",
     excerpt:
       "Pain intensity is not always a direct measure of tissue damage. Central sensitization helps explain why the nervous system may become more responsive to sensory input.",
@@ -202,6 +276,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   },
   {
     slug: "sciatica-red-flags-when-to-seek-care",
+    specialty: "Musculoskeletal (MSK)",
     title: "Sciatica and Back Pain: Red Flags That Need Urgent Assessment",
     excerpt:
       "Most back and leg pain is not an emergency, but certain symptoms need prompt medical assessment. Learn the major warning signs in simple language.",
