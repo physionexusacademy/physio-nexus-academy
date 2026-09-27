@@ -90,7 +90,7 @@ export default function KnowledgeHubPage() {
           Test your clinical reasoning in 5 questions
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-grey-200">
-          The quiz runs entirely in your browser. Your answers and score are not stored in the database.
+          You get one attempt per Gmail, 30 seconds for all five questions, and your score/time are stored for the weekly leaderboard.
         </p>
         <Link
           href="/clinical-quiz"
