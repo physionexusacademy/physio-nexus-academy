@@ -14,10 +14,10 @@ import {
   Users,
 } from "lucide-react";
 import {
-  knowledgeArticles,
   knowledgeSpecialties,
   type KnowledgeSpecialty,
 } from "@/lib/knowledge-content";
+import { allKnowledgeArticles } from "@/lib/knowledge-daily";
 
 export const metadata: Metadata = {
   title: "Physiotherapy Knowledge Hub",
@@ -55,7 +55,7 @@ const specialtyTones = [
 ];
 
 export default function KnowledgeHubPage() {
-  const featured = knowledgeArticles
+  const featured = allKnowledgeArticles
     .slice()
     .sort((a, b) => (b.level === "Advanced" ? 1 : 0) - (a.level === "Advanced" ? 1 : 0))
     .slice(0, 4);
@@ -106,14 +106,14 @@ export default function KnowledgeHubPage() {
             </h2>
           </div>
           <p className="text-sm text-navy-400">
-            {knowledgeArticles.length} learning articles and growing
+            {allKnowledgeArticles.length} learning articles and growing
           </p>
         </div>
 
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {knowledgeSpecialties.map((specialty, index) => {
             const Icon = specialtyIcons[specialty.name];
-            const count = knowledgeArticles.filter(
+            const count = allKnowledgeArticles.filter(
               (article) => article.specialty === specialty.name
             ).length;
 
