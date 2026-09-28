@@ -248,7 +248,97 @@ export const clinicalCases: ClinicalCase[] = [
       },
     ],
     caseType: "Simulated evidence-based case",
-  },
+  },,
+{
+  "slug": "acl-reconstruction-return-to-sport-readiness",
+  "title": "ACL Reconstruction: Is This Athlete Ready to Return to Pivoting Sport?",
+  "specialty": "Sports",
+  "difficulty": "Advanced",
+  "estimatedTime": "12–15 min",
+  "summary": "A criterion-based return-to-sport case that integrates symptoms, quadriceps strength, jump testing, psychological readiness and sport-specific exposure after ACL reconstruction.",
+  "presentation": [
+    "A 22-year-old recreational football player is 8 months after primary ACL reconstruction and asks to return to unrestricted team training.",
+    "The athlete reports no giving-way episodes and only occasional mild anterior knee discomfort after heavy gym sessions.",
+    "Jogging and planned cutting drills have been resumed, but full-speed reactive football drills and contact training have not yet been completed.",
+    "The athlete is highly motivated because an important tournament begins in 4 weeks."
+  ],
+  "keyFindings": [
+    "Full knee extension and near-symmetrical flexion with no clinically important effusion at rest.",
+    "Single-leg squat is controlled at slow speed, but high-speed deceleration shows reduced confidence on the reconstructed side.",
+    "Quadriceps peak torque is approximately 86% of the uninvolved limb; hamstring strength is closer to symmetry.",
+    "Single-hop distance is 92% symmetrical, but repeated jump testing shows poorer landing stiffness and reduced eccentric control on the reconstructed side.",
+    "Patient-reported knee function is good, while psychological readiness remains lower than desired for unrestricted pivoting sport.",
+    "The athlete has not yet completed repeated high-speed, reactive, unplanned change-of-direction sessions under fatigue."
+  ],
+  "redFlags": [
+    "A new large effusion, locking, recurrent giving way or acute loss of motion would require reassessment before further progression.",
+    "New calf swelling, unexplained shortness of breath or other postoperative medical warning signs require urgent medical assessment."
+  ],
+  "differentials": [
+    {
+      "diagnosis": "Incomplete neuromuscular and strength recovery after ACL reconstruction",
+      "reasoning": "Persistent quadriceps deficit, reduced deceleration quality and poorer repeated landing control suggest that recovery is not yet complete despite good basic function."
+    },
+    {
+      "diagnosis": "Adequate physical recovery but low psychological readiness",
+      "reasoning": "Fear or reduced confidence can independently limit sport performance, but this athlete also has objective strength and reactive-task deficits, so psychology is not the only issue."
+    },
+    {
+      "diagnosis": "Patellofemoral or donor-site-related anterior knee pain",
+      "reasoning": "Mild anterior discomfort after heavy loading may coexist with ACL rehabilitation and should be assessed, but it does not explain the full pattern of strength and high-speed control deficits."
+    },
+    {
+      "diagnosis": "Ready for unrestricted pivoting sport",
+      "reasoning": "This is less likely because objective testing and sport-specific exposure are incomplete. Calendar time and a single hop symmetry score are insufficient for clearance."
+    }
+  ],
+  "finalDiagnosis": "Late-stage ACL reconstruction rehabilitation with incomplete quadriceps recovery and insufficient high-speed reactive sport exposure; not yet ready for unrestricted pivoting competition.",
+  "reasoning": [
+    "Return to sport is a process rather than a single test or date. Biological healing time matters, but objective strength, symptoms, movement quality, psychological readiness and tolerance of sport-specific workload must also be considered.",
+    "The 92% single-hop symmetry result is reassuring but does not override the 86% quadriceps strength result or the poorer repeated landing and deceleration quality.",
+    "Limb symmetry can overestimate recovery if the uninvolved limb has deconditioned; absolute or normative values are useful when available.",
+    "Aspetar guidance emphasizes exercise as the foundation of ACL rehabilitation and proposes criteria including absence of pain/swelling, full range, knee stability, patient-reported function, psychological readiness and high-level strength/jump performance before return to high-demand pivoting sport.",
+    "Recent evidence-based consensus also supports individualized, multimodal rehabilitation lasting long enough to restore function rather than relying on an accelerated time-only pathway."
+  ],
+  "management": [
+    "Continue progressive quadriceps strengthening with loads high enough to address the remaining strength deficit while monitoring knee symptoms and next-day response.",
+    "Progress eccentric and deceleration training from planned to reactive tasks at increasing speed.",
+    "Use plyometric progressions that include repeated unilateral landings, horizontal and vertical force production, and movement-quality feedback.",
+    "Add unplanned change-of-direction drills that reproduce football-specific perception and decision-making demands.",
+    "Progress from non-contact technical training to controlled team drills, then higher-speed and fatigue-exposed sessions before unrestricted competition.",
+    "Address psychological readiness through graded exposure, shared testing results and successful completion of increasingly representative football tasks.",
+    "Reassess quadriceps strength, jump performance, knee symptoms and sport-specific tolerance before clearance."
+  ],
+  "progression": [
+    "First milestone: repeated high-load strength sessions without clinically important effusion or prolonged pain.",
+    "Second milestone: improved quadriceps strength toward sport-appropriate targets together with acceptable absolute performance, not symmetry alone.",
+    "Third milestone: controlled high-speed deceleration, planned cutting and repeated unilateral plyometrics.",
+    "Fourth milestone: reactive/unplanned cutting, football-specific drills and repeated efforts under fatigue.",
+    "Final stage: graded return to team training and competition only after the athlete demonstrates stable knee response, adequate physical testing, confidence and sport-specific workload tolerance."
+  ],
+  "learningPoints": [
+    "A good hop-test symmetry score does not automatically equal return-to-sport readiness.",
+    "Quadriceps strength and eccentric control remain important late-stage targets.",
+    "Psychological readiness should be assessed but should not be used to explain away objective physical deficits.",
+    "Sport-specific exposure must progress from predictable drills to reactive, fatigued and representative environments.",
+    "Return to sport is a shared, criterion-based decision rather than a reward for reaching a particular postoperative month."
+  ],
+  "references": [
+    {
+      "title": "Aspetar clinical practice guideline on rehabilitation after anterior cruciate ligament reconstruction",
+      "organization": "British Journal of Sports Medicine / Aspetar",
+      "year": "2023",
+      "url": "https://bjsm.bmj.com/content/57/9/500"
+    },
+    {
+      "title": "ACL rehabilitation after reconstruction: Evidence-based consensus recommendations from the German Knee Society-Part IV",
+      "organization": "PubMed",
+      "year": "2026",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42549304/"
+    }
+  ],
+  "caseType": "Simulated evidence-based case"
+}
 ];
 
 export function getClinicalCase(slug: string) {
