@@ -16,6 +16,7 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/lib/knowledge-daily": ["./src/lib/knowledge-current.ts"],
+      "@/lib/clinical-cases": ["./src/lib/clinical-cases-current.ts"],
       "@/*": ["./src/*"]
     }
   },
