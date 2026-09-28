@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { trainingHistory } from "@/lib/training-history";
-import { knowledgeArticles, knowledgeSpecialties } from "@/lib/knowledge-content";
+import { knowledgeSpecialties } from "@/lib/knowledge-content";
+import { allKnowledgeArticles } from "@/lib/knowledge-daily";
 import { clinicalCases } from "@/lib/clinical-cases";
 
 const routes = [
@@ -66,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const knowledgeRoutes: MetadataRoute.Sitemap = knowledgeArticles.map((article) => ({
+  const knowledgeRoutes: MetadataRoute.Sitemap = allKnowledgeArticles.map((article) => ({
     url: `${base}/knowledge-hub/${encodeURIComponent(article.slug)}`,
     lastModified: new Date(article.updatedAt ?? article.publishedAt),
     changeFrequency: "monthly" as const,
