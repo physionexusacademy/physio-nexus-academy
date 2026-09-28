@@ -248,7 +248,7 @@ export const clinicalCases: ClinicalCase[] = [
       },
     ],
     caseType: "Simulated evidence-based case",
-  },,
+  },
 {
   "slug": "acl-reconstruction-return-to-sport-readiness",
   "title": "ACL Reconstruction: Is This Athlete Ready to Return to Pivoting Sport?",
