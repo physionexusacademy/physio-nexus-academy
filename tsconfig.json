@@ -15,6 +15,7 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
+      "@/lib/knowledge-daily": ["./src/lib/knowledge-current.ts"],
       "@/*": ["./src/*"]
     }
   },
