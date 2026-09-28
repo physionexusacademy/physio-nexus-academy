@@ -219,7 +219,7 @@ export const dailyKnowledgeArticles: KnowledgeArticle[] = [
         ],
       },
     ],
-  },,
+  },
 {
   "slug": "parkinson-freezing-gait-balance-rehabilitation",
   "specialty": "Neurological",
