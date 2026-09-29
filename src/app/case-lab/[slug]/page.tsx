@@ -12,7 +12,7 @@ import {
   Route,
   Stethoscope,
 } from "lucide-react";
-import { clinicalCases, getClinicalCase } from "@/lib/clinical-cases";
+import { clinicalCases, getClinicalCase } from "@/lib/all-clinical-cases";
 
 const siteUrl = "https://physionexusacademy.com";
 
