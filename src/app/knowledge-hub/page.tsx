@@ -17,7 +17,7 @@ import {
   knowledgeSpecialties,
   type KnowledgeSpecialty,
 } from "@/lib/knowledge-content";
-import { allKnowledgeArticles } from "@/lib/knowledge-daily";
+import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 
 export const metadata: Metadata = {
   title: "Physiotherapy Knowledge Hub",
