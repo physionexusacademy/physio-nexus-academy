@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, ClipboardCheck, Stethoscope } from "lucide-react";
-import { clinicalCases } from "@/lib/clinical-cases";
+import { clinicalCases } from "@/lib/all-clinical-cases";
 
 export const metadata: Metadata = {
   title: "Clinical Case Lab",
