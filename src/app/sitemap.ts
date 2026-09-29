@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { trainingHistory } from "@/lib/training-history";
 import { knowledgeSpecialties } from "@/lib/knowledge-content";
-import { allKnowledgeArticles } from "@/lib/knowledge-daily";
-import { clinicalCases } from "@/lib/clinical-cases";
+import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
+import { clinicalCases } from "@/lib/all-clinical-cases";
 
 const routes = [
   "",
