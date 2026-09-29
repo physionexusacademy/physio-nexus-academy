@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, BrainCircuit, Clock3, Layers3 } from "lucide-react";
 import { knowledgeSpecialties } from "@/lib/knowledge-content";
-import { allKnowledgeArticles } from "@/lib/knowledge-daily";
-import { clinicalCases } from "@/lib/clinical-cases";
+import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
+import { clinicalCases } from "@/lib/all-clinical-cases";
 
 export function generateStaticParams() {
   return knowledgeSpecialties.map((specialty) => ({ slug: specialty.slug }));
