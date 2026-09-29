@@ -10,7 +10,7 @@ import {
   GraduationCap,
   Target,
 } from "lucide-react";
-import { allKnowledgeArticles, getAllKnowledgeArticle } from "@/lib/knowledge-daily";
+import { allKnowledgeArticles, getAllKnowledgeArticle } from "@/lib/all-knowledge-content";
 
 const siteUrl = "https://physionexusacademy.com";
 
