@@ -10,10 +10,17 @@ import {
   Lightbulb,
   ShieldAlert,
   ShieldCheck,
+  Brain,
+  Microscope,
+  ExternalLink,
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/manual-therapy";
 import { manualApplicationGuides } from "@/lib/manual-therapy-guides";
 import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
+import {
+  manualTherapyMechanisms,
+  manualTherapyMechanismEvidence,
+} from "@/lib/manual-therapy-mechanisms";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -71,9 +78,10 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const guide = manualApplicationGuides[slug];
+  const mechanism = manualTherapyMechanisms[slug];
   const regionalApplications = getApplicationsForTechnique(slug);
 
-  if (!technique || !guide) notFound();
+  if (!technique || !guide || !mechanism) notFound();
 
   return (
     <div className="container-content section-padding">
@@ -100,6 +108,88 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         <p className="mt-4 max-w-3xl text-base leading-7 text-violet-50">
           {technique.summary}
         </p>
+      </section>
+
+      <section className="mt-8 overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
+        <div className="border-b border-indigo-100 p-6 sm:p-8">
+          <div className="flex items-start gap-3">
+            <span className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-indigo-700 text-white">
+              <Brain className="h-6 w-6" />
+            </span>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-700">
+                Mechanism & Physiology
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+                How does this technique actually work?
+              </h2>
+              <p className="mt-3 max-w-4xl text-sm leading-7 text-navy-600">
+                {mechanism.simpleExplanation}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-5 sm:p-8">
+          <div className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+              Mechanism in one line
+            </p>
+            <p className="mt-3 font-mono text-sm font-semibold leading-7 text-navy-800">
+              {mechanism.mechanismMap}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-5 border-t border-indigo-100 p-5 sm:p-8 lg:grid-cols-2">
+          <ListBlock
+            title="Step-by-Step Physiological Pathway"
+            items={mechanism.stepByStep}
+            icon={Brain}
+            tone="border-indigo-100 bg-indigo-50/70"
+          />
+          <ListBlock
+            title="Deep Physiology — What Happens in the Body"
+            items={mechanism.physiology}
+            icon={Microscope}
+            tone="border-cyan-100 bg-cyan-50/70"
+          />
+          <ListBlock
+            title="What This Means Clinically"
+            items={mechanism.clinicalTranslation}
+            icon={Lightbulb}
+            tone="border-emerald-100 bg-emerald-50/70"
+          />
+          <ListBlock
+            title="What You Should NOT Claim"
+            items={mechanism.myths}
+            icon={ShieldAlert}
+            tone="border-rose-100 bg-rose-50/70"
+          />
+        </div>
+
+        <div className="border-t border-indigo-100 p-5 sm:p-8">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+            <p className="font-bold text-navy-800">Evidence note</p>
+            <p className="mt-2 text-sm leading-6 text-navy-600">
+              {mechanism.evidenceNote}
+            </p>
+            <p className="mt-3 text-xs leading-5 text-navy-500">
+              Across manual therapy as a whole, current evidence supports interacting peripheral,
+              spinal, supraspinal, neurovascular, neuromuscular and contextual responses rather than
+              one universal mechanism.
+            </p>
+            <a
+              href={manualTherapyMechanismEvidence.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-indigo-700"
+            >
+              Read the {manualTherapyMechanismEvidence.sourceYear} living review
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
       </section>
 
       <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
