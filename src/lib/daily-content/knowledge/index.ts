@@ -5,9 +5,11 @@ import type { KnowledgeArticle } from "@/lib/knowledge-content";
 // ./2026-10-01/index.ts -> imports that day's one-article-per-specialty files.
 
 // DAILY_KNOWLEDGE_IMPORTS_START
+import { knowledge20261001 } from "./2026-10-01";
 // DAILY_KNOWLEDGE_IMPORTS_END
 
 export const modularKnowledgeArticles: KnowledgeArticle[] = [
   // DAILY_KNOWLEDGE_SPREADS_START
+  ...knowledge20261001,
   // DAILY_KNOWLEDGE_SPREADS_END
 ];
