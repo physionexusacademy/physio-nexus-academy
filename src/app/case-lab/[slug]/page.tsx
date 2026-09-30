@@ -13,6 +13,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 import { clinicalCases, getClinicalCase } from "@/lib/all-clinical-cases";
+import { clinicalCaseGuides } from "@/lib/clinical-case-guides";
 
 const siteUrl = "https://physionexusacademy.com";
 
@@ -42,6 +43,7 @@ export default async function ClinicalCasePage({
 }) {
   const { slug } = await params;
   const item = getClinicalCase(slug);
+  const guide = clinicalCaseGuides[slug];
   if (!item) notFound();
 
   return (
@@ -162,6 +164,121 @@ export default async function ClinicalCasePage({
             ))}
           </div>
         </section>
+
+        {guide ? (
+          <section className="overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-emerald-50">
+            <div className="border-b border-indigo-100 p-6">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-700">
+                Master This Case
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-navy-800">
+                Think through it like a clinician
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-navy-600">
+                Use this section as a practical tutorial: what to ask, what to examine, how to make the decision,
+                how to apply management, how much exercise to give, what to reassess and which mistakes to avoid.
+              </p>
+            </div>
+
+            <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-2">
+              <section className="rounded-2xl border border-cyan-100 bg-cyan-50/70 p-5">
+                <h3 className="font-bold text-navy-800">1. Key Subjective Questions</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.keyQuestions.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <CheckCircle2 className="mt-1 h-4 w-4 flex-none text-cyan-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-violet-100 bg-violet-50/70 p-5">
+                <h3 className="font-bold text-navy-800">2. Examination Sequence</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.examinationSequence.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <CheckCircle2 className="mt-1 h-4 w-4 flex-none text-violet-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+                <h3 className="font-bold text-navy-800">3. Decision Logic</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.decisionLogic.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <BrainCircuit className="mt-1 h-4 w-4 flex-none text-indigo-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-5">
+                <h3 className="font-bold text-navy-800">4. Practical Management</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.practicalManagement.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <Route className="mt-1 h-4 w-4 flex-none text-emerald-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-amber-100 bg-amber-50/70 p-5">
+                <h3 className="font-bold text-navy-800">5. Exercise / Treatment Dose</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.exerciseDose.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <CheckCircle2 className="mt-1 h-4 w-4 flex-none text-amber-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-teal-100 bg-teal-50/70 p-5">
+                <h3 className="font-bold text-navy-800">6. Reassessment</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.reassessment.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <CheckCircle2 className="mt-1 h-4 w-4 flex-none text-teal-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-rose-100 bg-rose-50/70 p-5">
+                <h3 className="font-bold text-navy-800">7. Common Mistakes</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.commonMistakes.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <AlertTriangle className="mt-1 h-4 w-4 flex-none text-rose-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-2xl border border-sky-100 bg-sky-50/70 p-5">
+                <h3 className="font-bold text-navy-800">8. Master-Level Takeaway</h3>
+                <ul className="mt-3 space-y-3">
+                  {guide.masterTakeaway.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm leading-6 text-navy-700">
+                      <BookOpenCheck className="mt-1 h-4 w-4 flex-none text-sky-700" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+          </section>
+        ) : null}
 
         <section>
           <div className="flex items-center gap-3">
