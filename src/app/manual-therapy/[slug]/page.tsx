@@ -12,6 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/manual-therapy";
+import { manualApplicationGuides } from "@/lib/manual-therapy-guides";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -68,8 +69,9 @@ function ListBlock({
 export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
+  const guide = manualApplicationGuides[slug];
 
-  if (!technique) notFound();
+  if (!technique || !guide) notFound();
 
   return (
     <div className="container-content section-padding">
@@ -96,6 +98,37 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         <p className="mt-4 max-w-3xl text-base leading-7 text-violet-50">
           {technique.summary}
         </p>
+      </section>
+
+      <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
+        <div className="border-b border-violet-100 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
+            Practical Application
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+            Exactly how to apply this technique
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+            Read this section in order. It is written like a practical class: patient setup,
+            therapist setup, hand placement, force direction, step-by-step application,
+            what you should expect, when to stop and the mistakes that commonly spoil the technique.
+          </p>
+        </div>
+        <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
+          <ListBlock title="Patient Position" items={guide.patientPosition} icon={Hand} tone="border-cyan-100 bg-cyan-50/70" />
+          <ListBlock title="Therapist Position" items={guide.therapistPosition} icon={Hand} tone="border-indigo-100 bg-indigo-50/70" />
+          <ListBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
+          <ListBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
+        </div>
+        <div className="border-t border-violet-100 p-5 sm:p-8">
+          <ListBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
+        </div>
+        <div className="grid gap-5 border-t border-violet-100 p-5 sm:p-8 lg:grid-cols-2">
+          <ListBlock title="What a Good Response Looks Like" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
+          <ListBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
+          <ListBlock title="Common Practical Mistakes" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
+          <ListBlock title="Clinical Example" items={guide.clinicalExample} icon={Lightbulb} tone="border-purple-100 bg-purple-50/70" />
+        </div>
       </section>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
