@@ -1,0 +1,154 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BookOpenCheck,
+  Brain,
+  Hand,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
+import {
+  manualTherapyFamilies,
+  manualTherapyTechniques,
+} from "@/lib/manual-therapy";
+
+export const metadata: Metadata = {
+  title: "Manual Therapy Mastery",
+  description:
+    "Study manual therapy systems, science, technique selection, dosage, safety, procedures and clinical reasoning with Physio Nexus Academy.",
+  alternates: {
+    canonical: "https://physionexusacademy.com/manual-therapy",
+  },
+};
+
+export default function ManualTherapyPage() {
+  return (
+    <div className="container-content section-padding">
+      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-700 via-violet-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
+        <div className="max-w-4xl">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-violet-100">
+            PNA Clinical Mastery
+          </p>
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-5xl">
+            Manual Therapy Mastery
+          </h1>
+          <p className="mt-5 max-w-3xl text-base leading-7 text-violet-50 sm:text-lg">
+            Learn the science, reasoning, patient and therapist setup, force direction,
+            dosage, indications, precautions, contraindications and reassessment logic
+            behind major manual-therapy approaches used in physiotherapy.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
+            <span className="rounded-full bg-white/10 px-4 py-2">
+              {manualTherapyTechniques.length} detailed techniques
+            </span>
+            <span className="rounded-full bg-white/10 px-4 py-2">
+              {manualTherapyFamilies.length} technique families
+            </span>
+            <span className="rounded-full bg-white/10 px-4 py-2">
+              Evidence-informed clinical reasoning
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-violet-100 bg-violet-50 p-5">
+          <Brain className="h-6 w-6 text-violet-700" />
+          <h2 className="mt-3 font-bold text-navy-800">Understand the science</h2>
+          <p className="mt-2 text-sm leading-6 text-navy-600">
+            Learn what a technique may do, what remains theoretical, and how to explain
+            mechanisms without outdated structural claims.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-cyan-100 bg-cyan-50 p-5">
+          <Hand className="h-6 w-6 text-cyan-700" />
+          <h2 className="mt-3 font-bold text-navy-800">Learn the process</h2>
+          <p className="mt-2 text-sm leading-6 text-navy-600">
+            Follow a repeatable sequence from baseline assessment to positioning, contact,
+            dosage, execution and immediate reassessment.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+          <ShieldCheck className="h-6 w-6 text-emerald-700" />
+          <h2 className="mt-3 font-bold text-navy-800">Treat safely</h2>
+          <p className="mt-2 text-sm leading-6 text-navy-600">
+            Every technique includes precautions and contraindications so clinical safety
+            stays ahead of technique enthusiasm.
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest text-violet-700">
+              Technique Library
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">
+              Study by manual-therapy family
+            </h2>
+          </div>
+          <Link
+            href="/treatment-plans"
+            className="inline-flex items-center gap-1 text-sm font-bold text-teal-700"
+          >
+            Apply techniques in treatment plans <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        <div className="mt-8 space-y-8">
+          {manualTherapyFamilies.map((family) => {
+            const techniques = manualTherapyTechniques.filter(
+              (technique) => technique.family === family
+            );
+            return (
+              <div key={family}>
+                <div className="flex items-center gap-2">
+                  <BookOpenCheck className="h-5 w-5 text-violet-600" />
+                  <h3 className="text-xl font-bold text-navy-800">{family}</h3>
+                </div>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {techniques.map((technique) => (
+                    <Link
+                      key={technique.slug}
+                      href={"/manual-therapy/" + technique.slug}
+                      className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="rounded-full bg-violet-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-violet-700">
+                          {technique.level}
+                        </span>
+                        <Sparkles className="h-4 w-4 text-violet-300" />
+                      </div>
+                      <h4 className="mt-4 text-lg font-bold text-navy-800">
+                        {technique.name}
+                      </h4>
+                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">
+                        {technique.summary}
+                      </p>
+                      <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-violet-700">
+                        Master technique
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mt-12 rounded-3xl border border-amber-200 bg-amber-50 p-6">
+        <h2 className="font-bold text-navy-800">Clinical safety note</h2>
+        <p className="mt-2 text-sm leading-6 text-navy-600">
+          This section is for physiotherapy education. Manual techniques, especially thrust
+          manipulation, cervical techniques, lymphatic work and post-operative treatment,
+          require appropriate clinical training, screening, consent and scope of practice.
+          Technique selection never replaces an individual assessment.
+        </p>
+      </section>
+    </div>
+  );
+}
