@@ -40,6 +40,11 @@ export default async function ResourcesPage() {
     .eq("visibility", "Public")
     .order("created_at", { ascending: false });
 
+  const visibleResources = (resources ?? []).filter(
+    (resource) =>
+      resource.title?.trim().toLowerCase() !== "review book of myofascial release"
+  );
+
   const resourcesJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -50,7 +55,7 @@ export default async function ResourcesPage() {
       "Physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy.",
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: (resources ?? []).map((resource, index) => ({
+      itemListElement: visibleResources.map((resource, index) => ({
         "@type": "ListItem",
         position: index + 1,
         name: resource.title,
@@ -191,14 +196,14 @@ export default async function ResourcesPage() {
         <h2 className="mt-2 text-2xl font-bold text-navy-800">Learning materials</h2>
       </div>
 
-      {!resources?.length && (
+      {!visibleResources.length && (
         <p className="mt-8 rounded-xl border border-grey-200 bg-grey-50 p-8 text-center text-navy-400">
           No additional public resources are available yet — check back soon.
         </p>
       )}
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {resources?.map((r) => {
+        {visibleResources.map((r) => {
           const Icon = accessIcon[r.access_type] ?? BookOpen;
           return (
             <div
