@@ -106,7 +106,6 @@ export default async function HomePage() {
 
   const [
     { data: workshopRows },
-    { data: resourceRows },
     { data: testimonialRows },
   ] = await Promise.all([
     supabase
@@ -114,12 +113,6 @@ export default async function HomePage() {
       .select("*")
       .eq("status", "published")
       .order("start_date", { ascending: true, nullsFirst: false })
-      .limit(3),
-    supabase
-      .from("resources")
-      .select("*")
-      .eq("visibility", "Public")
-      .order("created_at", { ascending: false })
       .limit(3),
     supabase
       .from("testimonials")
@@ -130,7 +123,6 @@ export default async function HomePage() {
   ]);
 
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
-  const featuredResources = resourceRows?.length ? resourceRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
   const latestArticles = knowledgeArticles
     .filter((article) => article.level === "Advanced" || article.updatedAt)
@@ -418,35 +410,30 @@ export default async function HomePage() {
               <h2 className="mt-1 text-2xl font-bold sm:text-3xl">Books & Resources</h2>
             </div>
             <Link
-              href="/resources"
+              href="/resources#order-book"
               className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
             >
-              Browse library <ArrowRight className="h-4 w-4" />
+              Buy book <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          {featuredResources ? (
-            <div className="mt-8 grid gap-5 sm:grid-cols-3">
-              {featuredResources.map((resource) => (
-                <div
-                  key={resource.id}
-                  className="flex items-start gap-3 rounded-2xl border border-grey-200 p-5"
-                >
-                  <BookOpen className="h-6 w-6 flex-shrink-0 text-teal-500" />
-                  <div>
-                    <p className="font-medium text-navy-800">{resource.title}</p>
-                    <p className="mt-1 text-xs uppercase tracking-wide text-navy-400">
-                      {resource.access_type}
-                    </p>
-                  </div>
-                </div>
-              ))}
+          <Link
+            href="/resources#order-book"
+            className="group mt-8 flex flex-col gap-4 rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <BookOpen className="h-6 w-6 flex-shrink-0 text-teal-500" />
+              <div>
+                <p className="font-semibold text-navy-800">Clinical Myofascial Therapy</p>
+                <p className="mt-1 text-sm text-navy-500">
+                  Illustrated Clinical Edition · PKR 2,000 · Expected delivery 3–4 days
+                </p>
+              </div>
             </div>
-          ) : (
-            <p className="mt-8 rounded-2xl border border-grey-200 bg-grey-50 p-6 text-center text-navy-500">
-              Resource library is being expanded. Explore the current collection for available material.
-            </p>
-          )}
+            <span className="inline-flex items-center gap-1 text-sm font-bold text-teal-600">
+              Order now <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
         </div>
       </section>
 
