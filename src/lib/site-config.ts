@@ -170,6 +170,8 @@ export const footerLinks = {
   ],
   students: [
     { label: "Knowledge Hub", href: "/knowledge-hub" },
+    { label: "Manual Therapy Mastery", href: "/manual-therapy" },
+    { label: "Treatment Plans", href: "/treatment-plans" },
     { label: "Clinical Case Lab", href: "/case-lab" },
     { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
     { label: "Workshops", href: "/workshops" },
