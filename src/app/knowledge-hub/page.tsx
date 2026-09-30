@@ -12,6 +12,8 @@ import {
   HeartPulse,
   Stethoscope,
   Users,
+  Hand,
+  ClipboardList,
 } from "lucide-react";
 import {
   knowledgeSpecialties,
@@ -94,6 +96,56 @@ export default function KnowledgeHubPage() {
           </Link>
         </div>
       </div>
+
+      <section className="mt-10">
+        <div className="grid gap-5 md:grid-cols-2">
+          <Link
+            href="/manual-therapy"
+            className="group overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-indigo-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-700 text-white">
+              <Hand className="h-6 w-6" />
+            </span>
+            <p className="mt-4 text-xs font-bold uppercase tracking-widest text-violet-700">
+              Clinical Mastery
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-navy-800">
+              Manual Therapy Mastery
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-navy-600">
+              Study major manual-therapy systems with science, setup, hand placement,
+              dosage, safety, procedure and immediate reassessment.
+            </p>
+            <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-violet-700">
+              Open mastery library
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
+
+          <Link
+            href="/treatment-plans"
+            className="group overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-700 text-white">
+              <ClipboardList className="h-6 w-6" />
+            </span>
+            <p className="mt-4 text-xs font-bold uppercase tracking-widest text-teal-700">
+              Clinical Pathways
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-navy-800">
+              Condition-Based Treatment Plans
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-navy-600">
+              Move from assessment and red flags to modalities, manual therapy,
+              exercise prescription, home program, progression and referral criteria.
+            </p>
+            <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-teal-700">
+              Browse treatment plans
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
+        </div>
+      </section>
 
       <section id="specialties" className="mt-12 scroll-mt-28">
         <div className="flex flex-wrap items-end justify-between gap-3">
