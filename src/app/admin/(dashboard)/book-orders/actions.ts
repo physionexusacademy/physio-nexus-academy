@@ -140,6 +140,27 @@ physionexusacademy.com`,
     });
   }
 
+  if (statusChanged && existingOrder.email && status === "Cancelled") {
+    await sendCustomerEmail({
+      to: existingOrder.email,
+      subject: `Book Order Cancelled – ${existingOrder.reference_id}`,
+      text: `Dear ${existingOrder.full_name},
+
+Your book order with Physio Nexus Academy has been marked as cancelled.
+
+Order ID: ${existingOrder.reference_id}
+Book: ${existingOrder.book_title}
+Quantity: ${existingOrder.quantity}
+
+If you did not request this cancellation, or if you would like to place the order again, please contact Physio Nexus Academy and mention your Order ID.
+
+Regards,
+Physio Nexus Academy
+LEARN • APPLY • TRANSFORM LIVES
+physionexusacademy.com`,
+    });
+  }
+
   revalidatePath("/admin/book-orders");
   revalidatePath("/admin");
 }
