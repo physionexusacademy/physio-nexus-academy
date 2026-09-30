@@ -15,6 +15,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 import { treatmentPlans } from "@/lib/treatment-plans";
+import { treatmentPlanGuides } from "@/lib/treatment-plan-guides";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -71,8 +72,9 @@ function PlanSection({
 export default async function TreatmentPlanDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const plan = treatmentPlans.find((item) => item.slug === slug);
+  const guide = treatmentPlanGuides[slug];
 
-  if (!plan) notFound();
+  if (!plan || !guide) notFound();
 
   return (
     <div className="container-content section-padding">
@@ -90,6 +92,33 @@ export default async function TreatmentPlanDetailPage({ params }: PageProps) {
         </span>
         <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">{plan.name}</h1>
         <p className="mt-4 max-w-3xl text-base leading-7 text-emerald-50">{plan.summary}</p>
+      </section>
+
+      <section className="mt-8 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
+        <div className="border-b border-emerald-100 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
+            Master-Level Clinical Plan
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+            How to think, treat and progress this condition
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+            This section converts the condition into a real clinical workflow: what to think first,
+            what to do in the first session, how to dose exercise and modalities, how to apply
+            manual therapy, when to progress and which mistakes to avoid.
+          </p>
+        </div>
+
+        <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
+          <PlanSection title="Clinical Reasoning — Think Before Treating" items={guide.clinicalLogic} icon={Stethoscope} tone="border-indigo-100 bg-indigo-50/70" />
+          <PlanSection title="First Session — Practical Sequence" items={guide.firstSession} icon={ClipboardCheck} tone="border-cyan-100 bg-cyan-50/70" />
+          <PlanSection title="Exercise Dosage — Sets, Reps & Frequency" items={guide.exerciseDose} icon={Dumbbell} tone="border-emerald-100 bg-emerald-50/70" />
+          <PlanSection title="Manual Therapy — How to Apply It Here" items={guide.manualApplication} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
+          <PlanSection title="Modalities — When & How Much" items={guide.modalityDose} icon={Activity} tone="border-amber-100 bg-amber-50/70" />
+          <PlanSection title="Progression Rules" items={guide.progressionRules} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
+          <PlanSection title="Common Clinical Mistakes" items={guide.commonMistakes} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
+          <PlanSection title="Patient Education — What to Explain" items={guide.patientEducation} icon={HeartPulse} tone="border-teal-100 bg-teal-50/70" />
+        </div>
       </section>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
