@@ -5,6 +5,7 @@ import { knowledgeSpecialties } from "@/lib/knowledge-content";
 import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 import { manualTherapyTechniques } from "@/lib/manual-therapy";
+import { regionalManualApplications } from "@/lib/manual-therapy-regional";
 import { treatmentPlans } from "@/lib/treatment-plans";
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
   "/resources",
   "/knowledge-hub",
   "/manual-therapy",
+  "/manual-therapy/regions",
   "/treatment-plans",
   "/case-lab",
   "/clinical-quiz",
@@ -102,6 +104,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
+    url: `${base}/manual-therapy/regions/${encodeURIComponent(item.slug)}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.82,
+  }));
+
   return [
     ...staticRoutes,
     ...workshopRoutes,
@@ -110,6 +118,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...specialtyRoutes,
     ...caseRoutes,
     ...manualTherapyRoutes,
+    ...regionalManualRoutes,
     ...treatmentPlanRoutes,
   ];
 }
