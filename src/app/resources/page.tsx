@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import {
   BadgeCheck,
   BookOpen,
@@ -69,7 +68,7 @@ export default async function ResourcesPage() {
     },
     bookEdition: "First Edition 2026",
     image:
-      "https://physionexusacademy.com/images/clinical-myofascial-therapy-cover.webp",
+      "https://physionexusacademy.com/api/book-cover",
     publisher: {
       "@type": "Organization",
       name: "Physio Nexus Academy",
@@ -113,13 +112,13 @@ export default async function ResourcesPage() {
         <div className="grid lg:grid-cols-[0.8fr_1.2fr]">
           <div className="relative flex items-center justify-center bg-black/10 p-6 sm:p-10">
             <div className="relative w-full max-w-[360px] overflow-hidden rounded-xl border border-white/15 shadow-2xl">
-              <Image
-                src="/images/clinical-myofascial-therapy-cover.webp"
+              <img
+                src="/api/book-cover"
                 alt="Clinical Myofascial Therapy — Illustrated Clinical Edition book cover"
-                width={640}
-                height={960}
+                width={512}
+                height={768}
                 className="h-auto w-full"
-                priority
+                loading="eager"
               />
             </div>
           </div>
