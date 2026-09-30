@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/manual-therapy";
 import { manualApplicationGuides } from "@/lib/manual-therapy-guides";
+import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -70,6 +71,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const guide = manualApplicationGuides[slug];
+  const regionalApplications = getApplicationsForTechnique(slug);
 
   if (!technique || !guide) notFound();
 
@@ -181,6 +183,35 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           tone="border-indigo-100 bg-indigo-50/70"
         />
       </div>
+
+      {regionalApplications.length ? (
+        <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
+            Region-Wise Applications
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-navy-800">
+            Apply {technique.name} in specific body regions
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+            Open a regional application to see the exact patient position, therapist position,
+            stabilization, contact point, direction of force, dosage, steps and reassessment.
+          </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {regionalApplications.map((application) => (
+              <Link
+                key={application.slug}
+                href={"/manual-therapy/regions/" + application.slug}
+                className="rounded-2xl border border-violet-100 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <p className="text-xs font-bold uppercase tracking-wide text-violet-600">
+                  {application.region}
+                </p>
+                <p className="mt-1 font-bold text-navy-800">{application.title}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-8 rounded-2xl border border-grey-200 bg-white p-6">
         <h2 className="font-bold text-navy-800">Mastery sequence</h2>
