@@ -6,7 +6,8 @@ type OverviewTable =
   | "workshops"
   | "resources"
   | "appointments"
-  | "home_visit_requests";
+  | "home_visit_requests"
+  | "book_orders";
 
 async function count(table: OverviewTable, allowAdminFallback = false) {
   try {
@@ -42,16 +43,18 @@ async function count(table: OverviewTable, allowAdminFallback = false) {
 }
 
 export default async function AdminOverviewPage() {
-  const [workshops, resources, appointments, homeVisits] = await Promise.all([
+  const [workshops, resources, appointments, homeVisits, bookOrders] = await Promise.all([
     count("workshops"),
     count("resources"),
     count("appointments", true),
     count("home_visit_requests", true),
+    count("book_orders", true),
   ]);
 
   const cards = [
     { label: "Total Workshops", value: workshops, href: "/admin/workshops" },
     { label: "Total Resources", value: resources, href: "/admin/resources" },
+    { label: "Book Orders", value: bookOrders, href: "/admin/book-orders" },
     { label: "Total Patient Appointments", value: appointments, href: "/admin/appointments" },
     { label: "Total Home Visit Requests", value: homeVisits, href: "/admin/home-visits" },
   ];
