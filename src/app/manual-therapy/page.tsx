@@ -89,12 +89,20 @@ export default function ManualTherapyPage() {
               Study by manual-therapy family
             </h2>
           </div>
-          <Link
-            href="/treatment-plans"
-            className="inline-flex items-center gap-1 text-sm font-bold text-teal-700"
-          >
-            Apply techniques in treatment plans <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href="/manual-therapy/regions"
+              className="inline-flex items-center gap-1 text-sm font-bold text-violet-700"
+            >
+              Open regional applications <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/treatment-plans"
+              className="inline-flex items-center gap-1 text-sm font-bold text-teal-700"
+            >
+              Apply techniques in treatment plans <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
 
         <div className="mt-8 space-y-8">
@@ -138,6 +146,25 @@ export default function ManualTherapyPage() {
             );
           })}
         </div>
+      </section>
+
+      <section className="mt-12 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50 p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
+          Regional Encyclopedia
+        </p>
+        <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+          Learn the same technique by body region
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+          Open cervical, thoracic, lumbar, shoulder, elbow, hip, knee, ankle and neural applications
+          with exact positioning, stabilization, contact, force direction, dosage and reassessment.
+        </p>
+        <Link
+          href="/manual-therapy/regions"
+          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white"
+        >
+          Browse regional applications <ArrowRight className="h-4 w-4" />
+        </Link>
       </section>
 
       <section className="mt-12 rounded-3xl border border-amber-200 bg-amber-50 p-6">
