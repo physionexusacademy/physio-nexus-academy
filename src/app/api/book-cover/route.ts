@@ -4,7 +4,6 @@ import part3 from "./part3";
 import part4 from "./part4";
 import part5 from "./part5";
 
-export const runtime = "edge";
 
 export async function GET() {
   const base64 = part1 + part2 + part3 + part4 + part5;
