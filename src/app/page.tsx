@@ -172,6 +172,15 @@ export default async function HomePage() {
               >
                 Book Physiotherapy
               </Button>
+              <Button
+                href="/resources#order-book"
+                variant="secondary"
+                size="lg"
+                className="bg-amber-300 text-navy-900 hover:bg-amber-200"
+              >
+                <BookOpen className="h-4 w-4" />
+                Order Book
+              </Button>
             </div>
 
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-grey-300">
