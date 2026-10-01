@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamic = "force-static";
+export const revalidate = 300;
 
 const portalActions = [
   {
@@ -128,13 +128,13 @@ export default async function HomePage() {
   ] = await Promise.all([
     supabase
       .from("workshops")
-      .select("*")
+      .select("id,slug,title,summary,city,start_date")
       .eq("status", "published")
       .order("start_date", { ascending: true, nullsFirst: false })
       .limit(3),
     supabase
       .from("testimonials")
-      .select("*")
+      .select("id,content,name,role,sort_order")
       .eq("status", "published")
       .order("sort_order", { ascending: true })
       .limit(3),
