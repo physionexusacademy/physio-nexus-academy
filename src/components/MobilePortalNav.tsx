@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, BrainCircuit, CalendarDays, HeartPulse, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,7 +29,7 @@ export function MobilePortalNav() {
               : pathname === item.href || pathname.startsWith(item.href + "/");
 
           return (
-            <Link
+            <a
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
@@ -43,7 +42,7 @@ export function MobilePortalNav() {
             >
               <Icon className="h-5 w-5" />
               <span>{item.label}</span>
-            </Link>
+            </a>
           );
         })}
       </div>
