@@ -63,12 +63,12 @@ export default async function SpecialtyPage({ params }: { params: Promise<{ slug
                 ))}
               </div>
             </div>
-            <Link
+            <a
               href="/msk-injuries"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-orange-700"
             >
               Open MSK Clinical Library <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
         </section>
       ) : null}

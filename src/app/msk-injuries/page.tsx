@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   Activity,
   ArrowRight,
@@ -11,7 +10,10 @@ import {
   ShieldCheck,
   Stethoscope,
 } from "lucide-react";
-import { mskCategories, mskConditions, mskRegions } from "@/lib/msk-injury-hub";
+import { mskCategories, mskConditionIndex, mskRegions } from "@/lib/msk-injury-index";
+
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title: "MSK Clinical Injury & Rehabilitation Hub",
@@ -52,7 +54,7 @@ export default function MSKInjuryHubPage() {
           phased rehabilitation.
         </p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
-          <span className="rounded-full bg-white/10 px-4 py-2">{mskConditions.length} complete master conditions</span>
+          <span className="rounded-full bg-white/10 px-4 py-2">{mskConditionIndex.length} complete master conditions</span>
           <span className="rounded-full bg-white/10 px-4 py-2">{mskRegions.length} body regions</span>
           <span className="rounded-full bg-white/10 px-4 py-2">{mskCategories.length} pathology groups</span>
           <span className="rounded-full bg-white/10 px-4 py-2">Evidence-informed rehabilitation</span>
@@ -84,7 +86,7 @@ export default function MSKInjuryHubPage() {
         </div>
         <div className="mt-7 space-y-9">
           {mskRegions.map((region) => {
-            const items = mskConditions.filter((item) => item.region === region);
+            const items = mskConditionIndex.filter((item) => item.region === region);
             return (
               <div key={region}>
                 <h3 className="text-xl font-bold text-navy-800">{region}</h3>
@@ -92,7 +94,7 @@ export default function MSKInjuryHubPage() {
                   {items.map((item) => {
                     const Icon = categoryIcons[item.category] ?? Activity;
                     return (
-                      <Link
+                      <a
                         key={item.slug}
                         href={"/msk-injuries/" + item.slug}
                         className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg"
@@ -110,7 +112,7 @@ export default function MSKInjuryHubPage() {
                           Open clinical guide
                           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </span>
-                      </Link>
+                      </a>
                     );
                   })}
                 </div>
