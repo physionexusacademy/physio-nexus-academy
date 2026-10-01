@@ -8,10 +8,11 @@ export function PwaRuntime() {
       return;
     }
 
+    const hadController = Boolean(navigator.serviceWorker.controller);
     let refreshing = false;
 
     const handleControllerChange = () => {
-      if (refreshing) return;
+      if (!hadController || refreshing) return;
       refreshing = true;
       window.location.reload();
     };
