@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { knowledgeArticles } from "@/lib/knowledge-content";
 
 export const metadata: Metadata = {
@@ -120,7 +120,7 @@ const portalActions = [
 ] as const;
 
 export default async function HomePage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const [
     { data: workshopRows },
