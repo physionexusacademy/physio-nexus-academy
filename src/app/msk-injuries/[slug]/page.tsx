@@ -19,6 +19,10 @@ import { mskConditions, type MSKTest } from "@/lib/msk-injury-hub";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+export const revalidate = false;
+
 export function generateStaticParams() {
   return mskConditions.map((item) => ({ slug: item.slug }));
 }
@@ -122,7 +126,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
 
   return (
     <div className="container-content section-padding">
-      <Link href="/msk-injuries" className="inline-flex items-center gap-1 text-sm font-bold text-orange-700">
+      <Link href="/msk-injuries" prefetch={false} className="inline-flex items-center gap-1 text-sm font-bold text-orange-700">
         <ArrowLeft className="h-4 w-4" />
         MSK Injury & Rehabilitation Hub
       </Link>
