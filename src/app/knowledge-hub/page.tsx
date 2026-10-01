@@ -99,7 +99,7 @@ export default function KnowledgeHubPage() {
 
       <section className="mt-10">
         <div className="grid gap-5 md:grid-cols-3">
-          <Link
+          <a
             href="/msk-injuries"
             className="group overflow-hidden rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50 via-white to-rose-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
           >
@@ -120,7 +120,7 @@ export default function KnowledgeHubPage() {
               Open clinical library
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
-          </Link>
+          </a>
           <Link
             href="/manual-therapy"
             className="group overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-indigo-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
