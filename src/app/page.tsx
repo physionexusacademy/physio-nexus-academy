@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { knowledgeArticles } from "@/lib/knowledge-content";
 
 export const metadata: Metadata = {
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamic = "force-static";
+export const revalidate = 300;
 
 const portalActions = [
   {
@@ -120,7 +120,7 @@ const portalActions = [
 ] as const;
 
 export default async function HomePage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const [
     { data: workshopRows },
@@ -128,13 +128,13 @@ export default async function HomePage() {
   ] = await Promise.all([
     supabase
       .from("workshops")
-      .select("*")
+      .select("id,slug,title,summary,city,start_date")
       .eq("status", "published")
       .order("start_date", { ascending: true, nullsFirst: false })
       .limit(3),
     supabase
       .from("testimonials")
-      .select("*")
+      .select("id,content,name,role,sort_order")
       .eq("status", "published")
       .order("sort_order", { ascending: true })
       .limit(3),
