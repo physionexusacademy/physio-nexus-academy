@@ -33,7 +33,6 @@ async function fetchNavigation(request) {
   try {
     return await fetch(request, {
       signal: controller.signal,
-      cache: "no-store",
     });
   } catch {
     return (
