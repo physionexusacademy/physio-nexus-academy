@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export const metadata: Metadata = {
   title: "Physiotherapy Workshops in Pakistan | Karachi & Hyderabad",
@@ -13,13 +13,13 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60; // re-fetch published workshops at most once a minute
+export const dynamic = "force-static";\nexport const revalidate = 300; // refresh public workshop data at most every 5 minutes
 
 export default async function WorkshopsPage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: workshops } = await supabase
     .from("workshops")
-    .select("*")
+    .select("id,slug,title,summary,start_date,city,seat_limit,topics,is_past")
     .eq("status", "published")
     .order("start_date", { ascending: true, nullsFirst: false });
 
