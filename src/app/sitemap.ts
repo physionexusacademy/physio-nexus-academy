@@ -6,7 +6,7 @@ import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 import { manualTherapyTechniques } from "@/lib/manual-therapy";
 import { regionalManualApplications } from "@/lib/manual-therapy-regional";
-import { treatmentPlans } from "@/lib/treatment-plans";
+import { treatmentPlans } from "@/lib/treatment-plans";\nimport { mskConditions } from "@/lib/msk-injury-hub";
 
 const routes = [
   "",
@@ -19,7 +19,7 @@ const routes = [
   "/knowledge-hub",
   "/manual-therapy",
   "/manual-therapy/regions",
-  "/treatment-plans",
+  "/treatment-plans",\n  "/msk-injuries",
   "/case-lab",
   "/clinical-quiz",
   "/research",
@@ -104,7 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
+  const mskRoutes: MetadataRoute.Sitemap = mskConditions.map((item) => ({\n    url: \\`\\${base}/msk-injuries/\\${encodeURIComponent(item.slug)}\\`,\n    changeFrequency: "monthly" as const,\n    priority: 0.82,\n  }));\n\n  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
     url: `${base}/manual-therapy/regions/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
     priority: 0.82,

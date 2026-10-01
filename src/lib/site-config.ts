@@ -152,7 +152,7 @@ export const whatsappLink = (message?: string) => {
 
 export const mainNav = [
   { label: "Home", href: "/" },
-  { label: "Learn", href: "/knowledge-hub" },
+  { label: "Learn", href: "/knowledge-hub" },\n  { label: "MSK Hub", href: "/msk-injuries" },
   { label: "Case Lab", href: "/case-lab" },
   { label: "Workshops", href: "/workshops" },
   { label: "Resources", href: "/resources" },
@@ -170,7 +170,7 @@ export const footerLinks = {
   ],
   students: [
     { label: "Knowledge Hub", href: "/knowledge-hub" },
-    { label: "Manual Therapy Mastery", href: "/manual-therapy" },
+    { label: "Manual Therapy Mastery", href: "/manual-therapy" },\n    { label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" },
     { label: "Treatment Plans", href: "/treatment-plans" },
     { label: "Clinical Case Lab", href: "/case-lab" },
     { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
