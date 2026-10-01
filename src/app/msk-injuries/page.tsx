@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 import { mskCategories, mskConditions, mskRegions } from "@/lib/msk-injury-hub";
 
+export const dynamic = "force-static";
+export const revalidate = false;
+
 export const metadata: Metadata = {
   title: "MSK Clinical Injury & Rehabilitation Hub",
   description:
@@ -95,6 +98,7 @@ export default function MSKInjuryHubPage() {
                       <Link
                         key={item.slug}
                         href={"/msk-injuries/" + item.slug}
+                        prefetch={false}
                         className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg"
                       >
                         <div className="flex items-center justify-between gap-3">
