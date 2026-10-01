@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-static";\nexport const revalidate = 300; // refresh public workshop data at most every 5 minutes
+export const dynamic = "force-static";
+export const revalidate = 300; // refresh public workshop data at most every 5 minutes
 
 export default async function WorkshopsPage() {
   const supabase = createPublicClient();
