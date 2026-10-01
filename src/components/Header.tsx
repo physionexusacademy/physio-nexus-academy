@@ -109,7 +109,7 @@ export function Header() {
         {/* Desktop nav */}
         <nav className="hidden items-center gap-4 lg:flex" aria-label="Main navigation">
           {mainNav.filter((item) => item.href !== "/").map((item) => (
-            <Link
+            <a
               key={item.href}
               href={item.href}
               aria-current={pathname === item.href ? "page" : undefined}
@@ -119,7 +119,7 @@ export function Header() {
               )}
             >
               {item.label}
-            </Link>
+            </a>
           ))}
         </nav>
 
@@ -167,7 +167,7 @@ export function Header() {
   </p>
 </a>
           {mainNav.map((item) => (
-            <Link
+            <a
               key={item.href}
               href={item.href}
               tabIndex={open ? 0 : -1}
@@ -176,7 +176,7 @@ export function Header() {
               className="rounded-md px-3 py-3 text-base font-medium text-navy-800 hover:bg-navy-50"
             >
               {item.label}
-            </Link>
+            </a>
           ))}
           <div className="mt-4 flex flex-col gap-3 px-3">
             <Button href="/appointment" variant="secondary" size="lg" tabIndex={open ? 0 : -1} className="w-full">
