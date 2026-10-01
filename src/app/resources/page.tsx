@@ -8,7 +8,7 @@ import {
   ShoppingCart,
   Truck,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { BookOrderForm } from "./BookOrderForm";
 
 export const metadata: Metadata = {
@@ -20,7 +20,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
+export const dynamic = "force-static";
+export const revalidate = 300;
 
 const accessIcon: Record<string, typeof Download> = {
   "Free download": Download,
@@ -33,10 +34,10 @@ const BOOK_TITLE = "Clinical Myofascial Therapy";
 const BOOK_SUBTITLE = "Illustrated Clinical Edition";
 
 export default async function ResourcesPage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: resources } = await supabase
     .from("resources")
-    .select("*")
+    .select("id,title,author,description,access_type,file_url,external_link,created_at")
     .eq("visibility", "Public")
     .order("created_at", { ascending: false });
 
@@ -118,7 +119,7 @@ export default async function ResourcesPage() {
           <div className="relative flex items-center justify-center bg-black/10 p-6 sm:p-10">
             <div className="relative w-full max-w-[360px] overflow-hidden rounded-xl border border-white/15 shadow-2xl">
               <img
-                src="/api/book-cover"
+                src="/images/clinical-myofascial-therapy-cover.svg"
                 alt="Clinical Myofascial Therapy — Illustrated Clinical Edition book cover"
                 width={512}
                 height={768}
