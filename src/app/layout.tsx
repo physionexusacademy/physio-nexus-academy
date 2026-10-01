@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
+import { PwaRuntime } from "@/components/PwaRuntime";
 import { siteConfig } from "@/lib/site-config";
 
 const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
@@ -148,6 +149,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to main content
         </a>
+        <PwaRuntime />
         <Header />
         <main id="main-content" className="flex-1">
           {children}
