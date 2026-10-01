@@ -98,7 +98,29 @@ export default function KnowledgeHubPage() {
       </div>
 
       <section className="mt-10">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
+          <Link
+            href="/msk-injuries"
+            className="group overflow-hidden rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50 via-white to-rose-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-600 text-white">
+              <Activity className="h-6 w-6" />
+            </span>
+            <p className="mt-4 text-xs font-bold uppercase tracking-widest text-orange-700">
+              MSK Clinical Library
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-navy-800">
+              MSK Injury & Rehabilitation
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-navy-600">
+              Study sprains, strains, tendinopathies, tendon ruptures, arthritis,
+              instability and nerve-compression conditions with tests and phased rehabilitation.
+            </p>
+            <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-orange-700">
+              Open clinical library
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
           <Link
             href="/manual-therapy"
             className="group overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-indigo-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
