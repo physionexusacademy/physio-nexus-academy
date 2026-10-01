@@ -15,10 +15,6 @@ export function InstallApp() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    if ("serviceWorker" in navigator && location.protocol === "https:") {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
-    }
-
     const standalone = window.matchMedia("(display-mode: standalone)");
     const isInstalled = () =>
       standalone.matches ||
