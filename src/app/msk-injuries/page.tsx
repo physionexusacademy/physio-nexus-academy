@@ -11,7 +11,7 @@ import {
   ShieldCheck,
   Stethoscope,
 } from "lucide-react";
-import { mskCategories, mskConditions, mskRegions } from "@/lib/msk-injury-hub";
+import { mskCategories, mskConditionIndex, mskRegions } from "@/lib/msk-injury-index";
 
 export const dynamic = "force-static";
 export const revalidate = false;
@@ -55,7 +55,7 @@ export default function MSKInjuryHubPage() {
           phased rehabilitation.
         </p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
-          <span className="rounded-full bg-white/10 px-4 py-2">{mskConditions.length} complete master conditions</span>
+          <span className="rounded-full bg-white/10 px-4 py-2">{mskConditionIndex.length} complete master conditions</span>
           <span className="rounded-full bg-white/10 px-4 py-2">{mskRegions.length} body regions</span>
           <span className="rounded-full bg-white/10 px-4 py-2">{mskCategories.length} pathology groups</span>
           <span className="rounded-full bg-white/10 px-4 py-2">Evidence-informed rehabilitation</span>
@@ -87,7 +87,7 @@ export default function MSKInjuryHubPage() {
         </div>
         <div className="mt-7 space-y-9">
           {mskRegions.map((region) => {
-            const items = mskConditions.filter((item) => item.region === region);
+            const items = mskConditionIndex.filter((item) => item.region === region);
             return (
               <div key={region}>
                 <h3 className="text-xl font-bold text-navy-800">{region}</h3>
