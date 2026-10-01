@@ -13,7 +13,7 @@ import {
   Search,
   ShieldAlert,
   Stethoscope,
-  TestTube2,
+  ClipboardCheck,
 } from "lucide-react";
 import { mskConditions, type MSKTest } from "@/lib/msk-injury-hub";
 
@@ -67,7 +67,7 @@ function TestCard({ test }: { test: MSKTest }) {
   return (
     <article className="rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="flex items-start gap-3">
-        <TestTube2 className="mt-1 h-6 w-6 flex-none text-cyan-700" />
+        <ClipboardCheck className="mt-1 h-6 w-6 flex-none text-cyan-700" />
         <div>
           <h3 className="text-xl font-bold text-navy-800">{test.name}</h3>
           <p className="mt-1 text-sm leading-6 text-navy-600">{test.purpose}</p>
@@ -81,7 +81,7 @@ function TestCard({ test }: { test: MSKTest }) {
         ].map(([label, value]) => (
           <div key={label} className="rounded-xl bg-cyan-50 p-4">
             <p className="text-xs font-bold uppercase tracking-wider text-cyan-800">{label}</p>
-            <p className="mt-2 text-sm leading-6 text-navy-650">{value}</p>
+            <p className="mt-2 text-sm leading-6 text-navy-600">{value}</p>
           </div>
         ))}
       </div>
