@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   Activity,
   ArrowRight,
@@ -95,10 +94,9 @@ export default function MSKInjuryHubPage() {
                   {items.map((item) => {
                     const Icon = categoryIcons[item.category] ?? Activity;
                     return (
-                      <Link
+                      <a
                         key={item.slug}
                         href={"/msk-injuries/" + item.slug}
-                        prefetch={false}
                         className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg"
                       >
                         <div className="flex items-center justify-between gap-3">
@@ -114,7 +112,7 @@ export default function MSKInjuryHubPage() {
                           Open clinical guide
                           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </span>
-                      </Link>
+                      </a>
                     );
                   })}
                 </div>
