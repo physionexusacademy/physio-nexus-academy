@@ -74,7 +74,7 @@ export default async function ResourcesPage() {
     },
     bookEdition: "First Edition 2026",
     image:
-      "https://physionexusacademy.com/api/book-cover",
+      "https://physionexusacademy.com/images/clinical-myofascial-therapy-cover.svg",
     publisher: {
       "@type": "Organization",
       name: "Physio Nexus Academy",
