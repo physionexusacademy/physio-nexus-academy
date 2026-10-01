@@ -18,12 +18,12 @@ function FooterColumn({
       <ul className="space-y-2">
         {links.map((link) => (
           <li key={link.href}>
-            <Link
+            <a
               href={link.href}
               className="text-sm text-grey-200 hover:text-white"
             >
               {link.label}
-            </Link>
+            </a>
           </li>
         ))}
       </ul>
@@ -102,13 +102,13 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap gap-4">
             {footerLinks.legal.map((link) => (
-              <Link
+              <a
                 key={link.href}
                 href={link.href}
                 className="hover:text-white"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
