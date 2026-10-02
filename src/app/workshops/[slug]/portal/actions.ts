@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import {
   clearWorkshopPortalSession,
   createWorkshopPortalSession,
@@ -15,27 +16,28 @@ function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
 }
 
-export async function loginToWorkshopPortal(values: {
-  slug: string;
-  registrationId: string;
-  email: string;
-}) {
-  const slug = values.slug.trim();
-  const registrationId = normalizeReferenceId(values.registrationId);
-  const email = normalizeEmail(values.email);
+function portalUrl(slug: string, error?: string) {
+  const base = `/workshops/${slug}/portal`;
+  return error ? `${base}?error=${encodeURIComponent(error)}` : base;
+}
 
-  if (!slug || registrationId.length < 8) {
-    return { ok: false, error: "Please enter your valid Registration ID." };
-  }
+export async function loginToWorkshopPortal(
+  slug: string,
+  formData: FormData,
+) {
+  const registrationId = normalizeReferenceId(
+    String(formData.get("registrationId") || ""),
+  );
+  const email = normalizeEmail(String(formData.get("email") || ""));
 
-  if (!/^\S+@\S+\.\S+$/.test(email)) {
-    return { ok: false, error: "Please enter your registered email address." };
+  if (!slug || registrationId.length < 8 || !/^\S+@\S+\.\S+$/.test(email)) {
+    redirect(portalUrl(slug, "invalid-details"));
   }
 
   const workshop = await getWorkshopPortalPublicInfo(slug);
 
   if (!workshop) {
-    return { ok: false, error: "This workshop portal is not available." };
+    redirect(portalUrl(slug, "unavailable"));
   }
 
   const supabase = createAdminClient();
@@ -52,7 +54,7 @@ export async function loginToWorkshopPortal(values: {
       code: error.code,
       message: error.message,
     });
-    return { ok: false, error: "Unable to verify your registration right now." };
+    redirect(portalUrl(slug, "system"));
   }
 
   if (
@@ -60,21 +62,24 @@ export async function loginToWorkshopPortal(values: {
     registration.email.trim().toLowerCase() !== email ||
     registration.status === "Cancelled"
   ) {
-    return {
-      ok: false,
-      error: "Registration ID and email do not match an active participant.",
-    };
+    redirect(portalUrl(slug, "invalid-details"));
   }
 
-  await createWorkshopPortalSession({
-    workshopId: workshop.id,
-    registrationId: registration.id,
-    slug,
-  });
+  try {
+    await createWorkshopPortalSession({
+      workshopId: workshop.id,
+      registrationId: registration.id,
+      slug,
+    });
+  } catch (error) {
+    console.error("PNA_WORKSHOP_PORTAL_LOGIN_SESSION_ERROR", error);
+    redirect(portalUrl(slug, "system"));
+  }
 
-  return { ok: true, error: null };
+  redirect(portalUrl(slug));
 }
 
 export async function logoutFromWorkshopPortal(slug: string) {
   await clearWorkshopPortalSession(slug);
+  redirect(portalUrl(slug));
 }
