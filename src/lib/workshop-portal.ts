@@ -36,7 +36,7 @@ export async function getWorkshopPortalPublicInfo(slug: string) {
   const { data } = await supabase
     .from("workshops")
     .select(
-      "id, slug, title, subtitle, start_date, end_date, start_time, end_time, city, venue, contact_hours, topics, status",
+      "id, slug, title, subtitle, start_date, end_date, start_time, end_time, city, venue, contact_hours, topics, status, assessment_open",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -114,7 +114,7 @@ export async function getWorkshopPortalSession(slug: string) {
     supabase
       .from("workshops")
       .select(
-        "id, slug, title, subtitle, start_date, end_date, start_time, end_time, city, venue, contact_hours, topics, status",
+        "id, slug, title, subtitle, start_date, end_date, start_time, end_time, city, venue, contact_hours, topics, status, assessment_open",
       )
       .eq("id", session.workshop_id)
       .eq("slug", slug)
