@@ -42,12 +42,12 @@ export async function loginToWorkshopPortal(
 
   const supabase = createAdminClient();
 
-  const { data: registration, error } = await supabase
+  const { data: registrations, error } = await supabase
     .from("workshop_registrations")
     .select("id, email, status")
     .eq("workshop_id", workshop.id)
     .eq("reference_id", registrationId)
-    .maybeSingle();
+    .limit(5);
 
   if (error) {
     console.error("PNA_WORKSHOP_PORTAL_LOGIN_READ_ERROR", {
@@ -57,11 +57,13 @@ export async function loginToWorkshopPortal(
     redirect(portalUrl(slug, "system"));
   }
 
-  if (
-    !registration ||
-    registration.email.trim().toLowerCase() !== email ||
-    registration.status === "Cancelled"
-  ) {
+  const registration = registrations?.find(
+    (item) =>
+      item.email.trim().toLowerCase() === email &&
+      item.status !== "Cancelled",
+  );
+
+  if (!registration) {
     redirect(portalUrl(slug, "invalid-details"));
   }
 
