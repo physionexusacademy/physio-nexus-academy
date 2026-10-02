@@ -134,6 +134,13 @@ export default async function AdminWorkshopsPage() {
       Manage Registrations
     </Link>
 
+    <Link
+      href={`/admin/workshops/${w.id}/assessment-results`}
+      className="text-xs font-semibold text-amber-700 hover:text-amber-800 hover:underline"
+    >
+      Assessment Results
+    </Link>
+
     <a
       href={`/admin/workshops/${w.id}/export`}
       className="flex items-center gap-1 text-xs font-semibold text-teal-600 hover:underline"
