@@ -102,11 +102,6 @@ export async function getWorkshopPortalSession(slug: string) {
   }
 
   if (new Date(session.expires_at).getTime() <= Date.now()) {
-    await supabase
-      .from("workshop_portal_sessions")
-      .delete()
-      .eq("id", session.id);
-
     return null;
   }
 
@@ -130,11 +125,6 @@ export async function getWorkshopPortalSession(slug: string) {
   ]);
 
   if (!workshop || !registration || registration.status === "Cancelled") {
-    await supabase
-      .from("workshop_portal_sessions")
-      .delete()
-      .eq("id", session.id);
-
     return null;
   }
 
