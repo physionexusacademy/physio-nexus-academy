@@ -23,3 +23,9 @@ create index if not exists idx_workshop_portal_sessions_expires
 -- No public policies are created. Only the server-side service-role client
 -- can validate participant sessions.
 alter table public.workshop_portal_sessions enable row level security;
+
+
+-- The server-side service-role client still needs table privileges even though
+-- it bypasses RLS. Public roles receive no access.
+grant select, insert, delete on table public.workshop_portal_sessions to service_role;
+revoke all on table public.workshop_portal_sessions from anon, authenticated;
