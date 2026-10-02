@@ -1,3 +1,5 @@
+import "server-only";
+
 export type WorkshopAssessmentQuestion = {
   id: string;
   topic: string;
