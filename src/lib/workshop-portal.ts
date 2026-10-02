@@ -5,6 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 14;
 
+export const WORKSHOP_PORTAL_SLUG =
+  "advanced-manual-therapy-workshop-hyderabad-oct-2026";
+
 function getCookieName(slug: string) {
   const safeSlug = slug.replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 120);
   return `pna_portal_${safeSlug}`;
@@ -26,6 +29,8 @@ async function hashToken(token: string) {
 }
 
 export async function getWorkshopPortalPublicInfo(slug: string) {
+  if (slug !== WORKSHOP_PORTAL_SLUG) return null;
+
   const supabase = createAdminClient();
 
   const { data } = await supabase
