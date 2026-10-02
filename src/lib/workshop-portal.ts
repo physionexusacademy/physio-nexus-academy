@@ -98,7 +98,6 @@ export async function getWorkshopPortalSession(slug: string) {
     .maybeSingle();
 
   if (!session) {
-    cookieStore.delete(cookieName);
     return null;
   }
 
@@ -108,7 +107,6 @@ export async function getWorkshopPortalSession(slug: string) {
       .delete()
       .eq("id", session.id);
 
-    cookieStore.delete(cookieName);
     return null;
   }
 
@@ -137,7 +135,6 @@ export async function getWorkshopPortalSession(slug: string) {
       .delete()
       .eq("id", session.id);
 
-    cookieStore.delete(cookieName);
     return null;
   }
 
