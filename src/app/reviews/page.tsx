@@ -26,6 +26,19 @@ export default function ReviewsPage() {
           <p className="mx-auto mt-4 max-w-2xl text-grey-200">
             Your feedback helps Physio Nexus Academy improve its workshops, learning resources and patient services.
           </p>
+
+          <a
+            href={siteConfig.contact.googleReviewUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto mt-7 inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 text-base font-bold text-navy-800 shadow-lg transition hover:-translate-y-0.5 hover:bg-grey-50 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:text-lg"
+          >
+            Review Us on Google ⭐ <ExternalLink className="h-5 w-5" />
+          </a>
+
+          <p className="mx-auto mt-3 max-w-xl text-xs leading-5 text-grey-300">
+            Opens the official Physio Nexus Academy Google review form in a new tab.
+          </p>
         </div>
       </section>
 
