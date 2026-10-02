@@ -165,6 +165,24 @@ export default async function EditWorkshopPage({
           Mark as past workshop
         </label>
 
+        <label className="flex items-start gap-3 rounded-xl border border-teal-200 bg-teal-50 p-4 text-sm text-navy-700 sm:col-span-2">
+          <input
+            type="checkbox"
+            name="assessment_open"
+            defaultChecked={Boolean(w.assessment_open)}
+            className="mt-0.5 h-4 w-4 accent-teal-600"
+          />
+          <span>
+            <span className="block font-semibold text-navy-800">
+              Open Final Assessment
+            </span>
+            <span className="mt-1 block text-xs leading-5 text-navy-500">
+              When enabled, registered participants can start the 30-question
+              post-workshop assessment from their participant portal.
+            </span>
+          </span>
+        </label>
+
         <div className="sm:col-span-2">
           <button
             type="submit"
