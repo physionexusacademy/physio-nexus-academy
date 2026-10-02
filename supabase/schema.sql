@@ -138,6 +138,7 @@ create table if not exists workshops (
   poster_image_url text,
   gallery_images text[],
   is_past boolean not null default false,
+  assessment_open boolean not null default false,
   status text not null default 'draft' check (status in ('draft','published')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -165,6 +166,29 @@ create table if not exists workshop_registrations (
 );
 create index if not exists idx_registrations_workshop on workshop_registrations(workshop_id);
 create index if not exists idx_workshop_registrations_status on workshop_registrations(status);
+
+create table if not exists workshop_assessment_attempts (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null references workshops(id) on delete cascade,
+  registration_id uuid not null references workshop_registrations(id) on delete cascade,
+  score smallint,
+  total_questions smallint not null default 30,
+  elapsed_ms integer,
+  status text not null default 'started'
+    check (status in ('started','submitted','expired')),
+  started_at timestamptz not null default now(),
+  submitted_at timestamptz,
+  created_at timestamptz not null default now(),
+  unique (workshop_id, registration_id)
+);
+create index if not exists idx_workshop_assessment_attempts_workshop
+  on workshop_assessment_attempts(workshop_id);
+create index if not exists idx_workshop_assessment_attempts_registration
+  on workshop_assessment_attempts(registration_id);
+create index if not exists idx_workshop_assessment_attempts_status
+  on workshop_assessment_attempts(status);
+create index if not exists idx_workshop_assessment_attempts_submitted
+  on workshop_assessment_attempts(workshop_id, score desc, elapsed_ms asc);
 
 -- ═════════════════════════════════════════════════════════════════════
 -- COURSES (future-ready)
@@ -359,6 +383,7 @@ alter table qualifications enable row level security;
 alter table editable_page_sections enable row level security;
 alter table workshops enable row level security;
 alter table workshop_registrations enable row level security;
+alter table workshop_assessment_attempts enable row level security;
 alter table courses enable row level security;
 alter table resource_categories enable row level security;
 alter table resources enable row level security;
@@ -436,6 +461,11 @@ create policy "Admin update registrations" on workshop_registrations
 drop policy if exists "Admin delete registrations" on workshop_registrations;
 create policy "Admin delete registrations" on workshop_registrations
   for delete using (is_admin());
+
+-- workshop_assessment_attempts — server/service-role only.
+-- Participant access is mediated by secure server actions after portal verification.
+grant select, insert, update, delete on workshop_assessment_attempts to service_role;
+revoke all on workshop_assessment_attempts from anon, authenticated;
 
 -- courses — public read published, admin write
 drop policy if exists "Public read published courses" on courses;

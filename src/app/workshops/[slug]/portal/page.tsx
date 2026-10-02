@@ -19,6 +19,7 @@ import {
 } from "@/lib/workshop-portal";
 import { logoutFromWorkshopPortal } from "./actions";
 import { PortalLoginForm } from "./PortalLoginForm";
+import { WorkshopAssessmentClient } from "./WorkshopAssessmentClient";
 
 export const dynamic = "force-dynamic";
 
@@ -273,13 +274,19 @@ export default async function WorkshopParticipantPortalPage({
               <h2 className="font-bold text-navy-800">Final Assessment</h2>
             </div>
             <p className="mt-3 text-sm leading-6 text-navy-600">
-              The post-workshop knowledge assessment will contain 30 questions.
-              A 70% benchmark equals 21/30. The highest scorer will receive the
-              PNA Certificate of Excellence — Top Scorer Award.
+              The post-workshop assessment contains 30 English BCQs with 30
+              seconds for each question. Scores are not shown to participants.
+              PNA administration receives the complete ranked result list.
             </p>
-            <div className="mt-4 rounded-lg border border-teal-200 bg-white/70 px-3 py-2 text-xs font-semibold text-teal-800">
-              Assessment access will appear here when PNA opens the final quiz.
-            </div>
+
+            {workshop.assessment_open ? (
+              <WorkshopAssessmentClient slug={slug} />
+            ) : (
+              <div className="mt-4 rounded-lg border border-teal-200 bg-white/70 px-3 py-3 text-xs font-semibold leading-5 text-teal-800">
+                Assessment is currently closed. PNA will open it at the end of
+                the workshop.
+              </div>
+            )}
           </section>
         </div>
       </div>
