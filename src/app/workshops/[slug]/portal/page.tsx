@@ -35,10 +35,11 @@ export const metadata: Metadata = {
 function formatDate(value?: string | null) {
   if (!value) return "To be announced";
 
-  return new Date(`${value}T00:00:00+05:00`).toLocaleDateString("en-GB", {
+  return new Date(`${value}T00:00:00Z`).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",
     year: "numeric",
+    timeZone: "UTC",
   });
 }
 
