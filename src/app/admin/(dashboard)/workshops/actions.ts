@@ -95,6 +95,7 @@ export async function updateWorkshop(id: string, formData: FormData) {
     seat_limit: toNullableNumber(formData.get("seat_limit")),
     status: formData.get("status") || "draft",
     is_past: formData.get("is_past") === "on",
+    assessment_open: formData.get("assessment_open") === "on",
     updated_at: new Date().toISOString(),
   };
   if (posterUrl) update.poster_image_url = posterUrl;
