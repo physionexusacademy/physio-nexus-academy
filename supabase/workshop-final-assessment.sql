@@ -25,6 +25,9 @@ create index if not exists idx_workshop_assessment_attempts_workshop
 create index if not exists idx_workshop_assessment_attempts_status
   on public.workshop_assessment_attempts(status);
 
+create index if not exists idx_workshop_assessment_attempts_registration
+  on public.workshop_assessment_attempts(registration_id);
+
 create index if not exists idx_workshop_assessment_attempts_submitted
   on public.workshop_assessment_attempts(workshop_id, score desc, elapsed_ms asc);
 
