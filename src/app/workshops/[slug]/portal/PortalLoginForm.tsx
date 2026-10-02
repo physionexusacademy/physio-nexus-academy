@@ -1,44 +1,18 @@
-"use client";
-
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { LockKeyhole, Mail, TicketCheck } from "lucide-react";
 import { loginToWorkshopPortal } from "./actions";
 
-export function PortalLoginForm({ slug }: { slug: string }) {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
-
-    const formData = new FormData(event.currentTarget);
-
-    try {
-      const result = await loginToWorkshopPortal({
-        slug,
-        registrationId: String(formData.get("registrationId") || ""),
-        email: String(formData.get("email") || ""),
-      });
-
-      if (!result.ok) {
-        setError(result.error || "Unable to open the participant portal.");
-        return;
-      }
-
-      router.refresh();
-    } catch {
-      setError("Unable to open the participant portal. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
+export function PortalLoginForm({
+  slug,
+  error,
+}: {
+  slug: string;
+  error?: string | null;
+}) {
   return (
-    <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
+    <form
+      action={loginToWorkshopPortal.bind(null, slug)}
+      className="mt-6 space-y-4"
+    >
       <div>
         <label
           htmlFor="registrationId"
@@ -95,11 +69,10 @@ export function PortalLoginForm({ slug }: { slug: string }) {
 
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-teal-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-teal-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-700"
       >
         <LockKeyhole className="h-4 w-4" />
-        {isSubmitting ? "Verifying registration..." : "Enter Participant Portal"}
+        Enter Participant Portal
       </button>
 
       <p className="text-center text-xs leading-5 text-navy-400">
