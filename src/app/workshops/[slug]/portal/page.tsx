@@ -56,10 +56,13 @@ function formatTime(value?: string | null) {
 
 export default async function WorkshopParticipantPortalPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const { slug } = await params;
+  const query = await searchParams;
   const workshop = await getWorkshopPortalPublicInfo(slug);
 
   if (!workshop) notFound();
@@ -103,7 +106,18 @@ export default async function WorkshopParticipantPortalPage({
               </p>
             </div>
 
-            <PortalLoginForm slug={slug} />
+            <PortalLoginForm
+              slug={slug}
+              error={
+                query.error === "invalid-details"
+                  ? "Registration ID and email do not match an active participant."
+                  : query.error === "unavailable"
+                    ? "This workshop portal is not available."
+                    : query.error === "system"
+                      ? "Unable to verify your registration right now. Please try again."
+                      : null
+              }
+            />
           </div>
 
           <div className="mt-4 flex items-start gap-2 rounded-xl border border-grey-200 bg-grey-50 p-4 text-sm text-navy-500">
