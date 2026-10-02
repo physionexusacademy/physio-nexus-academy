@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, MapPin, Users, Award, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { WORKSHOP_PORTAL_SLUG } from "@/lib/workshop-portal";
 import { RegistrationForm } from "./RegistrationForm";
 
 export const revalidate = 60;
@@ -293,26 +294,28 @@ export default async function WorkshopDetailPage({
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="mb-4 rounded-xl border border-teal-200 bg-teal-50 p-5">
-            <div className="flex items-start gap-3">
-              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-teal-700" />
-              <div>
-                <h2 className="font-heading font-semibold text-navy-800">
-                  Already registered?
-                </h2>
-                <p className="mt-1 text-sm leading-6 text-navy-500">
-                  Registered participants can access workshop details, assessment
-                  information, and participant-only updates.
-                </p>
-                <Link
-                  href={`/workshops/${slug}/portal`}
-                  className="mt-3 inline-flex items-center rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-700"
-                >
-                  Open Participant Portal
-                </Link>
+          {slug === WORKSHOP_PORTAL_SLUG ? (
+            <div className="mb-4 rounded-xl border border-teal-200 bg-teal-50 p-5">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-teal-700" />
+                <div>
+                  <h2 className="font-heading font-semibold text-navy-800">
+                    Already registered?
+                  </h2>
+                  <p className="mt-1 text-sm leading-6 text-navy-500">
+                    Registered participants can access workshop details, assessment
+                    information, and participant-only updates.
+                  </p>
+                  <Link
+                    href={`/workshops/${slug}/portal`}
+                    className="mt-3 inline-flex items-center rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-700"
+                  >
+                    Open Participant Portal
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          ) : null}
 
           <div className="rounded-xl border border-grey-200 bg-white p-6 shadow-sm">
             <h2 className="font-heading text-lg font-semibold text-navy-800">
