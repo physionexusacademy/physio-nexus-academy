@@ -79,7 +79,10 @@ export async function loginToWorkshopPortal(
   redirect(portalUrl(slug));
 }
 
-export async function logoutFromWorkshopPortal(slug: string) {
+export async function logoutFromWorkshopPortal(
+  slug: string,
+  _formData?: FormData,
+) {
   await clearWorkshopPortalSession(slug);
   redirect(portalUrl(slug));
 }
