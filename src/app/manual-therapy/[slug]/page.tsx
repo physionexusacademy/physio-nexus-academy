@@ -22,6 +22,8 @@ import {
   manualTherapyMechanismEvidence,
 } from "@/lib/all-manual-therapy-mechanisms";
 import { getManualTherapyExpertProfile } from "@/lib/manual-therapy-expert";
+import ClinicalImage from "@/components/clinical/ClinicalImage";
+import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -81,6 +83,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
   const expert = getManualTherapyExpertProfile(slug);
+  const visuals = getManualTherapyVisuals(slug);
   const regionalApplications = getApplicationsForTechnique(slug);
 
   if (!technique || !guide || !mechanism || !expert) notFound();
@@ -193,6 +196,35 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {visuals.length ? (
+        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8">
+          <div className="mb-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
+              Clinical Visual Atlas
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+              See the technique, not just the text
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+              These PNA teaching visuals show positioning, contact, force direction and safety cues.
+              Images are delivered directly from the external image CDN and load only when needed.
+            </p>
+          </div>
+          <div className="grid gap-6">
+            {visuals.map((visual, index) => (
+              <ClinicalImage
+                key={visual.id}
+                path={visual.path}
+                alt={visual.alt}
+                caption={visual.caption}
+                label={visual.group + " · " + visual.title}
+                eager={index === 0}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
         <div className="border-b border-slate-200 p-6 sm:p-8">
