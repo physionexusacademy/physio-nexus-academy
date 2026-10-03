@@ -11,7 +11,7 @@ import {
 import {
   manualTherapyFamilies,
   manualTherapyTechniques,
-} from "@/lib/manual-therapy";
+} from "@/lib/all-manual-therapy";
 
 export const metadata: Metadata = {
   title: "Manual Therapy Mastery",
