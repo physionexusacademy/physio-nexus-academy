@@ -14,13 +14,14 @@ import {
   Microscope,
   ExternalLink,
 } from "lucide-react";
-import { manualTherapyTechniques } from "@/lib/manual-therapy";
-import { manualApplicationGuides } from "@/lib/manual-therapy-guides";
+import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
+import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
 import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
 import {
   manualTherapyMechanisms,
   manualTherapyMechanismEvidence,
-} from "@/lib/manual-therapy-mechanisms";
+} from "@/lib/all-manual-therapy-mechanisms";
+import { getManualTherapyExpertProfile } from "@/lib/manual-therapy-expert";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -79,9 +80,10 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
+  const expert = getManualTherapyExpertProfile(slug);
   const regionalApplications = getApplicationsForTechnique(slug);
 
-  if (!technique || !guide || !mechanism) notFound();
+  if (!technique || !guide || !mechanism || !expert) notFound();
 
   return (
     <div className="container-content section-padding">
@@ -189,6 +191,33 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
               <ExternalLink className="h-4 w-4" />
             </a>
           </div>
+        </div>
+      </section>
+
+      <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+        <div className="border-b border-slate-200 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-700">
+            Expert Clinical Layer
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+            Selection, dosing, progression and documentation
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+            This layer goes beyond memorizing the maneuver. It shows how an experienced clinician
+            selects, modifies, progresses, integrates and documents the technique while keeping
+            claims aligned with current evidence.
+          </p>
+        </div>
+        <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
+          <ListBlock title="Variants & Classifications" items={expert.variants} icon={Microscope} tone="border-violet-100 bg-violet-50/70" />
+          <ListBlock title="Clinical Selection Rules" items={expert.selectionRules} icon={Brain} tone="border-cyan-100 bg-cyan-50/70" />
+          <ListBlock title="Technical Variables That Change the Dose" items={expert.technicalVariables} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
+          <ListBlock title="Progression & Regression" items={expert.progressionRegression} icon={ShieldCheck} tone="border-emerald-100 bg-emerald-50/70" />
+          <ListBlock title="Integration With Active Rehabilitation" items={expert.integration} icon={Lightbulb} tone="border-teal-100 bg-teal-50/70" />
+          <ListBlock title="Documentation Standard" items={expert.documentation} icon={ClipboardCheck} tone="border-slate-200 bg-slate-50/70" />
+        </div>
+        <div className="border-t border-slate-200 p-5 sm:p-8">
+          <ListBlock title="Evidence Position — What We Can and Cannot Claim" items={expert.evidencePosition} icon={Microscope} tone="border-amber-100 bg-amber-50/70" />
         </div>
       </section>
 
