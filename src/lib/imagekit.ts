@@ -1,4 +1,8 @@
-const IMAGEKIT_ENDPOINT = (process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT ?? "")
+const DEFAULT_IMAGEKIT_ENDPOINT = "https://ik.imagekit.io/physionexusacademy";
+
+const IMAGEKIT_ENDPOINT = (
+  process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT ?? DEFAULT_IMAGEKIT_ENDPOINT
+)
   .trim()
   .replace(/\/+$/, "");
 
