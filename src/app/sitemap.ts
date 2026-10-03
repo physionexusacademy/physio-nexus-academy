@@ -4,7 +4,7 @@ import { trainingHistory } from "@/lib/training-history";
 import { knowledgeSpecialties } from "@/lib/knowledge-content";
 import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 import { clinicalCases } from "@/lib/all-clinical-cases";
-import { manualTherapyTechniques } from "@/lib/manual-therapy";
+import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { regionalManualApplications } from "@/lib/manual-therapy-regional";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { mskConditions } from "@/lib/msk-injury-hub";
