@@ -20,15 +20,14 @@ jobs:
         id: auth
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
-          if [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ]; then
+          if [ -n "$CF_TOKEN" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
-            echo "Cloudflare deployment credentials are configured."
+            echo "Cloudflare API token is configured."
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Cloudflare deployment skipped: add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID as repository Actions secrets."
+            echo "Cloudflare deployment skipped: add CLOUDFLARE_API_TOKEN as a repository Actions secret."
           fi
 
       - name: Checkout
@@ -50,7 +49,6 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
           NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
           NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
@@ -64,4 +62,6 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
           PAYMENTS_ENABLED: "false"
-        run: npm run deploy
+        run: |
+          npx wrangler whoami
+          npm run deploy
