@@ -1,26 +1,8 @@
 [
   {
-    "label": "QC approved cervical central PA anatomy and force",
+    "label": "QC approved TMJ distraction anatomy and force",
     "status": "success",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/force-anatomy-v1",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791140669/pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/force-anatomy-v1.png"
-  },
-  {
-    "label": "QC approved thoracic central PA hand contact",
-    "status": "success",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/hand-contact-v1",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791140670/pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/hand-contact-v1.png"
-  },
-  {
-    "label": "QC approved lumbar central PA hand contact",
-    "status": "success",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/hand-contact-v1",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791140671/pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/hand-contact-v1.png"
-  },
-  {
-    "label": "QC approved lumbar central PA anatomy and force",
-    "status": "success",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/force-anatomy-v1",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791140671/pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/force-anatomy-v1.png"
+    "public_id": "pna/clinical-skills/manual-therapy-3d/tmj-craniofacial/tmj-distraction-v2",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791149729/pna/clinical-skills/manual-therapy-3d/tmj-craniofacial/tmj-distraction-v2.png"
   }
 ]
