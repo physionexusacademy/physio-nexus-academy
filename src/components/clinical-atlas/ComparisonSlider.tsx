@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MoveHorizontal } from "lucide-react";
-import { getImageKitSrcSet, getImageKitUrl } from "@/lib/imagekit";
+import { getCloudinarySrcSet, getCloudinaryUrl } from "@/lib/cloudinary";
 
 export default function ComparisonSlider({
   beforePath,
@@ -18,10 +18,10 @@ export default function ComparisonSlider({
   alt: string;
 }) {
   const [position, setPosition] = useState(50);
-  const beforeSrc = getImageKitUrl(beforePath, { width: 1200, quality: 84 });
-  const afterSrc = getImageKitUrl(afterPath, { width: 1200, quality: 84 });
-  const beforeSet = getImageKitSrcSet(beforePath, [480, 768, 1024, 1440], 84);
-  const afterSet = getImageKitSrcSet(afterPath, [480, 768, 1024, 1440], 84);
+  const beforeSrc = getCloudinaryUrl(beforePath, { width: 1200, quality: 84, format: "auto" });
+  const afterSrc = getCloudinaryUrl(afterPath, { width: 1200, quality: 84, format: "auto" });
+  const beforeSet = getCloudinarySrcSet(beforePath, [480, 768, 1024, 1440]);
+  const afterSet = getCloudinarySrcSet(afterPath, [480, 768, 1024, 1440]);
 
   return (
     <div className="overflow-hidden rounded-3xl border border-grey-200 bg-white shadow-sm">
