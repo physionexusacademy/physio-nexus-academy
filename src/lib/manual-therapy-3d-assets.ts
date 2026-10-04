@@ -28,6 +28,7 @@ const READY_3D_ASSETS = {
   temporalis: "jbq8a2vs1pch421usa6q",
   suboccipital: "l4ocacerz3cj1hs4kd3t",
   tmj: "rewea37nooztxy5eknbq",
+  tmjDistraction: "pna/clinical-skills/manual-therapy-3d/tmj-craniofacial/tmj-distraction-v2",
   thoracicParaspinals: "tfuqogqnk8lt9qboqpjp",
   intercostalRibAngle: "exwpcpwltstbcikqrmq5",
   quadratusLumborum: "sgsx27zr83dmlznsxfte",
@@ -74,6 +75,10 @@ function getReady3DPublicId(args: {
 
   if (name.startsWith("patellar tendon")) {
     return READY_3D_ASSETS.patellarTendon;
+  }
+
+  if (name === "tmj distraction") {
+    return READY_3D_ASSETS.tmjDistraction;
   }
 
   if (name.startsWith("masseter")) {
