@@ -58,6 +58,38 @@ export const manualTherapyVisuals: Partial<Record<string, ManualTherapyVisual[]>
     },
   ],
 
+  "maitland-lumbar-pa-mobilization": [
+    {
+      id: "verified-master",
+      title: "Lumbar Central PA Mobilization",
+      path: "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/master",
+      alt: "Verified clinical teaching visual of Maitland lumbar central posterior-to-anterior mobilization with prone patient position, pisiform or hypothenar contact over a selected lumbar spinous process, reinforcing hand, lumbar anatomy and posterior-to-anterior force direction",
+      caption:
+        "Verified master view: prone lumbar position, localized pisiform/hypothenar contact over the selected spinous process, reinforcing hand, relaxed fingers and controlled PA force through the target segment.",
+      group: "Overview",
+    },
+    {
+      id: "hand-placement",
+      title: "Correct Lumbar Hand Placement",
+      path: "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/master",
+      alt: "Close-up of correct pisiform or hypothenar contact for Maitland lumbar central PA mobilization with reinforcing hand and relaxed fingers",
+      caption:
+        "The lower hand transmits pressure through the pisiform/hypothenar eminence over the selected spinous process. The upper hand reinforces without fingertip pressure.",
+      crop: { x: 985, y: 0, width: 551, height: 470 },
+      group: "Hand Placement",
+    },
+    {
+      id: "force-direction",
+      title: "Lumbar Anatomy & PA Force",
+      path: "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/master",
+      alt: "Sagittal lumbar anatomy showing posterior-to-anterior force through a selected lumbar spinous process",
+      caption:
+        "The mobilization force travels posterior-to-anterior through the selected lumbar segment while unnecessary global lumbar extension is minimized.",
+      crop: { x: 985, y: 480, width: 551, height: 544 },
+      group: "Force Direction",
+    },
+  ],
+
   "maitland-thoracic-pa-mobilization": [
     {
       id: "verified-master",
