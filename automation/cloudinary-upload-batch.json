@@ -1,18 +1,22 @@
 [
   {
-    "label": "Glenohumeral inferior glide",
-    "url": "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/00bfd59a5f706a9a5a9ad31716e901c6e67fc626ca0f40715824ef17a8d00d04.png"
+    "label": "Normal Shoulder Anatomy",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/23015177-fc0c-4081-9af6-77e2ba854698.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjJhZWM1YmE1NGI4NWE3ZCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyMjMzMH0.ACfmDNu02LkuaIbu3Ae-u0oFLE0mDoK5Yj-mdRHs0Qc",
+    "public_id": "pna/clinical-visual-atlas/shoulder/normal-shoulder-anatomy"
   },
   {
-    "label": "Glenohumeral anterior glide",
-    "url": "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/c331d76e42471d214157f6587fdd865497eed309138519e7d25250bea35889bb.png"
+    "label": "Rotator Cuff Anatomy",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/b301c74a-506f-4244-84fe-2f613fd29b15.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTc5Yjg5NjdmMThkNjIyOCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1ODcyN30.A0cLFJPal3XzClQrbpILfM1WTR_k9_AZyEfO_iWqnkY",
+    "public_id": "pna/clinical-visual-atlas/shoulder/rotator-cuff-anatomy"
   },
   {
-    "label": "Patellar tendon",
-    "url": "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/b1ea465059931fe4ec21a11f3182088747effc63052f8cce9f8d33046c5c768e.png"
+    "label": "Supraspinatus Full-Thickness Tear",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/d3ae33fd-f190-41ae-a025-cdf248c6bb4b.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjkxNzEzOWNjMWQ2OTA0NSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzOTcwOH0._j-3-00_ahsPLxmZjaG7uAimbtj8nPV6ZASeML9pG4E",
+    "public_id": "pna/clinical-visual-atlas/shoulder/supraspinatus-full-thickness-tear"
   },
   {
-    "label": "Posterior talar glide",
-    "url": "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/51bfe0932b2200c14f5c3f352b4deae6887232a31ae245380e314e408bb9ee3f.png"
+    "label": "Subacromial Bursitis / Impingement",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/d3aa41c7-eb8a-46b8-89a5-faa962e6e9c4.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOWZkYmE3NmQxN2I3ZmM3ZiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3NDk4OX0.oeC_ZgN3qQyXgHKUKFtW5DJyrUPbUQJq1p3jtpnPQoc",
+    "public_id": "pna/clinical-visual-atlas/shoulder/subacromial-bursitis-impingement"
   }
 ]
