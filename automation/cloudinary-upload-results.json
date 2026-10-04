@@ -1,26 +1,8 @@
 [
   {
-    "label": "Normal Shoulder Anatomy",
+    "label": "PNA MSK Atlas Master 01",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/shoulder/normal-shoulder-anatomy",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130196/pna/clinical-visual-atlas/shoulder/normal-shoulder-anatomy.png"
-  },
-  {
-    "label": "Rotator Cuff Anatomy",
-    "status": "success",
-    "public_id": "pna/clinical-visual-atlas/shoulder/rotator-cuff-anatomy",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130197/pna/clinical-visual-atlas/shoulder/rotator-cuff-anatomy.png"
-  },
-  {
-    "label": "Supraspinatus Full-Thickness Tear",
-    "status": "success",
-    "public_id": "pna/clinical-visual-atlas/shoulder/supraspinatus-full-thickness-tear",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130199/pna/clinical-visual-atlas/shoulder/supraspinatus-full-thickness-tear.png"
-  },
-  {
-    "label": "Subacromial Bursitis / Impingement",
-    "status": "success",
-    "public_id": "pna/clinical-visual-atlas/shoulder/subacromial-bursitis-impingement",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130199/pna/clinical-visual-atlas/shoulder/subacromial-bursitis-impingement.png"
+    "public_id": "pna/clinical-visual-atlas/master/msk-atlas-01",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130663/pna/clinical-visual-atlas/master/msk-atlas-01.png"
   }
 ]
