@@ -1,13 +1,13 @@
 const CLOUD_NAME = (
-  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? ""
+  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "qoc7ukqs"
 ).trim();
 
 export const cloudinaryEnabled = CLOUD_NAME.length > 0;
 
 function normalizePublicId(publicId: string) {
   return publicId
-    .replace(/^\/+/, "")
-    .replace(/\.(webp|png|jpe?g|avif)$/i, "");
+    .replace(/^\\/+/, "")
+    .replace(/\\.(webp|png|jpe?g|avif)$/i, "");
 }
 
 export function getCloudinaryUrl(
