@@ -18,11 +18,13 @@ import {
   Quote,
   Stethoscope,
   Trophy,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
 import { createPublicClient } from "@/lib/supabase/public";
 import { knowledgeArticles } from "@/lib/knowledge-content";
+import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
 export const metadata: Metadata = {
   title: { absolute: "Physio Nexus Academy | Physiotherapy Learning & Patient Care Pakistan" },
@@ -45,6 +47,19 @@ const portalActions = [
     tone: "from-cyan-500 to-teal-600",
     soft: "bg-cyan-50 border-cyan-100",
   },
+  ...(atlasPublished
+    ? [
+        {
+          title: "Clinical Visual Atlas",
+          description:
+            "Explore premium 3D anatomy, pathology, clinical tests and rehabilitation visuals.",
+          href: "/clinical-visual-atlas",
+          icon: Eye,
+          tone: "from-sky-500 to-cyan-600",
+          soft: "bg-sky-50 border-sky-100",
+        },
+      ]
+    : []),
   {
     title: "Clinical Case Lab",
     description: "Work through symptoms, differential diagnosis, reasoning and treatment planning.",
