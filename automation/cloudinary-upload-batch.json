@@ -1,52 +1,7 @@
 [
   {
-    "label": "Lateral Ankle Sprain",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/4ba24f29-b076-430c-91a5-f3af4748b6c8/ca201787-fc55-4ddf-a0d3-66499339e608/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmMwZDU0YzI3NjQ4NjQwNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1MDM3MH0.EA296RjUk6EJaK3IJ8DCLy88qoP4bqyWLFAVhK19rQw",
-    "public_id": "pna/clinical-visual-atlas/ankle-foot/lateral-ankle-sprain"
-  },
-  {
-    "label": "Hamstring Strain",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/b1523437-6f22-444d-a2c2-7c7a874be395/6b9f57e7-46f2-454d-9905-f36aa2437d44/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZTBlNzk5MDViM2Y0NDViMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1ODM3M30.MQyhGS3sTQT8C2Oguf25rR4W2hTQJnRnevz0DjodJO4",
-    "public_id": "pna/clinical-visual-atlas/thigh/hamstring-strain"
-  },
-  {
-    "label": "Achilles Tendon Rupture",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/8bf67be1-4608-476b-9c23-6a972d754941/4ab29572-15a1-4d67-a10d-865bcff49a1a/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNmRmNDAyNDE3OTBiNTIwZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyNjMwNX0.KjGfHjSKdnwv47fyMtK4QPTvV_KNTkpUdgfG2WFHDP0",
-    "public_id": "pna/clinical-visual-atlas/ankle-foot/achilles-tendon-rupture"
-  },
-  {
-    "label": "Femoroacetabular Impingement Syndrome",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/3a3bf500-f5dc-4716-a110-b3b2b52b21d0/b47fc547-dd3e-426c-a0fb-1f996b2e89c6/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNThmZDBhNDY1NDI2OWE4NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzMTA0Nn0.piD055UOYYfiSCZ8By5cn-qBI3-8Ezc5hdyBa5Ue-eA",
-    "public_id": "pna/clinical-visual-atlas/hip-groin/fais"
-  },
-  {
-    "label": "Knee Osteoarthritis",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/fd5fb724-d0b3-4f6c-82a8-4761715099f4/c1147945-b939-4d30-aaf2-60dadd165e94/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjBkZWEzODBkM2I1NTc2YiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTMwMTc2MH0.KZ1di-qvMXJwWFQNF1iPW6wvFUuqgLocrXgdmA8CP_E",
-    "public_id": "pna/clinical-visual-atlas/knee/knee-osteoarthritis"
-  },
-  {
-    "label": "Hip Osteoarthritis",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/5c3619c3-ba83-448a-84ce-5fa29875ae03/fa570157-1073-4774-a618-075baf15a7d3/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjA1M2RmOWIyOWEzNGJlZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3OTY0M30.xK7_jEZePtnE_iPoefZrvNIYJ_yfLLS4Zdy_l_Z1CEM",
-    "public_id": "pna/clinical-visual-atlas/hip-groin/hip-osteoarthritis"
-  },
-  {
-    "label": "Carpal Tunnel Syndrome",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/41f37762-239b-4148-8f82-5e32f8a13917/77c99e11-3277-413c-bb4a-8775fab8a1ca/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDZlMTQxNGEzOGUzOWFhYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI0MDAxMH0.kw9MNXtGzyUA7y8d1EysEylh5GuJIEbIK0kfRh4FHag",
-    "public_id": "pna/clinical-visual-atlas/wrist-hand/carpal-tunnel-syndrome"
-  },
-  {
-    "label": "Lateral Epicondylalgia",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/0c6c907f-09bc-4e4c-80e2-e88c91b8047d/4dcf27b8-c151-47ac-82cc-efa88fcb6f98/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGY1NDliODFlODhlMmEwZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI4NjQwMX0._s1jRbqhNUnelgk4eSot2_FWXf6J2nhsbw70Qnc-VfM",
-    "public_id": "pna/clinical-visual-atlas/elbow-forearm/lateral-epicondylalgia"
-  },
-  {
-    "label": "Anterior Shoulder Instability",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/cd119d32-f2b5-48bc-b374-879d00091c36/96f4f23b-701d-4dd6-be39-2c237868436b/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmNhM2U3NzcwMjFjYWNkNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzMzY1NX0.AfEyrDpYbMOSYkvtnNX7uH-A518A96T5GLFhpaX54mU",
-    "public_id": "pna/clinical-visual-atlas/shoulder/anterior-shoulder-instability"
-  },
-  {
-    "label": "Cervical Spine Anatomy",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/bed6f87f-9d50-41d0-afe6-5179acd75e8c/6f0982f2-c72f-4257-8887-e5c777b24328/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGU0YWYwZWU0ZWU1YWZmNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI4ODgxNH0.b6a_wRc5mvnYy9tLtUTVQ5HnVmJlSbLiIc0Ejofa64A",
-    "public_id": "pna/clinical-visual-atlas/head-neck/cervical-spine-anatomy"
+    "label": "Patellofemoral Pain Region",
+    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/b854474c-ca26-4524-bc56-56697952483d/2abd119c-a246-451c-af26-5b5f5e2f54f0/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDMwYWMxMzRkZmM3NTIzMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3MDE5Nn0.uwalzV0kFX-Jq5SV5OsBAdKqvzb_GX1YtfJP55axJHE",
+    "public_id": "pna/clinical-visual-atlas/knee/patellofemoral-pain"
   }
 ]
