@@ -298,6 +298,215 @@ function CervicalMap({ target }: { target: string }) {
   );
 }
 
+function ThoracicRibMap({
+  region,
+  target,
+}: {
+  region: "Thoracic" | "Ribs & Chest Wall";
+  target: string;
+}) {
+  const t = targetKey(target);
+  const isParaspinal = t.includes("paraspinal") || t.includes("thoracic");
+  const isRib = t.includes("rib") || t.includes("intercostal");
+  const isPec = t.includes("pector");
+  const isRhomboid = t.includes("rhomboid");
+
+  return (
+    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
+      <path d="M90 15 L90 128" className="stroke-slate-400" strokeWidth="5" strokeLinecap="round" />
+      {[35, 48, 61, 74, 87, 100].map((y) => (
+        <path
+          key={y}
+          d={"M90 " + y + " Q58 " + (y - 8) + " 42 " + (y + 6) + " M90 " + y + " Q122 " + (y - 8) + " 138 " + (y + 6)}
+          fill="none"
+          className="stroke-slate-300"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+      ))}
+      <path d="M52 22 Q90 8 128 22" fill="none" className="stroke-slate-300" strokeWidth="9" strokeLinecap="round" />
+
+      {isParaspinal ? (
+        <>
+          <path d="M78 30 L77 116" className="stroke-violet-500" strokeWidth="7" strokeLinecap="round" />
+          <path d="M102 30 L103 116" className="stroke-violet-500" strokeWidth="7" strokeLinecap="round" />
+        </>
+      ) : null}
+      {isRib ? (
+        <path d="M95 60 Q125 51 143 68" fill="none" className="stroke-cyan-500" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+      {isPec ? (
+        <path d="M66 30 Q90 27 111 46 Q102 71 82 75 Q65 60 66 30 Z" className="fill-emerald-400/30 stroke-emerald-600" strokeWidth="3" />
+      ) : null}
+      {isRhomboid ? (
+        <path d="M58 42 Q77 49 84 68 Q75 91 54 97 Q48 67 58 42 Z" className="fill-cyan-400/30 stroke-cyan-600" strokeWidth="3" />
+      ) : null}
+
+      {!isParaspinal && !isRib && !isPec && !isRhomboid ? (
+        <ellipse cx="90" cy="70" rx="34" ry="42" className="fill-violet-400/10 stroke-violet-500" strokeWidth="3" />
+      ) : null}
+    </svg>
+  );
+}
+
+function LumbarHipMap({
+  region,
+  target,
+}: {
+  region: "Lumbar" | "Hip & Pelvis";
+  target: string;
+}) {
+  const t = targetKey(target);
+  const isQL = t.includes("quadratus") || t.includes("ql");
+  const isLumbar = t.includes("lumbar") || t.includes("thoracolumbar");
+  const isGlute = t.includes("glute");
+  const isPiriformis = t.includes("piriformis") || t.includes("deep rotator");
+  const isAdductor = t.includes("adductor");
+  const isHipJoint = t.includes("femoral head") || t.includes("hip joint") || t.includes("femoroacetabular") || t.includes("acetabul");
+
+  return (
+    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
+      <path d="M90 15 L90 74" className="stroke-slate-400" strokeWidth="6" strokeLinecap="round" />
+      <path d="M56 61 Q90 45 124 61 L134 92 Q112 111 90 111 Q68 111 46 92 Z" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
+      <circle cx="63" cy="92" r="13" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
+      <circle cx="117" cy="92" r="13" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
+      <path d="M63 104 L52 142 M117 104 L128 142" className="stroke-slate-300" strokeWidth="12" strokeLinecap="round" />
+
+      {isLumbar ? (
+        <rect x="80" y="27" width="20" height="50" rx="10" className="fill-violet-400/20 stroke-violet-600" strokeWidth="3" />
+      ) : null}
+      {isQL ? (
+        <path d="M70 37 Q61 57 65 82" fill="none" className="stroke-emerald-500" strokeWidth="8" strokeLinecap="round" />
+      ) : null}
+      {isGlute ? (
+        <ellipse cx="118" cy="83" rx="22" ry="19" className="fill-emerald-400/25 stroke-emerald-600" strokeWidth="3" />
+      ) : null}
+      {isPiriformis ? (
+        <path d="M89 75 Q104 81 118 92" fill="none" className="stroke-cyan-500" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+      {isAdductor ? (
+        <path d="M78 95 Q83 119 76 142" fill="none" className="stroke-amber-500" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+      {isHipJoint ? (
+        <circle cx="117" cy="92" r="16" className="fill-violet-400/20 stroke-violet-600" strokeWidth="3" />
+      ) : null}
+    </svg>
+  );
+}
+
+function ElbowMap({ target }: { target: string }) {
+  const t = targetKey(target);
+  const isExtensor = t.includes("extensor");
+  const isFlexor = t.includes("flexor");
+  const isRadial = t.includes("radial");
+  const isJoint = t.includes("ulnohumeral") || t.includes("elbow");
+
+  return (
+    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
+      <path d="M72 10 L86 67" className="stroke-slate-300" strokeWidth="16" strokeLinecap="round" />
+      <path d="M86 67 L57 138" className="stroke-slate-300" strokeWidth="13" strokeLinecap="round" />
+      <path d="M91 67 L112 139" className="stroke-slate-300" strokeWidth="10" strokeLinecap="round" />
+      <circle cx="88" cy="69" r="18" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
+
+      {isExtensor ? (
+        <path d="M99 75 Q111 95 111 127" fill="none" className="stroke-emerald-500" strokeWidth="8" strokeLinecap="round" />
+      ) : null}
+      {isFlexor ? (
+        <path d="M76 76 Q67 98 61 127" fill="none" className="stroke-amber-500" strokeWidth="8" strokeLinecap="round" />
+      ) : null}
+      {isRadial ? (
+        <circle cx="103" cy="76" r="10" className="fill-cyan-400/20 stroke-cyan-600" strokeWidth="3" />
+      ) : null}
+      {isJoint ? (
+        <circle cx="88" cy="69" r="22" className="fill-violet-400/12 stroke-violet-600" strokeWidth="3" />
+      ) : null}
+    </svg>
+  );
+}
+
+function WristHandMap({ target }: { target: string }) {
+  const t = targetKey(target);
+  const isRadiocarpal = t.includes("radiocarpal") || t.includes("carpal");
+  const isThenar = t.includes("thenar");
+  const isDeQuervain = t.includes("de quervain") || t.includes("dorsal-compartment");
+  const isFlexor = t.includes("flexor");
+  const isExtensor = t.includes("extensor");
+
+  return (
+    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
+      <path d="M70 8 L72 77 M100 8 L98 77" className="stroke-slate-300" strokeWidth="11" strokeLinecap="round" />
+      <path d="M55 79 Q83 67 112 78 L132 115 Q113 143 80 140 Q53 133 45 107 Z" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
+      <path d="M127 98 L153 77" className="stroke-slate-300" strokeWidth="10" strokeLinecap="round" />
+
+      {isRadiocarpal ? (
+        <path d="M59 80 Q84 70 111 80" fill="none" className="stroke-violet-600" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+      {isThenar ? (
+        <ellipse cx="112" cy="112" rx="18" ry="24" className="fill-emerald-400/25 stroke-emerald-600" strokeWidth="3" />
+      ) : null}
+      {isDeQuervain ? (
+        <path d="M117 92 L145 79" fill="none" className="stroke-cyan-500" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+      {isFlexor ? (
+        <path d="M68 18 L72 73" className="stroke-amber-500" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+      {isExtensor ? (
+        <path d="M100 18 L98 73" className="stroke-cyan-500" strokeWidth="7" strokeLinecap="round" />
+      ) : null}
+    </svg>
+  );
+}
+
+function NeuralMap({
+  region,
+  target,
+}: {
+  region: "Upper Limb Neural" | "Lower Limb Neural";
+  target: string;
+}) {
+  const t = targetKey(target);
+  const upper = region === "Upper Limb Neural";
+
+  if (upper) {
+    const radial = t.includes("radial");
+    const ulnar = t.includes("ulnar");
+    return (
+      <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
+        <circle cx="65" cy="24" r="16" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
+        <path d="M66 41 L75 78" className="stroke-slate-300" strokeWidth="10" strokeLinecap="round" />
+        <path d="M73 54 L112 72 L142 112" fill="none" className="stroke-slate-300" strokeWidth="10" strokeLinecap="round" />
+        <path
+          d={radial ? "M73 54 Q102 69 116 85 Q129 99 145 116" : ulnar ? "M73 56 Q95 75 106 91 Q120 112 136 129" : "M73 55 Q101 69 119 88 Q134 104 148 123"}
+          fill="none"
+          className={radial ? "stroke-cyan-500" : ulnar ? "stroke-emerald-500" : "stroke-violet-600"}
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeDasharray="7 5"
+        />
+        <circle cx="73" cy="55" r="5" className="fill-violet-600" />
+      </svg>
+    );
+  }
+
+  const femoral = t.includes("femoral");
+  const tibial = t.includes("tibial");
+  const fibular = t.includes("fibular") || t.includes("peroneal");
+  return (
+    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
+      <path d="M75 10 L75 63 L61 140 M95 63 L111 140" fill="none" className="stroke-slate-300" strokeWidth="12" strokeLinecap="round" />
+      <path
+        d={femoral ? "M77 42 Q70 73 64 103 Q61 120 61 139" : tibial ? "M91 60 Q98 91 105 119 Q109 133 111 141" : fibular ? "M95 65 Q111 84 116 105 Q119 124 121 139" : "M89 56 Q86 86 91 112 Q94 129 98 141"}
+        fill="none"
+        className={femoral ? "stroke-cyan-500" : tibial ? "stroke-emerald-500" : fibular ? "stroke-amber-500" : "stroke-violet-600"}
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeDasharray="7 5"
+      />
+      <circle cx="89" cy="57" r="5" className="fill-violet-600" />
+    </svg>
+  );
+}
+
 function GenericBodyMap({
   region,
 }: {
@@ -354,6 +563,16 @@ export function AnatomyMiniMap({
           <AnkleFootMap target={target} />
         ) : region === "Cervical" ? (
           <CervicalMap target={target} />
+        ) : region === "Thoracic" || region === "Ribs & Chest Wall" ? (
+          <ThoracicRibMap region={region} target={target} />
+        ) : region === "Lumbar" || region === "Hip & Pelvis" ? (
+          <LumbarHipMap region={region} target={target} />
+        ) : region === "Elbow" ? (
+          <ElbowMap target={target} />
+        ) : region === "Wrist & Hand" ? (
+          <WristHandMap target={target} />
+        ) : region === "Upper Limb Neural" || region === "Lower Limb Neural" ? (
+          <NeuralMap region={region} target={target} />
         ) : (
           <GenericBodyMap region={region} />
         )}
