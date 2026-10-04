@@ -303,9 +303,6 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
 export const atlasCategories: AtlasCategory[] = [
   "Anatomy",
   "Pathology",
-  "Mechanism",
-  "Assessment",
-  "Rehabilitation",
 ];
 
 export const atlasRegions: AtlasRegion[] = Array.from(
@@ -316,12 +313,15 @@ export function getAtlasEntry(slug: string) {
   return clinicalVisualAtlas.find((item) => item.slug === slug);
 }
 
-export const atlasPublished = clinicalVisualAtlas.some((item) => item.assetReady);
+export const atlasPublished = clinicalVisualAtlas.some(
+  (item) => item.assetReady && (item.category === "Anatomy" || item.category === "Pathology")
+);
 
 export function getAtlasEntriesForCondition(conditionSlug: string) {
   return clinicalVisualAtlas.filter(
     (item) =>
       item.assetReady &&
+      (item.category === "Anatomy" || item.category === "Pathology") &&
       item.conditionSlugs?.includes(conditionSlug)
   );
 }
