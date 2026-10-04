@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Images, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Images, MoveRight, ShieldCheck, Target } from "lucide-react";
 import {
   completeRegionalManualApplications,
   getRegionalManualApplication,
@@ -81,15 +81,53 @@ export default async function ManualTherapyVisualDetailPage({ params }: PageProp
 
           <div className="mt-5 grid gap-5 lg:grid-cols-2">
             {visuals.map((visual, index) => (
-              <CloudinaryClinicalImage
+              <div
                 key={visual.id}
-                publicId={visual.path}
-                alt={visual.alt}
-                caption={visual.caption}
-                label={visual.title}
-                eager={index === 0}
                 className={index === 0 && visuals.length > 2 ? "lg:col-span-2" : ""}
-              />
+              >
+                <div className="relative">
+                  <CloudinaryClinicalImage
+                    publicId={visual.path}
+                    alt={visual.alt}
+                    caption={visual.caption}
+                    label={visual.title}
+                    eager={index === 0}
+                  />
+                  <div className="pointer-events-none absolute right-5 top-16 z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/80 bg-white/95 p-1.5 shadow-md">
+                    <img
+                      src="/images/pna-logo.png"
+                      alt=""
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-4">
+                    <div className="flex items-center gap-2 text-rose-700">
+                      <Target className="h-4 w-4" />
+                      <p className="text-[10px] font-black uppercase tracking-[0.16em]">
+                        Anatomy / target area
+                      </p>
+                    </div>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
+                      {visual.target}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-cyan-100 bg-cyan-50/70 p-4">
+                    <div className="flex items-center gap-2 text-cyan-700">
+                      <MoveRight className="h-4 w-4" />
+                      <p className="text-[10px] font-black uppercase tracking-[0.16em]">
+                        Force / movement direction
+                      </p>
+                    </div>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
+                      {visual.force}
+                    </p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </section>
