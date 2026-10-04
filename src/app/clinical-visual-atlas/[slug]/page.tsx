@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ClinicalVisualDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const item = getAtlasEntry(slug);
-  if (!item) notFound();
+  if (!item || !item.assetReady) notFound();
 
   return (
     <div className="container-content section-padding">
