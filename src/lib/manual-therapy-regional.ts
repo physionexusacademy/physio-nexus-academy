@@ -1,3 +1,5 @@
+import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
+
 export type ManualRegion =
   | "Cervical"
   | "Thoracic"
@@ -9,7 +11,9 @@ export type ManualRegion =
   | "Knee"
   | "Ankle & Foot"
   | "Upper Limb Neural"
-  | "Lower Limb Neural";
+  | "Lower Limb Neural"
+  | "TMJ & Craniofacial"
+  | "Ribs & Chest Wall";
 
 export type RegionalManualApplication = {
   slug: string;
@@ -29,6 +33,7 @@ export type RegionalManualApplication = {
   mistakes: string[];
   safety: string[];
   visualCue: string;
+  applicability?: "Detailed" | "Selected" | "Not routine";
 };
 
 export const regionalManualApplications: RegionalManualApplication[] = [
@@ -921,8 +926,10 @@ export const regionalManualApplications: RegionalManualApplication[] = [
 ];
 
 export const manualRegions: ManualRegion[] = [
+  "TMJ & Craniofacial",
   "Cervical",
   "Thoracic",
+  "Ribs & Chest Wall",
   "Lumbar",
   "Shoulder",
   "Elbow",
@@ -934,10 +941,440 @@ export const manualRegions: ManualRegion[] = [
   "Lower Limb Neural",
 ];
 
+type RegionProfile = {
+  focus: string;
+  patientPosition: string[];
+  therapistPosition: string[];
+  stabilization: string[];
+  contact: string[];
+  reassess: string[];
+  safety: string[];
+};
+
+const regionProfiles: Record<ManualRegion, RegionProfile> = {
+  "TMJ & Craniofacial": {
+    focus: "jaw opening/closing, lateral excursion, chewing tolerance and related craniofacial muscle symptoms",
+    patientPosition: ["Supported sitting or supine with the head and neck relaxed.", "Keep the jaw in a comfortable resting position before testing or treatment."],
+    therapistPosition: ["Stand or sit at the head/side with the patient's head fully supported.", "Use small, precise contacts; avoid forcing the mandible."],
+    stabilization: ["Support the cranium and, when needed, stabilize one side of the mandible without compressing the throat."],
+    contact: ["Use broad, gentle extra-oral contact over the relevant joint or muscle target.", "Intra-oral techniques require specific training, infection-control procedures and explicit consent."],
+    reassess: ["Pain-free mouth opening", "Lateral excursion", "Chewing or speaking tolerance"],
+    safety: ["Avoid aggressive force after acute trauma, suspected fracture/dislocation, active dental infection or unexplained cranial nerve signs."]
+  },
+  Cervical: {
+    focus: "neck pain, cervical range, headache-related comparable signs and upper-limb symptom behavior",
+    patientPosition: ["Use supported sitting, supine or prone according to the technique and irritability.", "Keep the head and shoulders relaxed and avoid unnecessary end-range positioning."],
+    therapistPosition: ["Work close to the patient with the head/neck fully controlled.", "Use relaxed shoulders and low force before considering progression."],
+    stabilization: ["Control adjacent cervical segments and the shoulder girdle so the intended target is not replaced by global neck motion."],
+    contact: ["Use a broad region-appropriate contact and avoid pressure over the anterior neck, carotid sinus or vulnerable neural/vascular structures."],
+    reassess: ["Cervical rotation/flexion/extension", "Pain or headache intensity", "Upper-limb symptom distribution when relevant"],
+    safety: ["Screen fracture/instability, progressive neurological deficit, myelopathy and vascular warning features before cervical manual therapy."]
+  },
+  Thoracic: {
+    focus: "thoracic extension/rotation, posture-related symptoms and linked neck/shoulder comparable signs",
+    patientPosition: ["Prone, side-lying or supported sitting according to technique.", "Use pillows as needed so breathing remains unrestricted."],
+    therapistPosition: ["Stand close to the target level and use body weight rather than excessive arm force."],
+    stabilization: ["Control the trunk/rib cage to localize the intended region and prevent rolling."],
+    contact: ["Use broad contact over the intended thoracic or paraspinal target and avoid direct aggressive pressure on painful ribs."],
+    reassess: ["Thoracic rotation/extension", "Linked neck/shoulder movement", "Breathing-related discomfort if relevant"],
+    safety: ["Check trauma, osteoporosis/fracture risk, inflammatory disease and unexplained chest symptoms."]
+  },
+  "Ribs & Chest Wall": {
+    focus: "rib/chest-wall pain, respiratory movement tolerance and thoracic-linked mobility",
+    patientPosition: ["Supported sitting, side-lying or supine/prone depending on the rib level and technique.", "Position must allow comfortable breathing throughout."],
+    therapistPosition: ["Stand beside the involved rib level with hands supported and force kept low."],
+    stabilization: ["Stabilize the adjacent thorax while respecting normal respiratory excursion."],
+    contact: ["Use broad contact over the rib or surrounding soft tissue; avoid focal pressure over suspected fracture or vulnerable anterior structures."],
+    reassess: ["Pain with deep breath/cough", "Thoracic rotation", "Shoulder or trunk movement linked to symptoms"],
+    safety: ["Do not manually treat unexplained chest pain, dyspnea, suspected rib fracture, acute cardiopulmonary symptoms or systemic illness."]
+  },
+  Lumbar: {
+    focus: "low-back movement, local pain, lower-limb symptom behavior and function such as bending or sit-to-stand",
+    patientPosition: ["Prone, side-lying or supine based on the technique and symptom response.", "Use abdominal/pelvic support if it reduces irritability."],
+    therapistPosition: ["Stand close to the trunk with neutral wrists and controlled body weight."],
+    stabilization: ["Control pelvis and adjacent trunk so the intended manual input is localized."],
+    contact: ["Use broad lumbar/paraspinal or pelvic contact and avoid direct pressure over painful bony prominences."],
+    reassess: ["Lumbar flexion/extension/rotation", "Sit-to-stand or bending", "Leg symptom distribution when relevant"],
+    safety: ["Screen cauda equina features, fracture, infection, malignancy and progressive neurological loss before routine manual treatment."]
+  },
+  Shoulder: {
+    focus: "glenohumeral/scapular pain, elevation, rotation and functional reach",
+    patientPosition: ["Supine, side-lying or sitting with the arm supported.", "Begin near a comfortable resting position in irritable presentations."],
+    therapistPosition: ["Stand beside the shoulder and keep the arm close to the joint line when applying manual force."],
+    stabilization: ["Stabilize the scapula/thorax when the target is glenohumeral; allow scapular motion when that is the intended target."],
+    contact: ["Use broad contact over proximal humerus, scapula or relevant soft tissue and protect sensitive anterior structures."],
+    reassess: ["Flexion/abduction", "Internal/external rotation", "Functional reach or painful arc"],
+    safety: ["Respect dislocation history, fracture, postoperative restrictions, acute inflammatory states and neurological symptoms."]
+  },
+  Elbow: {
+    focus: "elbow flexion/extension, forearm rotation, grip and load-related pain",
+    patientPosition: ["Sitting or supine with the upper limb supported.", "Keep wrist and shoulder relaxed unless movement is part of the technique."],
+    therapistPosition: ["Stand or sit beside the arm with the elbow supported close to the body."],
+    stabilization: ["Stabilize humerus or forearm according to the target joint/tissue."],
+    contact: ["Use broad contact around the ulnohumeral/radiocapitellar region or target soft tissue; protect the ulnar nerve and radial head region."],
+    reassess: ["Elbow flexion/extension", "Pronation/supination", "Grip or task-specific loading"],
+    safety: ["Avoid aggressive treatment with suspected fracture, unstable ligament injury, acute nerve irritation or major swelling."]
+  },
+  "Wrist & Hand": {
+    focus: "wrist/hand range, grip, dexterity and task-related pain",
+    patientPosition: ["Sitting with forearm and hand supported on the table.", "Keep fingers relaxed unless active movement is part of the technique."],
+    therapistPosition: ["Sit or stand beside the hand so small contacts can be controlled precisely."],
+    stabilization: ["Stabilize the forearm or adjacent carpal/metacarpal segment."],
+    contact: ["Use small, broad contacts over the intended joint/tendon/muscle and avoid compressing superficial nerves or inflamed structures."],
+    reassess: ["Wrist flexion/extension", "Forearm rotation", "Grip/pinch or dexterity task"],
+    safety: ["Respect fracture, acute ligament injury, inflammatory flare, nerve compression and postoperative precautions."]
+  },
+  "Hip & Pelvis": {
+    focus: "hip mobility, pelvic/SI-region symptoms, gait and functional loading",
+    patientPosition: ["Supine, prone or side-lying with the pelvis well supported.", "Use a comfortable hip position and avoid forcing painful end range."],
+    therapistPosition: ["Stand close to the pelvis/hip and use a belt when appropriate and trained."],
+    stabilization: ["Stabilize pelvis when targeting the hip; stabilize the trunk/leg according to the pelvic technique."],
+    contact: ["Use broad contact over proximal femur, pelvis or target soft tissue; avoid excessive pressure over groin neurovascular structures."],
+    reassess: ["Hip flexion/rotation", "Squat or sit-to-stand", "Walking or stair tolerance"],
+    safety: ["Screen fracture, severe OA irritability, postoperative restrictions, acute inflammatory pathology and red-flag pelvic symptoms."]
+  },
+  Knee: {
+    focus: "knee flexion/extension, patellofemoral/tibiofemoral symptoms and functional loading",
+    patientPosition: ["Supine, prone or sitting with the knee supported in the position required by the technique."],
+    therapistPosition: ["Stand beside the knee with hands close to the joint line and the limb fully supported."],
+    stabilization: ["Stabilize femur, tibia or patella depending on the target."],
+    contact: ["Use broad contact and avoid sustained compression over the fibular head/common peroneal nerve."],
+    reassess: ["Knee flexion/extension", "Sit-to-stand", "Squat, step or gait pain"],
+    safety: ["Avoid routine manual therapy with suspected DVT, fracture, acute instability, infection or uncleared postoperative restriction."]
+  },
+  "Ankle & Foot": {
+    focus: "dorsiflexion/plantarflexion, foot mobility, gait, balance and load tolerance",
+    patientPosition: ["Supine, prone, long sitting or weight-bearing according to the technique.", "Keep the foot supported and relaxed unless movement is required."],
+    therapistPosition: ["Stand at the foot end or beside the ankle with the lower leg stabilized."],
+    stabilization: ["Stabilize distal tibia/fibula, calcaneus or adjacent foot segment based on the target."],
+    contact: ["Use broad contact over talus/calcaneus/midfoot or soft tissue and avoid excessive pressure over superficial neurovascular structures."],
+    reassess: ["Weight-bearing lunge", "Ankle/foot ROM", "Squat, gait or single-leg task"],
+    safety: ["Screen fracture, syndesmotic instability, severe swelling, neurovascular compromise and suspected DVT."]
+  },
+  "Upper Limb Neural": {
+    focus: "upper-limb neural mechanosensitivity and symptom distribution",
+    patientPosition: ["Supine is commonly used so the shoulder girdle, elbow, wrist and neck can be controlled.", "Begin well short of symptom provocation."],
+    therapistPosition: ["Stand beside the involved upper limb with multiple joints supported."],
+    stabilization: ["Control scapula and adjacent joints so the neural load can be changed one component at a time."],
+    contact: ["Use support rather than focal pressure over the nerve; neural techniques are produced by joint sequencing, not direct nerve compression."],
+    reassess: ["Symptom distribution", "Neurodynamic test response", "Functional reach/grip when relevant"],
+    safety: ["Do not aggressively tension progressive neurological deficit, acute nerve injury or symptoms that rapidly worsen/peripheralize."]
+  },
+  "Lower Limb Neural": {
+    focus: "lower-limb neural mechanosensitivity, leg symptom distribution and function",
+    patientPosition: ["Supine, side-lying or slump sitting according to the selected neurodynamic sequence.", "Start well below the symptomatic threshold."],
+    therapistPosition: ["Stand beside the limb and support the leg so movement remains smooth."],
+    stabilization: ["Control pelvis/trunk and change one sensitizing component at a time."],
+    contact: ["Support the limb without focal compression over peripheral nerves."],
+    reassess: ["Leg symptom distribution", "SLR/slump response when relevant", "Walking or functional movement"],
+    safety: ["Use caution with progressive neurological loss, acute nerve injury, severe irritability or red-flag spinal presentations."]
+  }
+};
+
+type TechniqueRegionPolicy = {
+  primary: ManualRegion[];
+  selected?: ManualRegion[];
+  contact: string[];
+  force: string[];
+  dosage: string[];
+  extraSafety?: string[];
+  titleNoun?: string;
+};
+
+const techniqueRegionPolicies: Record<string, TechniqueRegionPolicy> = {
+  "maitland-joint-mobilization": {
+    primary: ["Cervical","Thoracic","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot","TMJ & Craniofacial","Ribs & Chest Wall"],
+    selected: ["Upper Limb Neural","Lower Limb Neural"],
+    contact: ["Select the joint surface/accessory motion that best relates to the patient's comparable sign.", "Use a comfortable broad contact and localize the intended segment rather than moving the whole region."],
+    force: ["Apply rhythmic Grade I–IV oscillation according to pain, stiffness and irritability.", "Direction is chosen from the joint mechanics and, more importantly, the immediate clinical response."],
+    dosage: ["A common trial is 30–60 seconds for 2–4 bouts with reassessment after each bout."],
+    titleNoun: "Joint Mobilization"
+  },
+  "kaltenborn-evjenth-mobilization": {
+    primary: ["Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["TMJ & Craniofacial","Cervical","Thoracic","Lumbar","Ribs & Chest Wall"],
+    contact: ["Stabilize one bone and contact the adjacent segment close to the joint line.", "Use the treatment plane appropriate to the joint rather than pulling from a distant lever."],
+    force: ["Traction is applied perpendicular to the treatment plane; glide is applied parallel to it.", "Grade I reduces compression, Grade II takes up slack and Grade III provides a sustained stretch when appropriate."],
+    dosage: ["Use brief sustained trials, often 10–30 seconds repeated 3–5 times, adjusted to irritability and response."],
+    titleNoun: "Traction / Translatoric Glide"
+  },
+  "mulligan-mobilization-with-movement": {
+    primary: ["Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["TMJ & Craniofacial","Ribs & Chest Wall"],
+    contact: ["Apply the accessory glide that makes the patient's active movement easier or pain-free.", "A belt may be used only where trained and where it improves control."],
+    force: ["Maintain the accessory glide while the patient performs the comparable active movement.", "The direction is modified until the movement shows an immediate acceptable improvement."],
+    dosage: ["Often 6–10 repetitions for 2–3 sets when the response stays pain-free and useful."],
+    titleNoun: "Mobilization With Movement"
+  },
+  "mulligan-snags-nags": {
+    primary: ["Cervical","Thoracic","Lumbar"],
+    selected: ["Ribs & Chest Wall","TMJ & Craniofacial"],
+    contact: ["Use a trained facet/segmental contact that supports the intended spinal glide.", "Self-SNAGs use a towel/belt only after the direction has been taught and reproduced safely."],
+    force: ["NAGs use a passive oscillatory glide; SNAGs sustain the glide while the patient actively moves.", "The movement should be pain-free or clearly easier."],
+    dosage: ["Commonly 6–10 repetitions, stopping if symptoms worsen or the pain-free effect is lost."],
+    titleNoun: "NAG / SNAG Guidance"
+  },
+  "cyriax-deep-transverse-friction": {
+    primary: ["Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Cervical","Thoracic","Lumbar","Ribs & Chest Wall"],
+    contact: ["Identify a specific symptomatic tendon, ligament or muscle structure rather than rubbing a broad area.", "Move transversely across the target tissue while minimizing sliding over the skin."],
+    force: ["Use localized transverse loading that remains tolerable and does not provoke escalating pain."],
+    dosage: ["Use short, symptom-guided bouts; progressive loading remains the main rehabilitation strategy for most tendinopathies."],
+    titleNoun: "Deep Transverse Friction"
+  },
+  "muscle-energy-technique": {
+    primary: ["TMJ & Craniofacial","Cervical","Thoracic","Ribs & Chest Wall","Lumbar","Shoulder","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Elbow","Wrist & Hand"],
+    contact: ["Position the target muscle/joint at a comfortable barrier and provide matched resistance without allowing unwanted movement."],
+    force: ["Use a gentle isometric contraction, commonly about 10–30% effort, followed by relaxation and taking up the newly available range."],
+    dosage: ["Usually 3–5 cycles of 5–10 second contractions before reassessment."],
+    titleNoun: "Muscle Energy Application"
+  },
+  "strain-counterstrain": {
+    primary: ["TMJ & Craniofacial","Cervical","Thoracic","Ribs & Chest Wall","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: [],
+    contact: ["Locate a reproducible tender point with light palpation, then monitor it while positioning the region toward maximal comfort.", "Do not maintain painful pressure on the tender point."],
+    force: ["The treatment direction is indirect: shorten/unload the painful tissue until tenderness is substantially reduced, then hold without force."],
+    dosage: ["Traditional teaching often uses about 90 seconds, individualized to comfort and response."],
+    titleNoun: "Positional Release / Counterstrain"
+  },
+  "myofascial-release": {
+    primary: ["TMJ & Craniofacial","Cervical","Thoracic","Ribs & Chest Wall","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: [],
+    contact: ["Use broad skin/fascial contact over the relevant soft-tissue region with enough grip to engage tissue without slipping.", "Direct work follows the perceived restriction; indirect work follows the direction of ease."],
+    force: ["Apply slow sustained multidirectional loading rather than a fast thrust.", "Pressure is adjusted to comfort, tissue response and the intended direct/indirect strategy."],
+    dosage: ["Sustained contacts are commonly held 60–120 seconds or until a clear change is felt, with reassessment rather than fixed over-treatment."],
+    titleNoun: "Myofascial Release"
+  },
+  "soft-tissue-mobilization": {
+    primary: ["TMJ & Craniofacial","Cervical","Thoracic","Ribs & Chest Wall","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: [],
+    contact: ["Use broad hand, thumb, knuckle or forearm contact appropriate to the size and sensitivity of the target tissue.", "Avoid direct sustained compression over nerves, vessels or acute lesions."],
+    force: ["Use longitudinal, transverse, kneading or sustained pressure according to the clinical target and patient tolerance."],
+    dosage: ["Use short-to-moderate bouts with frequent symptom checks; stop before excessive soreness."],
+    titleNoun: "Soft-Tissue Mobilization"
+  },
+  "trigger-point-compression": {
+    primary: ["TMJ & Craniofacial","Cervical","Thoracic","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Ribs & Chest Wall"],
+    contact: ["Palpate the symptomatic muscle and use a small but comfortable contact over the tender/trigger area.", "Confirm that pressure reproduces the patient's familiar local or referred symptoms before treating."],
+    force: ["Apply gradually increasing sustained pressure that remains tolerable; do not chase severe pain."],
+    dosage: ["Commonly 20–60 seconds per point, repeated only if the comparable sign improves."],
+    titleNoun: "Trigger-Point Pressure Release"
+  },
+  iastm: {
+    primary: ["Thoracic","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Cervical","Ribs & Chest Wall"],
+    contact: ["Use an appropriate instrument edge over intact skin with lubricant when required by the tool/system.", "Keep the tool moving and avoid vulnerable neurovascular structures or bony prominences."],
+    force: ["Use light-to-moderate scanning or treatment strokes; excessive redness/bruising is not the goal."],
+    dosage: ["Often 30–120 seconds per small area within a brief treatment bout, followed by active movement/loading."],
+    titleNoun: "IASTM"
+  },
+  "neurodynamic-mobilization": {
+    primary: ["Upper Limb Neural","Lower Limb Neural","Cervical","Lumbar"],
+    selected: ["Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    contact: ["Support the limb and use coordinated joint movement to alter neural bed length; do not press directly on the nerve.", "Choose slider before tensioner in irritable presentations."],
+    force: ["Sliders increase load at one end while decreasing it at another; tensioners increase load more globally and require lower irritability."],
+    dosage: ["A conservative trial is 5–10 smooth repetitions for 1–3 sets, staying below symptom flare."],
+    titleNoun: "Neurodynamic Mobilization"
+  },
+  "manual-traction": {
+    primary: ["Cervical","Lumbar","Shoulder","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Elbow","Wrist & Hand","TMJ & Craniofacial"],
+    contact: ["Support the segment close to the joint/region and create a comfortable distraction rather than a sudden pull."],
+    force: ["Apply smooth longitudinal or joint-plane distraction and begin with very low force.", "Continue only if symptoms centralize, pain decreases or movement becomes easier."],
+    dosage: ["Trial 10–30 second holds repeated 3–5 times, individualized to response."],
+    titleNoun: "Traction / Distraction"
+  },
+  "high-velocity-low-amplitude-thrust": {
+    primary: ["Thoracic","Lumbar"],
+    selected: ["Cervical","Ribs & Chest Wall","Hip & Pelvis"],
+    contact: ["Region-specific thrust contacts should be learned in supervised practical training, not from text alone.", "Use comfortable setup with minimal pre-thrust tension and clear consent."],
+    force: ["A trained clinician may deliver a short low-amplitude impulse through a controlled setup; cavitation is not the treatment goal."],
+    dosage: ["Use a very small number of attempts and do not repeat forcefully to chase a click."],
+    extraSafety: ["HVLA requires formal hands-on training, informed consent and region-specific screening. This guide intentionally does not teach a thrust maneuver step-by-step."],
+    titleNoun: "HVLA Safety & Application Principles"
+  },
+  "pnf-manual-techniques": {
+    primary: ["Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Cervical","Thoracic","Lumbar"],
+    contact: ["Use lumbrical/manual contacts that cue the intended diagonal pattern without gripping painfully.", "Provide resistance where it improves movement quality rather than simply maximizing force."],
+    force: ["Guide diagonal/spiral movement with graded manual resistance, stretch or rhythmic stabilization depending on the goal."],
+    dosage: ["Commonly 5–10 controlled repetitions or 5–10 second isometric holds for 2–3 sets, response-guided."],
+    titleNoun: "PNF Manual Pattern"
+  },
+  "fascial-manipulation": {
+    primary: ["Cervical","Thoracic","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["TMJ & Craniofacial","Ribs & Chest Wall"],
+    contact: ["Use focused contact over the selected fascial point only after movement-based assessment.", "Do not treat theoretical maps as proof of a structural lesion."],
+    force: ["Apply focused friction/pressure according to the trained system and tissue orientation, staying within tolerable limits."],
+    dosage: ["Use brief focused applications with immediate movement reassessment and avoid unnecessary prolonged soreness."],
+    titleNoun: "Fascial Manipulation"
+  },
+  "active-release-style-soft-tissue": {
+    primary: ["Cervical","Thoracic","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["TMJ & Craniofacial","Ribs & Chest Wall"],
+    contact: ["Establish a tolerable contact over the target muscle/tendon while it is relatively shortened.", "Maintain contact as the patient actively lengthens or moves the tissue."],
+    force: ["Pressure remains controlled while the patient produces the movement; avoid dragging aggressively across skin."],
+    dosage: ["Often 3–8 slow active repetitions followed by reassessment and loading."],
+    titleNoun: "Active Soft-Tissue Release"
+  },
+  "manual-lymphatic-drainage": {
+    primary: ["Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Ribs & Chest Wall","Cervical"],
+    contact: ["Use flat broad hands and very light skin-stretch pressure; this is not deep massage.", "Follow a drainage sequence appropriate to intact lymphatic pathways as taught in lymphedema training."],
+    force: ["Slow rhythmic skin stretch is directed according to the established drainage plan and underlying lymphatic anatomy."],
+    dosage: ["Session length is individualized within complete decongestive therapy and should be combined with compression/exercise/skin care when indicated."],
+    extraSafety: ["Do not treat unexplained acute swelling; exclude cellulitis, untreated DVT and acute decompensated heart failure."],
+    titleNoun: "Manual Lymphatic Drainage"
+  },
+  "scar-mobilization": {
+    primary: ["TMJ & Craniofacial","Cervical","Thoracic","Ribs & Chest Wall","Lumbar","Shoulder","Elbow","Wrist & Hand","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: [],
+    contact: ["Only work on a fully closed/healed scar once wound and surgical precautions allow.", "Use fingertip or broad contact to move skin/scar longitudinally, transversely and in small circles."],
+    force: ["Begin with light skin mobility and progress gradually toward deeper tissue loading only when healing stage and tolerance permit."],
+    dosage: ["Short bouts of 1–3 minutes per area are usually sufficient before reassessing mobility and function."],
+    titleNoun: "Scar Mobilization"
+  },
+  "paivm-ppivm-spinal-assessment": {
+    primary: ["Cervical","Thoracic","Lumbar"],
+    selected: ["Ribs & Chest Wall"],
+    contact: ["Use a trained segmental contact for PAIVM or guide physiological motion for PPIVM while monitoring symptoms.", "Interpret palpation as one clinical finding rather than proof that a segment is 'out'."],
+    force: ["Use the minimum accessory/physiological force needed to judge symptom response and movement behavior."],
+    dosage: ["Assessment uses brief graded trials; therapeutic oscillations may use 30–60 seconds for 2–4 bouts when appropriate."],
+    titleNoun: "PAIVM / PPIVM"
+  },
+  "myofascial-decompression-dry-cupping": {
+    primary: ["Thoracic","Lumbar","Shoulder","Elbow","Hip & Pelvis","Knee","Ankle & Foot"],
+    selected: ["Cervical","Wrist & Hand","Ribs & Chest Wall"],
+    contact: ["Place an appropriate cup only on intact soft tissue with conservative suction.", "Avoid vulnerable neurovascular areas, open skin and regions where a cup cannot be controlled safely."],
+    force: ["Use the lowest negative pressure that creates a tolerable effect; static or movement-assisted application may be used when appropriate."],
+    dosage: ["A conservative application is about 3–10 minutes per region, shorter for first exposure or sensitive skin."],
+    extraSafety: ["Temporary discoloration can occur; more bruising does not mean a better treatment."],
+    titleNoun: "Dry Cupping / Myofascial Decompression"
+  },
+  "facilitated-positional-release": {
+    primary: ["Cervical","Thoracic","Ribs & Chest Wall","Lumbar","Shoulder","Hip & Pelvis"],
+    selected: ["TMJ & Craniofacial","Elbow","Wrist & Hand","Knee","Ankle & Foot"],
+    contact: ["Position the symptomatic region toward ease and add the trained facilitating force without forcing end range."],
+    force: ["Use brief low-force compression, distraction or torsion according to the trained regional setup.", "Return slowly to neutral and reassess immediately."],
+    dosage: ["Brief holds, often about 3–10 seconds, repeated only a small number of times before reassessment."],
+    titleNoun: "Facilitated Positional Release"
+  }
+};
+
+const defaultPolicy: TechniqueRegionPolicy = {
+  primary: [],
+  selected: manualRegions,
+  contact: ["Use a region-appropriate contact that matches the parent technique and the patient's identified target.", "Avoid vulnerable neurovascular structures and painful bony prominences."],
+  force: ["Use the lowest force that can test the clinical hypothesis and modify it according to symptom response."],
+  dosage: ["Use a conservative trial dose, reassess immediately and continue only if pain, movement or function improves."],
+  titleNoun: "Regional Application"
+};
+
+function regionSlug(region: ManualRegion) {
+  return region
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function getApplicability(policy: TechniqueRegionPolicy, region: ManualRegion): "Selected" | "Not routine" {
+  if (policy.primary.includes(region)) return "Selected";
+  if (policy.selected?.includes(region)) return "Selected";
+  return "Not routine";
+}
+
+function buildGeneratedApplication(
+  technique: (typeof manualTherapyTechniques)[number],
+  region: ManualRegion
+): RegionalManualApplication {
+  const profile = regionProfiles[region];
+  const policy = techniqueRegionPolicies[technique.slug] ?? defaultPolicy;
+  const applicability = getApplicability(policy, region);
+  const isNotRoutine = applicability === "Not routine";
+  const title = isNotRoutine
+    ? region + " — " + technique.name + " Clinical Guidance"
+    : region + " — " + (policy.titleNoun ?? technique.name);
+
+  return {
+    slug: "guide-" + technique.slug + "-" + regionSlug(region),
+    techniqueSlug: technique.slug,
+    techniqueName: technique.name,
+    region,
+    title,
+    applicability,
+    clinicalUse: isNotRoutine
+      ? [
+          technique.name + " is not routinely a first-choice application for " + region + ".",
+          "Use it only when examination identifies a relevant target, the clinician is appropriately trained and a safer/more direct option is not preferable.",
+          "The treatment decision must still be based on the patient's comparable sign: " + profile.focus + "."
+        ]
+      : [
+          "Use when assessment identifies a relevant impairment in " + region + " and the parent technique fits the patient's presentation.",
+          "Primary treatment target: " + profile.focus + ".",
+          "Retain the technique only if it produces a meaningful within-session improvement."
+        ],
+    patientPosition: profile.patientPosition,
+    therapistPosition: profile.therapistPosition,
+    stabilization: profile.stabilization,
+    contact: isNotRoutine
+      ? [
+          "Do not force a textbook contact simply to make this technique fit the region.",
+          ...policy.contact
+        ]
+      : [...profile.contact, ...policy.contact],
+    forceDirection: policy.force,
+    dosage: policy.dosage,
+    steps: [
+      "1. Record the exact comparable sign for " + region + ": " + profile.focus + ".",
+      "2. Screen regional red flags, contraindications and technique-specific precautions before touching the patient.",
+      "3. Position and stabilize the patient so the target is comfortable and the manual input can be localized.",
+      "4. " + (isNotRoutine
+        ? "Confirm that this technique is genuinely relevant to the identified target; if not, choose a more appropriate regional technique."
+        : "Apply a low-force trial using the parent technique principles and the region-specific contact described above."),
+      "5. Monitor pain quality, symptom distribution, guarding and patient confidence throughout.",
+      "6. Re-test the original comparable sign immediately after the trial.",
+      "7. Keep the technique only when the response is useful, then transfer the gain into active movement, loading or self-management."
+    ],
+    reassess: profile.reassess,
+    mistakes: [
+      "Applying the technique because it is familiar rather than because the examination supports it.",
+      "Using more force when the response is unclear or worsening.",
+      "Failing to re-test the exact movement or function that justified the treatment."
+    ],
+    safety: [
+      ...profile.safety,
+      ...(policy.extraSafety ?? []),
+      "Stop or modify if symptoms peripheralize, neurological status worsens, the response is disproportionate or the patient asks to stop."
+    ],
+    visualCue: region + " assessment → correct regional setup → " + (policy.titleNoun ?? technique.name) + " → immediate comparable-sign re-test."
+  };
+}
+
+const generatedRegionalApplications: RegionalManualApplication[] =
+  manualTherapyTechniques.flatMap((technique) => {
+    const explicitRegions = new Set(
+      regionalManualApplications
+        .filter((item) => item.techniqueSlug === technique.slug)
+        .map((item) => item.region)
+    );
+
+    return manualRegions
+      .filter((region) => !explicitRegions.has(region))
+      .map((region) => buildGeneratedApplication(technique, region));
+  });
+
+export const completeRegionalManualApplications: RegionalManualApplication[] = [
+  ...regionalManualApplications.map((item) => ({ ...item, applicability: item.applicability ?? "Detailed" as const })),
+  ...generatedRegionalApplications,
+];
+
 export function getRegionalManualApplication(slug: string) {
-  return regionalManualApplications.find((item) => item.slug === slug);
+  return completeRegionalManualApplications.find((item) => item.slug === slug);
 }
 
 export function getApplicationsForTechnique(techniqueSlug: string) {
-  return regionalManualApplications.filter((item) => item.techniqueSlug === techniqueSlug);
+  return completeRegionalManualApplications.filter((item) => item.techniqueSlug === techniqueSlug);
 }
