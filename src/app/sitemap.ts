@@ -8,6 +8,7 @@ import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { regionalManualApplications } from "@/lib/manual-therapy-regional";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { mskConditions } from "@/lib/msk-injury-hub";
+import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 
 const routes = [
   "",
@@ -38,6 +39,7 @@ const routes = [
   "/legal/privacy",
   "/legal/terms",
   "/legal/disclaimer",
+  ...(atlasPublished ? ["/clinical-visual-atlas"] : []),
 ];
 
 const base = "https://physionexusacademy.com";
@@ -118,6 +120,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.82,
   }));
 
+  const atlasRoutes: MetadataRoute.Sitemap = clinicalVisualAtlas
+    .filter((item) => item.assetReady)
+    .map((item) => ({
+      url: `${base}/clinical-visual-atlas/${encodeURIComponent(item.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.84,
+    }));
+
   return [
     ...staticRoutes,
     ...workshopRoutes,
@@ -129,5 +139,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...regionalManualRoutes,
     ...treatmentPlanRoutes,
     ...mskRoutes,
+    ...atlasRoutes,
   ];
 }
