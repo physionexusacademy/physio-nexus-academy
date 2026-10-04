@@ -310,40 +310,167 @@ function ThoracicRibMap({
   const isRib = t.includes("rib") || t.includes("intercostal");
   const isPec = t.includes("pector");
   const isRhomboid = t.includes("rhomboid");
+  const isPosterior = !isPec;
 
   return (
-    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
-      <path d="M90 15 L90 128" className="stroke-slate-400" strokeWidth="5" strokeLinecap="round" />
-      {[35, 48, 61, 74, 87, 100].map((y) => (
+    <svg viewBox="0 0 220 180" className="h-full w-full" aria-hidden="true">
+      <defs>
+        <linearGradient id="thoraxSkin" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f8fafc" />
+          <stop offset="55%" stopColor="#e2e8f0" />
+          <stop offset="100%" stopColor="#cbd5e1" />
+        </linearGradient>
+        <linearGradient id="thoraxMuscle" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#6d28d9" stopOpacity="0.95" />
+        </linearGradient>
+        <linearGradient id="thoraxRib" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#e2e8f0" />
+          <stop offset="50%" stopColor="#f8fafc" />
+          <stop offset="100%" stopColor="#cbd5e1" />
+        </linearGradient>
+        <filter id="thoraxShadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="#0f172a" floodOpacity="0.14" />
+        </filter>
+        <filter id="thoraxGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#7c3aed" floodOpacity="0.45" />
+        </filter>
+      </defs>
+
+      <g filter="url(#thoraxShadow)">
         <path
-          key={y}
-          d={"M90 " + y + " Q58 " + (y - 8) + " 42 " + (y + 6) + " M90 " + y + " Q122 " + (y - 8) + " 138 " + (y + 6)}
-          fill="none"
-          className="stroke-slate-300"
-          strokeWidth="4"
-          strokeLinecap="round"
+          d="M73 20 Q110 8 147 20 Q164 35 170 67 L164 137 Q145 160 110 164 Q75 160 56 137 L50 67 Q56 35 73 20 Z"
+          fill="url(#thoraxSkin)"
+          stroke="#cbd5e1"
+          strokeWidth="2"
         />
-      ))}
-      <path d="M52 22 Q90 8 128 22" fill="none" className="stroke-slate-300" strokeWidth="9" strokeLinecap="round" />
+        <path d="M65 31 Q84 20 104 27" fill="none" stroke="#cbd5e1" strokeWidth="6" strokeLinecap="round" />
+        <path d="M155 31 Q136 20 116 27" fill="none" stroke="#cbd5e1" strokeWidth="6" strokeLinecap="round" />
+
+        {isPosterior ? (
+          <>
+            <path d="M110 23 L110 151" stroke="#94a3b8" strokeWidth="5" strokeLinecap="round" />
+            {[45, 59, 73, 87, 101, 115, 129].map((y, index) => (
+              <g key={y}>
+                <ellipse
+                  cx="110"
+                  cy={y}
+                  rx={6 - Math.min(index, 4) * 0.35}
+                  ry="4"
+                  fill="#f8fafc"
+                  stroke="#64748b"
+                  strokeWidth="1.6"
+                />
+                <path
+                  d={"M105 " + y + " Q78 " + (y - 8) + " 61 " + (y + 4)}
+                  fill="none"
+                  stroke="url(#thoraxRib)"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d={"M115 " + y + " Q142 " + (y - 8) + " 159 " + (y + 4)}
+                  fill="none"
+                  stroke="url(#thoraxRib)"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+              </g>
+            ))}
+            <path d="M72 45 Q88 38 96 57 Q91 86 73 101 Q61 75 72 45 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" opacity="0.8" />
+            <path d="M148 45 Q132 38 124 57 Q129 86 147 101 Q159 75 148 45 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" opacity="0.8" />
+          </>
+        ) : (
+          <>
+            <path d="M110 29 L110 142" stroke="#cbd5e1" strokeWidth="3" strokeLinecap="round" />
+            {[52, 69, 86, 103, 120].map((y) => (
+              <path
+                key={y}
+                d={"M110 " + y + " Q78 " + (y - 10) + " 62 " + (y + 7) + " M110 " + y + " Q142 " + (y - 10) + " 158 " + (y + 7)}
+                fill="none"
+                stroke="url(#thoraxRib)"
+                strokeWidth="4"
+                strokeLinecap="round"
+                opacity="0.8"
+              />
+            ))}
+          </>
+        )}
+      </g>
 
       {isParaspinal ? (
         <>
-          <path d="M78 30 L77 116" className="stroke-violet-500" strokeWidth="7" strokeLinecap="round" />
-          <path d="M102 30 L103 116" className="stroke-violet-500" strokeWidth="7" strokeLinecap="round" />
+          <path
+            d="M95 35 Q89 71 92 137"
+            fill="none"
+            stroke="url(#thoraxMuscle)"
+            strokeWidth="10"
+            strokeLinecap="round"
+            filter="url(#thoraxGlow)"
+          />
+          <path
+            d="M125 35 Q131 71 128 137"
+            fill="none"
+            stroke="url(#thoraxMuscle)"
+            strokeWidth="10"
+            strokeLinecap="round"
+            filter="url(#thoraxGlow)"
+          />
+          <path d="M110 43 L110 130" stroke="#7c3aed" strokeWidth="2" strokeDasharray="4 4" opacity="0.75" />
         </>
       ) : null}
+
       {isRib ? (
-        <path d="M95 60 Q125 51 143 68" fill="none" className="stroke-cyan-500" strokeWidth="7" strokeLinecap="round" />
-      ) : null}
-      {isPec ? (
-        <path d="M66 30 Q90 27 111 46 Q102 71 82 75 Q65 60 66 30 Z" className="fill-emerald-400/30 stroke-emerald-600" strokeWidth="3" />
-      ) : null}
-      {isRhomboid ? (
-        <path d="M58 42 Q77 49 84 68 Q75 91 54 97 Q48 67 58 42 Z" className="fill-cyan-400/30 stroke-cyan-600" strokeWidth="3" />
+        <>
+          <path
+            d="M118 78 Q145 68 163 84"
+            fill="none"
+            stroke="#06b6d4"
+            strokeWidth="8"
+            strokeLinecap="round"
+            filter="url(#thoraxGlow)"
+          />
+          <path d="M121 88 Q146 79 162 94" fill="none" stroke="#67e8f9" strokeWidth="4" strokeLinecap="round" />
+          <circle cx="151" cy="82" r="7" fill="#ecfeff" stroke="#0891b2" strokeWidth="2" />
+        </>
       ) : null}
 
-      {!isParaspinal && !isRib && !isPec && !isRhomboid ? (
-        <ellipse cx="90" cy="70" rx="34" ry="42" className="fill-violet-400/10 stroke-violet-500" strokeWidth="3" />
+      {isPec ? (
+        <>
+          <path
+            d="M70 40 Q93 31 108 47 L102 93 Q78 91 63 68 Q62 49 70 40 Z"
+            fill="#34d399"
+            fillOpacity="0.32"
+            stroke="#059669"
+            strokeWidth="3"
+          />
+          <path
+            d="M150 40 Q127 31 112 47 L118 93 Q142 91 157 68 Q158 49 150 40 Z"
+            fill="#34d399"
+            fillOpacity="0.32"
+            stroke="#059669"
+            strokeWidth="3"
+          />
+        </>
+      ) : null}
+
+      {isRhomboid ? (
+        <>
+          <path
+            d="M76 52 L103 48 L103 103 L73 91 Z"
+            fill="#22d3ee"
+            fillOpacity="0.26"
+            stroke="#0891b2"
+            strokeWidth="3"
+          />
+          <path
+            d="M144 52 L117 48 L117 103 L147 91 Z"
+            fill="#22d3ee"
+            fillOpacity="0.26"
+            stroke="#0891b2"
+            strokeWidth="3"
+          />
+        </>
       ) : null}
     </svg>
   );
@@ -365,30 +492,89 @@ function LumbarHipMap({
   const isHipJoint = t.includes("femoral head") || t.includes("hip joint") || t.includes("femoroacetabular") || t.includes("acetabul");
 
   return (
-    <svg viewBox="0 0 180 150" className="h-full w-full" aria-hidden="true">
-      <path d="M90 15 L90 74" className="stroke-slate-400" strokeWidth="6" strokeLinecap="round" />
-      <path d="M56 61 Q90 45 124 61 L134 92 Q112 111 90 111 Q68 111 46 92 Z" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
-      <circle cx="63" cy="92" r="13" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
-      <circle cx="117" cy="92" r="13" className="fill-slate-100 stroke-slate-300" strokeWidth="3" />
-      <path d="M63 104 L52 142 M117 104 L128 142" className="stroke-slate-300" strokeWidth="12" strokeLinecap="round" />
+    <svg viewBox="0 0 220 180" className="h-full w-full" aria-hidden="true">
+      <defs>
+        <linearGradient id="lumbarBody" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f8fafc" />
+          <stop offset="60%" stopColor="#e2e8f0" />
+          <stop offset="100%" stopColor="#cbd5e1" />
+        </linearGradient>
+        <linearGradient id="lumbarMuscle" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#6ee7b7" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#059669" stopOpacity="0.95" />
+        </linearGradient>
+        <filter id="lumbarShadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="#0f172a" floodOpacity="0.14" />
+        </filter>
+        <filter id="lumbarGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#10b981" floodOpacity="0.4" />
+        </filter>
+      </defs>
+
+      <g filter="url(#lumbarShadow)">
+        <path
+          d="M72 15 Q110 5 148 15 L154 64 Q149 91 139 111 Q127 132 110 140 Q93 132 81 111 Q71 91 66 64 Z"
+          fill="url(#lumbarBody)"
+          stroke="#cbd5e1"
+          strokeWidth="2.5"
+        />
+        <path
+          d="M61 105 Q79 91 110 92 Q141 91 159 105 L170 132 Q146 156 110 157 Q74 156 50 132 Z"
+          fill="#f8fafc"
+          stroke="#cbd5e1"
+          strokeWidth="3"
+        />
+        <path d="M110 24 L110 120" stroke="#94a3b8" strokeWidth="6" strokeLinecap="round" />
+        {[40, 53, 66, 79, 92].map((y) => (
+          <ellipse key={y} cx="110" cy={y} rx="8" ry="5" fill="#f8fafc" stroke="#64748b" strokeWidth="1.7" />
+        ))}
+        <path d="M73 117 Q89 103 101 112 Q93 136 75 142" fill="none" stroke="#cbd5e1" strokeWidth="9" strokeLinecap="round" />
+        <path d="M147 117 Q131 103 119 112 Q127 136 145 142" fill="none" stroke="#cbd5e1" strokeWidth="9" strokeLinecap="round" />
+        <circle cx="75" cy="137" r="11" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2.5" />
+        <circle cx="145" cy="137" r="11" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2.5" />
+      </g>
 
       {isLumbar ? (
-        <rect x="80" y="27" width="20" height="50" rx="10" className="fill-violet-400/20 stroke-violet-600" strokeWidth="3" />
+        <>
+          <rect x="99" y="34" width="22" height="66" rx="11" fill="#8b5cf6" fillOpacity="0.16" stroke="#7c3aed" strokeWidth="3" />
+          <path d="M110 37 L110 99" stroke="#7c3aed" strokeWidth="3" strokeDasharray="4 4" />
+        </>
       ) : null}
+
       {isQL ? (
-        <path d="M70 37 Q61 57 65 82" fill="none" className="stroke-emerald-500" strokeWidth="8" strokeLinecap="round" />
+        <>
+          <path
+            d="M81 51 Q73 72 76 106 L94 111 Q96 84 96 55 Z"
+            fill="url(#lumbarMuscle)"
+            stroke="#059669"
+            strokeWidth="3"
+            filter="url(#lumbarGlow)"
+          />
+          <path d="M84 57 Q80 79 82 101" fill="none" stroke="#d1fae5" strokeWidth="3" strokeLinecap="round" opacity="0.9" />
+          <circle cx="86" cy="82" r="7" fill="#ecfdf5" stroke="#059669" strokeWidth="2" />
+        </>
       ) : null}
+
       {isGlute ? (
-        <ellipse cx="118" cy="83" rx="22" ry="19" className="fill-emerald-400/25 stroke-emerald-600" strokeWidth="3" />
+        <ellipse cx="145" cy="125" rx="25" ry="22" fill="#34d399" fillOpacity="0.28" stroke="#059669" strokeWidth="3" />
       ) : null}
+
       {isPiriformis ? (
-        <path d="M89 75 Q104 81 118 92" fill="none" className="stroke-cyan-500" strokeWidth="7" strokeLinecap="round" />
+        <>
+          <path d="M111 112 Q128 118 145 134" fill="none" stroke="#06b6d4" strokeWidth="8" strokeLinecap="round" />
+          <circle cx="130" cy="124" r="8" fill="#ecfeff" stroke="#0891b2" strokeWidth="2" />
+        </>
       ) : null}
+
       {isAdductor ? (
-        <path d="M78 95 Q83 119 76 142" fill="none" className="stroke-amber-500" strokeWidth="7" strokeLinecap="round" />
+        <path d="M88 131 Q92 149 87 174" fill="none" stroke="#f59e0b" strokeWidth="9" strokeLinecap="round" />
       ) : null}
+
       {isHipJoint ? (
-        <circle cx="117" cy="92" r="16" className="fill-violet-400/20 stroke-violet-600" strokeWidth="3" />
+        <>
+          <circle cx="145" cy="137" r="17" fill="#8b5cf6" fillOpacity="0.15" stroke="#7c3aed" strokeWidth="3" />
+          <circle cx="145" cy="137" r="5" fill="#7c3aed" />
+        </>
       ) : null}
     </svg>
   );
@@ -538,7 +724,21 @@ export function AnatomyMiniMap({
   region: ManualRegion;
   target: string;
 }) {
-  const label = anatomyPoints[region].label;
+  const t = targetKey(target);
+  const label =
+    region === "Thoracic"
+      ? t.includes("paraspinal")
+        ? "Posterior thorax"
+        : "Thoracic spine"
+      : region === "Ribs & Chest Wall"
+        ? t.includes("posterior") || t.includes("intercostal")
+          ? "Posterior rib cage"
+          : "Chest wall"
+        : region === "Lumbar"
+          ? t.includes("quadratus") || t.includes("ql")
+            ? "Posterior lumbar / QL"
+            : "Lumbar spine"
+          : anatomyPoints[region].label;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-violet-50/40 p-4 shadow-sm">
@@ -552,7 +752,7 @@ export function AnatomyMiniMap({
         <Crosshair className="h-5 w-5 text-violet-600" />
       </div>
 
-      <div className="relative mx-auto mt-3 h-36 w-full max-w-[220px] rounded-2xl bg-white/80 p-2 shadow-inner ring-1 ring-slate-100">
+      <div className="relative mx-auto mt-3 h-44 w-full max-w-[260px] rounded-2xl bg-gradient-to-br from-white via-slate-50 to-violet-50/30 p-2 shadow-inner ring-1 ring-slate-100">
         {region === "TMJ & Craniofacial" ? (
           <CraniofacialMap target={target} />
         ) : region === "Shoulder" ? (
