@@ -1,7 +1,7 @@
 [
   {
-    "label": "PNA MSK Atlas Master 01",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/7e716ead-3039-4e44-b187-9198c653a344.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjM4NWU4NGZmNWZmYjcxOCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzODIyM30.QQzDZgv2PSIE-xJmgPI66bT1cCaPxSXpj_ox9Ljc8Vs",
-    "public_id": "pna/clinical-visual-atlas/master/msk-atlas-01"
+    "label": "PNA Knee Atlas Master 02",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/b8c3e745-4d41-4f67-850d-108b95ff5117.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDQ2YTUwODNjNTEyMWYxZCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3NjI5MX0.dPTLrO9w_Ci7Xj5lseVWzaouaPcR2i8IKxD1mv2hbS8",
+    "public_id": "pna/clinical-visual-atlas/master/knee-atlas-02"
   }
 ]
