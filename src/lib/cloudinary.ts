@@ -4,6 +4,13 @@ const CLOUD_NAME = (
 
 export const cloudinaryEnabled = CLOUD_NAME.length > 0;
 
+export type CloudinaryCrop = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 function normalizePublicId(publicId: string) {
   return publicId
     .replace(/^\\/+/, "")
@@ -16,33 +23,49 @@ export function getCloudinaryUrl(
     width?: number;
     quality?: "auto" | number;
     format?: "auto" | "webp" | "avif" | "jpg" | "png";
+    crop?: CloudinaryCrop;
   } = {}
 ) {
   if (!cloudinaryEnabled || !publicId) return "";
 
   const cleanId = normalizePublicId(publicId);
-  const transforms: string[] = [];
+  const stages: string[] = [];
 
-  transforms.push(`f_${options.format ?? "auto"}`);
-  transforms.push(
-    typeof options.quality === "number"
-      ? `q_${Math.round(options.quality)}`
-      : "q_auto"
-  );
-
-  if (options.width) {
-    transforms.push(`w_${Math.round(options.width)}`);
-    transforms.push("c_limit");
+  if (options.crop) {
+    const { x, y, width, height } = options.crop;
+    stages.push(
+      [
+        `x_${Math.round(x)}`,
+        `y_${Math.round(y)}`,
+        `w_${Math.round(width)}`,
+        `h_${Math.round(height)}`,
+        "c_crop",
+      ].join(",")
+    );
   }
 
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transforms.join(
-    ","
+  const delivery: string[] = [
+    `f_${options.format ?? "auto"}`,
+    typeof options.quality === "number"
+      ? `q_${Math.round(options.quality)}`
+      : "q_auto",
+  ];
+
+  if (options.width) {
+    delivery.push(`w_${Math.round(options.width)}`, "c_limit");
+  }
+
+  stages.push(delivery.join(","));
+
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${stages.join(
+    "/"
   )}/${cleanId}`;
 }
 
 export function getCloudinarySrcSet(
   publicId: string,
   widths: number[] = [480, 720, 900, 1200],
+  crop?: CloudinaryCrop,
 ) {
   if (!cloudinaryEnabled || !publicId) return undefined;
 
@@ -53,6 +76,7 @@ export function getCloudinarySrcSet(
           width,
           quality: "auto",
           format: "auto",
+          crop,
         })} ${width}w`
     )
     .join(", ");
