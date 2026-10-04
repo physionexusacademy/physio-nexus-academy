@@ -1,7 +1,12 @@
 [
   {
-    "label": "Patellofemoral Pain Region",
-    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/b854474c-ca26-4524-bc56-56697952483d/2abd119c-a246-451c-af26-5b5f5e2f54f0/Premium_3D_medical_textbook_illustration__single_standalone_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDMwYWMxMzRkZmM3NTIzMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3MDE5Nn0.uwalzV0kFX-Jq5SV5OsBAdKqvzb_GX1YtfJP55axJHE",
-    "public_id": "pna/clinical-visual-atlas/knee/patellofemoral-pain"
+    "label": "Maitland Cervical Central PA verified infographic",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/69d5f810-3c1c-4f2d-93ef-ba1b1565d3ec.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGIwZjU4YmZiMTlhMGU3NSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyNDM4M30.AR4ZSFC4NpHL-Z0mkDrK0F4WxjNXqfk1fkif83gxRnA",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/master"
+  },
+  {
+    "label": "Maitland Thoracic Central PA verified infographic",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/384b3ea9-6606-464d-9ffe-b8b610777464.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNzVjOGVjNmQ0YTNhZDZjMCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI5MjM5N30.HcRQ14K4AyxzdeWY6-84Bua7OA-tACPg_4KhoRDUkBk",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/master"
   }
 ]
