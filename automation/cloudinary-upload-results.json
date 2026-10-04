@@ -1,8 +1,14 @@
 [
   {
-    "label": "Patellofemoral Pain Region",
+    "label": "Maitland Cervical Central PA verified infographic",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/knee/patellofemoral-pain",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135782/pna/clinical-visual-atlas/knee/patellofemoral-pain.png"
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/master",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791137988/pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/master.png"
+  },
+  {
+    "label": "Maitland Thoracic Central PA verified infographic",
+    "status": "success",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/master",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791137989/pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/master.png"
   }
 ]
