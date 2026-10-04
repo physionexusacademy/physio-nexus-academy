@@ -24,6 +24,7 @@ import {
 import { getManualTherapyExpertProfile } from "@/lib/manual-therapy-expert";
 import ClinicalImage from "@/components/clinical/ClinicalImage";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
+import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -85,6 +86,11 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const expert = getManualTherapyExpertProfile(slug);
   const visuals = getManualTherapyVisuals(slug);
   const regionalApplications = getApplicationsForTechnique(slug);
+  const totalRegionalVariations = regionalApplications.reduce(
+    (total, application) =>
+      total + getRegionalSubTechniques(slug, application.region).length,
+    0,
+  );
 
   if (!technique || !guide || !mechanism || !expert) notFound();
 
@@ -349,6 +355,11 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
             dosage, steps, reassessment and safety. Regions where the technique is not a
             routine first choice are clearly marked instead of forcing an inappropriate application.
           </p>
+          {totalRegionalVariations > 0 ? (
+            <div className="mt-4 inline-flex rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-xs font-bold text-indigo-700">
+              {totalRegionalVariations} specific regional variations
+            </div>
+          ) : null}
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {regionalApplications.map((application) => (
               <Link
@@ -365,6 +376,11 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
                   </span>
                 </div>
                 <p className="mt-1 font-bold text-navy-800">{application.title}</p>
+                {getRegionalSubTechniques(slug, application.region).length ? (
+                  <p className="mt-2 text-xs font-semibold text-cyan-700">
+                    {getRegionalSubTechniques(slug, application.region).length} specific variations
+                  </p>
+                ) : null}
               </Link>
             ))}
           </div>
