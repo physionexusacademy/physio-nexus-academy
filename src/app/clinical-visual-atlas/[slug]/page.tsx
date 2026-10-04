@@ -9,7 +9,7 @@ import {
   Layers,
   ShieldCheck,
 } from "lucide-react";
-import ClinicalImage from "@/components/clinical/ClinicalImage";
+import CloudinaryClinicalImage from "@/components/clinical/CloudinaryClinicalImage";
 import AtlasPlaceholder from "@/components/clinical-atlas/AtlasPlaceholder";
 import ComparisonSlider from "@/components/clinical-atlas/ComparisonSlider";
 import HotspotVisual from "@/components/clinical-atlas/HotspotVisual";
@@ -91,8 +91,8 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
             hotspots={item.hotspots}
           />
         ) : item.assetReady && item.imagePath ? (
-          <ClinicalImage
-            path={item.imagePath}
+          <CloudinaryClinicalImage
+            publicId={item.imagePath}
             alt={item.title}
             label={item.category + " · " + item.region}
             caption={item.summary}
