@@ -740,6 +740,29 @@ export function AnatomyMiniMap({
             : "Lumbar spine"
           : anatomyPoints[region].label;
 
+  const viewLabel =
+    region === "TMJ & Craniofacial"
+      ? t.includes("suboccipital")
+        ? "Posterior-oblique view"
+        : "Side / facial view"
+      : region === "Thoracic" || region === "Lumbar"
+        ? "Posterior view"
+        : region === "Ribs & Chest Wall"
+          ? t.includes("pector")
+            ? "Anterior view"
+            : "Posterior view"
+          : region === "Shoulder"
+            ? "Shoulder-focused view"
+            : region === "Hip & Pelvis"
+              ? "Posterior pelvis view"
+              : region === "Knee"
+                ? "Knee-focused view"
+                : region === "Ankle & Foot"
+                  ? "Ankle / foot view"
+                  : region === "Upper Limb Neural" || region === "Lower Limb Neural"
+                    ? "Neural pathway view"
+                    : "Regional view";
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-violet-50/40 p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
@@ -747,7 +770,12 @@ export function AnatomyMiniMap({
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
             Structure-specific map
           </p>
-          <p className="mt-1 text-sm font-bold text-navy-900">{label}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <p className="text-sm font-bold text-navy-900">{label}</p>
+            <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-500">
+              {viewLabel}
+            </span>
+          </div>
         </div>
         <Crosshair className="h-5 w-5 text-violet-600" />
       </div>
