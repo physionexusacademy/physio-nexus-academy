@@ -12,6 +12,7 @@ export type AtlasRegion =
   | "Wrist & Hand"
   | "Spine"
   | "Hip & Groin"
+  | "Thigh"
   | "Knee"
   | "Ankle & Foot";
 
@@ -51,6 +52,12 @@ export type ClinicalVisualEntry = {
 const masterBase = "pna/clinical-visual-atlas/master/msk-atlas-01";
 const kneeMasterBase = "pna/clinical-visual-atlas/master/knee-atlas-02";
 const shoulderBase = "pna/clinical-visual-atlas/shoulder";
+const headNeckBase = "pna/clinical-visual-atlas/head-neck";
+const elbowForearmBase = "pna/clinical-visual-atlas/elbow-forearm";
+const wristHandBase = "pna/clinical-visual-atlas/wrist-hand";
+const hipGroinBase = "pna/clinical-visual-atlas/hip-groin";
+const thighBase = "pna/clinical-visual-atlas/thigh";
+const ankleFootBase = "pna/clinical-visual-atlas/ankle-foot";
 const kneeBase = "pna/clinical-visual-atlas/knee";
 
 export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
@@ -148,6 +155,181 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
   },
   {
+    slug: "anterior-shoulder-instability-pathology",
+    title: "Anterior Shoulder Instability — Bankart-Type Lesion",
+    shortTitle: "Anterior Instability",
+    region: "Shoulder",
+    category: "Pathology",
+    summary:
+      "3D anterior-oblique cutaway showing anterior-inferior capsulolabral injury consistent with a Bankart-type lesion.",
+    learningPoints: [
+      "Anterior instability commonly involves the anterior-inferior capsulolabral complex.",
+      "A Bankart lesion is a labral injury pattern and does not by itself describe the whole instability presentation.",
+      "History, apprehension, instability episodes and functional demands remain central to clinical reasoning.",
+    ],
+    imagePath: `${shoulderBase}/anterior-shoulder-instability`,
+    thumbnailPath: `${shoulderBase}/anterior-shoulder-instability`,
+    assetReady: true,
+    conditionSlugs: ["anterior-shoulder-instability"],
+    relatedLinks: [
+      { label: "Anterior Shoulder Instability guide", href: "/msk-injuries/anterior-shoulder-instability" },
+    ],
+  },
+  {
+    slug: "cervical-spine-anatomy",
+    title: "Cervical Spine Anatomy",
+    shortTitle: "Cervical Spine",
+    region: "Head & Neck",
+    category: "Anatomy",
+    summary:
+      "Oblique 3D anatomy of C2–C7, intervertebral discs, facet joints, spinal canal, neural foramina and exiting cervical nerve roots.",
+    learningPoints: [
+      "Orient vertebral bodies, discs, facet joints and neural foramina before interpreting radicular pathology.",
+      "Cervical nerve roots exit through neural foramina adjacent to discs and uncovertebral structures.",
+      "Anatomy supports localization but symptoms must still be interpreted clinically.",
+    ],
+    imagePath: `${headNeckBase}/cervical-spine-anatomy`,
+    thumbnailPath: `${headNeckBase}/cervical-spine-anatomy`,
+    assetReady: true,
+    conditionSlugs: ["cervical-radiculopathy"],
+    relatedLinks: [
+      { label: "Cervical Radiculopathy guide", href: "/msk-injuries/cervical-radiculopathy" },
+    ],
+  },
+  {
+    slug: "lateral-ankle-sprain",
+    title: "Lateral Ankle Sprain",
+    shortTitle: "Lateral Ankle Sprain",
+    region: "Ankle & Foot",
+    category: "Pathology",
+    summary:
+      "3D lateral ankle view showing the lateral ligament complex with realistic ATFL-predominant injury.",
+    learningPoints: [
+      "The ATFL is commonly injured in inversion-type lateral ankle sprains.",
+      "CFL involvement may occur with more substantial injury while the PTFL is less commonly injured in routine sprains.",
+      "Severity and return-to-activity decisions require functional assessment rather than image appearance alone.",
+    ],
+    imagePath: `${ankleFootBase}/lateral-ankle-sprain`,
+    thumbnailPath: `${ankleFootBase}/lateral-ankle-sprain`,
+    assetReady: true,
+    conditionSlugs: ["lateral-ankle-sprain"],
+    relatedLinks: [{ label: "Lateral Ankle Sprain guide", href: "/msk-injuries/lateral-ankle-sprain" }],
+  },
+  {
+    slug: "achilles-tendon-rupture",
+    title: "Achilles Tendon Rupture",
+    shortTitle: "Achilles Rupture",
+    region: "Ankle & Foot",
+    category: "Pathology",
+    summary:
+      "Posterior lower-leg 3D anatomy showing midsubstance Achilles tendon discontinuity and retraction.",
+    learningPoints: [
+      "The Achilles tendon transmits force from the gastrocnemius-soleus complex to the calcaneus.",
+      "Complete rupture creates tendon discontinuity, but gap size varies with position and imaging method.",
+      "Diagnosis and management should integrate history, examination, function and specialist referral where indicated.",
+    ],
+    imagePath: `${ankleFootBase}/achilles-tendon-rupture`,
+    thumbnailPath: `${ankleFootBase}/achilles-tendon-rupture`,
+    assetReady: true,
+    conditionSlugs: ["achilles-tendon-rupture"],
+    relatedLinks: [{ label: "Achilles Tendon Rupture guide", href: "/msk-injuries/achilles-tendon-rupture" }],
+  },
+  {
+    slug: "hamstring-strain",
+    title: "Hamstring Strain",
+    shortTitle: "Hamstring Strain",
+    region: "Thigh",
+    category: "Pathology",
+    summary:
+      "Posterior-thigh 3D view showing a realistic musculotendinous biceps femoris strain with localized fiber disruption.",
+    learningPoints: [
+      "Hamstring strains commonly involve the musculotendinous region and frequently affect biceps femoris long head.",
+      "Clinical severity depends on pain, strength loss, function, tissue involvement and recovery response.",
+      "Imaging can support selected cases but does not replace functional assessment.",
+    ],
+    imagePath: `${thighBase}/hamstring-strain`,
+    thumbnailPath: `${thighBase}/hamstring-strain`,
+    assetReady: true,
+    conditionSlugs: ["hamstring-strain"],
+    relatedLinks: [{ label: "Hamstring Strain guide", href: "/msk-injuries/hamstring-strain" }],
+  },
+  {
+    slug: "femoroacetabular-impingement-syndrome",
+    title: "Femoroacetabular Impingement Syndrome",
+    shortTitle: "FAIS",
+    region: "Hip & Groin",
+    category: "Pathology",
+    summary:
+      "3D hip cutaway showing cam-type head-neck morphology and the anterosuperior acetabular-labral contact region.",
+    learningPoints: [
+      "Cam and pincer morphologies are imaging features; symptoms and clinical findings determine the syndrome.",
+      "FAIS is assessed through history, hip motion, provocation, function and imaging when appropriate.",
+      "Morphology can exist in asymptomatic people, so imaging should not be interpreted in isolation.",
+    ],
+    imagePath: `${hipGroinBase}/fais`,
+    thumbnailPath: `${hipGroinBase}/fais`,
+    assetReady: true,
+    conditionSlugs: ["femoroacetabular-impingement-syndrome"],
+    relatedLinks: [{ label: "FAIS guide", href: "/msk-injuries/femoroacetabular-impingement-syndrome" }],
+  },
+  {
+    slug: "hip-osteoarthritis",
+    title: "Hip Osteoarthritis",
+    shortTitle: "Hip Osteoarthritis",
+    region: "Hip & Groin",
+    category: "Pathology",
+    summary:
+      "3D hip OA view showing joint-space narrowing, cartilage loss, marginal osteophytes and subchondral change.",
+    learningPoints: [
+      "Hip OA is a whole-joint process that can affect cartilage, subchondral bone and joint margins.",
+      "Pain and disability do not correlate perfectly with radiographic severity.",
+      "Clinical decisions should integrate symptoms, mobility, strength, function and patient priorities.",
+    ],
+    imagePath: `${hipGroinBase}/hip-osteoarthritis`,
+    thumbnailPath: `${hipGroinBase}/hip-osteoarthritis`,
+    assetReady: true,
+    conditionSlugs: ["hip-osteoarthritis"],
+    relatedLinks: [{ label: "Hip Osteoarthritis guide", href: "/msk-injuries/hip-osteoarthritis" }],
+  },
+  {
+    slug: "carpal-tunnel-syndrome",
+    title: "Carpal Tunnel Syndrome",
+    shortTitle: "Carpal Tunnel",
+    region: "Wrist & Hand",
+    category: "Pathology",
+    summary:
+      "Palmar wrist cutaway showing the median nerve within the carpal tunnel beneath the flexor retinaculum.",
+    learningPoints: [
+      "The median nerve shares the carpal tunnel with the flexor tendons beneath the flexor retinaculum.",
+      "Carpal tunnel syndrome is a median mononeuropathy at the wrist, not simply wrist pain.",
+      "Symptoms, sensory findings, strength and electrodiagnostic testing may contribute to assessment when indicated.",
+    ],
+    imagePath: `${wristHandBase}/carpal-tunnel-syndrome`,
+    thumbnailPath: `${wristHandBase}/carpal-tunnel-syndrome`,
+    assetReady: true,
+    conditionSlugs: ["carpal-tunnel-syndrome"],
+    relatedLinks: [{ label: "Carpal Tunnel Syndrome guide", href: "/msk-injuries/carpal-tunnel-syndrome" }],
+  },
+  {
+    slug: "lateral-epicondylalgia",
+    title: "Lateral Epicondylalgia",
+    shortTitle: "Tennis Elbow",
+    region: "Elbow & Forearm",
+    category: "Pathology",
+    summary:
+      "3D lateral elbow view highlighting the common extensor tendon origin, including ECRB, at the lateral epicondyle.",
+    learningPoints: [
+      "Lateral epicondylalgia is commonly associated with the common extensor tendon origin, especially ECRB.",
+      "Symptoms are load-related and should not be interpreted as a simple inflammatory lesion in every case.",
+      "Assessment should consider grip, resisted loading, function and alternative sources of lateral elbow pain.",
+    ],
+    imagePath: `${elbowForearmBase}/lateral-epicondylalgia`,
+    thumbnailPath: `${elbowForearmBase}/lateral-epicondylalgia`,
+    assetReady: true,
+    conditionSlugs: ["lateral-epicondylalgia"],
+    relatedLinks: [{ label: "Lateral Epicondylalgia guide", href: "/msk-injuries/lateral-epicondylalgia" }],
+  },
+  {
     slug: "cervical-disc-herniation-radiculopathy",
     title: "Cervical Disc Herniation and Nerve-Root Compression",
     shortTitle: "Cervical Disc Herniation",
@@ -194,33 +376,21 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   },
   {
     slug: "knee-osteoarthritis",
-    title: "Knee Osteoarthritis — Healthy vs Degenerative Change",
+    title: "Knee Osteoarthritis",
     shortTitle: "Knee Osteoarthritis",
     region: "Knee",
     category: "Pathology",
     summary:
-      "Healthy-versus-OA visual showing cartilage loss, joint-space narrowing, marginal osteophytes and subchondral change.",
+      "3D pathology view showing medial-compartment predominant joint-space narrowing, cartilage loss, osteophytes and subchondral change.",
     learningPoints: [
-      "Joint-space narrowing is an imaging correlate of cartilage loss rather than a structure itself.",
-      "Osteophytes develop at joint margins and should not be drawn as random bone spikes.",
-      "OA is a whole-joint disorder; symptoms do not map perfectly to radiographic severity.",
+      "Knee OA is a whole-joint disorder rather than cartilage wear alone.",
+      "Radiographic severity does not map perfectly to pain or disability.",
+      "Clinical management should combine symptoms, function, examination and patient goals rather than imaging alone.",
     ],
-    imagePath: `${kneeBase}/knee-osteoarthritis.webp`,
-    thumbnailPath: `${kneeBase}/thumbs/knee-osteoarthritis.webp`,
-    assetReady: false,
+    imagePath: `${kneeBase}/knee-osteoarthritis`,
+    thumbnailPath: `${kneeBase}/knee-osteoarthritis`,
+    assetReady: true,
     conditionSlugs: ["knee-osteoarthritis"],
-    comparison: {
-      beforePath: `${kneeBase}/knee-oa-healthy.webp`,
-      afterPath: `${kneeBase}/knee-oa-degenerative.webp`,
-      beforeLabel: "Healthy knee",
-      afterLabel: "Osteoarthritis",
-      alt: "Healthy knee compared with knee osteoarthritis",
-    },
-    hotspots: [
-      { label: "Cartilage loss", x: 50, y: 42, note: "Thinning and surface irregularity at the articular interface." },
-      { label: "Osteophyte", x: 74, y: 48, note: "Marginal bony outgrowth at the edge of the joint." },
-      { label: "Subchondral bone", x: 52, y: 58, note: "Bone directly beneath the articular cartilage may become sclerotic." },
-    ],
     relatedLinks: [
       { label: "Open Knee OA clinical guide", href: "/msk-injuries/knee-osteoarthritis" },
       { label: "Open Knee OA treatment plan", href: "/treatment-plans" },
@@ -335,15 +505,15 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     region: "Knee",
     category: "Pathology",
     summary:
-      "3D teaching visual of the patellofemoral joint emphasizing load-sensitive contact rather than a simplistic 'misalignment' explanation.",
+      "3D teaching visual of the patellofemoral joint emphasizing load-sensitive contact rather than a simplistic misalignment explanation.",
     learningPoints: [
       "Patellofemoral pain is a clinical pain condition, not a single structural lesion.",
       "Symptoms often relate to tasks that increase patellofemoral joint demand.",
-      "Rehabilitation commonly addresses load management and progressive hip/knee capacity.",
+      "Rehabilitation commonly addresses load management and progressive hip and knee capacity.",
     ],
-    imagePath: `${kneeBase}/patellofemoral-pain.webp`,
-    thumbnailPath: `${kneeBase}/thumbs/patellofemoral-pain.webp`,
-    assetReady: false,
+    imagePath: `${kneeBase}/patellofemoral-pain`,
+    thumbnailPath: `${kneeBase}/patellofemoral-pain`,
+    assetReady: true,
     relatedLinks: [{ label: "MSK Injury Hub", href: "/msk-injuries" }],
   },
   {
