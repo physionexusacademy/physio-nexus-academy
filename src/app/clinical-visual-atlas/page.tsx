@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
   Activity,
   Bone,
@@ -12,6 +13,7 @@ import AtlasExplorer from "@/components/clinical-atlas/AtlasExplorer";
 import {
   atlasCategories,
   atlasRegions,
+  atlasPublished,
   clinicalVisualAtlas,
 } from "@/lib/clinical-visual-atlas";
 
@@ -28,6 +30,8 @@ export const metadata: Metadata = {
 };
 
 export default function ClinicalVisualAtlasPage() {
+  if (!atlasPublished) notFound();
+
   const readyCount = clinicalVisualAtlas.filter((item) => item.assetReady).length;
 
   return (
