@@ -46,352 +46,446 @@
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Cervical",
       "title": "Cervical Central / Unilateral PA Mobilization",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "maitland-thoracic-pa-mobilization",
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Thoracic",
       "title": "Thoracic Central PA Mobilization",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "maitland-lumbar-pa-mobilization",
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Lumbar",
       "title": "Lumbar Central / Unilateral PA Mobilization",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "maitland-shoulder-posterior-glide",
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Shoulder",
       "title": "Glenohumeral Posterior Glide",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "maitland-knee-tibiofemoral-glide",
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Knee",
       "title": "Tibiofemoral AP / PA Mobilization",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "maitland-ankle-posterior-talar-glide",
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Ankle & Foot",
       "title": "Talocrural Posterior Talar Glide",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "kaltenborn-shoulder-traction",
       "techniqueName": "Kaltenborn–Evjenth Mobilization",
       "region": "Shoulder",
       "title": "Glenohumeral Traction",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "kaltenborn-hip-traction",
       "techniqueName": "Kaltenborn–Evjenth Mobilization",
       "region": "Hip & Pelvis",
       "title": "Hip Long-Axis / Lateral Traction",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "kaltenborn-knee-traction",
       "techniqueName": "Kaltenborn–Evjenth Mobilization",
       "region": "Knee",
       "title": "Tibiofemoral Traction",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "kaltenborn-ankle-traction",
       "techniqueName": "Kaltenborn–Evjenth Mobilization",
       "region": "Ankle & Foot",
       "title": "Talocrural Traction",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mulligan-cervical-rotation-snag",
       "techniqueName": "Mulligan NAGs, SNAGs & Self-SNAGs",
       "region": "Cervical",
       "title": "Cervical Rotation SNAG",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mulligan-shoulder-mwm",
       "techniqueName": "Mulligan Mobilization With Movement",
       "region": "Shoulder",
       "title": "Shoulder Elevation MWM",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mulligan-elbow-mwm",
       "techniqueName": "Mulligan Mobilization With Movement",
       "region": "Elbow",
       "title": "Lateral Elbow MWM",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mulligan-knee-mwm",
       "techniqueName": "Mulligan Mobilization With Movement",
       "region": "Knee",
       "title": "Knee MWM During Squat / Step",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mulligan-ankle-mwm",
       "techniqueName": "Mulligan Mobilization With Movement",
       "region": "Ankle & Foot",
       "title": "Weight-Bearing Ankle Dorsiflexion MWM",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "met-cervical-rotation",
       "techniqueName": "Muscle Energy Technique (MET)",
       "region": "Cervical",
       "title": "Cervical Rotation MET",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "met-lumbar-pelvic-rotation",
       "techniqueName": "Muscle Energy Technique (MET)",
       "region": "Lumbar",
       "title": "Lumbar / Pelvic Rotation MET",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "met-hamstring",
       "techniqueName": "Muscle Energy Technique (MET)",
       "region": "Hip & Pelvis",
       "title": "Hamstring MET",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mfr-cervical-upper-trapezius",
       "techniqueName": "Myofascial Release (Direct & Indirect)",
       "region": "Cervical",
       "title": "Cervical / Upper Trapezius MFR",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mfr-pectoral-shoulder",
       "techniqueName": "Myofascial Release (Direct & Indirect)",
       "region": "Shoulder",
       "title": "Pectoral / Anterior Shoulder MFR",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mfr-lumbar-thoracolumbar",
       "techniqueName": "Myofascial Release (Direct & Indirect)",
       "region": "Lumbar",
       "title": "Thoracolumbar Fascial MFR",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mfr-calf",
       "techniqueName": "Myofascial Release (Direct & Indirect)",
       "region": "Ankle & Foot",
       "title": "Calf / Posterior Leg MFR",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "neurodynamic-median-slider",
       "techniqueName": "Neurodynamic Mobilization",
       "region": "Upper Limb Neural",
       "title": "Median Nerve Slider",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "neurodynamic-ulnar-slider",
       "techniqueName": "Neurodynamic Mobilization",
       "region": "Upper Limb Neural",
       "title": "Ulnar Nerve Slider",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "neurodynamic-radial-slider",
       "techniqueName": "Neurodynamic Mobilization",
       "region": "Upper Limb Neural",
       "title": "Radial Nerve Slider",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "neurodynamic-sciatic-slider",
       "techniqueName": "Neurodynamic Mobilization",
       "region": "Lower Limb Neural",
       "title": "Sciatic Nerve Slider",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "iastm-forearm-extensors",
       "techniqueName": "Instrument-Assisted Soft-Tissue Mobilization (IASTM)",
       "region": "Elbow",
       "title": "IASTM for Forearm Extensors",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "iastm-hamstring",
       "techniqueName": "Instrument-Assisted Soft-Tissue Mobilization (IASTM)",
       "region": "Hip & Pelvis",
       "title": "IASTM for Hamstring Region",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "iastm-calf",
       "techniqueName": "Instrument-Assisted Soft-Tissue Mobilization (IASTM)",
       "region": "Ankle & Foot",
       "title": "IASTM for Calf",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "pnf-upper-limb-d1",
       "techniqueName": "PNF Manual Techniques",
       "region": "Shoulder",
       "title": "Upper-Limb D1 Flexion Pattern",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "pnf-lower-limb-d1",
       "techniqueName": "PNF Manual Techniques",
       "region": "Hip & Pelvis",
       "title": "Lower-Limb D1 Flexion Pattern",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "scar-knee-mobilization",
       "techniqueName": "Scar Mobilization",
       "region": "Knee",
       "title": "Healed Knee Scar Mobilization",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "maitland-wrist-radiocarpal-glide",
       "techniqueName": "Maitland Joint Mobilization",
       "region": "Wrist & Hand",
       "title": "Radiocarpal AP / PA Glide",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mulligan-wrist-mwm",
       "techniqueName": "Mulligan Mobilization With Movement",
       "region": "Wrist & Hand",
       "title": "Wrist MWM With Active Flexion / Extension",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "cyriax-lateral-elbow-friction",
       "techniqueName": "Cyriax Deep Transverse Friction",
       "region": "Elbow",
       "title": "Transverse Friction for Common Extensor Tendon Region",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "scs-upper-trapezius",
       "techniqueName": "Strain Counterstrain / Positional Release",
       "region": "Cervical",
       "title": "Upper Trapezius Positional Release",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "stm-shoulder-posterior-cuff",
       "techniqueName": "Soft-Tissue Mobilization",
       "region": "Shoulder",
       "title": "Posterior Cuff / Periscapular Soft-Tissue Mobilization",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "trigger-point-upper-trapezius",
       "techniqueName": "Trigger-Point Pressure Release",
       "region": "Cervical",
       "title": "Upper Trapezius Pressure Release",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "manual-cervical-traction",
       "techniqueName": "Manual Traction & Joint Distraction",
       "region": "Cervical",
       "title": "Manual Cervical Traction",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "hvla-thoracic-principles",
       "techniqueName": "HVLA Thrust Manipulation",
       "region": "Thoracic",
       "title": "Thoracic HVLA — Clinical Setup & Safety Principles",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "fascial-manipulation-lumbar",
       "techniqueName": "Fascial Manipulation",
       "region": "Lumbar",
       "title": "Lumbar Fascial Manipulation — Focused Point Approach",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "active-release-forearm",
       "techniqueName": "Active Soft-Tissue Release",
       "region": "Elbow",
       "title": "Active Release-Style Forearm Extensor Technique",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "active-release-calf",
       "techniqueName": "Active Soft-Tissue Release",
       "region": "Ankle & Foot",
       "title": "Active Release-Style Calf Technique",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     },
     {
       "pageSlug": "mld-upper-limb",
       "techniqueName": "Manual Lymphatic Drainage",
       "region": "Shoulder",
       "title": "Upper-Limb MLD Principles After Breast-Cancer Treatment",
-      "status": "pending",
-      "approvedAssets": []
+      "status": "published",
+      "approvedAssets": [
+        "Real PNA Cloudinary anatomy asset(s) mapped in src/lib/manual-therapy-visuals.ts"
+      ]
     }
-  ]
+  ],
+  "lastPublishedCoverage": {
+    "expected": 44,
+    "published": 44,
+    "missing": [],
+    "note": "All public Visual Lab technique pages use real PNA 3D/textbook-style anatomy assets; generic schematic body visuals are excluded."
+  }
 }
