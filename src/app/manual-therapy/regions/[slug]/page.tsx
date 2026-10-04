@@ -35,6 +35,12 @@ import {
   ClinicalCompareStrip,
   ForceDirectionMiniMap,
 } from "@/components/manual-therapy/ClinicalMiniVisuals";
+import OnDemand3DAnatomy from "@/components/clinical/OnDemand3DAnatomy";
+import {
+  getManualTherapy3DAlt,
+  getManualTherapy3DAssetPath,
+  imageKit3DEnabled,
+} from "@/lib/manual-therapy-3d-assets";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -193,6 +199,17 @@ function DeepTechniqueCard({
   techniqueSlug: string;
 }) {
   const theme = deepCardThemes[index % deepCardThemes.length];
+  const image3DPath = getManualTherapy3DAssetPath({
+    techniqueSlug,
+    region,
+    subTechniqueName: sub.name,
+  });
+  const image3DAlt = getManualTherapy3DAlt({
+    techniqueName: techniqueSlug,
+    region,
+    subTechniqueName: sub.name,
+    target: sub.target,
+  });
 
   return (
     <article className="overflow-hidden rounded-3xl border border-grey-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
@@ -251,6 +268,16 @@ function DeepTechniqueCard({
             techniqueSlug={techniqueSlug}
           />
         </div>
+
+        {imageKit3DEnabled ? (
+          <OnDemand3DAnatomy
+            path={image3DPath}
+            alt={image3DAlt}
+            title={sub.name}
+            target={sub.target}
+            caption="Realistic 3D anatomy is delivered directly from ImageKit only after you open this panel, keeping the main page lightweight."
+          />
+        ) : null}
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
