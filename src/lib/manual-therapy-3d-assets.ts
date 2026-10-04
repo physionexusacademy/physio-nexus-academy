@@ -17,11 +17,11 @@ const REGION_SLUGS: Record<ManualRegion, string> = {
 };
 
 /**
- * First approved PNA 3D anatomy batch.
+ * Approved PNA 3D anatomy assets.
  *
- * These images are anatomy-first teaching assets, so structure visuals can be
- * reused across compatible manual-therapy techniques instead of duplicating
- * the same anatomy for every technique family.
+ * Anatomy-first teaching images can be reused across compatible manual-therapy
+ * technique families, so one high-quality structure render can support several
+ * clinical application cards without duplicating image storage or delivery.
  */
 const READY_3D_ASSETS = {
   masseter: "czxmnbdvag77ejpuzocs",
@@ -32,6 +32,10 @@ const READY_3D_ASSETS = {
   intercostalRibAngle: "exwpcpwltstbcikqrmq5",
   quadratusLumborum: "sgsx27zr83dmlznsxfte",
   glenohumeralPosteriorGlide: "my7sknkgvla6h8so2sz3",
+  glenohumeralInferiorGlide: "rojfcrp8qhq9fpxzqblj",
+  glenohumeralAnteriorGlide: "uq8p6nwhoefxqzirzsxm",
+  patellarTendon: "swvfhjbwbroyj6lysdxi",
+  posteriorTalarGlide: "vdnhp1cc1ytjwsqb3zgp",
 } as const;
 
 export const cloudinary3DEnabled =
@@ -54,6 +58,22 @@ function getReady3DPublicId(args: {
 
   if (name === "glenohumeral posterior glide") {
     return READY_3D_ASSETS.glenohumeralPosteriorGlide;
+  }
+
+  if (name === "glenohumeral inferior glide") {
+    return READY_3D_ASSETS.glenohumeralInferiorGlide;
+  }
+
+  if (name === "glenohumeral anterior glide") {
+    return READY_3D_ASSETS.glenohumeralAnteriorGlide;
+  }
+
+  if (name.startsWith("posterior talar glide")) {
+    return READY_3D_ASSETS.posteriorTalarGlide;
+  }
+
+  if (name.startsWith("patellar tendon")) {
+    return READY_3D_ASSETS.patellarTendon;
   }
 
   if (name.startsWith("masseter")) {
