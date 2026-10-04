@@ -9,13 +9,13 @@ import {
   Loader2,
 } from "lucide-react";
 import {
-  getImageKitSrcSet,
-  getImageKitUrl,
-  imageKitEnabled,
-} from "@/lib/imagekit";
+  cloudinaryEnabled,
+  getCloudinarySrcSet,
+  getCloudinaryUrl,
+} from "@/lib/cloudinary";
 
 type OnDemand3DAnatomyProps = {
-  path: string;
+  publicId: string;
   alt: string;
   title: string;
   target: string;
@@ -23,7 +23,7 @@ type OnDemand3DAnatomyProps = {
 };
 
 export default function OnDemand3DAnatomy({
-  path,
+  publicId,
   alt,
   title,
   target,
@@ -33,11 +33,19 @@ export default function OnDemand3DAnatomy({
   const [loading, setLoading] = useState(true);
   const [missing, setMissing] = useState(false);
 
-  if (!imageKitEnabled || !path) return null;
+  if (!cloudinaryEnabled || !publicId) return null;
 
-  const src = getImageKitUrl(path, { width: 900, quality: 82 });
-  const srcSet = getImageKitSrcSet(path, [480, 720, 900, 1200], 82);
-  const detailUrl = getImageKitUrl(path, { width: 1800, quality: 90 });
+  const src = getCloudinaryUrl(publicId, {
+    width: 900,
+    quality: "auto",
+    format: "auto",
+  });
+  const srcSet = getCloudinarySrcSet(publicId, [480, 720, 900, 1200]);
+  const detailUrl = getCloudinaryUrl(publicId, {
+    width: 1800,
+    quality: "auto",
+    format: "auto",
+  });
 
   return (
     <section className="mt-4 overflow-hidden rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 shadow-sm">
@@ -53,7 +61,7 @@ export default function OnDemand3DAnatomy({
           </span>
           <span>
             <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600">
-              ImageKit 3D Atlas
+              PNA 3D Anatomy Atlas
             </span>
             <span className="mt-0.5 block text-sm font-bold text-navy-900">
               View realistic 3D anatomy
@@ -129,7 +137,7 @@ export default function OnDemand3DAnatomy({
               </p>
               <p className="mt-1 text-xs leading-5 text-amber-800">
                 The lightweight structure-specific map above remains available.
-                Once this asset is uploaded to ImageKit at its assigned path,
+                Once this asset is uploaded to Cloudinary with its assigned public ID,
                 the 3D view will appear automatically.
               </p>
             </div>
