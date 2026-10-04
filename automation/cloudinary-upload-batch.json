@@ -1,7 +1,22 @@
 [
   {
-    "label": "Maitland Lumbar Central PA verified infographic",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/6d67674a-7924-471f-9ccb-e98c52b7c3c0.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTY2YTM2YWM5Y2VhNjg0NSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI5MTU2NH0.Px77NwUlm8luRhWBrKGN9T6vPHpS_LOHOw_PU0sdKmU",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/master"
+    "label": "QC approved cervical central PA anatomy and force",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/f86ca4eb-e81b-497f-8ead-69d228f381a9.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODU1NmRiMmE1ZTM5ZWFhMCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzNzkzMH0.rkfH85NOOi4HDYgEvWfteS3ccRszbtupLurO91cctkU",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/force-anatomy-v1"
+  },
+  {
+    "label": "QC approved thoracic central PA hand contact",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/c54010cb-8371-4d08-b901-658fafbc0cd3.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDM3ODllNDM2ODI3NzI0ZiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI5OTAxMX0.zTIN1JIKjriT5W8GZNd65RPCWCVNPjJGrPAc_j-2sac",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/hand-contact-v1"
+  },
+  {
+    "label": "QC approved lumbar central PA hand contact",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/0df57955-28ba-4995-8f52-32ed56444350.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2Y1YzZmNWYyMjU3YjFlZiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1MDY1NX0.ao9uSYZgGVRMUsl104k8LiAi4UFuOUGkhK5X3DpeofA",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/hand-contact-v1"
+  },
+  {
+    "label": "QC approved lumbar central PA anatomy and force",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/1cff0ae0-27f5-43f3-9349-dcba4e60ee5b.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzNjOTExYTdlNzVjOTkzOSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTMxMDM3NX0.OGlTm-KzjQnsBsaCPrSwOQfKcs1IlrhvLl_1ODTCDR8",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/force-anatomy-v1"
   }
 ]
