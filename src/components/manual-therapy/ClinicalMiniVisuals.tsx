@@ -1204,7 +1204,7 @@ export function TechniqueAnatomyForceVisual({
   const point = anatomyPoints[region];
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-violet-50/60 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:p-5">
+    <div data-technique={techniqueSlug ?? undefined} className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-violet-50/60 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:p-5">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-600 via-cyan-500 to-emerald-400" />
 
       <div className="flex items-center justify-between gap-3">
