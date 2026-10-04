@@ -1,8 +1,26 @@
 [
   {
-    "label": "PNA Knee Atlas Master 02",
+    "label": "PNA Lower Limb Soft Tissue Atlas A",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/master/knee-atlas-02",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130973/pna/clinical-visual-atlas/master/knee-atlas-02.png"
+    "public_id": "pna/clinical-visual-atlas/master/lower-limb-soft-tissue-a",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135519/pna/clinical-visual-atlas/master/lower-limb-soft-tissue-a.png"
+  },
+  {
+    "label": "PNA Hip Knee Degenerative Atlas B",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/master/hip-knee-degenerative-b",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135521/pna/clinical-visual-atlas/master/hip-knee-degenerative-b.png"
+  },
+  {
+    "label": "PNA Upper Quarter Atlas C",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/master/upper-quarter-c",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135522/pna/clinical-visual-atlas/master/upper-quarter-c.png"
+  },
+  {
+    "label": "PNA Hamstring Patellofemoral Atlas D",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/master/hamstring-patellofemoral-d",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135524/pna/clinical-visual-atlas/master/hamstring-patellofemoral-d.png"
   }
 ]
