@@ -43,6 +43,7 @@ export type ClinicalVisualEntry = {
   assetReady: boolean;
   hotspots?: AtlasHotspot[];
   comparison?: AtlasComparison;
+  conditionSlugs?: string[];
   relatedLinks: Array<{ label: string; href: string }>;
 };
 
@@ -86,6 +87,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/knee-osteoarthritis.webp`,
     thumbnailPath: `${kneeBase}/thumbs/knee-osteoarthritis.webp`,
     assetReady: false,
+    conditionSlugs: ["knee-osteoarthritis"],
     comparison: {
       beforePath: `${kneeBase}/knee-oa-healthy.webp`,
       afterPath: `${kneeBase}/knee-oa-degenerative.webp`,
@@ -119,6 +121,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/acl-anatomy.webp`,
     thumbnailPath: `${kneeBase}/thumbs/acl-anatomy.webp`,
     assetReady: false,
+    conditionSlugs: ["acl-injury"],
     relatedLinks: [
       { label: "ACL clinical guide", href: "/msk-injuries/acl-injury" },
       { label: "Manual Therapy Mastery", href: "/manual-therapy" },
@@ -140,6 +143,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/acl-tear.webp`,
     thumbnailPath: `${kneeBase}/thumbs/acl-tear.webp`,
     assetReady: false,
+    conditionSlugs: ["acl-injury"],
     relatedLinks: [{ label: "ACL Injury guide", href: "/msk-injuries/acl-injury" }],
   },
   {
@@ -158,6 +162,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/acl-injury-mechanism.webp`,
     thumbnailPath: `${kneeBase}/thumbs/acl-injury-mechanism.webp`,
     assetReady: false,
+    conditionSlugs: ["acl-injury"],
     relatedLinks: [{ label: "ACL Injury guide", href: "/msk-injuries/acl-injury" }],
   },
   {
@@ -176,6 +181,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/meniscus-anatomy.webp`,
     thumbnailPath: `${kneeBase}/thumbs/meniscus-anatomy.webp`,
     assetReady: false,
+    conditionSlugs: ["meniscal-injury"],
     relatedLinks: [{ label: "Meniscal Injury guide", href: "/msk-injuries/meniscal-injury" }],
   },
   {
@@ -194,6 +200,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/meniscus-tear.webp`,
     thumbnailPath: `${kneeBase}/thumbs/meniscus-tear.webp`,
     assetReady: false,
+    conditionSlugs: ["meniscal-injury"],
     relatedLinks: [{ label: "Meniscal Injury guide", href: "/msk-injuries/meniscal-injury" }],
   },
   {
@@ -230,6 +237,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/lachman-test.webp`,
     thumbnailPath: `${kneeBase}/thumbs/lachman-test.webp`,
     assetReady: false,
+    conditionSlugs: ["acl-injury"],
     relatedLinks: [{ label: "ACL testing guide", href: "/msk-injuries/acl-injury" }],
   },
   {
@@ -248,6 +256,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/mcmurray-test.webp`,
     thumbnailPath: `${kneeBase}/thumbs/mcmurray-test.webp`,
     assetReady: false,
+    conditionSlugs: ["meniscal-injury"],
     relatedLinks: [{ label: "Meniscal testing guide", href: "/msk-injuries/meniscal-injury" }],
   },
   {
@@ -308,3 +317,11 @@ export function getAtlasEntry(slug: string) {
 }
 
 export const atlasPublished = clinicalVisualAtlas.some((item) => item.assetReady);
+
+export function getAtlasEntriesForCondition(conditionSlug: string) {
+  return clinicalVisualAtlas.filter(
+    (item) =>
+      item.assetReady &&
+      item.conditionSlugs?.includes(conditionSlug)
+  );
+}
