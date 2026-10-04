@@ -357,7 +357,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
         Regional Manual Therapy
       </Link>
 
-      <section className="relative mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-700 via-indigo-800 to-navy-950 p-7 text-white shadow-xl sm:p-10">
+      <section className="relative mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-700 via-indigo-800 to-slate-950 p-7 text-white shadow-xl sm:p-10">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-cyan-400/15 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-12 h-52 w-52 rounded-full bg-violet-300/15 blur-3xl" />
 
