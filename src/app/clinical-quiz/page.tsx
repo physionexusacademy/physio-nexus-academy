@@ -5,6 +5,9 @@ import { QuizClient } from "./QuizClient";
 import { currentQuiz } from "@/lib/weekly-quiz";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Weekly Clinical Quiz",
   description:
