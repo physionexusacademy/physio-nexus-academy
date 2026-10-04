@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Map, Hand, Activity } from "lucide-react";
 import {
+  completeRegionalManualApplications,
   manualRegions,
-  regionalManualApplications,
 } from "@/lib/manual-therapy-regional";
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default function RegionalManualTherapyPage() {
             {manualRegions.length} clinical regions
           </span>
           <span className="rounded-full bg-white/10 px-4 py-2">
-            {regionalManualApplications.length} detailed applications
+            {completeRegionalManualApplications.length} regional guides
           </span>
         </div>
       </section>
@@ -57,7 +57,7 @@ export default function RegionalManualTherapyPage() {
 
       <section className="mt-12 space-y-10">
         {manualRegions.map((region) => {
-          const items = regionalManualApplications.filter((item) => item.region === region);
+          const items = completeRegionalManualApplications.filter((item) => item.region === region);
           if (!items.length) return null;
 
           return (
@@ -86,6 +86,11 @@ export default function RegionalManualTherapyPage() {
                       {item.techniqueName}
                     </p>
                     <h3 className="mt-1 text-lg font-bold text-navy-800">{item.title}</h3>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-bold text-violet-700">
+                        {item.applicability ?? "Detailed"}
+                      </span>
+                    </div>
                     <p className="mt-3 line-clamp-3 text-sm leading-6 text-navy-600">
                       {item.clinicalUse[0]}
                     </p>
