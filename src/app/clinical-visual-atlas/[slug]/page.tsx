@@ -96,6 +96,7 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
             alt={item.title}
             label={item.category + " · " + item.region}
             caption={item.summary}
+            crop={item.crop}
             eager
           />
         ) : (
