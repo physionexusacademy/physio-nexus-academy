@@ -22,6 +22,14 @@ export type AtlasHotspot = {
   note: string;
 };
 
+export type AtlasComparison = {
+  beforePath: string;
+  afterPath: string;
+  beforeLabel: string;
+  afterLabel: string;
+  alt: string;
+};
+
 export type ClinicalVisualEntry = {
   slug: string;
   title: string;
@@ -34,6 +42,7 @@ export type ClinicalVisualEntry = {
   thumbnailPath?: string;
   assetReady: boolean;
   hotspots?: AtlasHotspot[];
+  comparison?: AtlasComparison;
   relatedLinks: Array<{ label: string; href: string }>;
 };
 
@@ -77,6 +86,13 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/knee-osteoarthritis.webp`,
     thumbnailPath: `${kneeBase}/thumbs/knee-osteoarthritis.webp`,
     assetReady: false,
+    comparison: {
+      beforePath: `${kneeBase}/knee-oa-healthy.webp`,
+      afterPath: `${kneeBase}/knee-oa-degenerative.webp`,
+      beforeLabel: "Healthy knee",
+      afterLabel: "Osteoarthritis",
+      alt: "Healthy knee compared with knee osteoarthritis",
+    },
     hotspots: [
       { label: "Cartilage loss", x: 50, y: 42, note: "Thinning and surface irregularity at the articular interface." },
       { label: "Osteophyte", x: 74, y: 48, note: "Marginal bony outgrowth at the edge of the joint." },
