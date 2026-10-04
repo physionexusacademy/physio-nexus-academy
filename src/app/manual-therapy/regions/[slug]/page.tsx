@@ -38,8 +38,8 @@ import {
 import OnDemand3DAnatomy from "@/components/clinical/OnDemand3DAnatomy";
 import {
   getManualTherapy3DAlt,
-  getManualTherapy3DAssetPath,
-  imageKit3DEnabled,
+  getManualTherapy3DAssetPublicId,
+  cloudinary3DEnabled,
 } from "@/lib/manual-therapy-3d-assets";
 
 type PageProps = {
@@ -199,7 +199,7 @@ function DeepTechniqueCard({
   techniqueSlug: string;
 }) {
   const theme = deepCardThemes[index % deepCardThemes.length];
-  const image3DPath = getManualTherapy3DAssetPath({
+  const image3DPublicId = getManualTherapy3DAssetPublicId({
     techniqueSlug,
     region,
     subTechniqueName: sub.name,
@@ -269,13 +269,13 @@ function DeepTechniqueCard({
           />
         </div>
 
-        {imageKit3DEnabled ? (
+        {cloudinary3DEnabled ? (
           <OnDemand3DAnatomy
-            path={image3DPath}
+            publicId={image3DPublicId}
             alt={image3DAlt}
             title={sub.name}
             target={sub.target}
-            caption="Realistic 3D anatomy is delivered directly from ImageKit only after you open this panel, keeping the main page lightweight."
+            caption="Realistic 3D anatomy is delivered on demand from Cloudinary only after you open this panel, keeping the main page lightweight."
           />
         ) : null}
 
