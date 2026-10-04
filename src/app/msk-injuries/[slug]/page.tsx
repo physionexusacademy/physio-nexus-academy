@@ -185,7 +185,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
                         alt={visual.shortTitle}
                         loading="lazy"
                         decoding="async"
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                        className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.02]"
                       />
                     </div>
                   ) : null}
