@@ -56,7 +56,7 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
         Clinical Visual Atlas
       </Link>
 
-      <section className="mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy-950 via-navy-900 to-teal-800 p-7 text-white shadow-xl sm:p-10">
+      <section className="mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy-900 via-navy-800 to-teal-800 p-7 text-white shadow-xl sm:p-10">
         <div className="flex flex-wrap gap-2">
           <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold">
             {item.region}
@@ -95,7 +95,7 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
           </div>
           <ul className="mt-5 space-y-4">
             {item.learningPoints.map((point) => (
-              <li key={point} className="flex gap-3 text-sm leading-6 text-navy-650">
+              <li key={point} className="flex gap-3 text-sm leading-6 text-navy-600">
                 <CheckCircle2 className="mt-1 h-4 w-4 flex-none text-teal-600" />
                 <span>{point}</span>
               </li>
