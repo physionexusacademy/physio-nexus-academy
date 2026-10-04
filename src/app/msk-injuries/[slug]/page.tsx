@@ -19,7 +19,7 @@ import { mskConditions, type MSKTest } from "@/lib/msk-injury-hub";
 type PageProps = { params: Promise<{ slug: string }> };
 
 export const dynamic = "force-static";
-export const dynamicParams = false;
+export const dynamicParams = true;
 export const revalidate = false;
 
 export function generateStaticParams() {
