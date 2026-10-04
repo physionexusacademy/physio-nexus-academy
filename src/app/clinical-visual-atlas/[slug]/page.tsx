@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import ClinicalImage from "@/components/clinical/ClinicalImage";
 import AtlasPlaceholder from "@/components/clinical-atlas/AtlasPlaceholder";
+import ComparisonSlider from "@/components/clinical-atlas/ComparisonSlider";
+import HotspotVisual from "@/components/clinical-atlas/HotspotVisual";
 import {
   clinicalVisualAtlas,
   getAtlasEntry,
@@ -74,7 +76,21 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
       </section>
 
       <section className="mt-7">
-        {item.assetReady && item.imagePath ? (
+        {item.assetReady && item.comparison ? (
+          <ComparisonSlider
+            beforePath={item.comparison.beforePath}
+            afterPath={item.comparison.afterPath}
+            beforeLabel={item.comparison.beforeLabel}
+            afterLabel={item.comparison.afterLabel}
+            alt={item.comparison.alt}
+          />
+        ) : item.assetReady && item.imagePath && item.hotspots?.length ? (
+          <HotspotVisual
+            path={item.imagePath}
+            alt={item.title}
+            hotspots={item.hotspots}
+          />
+        ) : item.assetReady && item.imagePath ? (
           <ClinicalImage
             path={item.imagePath}
             alt={item.title}
