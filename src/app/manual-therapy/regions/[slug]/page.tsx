@@ -14,8 +14,8 @@ import {
   RotateCcw,
 } from "lucide-react";
 import {
+  completeRegionalManualApplications,
   getRegionalManualApplication,
-  regionalManualApplications,
 } from "@/lib/manual-therapy-regional";
 
 type PageProps = {
@@ -23,7 +23,7 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return regionalManualApplications.map((item) => ({ slug: item.slug }));
+  return completeRegionalManualApplications.map((item) => ({ slug: item.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -92,11 +92,30 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold">
             {item.techniqueName}
           </span>
+          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold">
+            {item.applicability ?? "Detailed"}
+          </span>
         </div>
         <h1 className="mt-4 max-w-4xl text-3xl font-bold text-white sm:text-5xl">
           {item.title}
         </h1>
       </section>
+
+      {item.applicability === "Not routine" ? (
+        <section className="mt-8 rounded-3xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-700">
+            Clinical applicability
+          </p>
+          <h2 className="mt-2 text-xl font-bold text-navy-800">
+            Not a routine first-choice application in this region
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-navy-600">
+            This page is included so every body region has clear guidance. Do not force the
+            technique into this region; use it only when examination identifies a relevant
+            target and the clinician has appropriate training.
+          </p>
+        </section>
+      ) : null}
 
       <section className="mt-8 rounded-3xl border border-violet-200 bg-gradient-to-r from-violet-50 to-cyan-50 p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
