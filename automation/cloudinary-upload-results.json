@@ -1,26 +1,62 @@
 [
   {
-    "label": "PNA Lower Limb Soft Tissue Atlas A",
+    "label": "Lateral Ankle Sprain",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/master/lower-limb-soft-tissue-a",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135519/pna/clinical-visual-atlas/master/lower-limb-soft-tissue-a.png"
+    "public_id": "pna/clinical-visual-atlas/ankle-foot/lateral-ankle-sprain",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135756/pna/clinical-visual-atlas/ankle-foot/lateral-ankle-sprain.png"
   },
   {
-    "label": "PNA Hip Knee Degenerative Atlas B",
+    "label": "Hamstring Strain",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/master/hip-knee-degenerative-b",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135521/pna/clinical-visual-atlas/master/hip-knee-degenerative-b.png"
+    "public_id": "pna/clinical-visual-atlas/thigh/hamstring-strain",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135757/pna/clinical-visual-atlas/thigh/hamstring-strain.png"
   },
   {
-    "label": "PNA Upper Quarter Atlas C",
+    "label": "Achilles Tendon Rupture",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/master/upper-quarter-c",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135522/pna/clinical-visual-atlas/master/upper-quarter-c.png"
+    "public_id": "pna/clinical-visual-atlas/ankle-foot/achilles-tendon-rupture",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135758/pna/clinical-visual-atlas/ankle-foot/achilles-tendon-rupture.png"
   },
   {
-    "label": "PNA Hamstring Patellofemoral Atlas D",
+    "label": "Femoroacetabular Impingement Syndrome",
     "status": "success",
-    "public_id": "pna/clinical-visual-atlas/master/hamstring-patellofemoral-d",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135524/pna/clinical-visual-atlas/master/hamstring-patellofemoral-d.png"
+    "public_id": "pna/clinical-visual-atlas/hip-groin/fais",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135759/pna/clinical-visual-atlas/hip-groin/fais.png"
+  },
+  {
+    "label": "Knee Osteoarthritis",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/knee/knee-osteoarthritis",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135760/pna/clinical-visual-atlas/knee/knee-osteoarthritis.png"
+  },
+  {
+    "label": "Hip Osteoarthritis",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/hip-groin/hip-osteoarthritis",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135761/pna/clinical-visual-atlas/hip-groin/hip-osteoarthritis.png"
+  },
+  {
+    "label": "Carpal Tunnel Syndrome",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/wrist-hand/carpal-tunnel-syndrome",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135763/pna/clinical-visual-atlas/wrist-hand/carpal-tunnel-syndrome.png"
+  },
+  {
+    "label": "Lateral Epicondylalgia",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/elbow-forearm/lateral-epicondylalgia",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135764/pna/clinical-visual-atlas/elbow-forearm/lateral-epicondylalgia.png"
+  },
+  {
+    "label": "Anterior Shoulder Instability",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/shoulder/anterior-shoulder-instability",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135765/pna/clinical-visual-atlas/shoulder/anterior-shoulder-instability.png"
+  },
+  {
+    "label": "Cervical Spine Anatomy",
+    "status": "success",
+    "public_id": "pna/clinical-visual-atlas/head-neck/cervical-spine-anatomy",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791135766/pna/clinical-visual-atlas/head-neck/cervical-spine-anatomy.png"
   }
 ]
