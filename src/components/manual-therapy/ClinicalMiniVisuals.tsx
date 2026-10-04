@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   ArrowDown,
   ArrowLeft,
@@ -981,6 +982,333 @@ export function ClinicalCompareStrip({
         <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
           {therapistCheck}
         </p>
+      </div>
+    </div>
+  );
+}
+
+
+function ExactDirectionVector({ direction }: { direction: string }) {
+  const d = direction.toLowerCase();
+
+  const endpoint = (label: string, tone: "violet" | "cyan" = "violet") => (
+    <span
+      className={
+        "flex h-9 min-w-9 items-center justify-center rounded-xl border px-2 text-[10px] font-black uppercase tracking-wide shadow-sm " +
+        (tone === "violet"
+          ? "border-violet-200 bg-violet-50 text-violet-800"
+          : "border-cyan-200 bg-cyan-50 text-cyan-800")
+      }
+    >
+      {label}
+    </span>
+  );
+
+  if (d.includes("posterior-to-anterior") || d.includes("posterior to anterior")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-2">
+        {endpoint("P")}
+        <div className="h-2 w-24 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 shadow-sm" />
+        <ArrowRight className="h-8 w-8 text-cyan-600" />
+        {endpoint("A", "cyan")}
+      </div>
+    );
+  }
+
+  if (d.includes("anterior-to-posterior") || d.includes("anterior to posterior")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-2">
+        {endpoint("A")}
+        <div className="h-2 w-24 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 shadow-sm" />
+        <ArrowRight className="h-8 w-8 text-cyan-600" />
+        {endpoint("P", "cyan")}
+      </div>
+    );
+  }
+
+  if (
+    d.includes("superior or inferior") ||
+    d.includes("superior/inferior") ||
+    d.includes("inferior/superior")
+  ) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-5">
+        <div className="flex flex-col items-center">
+          <ArrowUp className="h-8 w-8 text-violet-700" />
+          <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Superior</span>
+        </div>
+        <div className="h-14 w-2 rounded-full bg-gradient-to-b from-violet-500 to-cyan-500" />
+        <div className="flex flex-col items-center">
+          <ArrowDown className="h-8 w-8 text-cyan-700" />
+          <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Inferior</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (d.includes("inferior")) {
+    return (
+      <div className="flex h-20 flex-col items-center justify-center">
+        <ArrowDown className="h-10 w-10 text-cyan-700" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Inferior</span>
+      </div>
+    );
+  }
+
+  if (d.includes("superior")) {
+    return (
+      <div className="flex h-20 flex-col items-center justify-center">
+        <ArrowUp className="h-10 w-10 text-violet-700" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Superior</span>
+      </div>
+    );
+  }
+
+  if (d.includes("posterolateral")) {
+    return (
+      <div className="flex h-20 items-center justify-center">
+        <ArrowRight className="h-11 w-11 -rotate-45 text-violet-700" />
+        <span className="ml-2 text-[10px] font-black uppercase tracking-wide text-violet-700">Posterolateral</span>
+      </div>
+    );
+  }
+
+  if (d.includes("posterior glide") || d.includes("posterior translation") || d.includes("posterior talar")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-2">
+        <ArrowLeft className="h-10 w-10 text-violet-700" />
+        <div className="h-2 w-24 rounded-full bg-gradient-to-l from-violet-600 to-cyan-500" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Posterior</span>
+      </div>
+    );
+  }
+
+  if (d.includes("anterior glide") || d.includes("anterior translation")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-2">
+        <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Anterior</span>
+        <div className="h-2 w-24 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
+        <ArrowRight className="h-10 w-10 text-cyan-700" />
+      </div>
+    );
+  }
+
+  if (
+    d.includes("medial/lateral") ||
+    d.includes("medial or lateral") ||
+    d.includes("lateral/medial") ||
+    d.includes("transverse") ||
+    d.includes("side-to-side") ||
+    d.includes("side to side")
+  ) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-1">
+        <ArrowLeft className="h-8 w-8 text-violet-700" />
+        <div className="h-2 w-28 rounded-full bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500" />
+        <ArrowRight className="h-8 w-8 text-cyan-700" />
+      </div>
+    );
+  }
+
+  if (d.includes("lateral")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-2">
+        <div className="h-2 w-28 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
+        <ArrowRight className="h-10 w-10 text-cyan-700" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Lateral</span>
+      </div>
+    );
+  }
+
+  if (d.includes("medial")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-2">
+        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Medial</span>
+        <ArrowLeft className="h-10 w-10 text-violet-700" />
+        <div className="h-2 w-28 rounded-full bg-gradient-to-l from-violet-600 to-cyan-500" />
+      </div>
+    );
+  }
+
+  if (d.includes("long-axis") || d.includes("long axis") || d.includes("traction") || d.includes("distraction")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-3">
+        <ArrowLeft className="h-9 w-9 text-violet-700" />
+        <div className="h-2 w-24 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
+        <ArrowRight className="h-9 w-9 text-cyan-700" />
+        <span className="ml-1 text-[10px] font-black uppercase tracking-wide text-slate-600">Distraction</span>
+      </div>
+    );
+  }
+
+  if (d.includes("rotation") || d.includes("rotate")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-3">
+        <RotateCw className="h-12 w-12 text-violet-700" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Rotation</span>
+      </div>
+    );
+  }
+
+  if (d.includes("diagonal")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-3">
+        <ArrowRight className="h-12 w-12 -rotate-45 text-violet-700" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Diagonal</span>
+      </div>
+    );
+  }
+
+  if (
+    d.includes("longitudinal") ||
+    d.includes("along") ||
+    d.includes("lengthen") ||
+    d.includes("lengthened")
+  ) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-3">
+        <div className="flex flex-col items-center">
+          <ArrowUp className="h-7 w-7 text-violet-700" />
+          <div className="h-8 w-2 rounded-full bg-gradient-to-b from-violet-600 to-cyan-500" />
+          <ArrowDown className="h-7 w-7 text-cyan-700" />
+        </div>
+        <span className="text-[10px] font-black uppercase tracking-wide text-slate-600">Longitudinal</span>
+      </div>
+    );
+  }
+
+  if (d.includes("pressure") || d.includes("compression") || d.includes("friction")) {
+    return (
+      <div className="flex h-20 items-center justify-center gap-3">
+        <ArrowDown className="h-10 w-10 text-violet-700" />
+        <div className="h-8 w-8 rounded-full border-4 border-rose-300 bg-rose-100 shadow-[0_0_20px_rgba(244,63,94,0.25)]" />
+        <span className="text-[10px] font-black uppercase tracking-wide text-rose-700">Target load</span>
+      </div>
+    );
+  }
+
+  return <CueGraphic type={cueMeta(undefined, direction).type} />;
+}
+
+export function TechniqueAnatomyForceVisual({
+  region,
+  target,
+  direction,
+  techniqueSlug,
+}: {
+  region: ManualRegion;
+  target: string;
+  direction: string;
+  techniqueSlug?: string;
+}) {
+  const point = anatomyPoints[region];
+
+  return (
+    <div className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-violet-50/60 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:p-5">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-600 via-cyan-500 to-emerald-400" />
+
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-700">
+            PNA Clinical Technique Visual
+          </p>
+          <p className="mt-1 text-sm font-bold text-navy-900">
+            Anatomy · target area · force direction
+          </p>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+          <Image
+            src="/images/pna-logo.png"
+            alt="Physio Nexus Academy"
+            width={44}
+            height={44}
+            className="h-full w-full object-contain"
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">
+                Anatomy + target area
+              </p>
+              <p className="mt-1 text-sm font-bold text-navy-900">{region}</p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-[10px] font-bold text-rose-700">
+              <span className="h-2 w-2 rounded-full bg-rose-500" />
+              Target / pain-sensitive region
+            </span>
+          </div>
+
+          <div className="relative mx-auto mt-3 h-56 w-full max-w-[340px] overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-white to-cyan-50/50 p-3 shadow-inner ring-1 ring-slate-100">
+            {region === "TMJ & Craniofacial" ? (
+              <CraniofacialMap target={target} />
+            ) : region === "Shoulder" ? (
+              <ShoulderMap target={target} />
+            ) : region === "Knee" ? (
+              <KneeMap target={target} />
+            ) : region === "Ankle & Foot" ? (
+              <AnkleFootMap target={target} />
+            ) : region === "Cervical" ? (
+              <CervicalMap target={target} />
+            ) : region === "Thoracic" || region === "Ribs & Chest Wall" ? (
+              <ThoracicRibMap region={region} target={target} />
+            ) : region === "Lumbar" || region === "Hip & Pelvis" ? (
+              <LumbarHipMap region={region} target={target} />
+            ) : region === "Elbow" ? (
+              <ElbowMap target={target} />
+            ) : region === "Wrist & Hand" ? (
+              <WristHandMap target={target} />
+            ) : region === "Upper Limb Neural" || region === "Lower Limb Neural" ? (
+              <NeuralMap region={region} target={target} />
+            ) : (
+              <GenericBodyMap region={region} />
+            )}
+
+            <div
+              className="pointer-events-none absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-rose-400 bg-rose-400/10 shadow-[0_0_22px_rgba(244,63,94,0.35)]"
+              style={{ left: point.x + "%", top: point.y + "%" }}
+            >
+              <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500 shadow" />
+            </div>
+          </div>
+
+          <div className="mt-3 rounded-2xl border border-rose-100 bg-rose-50/70 px-3 py-2.5">
+            <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-600">
+              Primary target
+            </p>
+            <p className="mt-1 text-sm font-bold leading-5 text-navy-900">{target}</p>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-4 shadow-sm">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-cyan-700">
+              Force / movement vector
+            </p>
+            <p className="mt-1 text-sm font-bold text-navy-900">
+              Exact direction from the technique description
+            </p>
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-cyan-100 bg-white px-4 py-3 shadow-inner">
+            <ExactDirectionVector direction={direction} />
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-white/90 px-3.5 py-3">
+            <p className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+              Applied direction
+            </p>
+            <p className="mt-1.5 text-sm font-semibold leading-6 text-navy-800">{direction}</p>
+          </div>
+
+          <div className="mt-3 flex items-center gap-2 rounded-xl border border-violet-100 bg-violet-50/70 px-3 py-2 text-[10px] font-semibold leading-4 text-violet-800">
+            <Crosshair className="h-4 w-4 flex-none" />
+            Schematic teaching visual — force vector and target are intentionally simplified for clarity.
+          </div>
+        </div>
       </div>
     </div>
   );
