@@ -3,7 +3,8 @@ import {
   getCloudinarySrcSet,
   getCloudinaryUrl,
   cloudinaryEnabled,
-  type CloudinaryCrop,\n} from "@/lib/cloudinary";
+  type CloudinaryCrop,
+} from "@/lib/cloudinary";
 
 type CloudinaryClinicalImageProps = {
   publicId: string;
@@ -14,6 +15,7 @@ type CloudinaryClinicalImageProps = {
   quality?: number;
   eager?: boolean;
   className?: string;
+  crop?: CloudinaryCrop;
 };
 
 export default function CloudinaryClinicalImage({
@@ -25,15 +27,35 @@ export default function CloudinaryClinicalImage({
   quality = 82,
   eager = false,
   className = "",
+  crop,
 }: CloudinaryClinicalImageProps) {
   if (!cloudinaryEnabled || !publicId) return null;
 
-  const src = getCloudinaryUrl(publicId, { width: 1200, quality, format: "auto", crop });
-  const srcSet = getCloudinarySrcSet(publicId, [480, 720, 900, 1200, 1600], crop);
-  const detailUrl = getCloudinaryUrl(publicId, { width: 1800, quality: 90, format: "auto", crop });
+  const src = getCloudinaryUrl(publicId, {
+    width: 1200,
+    quality,
+    format: "auto",
+    crop,
+  });
+  const srcSet = getCloudinarySrcSet(
+    publicId,
+    [480, 720, 900, 1200, 1600],
+    crop,
+  );
+  const detailUrl = getCloudinaryUrl(publicId, {
+    width: 1800,
+    quality: 90,
+    format: "auto",
+    crop,
+  });
 
   return (
-    <figure className={"overflow-hidden rounded-3xl border border-grey-200 bg-white shadow-sm " + className}>
+    <figure
+      className={
+        "overflow-hidden rounded-3xl border border-grey-200 bg-white shadow-sm " +
+        className
+      }
+    >
       {label ? (
         <div className="border-b border-grey-100 px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-violet-700">
           {label}
