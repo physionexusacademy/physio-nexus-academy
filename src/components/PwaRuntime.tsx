@@ -8,17 +8,6 @@ export function PwaRuntime() {
       return;
     }
 
-    const hadController = Boolean(navigator.serviceWorker.controller);
-    let refreshing = false;
-
-    const handleControllerChange = () => {
-      if (!hadController || refreshing) return;
-      refreshing = true;
-      window.location.reload();
-    };
-
-    navigator.serviceWorker.addEventListener("controllerchange", handleControllerChange);
-
     let registration: ServiceWorkerRegistration | null = null;
 
     navigator.serviceWorker
@@ -45,6 +34,9 @@ export function PwaRuntime() {
               worker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
+              // Activate the update without forcing a hard reload.
+              // A forced reload during a flaky edge response can surface ERR_FAILED
+              // inside an installed PWA.
               worker.postMessage({ type: "SKIP_WAITING" });
             }
           });
@@ -61,10 +53,6 @@ export function PwaRuntime() {
     window.addEventListener("online", handleOnline);
 
     return () => {
-      navigator.serviceWorker.removeEventListener(
-        "controllerchange",
-        handleControllerChange,
-      );
       window.removeEventListener("online", handleOnline);
     };
   }, []);
