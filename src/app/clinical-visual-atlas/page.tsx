@@ -32,7 +32,7 @@ export default function ClinicalVisualAtlasPage() {
 
   return (
     <div className="container-content section-padding">
-      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy-950 via-navy-900 to-teal-800 p-7 text-white shadow-2xl sm:p-10 lg:p-12">
+      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy-900 via-navy-800 to-teal-800 p-7 text-white shadow-2xl sm:p-10 lg:p-12">
         <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-300/15 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 left-1/3 h-72 w-72 rounded-full bg-violet-500/15 blur-3xl" />
         <div className="relative max-w-5xl">
