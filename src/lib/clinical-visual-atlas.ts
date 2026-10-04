@@ -47,9 +47,103 @@ export type ClinicalVisualEntry = {
   relatedLinks: Array<{ label: string; href: string }>;
 };
 
+const shoulderBase = "pna/clinical-visual-atlas/shoulder";
 const kneeBase = "pna/clinical-visual-atlas/knee";
 
 export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
+  {
+    slug: "normal-shoulder-anatomy",
+    title: "Normal Shoulder Anatomy",
+    shortTitle: "Normal Shoulder",
+    region: "Shoulder",
+    category: "Anatomy",
+    summary:
+      "A clinically oriented 3D view of the glenohumeral complex, rotator cuff, long-head biceps tendon and subacromial-subdeltoid bursa.",
+    learningPoints: [
+      "Orient the humeral head, glenoid, scapula, clavicle, acromion and coracoid before interpreting pathology.",
+      "The supraspinatus tendon passes beneath the acromial region to the greater tuberosity.",
+      "The long-head biceps tendon and subacromial-subdeltoid bursa are important neighboring structures in shoulder pain assessment.",
+    ],
+    imagePath: `${shoulderBase}/normal-shoulder-anatomy`,
+    thumbnailPath: `${shoulderBase}/normal-shoulder-anatomy`,
+    assetReady: true,
+    conditionSlugs: [
+      "rotator-cuff-tendinopathy",
+      "rotator-cuff-full-thickness-tear",
+      "anterior-shoulder-instability",
+    ],
+    relatedLinks: [
+      { label: "Rotator cuff tendinopathy guide", href: "/msk-injuries/rotator-cuff-tendinopathy" },
+      { label: "Full-thickness rotator cuff tear guide", href: "/msk-injuries/rotator-cuff-full-thickness-tear" },
+    ],
+  },
+  {
+    slug: "rotator-cuff-anatomy",
+    title: "Rotator Cuff Anatomy",
+    shortTitle: "Rotator Cuff",
+    region: "Shoulder",
+    category: "Anatomy",
+    summary:
+      "3D orientation of the supraspinatus, infraspinatus, teres minor and subscapularis around the humeral head.",
+    learningPoints: [
+      "The four rotator cuff muscles approach the humeral head from different directions and contribute to dynamic shoulder stability.",
+      "Supraspinatus, infraspinatus and teres minor insert on the greater tuberosity; subscapularis inserts on the lesser tuberosity.",
+      "Rotator cuff anatomy should be interpreted together with scapular position, deltoid function and joint loading.",
+    ],
+    imagePath: `${shoulderBase}/rotator-cuff-anatomy`,
+    thumbnailPath: `${shoulderBase}/rotator-cuff-anatomy`,
+    assetReady: true,
+    conditionSlugs: [
+      "rotator-cuff-tendinopathy",
+      "rotator-cuff-full-thickness-tear",
+    ],
+    relatedLinks: [
+      { label: "Rotator cuff tendinopathy guide", href: "/msk-injuries/rotator-cuff-tendinopathy" },
+      { label: "Full-thickness rotator cuff tear guide", href: "/msk-injuries/rotator-cuff-full-thickness-tear" },
+    ],
+  },
+  {
+    slug: "supraspinatus-full-thickness-tear",
+    title: "Supraspinatus Full-Thickness Tear",
+    shortTitle: "Supraspinatus Tear",
+    region: "Shoulder",
+    category: "Pathology",
+    summary:
+      "A focused 3D pathology view showing full-thickness supraspinatus tendon discontinuity with a visible defect and tendon retraction.",
+    learningPoints: [
+      "A full-thickness tear represents loss of tendon continuity through its full depth.",
+      "Tear size, retraction, muscle quality, symptoms and functional demand all influence clinical decision-making.",
+      "Imaging findings should be integrated with history, strength, active motion and functional limitation.",
+    ],
+    imagePath: `${shoulderBase}/supraspinatus-full-thickness-tear`,
+    thumbnailPath: `${shoulderBase}/supraspinatus-full-thickness-tear`,
+    assetReady: true,
+    conditionSlugs: ["rotator-cuff-full-thickness-tear"],
+    relatedLinks: [
+      { label: "Full-thickness rotator cuff tear guide", href: "/msk-injuries/rotator-cuff-full-thickness-tear" },
+    ],
+  },
+  {
+    slug: "subacromial-bursitis-impingement",
+    title: "Subacromial-Subdeltoid Bursa and Pain-Sensitive Region",
+    shortTitle: "Subacromial Region",
+    region: "Shoulder",
+    category: "Pathology",
+    summary:
+      "3D teaching view of the subacromial-subdeltoid bursa and supraspinatus tendon in their clinically relevant spatial relationship.",
+    learningPoints: [
+      "The subacromial-subdeltoid bursa lies between the rotator cuff region and the overlying acromial-deltoid structures.",
+      "Subacromial pain is multifactorial and should not be reduced to a simple bone-on-tendon pinching model.",
+      "Load tolerance, rotator cuff capacity, movement behavior and the overall clinical picture guide rehabilitation.",
+    ],
+    imagePath: `${shoulderBase}/subacromial-bursitis-impingement`,
+    thumbnailPath: `${shoulderBase}/subacromial-bursitis-impingement`,
+    assetReady: true,
+    conditionSlugs: ["rotator-cuff-tendinopathy"],
+    relatedLinks: [
+      { label: "Rotator cuff tendinopathy / subacromial pain guide", href: "/msk-injuries/rotator-cuff-tendinopathy" },
+    ],
+  },
   {
     slug: "normal-knee-anatomy",
     title: "Normal Knee Anatomy",
