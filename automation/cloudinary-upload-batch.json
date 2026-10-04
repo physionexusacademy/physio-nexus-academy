@@ -1,12 +1,7 @@
 [
   {
-    "label": "Maitland Cervical Central PA verified infographic",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/69d5f810-3c1c-4f2d-93ef-ba1b1565d3ec.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGIwZjU4YmZiMTlhMGU3NSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyNDM4M30.AR4ZSFC4NpHL-Z0mkDrK0F4WxjNXqfk1fkif83gxRnA",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-cervical-pa-mobilization/master"
-  },
-  {
-    "label": "Maitland Thoracic Central PA verified infographic",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/384b3ea9-6606-464d-9ffe-b8b610777464.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNzVjOGVjNmQ0YTNhZDZjMCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI5MjM5N30.HcRQ14K4AyxzdeWY6-84Bua7OA-tACPg_4KhoRDUkBk",
-    "public_id": "pna/clinical-skills/manual-therapy/maitland-thoracic-pa-mobilization/master"
+    "label": "Maitland Lumbar Central PA verified infographic",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/6d67674a-7924-471f-9ccb-e98c52b7c3c0.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTY2YTM2YWM5Y2VhNjg0NSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI5MTU2NH0.Px77NwUlm8luRhWBrKGN9T6vPHpS_LOHOw_PU0sdKmU",
+    "public_id": "pna/clinical-skills/manual-therapy/maitland-lumbar-pa-mobilization/master"
   }
 ]
