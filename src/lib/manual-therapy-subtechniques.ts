@@ -1,4 +1,5 @@
 import type { ManualRegion } from "@/lib/manual-therapy-regional";
+import { getPriorityRegionalSubTechniques } from "@/lib/manual-therapy-priority-depth";
 
 export type RegionalSubTechnique = {
   name: string;
@@ -383,6 +384,12 @@ function seedsForTechnique(techniqueSlug: string, region: ManualRegion): Seed[] 
     "cyriax-deep-transverse-friction",
     "fascial-manipulation"
   ].includes(techniqueSlug)) {
+    // Do not invent muscle/tendon applications inside neural-only regions.
+    // Neural regions are reserved for neurodynamic guidance unless a future
+    // evidence-based interface-specific module is written explicitly.
+    if (region === "Upper Limb Neural" || region === "Lower Limb Neural") {
+      return [];
+    }
     return softTissueSeeds(techniqueSlug, region);
   }
 
@@ -401,6 +408,9 @@ export function getRegionalSubTechniques(
   techniqueSlug: string,
   region: ManualRegion
 ): RegionalSubTechnique[] {
+  const curated = getPriorityRegionalSubTechniques(techniqueSlug, region);
+  if (curated) return curated;
+
   return seedsForTechnique(techniqueSlug, region).map((seed) => ({
     name: seed.name,
     target: seed.target,
