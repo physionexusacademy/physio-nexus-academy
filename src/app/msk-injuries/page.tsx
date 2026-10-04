@@ -9,8 +9,10 @@ import {
   Search,
   ShieldCheck,
   Stethoscope,
+  Eye,
 } from "lucide-react";
 import { mskCategories, mskConditionIndex, mskRegions } from "@/lib/msk-injury-index";
+import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
 export const dynamic = "force-static";
 export const revalidate = false;
@@ -59,6 +61,15 @@ export default function MSKInjuryHubPage() {
           <span className="rounded-full bg-white/10 px-4 py-2">{mskCategories.length} pathology groups</span>
           <span className="rounded-full bg-white/10 px-4 py-2">Evidence-informed rehabilitation</span>
         </div>
+        {atlasPublished ? (
+          <a
+            href="/clinical-visual-atlas"
+            className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white px-4 py-2.5 text-sm font-bold text-navy-900 shadow-sm transition hover:-translate-y-0.5"
+          >
+            <Eye className="h-4 w-4 text-cyan-700" />
+            Explore 3D Clinical Visual Atlas
+          </a>
+        ) : null}
       </section>
 
       <section className="mt-8 grid gap-4 md:grid-cols-4">
