@@ -10,7 +10,7 @@ import {
   Search,
   Stethoscope,
 } from "lucide-react";
-import { getImageKitUrl } from "@/lib/imagekit";
+import { getCloudinaryUrl } from "@/lib/cloudinary";
 import type {
   AtlasCategory,
   AtlasRegion,
@@ -75,7 +75,7 @@ export default function AtlasExplorer({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search anatomy, condition, test or rehabilitation..."
+            placeholder="Search anatomy or pathology..."
             className="w-full rounded-2xl border border-grey-200 bg-grey-50 py-3.5 pl-12 pr-4 text-sm text-navy-800 outline-none transition focus:border-teal-300 focus:bg-white focus:ring-4 focus:ring-teal-100"
             aria-label="Search clinical visual atlas"
           />
@@ -146,7 +146,7 @@ export default function AtlasExplorer({
         <p className="text-sm font-bold text-navy-700">
           {filtered.length} visual{filtered.length === 1 ? "" : "s"}
         </p>
-        <p className="text-xs text-navy-400">Lazy-loaded · ImageKit optimized</p>
+        <p className="text-xs text-navy-400">Lazy-loaded · Cloudinary optimized</p>
       </div>
 
       {filtered.length ? (
@@ -155,7 +155,7 @@ export default function AtlasExplorer({
             const Icon = categoryIcons[entry.category];
             const imageSrc =
               entry.assetReady && entry.thumbnailPath
-                ? getImageKitUrl(entry.thumbnailPath, { width: 720, quality: 78 })
+                ? getCloudinaryUrl(entry.thumbnailPath, { width: 720, quality: 78, format: "auto" })
                 : "";
 
             return (
