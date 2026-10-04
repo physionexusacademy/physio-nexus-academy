@@ -30,13 +30,67 @@ jobs:
           endpoint="https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload"
           echo '[]' > automation/cloudinary-upload-results.json
 
-          while IFS=$'\t' read -r label url; do
+          while IFS=
+
+              public_id=$(printf '%s' "$response" | jq -r '.public_id // ""')
+              secure_url=$(printf '%s' "$response" | jq -r '.secure_url // ""')
+
+              tmp=$(mktemp)
+              jq \
+                --arg label "$label" \
+                --arg status "success" \
+                --arg public_id "$public_id" \
+                --arg secure_url "$secure_url" \
+                '. + [{label:$label,status:$status,public_id:$public_id,secure_url:$secure_url}]' \
+                automation/cloudinary-upload-results.json > "$tmp"
+              mv "$tmp" automation/cloudinary-upload-results.json
+
+              echo "SUCCESS | $label | $public_id | $secure_url"
+            else
+              tmp=$(mktemp)
+              jq \
+                --arg label "$label" \
+                --arg status "failed" \
+                --arg error "$response" \
+                '. + [{label:$label,status:$status,error:$error}]' \
+                automation/cloudinary-upload-results.json > "$tmp"
+              mv "$tmp" automation/cloudinary-upload-results.json
+
+              echo "FAILED | $label"
+              printf '%s\n' "$response"
+            fi
+          done < <(jq -r '.[] | [.label,.url,(.public_id // "")] | @tsv' automation/cloudinary-upload-batch.json)
+
+          echo "Final results:"
+          cat automation/cloudinary-upload-results.json
+
+      - name: Save upload results in repository
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation/cloudinary-upload-results.json
+          if git diff --cached --quiet; then
+            echo "No result changes to commit."
+          else
+            git commit -m "Update Cloudinary upload results [skip ci]"
+            git push
+          fi
+\t' read -r label url public_id; do
             echo "Uploading: $label"
 
             response=""
-            if response=$(curl -sS --fail-with-body -X POST "$endpoint" \
-              -F "file=$url" \
-              -F "upload_preset=$CLOUDINARY_UPLOAD_PRESET"); then
+            args=(
+              -sS --fail-with-body -X POST "$endpoint"
+              -F "file=$url"
+              -F "upload_preset=$CLOUDINARY_UPLOAD_PRESET"
+              -F "tags=pna,clinical-visual-atlas,3d-anatomy"
+            )
+            if [ -n "$public_id" ] && [ "$public_id" != "null" ]; then
+              args+=( -F "public_id=$public_id" )
+            fi
+
+            if response=$(curl "${args[@]}"); then
 
               public_id=$(printf '%s' "$response" | jq -r '.public_id // ""')
               secure_url=$(printf '%s' "$response" | jq -r '.secure_url // ""')
