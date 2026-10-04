@@ -155,7 +155,7 @@ export default function AtlasExplorer({
             const Icon = categoryIcons[entry.category];
             const imageSrc =
               entry.assetReady && entry.thumbnailPath
-                ? getCloudinaryUrl(entry.thumbnailPath, { width: 720, quality: 78, format: "auto" })
+                ? getCloudinaryUrl(entry.thumbnailPath, { width: 720, quality: 78, format: "auto", crop: entry.crop })
                 : "";
 
             return (
