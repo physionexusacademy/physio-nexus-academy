@@ -155,7 +155,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
                 See this condition in 3D
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">
-                Open the related anatomy, pathology, mechanism and assessment visuals.
+                Open the related anatomy and pathology visuals.
               </p>
             </div>
             <a
@@ -170,7 +170,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
             {visualEntries.map((visual) => {
               const thumbnail =
                 visual.thumbnailPath
-                  ? getCloudinaryUrl(visual.thumbnailPath, { width: 560, quality: 78, format: "auto" })
+                  ? getCloudinaryUrl(visual.thumbnailPath, { width: 560, quality: 78, format: "auto", crop: visual.crop })
                   : "";
               return (
                 <a
