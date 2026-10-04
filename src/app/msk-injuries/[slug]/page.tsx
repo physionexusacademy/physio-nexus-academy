@@ -13,8 +13,11 @@ import {
   ShieldAlert,
   Stethoscope,
   ClipboardCheck,
+  Eye,
 } from "lucide-react";
 import { mskConditions, type MSKTest } from "@/lib/msk-injury-hub";
+import { getAtlasEntriesForCondition } from "@/lib/clinical-visual-atlas";
+import { getImageKitUrl } from "@/lib/imagekit";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -122,6 +125,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
   const { slug } = await params;
   const item = mskConditions.find((condition) => condition.slug === slug);
   if (!item) notFound();
+  const visualEntries = getAtlasEntriesForCondition(item.slug);
 
   return (
     <div className="container-content section-padding">
@@ -139,6 +143,64 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">{item.name}</h1>
         <p className="mt-4 max-w-4xl text-base leading-7 text-orange-50">{item.summary}</p>
       </section>
+
+      {visualEntries.length ? (
+        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50/50">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-cyan-100 p-5 sm:p-7">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
+                PNA Clinical Visual Atlas
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-navy-800">
+                See this condition in 3D
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">
+                Open the related anatomy, pathology, mechanism and assessment visuals.
+              </p>
+            </div>
+            <a
+              href="/clinical-visual-atlas"
+              className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-white px-4 py-2 text-xs font-bold text-cyan-800 shadow-sm"
+            >
+              <Eye className="h-4 w-4" />
+              Open Visual Atlas
+            </a>
+          </div>
+          <div className="grid gap-4 p-5 sm:grid-cols-2 sm:p-7 lg:grid-cols-3">
+            {visualEntries.map((visual) => {
+              const thumbnail =
+                visual.thumbnailPath
+                  ? getImageKitUrl(visual.thumbnailPath, { width: 560, quality: 78 })
+                  : "";
+              return (
+                <a
+                  key={visual.slug}
+                  href={"/clinical-visual-atlas/" + visual.slug}
+                  className="group overflow-hidden rounded-2xl border border-grey-200 bg-white transition hover:-translate-y-0.5 hover:border-cyan-200 hover:shadow-md"
+                >
+                  {thumbnail ? (
+                    <div className="aspect-[4/3] overflow-hidden bg-grey-50">
+                      <img
+                        src={thumbnail}
+                        alt={visual.shortTitle}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                      />
+                    </div>
+                  ) : null}
+                  <div className="p-4">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-cyan-700">
+                      {visual.category}
+                    </p>
+                    <h3 className="mt-1 font-bold text-navy-800">{visual.shortTitle}</h3>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         <ListSection title="Structures Involved" items={item.involvedStructures} icon={Search} tone="border-cyan-100 bg-cyan-50/70" />
