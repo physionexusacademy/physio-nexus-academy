@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Images, MoveRight, ShieldCheck, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, Images, ShieldCheck } from "lucide-react";
 import {
   completeRegionalManualApplications,
   getRegionalManualApplication,
 } from "@/lib/manual-therapy-regional";
-import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
-import CloudinaryClinicalImage from "@/components/clinical/CloudinaryClinicalImage";
+import { getManualTherapyVisualSpec } from "@/lib/manual-therapy-visual-specs";
+import TechniqueRealVisual from "@/components/manual-therapy/TechniqueRealVisual";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -36,7 +36,7 @@ export default async function ManualTherapyVisualDetailPage({ params }: PageProp
   const item = getRegionalManualApplication(slug);
   if (!item) notFound();
 
-  const visuals = getManualTherapyVisuals(item.slug);
+  const visual = getManualTherapyVisualSpec(item.slug);
 
   return (
     <div className="container-content section-padding pb-28">
@@ -67,68 +67,22 @@ export default async function ManualTherapyVisualDetailPage({ params }: PageProp
         </p>
       </section>
 
-      {visuals.length ? (
+      {visual ? (
         <section className="mt-8">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-6 w-6 text-emerald-700" />
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-                Clinically reviewed
+                Technique-specific visual
               </p>
-              <h2 className="text-2xl font-bold text-navy-900">Approved visual set</h2>
+              <h2 className="text-2xl font-bold text-navy-900">
+                Real anatomy + exact target + force direction
+              </h2>
             </div>
           </div>
 
-          <div className="mt-5 grid gap-5 lg:grid-cols-2">
-            {visuals.map((visual, index) => (
-              <div
-                key={visual.id}
-                className={index === 0 && visuals.length > 2 ? "lg:col-span-2" : ""}
-              >
-                <div className="relative">
-                  <CloudinaryClinicalImage
-                    publicId={visual.path}
-                    alt={visual.alt}
-                    caption={visual.caption}
-                    label={visual.title}
-                    eager={index === 0}
-                  />
-                  <div className="pointer-events-none absolute right-5 top-16 z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/80 bg-white/95 p-1.5 shadow-md">
-                    <img
-                      src="/images/pna-logo.png"
-                      alt=""
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-4">
-                    <div className="flex items-center gap-2 text-rose-700">
-                      <Target className="h-4 w-4" />
-                      <p className="text-[10px] font-black uppercase tracking-[0.16em]">
-                        Anatomy / target area
-                      </p>
-                    </div>
-                    <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
-                      {visual.target}
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-cyan-100 bg-cyan-50/70 p-4">
-                    <div className="flex items-center gap-2 text-cyan-700">
-                      <MoveRight className="h-4 w-4" />
-                      <p className="text-[10px] font-black uppercase tracking-[0.16em]">
-                        Force / movement direction
-                      </p>
-                    </div>
-                    <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
-                      {visual.force}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="mt-5">
+            <TechniqueRealVisual spec={visual} eager />
           </div>
         </section>
       ) : (
@@ -138,8 +92,7 @@ export default async function ManualTherapyVisualDetailPage({ params }: PageProp
           </span>
           <h2 className="mt-4 text-2xl font-bold text-navy-900">Visual set is in clinical QC</h2>
           <p className="mt-2 max-w-2xl text-sm leading-7 text-navy-600">
-            No placeholder or generic graphic is shown here. Real visuals will appear only after
-            the anatomy, target/pain area and force direction have been checked for this exact technique.
+            No old atlas image or generic placeholder is shown here. This page stays empty until a technique-specific real visual is ready.
           </p>
         </section>
       )}
