@@ -36,11 +36,13 @@ import {
   ForceDirectionMiniMap,
 } from "@/components/manual-therapy/ClinicalMiniVisuals";
 import OnDemand3DAnatomy from "@/components/clinical/OnDemand3DAnatomy";
+import CloudinaryClinicalImage from "@/components/clinical/CloudinaryClinicalImage";
 import {
   getManualTherapy3DAlt,
   getManualTherapy3DAssetPublicId,
   cloudinary3DEnabled,
 } from "@/lib/manual-therapy-3d-assets";
+import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -410,6 +412,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
     item.techniqueSlug,
     item.region,
   );
+  const techniqueVisuals = getManualTherapyVisuals(item.slug);
 
   return (
     <div className="container-content section-padding pb-28">
@@ -554,6 +557,44 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           ))}
         </div>
       </section>
+
+      {techniqueVisuals.length ? (
+        <section className="mt-8">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
+                Verified Clinical Visuals
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-navy-900">
+                See the exact contact, anatomy and force direction
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-navy-600">
+                These images are published only after the illustrated patient position,
+                therapist contact, target anatomy and force direction have been checked
+                against the technique description.
+              </p>
+            </div>
+            <span className="rounded-full border border-violet-100 bg-violet-50 px-4 py-2 text-xs font-bold text-violet-700">
+              Cloudinary optimized · lazy loaded
+            </span>
+          </div>
+
+          <div className="mt-5 grid gap-5 lg:grid-cols-2">
+            {techniqueVisuals.map((visual, index) => (
+              <CloudinaryClinicalImage
+                key={visual.id}
+                publicId={visual.path}
+                alt={visual.alt}
+                caption={visual.caption}
+                label={visual.title}
+                crop={visual.crop}
+                eager={index === 0}
+                className={visual.group === "Overview" ? "lg:col-span-2" : ""}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {subTechniques.length ? (
         <section className="mt-10">
