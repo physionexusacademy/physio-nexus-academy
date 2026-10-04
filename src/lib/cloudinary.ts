@@ -39,31 +39,36 @@ export function getCloudinaryUrl(
     const { x, y, width, height } = options.crop;
     stages.push(
       [
-        \`x_\${Math.round(x)}\`,
-        \`y_\${Math.round(y)}\`,
-        \`w_\${Math.round(width)}\`,
-        \`h_\${Math.round(height)}\`,
+        "x_" + Math.round(x),
+        "y_" + Math.round(y),
+        "w_" + Math.round(width),
+        "h_" + Math.round(height),
         "c_crop",
       ].join(",")
     );
   }
 
   const delivery: string[] = [
-    \`f_\${options.format ?? "auto"}\`,
+    "f_" + (options.format ?? "auto"),
     typeof options.quality === "number"
-      ? \`q_\${Math.round(options.quality)}\`
+      ? "q_" + Math.round(options.quality)
       : "q_auto",
   ];
 
   if (options.width) {
-    delivery.push(\`w_\${Math.round(options.width)}\`, "c_limit");
+    delivery.push("w_" + Math.round(options.width), "c_limit");
   }
 
   stages.push(delivery.join(","));
 
-  return \`https://res.cloudinary.com/\${CLOUD_NAME}/image/upload/\${stages.join(
-    "/"
-  )}/\${cleanId}\`;
+  return (
+    "https://res.cloudinary.com/" +
+    CLOUD_NAME +
+    "/image/upload/" +
+    stages.join("/") +
+    "/" +
+    cleanId
+  );
 }
 
 export function getCloudinarySrcSet(
@@ -76,12 +81,15 @@ export function getCloudinarySrcSet(
   return widths
     .map(
       (width) =>
-        \`\${getCloudinaryUrl(publicId, {
+        getCloudinaryUrl(publicId, {
           width,
           quality: "auto",
           format: "auto",
           crop,
-        })} \${width}w\`
+        }) +
+        " " +
+        width +
+        "w"
     )
     .join(", ");
 }
