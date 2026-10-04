@@ -24,11 +24,17 @@ import {
 import {
   completeRegionalManualApplications,
   getRegionalManualApplication,
+  type ManualRegion,
 } from "@/lib/manual-therapy-regional";
 import {
   getRegionalSubTechniques,
   type RegionalSubTechnique,
 } from "@/lib/manual-therapy-subtechniques";
+import {
+  AnatomyMiniMap,
+  ClinicalCompareStrip,
+  ForceDirectionMiniMap,
+} from "@/components/manual-therapy/ClinicalMiniVisuals";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -182,7 +188,7 @@ function DeepTechniqueCard({
 }: {
   sub: RegionalSubTechnique;
   index: number;
-  region: string;
+  region: ManualRegion;
 }) {
   const theme = deepCardThemes[index % deepCardThemes.length];
 
@@ -237,6 +243,11 @@ function DeepTechniqueCard({
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <AnatomyMiniMap region={region} target={sub.target} />
+          <ForceDirectionMiniMap direction={sub.direction} />
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
             <div className="flex items-center gap-2 text-blue-800">
               <CircleDot className="h-4 w-4" />
@@ -253,12 +264,33 @@ function DeepTechniqueCard({
             <div className="flex items-center gap-2 text-teal-800">
               <RotateCcw className="h-4 w-4" />
               <p className="text-xs font-bold uppercase tracking-wide">
-                Main re-test
+                Best reassessment
               </p>
             </div>
             <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
               {sub.reassess}
             </p>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <ClinicalCompareStrip
+            patientFocus={sub.clinicalGoal}
+            therapistCheck={sub.reassess}
+          />
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-violet-50 p-4">
+          <div className="flex items-start gap-3">
+            <Sparkles className="mt-0.5 h-5 w-5 flex-none text-indigo-700" />
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-700">
+                Success signal
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-navy-800">
+                Keep the technique only if the re-test shows a meaningful improvement in {sub.reassess.toLowerCase()} without symptom worsening.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -503,9 +535,9 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
                   Specific variations for {item.region}
                 </h2>
                 <p className="mt-3 max-w-3xl text-sm leading-6 text-indigo-100">
-                  Each card starts with the clinical goal and target, then opens
-                  into a four-step application sequence with dosing, re-test,
-                  clinical pearl and safety note.
+                  Each card now combines a mini anatomy target map, force-direction
+                  cue, best reassessment, patient focus and therapist check before
+                  opening into the full four-step application sequence.
                 </p>
               </div>
 
