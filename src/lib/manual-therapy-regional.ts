@@ -1376,5 +1376,7 @@ export function getRegionalManualApplication(slug: string) {
 }
 
 export function getApplicationsForTechnique(techniqueSlug: string) {
-  return completeRegionalManualApplications.filter((item) => item.techniqueSlug === techniqueSlug);
+  return completeRegionalManualApplications
+    .filter((item) => item.techniqueSlug === techniqueSlug)
+    .sort((a, b) => manualRegions.indexOf(a.region) - manualRegions.indexOf(b.region));
 }
