@@ -23,7 +23,7 @@ export const revalidate = false;
 export const metadata: Metadata = {
   title: "PNA Clinical Visual Atlas | 3D Physiotherapy Learning",
   description:
-    "Explore premium clinical visuals connecting anatomy, pathology, assessment and rehabilitation across physiotherapy body regions.",
+    "Explore premium 3D clinical visuals connecting anatomy with common musculoskeletal pathology across physiotherapy body regions.",
   alternates: {
     canonical: "https://physionexusacademy.com/clinical-visual-atlas",
   },
@@ -32,7 +32,12 @@ export const metadata: Metadata = {
 export default function ClinicalVisualAtlasPage() {
   if (!atlasPublished) notFound();
 
-  const readyCount = clinicalVisualAtlas.filter((item) => item.assetReady).length;
+  const readyEntries = clinicalVisualAtlas.filter(
+    (item) =>
+      item.assetReady &&
+      (item.category === "Anatomy" || item.category === "Pathology")
+  );
+  const readyCount = readyEntries.length;
 
   return (
     <div className="container-content section-padding">
@@ -48,19 +53,13 @@ export default function ClinicalVisualAtlasPage() {
             See the anatomy. Understand the pathology. Apply it clinically.
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-cyan-50 sm:text-lg">
-            A lightweight 3D-first learning library that connects body structures with
-            injury mechanisms, clinical assessment and rehabilitation — without loading
-            heavy 3D engines on every page.
+            A lightweight 3D-first learning library focused on clinically relevant
+            anatomy and musculoskeletal pathology — without loading heavy 3D engines
+            on every page.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-2.5 text-xs font-bold">
-            {[
-              "Anatomy",
-              "Pathology",
-              "Mechanisms",
-              "Clinical tests",
-              "Rehabilitation",
-            ].map((item) => (
+            {["Anatomy", "Pathology / injury"].map((item) => (
               <span key={item} className="rounded-full bg-white/10 px-3.5 py-2 text-cyan-50">
                 {item}
               </span>
@@ -84,7 +83,7 @@ export default function ClinicalVisualAtlasPage() {
           {
             icon: Gauge,
             title: "Fast by design",
-            text: "Responsive ImageKit delivery, thumbnails and on-demand loading.",
+            text: "Responsive Cloudinary delivery, optimized thumbnails and on-demand loading.",
           },
           {
             icon: ShieldCheck,
@@ -120,14 +119,13 @@ export default function ClinicalVisualAtlasPage() {
           </div>
           <div className="flex items-center gap-2 text-xs font-bold text-navy-500">
             <Bone className="h-4 w-4 text-cyan-600" />
-            {clinicalVisualAtlas.length} mapped visuals
-            {readyCount > 0 ? ` · ${readyCount} live` : ""}
+            {readyCount} live visual{readyCount === 1 ? "" : "s"}
           </div>
         </div>
 
         <div className="mt-6">
           <AtlasExplorer
-            entries={clinicalVisualAtlas}
+            entries={readyEntries}
             regions={atlasRegions}
             categories={atlasCategories}
           />
@@ -141,9 +139,9 @@ export default function ClinicalVisualAtlasPage() {
             Anatomy → condition → assessment
           </h2>
           <p className="mt-2 text-sm leading-6 text-navy-600">
-            Visual entries link directly to the relevant MSK guide, treatment plan,
-            manual-therapy page or case so students can move from seeing a structure to
-            reasoning about it.
+            Each anatomy or pathology visual links directly to the relevant MSK guide
+            so students can move from seeing a structure or injury to understanding its
+            clinical meaning.
           </p>
         </div>
         <div className="rounded-3xl border border-emerald-100 bg-emerald-50/70 p-6">
