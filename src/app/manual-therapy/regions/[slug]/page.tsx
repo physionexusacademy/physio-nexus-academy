@@ -447,6 +447,13 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
               <ShieldCheck className="h-4 w-4" />
               Clinical re-test built in
             </span>
+            <Link
+              href={"/visual-lab/manual-therapy/" + item.slug}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-bold text-violet-800 shadow-sm transition hover:bg-violet-50"
+            >
+              See Technique Visuals
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
