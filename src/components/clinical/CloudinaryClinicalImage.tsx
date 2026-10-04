@@ -3,7 +3,7 @@ import {
   getCloudinarySrcSet,
   getCloudinaryUrl,
   cloudinaryEnabled,
-} from "@/lib/cloudinary";
+  type CloudinaryCrop,\n} from "@/lib/cloudinary";
 
 type CloudinaryClinicalImageProps = {
   publicId: string;
@@ -28,9 +28,9 @@ export default function CloudinaryClinicalImage({
 }: CloudinaryClinicalImageProps) {
   if (!cloudinaryEnabled || !publicId) return null;
 
-  const src = getCloudinaryUrl(publicId, { width: 1200, quality, format: "auto" });
-  const srcSet = getCloudinarySrcSet(publicId, [480, 720, 900, 1200, 1600]);
-  const detailUrl = getCloudinaryUrl(publicId, { width: 1800, quality: 90, format: "auto" });
+  const src = getCloudinaryUrl(publicId, { width: 1200, quality, format: "auto", crop });
+  const srcSet = getCloudinarySrcSet(publicId, [480, 720, 900, 1200, 1600], crop);
+  const detailUrl = getCloudinaryUrl(publicId, { width: 1800, quality: 90, format: "auto", crop });
 
   return (
     <figure className={"overflow-hidden rounded-3xl border border-grey-200 bg-white shadow-sm " + className}>
