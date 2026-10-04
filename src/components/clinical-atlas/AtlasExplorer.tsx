@@ -8,7 +8,6 @@ import {
   Bone,
   Dumbbell,
   Search,
-  ScanSearch,
   Stethoscope,
 } from "lucide-react";
 import { getImageKitUrl } from "@/lib/imagekit";
@@ -22,7 +21,7 @@ import AtlasPlaceholder from "@/components/clinical-atlas/AtlasPlaceholder";
 const categoryIcons = {
   Anatomy: Bone,
   Pathology: Activity,
-  Mechanism: ScanSearch,
+  Mechanism: Search,
   Assessment: Stethoscope,
   Rehabilitation: Dumbbell,
 } satisfies Record<AtlasCategory, typeof Bone>;
