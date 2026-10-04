@@ -73,6 +73,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const item = getRegionalManualApplication(slug);
   if (!item) notFound();
+  const subTechniques = getRegionalSubTechniques(item.techniqueSlug, item.region);
 
   return (
     <div className="container-content section-padding">
@@ -114,6 +115,84 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             technique into this region; use it only when examination identifies a relevant
             target and the clinician has appropriate training.
           </p>
+        </section>
+      ) : null}
+
+
+      {subTechniques.length ? (
+        <section className="mt-8 overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+          <div className="border-b border-indigo-100 p-6 sm:p-8">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-700">
+              Deep Technique Library
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+              Specific variations for {item.region}
+            </h2>
+            <p className="mt-3 max-w-4xl text-sm leading-7 text-navy-600">
+              These are the clinically relevant sub-techniques inside this regional application.
+              Study the target, setup, contact, force direction, dose and the exact sign to
+              re-test after each trial.
+            </p>
+          </div>
+
+          <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
+            {subTechniques.map((sub) => (
+              <article
+                key={sub.name}
+                className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-indigo-700">
+                    {item.region}
+                  </span>
+                  <span className="rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-cyan-700">
+                    {sub.target}
+                  </span>
+                </div>
+
+                <h3 className="mt-3 text-xl font-bold text-navy-800">{sub.name}</h3>
+                <p className="mt-2 text-sm leading-6 text-navy-600">
+                  <strong className="text-navy-800">Clinical goal:</strong>{" "}
+                  {sub.clinicalGoal}
+                </p>
+
+                <dl className="mt-4 space-y-3 text-sm leading-6 text-navy-600">
+                  <div>
+                    <dt className="font-bold text-navy-800">Patient setup</dt>
+                    <dd>{sub.patientSetup}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-navy-800">Contact / hand placement</dt>
+                    <dd>{sub.contact}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-navy-800">Direction / movement</dt>
+                    <dd>{sub.direction}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-navy-800">Dose</dt>
+                    <dd>{sub.dosage}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-navy-800">Re-test</dt>
+                    <dd>{sub.reassess}</dd>
+                  </div>
+                </dl>
+
+                {sub.clinicalPearl ? (
+                  <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm leading-6 text-navy-700">
+                    <strong>Clinical pearl:</strong> {sub.clinicalPearl}
+                  </div>
+                ) : null}
+
+                {sub.safetyNote ? (
+                  <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-navy-700">
+                    <strong>Safety note:</strong> {sub.safetyNote}
+                  </div>
+                ) : null}
+              </article>
+            ))}
+          </div>
         </section>
       ) : null}
 
