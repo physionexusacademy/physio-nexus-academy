@@ -49,6 +49,7 @@ export type ClinicalVisualEntry = {
 };
 
 const masterBase = "pna/clinical-visual-atlas/master/msk-atlas-01";
+const kneeMasterBase = "pna/clinical-visual-atlas/master/knee-atlas-02";
 const shoulderBase = "pna/clinical-visual-atlas/shoulder";
 const kneeBase = "pna/clinical-visual-atlas/knee";
 
