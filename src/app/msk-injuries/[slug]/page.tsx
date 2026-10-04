@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { mskConditions, type MSKTest } from "@/lib/msk-injury-hub";
 import { getAtlasEntriesForCondition } from "@/lib/clinical-visual-atlas";
-import { getImageKitUrl } from "@/lib/imagekit";
+import { getCloudinaryUrl } from "@/lib/cloudinary";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -170,7 +170,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
             {visualEntries.map((visual) => {
               const thumbnail =
                 visual.thumbnailPath
-                  ? getImageKitUrl(visual.thumbnailPath, { width: 560, quality: 78 })
+                  ? getCloudinaryUrl(visual.thumbnailPath, { width: 560, quality: 78, format: "auto" })
                   : "";
               return (
                 <a
