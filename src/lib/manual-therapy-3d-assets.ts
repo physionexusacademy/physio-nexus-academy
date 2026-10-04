@@ -16,8 +16,8 @@ const REGION_SLUGS: Record<ManualRegion, string> = {
   "Lower Limb Neural": "lower-limb-neural",
 };
 
-export const imageKit3DEnabled =
-  process.env.NEXT_PUBLIC_IMAGEKIT_3D_ENABLED === "true";
+export const cloudinary3DEnabled =
+  process.env.NEXT_PUBLIC_CLOUDINARY_3D_ENABLED === "true";
 
 function slugify(value: string) {
   return value
@@ -28,16 +28,16 @@ function slugify(value: string) {
 }
 
 /**
- * Deterministic ImageKit path for every deep manual-therapy variation.
+ * Deterministic Cloudinary public ID for every deep manual-therapy variation.
  *
- * Upload the final WebP/PNG/JPG to this exact path and it becomes available
+ * Upload the final image with this exact public ID and it becomes available
  * without changing the page code.
  *
  * Example:
  * pna/clinical-skills/manual-therapy-3d/maitland-joint-mobilization/
- * shoulder/glenohumeral-posterior-glide.webp
+ * shoulder/glenohumeral-posterior-glide
  */
-export function getManualTherapy3DAssetPath(args: {
+export function getManualTherapy3DAssetPublicId(args: {
   techniqueSlug: string;
   region: ManualRegion;
   subTechniqueName: string;
@@ -51,7 +51,7 @@ export function getManualTherapy3DAssetPath(args: {
     "manual-therapy-3d",
     args.techniqueSlug,
     regionSlug,
-    assetSlug + ".webp",
+    assetSlug,
   ].join("/");
 }
 
