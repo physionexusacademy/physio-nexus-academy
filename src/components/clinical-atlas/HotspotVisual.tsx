@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Info } from "lucide-react";
-import { getImageKitSrcSet, getImageKitUrl } from "@/lib/imagekit";
+import { getCloudinarySrcSet, getCloudinaryUrl } from "@/lib/cloudinary";
 import type { AtlasHotspot } from "@/lib/clinical-visual-atlas";
 
 export default function HotspotVisual({
@@ -15,8 +15,8 @@ export default function HotspotVisual({
   hotspots: AtlasHotspot[];
 }) {
   const [active, setActive] = useState(0);
-  const src = getImageKitUrl(path, { width: 1200, quality: 84 });
-  const srcSet = getImageKitSrcSet(path, [480, 768, 1024, 1440], 84);
+  const src = getCloudinaryUrl(path, { width: 1200, quality: 84, format: "auto" });
+  const srcSet = getCloudinarySrcSet(path, [480, 768, 1024, 1440]);
   const selected = hotspots[active];
 
   return (
