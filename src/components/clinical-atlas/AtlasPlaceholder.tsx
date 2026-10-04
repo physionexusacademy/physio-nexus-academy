@@ -1,10 +1,10 @@
-import { Activity, Bone, Dumbbell, ScanSearch, Stethoscope } from "lucide-react";
+import { Activity, Bone, Dumbbell, Search, Stethoscope } from "lucide-react";
 import type { AtlasCategory } from "@/lib/clinical-visual-atlas";
 
 const iconMap = {
   Anatomy: Bone,
   Pathology: Activity,
-  Mechanism: ScanSearch,
+  Mechanism: Search,
   Assessment: Stethoscope,
   Rehabilitation: Dumbbell,
 } satisfies Record<AtlasCategory, typeof Bone>;
@@ -50,7 +50,7 @@ export default function AtlasPlaceholder({
         <p className="mt-2 max-w-sm text-lg font-black text-navy-900">{title}</p>
         {!compact ? (
           <p className="mt-3 max-w-md text-sm leading-6 text-navy-600">
-            Optimized 3D render slot — served from ImageKit only when the final asset is approved.
+            Visual teaching card connecting anatomy, pathology and clinical reasoning.
           </p>
         ) : null}
       </div>
