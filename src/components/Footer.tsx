@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MessageCircle, Mail, MapPin, Star } from "lucide-react";
 import { footerLinks, siteConfig, whatsappLink } from "@/lib/site-config";
+import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
 function FooterColumn({
   title,
@@ -32,6 +33,13 @@ function FooterColumn({
 }
 
 export function Footer() {
+  const studentLinks = atlasPublished
+    ? [
+        { label: "Clinical Visual Atlas", href: "/clinical-visual-atlas" },
+        ...footerLinks.students,
+      ]
+    : footerLinks.students;
+
   return (
     <footer className="bg-navy-800 text-white">
       <div className="container-content section-padding grid gap-10 lg:grid-cols-5">
@@ -90,7 +98,7 @@ export function Footer() {
         </div>
 
         <FooterColumn title="Academy" links={footerLinks.academy} />
-        <FooterColumn title="For Students" links={footerLinks.students} />
+        <FooterColumn title="For Students" links={studentLinks} />
         <FooterColumn title="For Patients" links={footerLinks.patients} />
       </div>
 
