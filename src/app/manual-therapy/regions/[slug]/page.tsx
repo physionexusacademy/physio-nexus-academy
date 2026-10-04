@@ -413,6 +413,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
     item.region,
   );
   const techniqueVisuals = getManualTherapyVisuals(item.slug);
+  const primaryTechniqueVisual = subTechniques[0];
 
   return (
     <div className="container-content section-padding pb-28">
@@ -461,6 +462,34 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {primaryTechniqueVisual ? (
+        <section className="mt-6 overflow-hidden rounded-[2rem] border border-violet-200 bg-gradient-to-br from-white via-violet-50/40 to-cyan-50/50 p-4 shadow-lg sm:p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-violet-700">
+                Clinical Technique Visual
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-navy-900 sm:text-2xl">
+                Anatomy, target area & force direction
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-navy-600">
+                The main regional application is shown first so you can understand the target and movement vector before reading the full technique details.
+              </p>
+            </div>
+            <span className="rounded-full border border-violet-100 bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-wide text-violet-700 shadow-sm">
+              PNA visual guide
+            </span>
+          </div>
+
+          <TechniqueAnatomyForceVisual
+            region={item.region}
+            target={primaryTechniqueVisual.target}
+            direction={primaryTechniqueVisual.direction}
+            techniqueSlug={item.techniqueSlug}
+          />
+        </section>
+      ) : null}
 
       {item.applicability === "Not routine" ? (
         <section className="mt-6 rounded-3xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-5 shadow-sm sm:p-6">
