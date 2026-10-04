@@ -290,3 +290,5 @@ export const atlasRegions: AtlasRegion[] = Array.from(
 export function getAtlasEntry(slug: string) {
   return clinicalVisualAtlas.find((item) => item.slug === slug);
 }
+
+export const atlasPublished = clinicalVisualAtlas.some((item) => item.assetReady);
