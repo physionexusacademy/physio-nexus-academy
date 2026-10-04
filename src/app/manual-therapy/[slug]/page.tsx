@@ -344,8 +344,10 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
             Apply {technique.name} in specific body regions
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-            Open a regional application to see the exact patient position, therapist position,
-            stabilization, contact point, direction of force, dosage, steps and reassessment.
+            Every major body region is now covered. Open a regional guide to see patient
+            position, therapist position, stabilization, contact point, direction of force,
+            dosage, steps, reassessment and safety. Regions where the technique is not a
+            routine first choice are clearly marked instead of forcing an inappropriate application.
           </p>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {regionalApplications.map((application) => (
@@ -354,9 +356,14 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
                 href={"/manual-therapy/regions/" + application.slug}
                 className="rounded-2xl border border-violet-100 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md"
               >
-                <p className="text-xs font-bold uppercase tracking-wide text-violet-600">
-                  {application.region}
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs font-bold uppercase tracking-wide text-violet-600">
+                    {application.region}
+                  </p>
+                  <span className="rounded-full bg-violet-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-violet-700">
+                    {application.applicability ?? "Detailed"}
+                  </span>
+                </div>
                 <p className="mt-1 font-bold text-navy-800">{application.title}</p>
               </Link>
             ))}
