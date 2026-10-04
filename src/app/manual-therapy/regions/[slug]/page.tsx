@@ -31,9 +31,8 @@ import {
   type RegionalSubTechnique,
 } from "@/lib/manual-therapy-subtechniques";
 import {
-  AnatomyMiniMap,
   ClinicalCompareStrip,
-  ForceDirectionMiniMap,
+  TechniqueAnatomyForceVisual,
 } from "@/components/manual-therapy/ClinicalMiniVisuals";
 import OnDemand3DAnatomy from "@/components/clinical/OnDemand3DAnatomy";
 import CloudinaryClinicalImage from "@/components/clinical/CloudinaryClinicalImage";
@@ -263,9 +262,10 @@ function DeepTechniqueCard({
           </div>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <AnatomyMiniMap region={region} target={sub.target} />
-          <ForceDirectionMiniMap
+        <div className="mt-4">
+          <TechniqueAnatomyForceVisual
+            region={region}
+            target={sub.target}
             direction={sub.direction}
             techniqueSlug={techniqueSlug}
           />
