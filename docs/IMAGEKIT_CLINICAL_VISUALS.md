@@ -84,3 +84,56 @@ Never register an asset before it exists in ImageKit. This prevents broken image
 Delivery requires only the public ImageKit URL endpoint.
 
 If authenticated uploads are added later, private keys must remain server-only and should never use a `NEXT_PUBLIC_` prefix.
+
+
+## Deep Manual Therapy 3D Atlas
+
+The deep regional manual-therapy cards support a second, realistic 3D anatomy layer.
+
+### Performance behavior
+
+- The normal structure-specific SVG map renders immediately and is tiny.
+- The realistic 3D image is **not requested on initial page load**.
+- The 3D image is requested directly from ImageKit only after the visitor taps **View realistic 3D anatomy**.
+- Responsive ImageKit widths are requested at 480 / 720 / 900 / 1200 px.
+- The full-detail link requests a 1800 px version.
+- If the asset is missing, the page falls back to the lightweight SVG map.
+
+### Feature flag
+
+Keep this off until the first 3D assets are uploaded:
+
+```
+NEXT_PUBLIC_IMAGEKIT_3D_ENABLED=false
+```
+
+After uploading the first batch, set:
+
+```
+NEXT_PUBLIC_IMAGEKIT_3D_ENABLED=true
+```
+
+### Automatic asset path convention
+
+No per-card code change is needed. Each deep technique automatically resolves to:
+
+```
+pna/clinical-skills/manual-therapy-3d/<technique-slug>/<region-slug>/<sub-technique-slug>.webp
+```
+
+Example:
+
+```
+pna/clinical-skills/manual-therapy-3d/maitland-joint-mobilization/shoulder/glenohumeral-posterior-glide.webp
+```
+
+Recommended first batch:
+
+- TMJ / masseter / temporalis / suboccipital
+- thoracic paraspinals / rib angle
+- quadratus lumborum
+- glenohumeral posterior / inferior / anterior glide
+- patellar tendon
+- posterior talar glide
+
+The image should be a clean, copyright-safe PNA-created 3D anatomy render with the target structure clearly highlighted.
