@@ -40,6 +40,7 @@ export type ClinicalVisualEntry = {
   learningPoints: string[];
   imagePath?: string;
   thumbnailPath?: string;
+  crop?: { x: number; y: number; width: number; height: number };
   assetReady: boolean;
   hotspots?: AtlasHotspot[];
   comparison?: AtlasComparison;
@@ -47,6 +48,7 @@ export type ClinicalVisualEntry = {
   relatedLinks: Array<{ label: string; href: string }>;
 };
 
+const masterBase = "pna/clinical-visual-atlas/master/msk-atlas-01";
 const shoulderBase = "pna/clinical-visual-atlas/shoulder";
 const kneeBase = "pna/clinical-visual-atlas/knee";
 
@@ -145,6 +147,29 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
   },
   {
+    slug: "cervical-disc-herniation-radiculopathy",
+    title: "Cervical Disc Herniation and Nerve-Root Compression",
+    shortTitle: "Cervical Disc Herniation",
+    region: "Head & Neck",
+    category: "Pathology",
+    summary:
+      "A focused 3D teaching view of a C5–C6 disc herniation narrowing the neural exit region and contacting an adjacent cervical nerve root.",
+    learningPoints: [
+      "A cervical disc herniation can contribute to nerve-root irritation, but imaging findings must be correlated with the clinical pattern.",
+      "Radicular symptoms may include arm pain, sensory change, weakness or reflex change in a root-related distribution.",
+      "Disc appearance alone does not establish symptomatic cervical radiculopathy; examination and red-flag screening remain essential.",
+    ],
+    imagePath: masterBase,
+    thumbnailPath: masterBase,
+    crop: { x: 1033, y: 680, width: 639, height: 261 },
+    assetReady: true,
+    conditionSlugs: ["cervical-radiculopathy"],
+    relatedLinks: [
+      { label: "Cervical Radiculopathy guide", href: "/msk-injuries/cervical-radiculopathy" },
+      { label: "Manual Therapy Mastery", href: "/manual-therapy" },
+    ],
+  },
+  {
     slug: "normal-knee-anatomy",
     title: "Normal Knee Anatomy",
     shortTitle: "Normal Knee",
@@ -159,7 +184,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     imagePath: `${kneeBase}/normal-knee-anatomy.webp`,
     thumbnailPath: `${kneeBase}/thumbs/normal-knee-anatomy.webp`,
-    assetReady: false,
+    assetReady: true,
     relatedLinks: [
       { label: "Knee MSK conditions", href: "/msk-injuries" },
       { label: "Knee treatment plans", href: "/treatment-plans" },
@@ -214,7 +239,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     imagePath: `${kneeBase}/acl-anatomy.webp`,
     thumbnailPath: `${kneeBase}/thumbs/acl-anatomy.webp`,
-    assetReady: false,
+    assetReady: true,
     conditionSlugs: ["acl-injury"],
     relatedLinks: [
       { label: "ACL clinical guide", href: "/msk-injuries/acl-injury" },
@@ -236,7 +261,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     imagePath: `${kneeBase}/acl-tear.webp`,
     thumbnailPath: `${kneeBase}/thumbs/acl-tear.webp`,
-    assetReady: false,
+    assetReady: true,
     conditionSlugs: ["acl-injury"],
     relatedLinks: [{ label: "ACL Injury guide", href: "/msk-injuries/acl-injury" }],
   },
@@ -274,7 +299,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     imagePath: `${kneeBase}/meniscus-anatomy.webp`,
     thumbnailPath: `${kneeBase}/thumbs/meniscus-anatomy.webp`,
-    assetReady: false,
+    assetReady: true,
     conditionSlugs: ["meniscal-injury"],
     relatedLinks: [{ label: "Meniscal Injury guide", href: "/msk-injuries/meniscal-injury" }],
   },
@@ -293,7 +318,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     imagePath: `${kneeBase}/meniscus-tear.webp`,
     thumbnailPath: `${kneeBase}/thumbs/meniscus-tear.webp`,
-    assetReady: false,
+    assetReady: true,
     conditionSlugs: ["meniscal-injury"],
     relatedLinks: [{ label: "Meniscal Injury guide", href: "/msk-injuries/meniscal-injury" }],
   },
