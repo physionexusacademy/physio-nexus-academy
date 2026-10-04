@@ -17,6 +17,7 @@ import {
   completeRegionalManualApplications,
   getRegionalManualApplication,
 } from "@/lib/manual-therapy-regional";
+import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
