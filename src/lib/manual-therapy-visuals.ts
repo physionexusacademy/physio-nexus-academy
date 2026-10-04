@@ -183,6 +183,10 @@ export const manualTherapyVisuals: Partial<Record<string, ManualTherapyVisual[]>
   "scar-knee-mobilization": [
     v("scar-knee","Healed Knee Scar Mobilization",PATELLAR_TENDON,"Healed anterior knee scar / skin interface","Small multidirectional skin glides","The real anterior knee anatomy provides the tissue context; mobilization is only for a fully healed scar."),
   ],
+  "maitland-wrist-radiocarpal-glide": [
+    v("radiocarpal-glide","Radiocarpal Joint Glide",WRIST,"Radiocarpal / proximal carpal region","Selected accessory carpal glide according to the restricted wrist movement","Real wrist anatomy is used to orient the radiocarpal target; the glide direction should match the movement being reassessed."),
+  ],
+
   "mulligan-wrist-mwm": [
     v("wrist-mwm","Wrist MWM With Active Flexion / Extension",WRIST,"Carpal region / symptomatic wrist joint","Accessory carpal glide + active flexion or extension","The accessory glide is paired with active movement and retained only if the movement becomes easier or less painful."),
   ],
