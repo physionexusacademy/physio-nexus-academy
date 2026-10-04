@@ -1163,6 +1163,405 @@ export const priorityRegionalSubTechniques: PriorityMap = {
   }
 };
 
+
+
+Object.assign(priorityRegionalSubTechniques["maitland-joint-mobilization"]!, {
+  Cervical: [
+    item(
+      "Cervical Central PA Mobilization",
+      "Selected cervical spinous process",
+      "Pain modulation or segmental extension tolerance when a central PA changes the patient's comparable sign.",
+      "Prone with the forehead supported and cervical spine close to neutral. Keep shoulders relaxed.",
+      "Use a broad supported-thumb or hypothenar contact over the selected spinous process; avoid sharp fingertip pressure.",
+      "Apply a smooth posterior-to-anterior oscillation through the selected segment. Grade I–II for pain-dominant presentations; Grade III–IV only when stiffness dominates and irritability is low.",
+      "30–60 seconds × 2–4 bouts with immediate re-test after each bout.",
+      "Cervical extension/rotation, local pain and the patient's look-up/look-over-shoulder task.",
+      "A central PA should create a local accessory movement—not rock the whole neck.",
+      "Stop with dizziness, unusual headache, neurological change or disproportionate symptom increase."
+    ),
+    item(
+      "Cervical Unilateral PA Mobilization",
+      "Cervical articular pillar on the selected side",
+      "Improve a painful/restricted rotation or extension comparable sign when unilateral segmental loading is helpful.",
+      "Prone with head supported and neck relaxed near neutral.",
+      "Broad thumb/hypothenar contact over the articular pillar while the opposite hand supports the contact and head position.",
+      "Apply a controlled posterior-to-anterior oscillation on the selected articular pillar.",
+      "30–60 seconds × 2–4 bouts, response-guided.",
+      "Cervical rotation to the symptomatic side, extension and referred symptom behavior.",
+      "Re-test after the first short bout. If the comparable sign does not change, do not simply increase force.",
+      "Use contemporary cervical vascular/neurological/instability screening."
+    ),
+    item(
+      "Lower-Cervical Side Glide",
+      "Mid/lower cervical segment",
+      "Improve selected lateral translation restriction or modify a radicular/mechanical comparable sign.",
+      "Supine with the head fully supported in neutral or slight flexion.",
+      "Cradle the neck and contact the lateral articular pillar/segment with a broad hand surface.",
+      "Translate the selected cervical segment gently sideways while minimizing rotation and flexion/extension.",
+      "20–40 seconds × 2–4 bouts or small oscillations, staying below symptom aggravation.",
+      "Cervical side-bending/rotation and upper-limb symptom distribution.",
+      "A useful side glide often changes the arm symptom or neck movement immediately; if not, reconsider the hypothesis.",
+      "Do not continue if arm symptoms peripheralize or neurological findings worsen."
+    )
+  ],
+  Thoracic: [
+    item(
+      "Thoracic Central PA Mobilization",
+      "Selected thoracic spinous process",
+      "Improve thoracic extension tolerance and local stiffness when clinically relevant.",
+      "Prone with head supported and breathing unrestricted.",
+      "Hypothenar or supported-thumb contact over the spinous process; stack shoulders over hands to avoid excessive arm effort.",
+      "Apply a posterior-to-anterior oscillation approximately perpendicular to the local thoracic contour.",
+      "30–60 seconds × 2–4 bouts.",
+      "Thoracic extension/rotation and any linked neck/shoulder comparable sign.",
+      "Use the lowest force that changes the comparable sign; more spring does not equal better treatment.",
+      "Use caution with osteoporosis, rib fracture history and recent trauma."
+    ),
+    item(
+      "Thoracic Unilateral PA Mobilization",
+      "Thoracic transverse-process / facet region",
+      "Address side-specific thoracic stiffness when a unilateral PA improves rotation or a linked upper-quarter sign.",
+      "Prone with chest and head supported.",
+      "Broad contact over the selected transverse-process/articular region while the trunk remains stable.",
+      "Apply a unilateral posterior-to-anterior oscillation on the selected side.",
+      "30–60 seconds × 2–4 bouts.",
+      "Thoracic rotation and linked neck/shoulder movement.",
+      "Prevent trunk rolling; if the body rotates under your hand, the local glide is lost.",
+      "Avoid painful direct loading over suspected rib injury."
+    )
+  ],
+  Lumbar: [
+    item(
+      "Lumbar Central PA Mobilization",
+      "Selected lumbar spinous process",
+      "Pain modulation or extension tolerance in selected mechanical low-back presentations.",
+      "Prone with a pillow under the abdomen if it improves comfort.",
+      "Broad hypothenar/supported-thumb contact over the selected spinous process with wrists neutral.",
+      "Apply a controlled posterior-to-anterior oscillation through the selected level.",
+      "30–60 seconds × 2–4 bouts with re-test after each bout.",
+      "Lumbar extension/flexion, sit-to-stand and symptom distribution.",
+      "Treat the comparable sign, not the imaging level. A stiff-feeling segment is not automatically the pain source.",
+      "Do not use routine manual therapy when cauda equina, fracture, infection or malignancy is suspected."
+    ),
+    item(
+      "Lumbar Unilateral PA Mobilization",
+      "Lumbar posterior element on the selected side",
+      "Improve selected rotation/side-bending restriction or local pain when unilateral loading is helpful.",
+      "Prone with pelvis level and trunk relaxed.",
+      "Broad contact over the posterior element while the opposite hand supports the mobilizing hand.",
+      "Apply a unilateral posterior-to-anterior oscillation, avoiding global lumbar extension.",
+      "30–60 seconds × 2–4 bouts.",
+      "Rotation/side-bending and the functional movement that reproduced pain.",
+      "If leg symptoms spread farther distally, stop and reassess rather than progressing the grade.",
+      "Avoid progressive neurological loss or red-flag spinal presentations."
+    )
+  ],
+  Elbow: [
+    item(
+      "Ulnohumeral Distraction",
+      "Ulnohumeral joint",
+      "Reduce compression sensitivity and prepare flexion/extension in a stiff or painful elbow.",
+      "Supine or sitting with the arm supported and elbow in a comfortable loose-packed position.",
+      "Stabilize the distal humerus and grasp the proximal ulna/forearm securely while protecting the ulnar nerve.",
+      "Apply gentle long-axis distraction through the ulnohumeral joint.",
+      "10–30 second holds or Grade I–II oscillatory distraction × 3–5 trials.",
+      "Elbow flexion/extension and functional reach/grip.",
+      "Keep the traction close to the joint; pulling the wrist mainly tensions the forearm.",
+      "Avoid acute dislocation, fracture or unstable ligament injury."
+    ),
+    item(
+      "Radial Head AP / PA Glide",
+      "Proximal radioulnar / radiocapitellar region",
+      "Improve pronation/supination when radial-head accessory motion is restricted.",
+      "Sitting or supine with elbow supported in slight flexion.",
+      "Stabilize the ulna/humerus and contact the radial head precisely, avoiding excessive pressure on the posterior interosseous nerve region.",
+      "Apply a small anterior or posterior glide chosen from the restricted forearm rotation and immediate response.",
+      "20–40 seconds × 2–4 bouts.",
+      "Pronation/supination and grip/task tolerance.",
+      "The radial head is small—precision matters more than force.",
+      "Stop with nerve-type pain, tingling or acute lateral-elbow instability."
+    )
+  ],
+  "Hip & Pelvis": [
+    item(
+      "Hip Long-Axis Distraction",
+      "Femoroacetabular joint",
+      "Reduce compression sensitivity and improve global hip movement tolerance.",
+      "Supine with hip near neutral or slight flexion/abduction as comfortable.",
+      "Stabilize the pelvis and hold the distal femur/leg with a secure broad grip.",
+      "Apply smooth long-axis traction along the femoral shaft without jerking.",
+      "10–30 second holds × 3–5 or low-grade oscillatory traction.",
+      "Hip flexion/rotation, gait and sit-to-stand.",
+      "If the pelvis slides on the table, you are losing the joint-specific distraction.",
+      "Respect fracture risk and hip-replacement precautions."
+    ),
+    item(
+      "Hip Posterior Glide",
+      "Femoral head on acetabulum",
+      "Improve selected hip flexion/internal-rotation restriction when posterior glide is helpful.",
+      "Supine with hip flexed to a comfortable treatment angle and pelvis stabilized.",
+      "Control the proximal femur through the distal thigh/knee while preventing pelvic rotation.",
+      "Glide the femoral head posteriorly relative to the acetabulum using the selected Maitland grade.",
+      "30–60 seconds × 2–4 bouts.",
+      "Hip flexion/internal rotation and squat.",
+      "A quiet pelvis is essential; pelvic rolling can create a false ROM gain.",
+      "Avoid acute intra-articular injury or unstable postoperative state."
+    )
+  ]
+});
+
+Object.assign(priorityRegionalSubTechniques["kaltenborn-evjenth-mobilization"]!, {
+  Elbow: [
+    item(
+      "Ulnohumeral Traction — Kaltenborn",
+      "Ulnohumeral joint",
+      "Grade I for decompression, Grade II to take up slack and Grade III for sustained capsular stretch when appropriate.",
+      "Sitting or supine with the elbow in a relaxed treatment position.",
+      "Stabilize the humerus and grasp the proximal ulna/forearm close to the joint.",
+      "Apply sustained traction perpendicular to the joint treatment plane.",
+      "10–30 second holds × 3–5, grade matched to irritability.",
+      "Elbow pain, flexion/extension and joint-play feel.",
+      "Kaltenborn traction is sustained and translatoric; do not turn it into large rhythmic oscillations.",
+      "Avoid acute instability or fracture."
+    ),
+    item(
+      "Radial Head Translatoric Glide",
+      "Proximal radioulnar joint",
+      "Improve forearm rotation when a specific radial-head glide is restricted.",
+      "Elbow supported in slight flexion with forearm relaxed.",
+      "Stabilize ulna and contact the radial head close to the joint line.",
+      "Apply a sustained AP or PA glide parallel to the treatment plane, selected from the motion restriction.",
+      "10–20 second holds × 3–5.",
+      "Pronation/supination.",
+      "Use small precise movement; the radial head should glide, not the entire forearm.",
+      "Stop with nerve-type symptoms."
+    )
+  ],
+  "Wrist & Hand": [
+    item(
+      "Radiocarpal Traction — Kaltenborn",
+      "Radiocarpal joint",
+      "Reduce compression and prepare the wrist for translatoric glides.",
+      "Sitting with forearm supported and wrist just off the table.",
+      "Stabilize distal radius/ulna and grasp the proximal carpal row/hand close to the joint.",
+      "Apply sustained distraction perpendicular to the radiocarpal treatment plane.",
+      "10–20 second holds × 3–5.",
+      "Pain, flexion/extension and weight-bearing tolerance.",
+      "Traction should occur at the joint, not by pulling the fingers.",
+      "Avoid acute fracture or carpal instability."
+    ),
+    item(
+      "Radiocarpal Dorsal / Volar Translatoric Glide",
+      "Proximal carpal row",
+      "Improve flexion or extension using a sustained translatoric glide.",
+      "Forearm supported with the wrist relaxed.",
+      "Stabilize radius/ulna and contact the proximal carpal row.",
+      "Use dorsal glide for flexion restriction or volar glide for extension restriction, then verify with re-test.",
+      "10–20 second holds × 3–5.",
+      "Wrist flexion/extension and the patient's task.",
+      "Biomechanical direction is a starting hypothesis—the patient's response confirms whether the glide is worth keeping.",
+      "Respect ligament injury and postoperative precautions."
+    )
+  ]
+});
+
+Object.assign(priorityRegionalSubTechniques["mulligan-mobilization-with-movement"]!, {
+  "Wrist & Hand": [
+    item(
+      "Wrist MWM + Active Extension",
+      "Radiocarpal / midcarpal region",
+      "Improve a painful wrist-extension comparable sign when an accessory glide makes the movement immediately easier.",
+      "Sitting with forearm supported and wrist free to move.",
+      "Apply the selected pain-free accessory glide across the wrist while stabilizing the forearm.",
+      "Maintain the glide while the patient actively extends the wrist or performs the exact painful weight-bearing movement.",
+      "6–10 repetitions × 2–3 sets only while the PILL response is present.",
+      "Wrist extension and weight-bearing through the hand.",
+      "The glide direction is chosen by immediate improvement—not by habit.",
+      "Avoid acute carpal instability or fracture."
+    )
+  ]
+});
+
+Object.assign(priorityRegionalSubTechniques["strain-counterstrain"]!, {
+  Thoracic: [
+    item(
+      "Thoracic Paraspinal Tender Point — Positional Release",
+      "Thoracic paraspinal tender region",
+      "Reduce focal thoracic guarding before active extension/rotation.",
+      "Prone, side-lying or supported sitting. Adjust thoracic flexion/extension, rotation and side-bending until tenderness falls markedly.",
+      "Light monitoring contact over the tender paraspinal point.",
+      "Maintain the position of maximal comfort without adding stretch.",
+      "60–90 seconds, then return slowly to neutral.",
+      "Thoracic rotation/extension and local tenderness.",
+      "The correct position is the one that reduces tenderness—not the one that looks most dramatic.",
+      "Use caution with osteoporosis and rib fracture risk."
+    )
+  ],
+  "Ribs & Chest Wall": [
+    item(
+      "Intercostal / Rib-Angle Tender Point — Positional Release",
+      "Intercostal or posterior rib-angle tender region",
+      "Reduce selected chest-wall guarding after cardiopulmonary and rib-fracture red flags have been excluded.",
+      "Side-lying or supported sitting with breathing comfortable. Fine-tune trunk rotation/side-bending to unload the tender region.",
+      "Very light monitoring contact over the tender rib/intercostal region; never use focal force on a suspected fracture.",
+      "Maintain the position of ease and allow relaxed breathing.",
+      "45–90 seconds.",
+      "Pain with deep breath, thoracic rotation and local tenderness.",
+      "Breathing should become easier, not more restricted, during the hold.",
+      "Do not manually treat unexplained chest pain, dyspnea or suspected rib fracture."
+    )
+  ],
+  "Wrist & Hand": [
+    item(
+      "Forearm Flexor Tender Point — Positional Release",
+      "Forearm flexor muscle belly",
+      "Reduce focal forearm guarding before grip or wrist movement.",
+      "Sitting with forearm supported. Flex the wrist/fingers and adjust forearm rotation until tenderness reduces clearly.",
+      "Light monitoring contact over the tender muscle point.",
+      "Maintain the shortened position without pressure escalation.",
+      "60–90 seconds.",
+      "Grip, wrist extension and local tenderness.",
+      "Support the hand fully so the patient is not actively holding the position.",
+      "Stop with nerve-type symptoms."
+    )
+  ]
+});
+
+Object.assign(priorityRegionalSubTechniques["myofascial-release"]!, {
+  Thoracic: [
+    item(
+      "Thoracic Paraspinal Fascial Release",
+      "Thoracic paraspinal fascia",
+      "Improve extension/rotation tolerance when thoracic soft-tissue restriction is relevant.",
+      "Prone with chest/head supported and breathing unrestricted.",
+      "Broad bilateral or unilateral hand contact over paraspinal soft tissue.",
+      "Take up fascial slack slowly in longitudinal/diagonal directions and sustain the most restricted comfortable direction.",
+      "60–120 seconds per contact, then re-test.",
+      "Thoracic extension/rotation and linked neck/shoulder movement.",
+      "Do not compress the rib cage heavily; think shear and sustained tissue load.",
+      "Use caution with osteoporosis or rib injury."
+    )
+  ],
+  "Ribs & Chest Wall": [
+    item(
+      "Pectoral / Anterior Chest Fascial Release",
+      "Pectoral fascia and anterior chest wall",
+      "Improve comfortable shoulder-girdle movement and chest-wall mobility when local soft-tissue restriction is clinically relevant.",
+      "Supine with the arm supported and breathing relaxed.",
+      "Broad respectful contact over pectoral fascia, avoiding breast tissue and vulnerable axillary structures.",
+      "Use a slow sustained diagonal or lateral fascial load while allowing normal breathing.",
+      "60–120 seconds, then re-test shoulder elevation and chest-wall comfort.",
+      "Shoulder elevation, scapular movement and breathing-related discomfort.",
+      "Use consent and draping carefully; the anterior chest requires especially clear boundaries.",
+      "Avoid unexplained chest pain or acute cardiopulmonary symptoms."
+    )
+  ],
+  Elbow: [
+    item(
+      "Forearm Extensor Fascial Release",
+      "Common extensor muscle mass",
+      "Improve forearm soft-tissue tolerance before grip and progressive loading.",
+      "Sitting with forearm supported and wrist relaxed.",
+      "Broad hand/thumb/forearm contact along extensor muscle bellies rather than directly on the lateral epicondyle.",
+      "Apply slow longitudinal or oblique fascial load; wrist movement may be added gently if comfortable.",
+      "45–90 seconds, then re-test.",
+      "Grip, wrist motion and local forearm pain.",
+      "Avoid spending the whole session on manual work—follow with graded extensor loading.",
+      "Avoid acute muscle tear."
+    )
+  ],
+  "Wrist & Hand": [
+    item(
+      "Thenar / Palmar Fascial Release",
+      "Thenar and palmar soft tissue",
+      "Improve selected thumb/hand movement tolerance and local soft-tissue comfort.",
+      "Sitting with hand supported palm-up.",
+      "Small broad thumb/finger contact over thenar/palmar soft tissue, avoiding direct nerve compression.",
+      "Use slow transverse/longitudinal tissue loading while fingers/thumb remain relaxed.",
+      "30–60 seconds per small area.",
+      "Thumb opposition/abduction, grip and local tenderness.",
+      "The hand needs precision, not deep pressure.",
+      "Stop with numbness/tingling."
+    )
+  ]
+});
+
+Object.assign(priorityRegionalSubTechniques["trigger-point-compression"]!, {
+  Thoracic: [
+    item(
+      "Rhomboid Trigger-Point Pressure Release",
+      "Rhomboid muscle region",
+      "Reduce familiar medial-scapular myofascial pain before active scapular control work.",
+      "Prone or side-lying with the arm supported so the scapula is relaxed.",
+      "Broad thumb/knuckle contact medial to the scapula over muscle, not directly on ribs.",
+      "Build tolerable sustained pressure on a point that reproduces the patient's familiar pain.",
+      "20–60 seconds, then re-test.",
+      "Scapular retraction, thoracic rotation and local pain.",
+      "Do not treat every medial-scapular ache as a trigger point; cervical referral should be considered.",
+      "Avoid direct heavy rib pressure."
+    )
+  ],
+  "Ribs & Chest Wall": [
+    item(
+      "Pectoralis Major Trigger-Point Pressure Release",
+      "Pectoralis major",
+      "Reduce selected anterior chest/shoulder myofascial pain when it is clearly muscular.",
+      "Supine with the arm supported and patient consent/draping maintained.",
+      "Broad finger-pad contact over pectoralis major muscle belly away from breast tissue and axillary neurovascular structures.",
+      "Apply gentle sustained pressure only if it reproduces familiar muscular symptoms.",
+      "20–45 seconds, then re-test.",
+      "Shoulder horizontal movement, elevation and local tenderness.",
+      "Unexplained chest pain is not a trigger-point diagnosis.",
+      "Do not manually treat acute or unexplained cardiopulmonary symptoms."
+    )
+  ],
+  Elbow: [
+    item(
+      "Common Wrist Extensor Trigger-Point Release",
+      "Wrist extensor muscle mass",
+      "Reduce familiar forearm/lateral-elbow myofascial pain before grip/loading.",
+      "Sitting with forearm supported.",
+      "Broad thumb/knuckle contact over the extensor muscle belly rather than the tendon origin.",
+      "Sustain tolerable pressure on a point that reproduces familiar symptoms.",
+      "20–60 seconds.",
+      "Grip, wrist extension and local pain.",
+      "Differentiate muscle trigger-point tenderness from tendon pain at the lateral epicondyle.",
+      "Stop with radial-nerve-type symptoms."
+    )
+  ],
+  "Wrist & Hand": [
+    item(
+      "Thenar Trigger-Point Pressure Release",
+      "Thenar muscle group",
+      "Reduce selected local thenar tenderness and improve thumb movement comfort.",
+      "Hand supported palm-up with thumb relaxed.",
+      "Small broad contact over thenar muscle belly, avoiding excessive pressure toward the carpal tunnel.",
+      "Apply gentle sustained pressure at a familiar tender point.",
+      "15–30 seconds per point.",
+      "Thumb opposition, pinch and local tenderness.",
+      "Small hand muscles require much less force than larger proximal muscles.",
+      "Stop with numbness/tingling."
+    )
+  ]
+});
+
+Object.assign(priorityRegionalSubTechniques["cyriax-deep-transverse-friction"]!, {
+  "Wrist & Hand": [
+    item(
+      "De Quervain-Region Tendon — Deep Transverse Friction",
+      "First dorsal-compartment tendon region",
+      "Selected adjunct only when the symptomatic tendon region is clearly identified and irritability is low enough to tolerate manual loading.",
+      "Sitting with forearm supported and thumb/wrist relaxed.",
+      "Use a small precise transverse contact over the symptomatic tendon region near the radial styloid while protecting superficial sensory structures.",
+      "Apply very small transverse movement across the tendon fibers; do not scrape along the skin.",
+      "Brief tolerable trial only, followed by graded thumb/wrist loading and activity modification.",
+      "Pain with thumb movement/grip and local tendon tenderness.",
+      "This region is small and irritable—precision matters more than duration or force.",
+      "Avoid acute inflammatory flare, marked swelling or sensory symptoms."
+    )
+  ]
+});
+
 export function getPriorityRegionalSubTechniques(
   techniqueSlug: string,
   region: ManualRegion,
