@@ -185,10 +185,12 @@ function DeepTechniqueCard({
   sub,
   index,
   region,
+  techniqueSlug,
 }: {
   sub: RegionalSubTechnique;
   index: number;
   region: ManualRegion;
+  techniqueSlug: string;
 }) {
   const theme = deepCardThemes[index % deepCardThemes.length];
 
@@ -244,7 +246,10 @@ function DeepTechniqueCard({
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <AnatomyMiniMap region={region} target={sub.target} />
-          <ForceDirectionMiniMap direction={sub.direction} />
+          <ForceDirectionMiniMap
+            direction={sub.direction}
+            techniqueSlug={techniqueSlug}
+          />
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -554,6 +559,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
                 sub={sub}
                 index={index}
                 region={item.region}
+                techniqueSlug={item.techniqueSlug}
               />
             ))}
           </div>
