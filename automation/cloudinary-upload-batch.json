@@ -1,22 +1,7 @@
 [
   {
-    "label": "Normal Shoulder Anatomy",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/23015177-fc0c-4081-9af6-77e2ba854698.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjJhZWM1YmE1NGI4NWE3ZCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyMjMzMH0.ACfmDNu02LkuaIbu3Ae-u0oFLE0mDoK5Yj-mdRHs0Qc",
-    "public_id": "pna/clinical-visual-atlas/shoulder/normal-shoulder-anatomy"
-  },
-  {
-    "label": "Rotator Cuff Anatomy",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/b301c74a-506f-4244-84fe-2f613fd29b15.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTc5Yjg5NjdmMThkNjIyOCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1ODcyN30.A0cLFJPal3XzClQrbpILfM1WTR_k9_AZyEfO_iWqnkY",
-    "public_id": "pna/clinical-visual-atlas/shoulder/rotator-cuff-anatomy"
-  },
-  {
-    "label": "Supraspinatus Full-Thickness Tear",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/d3ae33fd-f190-41ae-a025-cdf248c6bb4b.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjkxNzEzOWNjMWQ2OTA0NSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzOTcwOH0._j-3-00_ahsPLxmZjaG7uAimbtj8nPV6ZASeML9pG4E",
-    "public_id": "pna/clinical-visual-atlas/shoulder/supraspinatus-full-thickness-tear"
-  },
-  {
-    "label": "Subacromial Bursitis / Impingement",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/d3aa41c7-eb8a-46b8-89a5-faa962e6e9c4.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOWZkYmE3NmQxN2I3ZmM3ZiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3NDk4OX0.oeC_ZgN3qQyXgHKUKFtW5DJyrUPbUQJq1p3jtpnPQoc",
-    "public_id": "pna/clinical-visual-atlas/shoulder/subacromial-bursitis-impingement"
+    "label": "PNA MSK Atlas Master 01",
+    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/7e716ead-3039-4e44-b187-9198c653a344.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjM4NWU4NGZmNWZmYjcxOCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIzODIyM30.QQzDZgv2PSIE-xJmgPI66bT1cCaPxSXpj_ox9Ljc8Vs",
+    "public_id": "pna/clinical-visual-atlas/master/msk-atlas-01"
   }
 ]
