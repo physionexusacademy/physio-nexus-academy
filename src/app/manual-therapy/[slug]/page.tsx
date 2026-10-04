@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
+  ArrowRight,
   CheckCircle2,
   ClipboardCheck,
   Gauge,
@@ -13,6 +14,8 @@ import {
   Brain,
   Microscope,
   ExternalLink,
+  Layers3,
+  MapPinned,
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
@@ -342,47 +345,114 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
       </div>
 
       {regionalApplications.length ? (
-        <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50 p-6 sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
-            Region-Wise Applications
-          </p>
-          <h2 className="mt-2 text-2xl font-bold text-navy-800">
-            Apply {technique.name} in specific body regions
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-            Every major body region is now covered. Open a regional guide to see patient
-            position, therapist position, stabilization, contact point, direction of force,
-            dosage, steps, reassessment and safety. Regions where the technique is not a
-            routine first choice are clearly marked instead of forcing an inappropriate application.
-          </p>
-          {totalRegionalVariations > 0 ? (
-            <div className="mt-4 inline-flex rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-xs font-bold text-indigo-700">
-              {totalRegionalVariations} specific regional variations
+        <section className="mt-10">
+          <div className="overflow-hidden rounded-[2rem] bg-gradient-to-r from-slate-950 via-indigo-950 to-violet-900 p-6 text-white shadow-xl sm:p-8">
+            <div className="flex flex-wrap items-end justify-between gap-5">
+              <div className="max-w-3xl">
+                <div className="flex items-center gap-2 text-cyan-200">
+                  <MapPinned className="h-5 w-5" />
+                  <p className="text-xs font-bold uppercase tracking-[0.2em]">
+                    Region-Wise Applications
+                  </p>
+                </div>
+                <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+                  Apply {technique.name} across the body
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-indigo-100">
+                  Open a region to move from theory into a structured clinical application:
+                  setup, contact, force direction, dose, specific variations, re-test and safety.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold">
+                  <Layers3 className="h-4 w-4" />
+                  {regionalApplications.length} regions
+                </span>
+                {totalRegionalVariations > 0 ? (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-cyan-200/20 bg-cyan-300/10 px-4 py-2 text-xs font-bold text-cyan-50">
+                    {totalRegionalVariations} deep variations
+                  </span>
+                ) : null}
+              </div>
             </div>
-          ) : null}
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {regionalApplications.map((application) => (
-              <Link
-                key={application.slug}
-                href={"/manual-therapy/regions/" + application.slug}
-                className="rounded-2xl border border-violet-100 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-xs font-bold uppercase tracking-wide text-violet-600">
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {regionalApplications.map((application, index) => {
+              const variationCount = getRegionalSubTechniques(
+                slug,
+                application.region,
+              ).length;
+
+              return (
+                <Link
+                  key={application.slug}
+                  href={"/manual-therapy/regions/" + application.slug}
+                  className="group relative overflow-hidden rounded-3xl border border-grey-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
+                >
+                  <div
+                    className={
+                      "absolute inset-x-0 top-0 h-1.5 " +
+                      (index % 3 === 0
+                        ? "bg-gradient-to-r from-violet-600 to-indigo-600"
+                        : index % 3 === 1
+                          ? "bg-gradient-to-r from-cyan-600 to-teal-600"
+                          : "bg-gradient-to-r from-emerald-600 to-cyan-600")
+                    }
+                  />
+
+                  <div className="flex items-start justify-between gap-3 pt-1">
+                    <span className="flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-violet-50 text-violet-700">
+                      <MapPinned className="h-5 w-5" />
+                    </span>
+
+                    <span
+                      className={
+                        "rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide " +
+                        (application.applicability === "Not routine"
+                          ? "bg-amber-50 text-amber-700"
+                          : "bg-violet-50 text-violet-700")
+                      }
+                    >
+                      {application.applicability ?? "Detailed"}
+                    </span>
+                  </div>
+
+                  <p className="mt-4 text-xs font-bold uppercase tracking-[0.16em] text-violet-600">
                     {application.region}
                   </p>
-                  <span className="rounded-full bg-violet-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-violet-700">
-                    {application.applicability ?? "Detailed"}
-                  </span>
-                </div>
-                <p className="mt-1 font-bold text-navy-800">{application.title}</p>
-                {getRegionalSubTechniques(slug, application.region).length ? (
-                  <p className="mt-2 text-xs font-semibold text-cyan-700">
-                    {getRegionalSubTechniques(slug, application.region).length} specific variations
+                  <h3 className="mt-1 text-lg font-bold leading-snug text-navy-900">
+                    {application.title}
+                  </h3>
+
+                  <p className="mt-3 line-clamp-2 text-sm leading-6 text-navy-600">
+                    {application.clinicalUse[0]}
                   </p>
-                ) : null}
-              </Link>
-            ))}
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {variationCount ? (
+                      <span className="rounded-full border border-cyan-100 bg-cyan-50 px-2.5 py-1 text-xs font-bold text-cyan-700">
+                        {variationCount} specific variations
+                      </span>
+                    ) : (
+                      <span className="rounded-full border border-grey-200 bg-grey-50 px-2.5 py-1 text-xs font-bold text-navy-500">
+                        Regional guidance
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-grey-100 pt-4">
+                    <span className="text-sm font-bold text-violet-700">
+                      Open clinical guide
+                    </span>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-50 text-violet-700 transition group-hover:translate-x-1 group-hover:bg-violet-700 group-hover:text-white">
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       ) : null}
