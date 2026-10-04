@@ -1,7 +1,22 @@
 [
   {
-    "label": "PNA Knee Atlas Master 02",
-    "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/b8c3e745-4d41-4f67-850d-108b95ff5117.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDQ2YTUwODNjNTEyMWYxZCIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI3NjI5MX0.dPTLrO9w_Ci7Xj5lseVWzaouaPcR2i8IKxD1mv2hbS8",
-    "public_id": "pna/clinical-visual-atlas/master/knee-atlas-02"
+    "label": "PNA Lower Limb Soft Tissue Atlas A",
+    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/042e744f-1ee7-43f7-a6e4-d8ec5fef6a47/fe44657d-3bfd-4470-8430-d09123a570e3/Single_16_9_premium_medical_textbook_infographic_on_a_white_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNDkyMWJlNGViN2FkZDYyZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyNjU3NH0.o_-oFGnqrv1pDpw0UWJ_A3deiEdi_4VsKVuJBp-9dNg",
+    "public_id": "pna/clinical-visual-atlas/master/lower-limb-soft-tissue-a"
+  },
+  {
+    "label": "PNA Hip Knee Degenerative Atlas B",
+    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/fd7dbc0b-5010-409a-9306-ccdf6f1ac27b/617bf188-993f-429a-81d8-ef0fe7c0b501/Single_16_9_premium_medical_textbook_infographic_on_a_white_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmQzN2U1YjIzNDM5NzM3YSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1NTczMH0.d5RxHzp5qSrFnc9DSPS_J9mooTCyTOh7omEXjQtA9sU",
+    "public_id": "pna/clinical-visual-atlas/master/hip-knee-degenerative-b"
+  },
+  {
+    "label": "PNA Upper Quarter Atlas C",
+    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/38567b3a-63e7-4f65-b92a-562fd9913f26/77058639-2caa-483a-985e-b0a6283c305e/Single_16_9_premium_medical_textbook_infographic_on_a_white_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzRmYTA0YjNjMGYyM2JmYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTI1MDczOX0.gWM3OaC844FEJ9pLxmF8Bt8j71I33DeUi6HeCePxBHc",
+    "public_id": "pna/clinical-visual-atlas/master/upper-quarter-c"
+  },
+  {
+    "label": "PNA Hamstring Patellofemoral Atlas D",
+    "url": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/79bee367-8021-45e2-a493-88209fadcf6f/703b4da6-acd6-4a67-b35a-b7c4f86e7b7b/Single_16_9_premium_medical_textbook_infographic_on_a_white_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTQ3MmFlNzVkOTYzY2NhMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MTIyMjEzM30.8ZKZCBrHSDCsc0SyC0mu-27Ilp3takRDnyEa3HJqtxM",
+    "public_id": "pna/clinical-visual-atlas/master/hamstring-patellofemoral-d"
   }
 ]
