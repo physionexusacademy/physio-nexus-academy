@@ -1,26 +1,26 @@
 [
   {
-    "label": "Glenohumeral inferior glide",
+    "label": "Normal Shoulder Anatomy",
     "status": "success",
-    "public_id": "rojfcrp8qhq9fpxzqblj",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791118390/rojfcrp8qhq9fpxzqblj.png"
+    "public_id": "pna/clinical-visual-atlas/shoulder/normal-shoulder-anatomy",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130196/pna/clinical-visual-atlas/shoulder/normal-shoulder-anatomy.png"
   },
   {
-    "label": "Glenohumeral anterior glide",
+    "label": "Rotator Cuff Anatomy",
     "status": "success",
-    "public_id": "uq8p6nwhoefxqzirzsxm",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791118391/uq8p6nwhoefxqzirzsxm.png"
+    "public_id": "pna/clinical-visual-atlas/shoulder/rotator-cuff-anatomy",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130197/pna/clinical-visual-atlas/shoulder/rotator-cuff-anatomy.png"
   },
   {
-    "label": "Patellar tendon",
+    "label": "Supraspinatus Full-Thickness Tear",
     "status": "success",
-    "public_id": "swvfhjbwbroyj6lysdxi",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791118392/swvfhjbwbroyj6lysdxi.png"
+    "public_id": "pna/clinical-visual-atlas/shoulder/supraspinatus-full-thickness-tear",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130199/pna/clinical-visual-atlas/shoulder/supraspinatus-full-thickness-tear.png"
   },
   {
-    "label": "Posterior talar glide",
+    "label": "Subacromial Bursitis / Impingement",
     "status": "success",
-    "public_id": "vdnhp1cc1ytjwsqb3zgp",
-    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791118393/vdnhp1cc1ytjwsqb3zgp.png"
+    "public_id": "pna/clinical-visual-atlas/shoulder/subacromial-bursitis-impingement",
+    "secure_url": "https://res.cloudinary.com/qoc7ukqs/image/upload/v1791130199/pna/clinical-visual-atlas/shoulder/subacromial-bursitis-impingement.png"
   }
 ]
