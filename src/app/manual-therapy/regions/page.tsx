@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, Map, Hand, Activity } from "lucide-react";
 import {
   completeRegionalManualApplications,
@@ -76,7 +75,7 @@ export default function RegionalManualTherapyPage() {
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((item) => (
-                  <Link
+                  <a
                     key={item.slug}
                     href={"/manual-therapy/regions/" + item.slug}
                     className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
@@ -98,7 +97,7 @@ export default function RegionalManualTherapyPage() {
                       Open application
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
