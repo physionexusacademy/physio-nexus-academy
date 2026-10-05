@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -99,13 +98,13 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
   return (
     <div className="container-content section-padding">
-      <Link
+      <a
         href="/manual-therapy"
         className="inline-flex items-center gap-1 text-sm font-bold text-violet-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Manual Therapy Mastery
-      </Link>
+      </a>
 
       <section className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-violet-700 via-indigo-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
         <div className="flex flex-wrap gap-2">
@@ -386,7 +385,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
               ).length;
 
               return (
-                <Link
+                <a
                   key={application.slug}
                   href={"/manual-therapy/regions/" + application.slug}
                   className="group relative overflow-hidden rounded-3xl border border-grey-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
@@ -450,7 +449,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   </div>
-                </Link>
+                </a>
               );
             })}
           </div>
@@ -468,18 +467,18 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
       </section>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link
+        <a
           href="/manual-therapy"
           className="rounded-xl border border-grey-200 px-5 py-3 text-sm font-bold text-navy-700"
         >
           Browse more techniques
-        </Link>
-        <Link
+        </a>
+        <a
           href="/treatment-plans"
           className="rounded-xl bg-teal-600 px-5 py-3 text-sm font-bold text-white"
         >
           Apply in treatment plans
-        </Link>
+        </a>
       </div>
     </div>
   );
