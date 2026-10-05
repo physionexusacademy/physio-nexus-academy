@@ -11,17 +11,17 @@ import {
   Route,
   Stethoscope,
 } from "lucide-react";
-import { clinicalCases, getClinicalCase } from "@/lib/all-clinical-cases";
+import { getClinicalCase } from "@/lib/all-clinical-cases";
+import { clinicalCaseIndex } from "@/lib/clinical-case-index";
 import { clinicalCaseGuides } from "@/lib/clinical-case-guides";
 
 const siteUrl = "https://physionexusacademy.com";
 
 export const dynamic = "force-static";
-export const dynamicParams = false;
 export const revalidate = false;
 
 export function generateStaticParams() {
-  return clinicalCases.map((item) => ({ slug: item.slug }));
+  return clinicalCaseIndex.map((item) => ({ slug: item.slug }));
 }
 
 export async function generateMetadata({
