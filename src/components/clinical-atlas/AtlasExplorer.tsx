@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import {
   Activity,
   ArrowRight,
@@ -159,7 +158,7 @@ export default function AtlasExplorer({
                 : "";
 
             return (
-              <Link
+              <a
                 key={entry.slug}
                 href={"/clinical-visual-atlas/" + entry.slug}
                 className="group overflow-hidden rounded-3xl border border-grey-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-teal-200 hover:shadow-xl"
@@ -210,7 +209,7 @@ export default function AtlasExplorer({
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
-              </Link>
+              </a>
             );
           })}
         </div>
