@@ -16,6 +16,10 @@ import { clinicalCaseGuides } from "@/lib/clinical-case-guides";
 
 const siteUrl = "https://physionexusacademy.com";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+export const revalidate = false;
+
 export function generateStaticParams() {
   return clinicalCases.map((item) => ({ slug: item.slug }));
 }
