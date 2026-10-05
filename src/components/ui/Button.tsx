@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
@@ -45,9 +44,9 @@ export function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes} tabIndex={tabIndex}>
+      <a href={href} className={classes} tabIndex={tabIndex}>
         {children}
-      </Link>
+      </a>
     );
   }
 
