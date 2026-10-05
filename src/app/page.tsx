@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import {
   ArrowRight,
   BookOpen,
@@ -209,9 +208,9 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-grey-300">
-              <Link href="/case-lab" className="hover:text-white">Clinical Case Lab →</Link>
-              <Link href="/clinical-quiz" className="hover:text-white">Weekly Clinical Quiz →</Link>
-              <Link href="/verify" className="hover:text-white">Verify Certificate →</Link>
+              <a href="/case-lab" className="hover:text-white">Clinical Case Lab →</a>
+              <a href="/clinical-quiz" className="hover:text-white">Weekly Clinical Quiz →</a>
+              <a href="/verify" className="hover:text-white">Verify Certificate →</a>
             </div>
           </div>
 
@@ -252,19 +251,19 @@ export default async function HomePage() {
                 Every major part of the academy has its own clear entry point.
               </p>
             </div>
-            <Link
+            <a
               href="/about"
               className="text-sm font-semibold text-navy-500 hover:text-teal-700"
             >
               About PNA →
-            </Link>
+            </a>
           </div>
 
           <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {portalActions.map((action) => {
               const Icon = action.icon;
               return (
-                <Link
+                <a
                   key={action.href}
                   href={action.href}
                   className={"group relative overflow-hidden rounded-3xl border p-5 transition hover:-translate-y-1 hover:shadow-xl " + action.soft}
@@ -282,7 +281,7 @@ export default async function HomePage() {
                       Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
-                </Link>
+                </a>
               );
             })}
           </div>
@@ -317,9 +316,9 @@ export default async function HomePage() {
             >
               Verify Provider →
             </a>
-            <Link href="/verify" className="text-sm font-semibold text-teal-600 hover:text-teal-700">
+            <a href="/verify" className="text-sm font-semibold text-teal-600 hover:text-teal-700">
               Verify PNA Certificate →
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -333,18 +332,18 @@ export default async function HomePage() {
               </p>
               <h2 className="mt-1 text-2xl font-bold sm:text-3xl">Upcoming Workshops</h2>
             </div>
-            <Link
+            <a
               href="/workshops"
               className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
             >
               View all workshops <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
 
           {featuredWorkshops ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featuredWorkshops.map((workshop) => (
-                <Link
+                <a
                   key={workshop.id}
                   href={"/workshops/" + workshop.slug}
                   className="rounded-2xl border border-grey-200 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-md"
@@ -363,15 +362,15 @@ export default async function HomePage() {
                         })
                       : "Date TBA"}
                   </div>
-                </Link>
+                </a>
               ))}
             </div>
           ) : (
             <div className="mt-8 rounded-2xl border border-grey-200 bg-grey-50 p-6 text-center">
               <p className="font-semibold text-navy-700">New workshop dates are being prepared.</p>
-              <Link href="/workshops" className="mt-2 inline-flex text-sm font-semibold text-teal-600">
+              <a href="/workshops" className="mt-2 inline-flex text-sm font-semibold text-teal-600">
                 Explore workshop archive →
-              </Link>
+              </a>
             </div>
           )}
         </div>
@@ -388,17 +387,17 @@ export default async function HomePage() {
                 Clinical learning without the clutter
               </h2>
             </div>
-            <Link
+            <a
               href="/knowledge-hub"
               className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
             >
               Open Knowledge Hub <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {latestArticles.map((article) => (
-              <Link
+              <a
                 key={article.slug}
                 href={"/knowledge-hub/" + article.slug}
                 className="rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-md"
@@ -409,11 +408,11 @@ export default async function HomePage() {
                 <h3 className="mt-2 text-lg font-semibold text-navy-800">{article.title}</h3>
                 <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-500">{article.excerpt}</p>
                 <p className="mt-4 text-xs font-semibold text-navy-400">{article.readTime}</p>
-              </Link>
+              </a>
             ))}
           </div>
 
-          <Link
+          <a
             href="/clinical-quiz"
             className="mt-6 flex flex-col gap-4 rounded-2xl bg-navy-800 p-6 text-white transition hover:bg-navy-700 sm:flex-row sm:items-center sm:justify-between"
           >
@@ -429,7 +428,7 @@ export default async function HomePage() {
             <span className="inline-flex items-center gap-1 text-sm font-semibold text-teal-200">
               Take the quiz <ArrowRight className="h-4 w-4" />
             </span>
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -442,15 +441,15 @@ export default async function HomePage() {
               </p>
               <h2 className="mt-1 text-2xl font-bold sm:text-3xl">Books & Resources</h2>
             </div>
-            <Link
+            <a
               href="/resources#order-book"
               className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
             >
               Buy book <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
 
-          <Link
+          <a
             href="/resources#order-book"
             className="group mt-8 flex flex-col gap-4 rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
           >
@@ -466,7 +465,7 @@ export default async function HomePage() {
             <span className="inline-flex items-center gap-1 text-sm font-bold text-teal-600">
               Order now <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -485,22 +484,22 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Link
+              <a
                 href="/appointment"
                 className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-teal-300 hover:bg-white/10"
               >
                 <Stethoscope className="h-6 w-6 text-teal-300" />
                 <p className="mt-3 font-semibold text-white">Book Appointment</p>
                 <p className="mt-1 text-sm text-grey-200">In-person or online consultation request.</p>
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/home-visit"
                 className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-teal-300 hover:bg-white/10"
               >
                 <Home className="h-6 w-6 text-teal-300" />
                 <p className="mt-3 font-semibold text-white">Request Home Visit</p>
                 <p className="mt-1 text-sm text-grey-200">Home physiotherapy in supported service areas.</p>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
