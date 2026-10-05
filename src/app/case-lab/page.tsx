@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, BrainCircuit, ClipboardCheck, Stethoscope } from "lucide-react";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 
@@ -59,7 +58,7 @@ export default function CaseLabPage() {
             "from-emerald-50 to-teal-50 border-emerald-100",
           ];
           return (
-            <Link
+            <a
               key={item.slug}
               href={"/case-lab/" + item.slug}
               className={"group flex h-full flex-col rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " + tones[index % tones.length]}
@@ -80,7 +79,7 @@ export default function CaseLabPage() {
                   Open case <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
-            </Link>
+            </a>
           );
         })}
       </div>
