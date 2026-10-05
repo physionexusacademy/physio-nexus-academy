@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Activity,
@@ -405,13 +404,13 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
 
   return (
     <div className="container-content section-padding pb-28">
-      <Link
+      <a
         href="/manual-therapy/regions"
         className="inline-flex items-center gap-1 text-sm font-bold text-violet-700 transition hover:gap-2"
       >
         <ArrowLeft className="h-4 w-4" />
         Regional Manual Therapy
-      </Link>
+      </a>
 
       <section className="relative mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-700 via-indigo-800 to-slate-950 p-7 text-white shadow-xl sm:p-10">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-cyan-400/15 blur-3xl" />
@@ -447,13 +446,13 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
               <ShieldCheck className="h-4 w-4" />
               Clinical re-test built in
             </span>
-            <Link
+            <a
               href={"/visual-lab/manual-therapy/" + item.slug}
               className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-bold text-violet-800 shadow-sm transition hover:bg-violet-50"
             >
               See Technique Visuals
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -805,19 +804,19 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
       </section>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link
+        <a
           href={"/manual-therapy/" + item.techniqueSlug}
           className="inline-flex items-center gap-2 rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-violet-800"
         >
           Study parent technique
           <ArrowRight className="h-4 w-4" />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/manual-therapy/regions"
           className="rounded-xl border border-grey-200 bg-white px-5 py-3 text-sm font-bold text-navy-700 shadow-sm"
         >
           Browse other regions
-        </Link>
+        </a>
       </div>
     </div>
   );
