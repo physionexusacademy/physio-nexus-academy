@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { updateWorkshopRegistration } from "../../actions";
@@ -48,12 +47,12 @@ export default async function WorkshopRegistrationsPage({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link
+          <a
             href="/admin/workshops"
             className="text-sm font-semibold text-teal-600 hover:underline"
           >
             ← Back to Workshops
-          </Link>
+          </a>
 
           <h1 className="mt-3 text-2xl font-bold text-navy-800">
             Workshop Registrations

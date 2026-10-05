@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowRight, BookOpen, Images, Sparkles } from "lucide-react";
 
 export const metadata = {
@@ -22,7 +21,7 @@ export default function VisualLabPage() {
       </section>
 
       <section className="mt-8 grid gap-5 lg:grid-cols-2">
-        <Link
+        <a
           href="/visual-lab/manual-therapy"
           className="group rounded-3xl border-2 border-violet-200 bg-gradient-to-br from-white via-violet-50/40 to-cyan-50/40 p-6 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl"
         >
@@ -42,9 +41,9 @@ export default function VisualLabPage() {
             See Technique Visuals
             <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
           </span>
-        </Link>
+        </a>
 
-        <Link
+        <a
           href="/clinical-visual-atlas"
           className="group rounded-3xl border border-cyan-100 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
         >
@@ -64,7 +63,7 @@ export default function VisualLabPage() {
             Open existing atlas
             <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
           </span>
-        </Link>
+        </a>
       </section>
 
       <div className="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 text-sm leading-6 text-navy-700">

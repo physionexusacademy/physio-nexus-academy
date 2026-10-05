@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
@@ -56,12 +55,12 @@ export default async function AboutPage() {
           Nexus Academy, leading its physiotherapy education, hands-on clinical
           workshops and professional learning initiatives.
         </p>
-        <Link
+        <a
           href="/founder"
           className="mt-4 inline-flex text-sm font-semibold text-teal-600 hover:text-teal-700"
         >
           View the founder profile →
-        </Link>
+        </a>
       </section>
 
       <h2 className="mt-10 text-xl font-bold">Purpose</h2>

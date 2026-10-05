@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { createWorkshop, deleteWorkshop } from "./actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
@@ -127,19 +126,19 @@ export default async function AdminWorkshopsPage() {
                 </td>
                 <td className="px-4 py-3">
   <div className="flex flex-col items-start gap-2">
-    <Link
+    <a
       href={`/admin/workshops/${w.id}/registrations`}
       className="text-xs font-semibold text-navy-700 hover:text-teal-600 hover:underline"
     >
       Manage Registrations
-    </Link>
+    </a>
 
-    <Link
+    <a
       href={`/admin/workshops/${w.id}/assessment-results`}
       className="text-xs font-semibold text-amber-700 hover:text-amber-800 hover:underline"
     >
       Assessment Results
-    </Link>
+    </a>
 
     <a
       href={`/admin/workshops/${w.id}/export`}
@@ -152,9 +151,9 @@ export default async function AdminWorkshopsPage() {
 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex justify-end gap-3">
-                    <Link href={`/admin/workshops/${w.id}`} className="text-xs font-semibold text-navy-600 hover:underline">
+                    <a href={`/admin/workshops/${w.id}`} className="text-xs font-semibold text-navy-600 hover:underline">
                       Edit
-                    </Link>
+                    </a>
                     <form action={deleteWorkshop}>
                       <input type="hidden" name="id" value={w.id} />
                       <ConfirmSubmitButton

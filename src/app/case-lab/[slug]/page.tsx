@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   AlertTriangle,
@@ -48,13 +47,13 @@ export default async function ClinicalCasePage({
 
   return (
     <article className="container-content section-padding">
-      <Link
+      <a
         href="/case-lab"
         className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700 hover:text-violet-800"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Clinical Case Lab
-      </Link>
+      </a>
 
       <header className="mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-violet-700 via-indigo-700 to-navy-800 p-7 text-white shadow-xl sm:p-10">
         <div className="flex flex-wrap gap-2">

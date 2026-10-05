@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { MessageCircle, Mail, MapPin, Star } from "lucide-react";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { ContactForm } from "./ContactForm";
@@ -68,13 +67,13 @@ export default function ContactPage() {
           </div>
           <p className="mt-6 text-sm text-navy-500">
             Current service areas include{" "}
-            <Link href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+            <a href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
               Karachi
-            </Link>{" "}
+            </a>{" "}
             and{" "}
-            <Link href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+            <a href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
               Hyderabad
-            </Link>
+            </a>
             . Home visits and appointment times are confirmed before booking.
           </p>
 

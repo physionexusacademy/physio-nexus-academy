@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -87,13 +86,13 @@ export default async function TrainingRecordPage({
         }}
       />
 
-      <Link
+      <a
         href="/training"
         className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to training archive
-      </Link>
+      </a>
 
       <div className="mt-7 grid gap-10 lg:grid-cols-[minmax(260px,380px)_1fr] lg:items-start">
         <div className="rounded-2xl border border-grey-200 bg-grey-50 p-4">

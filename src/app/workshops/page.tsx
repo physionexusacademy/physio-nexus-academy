@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { createPublicClient } from "@/lib/supabase/public";
@@ -38,13 +37,13 @@ export default async function WorkshopsPage() {
       </p>
       <p className="mt-3 text-sm text-navy-500">
         Browse location information for{" "}
-        <Link href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+        <a href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
           Karachi
-        </Link>{" "}
+        </a>{" "}
         and{" "}
-        <Link href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+        <a href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
           Hyderabad
-        </Link>
+        </a>
         .
       </p>
 

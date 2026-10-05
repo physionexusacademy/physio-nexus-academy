@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   LayoutDashboard,
@@ -75,14 +74,14 @@ if (adminError || !isAdmin) {
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {navItems.map((item) => (
-            <Link
+            <a
               key={item.href}
               href={item.href}
               className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-grey-200 hover:bg-white/10 hover:text-white"
             >
               <item.icon className="h-4 w-4" />
               {item.label}
-            </Link>
+            </a>
           ))}
         </nav>
         <div className="border-t border-white/10 p-3">
@@ -111,14 +110,14 @@ if (adminError || !isAdmin) {
           </div>
           <nav className="flex flex-wrap gap-2 px-3 pb-3">
             {navItems.map((item) => (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
                 className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-grey-100 px-3 py-1.5 text-xs font-medium text-navy-600"
               >
                 <item.icon className="h-3.5 w-3.5" />
                 {item.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </div>

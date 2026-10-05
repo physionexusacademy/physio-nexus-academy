@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, MapPin, Users, Award, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -306,12 +305,12 @@ export default async function WorkshopDetailPage({
                     Registered participants can access workshop details, assessment
                     information, and participant-only updates.
                   </p>
-                  <Link
+                  <a
                     href={`/workshops/${slug}/portal`}
                     className="mt-3 inline-flex items-center rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-700"
                   >
                     Open Participant Portal
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>
