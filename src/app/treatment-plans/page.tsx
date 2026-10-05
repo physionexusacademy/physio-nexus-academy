@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   Activity,
   ArrowRight,
@@ -79,12 +78,12 @@ export default function TreatmentPlansPage() {
               Browse by condition category
             </h2>
           </div>
-          <Link
+          <a
             href="/manual-therapy"
             className="inline-flex items-center gap-1 text-sm font-bold text-violet-700"
           >
             Open Manual Therapy Mastery <ArrowRight className="h-4 w-4" />
-          </Link>
+          </a>
         </div>
 
         <div className="mt-8 space-y-8">
@@ -98,7 +97,7 @@ export default function TreatmentPlansPage() {
                 </div>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {plans.map((plan) => (
-                    <Link
+                    <a
                       key={plan.slug}
                       href={"/treatment-plans/" + plan.slug}
                       className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-teal-200 hover:shadow-lg"
@@ -112,7 +111,7 @@ export default function TreatmentPlansPage() {
                         Open treatment plan
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </span>
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </div>
