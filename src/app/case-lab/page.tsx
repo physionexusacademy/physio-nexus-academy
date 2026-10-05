@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { ArrowRight, BrainCircuit, ClipboardCheck, Stethoscope } from "lucide-react";
-import { clinicalCases } from "@/lib/all-clinical-cases";
+import { clinicalCaseIndex } from "@/lib/clinical-case-index";
+
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title: "Clinical Case Lab",
@@ -51,7 +54,7 @@ export default function CaseLabPage() {
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        {clinicalCases.map((item, index) => {
+        {clinicalCaseIndex.map((item, index) => {
           const tones = [
             "from-rose-50 to-orange-50 border-rose-100",
             "from-indigo-50 to-cyan-50 border-indigo-100",
