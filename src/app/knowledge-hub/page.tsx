@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   Activity,
   ArrowRight,
@@ -76,24 +75,24 @@ export default function KnowledgeHubPage() {
           concepts to advanced clinical reasoning, evidence sources and case-based learning.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link
+          <a
             href="#specialties"
             className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-navy-800 shadow-sm transition hover:-translate-y-0.5"
           >
             Browse Specialties
-          </Link>
-          <Link
+          </a>
+          <a
             href="/case-lab"
             className="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
           >
             Open Clinical Case Lab
-          </Link>
-          <Link
+          </a>
+          <a
             href="/clinical-quiz"
             className="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
           >
             Weekly Clinical Quiz
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -121,7 +120,7 @@ export default function KnowledgeHubPage() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
           </a>
-          <Link
+          <a
             href="/manual-therapy"
             className="group overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-indigo-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
           >
@@ -142,9 +141,9 @@ export default function KnowledgeHubPage() {
               Open mastery library
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
-          </Link>
+          </a>
 
-          <Link
+          <a
             href="/treatment-plans"
             className="group overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 transition hover:-translate-y-1 hover:shadow-lg"
           >
@@ -165,7 +164,7 @@ export default function KnowledgeHubPage() {
               Browse treatment plans
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -192,7 +191,7 @@ export default function KnowledgeHubPage() {
             ).length;
 
             return (
-              <Link
+              <a
                 key={specialty.slug}
                 href={"/knowledge-hub/specialty/" + specialty.slug}
                 className={"group relative overflow-hidden rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " + specialtyTones[index % specialtyTones.length]}
@@ -215,7 +214,7 @@ export default function KnowledgeHubPage() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -231,9 +230,9 @@ export default function KnowledgeHubPage() {
               Featured clinical topics
             </h2>
           </div>
-          <Link href="/case-lab" className="text-sm font-bold text-violet-700">
+          <a href="/case-lab" className="text-sm font-bold text-violet-700">
             Clinical Case Lab →
-          </Link>
+          </a>
         </div>
 
         <div className="mt-7 grid gap-5 md:grid-cols-2">
@@ -246,7 +245,7 @@ export default function KnowledgeHubPage() {
               "from-emerald-50 to-white border-emerald-100",
             ];
             return (
-              <Link
+              <a
                 key={article.slug}
                 href={"/knowledge-hub/" + article.slug}
                 className={"rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " + tones[index % tones.length]}
@@ -269,7 +268,7 @@ export default function KnowledgeHubPage() {
                     Study <ArrowRight className="h-4 w-4" />
                   </span>
                 </div>
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -294,12 +293,12 @@ export default function KnowledgeHubPage() {
               </p>
             </div>
           </div>
-          <Link
+          <a
             href="/case-lab"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-violet-800 shadow-sm"
           >
             Open Case Lab <ArrowRight className="h-4 w-4" />
-          </Link>
+          </a>
         </div>
       </section>
     </div>
