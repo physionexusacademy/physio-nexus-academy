@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   ArrowRight,
   BookOpenCheck,
@@ -90,18 +89,18 @@ export default function ManualTherapyPage() {
             </h2>
           </div>
           <div className="flex flex-wrap gap-4">
-            <Link
+            <a
               href="/manual-therapy/regions"
               className="inline-flex items-center gap-1 text-sm font-bold text-violet-700"
             >
               Open regional applications <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
+            </a>
+            <a
               href="/treatment-plans"
               className="inline-flex items-center gap-1 text-sm font-bold text-teal-700"
             >
               Apply techniques in treatment plans <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -118,7 +117,7 @@ export default function ManualTherapyPage() {
                 </div>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {techniques.map((technique) => (
-                    <Link
+                    <a
                       key={technique.slug}
                       href={"/manual-therapy/" + technique.slug}
                       className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
@@ -139,7 +138,7 @@ export default function ManualTherapyPage() {
                         Master technique
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </span>
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -159,12 +158,12 @@ export default function ManualTherapyPage() {
           Open cervical, thoracic, lumbar, shoulder, elbow, hip, knee, ankle and neural applications
           with exact positioning, stabilization, contact, force direction, dosage and reassessment.
         </p>
-        <Link
+        <a
           href="/manual-therapy/regions"
           className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white"
         >
           Browse regional applications <ArrowRight className="h-4 w-4" />
-        </Link>
+        </a>
       </section>
 
       <section className="mt-12 rounded-3xl border border-amber-200 bg-amber-50 p-6">
