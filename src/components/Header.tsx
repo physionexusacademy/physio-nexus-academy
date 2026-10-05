@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Menu, X, Calendar, Home } from "lucide-react";
@@ -86,7 +85,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-grey-200 bg-white/95 backdrop-blur-sm">
       <div className="container-content flex h-20 items-center justify-between">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+        <a href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
           <Image
             src="/images/pna-logo.png"
             alt={`${siteConfig.academyName} logo`}
@@ -104,7 +103,7 @@ export function Header() {
     Approved CPD Provider · #791052
   </span>
 </div>
-        </Link>
+        </a>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-4 lg:flex" aria-label="Main navigation">
