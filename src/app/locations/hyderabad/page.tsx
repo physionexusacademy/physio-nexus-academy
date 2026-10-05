@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Stethoscope, GraduationCap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
@@ -131,12 +130,12 @@ export default function HyderabadLocationPage() {
           resources and professional development for physiotherapy students and
           practitioners. Workshop availability in Hyderabad depends on the published schedule.
         </p>
-        <Link
+        <a
           href="/training"
           className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
         >
           View documented training activities <ArrowRight className="h-4 w-4" />
-        </Link>
+        </a>
       </section>
 
       <section className="mt-8">
@@ -145,18 +144,18 @@ export default function HyderabadLocationPage() {
         </h2>
         <p className="mt-3 leading-7 text-navy-600">
           PNA was founded by{" "}
-          <Link href="/founder" className="font-semibold text-teal-600 hover:underline">
+          <a href="/founder" className="font-semibold text-teal-600 hover:underline">
             {siteConfig.founder.name}
-          </Link>
+          </a>
           , with a focus on practical physiotherapy education, clinical skills and
           evidence-informed learning.
         </p>
-        <Link
+        <a
           href="/contact"
           className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
         >
           Contact PNA <ArrowRight className="h-4 w-4" />
-        </Link>
+        </a>
       </section>
     </div>
   );

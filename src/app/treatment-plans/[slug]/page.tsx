@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Activity,
@@ -78,13 +77,13 @@ export default async function TreatmentPlanDetailPage({ params }: PageProps) {
 
   return (
     <div className="container-content section-padding">
-      <Link
+      <a
         href="/treatment-plans"
         className="inline-flex items-center gap-1 text-sm font-bold text-teal-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Treatment Plans
-      </Link>
+      </a>
 
       <section className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-teal-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
         <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold">
@@ -143,18 +142,18 @@ export default async function TreatmentPlanDetailPage({ params }: PageProps) {
       </section>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link
+        <a
           href="/treatment-plans"
           className="rounded-xl border border-grey-200 px-5 py-3 text-sm font-bold text-navy-700"
         >
           Browse more conditions
-        </Link>
-        <Link
+        </a>
+        <a
           href="/manual-therapy"
           className="rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white"
         >
           Study manual techniques
-        </Link>
+        </a>
       </div>
     </div>
   );

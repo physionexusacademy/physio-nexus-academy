@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Clock3, Medal, Trophy } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -89,12 +88,12 @@ export default async function WorkshopAssessmentResultsPage({
 
   return (
     <div>
-      <Link
+      <a
         href="/admin/workshops"
         className="text-sm font-semibold text-teal-600 hover:underline"
       >
         ← Back to Workshops
-      </Link>
+      </a>
 
       <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

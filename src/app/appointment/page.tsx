@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AlertTriangle, Building2, Home, ShieldCheck } from "lucide-react";
 import { AppointmentForm } from "./AppointmentForm";
 import { siteConfig } from "@/lib/site-config";
@@ -59,7 +58,7 @@ export default function AppointmentPage() {
           <p className="mt-3 font-semibold text-navy-800">Clinic / Online Appointment</p>
           <p className="mt-1 text-sm text-navy-500">You are booking this service.</p>
         </div>
-        <Link
+        <a
           href="/home-visit"
           className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:bg-teal-50"
         >
@@ -68,7 +67,7 @@ export default function AppointmentPage() {
           </span>
           <p className="mt-3 font-semibold text-navy-800">Home Visit</p>
           <p className="mt-1 text-sm text-navy-500">Request physiotherapy at your location.</p>
-        </Link>
+        </a>
       </div>
 
       <div className="mt-8">

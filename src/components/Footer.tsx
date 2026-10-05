@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { MessageCircle, Mail, MapPin, Star } from "lucide-react";
 import { footerLinks, siteConfig, whatsappLink } from "@/lib/site-config";
@@ -81,9 +80,9 @@ export function Footer() {
             </span>
             <p className="text-xs text-grey-300">
               Service areas:{" "}
-              <Link href="/locations/karachi" className="hover:text-white">Karachi</Link>
+              <a href="/locations/karachi" className="hover:text-white">Karachi</a>
               {" · "}
-              <Link href="/locations/hyderabad" className="hover:text-white">Hyderabad</Link>
+              <a href="/locations/hyderabad" className="hover:text-white">Hyderabad</a>
             </p>
             <a
               href={siteConfig.contact.googleReviewUrl}

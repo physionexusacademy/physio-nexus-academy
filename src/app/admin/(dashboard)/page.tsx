@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -66,14 +65,14 @@ export default async function AdminOverviewPage() {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => (
-          <Link
+          <a
             key={card.label}
             href={card.href}
             className="rounded-xl border border-grey-200 bg-white p-5 transition-shadow hover:shadow-md"
           >
             <p className="text-3xl font-bold text-navy-800">{card.value}</p>
             <p className="mt-1 text-sm text-navy-500">{card.label}</p>
-          </Link>
+          </a>
         ))}
       </div>
     </div>

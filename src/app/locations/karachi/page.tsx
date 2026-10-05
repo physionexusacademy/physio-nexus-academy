@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { MapPin, Stethoscope, GraduationCap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
@@ -137,18 +136,18 @@ export default function KarachiLocationPage() {
         </h2>
         <p className="mt-3 leading-7 text-navy-600">
           Physio Nexus Academy was founded by{" "}
-          <Link href="/founder" className="font-semibold text-teal-600 hover:underline">
+          <a href="/founder" className="font-semibold text-teal-600 hover:underline">
             {siteConfig.founder.name}
-          </Link>
+          </a>
           . The academy combines physiotherapy education, professional workshops,
           research support and patient-service pathways within one platform.
         </p>
-        <Link
+        <a
           href="/contact"
           className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
         >
           Contact PNA in Karachi <ArrowRight className="h-4 w-4" />
-        </Link>
+        </a>
       </section>
     </div>
   );

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowLeft, ArrowRight, Images } from "lucide-react";
 import {
   completeRegionalManualApplications,
@@ -32,13 +31,13 @@ export default function ManualTherapyVisualLabPage() {
 
   return (
     <div className="container-content section-padding pb-28">
-      <Link
+      <a
         href="/visual-lab"
         className="inline-flex items-center gap-2 text-sm font-bold text-violet-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Visual Lab
-      </Link>
+      </a>
 
       <section className="mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-800 via-indigo-900 to-slate-950 p-7 text-white shadow-xl sm:p-10">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-200">
@@ -72,7 +71,7 @@ export default function ManualTherapyVisualLabPage() {
 
               <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {regional.map((item) => (
-                  <Link
+                  <a
                     key={item.slug}
                     href={"/visual-lab/manual-therapy/" + item.slug}
                     className="group rounded-3xl border border-grey-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-lg"
@@ -90,7 +89,7 @@ export default function ManualTherapyVisualLabPage() {
                       See Technique Visuals
                       <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                     </span>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </section>

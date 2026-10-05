@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -50,13 +49,13 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
 
   return (
     <div className="container-content section-padding">
-      <Link
+      <a
         href="/clinical-visual-atlas"
         className="inline-flex items-center gap-1.5 text-sm font-black text-teal-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Clinical Visual Atlas
-      </Link>
+      </a>
 
       <section className="mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy-900 via-navy-800 to-teal-800 p-7 text-white shadow-xl sm:p-10">
         <div className="flex flex-wrap gap-2">
@@ -127,14 +126,14 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
           </div>
           <div className="mt-4 space-y-3">
             {item.relatedLinks.map((link) => (
-              <Link
+              <a
                 key={link.href + link.label}
                 href={link.href}
                 className="group flex items-center justify-between gap-3 rounded-2xl border border-cyan-100 bg-white p-4 text-sm font-black text-navy-800 transition hover:border-teal-200 hover:shadow-sm"
               >
                 <span>{link.label}</span>
                 <ArrowRight className="h-4 w-4 flex-none text-teal-700 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </a>
             ))}
           </div>
         </aside>

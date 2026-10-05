@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -71,9 +70,9 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
   return (
     <article className="container-content section-padding">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c") }} />
-      <Link href="/knowledge-hub" className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700">
+      <a href="/knowledge-hub" className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700">
         <ArrowLeft className="h-4 w-4" /> Back to Knowledge Hub
-      </Link>
+      </a>
 
       <header className="mx-auto mt-7 max-w-4xl overflow-hidden rounded-3xl border border-grey-200 bg-gradient-to-br from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-9">
         <div className="flex flex-wrap gap-2">

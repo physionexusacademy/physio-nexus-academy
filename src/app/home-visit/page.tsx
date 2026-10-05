@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Building2, Home, ShieldCheck } from "lucide-react";
 import { HomeVisitForm } from "./HomeVisitForm";
 
@@ -54,19 +53,19 @@ export default function HomeVisitPage() {
         </p>
         <p className="mx-auto mt-3 max-w-2xl text-sm text-navy-500">
           See local information for{" "}
-          <Link href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+          <a href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
             Karachi physiotherapy services
-          </Link>{" "}
+          </a>{" "}
           or{" "}
-          <Link href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+          <a href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
             Hyderabad physiotherapy services
-          </Link>
+          </a>
           .
         </p>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Link
+        <a
           href="/appointment"
           className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:bg-teal-50"
         >
@@ -75,7 +74,7 @@ export default function HomeVisitPage() {
           </span>
           <p className="mt-3 font-semibold text-navy-800">Clinic / Online Appointment</p>
           <p className="mt-1 text-sm text-navy-500">Book a consultation instead.</p>
-        </Link>
+        </a>
         <div className="rounded-2xl border-2 border-teal-500 bg-teal-50 p-5 shadow-sm">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-100 text-teal-700">
             <Home className="h-5 w-5" />

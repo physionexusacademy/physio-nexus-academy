@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { CalendarDays, MapPin, ArrowRight, History } from "lucide-react";
 import {
   trainingCategories,
@@ -131,13 +130,13 @@ export default function TrainingArchivePage() {
                         </p>
                       </div>
 
-                      <Link
+                      <a
                         href={`/training/${item.slug}`}
                         className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
                       >
                         View training record
                         <ArrowRight className="h-4 w-4" />
-                      </Link>
+                      </a>
                     </div>
                   </article>
                 ))}
