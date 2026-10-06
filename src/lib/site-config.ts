@@ -165,6 +165,7 @@ export const footerLinks = {
   academy: [
     { label: "About PNA", href: "/about" },
     { label: "Founder", href: "/founder" },
+    { label: "Faculty", href: "/faculty" },
     { label: "Gallery", href: "/gallery" },
     { label: "Updates", href: "/updates" },
     { label: "Reviews & Feedback", href: "/reviews" },
