@@ -7,11 +7,31 @@ import { Button } from "@/components/ui/Button";
 import { trainingHistory } from "@/lib/training-history";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Instructor in Pakistan — Dr. Sajjad Raza PT",
+  title: "Dr. Sajjad Raza PT — Physiotherapist, Clinical Educator & Founder",
   description:
-    "Meet Dr. Sajjad Raza PT, physiotherapy educator, clinical workshop instructor and Founder of Physio Nexus Academy in Pakistan.",
+    "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator, Clinical Supervisor and Founder of Physio Nexus Academy in Pakistan.",
   alternates: {
     canonical: "https://physionexusacademy.com/founder",
+  },
+  openGraph: {
+    title: "Dr. Sajjad Raza PT — Physiotherapist, Clinical Educator & Founder",
+    description:
+      "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
+    url: "https://physionexusacademy.com/founder",
+    type: "profile",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        alt: "Dr. Sajjad Raza PT",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dr. Sajjad Raza PT",
+    description:
+      "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
 };
 
@@ -66,21 +86,46 @@ export default async function FounderPage() {
     "@type": "ProfilePage",
     "@id": `${founderUrl}#profile`,
     url: founderUrl,
-    name: `${founder.name} — Physiotherapy Instructor & Clinical Educator`,
+    name: `${founder.name} — Official Professional Profile`,
+    description:
+      "Official professional profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      "@id": `${founderUrl}#primaryimage`,
+      url: founderImage,
+      contentUrl: founderImage,
+      caption: `${founder.name} — Founder of Physio Nexus Academy`,
+      representativeOfPage: true,
+    },
     mainEntity: {
       "@type": "Person",
       "@id": `${founderUrl}#person`,
       name: founder.name,
+      alternateName: ["Dr. Sajjad Raza PT", "Sajjad Raza PT"],
       url: founderUrl,
-      image: founderImage,
-      jobTitle: "Physiotherapy Instructor and Founder",
+      image: {
+        "@id": `${founderUrl}#primaryimage`,
+      },
+      sameAs: [
+        "https://pk.linkedin.com/in/dr-sajjad-raza-pt-8a7455372",
+      ],
+      jobTitle: "Physiotherapist, Clinical Supervisor and Founder",
       description:
-        "Physiotherapy educator, clinical workshop instructor and Founder of Physio Nexus Academy.",
+        "Physiotherapist, clinical educator, workshop instructor, Clinical Supervisor and Founder of Physio Nexus Academy.",
       worksFor: {
         "@type": "EducationalOrganization",
         "@id": "https://physionexusacademy.com/#organization",
         name: "Physio Nexus Academy",
         url: siteUrl,
+      },
+      affiliation: {
+        "@type": "EducationalOrganization",
+        "@id": "https://physionexusacademy.com/#organization",
+        name: "Physio Nexus Academy",
+      },
+      alumniOf: {
+        "@type": "CollegeOrUniversity",
+        name: "Isra University",
       },
       knowsAbout: [
         "Physiotherapy education",
