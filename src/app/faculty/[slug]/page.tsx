@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 import { facultyMembers, getFacultyMember } from "@/lib/faculty";
 
-export const dynamicParams = false;
-
 export function generateStaticParams() {
   return facultyMembers.map((member) => ({ slug: member.slug }));
 }
