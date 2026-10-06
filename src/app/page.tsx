@@ -18,12 +18,14 @@ import {
   Stethoscope,
   Trophy,
   Eye,
+  UserRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
 import { createPublicClient } from "@/lib/supabase/public";
 import { knowledgeArticles } from "@/lib/knowledge-content";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
+import { featuredFaculty } from "@/lib/faculty";
 
 export const metadata: Metadata = {
   title: { absolute: "Physio Nexus Academy | Physiotherapy Learning & Patient Care Pakistan" },
@@ -319,6 +321,54 @@ export default async function HomePage() {
             <a href="/verify" className="text-sm font-semibold text-teal-600 hover:text-teal-700">
               Verify PNA Certificate →
             </a>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="section-padding bg-white">
+        <div className="container-content">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-teal-600">
+                Meet the Team
+              </p>
+              <h2 className="mt-1 text-2xl font-bold sm:text-3xl">Our Faculty</h2>
+              <p className="mt-3 max-w-2xl text-navy-500">
+                Professionals supporting practical learning, workshops and clinical training at Physio Nexus Academy.
+              </p>
+            </div>
+            <a
+              href="/faculty"
+              className="flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-700"
+            >
+              View all faculty <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredFaculty.map((member) => (
+              <a
+                key={member.slug}
+                href="/faculty"
+                className="group rounded-3xl border border-grey-200 bg-gradient-to-br from-white to-cyan-50/50 p-6 transition hover:-translate-y-1 hover:border-teal-200 hover:shadow-xl"
+              >
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-md">
+                  <UserRound className="h-7 w-7" />
+                </span>
+                <h3 className="mt-5 text-xl font-bold text-navy-800">{member.name}</h3>
+                <p className="mt-2 text-sm font-semibold text-teal-700">{member.role}</p>
+                {member.credentials ? (
+                  <p className="mt-1 text-xs font-medium uppercase tracking-wide text-navy-400">
+                    {member.credentials}
+                  </p>
+                ) : null}
+                <p className="mt-4 text-sm leading-6 text-navy-500">{member.summary}</p>
+                <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-navy-700">
+                  Faculty profile <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </a>
+            ))}
           </div>
         </div>
       </section>
