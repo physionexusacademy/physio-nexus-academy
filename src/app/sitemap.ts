@@ -9,6 +9,7 @@ import { regionalManualApplications } from "@/lib/manual-therapy-regional";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { mskConditions } from "@/lib/msk-injury-hub";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
+import { facultyMembers } from "@/lib/faculty";
 
 const routes = [
   "",
@@ -121,6 +122,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.82,
   }));
 
+
+  const facultyRoutes: MetadataRoute.Sitemap = facultyMembers.map((member) => ({
+    url: `${base}/faculty/${encodeURIComponent(member.slug)}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
+
   const atlasRoutes: MetadataRoute.Sitemap = clinicalVisualAtlas
     .filter((item) => item.assetReady)
     .map((item) => ({
@@ -140,6 +148,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...regionalManualRoutes,
     ...treatmentPlanRoutes,
     ...mskRoutes,
+    ...facultyRoutes,
     ...atlasRoutes,
   ];
 }
