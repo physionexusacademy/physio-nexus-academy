@@ -14,6 +14,7 @@ const routes = [
   "",
   "/about",
   "/founder",
+  "/faculty",
   "/workshops",
   "/training",
   "/verify",
