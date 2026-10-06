@@ -64,10 +64,19 @@ const siteJsonLd = {
       "@id": "https://physionexusacademy.com/founder#person",
       name: siteConfig.founder.name,
       url: "https://physionexusacademy.com/founder",
-      image: `https://physionexusacademy.com${siteConfig.founder.photo}`,
-      jobTitle: "Founder and Main Instructor",
+      image: {
+        "@type": "ImageObject",
+        "@id": "https://physionexusacademy.com/founder#primaryimage",
+        url: `https://physionexusacademy.com${siteConfig.founder.photo}`,
+        contentUrl: `https://physionexusacademy.com${siteConfig.founder.photo}`,
+        caption: "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy",
+      },
+      sameAs: [
+        "https://pk.linkedin.com/in/dr-sajjad-raza-pt-8a7455372",
+      ],
+      jobTitle: "Physiotherapist, Clinical Supervisor and Founder",
       description:
-        "Physiotherapy educator, clinical workshop instructor and Founder of Physio Nexus Academy in Pakistan.",
+        "Dr. Sajjad Raza PT is a physiotherapist, clinical educator, Clinical Supervisor and Founder of Physio Nexus Academy in Pakistan.",
       worksFor: {
         "@id": "https://physionexusacademy.com/#organization",
       },
