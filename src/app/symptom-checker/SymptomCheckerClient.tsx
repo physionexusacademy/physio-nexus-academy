@@ -17,7 +17,9 @@ import {
 import {
   commonHistoryOptions,
   compatibilityLabel,
+  getCarePriority,
   getImagingNotice,
+  getNeurologicHint,
   redFlags,
   regions,
   scoreConditions,
@@ -46,6 +48,7 @@ export function SymptomCheckerClient() {
   const [age, setAge] = useState("");
   const [onset, setOnset] = useState("");
   const [duration, setDuration] = useState("");
+  const [impact, setImpact] = useState("");
   const [location, setLocation] = useState("");
   const [clues, setClues] = useState<Set<string>>(new Set());
   const [selectedRedFlags, setSelectedRedFlags] = useState<Set<string>>(new Set());
@@ -56,10 +59,10 @@ export function SymptomCheckerClient() {
 
   const selectedFeatures = useMemo(() => {
     const values = new Set<string>();
-    [age, onset, duration, location].filter(Boolean).forEach((item) => values.add(item));
+    [age, onset, duration, impact, location].filter(Boolean).forEach((item) => values.add(item));
     clues.forEach((item) => values.add(item));
     return values;
-  }, [age, onset, duration, location, clues]);
+  }, [age, onset, duration, impact, location, clues]);
 
   const results = useMemo(
     () => (regionId ? scoreConditions(regionId, selectedFeatures) : []),
@@ -68,6 +71,11 @@ export function SymptomCheckerClient() {
 
   const imagingNotice = useMemo(
     () => (regionId ? getImagingNotice(regionId, selectedFeatures) : null),
+    [regionId, selectedFeatures],
+  );
+
+  const neurologicHint = useMemo(
+    () => (regionId ? getNeurologicHint(regionId, selectedFeatures) : null),
     [regionId, selectedFeatures],
   );
 
@@ -97,6 +105,8 @@ export function SymptomCheckerClient() {
       return changed ? next : current;
     });
   }, [onset]);
+
+  const carePriority = useMemo(() => getCarePriority(selectedFeatures), [selectedFeatures]);
 
   const selectedFlagObjects = redFlags.filter((flag) => selectedRedFlags.has(flag.id));
   const hasEmergencyFlag = selectedFlagObjects.some((flag) => flag.level === "emergency");
@@ -131,8 +141,8 @@ export function SymptomCheckerClient() {
   const next = () => {
     setMessage("");
 
-    if (step === 1 && (!age || !onset || !duration)) {
-      setMessage("Please choose your age range, how the problem started and how long it has been present.");
+    if (step === 1 && (!age || !onset || !duration || !impact)) {
+      setMessage("Please choose your age range, how the problem started, how long it has been present and how much it affects daily activity.");
       return;
     }
 
@@ -160,6 +170,7 @@ export function SymptomCheckerClient() {
     setAge("");
     setOnset("");
     setDuration("");
+    setImpact("");
     setLocation("");
     setClues(new Set());
     setSelectedRedFlags(new Set());
@@ -242,6 +253,7 @@ export function SymptomCheckerClient() {
               <ChoiceGroup title="Your age" options={commonHistoryOptions.age} value={age} onChange={setAge} />
               <ChoiceGroup title="How did it start?" options={commonHistoryOptions.onset} value={onset} onChange={setOnset} />
               <ChoiceGroup title="How long has it been present?" options={commonHistoryOptions.duration} value={duration} onChange={setDuration} />
+              <ChoiceGroup title="How much is it affecting normal life?" options={commonHistoryOptions.impact} value={impact} onChange={setImpact} />
             </section>
           )}
 
@@ -410,6 +422,34 @@ export function SymptomCheckerClient() {
                     </div>
                   </div>
 
+                  <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-emerald-700" />
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+                          Next-step priority
+                        </p>
+                        <h3 className="mt-1 text-lg font-bold text-navy-900">{carePriority.label}</h3>
+                        <p className="mt-2 text-sm leading-6 text-navy-700">{carePriority.detail}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {neurologicHint ? (
+                    <div className="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-5">
+                      <div className="flex items-start gap-3">
+                        <Info className="mt-0.5 h-5 w-5 flex-none text-sky-700" />
+                        <div>
+                          <p className="text-xs font-bold uppercase tracking-wider text-sky-700">
+                            Nerve distribution hint
+                          </p>
+                          <h3 className="mt-1 text-lg font-bold text-navy-900">{neurologicHint.label}</h3>
+                          <p className="mt-2 text-sm leading-6 text-navy-700">{neurologicHint.detail}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
                   {imagingNotice ? (
                     <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 p-5">
                       <div className="flex items-start gap-3">
@@ -463,6 +503,16 @@ export function SymptomCheckerClient() {
                               <p className="text-xs font-bold uppercase tracking-wide text-navy-500">Why it matched</p>
                               <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-navy-600">
                                 {result.matches.map((match) => <li key={match}>{match}</li>)}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {result.contradictions.length > 0 ? (
+                            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/70 p-3">
+                              <p className="text-xs font-bold uppercase tracking-wide text-amber-800">
+                                What argues against it
+                              </p>
+                              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
+                                {result.contradictions.map((item) => <li key={item}>{item}</li>)}
                               </ul>
                             </div>
                           ) : null}
