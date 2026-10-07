@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  Activity,
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
@@ -14,6 +13,7 @@ import {
   ShieldAlert,
   Stethoscope,
 } from "lucide-react";
+import { AnatomyRegionVisual } from "./AnatomyRegionVisual";
 import {
   commonHistoryOptions,
   compatibilityLabel,
@@ -261,17 +261,24 @@ export function SymptomCheckerClient() {
                     className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-xl hover:shadow-teal-900/10"
                   >
                     <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 transition-opacity group-hover:opacity-100" />
-                    <span className="flex items-center gap-3">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-teal-100 bg-teal-50 text-teal-700 transition group-hover:scale-105 group-hover:bg-teal-100">
-                        <Activity className="h-5 w-5" />
+                    <span className="flex items-center gap-4">
+                      <span className="relative flex h-24 w-20 flex-none items-center justify-center overflow-hidden rounded-2xl border border-cyan-100 bg-[radial-gradient(circle_at_center,#f0fbfc_0%,#e4f5f7_58%,#d7edf0_100%)] shadow-inner">
+                        <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.75),transparent_55%)]" />
+                        <AnatomyRegionVisual
+                          region={item.id}
+                          compact
+                          className="relative h-[88px] w-[44px] transition-transform duration-300 group-hover:scale-105"
+                        />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-base font-bold text-navy-900">{item.label}</span>
+                        <span className="flex items-center justify-between gap-3">
+                          <span className="block text-base font-bold text-navy-900">{item.label}</span>
+                          <ArrowRight className="h-4 w-4 flex-none text-slate-300 transition group-hover:translate-x-1 group-hover:text-teal-600" />
+                        </span>
                         <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wide text-teal-700">{item.medical}</span>
+                        <span className="mt-2 block text-sm leading-5 text-navy-500">{item.hint}</span>
                       </span>
-                      <ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-teal-600" />
                     </span>
-                    <span className="mt-4 block text-sm leading-5 text-navy-500">{item.hint}</span>
                   </button>
                 ))}
               </div>
@@ -295,9 +302,19 @@ export function SymptomCheckerClient() {
 
           {step === 2 && region && (
             <section>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Symptom location</p>
-              <h2 className="mt-2 text-2xl font-bold text-navy-900 sm:text-3xl">Where exactly do you feel it?</h2>
-              <p className="mt-2 text-sm text-navy-600">Choose the closest match for your main symptom location.</p>
+              <div className="grid items-center gap-5 sm:grid-cols-[1fr_150px]">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Symptom location</p>
+                  <h2 className="mt-2 text-2xl font-bold text-navy-900 sm:text-3xl">Where exactly do you feel it?</h2>
+                  <p className="mt-2 text-sm text-navy-600">Choose the closest match for your main symptom location.</p>
+                </div>
+                <div className="hidden justify-self-end sm:block">
+                  <div className="relative flex h-44 w-32 items-center justify-center overflow-hidden rounded-3xl border border-cyan-100 bg-[radial-gradient(circle_at_center,#f2fcfd_0%,#e6f5f7_62%,#d9edf0_100%)] shadow-sm">
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.78),transparent_58%)]" />
+                    <AnatomyRegionVisual region={region.id} className="relative h-40 w-auto" />
+                  </div>
+                </div>
+              </div>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {region.locations.map((item) => (
                   <button
@@ -459,16 +476,33 @@ export function SymptomCheckerClient() {
                 </div>
               ) : (
                 <div>
-                  <div className="flex items-start gap-3">
-                    <span className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-teal-100 text-teal-700">
-                      <Stethoscope className="h-6 w-6" />
-                    </span>
+                  <div className="grid items-center gap-5 rounded-3xl border border-cyan-100 bg-[linear-gradient(135deg,#f8fdfd_0%,#eef9fa_55%,#ffffff_100%)] p-5 shadow-sm sm:grid-cols-[150px_1fr] sm:p-6">
+                    <div className="relative mx-auto flex h-48 w-36 items-center justify-center overflow-hidden rounded-3xl border border-white bg-white/70 shadow-lg shadow-cyan-900/5 sm:mx-0">
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,184,166,0.09),transparent_66%)]" />
+                      <AnatomyRegionVisual region={region.id} className="relative h-44 w-auto" />
+                      <span className="absolute bottom-3 rounded-full border border-teal-100 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-700 shadow-sm">
+                        {region.label}
+                      </span>
+                    </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Your screening result</p>
-                      <h2 className="mt-1 text-2xl font-bold text-navy-900 sm:text-3xl">Possible {region.label} patterns</h2>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-navy-900 text-teal-300 shadow-sm">
+                          <Stethoscope className="h-4 w-4" />
+                        </span>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Your screening result</p>
+                      </div>
+                      <h2 className="mt-3 text-2xl font-bold text-navy-900 sm:text-3xl">Possible {region.label} patterns</h2>
                       <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">
                         These are ranked compatibility patterns from your answers — not confirmed diagnoses.
                       </p>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-600">
+                          Visual pain-region locator
+                        </span>
+                        <span className="rounded-full border border-teal-100 bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
+                          Lightweight vector graphic
+                        </span>
+                      </div>
                     </div>
                   </div>
 
