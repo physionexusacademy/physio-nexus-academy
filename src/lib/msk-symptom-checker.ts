@@ -43,6 +43,12 @@ export type RedFlag = {
   advice: string;
 };
 
+export type ImagingNotice = {
+  title: string;
+  body: string;
+  criteria: string[];
+};
+
 export const commonHistoryOptions = {
   age: [
     { id: "age_18_39", label: "18–39 years" },
@@ -283,6 +289,11 @@ export const regions: RegionConfig[] = [
       { id: "clue_dashboard", label: "Direct blow to front of bent knee", medical: "Dashboard-type mechanism" },
       { id: "clue_jump_tendon", label: "Pain below kneecap with jumping/running" },
       { id: "clue_knee_stiff_age", label: "Gradual stiffness/pain with walking in middle or older age" },
+      { id: "clue_knee_age55", label: "I am 55 years or older", medical: "Acute knee fracture-screening criterion" },
+      { id: "clue_knee_fibular_head_tender", label: "Very tender directly over the bony bump on the outer upper shin just below the knee", medical: "Fibular-head tenderness" },
+      { id: "clue_knee_patella_isolated_tender", label: "The kneecap itself is the main very tender bony spot", medical: "Isolated patellar tenderness" },
+      { id: "clue_knee_cant_flex90", label: "I cannot bend the injured knee to about a right angle (90°)" },
+      { id: "clue_knee_no4steps", label: "I cannot take 4 weight-bearing steps because of the injury" },
     ],
   },
   {
@@ -328,6 +339,10 @@ export const regions: RegionConfig[] = [
       { id: "clue_bigtoe_stiff", label: "Big toe is stiff/painful when pushing off" },
       { id: "clue_forefoot_load", label: "Ball-of-foot pain with standing/running" },
       { id: "clue_foot_focal_bone", label: "Focal bone tenderness after increased running/walking load" },
+      { id: "clue_ankle_no_weight_initial", label: "After the injury I could not put weight through the foot/ankle" },
+      { id: "clue_ankle_no4steps", label: "I cannot take 4 weight-bearing steps because of the injury" },
+      { id: "clue_ankle_malleolus_tender", label: "Very tender directly on the ankle bone on the inside or outside", medical: "Malleolar bony tenderness" },
+      { id: "clue_ankle_hindfoot_tender", label: "Very tender directly over the heel/hindfoot bone after the injury", medical: "Talus/calcaneus region tenderness" },
     ],
   },
 ];
@@ -459,4 +474,69 @@ export function compatibilityLabel(score: number) {
   if (score >= 9) return "High compatibility";
   if (score >= 6) return "Moderate compatibility";
   return "Possible";
+}
+
+
+export function getImagingNotice(region: RegionId, selected: Set<string>): ImagingNotice | null {
+  if (!selected.has("onset_trauma")) return null;
+
+  if (region === "knee") {
+    const criteria: string[] = [];
+
+    if (selected.has("age_60_plus") || selected.has("clue_knee_age55")) {
+      criteria.push("Age 55 years or older");
+    }
+    if (selected.has("clue_knee_fibular_head_tender")) {
+      criteria.push("Focal tenderness over the fibular head");
+    }
+    if (selected.has("clue_knee_patella_isolated_tender")) {
+      criteria.push("Isolated bony tenderness over the kneecap");
+    }
+    if (selected.has("clue_knee_cant_flex90")) {
+      criteria.push("Unable to flex the knee to about 90°");
+    }
+    if (selected.has("clue_knee_no4steps")) {
+      criteria.push("Unable to take 4 weight-bearing steps");
+    }
+
+    if (criteria.length > 0) {
+      return {
+        title: "Knee X-ray assessment may be indicated",
+        body:
+          "Your answers meet one or more Ottawa Knee Rule fracture-screening criteria after an acute injury. This does not mean a fracture is confirmed, but an in-person medical assessment and consideration of knee radiography are appropriate before relying on a routine soft-tissue diagnosis.",
+        criteria,
+      };
+    }
+  }
+
+  if (region === "ankle-foot") {
+    const ankleLocations = new Set(["loc_ankle_lateral", "loc_ankle_medial", "loc_heel_back", "loc_heel_bottom"]);
+    if (!Array.from(ankleLocations).some((item) => selected.has(item))) return null;
+
+    const criteria: string[] = [];
+
+    if (selected.has("clue_ankle_no_weight_initial")) {
+      criteria.push("Unable to bear weight immediately after the injury");
+    }
+    if (selected.has("clue_ankle_no4steps")) {
+      criteria.push("Unable to take 4 weight-bearing steps");
+    }
+    if (selected.has("clue_ankle_malleolus_tender")) {
+      criteria.push("Focal bony tenderness over an ankle bone");
+    }
+    if (selected.has("clue_ankle_hindfoot_tender")) {
+      criteria.push("Focal bony tenderness over the hindfoot/heel region");
+    }
+
+    if (criteria.length > 0) {
+      return {
+        title: "Ankle X-ray assessment may be indicated",
+        body:
+          "Your answers meet one or more Ottawa-style ankle fracture-screening criteria after an acute injury. This does not confirm a fracture, but an in-person assessment and consideration of radiography are appropriate.",
+        criteria,
+      };
+    }
+  }
+
+  return null;
 }
