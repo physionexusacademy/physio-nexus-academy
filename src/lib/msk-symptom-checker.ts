@@ -427,7 +427,7 @@ export const featureLabels = new Map<string, string>([
   ...commonHistoryOptions.onset,
   ...commonHistoryOptions.duration,
   ...regions.flatMap((region) => [...region.locations, ...region.clues]),
-].map((item) => [item.id, item.label]));
+].map((item) => [item.id, item.label] as const));
 
 export function scoreConditions(region: RegionId, selected: Set<string>) {
   return conditionRules
