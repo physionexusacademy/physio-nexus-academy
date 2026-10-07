@@ -487,6 +487,16 @@ export function SymptomCheckerClient() {
                               </ul>
                             </div>
                           ) : null}
+                          {result.contradictions.length > 0 ? (
+                            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/70 p-3">
+                              <p className="text-xs font-bold uppercase tracking-wide text-amber-800">
+                                What argues against it
+                              </p>
+                              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
+                                {result.contradictions.map((item) => <li key={item}>{item}</li>)}
+                              </ul>
+                            </div>
+                          ) : null}
                           <p className="mt-4 text-sm font-medium text-navy-700">{result.condition.advice}</p>
                         </article>
                       ))}
