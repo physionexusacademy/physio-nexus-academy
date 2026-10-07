@@ -36,6 +36,7 @@ const traumaOnlyClueIds = new Set([
   "clue_knee_fibular_head_tender",
   "clue_knee_patella_isolated_tender",
   "clue_knee_cant_flex90",
+  "clue_knee_no_weight_initial",
   "clue_knee_no4steps",
   "clue_ankle_no_weight_initial",
   "clue_ankle_no4steps",
