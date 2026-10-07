@@ -49,6 +49,12 @@ export type ImagingNotice = {
   criteria: string[];
 };
 
+export type SafetyDisposition = {
+  level: "emergency" | "urgent";
+  title: string;
+  flags: RedFlag[];
+};
+
 export const commonHistoryOptions = {
   age: [
     { id: "age_18_39", label: "18–39 years" },
@@ -641,6 +647,21 @@ export function getCarePriority(selected: Set<string>) {
   };
 }
 
+
+export function getSafetyDisposition(selected: Set<string>): SafetyDisposition | null {
+  const flags = redFlags.filter((flag) => selected.has(flag.id));
+  if (flags.length === 0) return null;
+
+  const emergency = flags.some((flag) => flag.level === "emergency");
+
+  return {
+    level: emergency ? "emergency" : "urgent",
+    title: emergency
+      ? "Emergency medical assessment recommended"
+      : "Urgent medical assessment recommended",
+    flags,
+  };
+}
 
 export function getImagingNotice(region: RegionId, selected: Set<string>): ImagingNotice | null {
   if (!selected.has("onset_trauma")) return null;
