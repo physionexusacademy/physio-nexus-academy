@@ -17,6 +17,7 @@ import {
 import {
   commonHistoryOptions,
   compatibilityLabel,
+  getCarePriority,
   getImagingNotice,
   getNeurologicHint,
   redFlags,
@@ -47,6 +48,7 @@ export function SymptomCheckerClient() {
   const [age, setAge] = useState("");
   const [onset, setOnset] = useState("");
   const [duration, setDuration] = useState("");
+  const [impact, setImpact] = useState("");
   const [location, setLocation] = useState("");
   const [clues, setClues] = useState<Set<string>>(new Set());
   const [selectedRedFlags, setSelectedRedFlags] = useState<Set<string>>(new Set());
@@ -57,10 +59,10 @@ export function SymptomCheckerClient() {
 
   const selectedFeatures = useMemo(() => {
     const values = new Set<string>();
-    [age, onset, duration, location].filter(Boolean).forEach((item) => values.add(item));
+    [age, onset, duration, impact, location].filter(Boolean).forEach((item) => values.add(item));
     clues.forEach((item) => values.add(item));
     return values;
-  }, [age, onset, duration, location, clues]);
+  }, [age, onset, duration, impact, location, clues]);
 
   const results = useMemo(
     () => (regionId ? scoreConditions(regionId, selectedFeatures) : []),
@@ -104,6 +106,8 @@ export function SymptomCheckerClient() {
     });
   }, [onset]);
 
+  const carePriority = useMemo(() => getCarePriority(selectedFeatures), [selectedFeatures]);
+
   const selectedFlagObjects = redFlags.filter((flag) => selectedRedFlags.has(flag.id));
   const hasEmergencyFlag = selectedFlagObjects.some((flag) => flag.level === "emergency");
 
@@ -137,8 +141,8 @@ export function SymptomCheckerClient() {
   const next = () => {
     setMessage("");
 
-    if (step === 1 && (!age || !onset || !duration)) {
-      setMessage("Please choose your age range, how the problem started and how long it has been present.");
+    if (step === 1 && (!age || !onset || !duration || !impact)) {
+      setMessage("Please choose your age range, how the problem started, how long it has been present and how much it affects daily activity.");
       return;
     }
 
@@ -166,6 +170,7 @@ export function SymptomCheckerClient() {
     setAge("");
     setOnset("");
     setDuration("");
+    setImpact("");
     setLocation("");
     setClues(new Set());
     setSelectedRedFlags(new Set());
@@ -248,6 +253,7 @@ export function SymptomCheckerClient() {
               <ChoiceGroup title="Your age" options={commonHistoryOptions.age} value={age} onChange={setAge} />
               <ChoiceGroup title="How did it start?" options={commonHistoryOptions.onset} value={onset} onChange={setOnset} />
               <ChoiceGroup title="How long has it been present?" options={commonHistoryOptions.duration} value={duration} onChange={setDuration} />
+              <ChoiceGroup title="How much is it affecting normal life?" options={commonHistoryOptions.impact} value={impact} onChange={setImpact} />
             </section>
           )}
 
@@ -413,6 +419,19 @@ export function SymptomCheckerClient() {
                       <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">
                         These are ranked compatibility patterns from your answers — not confirmed diagnoses.
                       </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-emerald-700" />
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+                          Next-step priority
+                        </p>
+                        <h3 className="mt-1 text-lg font-bold text-navy-900">{carePriority.label}</h3>
+                        <p className="mt-2 text-sm leading-6 text-navy-700">{carePriority.detail}</p>
+                      </div>
                     </div>
                   </div>
 
