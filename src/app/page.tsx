@@ -118,6 +118,14 @@ const portalActions = [
     soft: "bg-fuchsia-50 border-fuchsia-100",
   },
   {
+    title: "MSK Symptom Checker",
+    description: "Answer simple questions to screen possible musculoskeletal patterns and safety warnings.",
+    href: "/symptom-checker",
+    icon: Stethoscope,
+    tone: "from-teal-500 to-cyan-600",
+    soft: "bg-teal-50 border-teal-100",
+  },
+  {
     title: "Patient Care",
     description: "Book physiotherapy, request a home visit or explore patient services.",
     href: "/patient-services",
@@ -550,7 +558,15 @@ export default async function HomePage() {
                 Choose a consultation or request a home visit. Our team confirms availability before care is scheduled.
               </p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <a
+                href="/symptom-checker"
+                className="rounded-2xl border border-teal-300 bg-teal-500/10 p-5 transition hover:border-teal-200 hover:bg-white/10"
+              >
+                <Stethoscope className="h-6 w-6 text-teal-300" />
+                <p className="mt-3 font-semibold text-white">Check Your Symptoms</p>
+                <p className="mt-1 text-sm text-grey-200">Screen possible MSK patterns before booking.</p>
+              </a>
               <a
                 href="/appointment"
                 className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-teal-300 hover:bg-white/10"
