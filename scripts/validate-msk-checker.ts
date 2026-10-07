@@ -215,6 +215,7 @@ const signatureTop3Rate = signatureTop3 / allConditionRules.length;
 
 console.log("PNA MSK validation");
 console.log("------------------");
+console.log("Regression note: these are synthetic canonical cases for logic calibration, not clinical sensitivity/specificity or diagnostic-accuracy claims.");
 console.log(`Conditions: ${allConditionRules.length}`);
 console.log(`Canonical cases: ${canonicalCases.length}`);
 console.log(`Canonical top-1: ${canonicalTop1}/${canonicalCases.length} (${(canonicalTop1Rate * 100).toFixed(1)}%)`);
@@ -236,7 +237,7 @@ if (signatureMisses.length > 0) {
 }
 
 const gates = [
-  { label: "canonical top-1 >= 90%", pass: canonicalTop1Rate >= 0.9 },
+  { label: "canonical top-1 = 100%", pass: canonicalTop1Rate === 1 },
   { label: "canonical top-3 = 100%", pass: canonicalTop3Rate === 1 },
   { label: "rule-signature top-3 >= 95%", pass: signatureTop3Rate >= 0.95 },
   { label: "all safety checks pass", pass: safetyPassed === redFlags.length && mixedSafety?.level === "emergency" },
