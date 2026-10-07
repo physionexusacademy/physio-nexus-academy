@@ -108,12 +108,19 @@ const failures: string[] = [];
 
 let canonicalTop1 = 0;
 let canonicalTop3 = 0;
+const top1Disagreements: string[] = [];
 
 for (const test of canonicalCases) {
   const results = scoreConditions(test.region, new Set(test.selected));
   const ids = results.map((result) => result.condition.id);
 
-  if (ids[0] === test.expected) canonicalTop1 += 1;
+  if (ids[0] === test.expected) {
+    canonicalTop1 += 1;
+  } else {
+    top1Disagreements.push(
+      `${test.id}: expected=${test.expected} top1=${ids[0] ?? "none"} top3=${ids.slice(0, 3).join(",") || "none"}`,
+    );
+  }
   if (ids.slice(0, 3).includes(test.expected)) canonicalTop3 += 1;
   else {
     failures.push(
@@ -217,6 +224,11 @@ console.log(`Safety flags: ${safetyPassed}/${redFlags.length}`);
 console.log(`Imaging checks: ${imagingTests.filter((item) => item.pass).length}/${imagingTests.length}`);
 console.log(`Neurologic hints: ${neuroTests.length - failures.filter((item) => item.startsWith("Neurologic hint miss")).length}/${neuroTests.length}`);
 console.log(`Care priority: ${careTests.length - failures.filter((item) => item.startsWith("Care priority miss")).length}/${careTests.length}`);
+
+if (top1Disagreements.length > 0) {
+  console.log("\nCanonical top-1 disagreements (calibration targets):");
+  for (const item of top1Disagreements) console.log(`- ${item}`);
+}
 
 if (signatureMisses.length > 0) {
   console.log("\nRule-signature misses (informational):");
