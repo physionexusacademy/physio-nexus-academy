@@ -65,6 +65,11 @@ export const commonHistoryOptions = {
     { id: "duration_subacute", label: "2–6 weeks" },
     { id: "duration_chronic", label: "More than 6 weeks" },
   ] satisfies CheckerOption[],
+  impact: [
+    { id: "impact_mild", label: "Mild — I can do most normal activities" },
+    { id: "impact_moderate", label: "Moderate — I have to change/limit some daily activities" },
+    { id: "impact_high", label: "High — it significantly affects work, sleep, walking or normal activity" },
+  ] satisfies CheckerOption[],
 };
 
 export const redFlags: RedFlag[] = [
@@ -566,6 +571,7 @@ export const featureLabels = new Map<string, string>([
   ...commonHistoryOptions.age,
   ...commonHistoryOptions.onset,
   ...commonHistoryOptions.duration,
+  ...commonHistoryOptions.impact,
   ...regions.flatMap((region) => [...region.locations, ...region.clues]),
 ].map((item) => [item.id, item.label] as const));
 
@@ -609,6 +615,30 @@ export function compatibilityLabel(score: number) {
   if (score >= 9) return "High compatibility";
   if (score >= 6) return "Moderate compatibility";
   return "Possible";
+}
+
+export function getCarePriority(selected: Set<string>) {
+  if (selected.has("impact_high")) {
+    return {
+      label: "Prompt professional assessment recommended",
+      detail:
+        "Your symptoms are having a high functional impact. Even without an emergency warning, an in-person assessment is sensible rather than relying only on self-care.",
+    };
+  }
+
+  if (selected.has("impact_moderate")) {
+    return {
+      label: "Professional assessment recommended",
+      detail:
+        "Your symptoms are affecting daily activity. A physiotherapy assessment can help confirm the pattern and guide progression.",
+    };
+  }
+
+  return {
+    label: "Monitor and assess as needed",
+    detail:
+      "Your current functional impact appears mild. Seek professional assessment if symptoms persist, worsen, recur or you are concerned.",
+  };
 }
 
 
