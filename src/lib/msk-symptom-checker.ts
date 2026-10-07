@@ -139,6 +139,12 @@ export const regions: RegionConfig[] = [
       { id: "clue_after_whiplash", label: "Started after sudden acceleration/deceleration (for example a road accident)", medical: "Whiplash mechanism" },
       { id: "clue_neck_age_stiff", label: "Long-term stiffness, especially with turning the head" },
       { id: "clue_trigger_tender", label: "Local tender/tight muscle areas reproduce the pain" },
+      { id: "clue_neck_ext_rotate", label: "One-sided neck pain is worse when looking up and turning toward that side", medical: "Extension-rotation pattern" },
+      { id: "clue_torticollis", label: "My neck suddenly became stuck/tilted and turning it is very difficult", medical: "Acute torticollis pattern" },
+      { id: "clue_overhead_neuro_arm", label: "Arm heaviness, tingling or numbness is brought on by overhead positions and eases when the arm is lowered" },
+      { id: "clue_c6_dist", label: "Tingling/numbness is strongest toward the thumb/index-finger side of the hand", medical: "Possible C6 distribution" },
+      { id: "clue_c7_dist", label: "Tingling/numbness is strongest around the middle finger", medical: "Possible C7 distribution" },
+      { id: "clue_c8_dist", label: "Tingling/numbness is strongest toward the ring/little-finger side of the hand", medical: "Possible C8/T1 distribution" },
     ],
   },
   {
@@ -161,6 +167,9 @@ export const regions: RegionConfig[] = [
       { id: "clue_cross_body", label: "Pain when bringing the arm across the chest" },
       { id: "clue_biceps_load", label: "Front shoulder pain with lifting/carrying or resisted elbow flexion" },
       { id: "clue_click_catch", label: "Deep clicking/catching with movement" },
+      { id: "clue_shoulder_crepitus_stiff", label: "Deep shoulder stiffness with grinding/creaking, especially with age" },
+      { id: "clue_calcific_acute", label: "Very painful shoulder movement started suddenly without a clear injury and is difficult even at rest" },
+      { id: "clue_posterior_overhead_weak", label: "Back-of-shoulder pain/weakness is worse with repeated overhead sport or activity" },
     ],
   },
   {
@@ -181,6 +190,10 @@ export const regions: RegionConfig[] = [
       { id: "clue_elbow_swelling", label: "Visible swelling over the tip of the elbow" },
       { id: "clue_elbow_stiff", label: "Stiffness and reduced elbow movement" },
       { id: "clue_sudden_pop_elbow", label: "Sudden pop with bruising or major weakness after lifting" },
+      { id: "clue_radial_tunnel", label: "Aching pain is a few centimetres below the outer elbow and worsens with forearm rotation" },
+      { id: "clue_throwing_medial", label: "Inner-elbow pain occurs during throwing, especially late cocking/acceleration" },
+      { id: "clue_triceps_load", label: "Back-of-elbow pain is worse with pushing, press-ups or resisted elbow straightening" },
+      { id: "clue_elbow_lateral_instability", label: "Outer elbow clicks/shifts or feels unstable when pushing up from a chair" },
     ],
   },
   {
@@ -203,6 +216,10 @@ export const regions: RegionConfig[] = [
       { id: "clue_wrist_twist", label: "Pain with twisting/rotation or pushing up from a chair" },
       { id: "clue_wrist_trauma", label: "Started after a fall onto the hand or wrist twist" },
       { id: "clue_hand_weakness", label: "Grip feels weak or objects are being dropped" },
+      { id: "clue_snuffbox_tender", label: "After a fall, the small hollow at the thumb-side of the wrist is very tender", medical: "Anatomical snuffbox tenderness" },
+      { id: "clue_thumb_forced_out", label: "Thumb pain/instability started after the thumb was forced away from the hand", medical: "Thumb MCP UCL mechanism" },
+      { id: "clue_intersection", label: "Pain/creaking is on the back of the thumb-side forearm a few centimetres above the wrist with repetitive hand use" },
+      { id: "clue_dorsal_wrist_load", label: "Back-of-wrist pain is worse with repeated wrist extension, gripping or weight-bearing through the hand" },
     ],
   },
   {
@@ -214,6 +231,7 @@ export const regions: RegionConfig[] = [
       { id: "loc_thoracic_midline", label: "Middle of upper/mid back" },
       { id: "loc_between_blades", label: "Between the shoulder blades" },
       { id: "loc_rib_side", label: "One side of the ribs / chest wall" },
+      { id: "loc_anterior_rib", label: "Front of chest/rib near the breastbone", medical: "Costosternal region" },
     ],
     clues: [
       { id: "clue_posture", label: "Worse after prolonged sitting or slouched posture" },
@@ -221,6 +239,9 @@ export const regions: RegionConfig[] = [
       { id: "clue_deep_breath", label: "Worse with deep breath, cough or sneeze" },
       { id: "clue_rib_tender", label: "Pressing a specific rib/chest-wall spot reproduces pain" },
       { id: "clue_thoracic_trauma", label: "Started after a direct hit/fall onto the ribs" },
+      { id: "clue_costosternal_tender", label: "Pressing a specific front-rib/breastbone junction reproduces the pain" },
+      { id: "clue_periscapular_overuse", label: "Aching around the shoulder blade builds with desk work, carrying or repeated arm use" },
+      { id: "clue_thoracic_ext_rotate", label: "A focused one-sided upper-back pain is worse with arching/rotation" },
     ],
   },
   {
@@ -242,6 +263,12 @@ export const regions: RegionConfig[] = [
       { id: "clue_back_extension", label: "Worse with arching backward or prolonged standing" },
       { id: "clue_sij_load", label: "One-sided buttock pain with turning in bed, stairs or single-leg loading" },
       { id: "clue_morning_30", label: "Morning stiffness lasts more than about 30 minutes and improves with movement" },
+      { id: "clue_extension_young_athlete", label: "I am a younger active person and repeated back-bending/extension causes the pain" },
+      { id: "clue_hamstring_tight_ext", label: "Back pain with extension is accompanied by marked hamstring tightness or a feeling of slipping" },
+      { id: "clue_lowback_tender_side", label: "A very local tender/tight area beside the lower spine reproduces the pain" },
+      { id: "clue_l4_dist", label: "Numbness/tingling is strongest toward the front of the knee or inner shin", medical: "Possible L4 distribution" },
+      { id: "clue_l5_dist", label: "Numbness/tingling is strongest over the outer leg/top of foot or big-toe area", medical: "Possible L5 distribution" },
+      { id: "clue_s1_dist", label: "Numbness/tingling is strongest down the back of the calf toward the outer/sole of the foot", medical: "Possible S1 distribution" },
     ],
   },
   {
@@ -263,6 +290,10 @@ export const regions: RegionConfig[] = [
       { id: "clue_adductor", label: "Groin pain with running, cutting or squeezing knees together" },
       { id: "clue_hamstring_sit", label: "Pain near sit-bone with running or prolonged sitting" },
       { id: "clue_buttock_sciatic", label: "Buttock pain with tingling down the back of the leg" },
+      { id: "clue_iliopsoas_load", label: "Front-of-hip/groin pain is worse with repeated hip flexion, stairs or resisted knee lifting" },
+      { id: "clue_internal_snap", label: "A snapping/clicking sensation is felt at the front of the hip during hip movement" },
+      { id: "clue_hip_flexor_sudden", label: "Front-of-hip pain started suddenly during sprinting, kicking or forceful hip flexion" },
+      { id: "clue_pubalgia", label: "Deep groin/lower-abdominal pain is worse with cutting, sit-ups, coughing or forceful twisting" },
     ],
   },
   {
@@ -294,6 +325,11 @@ export const regions: RegionConfig[] = [
       { id: "clue_knee_patella_isolated_tender", label: "The kneecap itself is the main very tender bony spot", medical: "Isolated patellar tenderness" },
       { id: "clue_knee_cant_flex90", label: "I cannot bend the injured knee to about a right angle (90°)" },
       { id: "clue_knee_no4steps", label: "I cannot take 4 weight-bearing steps because of the injury" },
+      { id: "clue_quad_tendon", label: "Pain is just above the kneecap and worse with jumping, squatting or resisted knee straightening" },
+      { id: "clue_pes_anserine", label: "Tender pain is on the inner upper shin a few centimetres below the knee joint" },
+      { id: "clue_itb_running", label: "Outer-knee pain predictably appears during running/cycling and eases after stopping" },
+      { id: "clue_prepatellar_swelling", label: "There is swelling directly in front of the kneecap, often after kneeling or a knock" },
+      { id: "clue_patella_slip", label: "The kneecap feels like it shifts/slips sideways or has dislocated before" },
     ],
   },
   {
@@ -314,6 +350,8 @@ export const regions: RegionConfig[] = [
       { id: "clue_calf_sudden", label: "Sudden calf pain during sprinting/pushing off" },
       { id: "clue_exertional_tight", label: "Tightness/pain predictably builds during exercise and eases after stopping" },
       { id: "clue_foot_drop", label: "Foot slaps/drops or there is numbness over the outer leg/top of foot" },
+      { id: "clue_tib_ant_load", label: "Pain at the front of the shin/ankle is worse with uphill walking or pulling the foot upward" },
+      { id: "clue_soleus_load", label: "Deep calf pain is worse with running or a bent-knee calf raise" },
     ],
   },
   {
@@ -343,6 +381,15 @@ export const regions: RegionConfig[] = [
       { id: "clue_ankle_no4steps", label: "I cannot take 4 weight-bearing steps because of the injury" },
       { id: "clue_ankle_malleolus_tender", label: "Very tender directly on the ankle bone on the inside or outside", medical: "Malleolar bony tenderness" },
       { id: "clue_ankle_hindfoot_tender", label: "Very tender directly over the heel/hindfoot bone after the injury", medical: "Talus/calcaneus region tenderness" },
+      { id: "clue_high_ankle", label: "Pain is above the ankle joint and started with the foot twisting outward", medical: "Syndesmosis mechanism" },
+      { id: "clue_eversion_injury", label: "Inner-ankle pain started when the foot was forced outward/rolled outward", medical: "Eversion injury" },
+      { id: "clue_peroneal_load", label: "Outer-ankle pain behind the ankle bone is worse with walking, running or turning the foot outward" },
+      { id: "clue_tarsal_tunnel", label: "Burning/tingling starts near the inner ankle and spreads into the sole of the foot" },
+      { id: "clue_turf_toe", label: "Big-toe pain started when the toe was forcefully bent upward", medical: "Hyperextension injury" },
+      { id: "clue_anterior_impinge", label: "Pinching pain at the front of the ankle is worse with deep ankle bend/squat" },
+      { id: "clue_posterior_impinge", label: "Pain at the back of the ankle is worse when pointing the foot downward" },
+      { id: "clue_bunion", label: "There is a painful bump at the base of the big toe and the toe angles toward the others" },
+      { id: "clue_plantar_plate", label: "Pain is under the 2nd/3rd toe joint and the toe feels unstable or is drifting upward/sideways" },
     ],
   },
 ];
@@ -360,7 +407,7 @@ const C = (
 
 export const conditionRules: ConditionRule[] = [
   C("mechanical-neck-pain","neck","Mechanical Neck Pain / Cervical Strain","Common neck joint or muscle pain","Local neck pain and stiffness that changes with posture or movement.",{loc_neck_central:2,loc_neck_side:2,clue_neck_move:3,onset_no_clear:1,onset_gradual:1,clue_trigger_tender:1}),
-  C("cervical-radiculopathy","neck","Cervical Radiculopathy","Neck nerve irritation","Neck-to-arm symptoms with numbness, tingling or weakness in a nerve-root pattern.",{loc_neck_to_arm:3,clue_arm_tingling:4,clue_arm_weakness:3,clue_neck_move:1}),
+  C("cervical-radiculopathy","neck","Cervical Radiculopathy","Neck nerve irritation","Neck-to-arm symptoms with numbness, tingling or weakness in a nerve-root pattern.",{loc_neck_to_arm:3,clue_arm_tingling:4,clue_arm_weakness:3,clue_neck_move:1,clue_c6_dist:2,clue_c7_dist:2,clue_c8_dist:2}),
   C("cervicogenic-headache","neck","Cervicogenic Headache","Headache linked to the neck","Headache associated with neck pain and neck movement, often beginning near the upper neck/base of skull.",{loc_base_skull:3,clue_headache:4,clue_neck_move:2}),
   C("whiplash-associated-disorder","neck","Whiplash-Associated Disorder","Neck pain after a sudden jolt","Neck pain/stiffness after rapid acceleration-deceleration such as a road-traffic collision.",{clue_after_whiplash:5,onset_trauma:3,clue_neck_move:1}),
   C("cervical-spondylosis","neck","Cervical Spondylosis / Degenerative Neck Pain","Age-related neck stiffness","Persistent neck stiffness and pain that is more common with increasing age.",{age_40_59:2,age_60_plus:3,duration_chronic:2,clue_neck_age_stiff:3,clue_neck_move:1}),
@@ -395,7 +442,7 @@ export const conditionRules: ConditionRule[] = [
   C("rib-injury","upper-back-ribs","Rib Contusion / Fracture Pattern","Possible rib injury","Localized rib pain and tenderness following a direct hit or fall.",{loc_rib_side:4,clue_thoracic_trauma:5,clue_rib_tender:3,clue_deep_breath:2},"In-person assessment is recommended after significant rib trauma."),
 
   C("nonspecific-low-back","low-back","Non-Specific Mechanical Low Back Pain","Common lower-back pain","Localized back pain influenced by movement, lifting, posture or activity without clear nerve features.",{loc_lowback_central:2,loc_lowback_side:2,clue_sit_bend:3,onset_no_clear:1,onset_gradual:1},"A physiotherapy assessment can identify movement and load factors."),
-  C("lumbar-radiculopathy","low-back","Lumbar Radiculopathy / Sciatica Pattern","Lower-back nerve irritation","Back-to-leg pain with numbness, tingling and/or weakness.",{loc_leg_radiation:4,clue_leg_tingling:4,clue_leg_weakness:3}),
+  C("lumbar-radiculopathy","low-back","Lumbar Radiculopathy / Sciatica Pattern","Lower-back nerve irritation","Back-to-leg pain with numbness, tingling and/or weakness.",{loc_leg_radiation:4,clue_leg_tingling:4,clue_leg_weakness:3,clue_l4_dist:2,clue_l5_dist:2,clue_s1_dist:2}),
   C("disc-related-low-back","low-back","Lumbar Disc-Related Pain Pattern","Disc-related lower-back pattern","Back pain commonly aggravated by sitting, bending or lifting, sometimes with leg symptoms.",{clue_sit_bend:4,loc_lowback_central:2,loc_leg_radiation:1,age_18_39:1,age_40_59:1}),
   C("lumbar-stenosis","low-back","Lumbar Spinal Stenosis Pattern","Walking/standing-related nerve pain","Leg/back symptoms that build with standing or walking and ease with sitting or bending forward.",{clue_walk_stand:5,age_60_plus:4,duration_chronic:2,loc_leg_radiation:2}),
   C("lumbar-facet","low-back","Lumbar Facet / Extension-Related Pain Pattern","Back pain worse with arching/standing","Localized low-back pain aggravated by extension or prolonged standing.",{clue_back_extension:4,loc_lowback_side:2,age_40_59:1,age_60_plus:1}),
@@ -437,6 +484,81 @@ export const conditionRules: ConditionRule[] = [
   C("foot-stress-injury","ankle-foot","Foot Stress Injury Pattern","Possible foot bone stress injury","Focal bony pain after a recent rise in walking/running load.",{clue_foot_focal_bone:6,onset_gradual:2,clue_running_load:2},"Reduce impact loading and arrange assessment; stress injuries can require imaging."),
 ];
 
+export const expandedConditionRules: ConditionRule[] = [
+  C("cervical-facet-pattern","neck","Cervical Facet-Mediated Pain Pattern","One-sided neck joint pain","Localized one-sided neck pain that is commonly provoked by extension and rotation.",{loc_neck_side:3,clue_neck_ext_rotate:5,clue_neck_move:2},undefined,{clue_arm_tingling:2,clue_arm_weakness:2}),
+  C("acute-torticollis","neck","Acute Torticollis Pattern","Suddenly stuck or tilted neck","Sudden painful restriction with the head held turned or tilted and marked difficulty moving the neck.",{clue_torticollis:7,duration_acute:2,onset_no_clear:1}),
+  C("neurogenic-thoracic-outlet","neck","Neurogenic Thoracic Outlet Syndrome Pattern","Arm symptoms linked to overhead position","Arm heaviness, tingling or numbness provoked by overhead positioning can fit a thoracic-outlet-type pattern.",{loc_neck_to_arm:2,clue_overhead_neuro_arm:6,clue_arm_tingling:2,clue_c8_dist:1},"A clinician should assess the neck, shoulder girdle, neurologic findings and vascular status before confirming this pattern."),
+
+  C("glenohumeral-oa","shoulder","Glenohumeral Osteoarthritis","Shoulder joint arthritis pattern","Deep shoulder pain, stiffness and crepitus that gradually limit movement.",{loc_shoulder_deep:3,clue_shoulder_crepitus_stiff:6,age_60_plus:3,age_40_59:2,duration_chronic:2},undefined,{onset_trauma:2,age_18_39:2}),
+  C("calcific-tendinopathy","shoulder","Calcific Rotator Cuff Tendinopathy Pattern","Sudden severe shoulder tendon pain","A very painful shoulder episode can occur without major trauma and may severely restrict movement.",{clue_calcific_acute:6,loc_shoulder_lateral:2,onset_no_clear:2,duration_acute:2},"Severe unexplained shoulder pain deserves clinical assessment; imaging may be considered depending on examination findings."),
+  C("suprascapular-neuropathy","shoulder","Suprascapular Neuropathy Pattern","Posterior shoulder nerve-related weakness","Posterior shoulder pain and weakness can occur with repetitive overhead activity and suprascapular nerve involvement.",{clue_posterior_overhead_weak:6,clue_shoulder_weakness:3,loc_shoulder_deep:1},"Neurologic and shoulder examination is recommended before confirming this pattern."),
+
+  C("radial-tunnel","elbow","Radial Tunnel Syndrome Pattern","Outer forearm nerve irritation","Aching pain just below the outer elbow that is aggravated by forearm rotation can fit radial-tunnel-type irritation.",{loc_elbow_lateral:3,clue_radial_tunnel:6,onset_gradual:2},undefined,{clue_ulnar_tingling:2}),
+  C("elbow-ucl","elbow","Ulnar Collateral Ligament Injury Pattern","Throwing-related inner elbow ligament pain","Medial elbow pain during throwing can reflect UCL stress or injury.",{loc_elbow_medial:4,clue_throwing_medial:6,onset_gradual:1,onset_trauma:1},"Throwing athletes with instability or persistent pain should have an in-person sports/orthopaedic assessment."),
+  C("triceps-tendinopathy","elbow","Distal Triceps Tendinopathy","Back-of-elbow triceps tendon pain","Posterior elbow pain linked to pushing and resisted elbow extension can fit distal triceps tendon overload.",{loc_elbow_back:4,clue_triceps_load:6,onset_gradual:2}),
+  C("posterolateral-rotatory-instability","elbow","Posterolateral Rotatory Instability Pattern","Outer elbow instability pattern","Clicking, shifting or giving-way at the outer elbow during pushing can fit an instability pattern.",{loc_elbow_lateral:3,clue_elbow_lateral_instability:7,onset_trauma:1},"Recurrent instability deserves specialist clinical assessment."),
+
+  C("scaphoid-injury","wrist-hand","Scaphoid Injury / Fracture Pattern","Possible thumb-side wrist bone injury","Thumb-side wrist pain with snuffbox tenderness after a fall can indicate a scaphoid injury.",{loc_wrist_thumbside:4,clue_wrist_trauma:3,clue_snuffbox_tender:8,onset_trauma:3},"Prompt in-person assessment and imaging consideration are recommended because scaphoid fractures can be occult."),
+  C("thumb-mcp-ucl","wrist-hand","Thumb MCP UCL Injury (Skier's/Gamekeeper's Thumb) Pattern","Thumb ligament injury","Pain and instability after the thumb is forced away from the hand can fit an ulnar collateral ligament injury.",{loc_thumb_base:3,clue_thumb_forced_out:7,onset_trauma:3},"Marked thumb instability or weakness with pinch should be assessed promptly."),
+  C("intersection-syndrome","wrist-hand","Intersection Syndrome Pattern","Thumb-side dorsal forearm tendon friction","Pain and creaking a few centimetres above the thumb-side wrist can occur with repetitive wrist/thumb loading.",{loc_wrist_thumbside:3,clue_intersection:7,onset_gradual:2}),
+  C("wrist-extensor-tendinopathy","wrist-hand","Wrist Extensor Tendinopathy Pattern","Back-of-wrist tendon overload","Dorsal wrist pain aggravated by repeated extension, gripping or hand weight-bearing can fit extensor tendon overload.",{clue_dorsal_wrist_load:6,onset_gradual:2}),
+
+  C("costochondral-pain","upper-back-ribs","Costochondral / Costosternal Pain Pattern","Tender front-rib/chest-wall pain","Localized pain at a front rib-sternum junction that is reproducible with pressure or movement can be musculoskeletal.",{loc_anterior_rib:5,clue_costosternal_tender:6,clue_deep_breath:1},"Chest symptoms still require appropriate medical screening when features are not clearly musculoskeletal."),
+  C("periscapular-myofascial","upper-back-ribs","Periscapular Myofascial Pain","Shoulder-blade muscle overuse pain","Aching around the shoulder blade that builds with posture or repeated arm use commonly reflects local muscular overload.",{loc_between_blades:3,clue_periscapular_overuse:6,clue_posture:2}),
+  C("thoracic-facet-pattern","upper-back-ribs","Thoracic Facet / Extension-Rotation Pain Pattern","Focused upper-back joint pain","A focal unilateral thoracic pain aggravated by extension/rotation can fit a local joint-mediated pattern.",{loc_thoracic_midline:1,loc_between_blades:2,clue_thoracic_ext_rotate:6,clue_rotation:2}),
+
+  C("lumbar-spondylolysis","low-back","Lumbar Spondylolysis Pattern","Extension-related stress injury pattern","Extension-related low-back pain in a younger active person can raise suspicion of a pars stress injury.",{clue_extension_young_athlete:7,clue_back_extension:3,age_18_39:2,onset_gradual:1},"Persistent extension-related pain in an athlete deserves clinical assessment; imaging may be considered based on examination and duration."),
+  C("spondylolisthesis","low-back","Lumbar Spondylolisthesis Pattern","Vertebral slip-related back pain pattern","Extension-related pain with chronic stiffness or hamstring tightness can be seen with spondylolisthesis.",{clue_hamstring_tight_ext:6,clue_back_extension:3,duration_chronic:2,age_18_39:1,age_40_59:1}),
+  C("lumbar-myofascial","low-back","Lumbar Myofascial / Quadratus Lumborum Pain Pattern","Localized lower-back muscle pain","A focal tender/tight area beside the lower spine that reproduces pain can reflect a local muscular pain pattern.",{loc_lowback_side:3,clue_lowback_tender_side:7,clue_sit_bend:1},undefined,{clue_leg_tingling:2,clue_leg_weakness:3}),
+
+  C("iliopsoas-tendinopathy","hip-groin","Iliopsoas Tendinopathy Pattern","Front hip flexor tendon pain","Anterior hip/groin pain aggravated by repeated hip flexion or resisted knee lifting can fit iliopsoas overload.",{loc_hip_groin:3,clue_iliopsoas_load:7,onset_gradual:2}),
+  C("internal-snapping-hip","hip-groin","Internal Snapping Hip Pattern","Front-of-hip snapping","A reproducible snapping sensation at the front of the hip during movement can be related to iliopsoas mechanics.",{loc_hip_groin:3,clue_internal_snap:7,age_18_39:2}),
+  C("hip-flexor-strain","hip-groin","Hip Flexor Strain","Pulled front-hip muscle","Sudden anterior hip pain during sprinting, kicking or forceful hip flexion can fit a muscle strain.",{loc_hip_groin:3,clue_hip_flexor_sudden:7,onset_trauma:3,duration_acute:1}),
+  C("athletic-pubalgia","hip-groin","Athletic Pubalgia / Groin Pain Pattern","Sport-related deep groin/lower-abdominal pain","Groin or lower-abdominal pain with cutting, sit-ups, coughing or twisting can fit an athletic-pubalgia-type pattern.",{loc_hip_groin:3,clue_pubalgia:7,age_18_39:2,onset_gradual:1},"Groin pain has several possible sources; abdominal, hip and adductor assessment may be needed."),
+
+  C("quadriceps-tendinopathy","knee","Quadriceps Tendinopathy","Above-kneecap tendon pain","Pain just above the kneecap with jumping, squatting or resisted knee extension can fit quadriceps tendon overload.",{loc_knee_front:3,clue_quad_tendon:7,onset_gradual:2}),
+  C("pes-anserine","knee","Pes Anserine Pain / Bursitis Pattern","Inner upper-shin soft-tissue pain","Tender pain on the inner upper shin below the joint line can fit a pes anserine pain pattern.",{loc_knee_medial:3,clue_pes_anserine:7,onset_gradual:2}),
+  C("itb-syndrome","knee","Iliotibial Band Syndrome Pattern","Running-related outer-knee pain","Lateral knee pain that predictably develops during running or cycling can fit ITB-related pain.",{loc_knee_lateral:4,clue_itb_running:7,onset_gradual:2}),
+  C("prepatellar-bursitis","knee","Prepatellar Bursitis","Swelling in front of the kneecap","Localized swelling over the front of the kneecap often follows kneeling, pressure or a direct knock.",{loc_knee_front:3,clue_prepatellar_swelling:8}),
+  C("patellar-instability","knee","Patellar Instability / Prior Dislocation Pattern","Kneecap slipping pattern","A sense that the kneecap shifts sideways, especially after prior dislocation, can fit patellar instability.",{loc_knee_front:3,clue_patella_slip:8,clue_knee_give:2,age_18_39:1},"Recurrent patellar instability should be assessed in person."),
+
+  C("tibialis-anterior-tendinopathy","lower-leg","Tibialis Anterior Tendinopathy Pattern","Front-shin/ankle tendon overload","Pain at the front of the lower leg or ankle aggravated by dorsiflexion and uphill walking can fit tibialis anterior overload.",{loc_outer_leg:1,clue_tib_ant_load:7,onset_gradual:2}),
+  C("soleus-strain","lower-leg","Soleus Muscle Strain Pattern","Deep calf muscle strain","Deep calf pain during running or bent-knee calf loading can fit soleus muscle injury.",{loc_calf:4,clue_soleus_load:7,onset_trauma:1,onset_gradual:1}),
+
+  C("syndesmotic-sprain","ankle-foot","Syndesmotic (High Ankle) Sprain Pattern","High ankle ligament injury","Pain above the ankle joint after an external-rotation mechanism can fit a syndesmotic sprain.",{loc_ankle_lateral:2,clue_high_ankle:8,onset_trauma:3},"High ankle sprains often need in-person assessment because recovery and stability differ from a routine lateral sprain."),
+  C("deltoid-sprain","ankle-foot","Medial Ankle / Deltoid Ligament Sprain Pattern","Inner ankle ligament injury","Medial ankle pain after an eversion mechanism can fit deltoid-ligament injury.",{loc_ankle_medial:4,clue_eversion_injury:8,onset_trauma:3}),
+  C("peroneal-tendinopathy","ankle-foot","Peroneal Tendinopathy Pattern","Outer ankle tendon overload","Pain behind the outer ankle bone aggravated by walking, running or eversion can fit peroneal tendon overload.",{loc_ankle_lateral:4,clue_peroneal_load:7,onset_gradual:2}),
+  C("tarsal-tunnel","ankle-foot","Tarsal Tunnel Syndrome Pattern","Inner ankle nerve irritation","Burning or tingling near the inner ankle spreading into the sole can fit tibial-nerve compression at the tarsal tunnel.",{loc_ankle_medial:3,clue_tarsal_tunnel:8},"Persistent numbness, weakness or progressive symptoms deserve neurologic assessment."),
+  C("turf-toe","ankle-foot","Turf Toe / First MTP Sprain Pattern","Big-toe hyperextension injury","Pain at the big-toe joint after forceful hyperextension can fit a first-MTP sprain.",{loc_bigtoe:5,clue_turf_toe:8,onset_trauma:3}),
+  C("anterior-ankle-impingement","ankle-foot","Anterior Ankle Impingement Pattern","Front ankle pinching","Anterior ankle pinching during deep dorsiflexion, squatting or landing can fit an impingement pattern.",{clue_anterior_impinge:8,onset_gradual:1}),
+  C("posterior-ankle-impingement","ankle-foot","Posterior Ankle Impingement Pattern","Back ankle pinching","Posterior ankle pain aggravated by forced plantarflexion can fit a posterior impingement pattern.",{loc_heel_back:2,clue_posterior_impinge:8,onset_gradual:1}),
+  C("hallux-valgus","ankle-foot","Hallux Valgus (Bunion) Pattern","Bunion-related big-toe pain","A painful prominence at the first MTP with the big toe angling toward the others fits hallux valgus.",{loc_bigtoe:4,clue_bunion:9,duration_chronic:1}),
+  C("plantar-plate-injury","ankle-foot","Plantar Plate Injury Pattern","Forefoot/toe-joint stabilizer injury","Pain under a lesser toe joint with toe drift or instability can fit plantar-plate injury.",{loc_forefoot:4,clue_plantar_plate:8,onset_gradual:1,onset_trauma:1}),
+];
+
+export const allConditionRules: ConditionRule[] = [...conditionRules, ...expandedConditionRules];
+
+export type NeurologicHint = {
+  label: string;
+  detail: string;
+};
+
+export function getNeurologicHint(region: RegionId, selected: Set<string>): NeurologicHint | null {
+  if (region === "neck") {
+    if (selected.has("clue_c6_dist")) return { label: "Possible C6 distribution", detail: "Thumb/index-side sensory symptoms can fit a C6-pattern, but peripheral nerve and local hand causes can overlap." };
+    if (selected.has("clue_c7_dist")) return { label: "Possible C7 distribution", detail: "Middle-finger sensory symptoms can fit a C7-pattern, but this is not enough to identify a nerve root by itself." };
+    if (selected.has("clue_c8_dist")) return { label: "Possible C8/T1 distribution", detail: "Ring/little-finger-side symptoms can overlap with C8/T1 and ulnar-nerve problems, so examination is important." };
+  }
+
+  if (region === "low-back") {
+    if (selected.has("clue_l4_dist")) return { label: "Possible L4 distribution", detail: "Front-knee/medial-shin sensory symptoms can fit an L4-pattern, but clinical neurologic testing is needed." };
+    if (selected.has("clue_l5_dist")) return { label: "Possible L5 distribution", detail: "Outer-leg/top-of-foot or big-toe sensory symptoms can fit an L5-pattern, but clinical neurologic testing is needed." };
+    if (selected.has("clue_s1_dist")) return { label: "Possible S1 distribution", detail: "Posterior-calf/lateral-foot sensory symptoms can fit an S1-pattern, but clinical neurologic testing is needed." };
+  }
+
+  return null;
+}
+
 export const featureLabels = new Map<string, string>([
   ...commonHistoryOptions.age,
   ...commonHistoryOptions.onset,
@@ -445,7 +567,7 @@ export const featureLabels = new Map<string, string>([
 ].map((item) => [item.id, item.label] as const));
 
 export function scoreConditions(region: RegionId, selected: Set<string>) {
-  return conditionRules
+  return allConditionRules
     .filter((condition) => condition.region === region)
     .map((condition) => {
       let score = 0;
