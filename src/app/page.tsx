@@ -207,6 +207,15 @@ export default async function HomePage() {
                 Book Physiotherapy
               </Button>
               <Button
+                href="/symptom-checker"
+                variant="secondary"
+                size="lg"
+                className="bg-teal-300 text-navy-900 hover:bg-teal-200"
+              >
+                <Stethoscope className="h-4 w-4" />
+                Check Symptoms
+              </Button>
+              <Button
                 href="/resources#order-book"
                 variant="secondary"
                 size="lg"
@@ -555,7 +564,7 @@ export default async function HomePage() {
                 Need physiotherapy support?
               </h2>
               <p className="mt-3 max-w-xl text-grey-200">
-                Choose a consultation or request a home visit. Our team confirms availability before care is scheduled.
+                Check your symptoms first, then book a consultation or request a home visit. Our team confirms availability before care is scheduled.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
