@@ -106,7 +106,7 @@ export default function SymptomCheckerPage() {
         <div className="mx-auto mt-5 max-w-5xl">
           <div className="flex items-start gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/90 px-4 py-3.5 text-sm leading-6 text-amber-950 shadow-sm">
             <span className="mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-amber-100 text-amber-700">
-              <AlertTriangle className="h-4.5 w-4.5" />
+              <AlertTriangle className="h-4 w-4" />
             </span>
             <p>
               <strong>Clinical note:</strong> This is a screening tool for adults aged 18+ and does not provide a
