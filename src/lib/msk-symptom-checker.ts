@@ -336,6 +336,7 @@ export const regions: RegionConfig[] = [
       { id: "clue_knee_fibular_head_tender", label: "Very tender directly over the bony bump on the outer upper shin just below the knee", medical: "Fibular-head tenderness" },
       { id: "clue_knee_patella_isolated_tender", label: "The kneecap itself is the main very tender bony spot", medical: "Isolated patellar tenderness" },
       { id: "clue_knee_cant_flex90", label: "I cannot bend the injured knee to about a right angle (90°)" },
+      { id: "clue_knee_no_weight_initial", label: "Immediately after the injury I could not put weight through the leg" },
       { id: "clue_knee_no4steps", label: "I cannot take 4 weight-bearing steps because of the injury" },
       { id: "clue_quad_tendon", label: "Pain is just above the kneecap and worse with jumping, squatting or resisted knee straightening" },
       { id: "clue_pes_anserine", label: "Tender pain is on the inner upper shin a few centimetres below the knee joint" },
@@ -680,6 +681,9 @@ export function getImagingNotice(region: RegionId, selected: Set<string>): Imagi
     }
     if (selected.has("clue_knee_cant_flex90")) {
       criteria.push("Unable to flex the knee to about 90°");
+    }
+    if (selected.has("clue_knee_no_weight_initial")) {
+      criteria.push("Unable to bear weight immediately after the injury");
     }
     if (selected.has("clue_knee_no4steps")) {
       criteria.push("Unable to take 4 weight-bearing steps");
