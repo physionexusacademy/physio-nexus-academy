@@ -3,6 +3,8 @@
   "main": ".open-next/worker.js",
   "name": "physio-nexus-academy",
   "keep_vars": true,
+  "workers_dev": false,
+  "preview_urls": false,
   "compatibility_date": "2026-09-19",
   "compatibility_flags": [
     "nodejs_compat"
