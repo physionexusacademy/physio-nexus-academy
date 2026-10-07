@@ -17,6 +17,7 @@ import {
 import {
   commonHistoryOptions,
   compatibilityLabel,
+  getImagingNotice,
   redFlags,
   regions,
   scoreConditions,
@@ -26,6 +27,18 @@ import {
 type Step = 0 | 1 | 2 | 3 | 4 | 5;
 
 const steps = ["Body area", "Your history", "Pain location", "Symptoms", "Safety check", "Result"];
+
+const traumaOnlyClueIds = new Set([
+  "clue_knee_age55",
+  "clue_knee_fibular_head_tender",
+  "clue_knee_patella_isolated_tender",
+  "clue_knee_cant_flex90",
+  "clue_knee_no4steps",
+  "clue_ankle_no_weight_initial",
+  "clue_ankle_no4steps",
+  "clue_ankle_malleolus_tender",
+  "clue_ankle_hindfoot_tender",
+]);
 
 export function SymptomCheckerClient() {
   const [step, setStep] = useState<Step>(0);
@@ -51,6 +64,19 @@ export function SymptomCheckerClient() {
   const results = useMemo(
     () => (regionId ? scoreConditions(regionId, selectedFeatures) : []),
     [regionId, selectedFeatures],
+  );
+
+  const imagingNotice = useMemo(
+    () => (regionId ? getImagingNotice(regionId, selectedFeatures) : null),
+    [regionId, selectedFeatures],
+  );
+
+  const visibleClues = useMemo(
+    () =>
+      region
+        ? region.clues.filter((item) => onset === "onset_trauma" || !traumaOnlyClueIds.has(item.id))
+        : [],
+    [region, onset],
   );
 
   const selectedFlagObjects = redFlags.filter((flag) => selectedRedFlags.has(flag.id));
@@ -123,9 +149,11 @@ export function SymptomCheckerClient() {
   };
 
   const topResult = results[0];
-  const reason = topResult
-    ? `${region?.label ?? "MSK"} symptoms — screening pattern most compatible with ${topResult.condition.name}. Screening is not a confirmed diagnosis.`
-    : `${region?.label ?? "Musculoskeletal"} symptoms — completed PNA MSK symptom screening; professional assessment requested.`;
+  const reason = imagingNotice
+    ? `${region?.label ?? "MSK"} acute injury — fracture screening suggests in-person assessment / possible radiography before routine MSK diagnosis.`
+    : topResult
+      ? `${region?.label ?? "MSK"} symptoms — screening pattern most compatible with ${topResult.condition.name}. Screening is not a confirmed diagnosis.`
+      : `${region?.label ?? "Musculoskeletal"} symptoms — completed PNA MSK symptom screening; professional assessment requested.`;
 
   const appointmentHref = `/appointment?reason=${encodeURIComponent(reason)}`;
 
@@ -229,7 +257,7 @@ export function SymptomCheckerClient() {
                 Select every option that clearly matches. Leave an option unticked if you are unsure.
               </p>
               <div className="mt-5 grid gap-3">
-                {region.clues.map((item) => {
+                {visibleClues.map((item) => {
                   const checked = clues.has(item.id);
                   return (
                     <label
@@ -362,6 +390,32 @@ export function SymptomCheckerClient() {
                       </p>
                     </div>
                   </div>
+
+                  {imagingNotice ? (
+                    <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 p-5">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="mt-0.5 h-6 w-6 flex-none text-amber-700" />
+                        <div>
+                          <p className="text-xs font-bold uppercase tracking-wider text-amber-800">
+                            Fracture screening
+                          </p>
+                          <h3 className="mt-1 text-lg font-bold text-navy-900">{imagingNotice.title}</h3>
+                          <p className="mt-2 text-sm leading-6 text-navy-700">{imagingNotice.body}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 rounded-xl bg-white/80 p-4">
+                        <p className="text-xs font-bold uppercase tracking-wide text-navy-500">Matched criteria</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-navy-700">
+                          {imagingNotice.criteria.map((criterion) => (
+                            <li key={criterion}>{criterion}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold text-amber-900">
+                        The MSK possibilities below are secondary until a fracture is reasonably excluded.
+                      </p>
+                    </div>
+                  ) : null}
 
                   {results.length > 0 ? (
                     <div className="mt-6 space-y-4">
