@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -74,10 +74,29 @@ export function SymptomCheckerClient() {
   const visibleClues = useMemo(
     () =>
       region
-        ? region.clues.filter((item) => onset === "onset_trauma" || !traumaOnlyClueIds.has(item.id))
+        ? region.clues.filter((item) => {
+            if (traumaOnlyClueIds.has(item.id) && onset !== "onset_trauma") return false;
+            if (item.id === "clue_knee_age55") return age === "age_40_59";
+            return true;
+          })
         : [],
-    [region, onset],
+    [region, onset, age],
   );
+
+  useEffect(() => {
+    if (onset === "onset_trauma") return;
+
+    setClues((current) => {
+      const next = new Set(current);
+      let changed = false;
+
+      traumaOnlyClueIds.forEach((id) => {
+        if (next.delete(id)) changed = true;
+      });
+
+      return changed ? next : current;
+    });
+  }, [onset]);
 
   const selectedFlagObjects = redFlags.filter((flag) => selectedRedFlags.has(flag.id));
   const hasEmergencyFlag = selectedFlagObjects.some((flag) => flag.level === "emergency");
