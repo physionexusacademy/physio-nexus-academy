@@ -29,6 +29,7 @@ const routes = [
   "/clinical-quiz",
   "/research",
   "/patient-services",
+  "/symptom-checker",
   "/appointment",
   "/home-visit",
   "/gallery",

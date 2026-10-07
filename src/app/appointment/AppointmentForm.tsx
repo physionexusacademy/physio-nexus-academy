@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -66,6 +66,14 @@ export function AppointmentForm() {
 
   const appointmentType = watch("appointmentType");
   const preferredTime = watch("preferredTime");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const screeningReason = params.get("reason");
+    if (screeningReason) {
+      setValue("reason", screeningReason, { shouldDirty: false, shouldValidate: true });
+    }
+  }, [setValue]);
 
   const goToDetails = async () => {
     const valid = await trigger(["appointmentType", "preferredDate", "preferredTime"]);

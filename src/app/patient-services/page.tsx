@@ -21,12 +21,18 @@ export default function PatientServicesPage() {
       {
         "@type": "ListItem",
         position: 1,
+        url: "https://physionexusacademy.com/symptom-checker",
+        name: "Musculoskeletal Symptom Checker",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
         url: "https://physionexusacademy.com/appointment",
         name: "Physiotherapy Appointment & Consultation",
       },
       {
         "@type": "ListItem",
-        position: 2,
+        position: 3,
         url: "https://physionexusacademy.com/home-visit",
         name: "Physiotherapy Home Visit Service",
       },
@@ -54,6 +60,7 @@ export default function PatientServicesPage() {
 
       <h2 className="mt-8 text-xl font-bold">Physiotherapy Service Options</h2>
       <ul className="mt-3 list-disc space-y-2 pl-5 text-navy-600">
+        <li>Patient-friendly MSK symptom screening with possible clinical patterns and safety guidance.</li>
         <li>Musculoskeletal (MSK) consultation and guidance.</li>
         <li>In-person consultation requests.</li>
         <li>Home visit requests, where the service is available.</li>
@@ -66,7 +73,8 @@ export default function PatientServicesPage() {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button href="/appointment">Book Appointment</Button>
+        <Button href="/symptom-checker">Check Your Symptoms</Button>
+        <Button href="/appointment" variant="outline">Book Appointment</Button>
         <Button href="/home-visit" variant="outline">
           Request Home Visit
         </Button>
