@@ -62,7 +62,7 @@ const canonicalCases: CanonicalCase[] = [
 
   { id: "lowback-mechanical", region: "low-back", expected: "nonspecific-low-back", selected: [...base("age_40_59","onset_no_clear","duration_subacute"),"loc_lowback_central","clue_sit_bend"] },
   { id: "lowback-radiculopathy-l5", region: "low-back", expected: "lumbar-radiculopathy", selected: [...base("age_40_59","onset_no_clear","duration_subacute","impact_high"),"loc_leg_radiation","clue_leg_tingling","clue_leg_weakness","clue_l5_dist"] },
-  { id: "lowback-disc", region: "low-back", expected: "disc-related-low-back", selected: [...base("age_18_39","onset_no_clear","duration_subacute"),"loc_lowback_central","clue_sit_bend"] },
+  { id: "lowback-disc", region: "low-back", expected: "disc-related-low-back", selected: [...base("age_18_39","onset_no_clear","duration_subacute"),"loc_lowback_central","clue_sit_bend","clue_disc_pressure"] },
   { id: "lowback-stenosis", region: "low-back", expected: "lumbar-stenosis", selected: [...base("age_60_plus","onset_gradual","duration_chronic","impact_high"),"loc_leg_radiation","clue_walk_stand"] },
   { id: "lowback-facet", region: "low-back", expected: "lumbar-facet", selected: [...base("age_40_59","onset_no_clear","duration_chronic"),"loc_lowback_side","clue_back_extension"] },
   { id: "lowback-sij", region: "low-back", expected: "sij-related", selected: [...base("age_40_59","onset_no_clear","duration_subacute"),"loc_buttock","clue_sij_load"] },
