@@ -18,6 +18,7 @@ import {
   commonHistoryOptions,
   compatibilityLabel,
   getImagingNotice,
+  getNeurologicHint,
   redFlags,
   regions,
   scoreConditions,
@@ -68,6 +69,11 @@ export function SymptomCheckerClient() {
 
   const imagingNotice = useMemo(
     () => (regionId ? getImagingNotice(regionId, selectedFeatures) : null),
+    [regionId, selectedFeatures],
+  );
+
+  const neurologicHint = useMemo(
+    () => (regionId ? getNeurologicHint(regionId, selectedFeatures) : null),
     [regionId, selectedFeatures],
   );
 
@@ -409,6 +415,21 @@ export function SymptomCheckerClient() {
                       </p>
                     </div>
                   </div>
+
+                  {neurologicHint ? (
+                    <div className="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-5">
+                      <div className="flex items-start gap-3">
+                        <Info className="mt-0.5 h-5 w-5 flex-none text-sky-700" />
+                        <div>
+                          <p className="text-xs font-bold uppercase tracking-wider text-sky-700">
+                            Nerve distribution hint
+                          </p>
+                          <h3 className="mt-1 text-lg font-bold text-navy-900">{neurologicHint.label}</h3>
+                          <p className="mt-2 text-sm leading-6 text-navy-700">{neurologicHint.detail}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
 
                   {imagingNotice ? (
                     <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 p-5">
