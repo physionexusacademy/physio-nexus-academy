@@ -20,6 +20,7 @@ import {
   getCarePriority,
   getImagingNotice,
   getNeurologicHint,
+  getSafetyDisposition,
   redFlags,
   regions,
   scoreConditions,
@@ -35,6 +36,7 @@ const traumaOnlyClueIds = new Set([
   "clue_knee_fibular_head_tender",
   "clue_knee_patella_isolated_tender",
   "clue_knee_cant_flex90",
+  "clue_knee_no_weight_initial",
   "clue_knee_no4steps",
   "clue_ankle_no_weight_initial",
   "clue_ankle_no4steps",
@@ -108,8 +110,12 @@ export function SymptomCheckerClient() {
 
   const carePriority = useMemo(() => getCarePriority(selectedFeatures), [selectedFeatures]);
 
-  const selectedFlagObjects = redFlags.filter((flag) => selectedRedFlags.has(flag.id));
-  const hasEmergencyFlag = selectedFlagObjects.some((flag) => flag.level === "emergency");
+  const safetyDisposition = useMemo(
+    () => getSafetyDisposition(selectedRedFlags),
+    [selectedRedFlags],
+  );
+  const selectedFlagObjects = safetyDisposition?.flags ?? [];
+  const hasEmergencyFlag = safetyDisposition?.level === "emergency";
 
   const toggleClue = (id: string) => {
     setClues((current) => {
@@ -382,7 +388,7 @@ export function SymptomCheckerClient() {
                       }`} />
                       <div>
                         <h2 className="text-xl font-bold text-navy-900">
-                          {hasEmergencyFlag ? "Emergency medical assessment recommended" : "Urgent medical assessment recommended"}
+                          {safetyDisposition?.title ?? "Medical assessment recommended"}
                         </h2>
                         <p className="mt-2 text-sm leading-6 text-navy-700">
                           The checker has stopped before giving a musculoskeletal differential because one or more safety warnings were selected.

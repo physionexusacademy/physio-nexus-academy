@@ -45,6 +45,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm ci
 
+      - name: Validate MSK screening engine
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:msk
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:

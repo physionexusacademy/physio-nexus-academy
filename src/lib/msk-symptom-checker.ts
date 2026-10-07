@@ -49,6 +49,12 @@ export type ImagingNotice = {
   criteria: string[];
 };
 
+export type SafetyDisposition = {
+  level: "emergency" | "urgent";
+  title: string;
+  flags: RedFlag[];
+};
+
 export const commonHistoryOptions = {
   age: [
     { id: "age_18_39", label: "18–39 years" },
@@ -265,6 +271,7 @@ export const regions: RegionConfig[] = [
       { id: "clue_leg_tingling", label: "Numbness/tingling in the leg or foot" },
       { id: "clue_leg_weakness", label: "Leg/foot feels weak" },
       { id: "clue_sit_bend", label: "Worse with prolonged sitting, bending or lifting" },
+      { id: "clue_disc_pressure", label: "Sitting/bending strongly increases the back pain and coughing or sneezing can also aggravate it", medical: "Disc-related pressure pattern" },
       { id: "clue_walk_stand", label: "Worse with standing/walking and better when sitting/bending forward" },
       { id: "clue_back_extension", label: "Worse with arching backward or prolonged standing" },
       { id: "clue_sij_load", label: "One-sided buttock pain with turning in bed, stairs or single-leg loading" },
@@ -330,6 +337,7 @@ export const regions: RegionConfig[] = [
       { id: "clue_knee_fibular_head_tender", label: "Very tender directly over the bony bump on the outer upper shin just below the knee", medical: "Fibular-head tenderness" },
       { id: "clue_knee_patella_isolated_tender", label: "The kneecap itself is the main very tender bony spot", medical: "Isolated patellar tenderness" },
       { id: "clue_knee_cant_flex90", label: "I cannot bend the injured knee to about a right angle (90°)" },
+      { id: "clue_knee_no_weight_initial", label: "Immediately after the injury I could not put weight through the leg" },
       { id: "clue_knee_no4steps", label: "I cannot take 4 weight-bearing steps because of the injury" },
       { id: "clue_quad_tendon", label: "Pain is just above the kneecap and worse with jumping, squatting or resisted knee straightening" },
       { id: "clue_pes_anserine", label: "Tender pain is on the inner upper shin a few centimetres below the knee joint" },
@@ -431,7 +439,7 @@ export const conditionRules: ConditionRule[] = [
 
   C("lateral-epicondylalgia","elbow","Lateral Epicondylalgia (Tennis Elbow)","Outer elbow tendon pain","Outer elbow pain with gripping and lifting.",{loc_elbow_lateral:5,clue_grip:4,onset_gradual:2}),
   C("medial-epicondylalgia","elbow","Medial Epicondylalgia (Golfer's Elbow)","Inner elbow tendon pain","Inner elbow pain aggravated by gripping, wrist flexion or throwing.",{loc_elbow_medial:5,clue_wrist_flex_load:4,onset_gradual:2}),
-  C("cubital-tunnel","elbow","Cubital Tunnel Syndrome","Ulnar nerve irritation at the elbow","Inner elbow symptoms with numbness/tingling into the ring and little fingers.",{loc_elbow_medial:2,clue_ulnar_tingling:5}),
+  C("cubital-tunnel","elbow","Cubital Tunnel Syndrome","Ulnar nerve irritation at the elbow","Inner elbow symptoms with numbness/tingling into the ring and little fingers.",{loc_elbow_medial:2,clue_ulnar_tingling:7,duration_chronic:1},undefined,{clue_wrist_flex_load:2}),
   C("olecranon-bursitis","elbow","Olecranon Bursitis","Swollen elbow-tip bursa","Localized swelling over the tip of the elbow, sometimes after pressure or a knock.",{loc_elbow_back:4,clue_elbow_swelling:5}),
   C("distal-biceps-injury","elbow","Distal Biceps Tendon Injury","Front elbow biceps tendon injury","Sudden front-of-elbow pain, bruising or weakness after a forceful lift.",{loc_elbow_front:4,clue_sudden_pop_elbow:5,onset_trauma:3},"Prompt assessment is recommended for suspected tendon rupture."),
   C("elbow-oa","elbow","Elbow Osteoarthritis Pattern","Degenerative elbow stiffness","Gradual elbow pain and stiffness, usually with reduced movement.",{clue_elbow_stiff:4,duration_chronic:2,age_40_59:2,age_60_plus:3}),
@@ -451,7 +459,7 @@ export const conditionRules: ConditionRule[] = [
 
   C("nonspecific-low-back","low-back","Non-Specific Mechanical Low Back Pain","Common lower-back pain","Localized back pain influenced by movement, lifting, posture or activity without clear nerve features.",{loc_lowback_central:2,loc_lowback_side:2,clue_sit_bend:3,onset_no_clear:1,onset_gradual:1},"A physiotherapy assessment can identify movement and load factors."),
   C("lumbar-radiculopathy","low-back","Lumbar Radiculopathy / Sciatica Pattern","Lower-back nerve irritation","Back-to-leg pain with numbness, tingling and/or weakness.",{loc_leg_radiation:4,clue_leg_tingling:4,clue_leg_weakness:3,clue_l4_dist:2,clue_l5_dist:2,clue_s1_dist:2}),
-  C("disc-related-low-back","low-back","Lumbar Disc-Related Pain Pattern","Disc-related lower-back pattern","Back pain commonly aggravated by sitting, bending or lifting, sometimes with leg symptoms.",{clue_sit_bend:4,loc_lowback_central:2,loc_leg_radiation:1,age_18_39:1,age_40_59:1}),
+  C("disc-related-low-back","low-back","Lumbar Disc-Related Pain Pattern","Disc-related lower-back pattern","Back pain commonly aggravated by sitting, bending or lifting, sometimes with leg symptoms.",{clue_sit_bend:2,clue_disc_pressure:5,loc_lowback_central:2,loc_leg_radiation:1,age_18_39:1,age_40_59:1}),
   C("lumbar-stenosis","low-back","Lumbar Spinal Stenosis Pattern","Walking/standing-related nerve pain","Leg/back symptoms that build with standing or walking and ease with sitting or bending forward.",{clue_walk_stand:5,age_60_plus:4,duration_chronic:2,loc_leg_radiation:2}),
   C("lumbar-facet","low-back","Lumbar Facet / Extension-Related Pain Pattern","Back pain worse with arching/standing","Localized low-back pain aggravated by extension or prolonged standing.",{clue_back_extension:4,loc_lowback_side:2,age_40_59:1,age_60_plus:1}),
   C("sij-related","low-back","Sacroiliac Joint-Related Pain Pattern","One-sided buttock/pelvic load pain","Pain around one buttock/posterior pelvis aggravated by transfers, stairs or single-leg loading.",{loc_buttock:4,clue_sij_load:5}),
@@ -460,7 +468,7 @@ export const conditionRules: ConditionRule[] = [
   C("hip-oa","hip-groin","Hip Osteoarthritis","Hip arthritis pattern","Groin/anterior hip pain with stiffness and difficulty with shoes, socks or walking.",{loc_hip_groin:4,clue_hip_stiff:5,age_60_plus:4,age_40_59:2,duration_chronic:2},undefined,{age_18_39:3,onset_trauma:2,duration_acute:2}),
   C("gtps","hip-groin","Greater Trochanteric Pain Syndrome / Gluteal Tendinopathy","Outer hip tendon pain","Pain over the outer hip, often worse lying on that side, walking or stairs.",{loc_hip_lateral:5,clue_hip_side_sleep:5,onset_gradual:2}),
   C("fai","hip-groin","Femoroacetabular Impingement Syndrome Pattern","Hip impingement-type pattern","Groin pain provoked by deep hip flexion, squatting or pivoting.",{loc_hip_groin:4,clue_hip_flex_rotate:5,age_18_39:2,age_40_59:1}),
-  C("hip-labral","hip-groin","Hip Labral Injury Pattern","Deep hip clicking/catching pattern","Deep groin pain with clicking/catching, often during flexion/rotation or sport.",{loc_hip_groin:3,clue_hip_click:5,clue_hip_flex_rotate:2}),
+  C("hip-labral","hip-groin","Hip Labral Injury Pattern","Deep hip clicking/catching pattern","Deep groin pain with clicking/catching, often during flexion/rotation or sport.",{loc_hip_groin:3,clue_hip_click:6,clue_hip_flex_rotate:2,onset_trauma:2}),
   C("adductor-strain","hip-groin","Adductor Strain / Tendinopathy","Inner-thigh/groin muscle pain","Groin pain linked to running, cutting, kicking or resisted adduction.",{loc_hip_groin:3,clue_adductor:5,onset_trauma:1,onset_gradual:1}),
   C("proximal-hamstring","hip-groin","Proximal Hamstring Tendinopathy","Upper hamstring / sit-bone tendon pain","Pain near the sit-bone with running, hinging or prolonged sitting.",{loc_hamstring_origin:5,clue_hamstring_sit:5,onset_gradual:2}),
   C("deep-gluteal","hip-groin","Deep Gluteal / Sciatic Nerve Irritation Pattern","Buttock-related sciatic irritation","Deep buttock pain with possible tingling down the leg.",{loc_hip_buttock:4,clue_buttock_sciatic:5}),
@@ -642,6 +650,21 @@ export function getCarePriority(selected: Set<string>) {
 }
 
 
+export function getSafetyDisposition(selected: Set<string>): SafetyDisposition | null {
+  const flags = redFlags.filter((flag) => selected.has(flag.id));
+  if (flags.length === 0) return null;
+
+  const emergency = flags.some((flag) => flag.level === "emergency");
+
+  return {
+    level: emergency ? "emergency" : "urgent",
+    title: emergency
+      ? "Emergency medical assessment recommended"
+      : "Urgent medical assessment recommended",
+    flags,
+  };
+}
+
 export function getImagingNotice(region: RegionId, selected: Set<string>): ImagingNotice | null {
   if (!selected.has("onset_trauma")) return null;
 
@@ -659,6 +682,9 @@ export function getImagingNotice(region: RegionId, selected: Set<string>): Imagi
     }
     if (selected.has("clue_knee_cant_flex90")) {
       criteria.push("Unable to flex the knee to about 90°");
+    }
+    if (selected.has("clue_knee_no_weight_initial")) {
+      criteria.push("Unable to bear weight immediately after the injury");
     }
     if (selected.has("clue_knee_no4steps")) {
       criteria.push("Unable to take 4 weight-bearing steps");
