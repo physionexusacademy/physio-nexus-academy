@@ -205,6 +205,7 @@ export const regions: RegionConfig[] = [
       { id: "loc_wrist_thumbside", label: "Thumb-side of wrist" },
       { id: "loc_palm_median", label: "Thumb, index, middle fingers / palm side" },
       { id: "loc_wrist_ulnar", label: "Little-finger side of wrist" },
+      { id: "loc_wrist_dorsal", label: "Back of wrist" },
       { id: "loc_thumb_base", label: "Base of thumb" },
       { id: "loc_finger", label: "A finger / finger tendon" },
     ],
@@ -341,6 +342,7 @@ export const regions: RegionConfig[] = [
       { id: "loc_shin_medial", label: "Inner border of shin" },
       { id: "loc_shin_focal", label: "One small focal spot on the shin bone" },
       { id: "loc_calf", label: "Calf muscle" },
+      { id: "loc_shin_front", label: "Front of shin / front of lower leg" },
       { id: "loc_outer_leg", label: "Outer lower leg" },
     ],
     clues: [
@@ -364,6 +366,7 @@ export const regions: RegionConfig[] = [
       { id: "loc_heel_back", label: "Back of heel / Achilles tendon" },
       { id: "loc_heel_bottom", label: "Bottom of heel" },
       { id: "loc_ankle_medial", label: "Inner ankle / arch" },
+      { id: "loc_ankle_front", label: "Front of ankle" },
       { id: "loc_forefoot", label: "Ball of foot / forefoot" },
       { id: "loc_bigtoe", label: "Big toe joint" },
     ],
@@ -415,7 +418,7 @@ export const conditionRules: ConditionRule[] = [
 
   C("rotator-cuff-related","shoulder","Rotator Cuff-Related Shoulder Pain","Common shoulder tendon pain","Outer shoulder/upper-arm pain aggravated by lifting or overhead activity.",{loc_shoulder_lateral:3,clue_overhead:3,clue_painful_arc:3,onset_gradual:2}),
   C("rotator-cuff-tear","shoulder","Rotator Cuff Tear Pattern","Possible shoulder tendon tear","Shoulder pain with notable weakness, particularly after trauma or in older adults.",{clue_shoulder_weakness:4,onset_trauma:2,age_60_plus:2,loc_shoulder_lateral:2,clue_overhead:1},"Prompt assessment is recommended if weakness followed an injury."),
-  C("adhesive-capsulitis","shoulder","Adhesive Capsulitis (Frozen Shoulder)","Frozen shoulder pattern","Progressive pain and marked stiffness in several shoulder directions.",{clue_shoulder_stiff_all:5,duration_chronic:2,age_40_59:2,age_60_plus:1}),
+  C("adhesive-capsulitis","shoulder","Adhesive Capsulitis (Frozen Shoulder)","Frozen shoulder pattern","Progressive pain and marked stiffness in several shoulder directions.",{clue_shoulder_stiff_all:5,duration_chronic:2,age_40_59:2,age_60_plus:1},undefined,{onset_trauma:2,age_18_39:2}),
   C("ac-joint-pain","shoulder","Acromioclavicular Joint Pain","Top-of-shoulder joint pain","Pain focused over the top of the shoulder, often aggravated by cross-body movement.",{loc_shoulder_top:4,clue_cross_body:4,onset_trauma:1}),
   C("shoulder-instability","shoulder","Glenohumeral Instability","Shoulder slipping/giving-way pattern","A sense of slipping, apprehension or repeated instability, commonly after dislocation/subluxation.",{clue_instability:5,onset_trauma:2,age_18_39:2}),
   C("long-head-biceps","shoulder","Long-Head Biceps Tendinopathy","Front shoulder biceps tendon pain","Front shoulder pain aggravated by lifting/carrying or biceps loading.",{loc_shoulder_front:4,clue_biceps_load:4,onset_gradual:2}),
@@ -428,7 +431,7 @@ export const conditionRules: ConditionRule[] = [
   C("distal-biceps-injury","elbow","Distal Biceps Tendon Injury","Front elbow biceps tendon injury","Sudden front-of-elbow pain, bruising or weakness after a forceful lift.",{loc_elbow_front:4,clue_sudden_pop_elbow:5,onset_trauma:3},"Prompt assessment is recommended for suspected tendon rupture."),
   C("elbow-oa","elbow","Elbow Osteoarthritis Pattern","Degenerative elbow stiffness","Gradual elbow pain and stiffness, usually with reduced movement.",{clue_elbow_stiff:4,duration_chronic:2,age_40_59:2,age_60_plus:3}),
 
-  C("carpal-tunnel","wrist-hand","Carpal Tunnel Syndrome","Median nerve compression at the wrist","Night-time tingling/numbness in the thumb, index and middle fingers, sometimes relieved by shaking the hand.",{loc_palm_median:4,clue_night_tingling:4,clue_shake_hand:3,clue_hand_weakness:1}),
+  C("carpal-tunnel","wrist-hand","Carpal Tunnel Syndrome","Median nerve compression at the wrist","Night-time tingling/numbness in the thumb, index and middle fingers, sometimes relieved by shaking the hand.",{loc_palm_median:4,clue_night_tingling:4,clue_shake_hand:3,clue_hand_weakness:1},undefined,{onset_trauma:2}),
   C("de-quervain","wrist-hand","De Quervain Tenosynovitis","Thumb-side wrist tendon irritation","Thumb-side wrist pain aggravated by thumb movement, gripping or lifting.",{loc_wrist_thumbside:5,clue_thumb_motion:4,onset_gradual:2}),
   C("thumb-cmc-oa","wrist-hand","Thumb CMC Osteoarthritis","Base-of-thumb arthritis pattern","Pain and stiffness at the base of the thumb, often with pinch/grip tasks.",{loc_thumb_base:5,age_40_59:2,age_60_plus:3,duration_chronic:2}),
   C("trigger-finger","wrist-hand","Trigger Finger","Finger locking/catching","A finger catches, clicks or locks during flexion/extension.",{loc_finger:3,clue_triggering:6}),
@@ -449,7 +452,7 @@ export const conditionRules: ConditionRule[] = [
   C("sij-related","low-back","Sacroiliac Joint-Related Pain Pattern","One-sided buttock/pelvic load pain","Pain around one buttock/posterior pelvis aggravated by transfers, stairs or single-leg loading.",{loc_buttock:4,clue_sij_load:5}),
   C("inflammatory-back-pattern","low-back","Inflammatory Back Pain Pattern","Back pain that may need medical review","Persistent back pain with prolonged morning stiffness and improvement with movement can suggest an inflammatory pattern.",{clue_morning_30:5,duration_chronic:2,age_18_39:2},"Discuss this pattern with a clinician; medical review may be appropriate."),
 
-  C("hip-oa","hip-groin","Hip Osteoarthritis","Hip arthritis pattern","Groin/anterior hip pain with stiffness and difficulty with shoes, socks or walking.",{loc_hip_groin:4,clue_hip_stiff:5,age_60_plus:4,age_40_59:2,duration_chronic:2}),
+  C("hip-oa","hip-groin","Hip Osteoarthritis","Hip arthritis pattern","Groin/anterior hip pain with stiffness and difficulty with shoes, socks or walking.",{loc_hip_groin:4,clue_hip_stiff:5,age_60_plus:4,age_40_59:2,duration_chronic:2},undefined,{age_18_39:3,onset_trauma:2,duration_acute:2}),
   C("gtps","hip-groin","Greater Trochanteric Pain Syndrome / Gluteal Tendinopathy","Outer hip tendon pain","Pain over the outer hip, often worse lying on that side, walking or stairs.",{loc_hip_lateral:5,clue_hip_side_sleep:5,onset_gradual:2}),
   C("fai","hip-groin","Femoroacetabular Impingement Syndrome Pattern","Hip impingement-type pattern","Groin pain provoked by deep hip flexion, squatting or pivoting.",{loc_hip_groin:4,clue_hip_flex_rotate:5,age_18_39:2,age_40_59:1}),
   C("hip-labral","hip-groin","Hip Labral Injury Pattern","Deep hip clicking/catching pattern","Deep groin pain with clicking/catching, often during flexion/rotation or sport.",{loc_hip_groin:3,clue_hip_click:5,clue_hip_flex_rotate:2}),
@@ -457,8 +460,8 @@ export const conditionRules: ConditionRule[] = [
   C("proximal-hamstring","hip-groin","Proximal Hamstring Tendinopathy","Upper hamstring / sit-bone tendon pain","Pain near the sit-bone with running, hinging or prolonged sitting.",{loc_hamstring_origin:5,clue_hamstring_sit:5,onset_gradual:2}),
   C("deep-gluteal","hip-groin","Deep Gluteal / Sciatic Nerve Irritation Pattern","Buttock-related sciatic irritation","Deep buttock pain with possible tingling down the leg.",{loc_hip_buttock:4,clue_buttock_sciatic:5}),
 
-  C("patellofemoral-pain","knee","Patellofemoral Pain","Kneecap-related pain","Front-of-knee pain aggravated by stairs, squats, running or prolonged sitting.",{loc_knee_front:5,clue_stairs_squat:5,age_18_39:2,onset_gradual:2}),
-  C("knee-oa","knee","Knee Osteoarthritis","Knee arthritis pattern","Gradual knee pain and stiffness with walking and daily activity, more common with age.",{clue_knee_stiff_age:5,age_60_plus:4,age_40_59:2,duration_chronic:2}),
+  C("patellofemoral-pain","knee","Patellofemoral Pain","Kneecap-related pain","Front-of-knee pain aggravated by stairs, squats, running or prolonged sitting.",{loc_knee_front:5,clue_stairs_squat:5,age_18_39:2,onset_gradual:2},undefined,{clue_locking:2,clue_pivot_pop:2}),
+  C("knee-oa","knee","Knee Osteoarthritis","Knee arthritis pattern","Gradual knee pain and stiffness with walking and daily activity, more common with age.",{clue_knee_stiff_age:5,age_60_plus:4,age_40_59:2,duration_chronic:2},undefined,{age_18_39:3,onset_trauma:2,duration_acute:2}),
   C("meniscal-injury","knee","Meniscal Injury Pattern","Knee cartilage/meniscus injury","Joint-line pain with swelling, catching or locking, often after twisting.",{loc_knee_jointline:4,clue_locking:4,clue_knee_swelling:2,onset_trauma:2,clue_pivot_pop:1}),
   C("acl-injury","knee","ACL Injury Pattern","Major knee stabilizing ligament injury","Pivot injury with pop, early swelling and instability/giving way.",{clue_pivot_pop:5,clue_knee_give:4,clue_knee_swelling:3,onset_trauma:3},"Prompt sports/orthopaedic or physiotherapy assessment is recommended."),
   C("mcl-sprain","knee","MCL Sprain Pattern","Inner-knee ligament sprain","Medial knee pain after a force pushing the knee inward.",{loc_knee_medial:4,clue_valgus_injury:5,onset_trauma:3}),
@@ -473,10 +476,10 @@ export const conditionRules: ConditionRule[] = [
   C("exertional-compartment","lower-leg","Chronic Exertional Compartment Syndrome Pattern","Exercise-induced lower-leg pressure pattern","Tightness/pain that predictably develops during exercise and settles after stopping.",{clue_exertional_tight:6,clue_running_load:3}),
   C("common-peroneal-nerve","lower-leg","Common Peroneal Nerve Irritation Pattern","Outer-leg nerve problem","Outer-leg/top-of-foot numbness with possible foot-drop weakness.",{loc_outer_leg:3,clue_foot_drop:6},"Weakness such as foot drop deserves prompt clinical assessment."),
 
-  C("lateral-ankle-sprain","ankle-foot","Lateral Ankle Sprain","Rolled ankle ligament injury","Outer-ankle pain and swelling after an inversion/rolling injury.",{loc_ankle_lateral:5,clue_inversion:6,onset_trauma:3}),
-  C("achilles-tendinopathy","ankle-foot","Achilles Tendinopathy","Achilles tendon overload pain","Load-related pain at the back of the heel/Achilles during running, stairs or calf raises.",{loc_heel_back:5,clue_achilles_load:5,onset_gradual:2}),
+  C("lateral-ankle-sprain","ankle-foot","Lateral Ankle Sprain","Rolled ankle ligament injury","Outer-ankle pain and swelling after an inversion/rolling injury.",{loc_ankle_lateral:5,clue_inversion:6,onset_trauma:3},undefined,{onset_gradual:3}),
+  C("achilles-tendinopathy","ankle-foot","Achilles Tendinopathy","Achilles tendon overload pain","Load-related pain at the back of the heel/Achilles during running, stairs or calf raises.",{loc_heel_back:5,clue_achilles_load:5,onset_gradual:2},undefined,{clue_achilles_pop:5,onset_trauma:2}),
   C("achilles-rupture","ankle-foot","Achilles Tendon Rupture Pattern","Possible Achilles tendon rupture","Sudden pop or kick-like sensation with major loss of push-off strength.",{loc_heel_back:4,clue_achilles_pop:7,onset_trauma:3},"Urgent in-person assessment is recommended for a suspected Achilles rupture."),
-  C("plantar-heel-pain","ankle-foot","Plantar Heel Pain / Plantar Fasciopathy","Bottom-of-heel first-step pain","Heel pain that is typically worst with the first steps after rest and during prolonged weight-bearing.",{loc_heel_bottom:5,clue_first_steps:6,onset_gradual:2}),
+  C("plantar-heel-pain","ankle-foot","Plantar Heel Pain / Plantar Fasciopathy","Bottom-of-heel first-step pain","Heel pain that is typically worst with the first steps after rest and during prolonged weight-bearing.",{loc_heel_bottom:5,clue_first_steps:6,onset_gradual:2},undefined,{onset_trauma:3,clue_foot_focal_bone:2}),
   C("posterior-tibial-tendon","ankle-foot","Posterior Tibial Tendon Dysfunction Pattern","Inner-ankle/arch tendon problem","Medial ankle/arch pain with prolonged walking and possible progressive flattening of the arch.",{loc_ankle_medial:5,clue_medial_arch:6,onset_gradual:2}),
   C("mortons-neuroma","ankle-foot","Morton's Neuroma Pattern","Forefoot nerve irritation","Burning/tingling forefoot pain between the toes, often worse in tight shoes.",{loc_forefoot:4,clue_forefoot_burning:6}),
   C("metatarsalgia","ankle-foot","Metatarsalgia Pattern","Ball-of-foot load pain","Pain under the forefoot with standing, walking or running.",{loc_forefoot:5,clue_forefoot_load:5,onset_gradual:2}),
@@ -501,7 +504,7 @@ export const expandedConditionRules: ConditionRule[] = [
   C("scaphoid-injury","wrist-hand","Scaphoid Injury / Fracture Pattern","Possible thumb-side wrist bone injury","Thumb-side wrist pain with snuffbox tenderness after a fall can indicate a scaphoid injury.",{loc_wrist_thumbside:4,clue_wrist_trauma:3,clue_snuffbox_tender:8,onset_trauma:3},"Prompt in-person assessment and imaging consideration are recommended because scaphoid fractures can be occult."),
   C("thumb-mcp-ucl","wrist-hand","Thumb MCP UCL Injury (Skier's/Gamekeeper's Thumb) Pattern","Thumb ligament injury","Pain and instability after the thumb is forced away from the hand can fit an ulnar collateral ligament injury.",{loc_thumb_base:3,clue_thumb_forced_out:7,onset_trauma:3},"Marked thumb instability or weakness with pinch should be assessed promptly."),
   C("intersection-syndrome","wrist-hand","Intersection Syndrome Pattern","Thumb-side dorsal forearm tendon friction","Pain and creaking a few centimetres above the thumb-side wrist can occur with repetitive wrist/thumb loading.",{loc_wrist_thumbside:3,clue_intersection:7,onset_gradual:2}),
-  C("wrist-extensor-tendinopathy","wrist-hand","Wrist Extensor Tendinopathy Pattern","Back-of-wrist tendon overload","Dorsal wrist pain aggravated by repeated extension, gripping or hand weight-bearing can fit extensor tendon overload.",{clue_dorsal_wrist_load:6,onset_gradual:2}),
+  C("wrist-extensor-tendinopathy","wrist-hand","Wrist Extensor Tendinopathy Pattern","Back-of-wrist tendon overload","Dorsal wrist pain aggravated by repeated extension, gripping or hand weight-bearing can fit extensor tendon overload.",{loc_wrist_dorsal:4,clue_dorsal_wrist_load:6,onset_gradual:2},undefined,{onset_trauma:2}),
 
   C("costochondral-pain","upper-back-ribs","Costochondral / Costosternal Pain Pattern","Tender front-rib/chest-wall pain","Localized pain at a front rib-sternum junction that is reproducible with pressure or movement can be musculoskeletal.",{loc_anterior_rib:5,clue_costosternal_tender:6,clue_deep_breath:1},"Chest symptoms still require appropriate medical screening when features are not clearly musculoskeletal."),
   C("periscapular-myofascial","upper-back-ribs","Periscapular Myofascial Pain","Shoulder-blade muscle overuse pain","Aching around the shoulder blade that builds with posture or repeated arm use commonly reflects local muscular overload.",{loc_between_blades:3,clue_periscapular_overuse:6,clue_posture:2}),
@@ -522,7 +525,7 @@ export const expandedConditionRules: ConditionRule[] = [
   C("prepatellar-bursitis","knee","Prepatellar Bursitis","Swelling in front of the kneecap","Localized swelling over the front of the kneecap often follows kneeling, pressure or a direct knock.",{loc_knee_front:3,clue_prepatellar_swelling:8}),
   C("patellar-instability","knee","Patellar Instability / Prior Dislocation Pattern","Kneecap slipping pattern","A sense that the kneecap shifts sideways, especially after prior dislocation, can fit patellar instability.",{loc_knee_front:3,clue_patella_slip:8,clue_knee_give:2,age_18_39:1},"Recurrent patellar instability should be assessed in person."),
 
-  C("tibialis-anterior-tendinopathy","lower-leg","Tibialis Anterior Tendinopathy Pattern","Front-shin/ankle tendon overload","Pain at the front of the lower leg or ankle aggravated by dorsiflexion and uphill walking can fit tibialis anterior overload.",{loc_outer_leg:1,clue_tib_ant_load:7,onset_gradual:2}),
+  C("tibialis-anterior-tendinopathy","lower-leg","Tibialis Anterior Tendinopathy Pattern","Front-shin/ankle tendon overload","Pain at the front of the lower leg or ankle aggravated by dorsiflexion and uphill walking can fit tibialis anterior overload.",{loc_shin_front:4,clue_tib_ant_load:7,onset_gradual:2},undefined,{onset_trauma:2}),
   C("soleus-strain","lower-leg","Soleus Muscle Strain Pattern","Deep calf muscle strain","Deep calf pain during running or bent-knee calf loading can fit soleus muscle injury.",{loc_calf:4,clue_soleus_load:7,onset_trauma:1,onset_gradual:1}),
 
   C("syndesmotic-sprain","ankle-foot","Syndesmotic (High Ankle) Sprain Pattern","High ankle ligament injury","Pain above the ankle joint after an external-rotation mechanism can fit a syndesmotic sprain.",{loc_ankle_lateral:2,clue_high_ankle:8,onset_trauma:3},"High ankle sprains often need in-person assessment because recovery and stability differ from a routine lateral sprain."),
@@ -530,7 +533,7 @@ export const expandedConditionRules: ConditionRule[] = [
   C("peroneal-tendinopathy","ankle-foot","Peroneal Tendinopathy Pattern","Outer ankle tendon overload","Pain behind the outer ankle bone aggravated by walking, running or eversion can fit peroneal tendon overload.",{loc_ankle_lateral:4,clue_peroneal_load:7,onset_gradual:2}),
   C("tarsal-tunnel","ankle-foot","Tarsal Tunnel Syndrome Pattern","Inner ankle nerve irritation","Burning or tingling near the inner ankle spreading into the sole can fit tibial-nerve compression at the tarsal tunnel.",{loc_ankle_medial:3,clue_tarsal_tunnel:8},"Persistent numbness, weakness or progressive symptoms deserve neurologic assessment."),
   C("turf-toe","ankle-foot","Turf Toe / First MTP Sprain Pattern","Big-toe hyperextension injury","Pain at the big-toe joint after forceful hyperextension can fit a first-MTP sprain.",{loc_bigtoe:5,clue_turf_toe:8,onset_trauma:3}),
-  C("anterior-ankle-impingement","ankle-foot","Anterior Ankle Impingement Pattern","Front ankle pinching","Anterior ankle pinching during deep dorsiflexion, squatting or landing can fit an impingement pattern.",{clue_anterior_impinge:8,onset_gradual:1}),
+  C("anterior-ankle-impingement","ankle-foot","Anterior Ankle Impingement Pattern","Front ankle pinching","Anterior ankle pinching during deep dorsiflexion, squatting or landing can fit an impingement pattern.",{loc_ankle_front:4,clue_anterior_impinge:8,onset_gradual:1}),
   C("posterior-ankle-impingement","ankle-foot","Posterior Ankle Impingement Pattern","Back ankle pinching","Posterior ankle pain aggravated by forced plantarflexion can fit a posterior impingement pattern.",{loc_heel_back:2,clue_posterior_impinge:8,onset_gradual:1}),
   C("hallux-valgus","ankle-foot","Hallux Valgus (Bunion) Pattern","Bunion-related big-toe pain","A painful prominence at the first MTP with the big toe angling toward the others fits hallux valgus.",{loc_bigtoe:4,clue_bunion:9,duration_chronic:1}),
   C("plantar-plate-injury","ankle-foot","Plantar Plate Injury Pattern","Forefoot/toe-joint stabilizer injury","Pain under a lesser toe joint with toe drift or instability can fit plantar-plate injury.",{loc_forefoot:4,clue_plantar_plate:8,onset_gradual:1,onset_trauma:1}),
@@ -572,6 +575,7 @@ export function scoreConditions(region: RegionId, selected: Set<string>) {
     .map((condition) => {
       let score = 0;
       const matches: string[] = [];
+      const contradictions: string[] = [];
 
       for (const [feature, weight] of Object.entries(condition.weights)) {
         if (selected.has(feature)) {
@@ -582,10 +586,19 @@ export function scoreConditions(region: RegionId, selected: Set<string>) {
       }
 
       for (const [feature, penalty] of Object.entries(condition.penalties ?? {})) {
-        if (selected.has(feature)) score -= penalty;
+        if (selected.has(feature)) {
+          score -= penalty;
+          const label = featureLabels.get(feature);
+          if (label && !contradictions.includes(label)) contradictions.push(label);
+        }
       }
 
-      return { condition, score, matches: matches.slice(0, 4) };
+      return {
+        condition,
+        score,
+        matches: matches.slice(0, 4),
+        contradictions: contradictions.slice(0, 3),
+      };
     })
     .filter((result) => result.score >= 3)
     .sort((a, b) => b.score - a.score)
