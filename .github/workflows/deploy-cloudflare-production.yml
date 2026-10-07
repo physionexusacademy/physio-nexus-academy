@@ -65,3 +65,31 @@ jobs:
         run: |
           npx wrangler whoami
           npm run deploy
+
+      - name: Smoke test production
+        if: steps.auth.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          check_url() {
+            local url="$1"
+            local marker="$2"
+
+            for attempt in 1 2 3 4 5 6; do
+              body="$(curl -fsSL --connect-timeout 10 --max-time 30 "$url?deploy=${GITHUB_SHA}" || true)"
+              if printf '%s' "$body" | grep -Fq "$marker"; then
+                echo "Smoke test passed: $url"
+                return 0
+              fi
+
+              echo "Smoke test attempt $attempt failed for $url"
+              sleep 5
+            done
+
+            echo "Smoke test failed: $url did not contain expected marker: $marker"
+            return 1
+          }
+
+          check_url "https://physionexusacademy.com/" "Check Symptoms"
+          check_url "https://physionexusacademy.com/symptom-checker" "Musculoskeletal Symptom Checker"
