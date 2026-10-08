@@ -11,11 +11,12 @@ import {
   manualTherapyFamilies,
   manualTherapyTechniques,
 } from "@/lib/all-manual-therapy";
+import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 
 export const metadata: Metadata = {
   title: "Manual Therapy Mastery",
   description:
-    "Study manual therapy systems, science, technique selection, dosage, safety, procedures and clinical reasoning with Physio Nexus Academy.",
+    "Explore 22 manual therapy techniques through memorable clinical stories, clear science, practical application, and safety-first reasoning with Physio Nexus Academy.",
   alternates: {
     canonical: "https://physionexusacademy.com/manual-therapy",
   },
@@ -33,9 +34,9 @@ export default function ManualTherapyPage() {
             Manual Therapy Mastery
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-violet-50 sm:text-lg">
-            Learn the science, reasoning, patient and therapist setup, force direction,
-            dosage, indications, precautions, contraindications and reassessment logic
-            behind major manual-therapy approaches used in physiotherapy.
+            Every technique begins with a clinical mystery. Meet the patient, question the first
+            assumption, understand what might be happening, and follow the reasoning all the
+            way from the first examination to the final reassessment.
           </p>
           <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
             <span className="rounded-full bg-white/10 px-4 py-2">
@@ -54,26 +55,26 @@ export default function ManualTherapyPage() {
       <section className="mt-8 grid gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-violet-100 bg-violet-50 p-5">
           <Brain className="h-6 w-6 text-violet-700" />
-          <h2 className="mt-3 font-bold text-navy-800">Understand the science</h2>
+          <h2 className="mt-3 font-bold text-navy-800">Follow the clinical mystery</h2>
           <p className="mt-2 text-sm leading-6 text-navy-600">
-            Learn what a technique may do, what remains theoretical, and how to explain
-            mechanisms without outdated structural claims.
+            Start with a patient and a question worth answering. Then uncover what the
+            science might explain—and where certainty ends.
           </p>
         </div>
         <div className="rounded-2xl border border-cyan-100 bg-cyan-50 p-5">
           <Hand className="h-6 w-6 text-cyan-700" />
-          <h2 className="mt-3 font-bold text-navy-800">Learn the process</h2>
+          <h2 className="mt-3 font-bold text-navy-800">Walk into the treatment room</h2>
           <p className="mt-2 text-sm leading-6 text-navy-600">
-            Follow a repeatable sequence from baseline assessment to positioning, contact,
-            dosage, execution and immediate reassessment.
+            Picture the patient, the movement and the therapist's next decision.
+            Then follow exact positioning, force and dosage step by step.
           </p>
         </div>
         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
           <ShieldCheck className="h-6 w-6 text-emerald-700" />
-          <h2 className="mt-3 font-bold text-navy-800">Treat safely</h2>
+          <h2 className="mt-3 font-bold text-navy-800">Know when the story must change</h2>
           <p className="mt-2 text-sm leading-6 text-navy-600">
-            Every technique includes precautions and contraindications so clinical safety
-            stays ahead of technique enthusiasm.
+            The best clinical decision is not always a manual technique.
+            Red flags, contraindications and reassessment guide every chapter.
           </p>
         </div>
       </section>
@@ -85,7 +86,7 @@ export default function ManualTherapyPage() {
               Technique Library
             </p>
             <h2 className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">
-              Study by manual-therapy family
+              Choose a clinical story worth exploring
             </h2>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -131,11 +132,20 @@ export default function ManualTherapyPage() {
                       <h4 className="mt-4 text-lg font-bold text-navy-800">
                         {technique.name}
                       </h4>
-                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">
-                        {technique.summary}
-                      </p>
+                      {getManualTherapyStory(technique.slug) ? (
+                        <>
+                          <p className="mt-3 text-base font-bold leading-6 text-navy-900">
+                            {getManualTherapyStory(technique.slug)?.headline}
+                          </p>
+                          <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">
+                            {getManualTherapyStory(technique.slug)?.scene}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">{technique.summary}</p>
+                      )}
                       <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-violet-700">
-                        Master technique
+                        Explore this story
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </span>
                     </a>
@@ -152,7 +162,7 @@ export default function ManualTherapyPage() {
           Regional Encyclopedia
         </p>
         <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-          Learn the same technique by body region
+          See how the story changes across the body
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
           Open cervical, thoracic, lumbar, shoulder, elbow, hip, knee, ankle and neural applications
