@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { feedbackLine } from "@/lib/clinical-arena-humor";
 import { ArrowRight, BrainCircuit, CheckCircle2, RotateCcw, ShieldAlert, Sparkles, Trophy } from "lucide-react";
@@ -38,6 +38,9 @@ export default function ClinicalArenaPage(){
  const [revealed,setRevealed]=useState(false);
  const [feedback,setFeedback]=useState("");
  const [seen,setSeen]=useState<string[]>([]);
+ const [seenReady,setSeenReady]=useState(false);
+ useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem("pna-arena-feedback-seen-v1")||"[]");if(Array.isArray(saved))setSeen(saved.filter((x):x is string=>typeof x==="string").slice(-2400));}catch{}setSeenReady(true);},[]);
+ useEffect(()=>{if(seenReady){try{localStorage.setItem("pna-arena-feedback-seen-v1",JSON.stringify(seen.slice(-2400)));}catch{}}},[seen,seenReady]);
  const [score,setScore]=useState(0);
  const [finished,setFinished]=useState(false);
  const [asked,setAsked]=useState<number[]>([]);
