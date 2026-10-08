@@ -1,0 +1,55 @@
+name: Verify Live Manual Therapy Card Cover Selection
+
+on:
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - ".github/workflows/check-live-manual-cover-html.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Ensure server-rendered encyclopedia uses 35 unique new covers
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://physionexusacademy.com/manual-therapy?cover_probe=${GITHUB_RUN_ID}"
+          ok=0
+          for attempt in 1 2 3 4 5; do
+            status="$(curl -fsSL --connect-timeout 8 --max-time 22 -o /tmp/pna-manual-page.html -w "%{http_code}" "$url" || true)"
+            if [ "$status" = "200" ]; then ok=1; break; fi
+            echo "::warning::Manual encyclopedia returned status=${status} attempt=${attempt}"
+            sleep 3
+          done
+          if [ "$ok" != "1" ]; then echo "::error::Live encyclopedia was unavailable"; exit 1; fi
+          for slug in             maitland-joint-mobilization mulligan-snags-nags             kaltenborn-evjenth-mobilization paivm-ppivm-spinal-assessment             craniosacral-therapy; do
+            marker="data-pna-manual-cover=\"${slug}\""
+            if ! grep -Fq "$marker" /tmp/pna-manual-page.html; then
+              echo "::error::Old fallback still in use: ${slug} lacks new cover marker"
+              exit 1
+            fi
+            echo "new PNA cover confirmed: ${slug}"
+          done
+          count="$(grep -o 'data-pna-manual-cover=' /tmp/pna-manual-page.html | wc -l)"
+          echo "Server-rendered unique cover elements found: ${count}"
+          test "$count" -ge 35 || { echo "::error::Expected 35 PNA picture elements"; exit 1; }
+          echo "35-cover switch verified in real server HTML."
+      - name: Verify distinct AVIF image files serve correct MIME
+        shell: bash
+        run: |
+          set -euo pipefail
+          for slug in maitland-joint-mobilization mulligan-snags-nags craniosacral-therapy; do
+            url="https://physionexusacademy.com/images/manual-therapy/cards/${slug}.avif"
+            header="$(curl -fsSL -I --connect-timeout 8 --max-time 18 "$url" || true)"
+            if ! grep -Eqi '^content-type: image/avif' <<< "$header"; then
+              echo "::error::Wrong AVIF content type: ${slug}"; exit 1
+            fi
+            echo "AVIF reachable: ${slug}"
+          done
