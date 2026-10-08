@@ -1380,3 +1380,8 @@ export function getApplicationsForTechnique(techniqueSlug: string) {
     .filter((item) => item.techniqueSlug === techniqueSlug)
     .sort((a, b) => manualRegions.indexOf(a.region) - manualRegions.indexOf(b.region));
 }
+
+/** Generated guide-* records are orientation templates, never validated technique-specific protocols. */
+export function isTechniqueSpecificRegionalApplication(application: { slug: string }) {
+  return !application.slug.startsWith("guide-");
+}

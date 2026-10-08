@@ -3,6 +3,7 @@ import { ArrowRight, Map, Hand, Activity } from "lucide-react";
 import {
   completeRegionalManualApplications,
   manualRegions,
+  isTechniqueSpecificRegionalApplication,
 } from "@/lib/manual-therapy-regional";
 
 export const metadata: Metadata = {
@@ -28,14 +29,15 @@ export default function RegionalManualTherapyPage() {
           The same technique can tell a very different clinical story at the neck, shoulder,
           knee or ankle. Start with a patient's familiar movement, discover which manual input
           might help, and follow each decision from the first contact to the final re-test.
-          Every guide keeps exact positioning, dosage and safety close at hand.
+          Technique-specific guides contain authored procedures; general regional overviews
+          introduce concepts and safety considerations but do not substitute for detailed technique training.
         </p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
           <span className="rounded-full bg-white/10 px-4 py-2">
             {manualRegions.length} clinical regions
           </span>
           <span className="rounded-full bg-white/10 px-4 py-2">
-            {completeRegionalManualApplications.length} regional guides
+            {completeRegionalManualApplications.filter(isTechniqueSpecificRegionalApplication).length} technique-specific guides · {completeRegionalManualApplications.filter((item) => !isTechniqueSpecificRegionalApplication(item)).length} general overviews
           </span>
         </div>
       </section>
@@ -57,7 +59,7 @@ export default function RegionalManualTherapyPage() {
 
       <section className="mt-12 space-y-10">
         {manualRegions.map((region) => {
-          const items = completeRegionalManualApplications.filter((item) => item.region === region);
+          const items = completeRegionalManualApplications.filter((item) => item.region === region).sort((a, b) => Number(isTechniqueSpecificRegionalApplication(b)) - Number(isTechniqueSpecificRegionalApplication(a)));
           if (!items.length) return null;
 
           return (
@@ -88,14 +90,14 @@ export default function RegionalManualTherapyPage() {
                     <h3 className="mt-1 text-lg font-bold text-navy-800">{item.title}</h3>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-bold text-violet-700">
-                        {item.applicability ?? "Detailed"}
+                        {isTechniqueSpecificRegionalApplication(item) ? "Technique-specific" : "General overview"}
                       </span>
                     </div>
                     <p className="mt-3 line-clamp-3 text-sm leading-6 text-navy-600">
                       {item.clinicalUse[0]}
                     </p>
                     <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-violet-700">
-                      Explore this clinical guide
+                      {isTechniqueSpecificRegionalApplication(item) ? "Read the detailed clinical guide" : "Explore the regional principles"}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </a>

@@ -1,13 +1,16 @@
 import { ArrowRight, BookOpenText, Lightbulb } from "lucide-react";
 import type { ClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import type { ManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
+import { clinicalRoomScenes } from "@/lib/manual-therapy-room-scenes";
 
 type Props = {
+  slug: string;
   episode: ClinicalEpisode;
   challenge?: ManualTherapyAhaMoment;
 };
 
-export function ClinicalStoryChapter({ episode, challenge }: Props) {
+export function ClinicalStoryChapter({ slug, episode, challenge }: Props) {
+  const room = clinicalRoomScenes[slug];
   return (
     <article
       id="clinical-story"
@@ -35,21 +38,21 @@ export function ClinicalStoryChapter({ episode, challenge }: Props) {
             <span className="absolute -left-[38px] top-0 h-4 w-4 rounded-full border-4 border-white bg-teal-500 ring-1 ring-teal-100 sm:-left-[46px]" />
             <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">01 · The patient walks in</p>
             <h3 className="mt-2 font-serif text-xl font-bold text-slate-900">Here is the problem. What would you notice?</h3>
-            <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{episode.patient}</p>
+            <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{room?.arrival ?? episode.patient}</p>
           </section>
 
           <section className="relative pb-8 sm:pb-10" aria-label="The clinical decision">
             <span className="absolute -left-[38px] top-0 h-4 w-4 rounded-full border-4 border-white bg-teal-500 ring-1 ring-teal-100 sm:-left-[46px]" />
             <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">02 · The decision</p>
             <h3 className="mt-2 font-serif text-xl font-bold text-slate-900">Now the hands—and the thinking—come in.</h3>
-            <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{episode.decision}</p>
+            <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{room?.touch ?? episode.decision}</p>
           </section>
 
           <section className="relative" aria-label="The retest">
             <span className="absolute -left-[38px] top-0 h-4 w-4 rounded-full border-4 border-white bg-teal-500 ring-1 ring-teal-100 sm:-left-[46px]" />
             <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">03 · The moment of truth</p>
             <h3 className="mt-2 font-serif text-xl font-bold text-slate-900">After the hands leave, what is different?</h3>
-            <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{episode.retest}</p>
+            <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{room?.retest ?? episode.retest}</p>
           </section>
         </div>
 

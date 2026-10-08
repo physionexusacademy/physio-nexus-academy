@@ -22,7 +22,7 @@ import { getClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import { ClinicalStoryChapter } from "@/components/manual-therapy/ClinicalStoryChapter";
 import { getManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
-import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
+import { getApplicationsForTechnique, isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regional";
 import {
   manualTherapyMechanisms,
   manualTherapyMechanismEvidence,
@@ -112,7 +112,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
       </section>
 
-      {episode ? <ClinicalStoryChapter episode={episode} challenge={aha} /> : null}
+      {episode ? <ClinicalStoryChapter slug={slug} episode={episode} challenge={aha} /> : null}
 
       <section id="clinical-method" className="mt-8 scroll-mt-28 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
         <div className="border-b border-violet-100 p-6 sm:p-8">
@@ -192,6 +192,23 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         />
       </div>
 
+      </section>
+
+      <section className="mt-9 rounded-3xl border border-slate-200 bg-slate-50/70 p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-800">Evidence compass</p>
+        <h2 className="mt-2 font-serif text-xl font-bold text-slate-900">What can science actually support?</h2>
+        <p className="mt-3 text-sm leading-7 text-slate-700">
+          The 2025 living review describes several possible mechanisms of manual therapy,
+          but cautions that we cannot confidently say which one produced an individual
+          patient's improvement. Do not turn a useful clinical response into an unsupported
+          claim that tissue was permanently repositioned or adhesions were broken.
+          A review of general manual therapy mechanisms does not establish the
+          effectiveness of this exact named technique for every diagnosis.
+        </p>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/40100908/" target="_blank" rel="noopener noreferrer"
+          className="mt-3 inline-flex text-sm font-bold text-indigo-800 underline underline-offset-4">
+          Read the 2025 living review of manual therapy mechanisms
+        </a>
       </section>
 
       {visuals.length ? (
@@ -390,8 +407,8 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
                   Apply {technique.name} across the body
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-indigo-100">
-                  Open a region to move from theory into a structured clinical application:
-                  setup, contact, force direction, dose, specific variations, re-test and safety.
+                  Explore independently authored clinical procedures first. General regional overviews
+                  offer orientation only; they are not replacements for exact technique training.
                 </p>
               </div>
 
@@ -410,7 +427,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {regionalApplications.map((application, index) => {
+            {[...regionalApplications].sort((a, b) => Number(isTechniqueSpecificRegionalApplication(b)) - Number(isTechniqueSpecificRegionalApplication(a))).map((application, index) => {
               const variationCount = getRegionalSubTechniques(
                 slug,
                 application.region,
@@ -446,7 +463,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
                           : "bg-violet-50 text-violet-700")
                       }
                     >
-                      {application.applicability ?? "Detailed"}
+                      {isTechniqueSpecificRegionalApplication(application) ? "Technique-specific" : "Regional overview"}
                     </span>
                   </div>
 

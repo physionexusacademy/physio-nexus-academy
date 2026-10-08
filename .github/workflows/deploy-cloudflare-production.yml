@@ -101,3 +101,5 @@ jobs:
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-editorial="v2"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="clinical-story-v2"'
           check_url "https://physionexusacademy.com/manual-therapy/strain-counterstrain" 'data-pna-reading="clinical-story-v2"'
+          check_url "https://physionexusacademy.com/manual-therapy/regions" "general overviews"
+          check_url "https://physionexusacademy.com/manual-therapy/regions/guide-facilitated-positional-release-wrist-and-hand" 'data-pna-content-depth="general-overview"'

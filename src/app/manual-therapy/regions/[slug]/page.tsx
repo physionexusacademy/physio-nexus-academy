@@ -23,6 +23,7 @@ import {
 import {
   completeRegionalManualApplications,
   getRegionalManualApplication,
+  isTechniqueSpecificRegionalApplication,
   type ManualRegion,
 } from "@/lib/manual-therapy-regional";
 import {
@@ -83,6 +84,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!item) return {};
 
   return {
+    robots: { index: isTechniqueSpecificRegionalApplication(item), follow: true },
     title: item.title + " | Regional Manual Therapy",
     description: item.clinicalUse[0],
     alternates: {
@@ -364,6 +366,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
   const item = getRegionalManualApplication(slug);
   if (!item) notFound();
 
+  const isTechniqueSpecific = isTechniqueSpecificRegionalApplication(item);
   const subTechniques = getRegionalSubTechniques(
     item.techniqueSlug,
     item.region,
@@ -393,12 +396,12 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
               {item.techniqueName}
             </span>
             <span className="rounded-full border border-cyan-200/20 bg-cyan-300/10 px-3 py-1 text-xs font-bold text-cyan-50">
-              {item.applicability ?? "Detailed"}
+              {isTechniqueSpecific ? "Technique-specific guide" : "General regional overview"}
             </span>
           </div>
 
           <p className="mt-5 text-xs font-bold uppercase tracking-[0.22em] text-cyan-100">
-            PNA Clinical Application Guide
+            {isTechniqueSpecific ? "PNA Clinical Application Guide" : "PNA Regional Principles · Overview"}
           </p>
 
           <h1 className="mt-2 max-w-4xl text-3xl font-bold leading-tight text-white sm:text-5xl">
@@ -419,16 +422,38 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
               <ShieldCheck className="h-4 w-4" />
               Clinical re-test built in
             </span>
-            <a
-              href={"/visual-lab/manual-therapy/" + item.slug}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-bold text-violet-800 shadow-sm transition hover:bg-violet-50"
-            >
-              See Technique Visuals
-              <ArrowRight className="h-4 w-4" />
-            </a>
+            {techniqueVisuals.length ? (
+              <a
+                href={"/visual-lab/manual-therapy/" + item.slug}
+                className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-bold text-violet-800 shadow-sm transition hover:bg-violet-50"
+              >
+                See optional technique visuals
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            ) : null}
           </div>
         </div>
       </section>
+      {!isTechniqueSpecific ? (
+        <section data-pna-content-depth="general-overview" className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-1 h-5 w-5 flex-none text-amber-800" />
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Important: this is a clinical framework, not a complete technique protocol.</h2>
+              <p className="mt-2 text-sm leading-7 text-slate-700">
+                This page was generated from broader regional principles. It can help you frame
+                assessment, patient comfort, safety and reassessment, but its generic positioning,
+                contact and dosage text must not be treated as technique-specific hands-on instruction.
+                Study a detailed, individually authored procedure and use supervised practical training.
+              </p>
+              <a href={"/manual-therapy/" + item.techniqueSlug} className="mt-3 inline-flex text-sm font-bold text-teal-800 underline underline-offset-4">
+                Read the parent technique and its specific clinical methods
+              </a>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {item.applicability === "Not routine" ? (
         <section className="mt-6 rounded-3xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-3">
@@ -449,6 +474,34 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             </div>
           </div>
         </section>
+      ) : null}
+
+      {item.region === "Cervical" || item.region === "Lumbar" ? (
+        <aside className="mt-7 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5 sm:p-6">
+          <h2 className="text-base font-bold text-slate-900">Evidence & screening: read this before the technique</h2>
+          <p className="mt-2 text-sm leading-7 text-slate-700">
+            Clinical practice guidelines address patient presentations and the wider care plan.
+            They are not proof that every named manual technique or automatically generated
+            regional contact is effective. Use individual examination and current safety screening.
+          </p>
+          {item.region === "Cervical" ? (
+            <div className="mt-3 flex flex-wrap gap-4">
+              <a href="https://www.ifompt.org/news-resources/resources/frameworks-research-and-clinical-resources/"
+                target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-indigo-800 underline underline-offset-4">
+                IFOMPT cervical vascular-screening framework
+              </a>
+              <a href="https://pubmed.ncbi.nlm.nih.gov/28666405/"
+                target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-indigo-800 underline underline-offset-4">
+                Neck Pain clinical practice guideline
+              </a>
+            </div>
+          ) : (
+            <a href="https://pubmed.ncbi.nlm.nih.gov/34719942/"
+              target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex text-sm font-bold text-indigo-800 underline underline-offset-4">
+              2021 Low Back Pain clinical practice guideline
+            </a>
+          )}
+        </aside>
       ) : null}
 
       <aside className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-8">
@@ -674,19 +727,19 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             tone="border-blue-100 bg-blue-50/30"
           />
           <EditorialBlock
-            title="Exact Contact / Hand Placement"
+            title={isTechniqueSpecific ? "Exact Contact / Hand Placement" : "General Contact Considerations"}
             items={item.contact}
             icon={Hand}
             tone="border-violet-100 bg-violet-50/30"
           />
           <EditorialBlock
-            title="Force Direction"
+            title={isTechniqueSpecific ? "Force Direction" : "Force Principles — Not a Specific Technique"}
             items={item.forceDirection}
             icon={Move}
             tone="border-fuchsia-100 bg-fuchsia-50/30"
           />
           <EditorialBlock
-            title="Dosage"
+            title={isTechniqueSpecific ? "Dosage" : "Conservative Dosing Principles"}
             items={item.dosage}
             icon={Gauge}
             tone="border-amber-100 bg-amber-50/30"
@@ -711,7 +764,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
                 Application Sequence
               </p>
               <h2 className="text-2xl font-bold text-navy-900">
-                Complete applying method
+                {isTechniqueSpecific ? "Detailed applying method" : "General clinical reasoning sequence · not a technique-specific protocol"}
               </h2>
             </div>
           </div>
