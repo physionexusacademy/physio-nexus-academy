@@ -3,6 +3,16 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/manual-therapy/world-approaches',
+        destination: '/manual-therapy',
+        permanent: true,
+      },
+      {
+        source: '/manual-therapy/world-approaches/:slug',
+        destination: '/manual-therapy/:slug',
+        permanent: true,
+      },
+      {
         source: '/homepage',
         destination: '/',
         permanent: true,
