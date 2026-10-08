@@ -29,6 +29,7 @@ import { getManualTherapyExpertProfile } from "@/lib/manual-therapy-expert";
 import ClinicalImage from "@/components/clinical/ClinicalImage";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
+import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -51,35 +52,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: "https://physionexusacademy.com/manual-therapy/" + technique.slug,
     },
   };
-}
-
-function ListBlock({
-  title,
-  items,
-  icon: Icon,
-  tone,
-}: {
-  title: string;
-  items: string[];
-  icon: typeof Hand;
-  tone: string;
-}) {
-  return (
-    <section className={"rounded-2xl border p-5 sm:p-6 " + tone}>
-      <div className="flex items-center gap-2">
-        <Icon className="h-5 w-5" />
-        <h2 className="text-lg font-bold text-navy-800">{title}</h2>
-      </div>
-      <ul className="mt-4 space-y-3">
-        {items.map((item) => (
-          <li key={item} className="flex gap-3 text-sm leading-6 text-navy-600">
-            <CheckCircle2 className="mt-1 h-4 w-4 flex-none" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
 }
 
 export default async function ManualTherapyDetailPage({ params }: PageProps) {
@@ -182,25 +154,25 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </div>
 
         <div className="grid gap-5 border-t border-indigo-100 p-5 sm:p-8 lg:grid-cols-2">
-          <ListBlock
+          <EditorialBlock
             title="The Response: What Could Be Happening"
             items={mechanism.stepByStep}
             icon={Brain}
             tone="border-indigo-100 bg-indigo-50/70"
           />
-          <ListBlock
+          <EditorialBlock
             title="Under the Surface: The Science"
             items={mechanism.physiology}
             icon={Microscope}
             tone="border-cyan-100 bg-cyan-50/70"
           />
-          <ListBlock
+          <EditorialBlock
             title="Bring the Science Back to the Patient"
             items={mechanism.clinicalTranslation}
             icon={Lightbulb}
             tone="border-emerald-100 bg-emerald-50/70"
           />
-          <ListBlock
+          <EditorialBlock
             title="What the Evidence Does Not Let Us Promise"
             items={mechanism.myths}
             icon={ShieldAlert}
@@ -276,15 +248,15 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </p>
         </div>
         <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
-          <ListBlock title="Variants & Classifications" items={expert.variants} icon={Microscope} tone="border-violet-100 bg-violet-50/70" />
-          <ListBlock title="When Would You Choose This?" items={expert.selectionRules} icon={Brain} tone="border-cyan-100 bg-cyan-50/70" />
-          <ListBlock title="Technical Variables That Change the Dose" items={expert.technicalVariables} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
-          <ListBlock title="Progression & Regression" items={expert.progressionRegression} icon={ShieldCheck} tone="border-emerald-100 bg-emerald-50/70" />
-          <ListBlock title="Turn the Gain Into Real Movement" items={expert.integration} icon={Lightbulb} tone="border-teal-100 bg-teal-50/70" />
-          <ListBlock title="Documentation Standard" items={expert.documentation} icon={ClipboardCheck} tone="border-slate-200 bg-slate-50/70" />
+          <EditorialBlock title="Variants & Classifications" items={expert.variants} icon={Microscope} tone="border-violet-100 bg-violet-50/70" />
+          <EditorialBlock title="When Would You Choose This?" items={expert.selectionRules} icon={Brain} tone="border-cyan-100 bg-cyan-50/70" />
+          <EditorialBlock title="Technical Variables That Change the Dose" items={expert.technicalVariables} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
+          <EditorialBlock title="Progression & Regression" items={expert.progressionRegression} icon={ShieldCheck} tone="border-emerald-100 bg-emerald-50/70" />
+          <EditorialBlock title="Turn the Gain Into Real Movement" items={expert.integration} icon={Lightbulb} tone="border-teal-100 bg-teal-50/70" />
+          <EditorialBlock title="Documentation Standard" items={expert.documentation} icon={ClipboardCheck} tone="border-slate-200 bg-slate-50/70" />
         </div>
         <div className="border-t border-slate-200 p-5 sm:p-8">
-          <ListBlock title="Where Evidence Supports Us—and Where It Does Not" items={expert.evidencePosition} icon={Microscope} tone="border-amber-100 bg-amber-50/70" />
+          <EditorialBlock title="Where Evidence Supports Us—and Where It Does Not" items={expert.evidencePosition} icon={Microscope} tone="border-amber-100 bg-amber-50/70" />
         </div>
       </section>
 
@@ -328,66 +300,66 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </p>
         </div>
         <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
-          <ListBlock title="Patient Position" items={guide.patientPosition} icon={Hand} tone="border-cyan-100 bg-cyan-50/70" />
-          <ListBlock title="Therapist Position" items={guide.therapistPosition} icon={Hand} tone="border-indigo-100 bg-indigo-50/70" />
-          <ListBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
-          <ListBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
+          <EditorialBlock title="Patient Position" items={guide.patientPosition} icon={Hand} tone="border-cyan-100 bg-cyan-50/70" />
+          <EditorialBlock title="Therapist Position" items={guide.therapistPosition} icon={Hand} tone="border-indigo-100 bg-indigo-50/70" />
+          <EditorialBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
+          <EditorialBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
         </div>
         <div className="border-t border-violet-100 p-5 sm:p-8">
-          <ListBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
+          <EditorialBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
         </div>
         <div className="grid gap-5 border-t border-violet-100 p-5 sm:p-8 lg:grid-cols-2">
-          <ListBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
-          <ListBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
-          <ListBlock title="Where Good Intentions Go Wrong" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
-          <ListBlock title="See It Through a Patient's Eyes" items={guide.clinicalExample} icon={Lightbulb} tone="border-purple-100 bg-purple-50/70" />
+          <EditorialBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
+          <EditorialBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
+          <EditorialBlock title="Where Good Intentions Go Wrong" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
+          <EditorialBlock title="See It Through a Patient's Eyes" items={guide.clinicalExample} icon={Lightbulb} tone="border-purple-100 bg-purple-50/70" />
         </div>
       </section>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
-        <ListBlock
+        <EditorialBlock
           title="The Science: What May Explain the Response"
           items={technique.science}
           icon={Lightbulb}
           tone="border-violet-100 bg-violet-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="The Method: From First Contact to Did It Make a Meaningful Difference?"
           items={technique.procedure}
           icon={Hand}
           tone="border-cyan-100 bg-cyan-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="How Much Is Enough?"
           items={technique.dosage}
           icon={Gauge}
           tone="border-blue-100 bg-blue-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="Indications"
           items={technique.indications}
           icon={ClipboardCheck}
           tone="border-emerald-100 bg-emerald-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="Precautions"
           items={technique.precautions}
           icon={ShieldAlert}
           tone="border-amber-100 bg-amber-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="Contraindications"
           items={technique.contraindications}
           icon={ShieldAlert}
           tone="border-rose-100 bg-rose-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="Did It Make a Meaningful Difference?"
           items={technique.reassessment}
           icon={ShieldCheck}
           tone="border-teal-100 bg-teal-50/70"
         />
-        <ListBlock
+        <EditorialBlock
           title="Small Details That Change Everything"
           items={technique.pearls}
           icon={Lightbulb}
