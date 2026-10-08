@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function ManualTherapyPage() {
   return (
     <div className="container-content section-padding">
-      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-700 via-violet-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
+      <section data-pna-content-revision="storytelling-v1" className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-700 via-violet-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
         <div className="max-w-4xl">
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-violet-100">
             PNA Clinical Mastery
