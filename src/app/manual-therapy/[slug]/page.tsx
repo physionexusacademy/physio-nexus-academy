@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
+import { getClinicalNarrative } from "@/lib/manual-therapy-clinical-narratives";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
 import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
 import {
@@ -85,6 +86,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const story = getManualTherapyStory(slug);
+  const narrative = getClinicalNarrative(slug);
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
   const expert = getManualTherapyExpertProfile(slug);
@@ -137,6 +139,16 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         )}
 
       </section>
+
+      {narrative ? (
+        <section className="mt-8 rounded-3xl border border-cyan-200 bg-white p-6 shadow-sm sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.19em] text-teal-700">Chapter 1 · Follow the clues</p>
+          <h2 className="mt-3 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
+            Before the first touch, the patient has already told you something important.
+          </h2>
+          <p className="mt-4 max-w-4xl text-base leading-8 text-navy-700">{narrative.clue}</p>
+        </section>
+      ) : null}
 
       <section className="mt-8 overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
         <div className="border-b border-indigo-100 p-6 sm:p-8">
@@ -287,6 +299,20 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </aside>
       ) : null}
 
+      {narrative ? (
+        <section className="mt-8 rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50 to-white p-6 shadow-sm sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.19em] text-violet-700">Chapter 2 · The careful trial</p>
+          <h2 className="mt-3 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
+            One clinical hypothesis. One controlled attempt. One meaningful question.
+          </h2>
+          <p className="mt-4 max-w-4xl text-base leading-8 text-navy-700">{narrative.trial}</p>
+          <p className="mt-4 text-sm leading-7 text-navy-600">
+            The practical guide below provides the exact positioning, contact, dosage and safety
+            limits. The story is an introduction—not a substitute for technique training.
+          </p>
+        </section>
+      ) : null}
+
       <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
         <div className="border-b border-violet-100 p-6 sm:p-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
@@ -368,6 +394,22 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           tone="border-indigo-100 bg-indigo-50/70"
         />
       </div>
+
+      {narrative ? (
+        <section className="mt-9 rounded-3xl border border-teal-200 bg-gradient-to-r from-teal-50 via-white to-cyan-50 p-6 shadow-sm sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.19em] text-teal-700">Chapter 3 · After the hands leave</p>
+          <h2 className="mt-3 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
+            The final answer belongs to the patient's movement—not the technique.
+          </h2>
+          <p className="mt-4 max-w-4xl text-base leading-8 text-navy-700">{narrative.ending}</p>
+          <a
+            href={"/manual-therapy/regions"}
+            className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-teal-800 hover:text-teal-900"
+          >
+            Follow the story into regional applications <ArrowRight className="h-4 w-4" />
+          </a>
+        </section>
+      ) : null}
 
       {regionalApplications.length ? (
         <section className="mt-10">
