@@ -139,3 +139,7 @@
  .pna-editorial-card{transition:none}
  .pna-editorial-card:hover,.pna-editorial-card:focus-visible{transform:none}
 }
+
+/* The <picture> element must fill the same 3D art slot as earlier CDN <img> elements. */
+.pna-editorial-card-art picture { display: block; width: 100%; height: 100%; }
+.pna-editorial-card-art picture img { display: block; width: 100%; height: 100%; }
