@@ -143,21 +143,6 @@ export function EditorialManualEncyclopedia({
         </div>
       </section>
 
-      <section className="pna-editorial-intro" aria-label="Your learning journey">
-        <div className="pna-editorial-intro-item">
-          <strong><Sparkles className="mr-1 inline h-4 w-4 text-violet-600" aria-hidden="true" /> Laugh and remember</strong>
-          Patient conversations, memorable Aha Moments and real-world clinical questions.
-        </div>
-        <div className="pna-editorial-intro-item">
-          <strong><Stethoscope className="mr-1 inline h-4 w-4 text-cyan-700" aria-hidden="true" /> Learn and apply</strong>
-          Clear mechanisms, assessment, practical reasoning and regional applications.
-        </div>
-        <div className="pna-editorial-intro-item">
-          <strong><ShieldCheck className="mr-1 inline h-4 w-4 text-emerald-700" aria-hidden="true" /> Think safely</strong>
-          Evidence limitations, red flags and reassessment are always part of the lesson.
-        </div>
-      </section>
-
       <section aria-label="Find your manual therapy approach" className="pna-editorial-toolbar" id="encyclopedia-library">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
@@ -232,6 +217,21 @@ export function EditorialManualEncyclopedia({
           </button>
         </div>
       )}
+
+      <section className="pna-editorial-intro" aria-label="Your learning journey">
+        <div className="pna-editorial-intro-item">
+          <strong><Sparkles className="mr-1 inline h-4 w-4 text-violet-600" aria-hidden="true" /> Laugh and remember</strong>
+          Patient conversations, memorable Aha Moments and real-world clinical questions.
+        </div>
+        <div className="pna-editorial-intro-item">
+          <strong><Stethoscope className="mr-1 inline h-4 w-4 text-cyan-700" aria-hidden="true" /> Learn and apply</strong>
+          Clear mechanisms, assessment, practical reasoning and regional applications.
+        </div>
+        <div className="pna-editorial-intro-item">
+          <strong><ShieldCheck className="mr-1 inline h-4 w-4 text-emerald-700" aria-hidden="true" /> Think safely</strong>
+          Evidence limitations, red flags and reassessment are always part of the lesson.
+        </div>
+      </section>
 
       <div className="pna-editorial-bottom">
         <a href="/manual-therapy/regions" className="group">
