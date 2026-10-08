@@ -234,7 +234,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
       ) : null}
 
       {visuals.length ? (
-        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8>
+        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8">
           <div className="mb-6">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
               Clinical Visual Atlas
