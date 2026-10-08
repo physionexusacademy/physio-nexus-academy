@@ -6,6 +6,10 @@ on:
     paths:
       - "automation/manual-asset-transfer/*.txt"
       - ".github/workflows/manual-final-seven-intake.yml"
+      - "src/data/manual-therapy-visual-manifest.json"
+      - "src/components/manual-therapy/EditorialManualEncyclopedia.tsx"
+      - "src/app/manual-therapy/encyclopedia.css"
+      - ".github/workflows/deploy-cloudflare-production.yml"
 
 permissions:
   contents: write
@@ -82,7 +86,7 @@ jobs:
           PY
       - name: Check all 35 technique covers and performance caps
         run: |
-          node scripts/validate-manual-visuals.mjs
+          node scripts/validate-manual-visuals.mjs --publish
           python - <<'PY'
           from pathlib import Path
           p=Path('public/images/manual-therapy/cards')
