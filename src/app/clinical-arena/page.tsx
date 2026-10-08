@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { feedbackLine } from "@/lib/clinical-arena-humor";
 import { ArrowRight, BrainCircuit, CheckCircle2, RotateCcw, ShieldAlert, Sparkles, Trophy } from "lucide-react";
 
 type Case = { id:string; specialty:string; title:string; patient:string; history:string; findings:string[]; question:string; options:string[]; correct:number; explanation:string; clue:string; safety?:boolean };
@@ -29,36 +30,6 @@ const flows:Record<string,Flow>={
 };
 type Stage="history"|"differential"|"diagnosis"|"treatment";
 const stages:Stage[]=["history","differential","diagnosis","treatment"];
-const positive=[
-"Clinical reasoning just got promoted to consultant! 😂",
-"Sherlock Holmes called. He wants his diagnostic skills back! 🔍",
-"Even the textbook said: okay, this one knows the assignment. 🧠",
-"Your neurons finally formed a multidisciplinary team. 😎",
-"That was cleaner than a freshly documented SOAP note! ✨",
-"Evidence-based practice is giving you a standing ovation! 👏",
-"Your differential list just gave you a high five. 🏆",
-"Diagnosis secured. The examiner can put the red pen away! 😂"
-];
-const roasts=[
-"Doctor, your confidence is consultant-level; the reasoning is still on internship! 😂",
-"The patient gave you clues, not a lucky-draw ticket! 🎟️",
-"Your neurons held a meeting, but nobody read the agenda. 🧠",
-"Clinical reasoning has left the chat. Please invite it back. 😂",
-"The textbook saw that answer and quietly closed itself. 📚",
-"Even the goniometer is asking you to measure your reasoning first! 📐",
-"That answer went on an unscheduled holiday from evidence. 🏖️",
-"This isn't MCQ roulette. Follow the clinical clues! 🎯",
-"The differential diagnosis list is requesting a second opinion on you! 😭",
-"That was a bold choice. The evidence would like a word. 😅",
-"Doctor, the clinical compass is pointing toward the cafeteria! 🧭",
-"The assessment was invited, but the conclusion arrived without it. 😂"
-];
-const stageNames:Record<Stage,string>={history:"History taking",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning"};
-function draw(pool:string[],used:string[]):string{
- const remaining=pool.filter(x=>!used.includes(x));
- const available=remaining.length?remaining:pool;
- return available[Math.floor(Math.random()*available.length)];
-}
 export default function ClinicalArenaPage(){
  const [specialty,setSpecialty]=useState("All specialties");
  const [position,setPosition]=useState(0);
@@ -77,7 +48,7 @@ export default function ClinicalArenaPage(){
  const current=stage==="differential"?{question:"Which differential diagnoses should you prioritize?",options:flow?.differential||[],correct:flow?.differentialCorrect??0,why:flow?.differentialWhy||""}:stage==="diagnosis"?{question:item?.question||"",options:item?.options||[],correct:item?.correct??0,why:item?.explanation||""}:{question:"Which is the most appropriate management plan?",options:flow?.treatment||[],correct:flow?.treatmentCorrect??0,why:flow?.treatmentWhy||""};
  function reset(next:string){setSpecialty(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setScore(0);setFinished(false);setAsked([]);}
  function respond(ok:boolean,why:string){
-  const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):draw(ok?positive:roasts,seen);
+  const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):feedbackLine(ok?"correct":"incorrect",seen,stage);
   setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok)setScore(v=>v+1);
  }
  function submit(){if(selected===null||revealed||stage==="history")return;respond(selected===current.correct,current.why);}
