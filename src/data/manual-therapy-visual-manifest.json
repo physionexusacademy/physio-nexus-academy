@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "publish": false,
+  "targetSize": {
+    "width": 480,
+    "height": 600
+  },
+  "entries": [
+    {
+      "slug": "maitland-joint-mobilization",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "kaltenborn-evjenth-mobilization",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "mulligan-mobilization-with-movement",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "mulligan-snags-nags",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "cyriax-deep-transverse-friction",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "muscle-energy-technique",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "strain-counterstrain",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "myofascial-release",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "soft-tissue-mobilization",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "trigger-point-compression",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "iastm",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "neurodynamic-mobilization",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "manual-traction",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "high-velocity-low-amplitude-thrust",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "pnf-manual-techniques",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "fascial-manipulation",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "active-release-style-soft-tissue",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "manual-lymphatic-drainage",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "scar-mobilization",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 2 candidate; position and anatomical QA required"
+    },
+    {
+      "slug": "paivm-ppivm-spinal-assessment",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "myofascial-decompression-dry-cupping",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "facilitated-positional-release",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "paris-approach",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "mckenzie-mdt",
+      "status": "review",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Batch 1 candidate; final anatomical and crop QA required"
+    },
+    {
+      "slug": "mennell-joint-play",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "fascial-distortion-model",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "balanced-ligamentous-tension",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "spencer-shoulder-sequence",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "still-technique",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "osteopathic-articulatory",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "osteopathic-lymphatic-pump",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "rolfing-structural-integration",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "bowen-technique",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "visceral-manipulation",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    },
+    {
+      "slug": "craniosacral-therapy",
+      "status": "pending",
+      "crop": {
+        "x": 50,
+        "y": 50
+      },
+      "reviewNote": "Not yet approved for publishing"
+    }
+  ]
+}
