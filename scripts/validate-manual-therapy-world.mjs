@@ -38,7 +38,7 @@ const oldSource = [
   content("src/lib/manual-therapy.ts"),
   content("src/lib/manual-therapy-additions.ts"),
 ];
-const originalSlugs = oldSource.flatMap((source) => [...source.matchAll(/\\bslug:\\s*"([^"]+)"/g)].map((match) => match[1]));
+const originalSlugs = oldSource.flatMap((source) => [...source.matchAll(/\bslug:\s*"([^"]+)"/g)].map((match) => match[1]));
 assert.equal(originalSlugs.length, 22, "Original 22 technique chapters must be preserved");
 assert.equal(new Set(originalSlugs).size, 22, "Duplicate original chapters");
 assert(worldManualApproaches.every((item) => !originalSlugs.includes(item.slug)),
