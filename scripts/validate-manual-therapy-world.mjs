@@ -72,4 +72,53 @@ assert(nextConfig.includes("source: '/manual-therapy/world-approaches/:slug'"),
 assert(content("src/components/manual-therapy/WorldApproachChallenge.tsx").includes("lesson.explanation"),
   "Challenges must reveal clinical reasoning");
 
+
+const deepFiles = [
+  "src/lib/manual-therapy-world-depth-orthopedic.ts",
+  "src/lib/manual-therapy-world-depth-osteopathic.ts",
+  "src/lib/manual-therapy-world-depth-disputed.ts",
+];
+const authoredDepth = Object.assign({}, ...deepFiles.map((file) => {
+  const raw = content(file);
+  const match = raw.match(/= (\{[\s\S]*\});?\s*$/);
+  assert(match, "Cannot parse structured expanded lessons: " + file);
+  return JSON.parse(match[1]);
+}));
+assert.deepEqual(Object.keys(authoredDepth).sort(), worldManualApproaches.map((x) => x.slug).sort(),
+  "All 13 worldwide approaches need individually authored, matching deep chapters");
+for (const [slug, lesson] of Object.entries(authoredDepth)) {
+  assert(lesson.opening.length > 175, slug + ": opening lacks narrative depth");
+  assert(lesson.principles.length >= 5 && lesson.assessment.length >= 4 &&
+    lesson.application.length >= 6, slug + ": theoretical/clinical chapter incomplete");
+  for (const field of ["principles", "assessment", "application"]) {
+    for (const part of lesson[field]) {
+      assert(part.title.length >= 15 && part.body.length >= 125, slug + ": thin " + field + " section");
+    }
+  }
+  for (const stage of ["scene", "findings", "decision", "twist", "finish"]) {
+    assert(lesson.caseStudy[stage].length >= 110, slug + ": case misses " + stage);
+  }
+  for (const field of ["dose", "caution", "memoryHook"]) {
+    assert(lesson[field].length >= 35, slug + ": missing " + field);
+  }
+  for (const field of ["known", "unknown", "communication"]) {
+    assert(lesson.evidence[field].length >= 140, slug + ": evidence context lacks " + field);
+  }
+  assert(lesson.checks.length >= 2 && lesson.checks.every((q) => q.question.length > 30 && q.answer.length > 65),
+    slug + ": needs two realistic reasoning checks");
+  assert(lesson.sources.length >= 1 && lesson.sources.every((r) => r.url.startsWith("https://")),
+    slug + ": missing contextual sources");
+  const approximateWords = JSON.stringify(lesson).trim().split(/\\s+/).length;
+  assert(approximateWords >= 700, slug + ": less than 700 words of additional depth");
+}
+assert(chapter.includes("<WorldApproachDeepDive chapter={deep} />"),
+  "Deep clinical encyclopedia chapters must actually render on each approach page");
+const longChapterComponent = content("src/components/manual-therapy/WorldApproachDeepDive.tsx");
+assert(longChapterComponent.includes('data-pna-world-depth="full-chapter-v2"') &&
+  longChapterComponent.includes("chapter.application") &&
+  longChapterComponent.includes("chapter.evidence.unknown") &&
+  longChapterComponent.includes("chapter.caution"),
+  "Rendered deep chapter is missing clinical procedure, evidence or safety");
+console.log("World Manual Therapy deep chapter validation passed: 13/13 expanded, 5 concepts, 4 assessment lenses, 6+ stages, full case, safety, evidence and quizzes.");
+
 console.log("World Manual Therapy Encyclopedia validation passed: 35/35 chapters on one main library, no separate collection, 13 lessons with safety and quizzes, old URLs preserved.");

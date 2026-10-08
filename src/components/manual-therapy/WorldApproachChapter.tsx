@@ -5,10 +5,13 @@ import {
 } from "lucide-react";
 import { worldManualApproaches, type WorldManualApproach } from "@/lib/manual-therapy-world";
 import { WorldApproachChallenge } from "@/components/manual-therapy/WorldApproachChallenge";
+import { WorldApproachDeepDive } from "@/components/manual-therapy/WorldApproachDeepDive";
+import { worldManualDeepChapters } from "@/lib/manual-therapy-world-depth";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
   const next = worldManualApproaches[(worldManualApproaches.findIndex((x) => x.slug === lesson.slug) + 1) % worldManualApproaches.length];
+  const deep = worldManualDeepChapters[lesson.slug];
   return (
     <main className="container-content section-padding" data-pna-world-story="v1">
       <a href="/manual-therapy" className="inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
@@ -90,6 +93,8 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
           <p className="mt-3 max-w-4xl text-[15px] leading-8 text-slate-800">{lesson.patientExplanation}</p>
         </div>
       </section>
+
+      {deep ? <WorldApproachDeepDive chapter={deep} /> : null}
 
       <WorldApproachChallenge lesson={lesson} />
 

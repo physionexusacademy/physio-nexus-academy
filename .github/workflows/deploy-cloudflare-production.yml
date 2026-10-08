@@ -132,6 +132,7 @@ jobs:
             bowen-technique visceral-manipulation craniosacral-therapy
           do
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-story="v1"'
+            check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-depth="full-chapter-v2"'
           done
           check_url "https://physionexusacademy.com/manual-therapy/world-approaches/paris-approach" 'data-pna-world-story="v1"'
           for slug in \
