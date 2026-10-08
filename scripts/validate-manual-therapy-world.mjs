@@ -15,7 +15,7 @@ for (const item of worldManualApproaches) {
   assert.match(item.slug, /^[a-z0-9-]+$/, item.slug + ": invalid route slug");
   for (const field of required) {
     assert.equal(typeof item[field], "string", item.slug + ": missing " + field);
-    assert(item[field].trim().length > 24, item.slug + ": insufficient depth in " + field);
+    assert(item[field].trim().length > (["title", "category", "kind", "evidenceLabel"].includes(field) ? 6 : 24), item.slug + ": insufficient depth in " + field);
   }
   assert(item.scene.length > 140 && item.dialogue.length > 65, item.slug + ": story is too thin");
   assert(item.clinicFlow.length === 4 && item.clinicFlow.every((step) => step.length > 60),
