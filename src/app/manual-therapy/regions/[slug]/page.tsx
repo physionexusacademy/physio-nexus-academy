@@ -40,6 +40,7 @@ import {
   cloudinary3DEnabled,
 } from "@/lib/manual-therapy-3d-assets";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
+import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -89,44 +90,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         "https://physionexusacademy.com/manual-therapy/regions/" + item.slug,
     },
   };
-}
-
-function Section({
-  title,
-  items,
-  icon: Icon,
-  tone,
-}: {
-  title: string;
-  items: string[];
-  icon: typeof Hand;
-  tone: string;
-}) {
-  return (
-    <section
-      className={
-        "overflow-hidden rounded-3xl border bg-white shadow-sm " + tone
-      }
-    >
-      <div className="flex items-center gap-3 border-b border-black/5 px-5 py-4 sm:px-6">
-        <span className="flex h-10 w-10 flex-none items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
-          <Icon className="h-5 w-5" />
-        </span>
-        <h2 className="text-lg font-bold text-navy-800">{title}</h2>
-      </div>
-      <ul className="space-y-3 p-5 sm:p-6">
-        {items.map((entry) => (
-          <li
-            key={entry}
-            className="flex gap-3 rounded-2xl bg-white/80 p-3 text-sm leading-6 text-navy-600"
-          >
-            <CheckCircle2 className="mt-1 h-4 w-4 flex-none" />
-            <span>{entry}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
 }
 
 function SnapshotCard({
@@ -687,49 +650,49 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
         </h2>
 
         <div className="mt-5 grid gap-5 lg:grid-cols-2">
-          <Section
+          <EditorialBlock
             title="When to Use It"
             items={item.clinicalUse}
             icon={Target}
             tone="border-emerald-100 bg-emerald-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Patient Position"
             items={item.patientPosition}
             icon={UserRound}
             tone="border-cyan-100 bg-cyan-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Therapist Position"
             items={item.therapistPosition}
             icon={UsersRound}
             tone="border-indigo-100 bg-indigo-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Stabilization"
             items={item.stabilization}
             icon={Hand}
             tone="border-blue-100 bg-blue-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Exact Contact / Hand Placement"
             items={item.contact}
             icon={Hand}
             tone="border-violet-100 bg-violet-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Force Direction"
             items={item.forceDirection}
             icon={Move}
             tone="border-fuchsia-100 bg-fuchsia-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Dosage"
             items={item.dosage}
             icon={Gauge}
             tone="border-amber-100 bg-amber-50/30"
           />
-          <Section
+          <EditorialBlock
             title="Reassessment"
             items={item.reassess}
             icon={RotateCcw}
