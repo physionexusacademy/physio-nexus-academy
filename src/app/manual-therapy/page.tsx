@@ -13,6 +13,7 @@ import {
 } from "@/lib/all-manual-therapy";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
+import { worldManualApproaches } from "@/lib/manual-therapy-world";
 
 export const metadata: Metadata = {
   title: "Manual Therapy Mastery",
@@ -78,6 +79,31 @@ export default function ManualTherapyPage() {
             Red flags, contraindications and reassessment guide every chapter.
           </p>
         </div>
+      </section>
+
+      <section data-pna-world-entry="v1" className="mt-10 overflow-hidden rounded-3xl border border-teal-200 bg-gradient-to-br from-teal-50 via-white to-indigo-50 p-6 shadow-sm sm:p-8">
+        <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.17em] text-teal-800">
+          <Sparkles className="h-5 w-5" aria-hidden="true" /> New · Beyond the original library
+        </p>
+        <h2 className="mt-3 font-serif text-2xl font-bold leading-tight text-navy-900 sm:text-3xl">
+          Welcome to the World Manual Therapy Encyclopedia
+        </h2>
+        <p className="mt-4 max-w-4xl text-[15px] leading-8 text-navy-700">
+          There are more approaches in the world than our original technique list. Meet {worldManualApproaches.length}
+          additional orthopedic, osteopathic and bodywork traditions through funny clinic dialogues,
+          genuine clinical puzzles, Aha Moments, safety warnings and honest research summaries.
+          Some systems focus on self-management, not manual contact. Others are interesting history
+          but have limited evidence. Learn the difference without losing the fun.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-indigo-800">
+          <span className="rounded-full border border-indigo-100 bg-white px-3 py-2">Unique patient stories</span>
+          <span className="rounded-full border border-indigo-100 bg-white px-3 py-2">Clinical plot twists</span>
+          <span className="rounded-full border border-indigo-100 bg-white px-3 py-2">Interactive reasoning</span>
+          <span className="rounded-full border border-indigo-100 bg-white px-3 py-2">Evidence without exaggeration</span>
+        </div>
+        <a href="/manual-therapy/world-approaches" className="mt-6 inline-flex items-center gap-2 rounded-full bg-teal-800 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-900">
+          Explore the worldwide collection <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </a>
       </section>
 
       <section className="mt-12">
