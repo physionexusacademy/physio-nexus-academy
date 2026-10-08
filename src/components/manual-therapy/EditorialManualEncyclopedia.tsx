@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { getCloudinaryUrl } from "@/lib/cloudinary";
 import { getEditorialArt } from "@/lib/manual-therapy-editorial-art";
+import { approvedManualAvifCards } from "@/lib/manual-therapy-avif-cards";
 
 export type EncyclopediaItem = {
   slug: string;
@@ -30,9 +31,9 @@ function readableHook(item: EncyclopediaItem) {
 
 function Card({ item, index }: { item: EncyclopediaItem; index: number }) {
   const art = getEditorialArt(item.slug, item.family);
-  const artUrl = art
-    ? getCloudinaryUrl(art.publicId, { width: 560, quality: 64, format: "auto" })
-    : "";
+  const artUrl = approvedManualAvifCards[item.slug] ?? (
+    art ? getCloudinaryUrl(art.publicId, { width: 560, quality: 64, format: "auto" }) : ""
+  );
   const level = item.tag.toLowerCase();
   const tone = art?.tone === "teal" ? "teal" : "violet";
 
@@ -46,16 +47,16 @@ function Card({ item, index }: { item: EncyclopediaItem; index: number }) {
     >
       {artUrl ? (
         <div className="pna-editorial-card-art" aria-hidden="true">
-          {/* A cached, CDN-compressed illustrative PNA asset; not a technique demonstration. */}
+          {/* Lightweight approved AVIF for nine techniques, CDN-compressed illustration for remaining entries. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={artUrl}
             loading="lazy"
             decoding="async"
-            width="560"
-            height="420"
+            width="400"
+            height="500"
             alt=""
-            style={{ objectPosition: art?.position ?? "center" }}
+            style={{ objectPosition: approvedManualAvifCards[item.slug] ? "center center" : art?.position ?? "center" }}
           />
         </div>
       ) : (
