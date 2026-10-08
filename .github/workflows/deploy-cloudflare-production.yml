@@ -49,6 +49,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:msk
 
+      - name: Validate every MSK clinical story
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-msk-stories.mjs
+
       - name: Validate PNA story depth and clinical content
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-therapy-stories.mjs
@@ -101,6 +105,16 @@ jobs:
 
           check_url "https://physionexusacademy.com/" "Check Symptoms"
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
+          check_url "https://physionexusacademy.com/msk-injuries" 'data-pna-msk-story-library="v1"'
+          for slug in \
+            lateral-ankle-sprain acl-injury meniscal-injury hamstring-strain \
+            achilles-tendon-rupture rotator-cuff-tendinopathy \
+            rotator-cuff-full-thickness-tear anterior-shoulder-instability \
+            femoroacetabular-impingement-syndrome knee-osteoarthritis hip-osteoarthritis \
+            cervical-radiculopathy carpal-tunnel-syndrome lateral-epicondylalgia
+          do
+            check_url "https://physionexusacademy.com/msk-injuries/$slug" 'data-pna-msk-story="cinematic-v1"'
+          done
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-content-revision="storytelling-v1"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-editorial="v2"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="clinical-story-v3"'
