@@ -61,6 +61,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-therapy-stories.mjs
 
+      - name: Validate Manual Therapy visual manifest (inactive until 35 approved)
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-manual-visuals.mjs
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:
@@ -74,11 +78,16 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
           NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+          # Disabled until complete 35/35 clinical QA and image checks are finished.
+          MANUAL_THERAPY_VISUALS_LIVE: "false"
 
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
           PAYMENTS_ENABLED: "false"
         run: |
+          if [ "$MANUAL_THERAPY_VISUALS_LIVE" = "true" ]; then
+            node scripts/validate-manual-visuals.mjs --publish
+          fi
           npx wrangler whoami
           npm run deploy
 
