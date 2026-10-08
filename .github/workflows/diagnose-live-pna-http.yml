@@ -1,0 +1,55 @@
+name: Check Live PNA Availability Without Redeploying
+
+on:
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - ".github/workflows/diagnose-live-pna-http.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-live-http:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Inspect live page and optimized asset HTTP responses
+        shell: bash
+        run: |
+          set -uo pipefail
+          urls=(
+            "https://physionexusacademy.com/manual-therapy"
+            "https://physionexusacademy.com/manual-therapy/regions/scs-upper-trapezius"
+            "https://physionexusacademy.com/manual-therapy/myofascial-release"
+            "https://physionexusacademy.com/msk-injuries/lateral-ankle-sprain"
+            "https://physionexusacademy.com/images/manual-therapy/cards/maitland-joint-mobilization.avif"
+            "https://physionexusacademy.com/images/manual-therapy/cards/craniosacral-therapy.webp"
+          )
+          failures=0
+          for url in "${urls[@]}"; do
+            echo "--- Testing $url"
+            ok=0
+            for attempt in 1 2 3; do
+              head_file="$(mktemp)"; body_file="$(mktemp)"
+              status="$(curl -sSL --connect-timeout 8 --max-time 20 -D "$head_file" -o "$body_file" \
+                 -w "%{http_code}" -H "User-Agent: Mozilla/5.0 PNAAvailabilityQA/1.0" \
+                 "$url?availability_probe=${GITHUB_RUN_ID}-${attempt}" || true)"
+              type="$(grep -i '^content-type:' "$head_file" | tail -1 | tr -d '\r' || true)"
+              echo "attempt=$attempt status=$status content-type=$type response_bytes=$(wc -c < "$body_file")"
+              if [ "$status" = "200" ]; then ok=1; rm -f "$head_file" "$body_file"; break; fi
+              head -c 200 "$body_file" | tr '\n' ' ' || true
+              echo
+              rm -f "$head_file" "$body_file"
+              sleep 4
+            done
+            if [ "$ok" -ne 1 ]; then
+              failures=$((failures+1))
+              echo "::error::Unreliable live route: $url"
+            fi
+            sleep 3
+          done
+          echo "failed_routes=$failures" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$failures" -gt 0 ]; then exit 1; fi
