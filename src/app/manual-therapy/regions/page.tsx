@@ -25,10 +25,10 @@ export default function RegionalManualTherapyPage() {
           Region-Wise Manual Therapy Applications
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-7 text-violet-50 sm:text-lg">
-          Learn exactly how a technique changes when you move from the cervical spine to the
-          shoulder, knee, ankle or neural system. Every application includes positioning,
-          stabilization, contact, force direction, dose, step-by-step execution, reassessment,
-          mistakes and safety.
+          The same technique can tell a very different clinical story at the neck, shoulder,
+          knee or ankle. Start with a patient's familiar movement, discover which manual input
+          might help, and follow each decision from the first contact to the final re-test.
+          Every guide keeps exact positioning, dosage and safety close at hand.
         </p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
           <span className="rounded-full bg-white/10 px-4 py-2">
@@ -44,11 +44,12 @@ export default function RegionalManualTherapyPage() {
         <div className="flex items-start gap-3">
           <Map className="mt-1 h-6 w-6 flex-none text-cyan-700" />
           <div>
-            <h2 className="text-xl font-bold text-navy-800">How to study this section</h2>
+            <h2 className="text-xl font-bold text-navy-800">Start with the question, not the technique</h2>
             <p className="mt-2 text-sm leading-6 text-navy-600">
-              First learn the parent technique in Manual Therapy Mastery. Then open the body
-              region you want and study how hand placement, stabilization, force direction and
-              dosage change in that region. Finish by retesting the exact comparable sign.
+              Imagine the patient and choose one movement that matters. Explore the parent
+              technique's clinical story, then open its regional application to see why contact,
+              direction and dose might change. The last chapter of every treatment trial is the
+              same: re-test that original movement and decide what to do next.
             </p>
           </div>
         </div>
@@ -94,7 +95,7 @@ export default function RegionalManualTherapyPage() {
                       {item.clinicalUse[0]}
                     </p>
                     <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-violet-700">
-                      Open application
+                      Explore this clinical guide
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </a>
