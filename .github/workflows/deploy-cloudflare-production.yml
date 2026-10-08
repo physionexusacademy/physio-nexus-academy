@@ -26,8 +26,8 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
             echo "Cloudflare API token is configured."
           else
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Cloudflare deployment skipped: add CLOUDFLARE_API_TOKEN as a repository Actions secret."
+            echo "::error::Cloudflare deployment cannot run: CLOUDFLARE_API_TOKEN is missing from repository Actions secrets."
+            exit 1
           fi
 
       - name: Checkout
@@ -82,7 +82,7 @@ jobs:
 
             for attempt in 1 2 3 4 5 6; do
               body="$(curl -fsSL --connect-timeout 10 --max-time 30 "$url?deploy=${GITHUB_SHA}" || true)"
-              if printf '%s' "$body" | grep -Fq "$marker"; then
+              if grep -Fq "$marker" <<< "$body"; then
                 echo "Smoke test passed: $url"
                 return 0
               fi
@@ -97,3 +97,4 @@ jobs:
 
           check_url "https://physionexusacademy.com/" "Check Symptoms"
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-content-revision="storytelling-v1"'
