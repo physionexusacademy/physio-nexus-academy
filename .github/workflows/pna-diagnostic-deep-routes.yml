@@ -1,4 +1,4 @@
-name: PNA Deep Route Diagnostics (no deploy)
+name: PNA 52 Regional Story Live QA (read only)
 
 on:
   push:
@@ -7,48 +7,97 @@ on:
   workflow_dispatch:
 
 jobs:
-  probe:
-    name: Compare home vs deep routes without changing production
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
-      - name: HTTP diagnostics for PNA routes
+      - name: Check all authored clinical region pages without deployment
         shell: bash
         run: |
-          set -u
-          urls=(
-            "https://physionexusacademy.com/"
-            "https://physionexusacademy.com/manual-therapy"
-            "https://physionexusacademy.com/manual-therapy/strain-counterstrain"
-            "https://physionexusacademy.com/manual-therapy/myofascial-release"
-            "https://physionexusacademy.com/manual-therapy/regions"
-            "https://physionexusacademy.com/manual-therapy/regions/by-region/cervical"
-            "https://physionexusacademy.com/manual-therapy/regions/maitland-cervical-pa-mobilization"
-            "https://physionexusacademy.com/manual-therapy/regions/scs-quadratus-lumborum-lumbar"
-            "https://physionexusacademy.com/manual-therapy/regions/mulligan-hip-lateral-mwm"
-          )
-          for pass in 1 2 3; do
-            echo "=========== PASS $pass ==========="
-            for url in "${urls[@]}"; do
-              for agent in curl chrome; do
-                if [ "$agent" = chrome ]; then
-                  ua="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36"
-                else
-                  ua="pna-site-diagnostic/1.0"
-                fi
-                headers="$(mktemp)"
-                body="$(mktemp)"
-                response="$(curl --http1.1 -sS -L --connect-timeout 8 --max-time 20 --retry 0 -A "$ua" -D "$headers" -o "$body" -w 'http=%{http_code} sec=%{time_total} bytes=%{size_download} IP=%{remote_ip} TLS=%{ssl_verify_result}' "$url" 2>&1)"
-                rc=$?
-                ray="$(grep -i '^cf-ray:' "$headers" | tail -1 | tr -d '\r' || true)"
-                ct="$(grep -i '^content-type:' "$headers" | tail -1 | tr -d '\r' || true)"
-                title="$(grep -o '<title[^>]*>[^<]*' "$body" | head -1 | sed -E 's/<title[^>]*>//' || true)"
-                echo "pass=$pass agent=$agent rc=$rc $response $ray $ct title=$title url=$url"
-                if [ "$rc" -ne 0 ] || grep -Eq '^HTTP/[^ ]+ (429|5[0-9][0-9])' "$headers"; then
-                  echo "  error_body=$(head -c 200 "$body" | tr '\n' ' ')"
-                fi
-                rm -f "$headers" "$body"
-              done
-            done
-            sleep 3
+          set -euo pipefail
+          success=0
+          failed=0
+          for slug in \
+            maitland-cervical-pa-mobilization \
+            maitland-thoracic-pa-mobilization \
+            maitland-lumbar-pa-mobilization \
+            maitland-shoulder-posterior-glide \
+            maitland-knee-tibiofemoral-glide \
+            maitland-ankle-posterior-talar-glide \
+            kaltenborn-shoulder-traction \
+            kaltenborn-hip-traction \
+            kaltenborn-knee-traction \
+            kaltenborn-ankle-traction \
+            mulligan-cervical-rotation-snag \
+            mulligan-shoulder-mwm \
+            mulligan-elbow-mwm \
+            mulligan-knee-mwm \
+            mulligan-ankle-mwm \
+            met-cervical-rotation \
+            met-lumbar-pelvic-rotation \
+            met-hamstring \
+            mfr-cervical-upper-trapezius \
+            mfr-pectoral-shoulder \
+            mfr-lumbar-thoracolumbar \
+            mfr-calf \
+            neurodynamic-median-slider \
+            neurodynamic-ulnar-slider \
+            neurodynamic-radial-slider \
+            neurodynamic-sciatic-slider \
+            iastm-forearm-extensors \
+            iastm-hamstring \
+            iastm-calf \
+            pnf-upper-limb-d1 \
+            pnf-lower-limb-d1 \
+            scar-knee-mobilization \
+            maitland-wrist-radiocarpal-glide \
+            mulligan-wrist-mwm \
+            cyriax-lateral-elbow-friction \
+            scs-upper-trapezius \
+            stm-shoulder-posterior-cuff \
+            trigger-point-upper-trapezius \
+            manual-cervical-traction \
+            hvla-thoracic-principles \
+            fascial-manipulation-lumbar \
+            active-release-forearm \
+            active-release-calf \
+            mld-upper-limb
+          do
+            url="https://physionexusacademy.com/manual-therapy/regions/$slug"
+            if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 1 "$url" | grep -Fq 'data-pna-engagement="regional-reading-v3"'; then
+              echo "PASS authored region $slug"
+              success=$((success+1))
+            else
+              echo "::error::Missing live regional storytelling marker for $url"
+              failed=$((failed+1))
+            fi
           done
+          for slug in \
+            scs-quadratus-lumborum-lumbar \
+            scs-upper-trapezius-shoulder \
+            trigger-point-infraspinatus-shoulder \
+            stm-lumbar-paraspinals \
+            stm-calf-ankle-foot \
+            met-shoulder-external-rotation \
+            mulligan-hip-lateral-mwm \
+            mfr-thoracic-paraspinals
+          do
+            url="https://physionexusacademy.com/manual-therapy/regions/$slug"
+            if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 1 "$url" | grep -Fq 'data-pna-content-depth="authored-clinical-story"'; then
+              echo "PASS eight authored episodes $slug"
+              success=$((success+1))
+            else
+              echo "::error::Missing live authored-episode marker for $url"
+              failed=$((failed+1))
+            fi
+          done
+          overview="https://physionexusacademy.com/manual-therapy/regions/guide-facilitated-positional-release-wrist-and-hand"
+          if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 "$overview" | grep -Fq 'data-pna-story="regional-overview-v1"'; then
+            echo "PASS safe general regional overview with imaginative scene"
+          else
+            echo "::error::General overview did not show its introductory story"
+            failed=$((failed+1))
+          fi
+          echo "Regional check result: $success/52 detailed pages passed; $failed failures"
+          test "$success" -eq 52
+          test "$failed" -eq 0
