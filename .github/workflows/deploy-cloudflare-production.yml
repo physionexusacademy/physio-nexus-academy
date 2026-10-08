@@ -99,3 +99,4 @@ jobs:
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-content-revision="storytelling-v1"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-editorial="v2"'
+          check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="learn-and-smile-v1"'
