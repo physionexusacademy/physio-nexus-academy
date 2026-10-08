@@ -238,6 +238,10 @@ export function EditorialManualEncyclopedia({
           <h2>Explore the Regional Encyclopedia <ArrowRight className="inline h-4 w-4 text-violet-600 group-hover:translate-x-1" aria-hidden="true" /></h2>
           <p>See how safe positioning, force direction, dosage and reassessment vary across body regions.</p>
         </a>
+        <a href="/treatment-plans" className="group">
+          <h2>Apply it in treatment plans <ArrowRight className="inline h-4 w-4 text-teal-700 group-hover:translate-x-1" aria-hidden="true" /></h2>
+          <p>Connect the concepts to tailored exercises and rehabilitation progressions.</p>
+        </a>
         <aside aria-label="Clinical safety notice">
           <h2>Clinical safety first</h2>
           <p>Educational content is not patient-specific advice. Manipulation, cervical and specialist techniques require screening, training and informed consent.</p>
