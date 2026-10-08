@@ -29,16 +29,39 @@ for (const item of worldManualApproaches) {
 }
 
 const content = (path) => readFileSync(path, "utf8");
-assert(content("src/app/manual-therapy/page.tsx").includes('data-pna-world-entry="v1"'),
-  "The original Manual Therapy homepage must link to the worldwide collection");
-assert(content("src/app/manual-therapy/world-approaches/page.tsx").includes('data-pna-world-library="v1"'),
-  "World encyclopedia index marker missing");
-assert(content("src/app/manual-therapy/world-approaches/[slug]/page.tsx").includes('data-pna-world-story="v1"'),
-  "World lesson pages are not wired");
-assert(content("src/app/manual-therapy/world-approaches/[slug]/page.tsx").includes("lesson.stop")
-  && content("src/app/manual-therapy/world-approaches/[slug]/page.tsx").includes("lesson.evidence"),
-  "Clinical caution and evidence are required");
-assert(content("src/components/manual-therapy/WorldApproachChallenge.tsx").includes("lesson.explanation"),
-  "The challenge must reveal reasoning, not only an answer key");
+const hub = content("src/app/manual-therapy/page.tsx");
+const detail = content("src/app/manual-therapy/[slug]/page.tsx");
+const chapter = content("src/components/manual-therapy/WorldApproachChapter.tsx");
+const nextConfig = content("next.config.js");
 
-console.log("World Manual Therapy Encyclopedia validation passed: 13/13 distinct evidence-aware stories, safety sections, references, routes and quizzes.");
+const oldSource = [
+  content("src/lib/manual-therapy.ts"),
+  content("src/lib/manual-therapy-additions.ts"),
+];
+const originalSlugs = oldSource.flatMap((source) => [...source.matchAll(/\bslug:\s*"([^"]+)"/g)].map((match) => match[1]));
+assert.equal(originalSlugs.length, 22, "Original 22 technique chapters must be preserved");
+assert.equal(new Set(originalSlugs).size, 22, "Duplicate original chapters");
+assert(worldManualApproaches.every((item) => !originalSlugs.includes(item.slug)),
+  "Worldwide approaches must not overwrite existing technique URLs");
+
+assert(hub.includes('data-pna-library="unified-35-v1"'), "Unified main library marker missing");
+assert(hub.includes("World Manual Therapy Encyclopedia"), "Main heading was not renamed");
+assert(hub.includes("...manualTherapyTechniques.map") && hub.includes("...worldManualApproaches.map"),
+  "Main library must render all 22 existing and 13 worldwide items");
+assert(hub.includes("href={technique.href}"), "All library cards must open their own chapter");
+assert(!hub.includes('data-pna-world-entry="v1"'), "Remove standalone worldwide promo card");
+assert(!hub.includes("Explore the worldwide collection"), "No second collection call-to-action");
+assert(detail.includes("...worldManualApproaches.map") && detail.includes("<WorldApproachChapter lesson={worldLesson} />"),
+  "13 additional chapters must resolve on the same /manual-therapy/[slug] route");
+assert(chapter.includes('data-pna-world-story="v1"') && chapter.includes("lesson.stop")
+  && chapter.includes("lesson.evidence"), "Worldwide chapters need narrative, safety and evidence sections");
+assert(content("src/app/manual-therapy/world-approaches/page.tsx").includes('redirect("/manual-therapy")'),
+  "Legacy collection must redirect home");
+assert(content("src/app/manual-therapy/world-approaches/[slug]/page.tsx").includes('redirect("/manual-therapy/" + slug)'),
+  "Legacy chapter URLs must redirect to unified root");
+assert(nextConfig.includes("source: '/manual-therapy/world-approaches/:slug'"),
+  "Legacy chapter links need an SEO-preserving redirect");
+assert(content("src/components/manual-therapy/WorldApproachChallenge.tsx").includes("lesson.explanation"),
+  "Challenges must reveal clinical reasoning");
+
+console.log("World Manual Therapy Encyclopedia validation passed: 35/35 chapters on one main library, no separate collection, 13 lessons with safety and quizzes, old URLs preserved.");

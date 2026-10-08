@@ -17,6 +17,8 @@ import {
   MapPinned,
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
+import { worldManualApproaches } from "@/lib/manual-therapy-world";
+import { WorldApproachChapter } from "@/components/manual-therapy/WorldApproachChapter";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { getClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import { ClinicalStoryChapter } from "@/components/manual-therapy/ClinicalStoryChapter";
@@ -39,17 +41,26 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return manualTherapyTechniques.map((technique) => ({ slug: technique.slug }));
+  return [
+    ...manualTherapyTechniques.map((technique) => ({ slug: technique.slug })),
+    ...worldManualApproaches.map((approach) => ({ slug: approach.slug })),
+  ];
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
+  const worldLesson = worldManualApproaches.find((item) => item.slug === slug);
 
+  if (worldLesson) return {
+    title: worldLesson.title + " | World Manual Therapy Encyclopedia",
+    description: worldLesson.summary,
+    alternates: { canonical: "https://physionexusacademy.com/manual-therapy/" + slug },
+  };
   if (!technique) return {};
 
   return {
-    title: technique.name + " | Manual Therapy Mastery",
+    title: technique.name + " | World Manual Therapy Encyclopedia",
     description: technique.summary,
     alternates: {
       canonical: "https://physionexusacademy.com/manual-therapy/" + technique.slug,
@@ -59,6 +70,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
+  const worldLesson = worldManualApproaches.find((item) => item.slug === slug);
+  if (worldLesson) return <WorldApproachChapter lesson={worldLesson} />;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const story = getManualTherapyStory(slug);
   const episode = getClinicalEpisode(slug);
@@ -84,7 +97,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         className="inline-flex items-center gap-1 text-sm font-bold text-violet-700"
       >
         <ArrowLeft className="h-4 w-4" />
-        Manual Therapy Mastery
+        World Manual Therapy Encyclopedia
       </a>
 
       <section className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-violet-700 via-indigo-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
