@@ -8,7 +8,7 @@ import { WorldApproachChallenge } from "@/components/manual-therapy/WorldApproac
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
-  const next = worldManualApproaches[(worldManualApproaches.findIndex((x) => x.slug === slug) + 1) % worldManualApproaches.length];
+  const next = worldManualApproaches[(worldManualApproaches.findIndex((x) => x.slug === lesson.slug) + 1) % worldManualApproaches.length];
   return (
     <main className="container-content section-padding" data-pna-world-story="v1">
       <a href="/manual-therapy" className="inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
