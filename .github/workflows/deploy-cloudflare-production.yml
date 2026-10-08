@@ -53,6 +53,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-msk-stories.mjs
 
+      - name: Validate worldwide manual therapy chapters
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-manual-therapy-world.mjs
+
       - name: Validate PNA story depth and clinical content
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-therapy-stories.mjs
@@ -106,6 +110,16 @@ jobs:
           check_url "https://physionexusacademy.com/" "Check Symptoms"
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           check_url "https://physionexusacademy.com/msk-injuries" 'data-pna-msk-story-library="v1"'
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-world-entry="v1"'
+          check_url "https://physionexusacademy.com/manual-therapy/world-approaches" 'data-pna-world-library="v1"'
+          for slug in \
+            paris-approach mckenzie-mdt mennell-joint-play fascial-distortion-model \
+            balanced-ligamentous-tension spencer-shoulder-sequence still-technique \
+            osteopathic-articulatory osteopathic-lymphatic-pump rolfing-structural-integration \
+            bowen-technique visceral-manipulation craniosacral-therapy
+          do
+            check_url "https://physionexusacademy.com/manual-therapy/world-approaches/$slug" 'data-pna-world-story="v1"'
+          done
           for slug in \
             lateral-ankle-sprain acl-injury meniscal-injury hamstring-strain \
             achilles-tendon-rupture rotator-cuff-tendinopathy \
