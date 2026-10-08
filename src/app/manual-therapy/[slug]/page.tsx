@@ -21,6 +21,7 @@ import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { getClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import { ClinicalStoryChapter } from "@/components/manual-therapy/ClinicalStoryChapter";
 import { getManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
+import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
 import { getApplicationsForTechnique, isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regional";
 import {
@@ -62,6 +63,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const story = getManualTherapyStory(slug);
   const episode = getClinicalEpisode(slug);
   const aha = getManualTherapyAhaMoment(slug);
+  const weave = manualTherapyLessonWeaves[slug];
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
   const expert = getManualTherapyExpertProfile(slug);
@@ -112,7 +114,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
       </section>
 
-      {episode ? <ClinicalStoryChapter slug={slug} episode={episode} challenge={aha} /> : null}
+      {episode ? <ClinicalStoryChapter slug={slug} episode={episode} challenge={aha} weave={weave} /> : null}
 
       <section id="clinical-method" className="mt-8 scroll-mt-28 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
         <div className="border-b border-violet-100 p-6 sm:p-8">
@@ -134,6 +136,12 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <EditorialBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
           <EditorialBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
         </div>
+        {weave ? (
+          <aside className="mx-5 mt-1 rounded-2xl border-l-4 border-teal-500 bg-white px-5 py-5 sm:mx-8 sm:px-7">
+            <p className="text-xs font-bold uppercase tracking-[0.19em] text-teal-800">The subtle move · What textbook shorthand misses</p>
+            <p className="mt-3 text-base leading-8 text-slate-700">{weave.method}</p>
+          </aside>
+        ) : null}
         <div className="border-t border-violet-100 p-5 sm:p-8">
           <EditorialBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
         </div>
@@ -151,6 +159,19 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </div>
         </details>
       </section>
+
+      {weave ? (
+        <section data-pna-engagement="clinical-curveball-v1" className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50/70 to-white p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.19em] text-cyan-800">Clinical curveball · Your turn</p>
+          <h2 className="mt-2 font-serif text-xl font-bold text-slate-900 sm:text-2xl">The technique is over. But did it work?</h2>
+          <p className="mt-4 text-base font-medium leading-8 text-slate-800">{weave.question}</p>
+          <details className="mt-5 rounded-xl border border-teal-200 bg-white p-4">
+            <summary className="cursor-pointer text-sm font-bold text-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700">Think first, then reveal the reasoning</summary>
+            <p className="mt-4 border-t border-slate-100 pt-4 text-[15px] leading-8 text-slate-700">{weave.answer}</p>
+          </details>
+          <p className="mt-3 text-xs leading-6 text-slate-500">An educational scenario, not a replacement for individual clinical assessment.</p>
+        </section>
+      ) : null}
 
       <section className="mt-8" aria-labelledby="clinical-essentials">
         <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">The non-negotiables</p>
@@ -256,6 +277,12 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
               <p className="mt-3 max-w-4xl text-sm leading-7 text-navy-600">
                 {mechanism.simpleExplanation}
               </p>
+              {weave ? (
+                <div className="mt-5 max-w-4xl rounded-xl border-l-4 border-indigo-500 bg-white p-5">
+                  <p className="text-xs font-bold uppercase tracking-[0.17em] text-indigo-800">Science without the snooze button</p>
+                  <p className="mt-2 text-[15px] leading-8 text-slate-700">{weave.science}</p>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

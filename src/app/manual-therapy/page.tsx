@@ -12,6 +12,7 @@ import {
   manualTherapyTechniques,
 } from "@/lib/all-manual-therapy";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
+import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 
 export const metadata: Metadata = {
   title: "Manual Therapy Mastery",
@@ -140,6 +141,11 @@ export default function ManualTherapyPage() {
                           <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">
                             {getManualTherapyStory(technique.slug)?.scene}
                           </p>
+                           {manualTherapyLessonWeaves[technique.slug] ? (
+                             <p className="mt-3 border-l-2 border-teal-400 pl-3 font-serif text-sm italic leading-6 text-teal-900">
+                               {manualTherapyLessonWeaves[technique.slug].closer}
+                             </p>
+                           ) : null}
                         </>
                       ) : (
                         <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">{technique.summary}</p>

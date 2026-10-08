@@ -2,19 +2,21 @@ import { ArrowRight, BookOpenText, Lightbulb } from "lucide-react";
 import type { ClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import type { ManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
 import { clinicalRoomScenes } from "@/lib/manual-therapy-room-scenes";
+import type { LessonWeave } from "@/lib/manual-therapy-lesson-weave";
 
 type Props = {
   slug: string;
   episode: ClinicalEpisode;
   challenge?: ManualTherapyAhaMoment;
+  weave?: LessonWeave;
 };
 
-export function ClinicalStoryChapter({ slug, episode, challenge }: Props) {
+export function ClinicalStoryChapter({ slug, episode, challenge, weave }: Props) {
   const room = clinicalRoomScenes[slug];
   return (
     <article
       id="clinical-story"
-      data-pna-reading="clinical-story-v2"
+      data-pna-reading="clinical-story-v3"
       className="mt-9 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm"
       aria-labelledby="clinical-story-heading"
     >
@@ -24,7 +26,7 @@ export function ClinicalStoryChapter({ slug, episode, challenge }: Props) {
           <p className="text-xs font-bold uppercase tracking-[0.18em]">PNA · Inside the clinic</p>
         </div>
         <h2 id="clinical-story-heading" className="mt-3 max-w-3xl font-serif text-2xl font-bold leading-tight text-slate-900 sm:text-3xl">
-          One patient. Three decisions. No magic tricks.
+          {challenge?.hook ?? "One patient. Three decisions. No magic tricks."}
         </h2>
         <p className="mt-3 max-w-3xl text-[15px] leading-7 text-slate-600">
           A fictional teaching scenario to make the clinical reasoning memorable. The real patient,
@@ -33,6 +35,14 @@ export function ClinicalStoryChapter({ slug, episode, challenge }: Props) {
       </div>
 
       <div className="px-6 py-7 sm:px-9 sm:py-9">
+        {weave ? (
+          <aside className="mb-8 rounded-2xl border border-violet-100 bg-violet-50/60 p-5 sm:p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.17em] text-violet-700">
+              Scene zero · Listen to the conversation
+            </p>
+            <p className="mt-3 max-w-3xl font-serif text-lg leading-8 text-slate-800">{weave.dialogue}</p>
+          </aside>
+        ) : null}
         <div className="relative ml-3 border-l-2 border-teal-100 pl-7 sm:pl-9">
           <section className="relative pb-8 sm:pb-10" aria-label="The first clue">
             <span className="absolute -left-[38px] top-0 h-4 w-4 rounded-full border-4 border-white bg-teal-500 ring-1 ring-teal-100 sm:-left-[46px]" />
@@ -46,6 +56,14 @@ export function ClinicalStoryChapter({ slug, episode, challenge }: Props) {
             <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">02 · The decision</p>
             <h3 className="mt-2 font-serif text-xl font-bold text-slate-900">Now the hands—and the thinking—come in.</h3>
             <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{room?.touch ?? episode.decision}</p>
+            {weave ? (
+              <div className="mt-5 rounded-xl bg-teal-50 px-4 py-4">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-800">
+                  Freeze-frame · Picture it happening
+                </p>
+                <p className="mt-2 text-[15px] leading-8 text-slate-700">{weave.watch}</p>
+              </div>
+            ) : null}
           </section>
 
           <section className="relative" aria-label="The retest">
@@ -57,10 +75,10 @@ export function ClinicalStoryChapter({ slug, episode, challenge }: Props) {
         </div>
 
         <p className="mt-8 max-w-3xl border-l-[3px] border-cyan-500 pl-4 font-serif text-lg italic leading-8 text-slate-800">
-          {episode.spark}
+          {weave?.closer ?? episode.spark}
         </p>
 
-        {challenge ? (
+        {!weave && challenge ? (
           <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-6">
             <div className="flex items-center gap-2 text-teal-700">
               <Lightbulb className="h-4 w-4" aria-hidden="true" />

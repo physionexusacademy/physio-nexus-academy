@@ -43,6 +43,8 @@ import {
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import { regionalClinicalStories, regionalClinicalChallenges } from "@/lib/manual-therapy-regional-stories";
+import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
+import { regionalManualVignettes } from "@/lib/manual-therapy-regional-vignettes";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -369,6 +371,8 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
 
   const isTechniqueSpecific = isTechniqueSpecificRegionalApplication(item);
   const clinicalStory = regionalClinicalStories[item.slug];
+  const lessonVoice = manualTherapyLessonWeaves[item.techniqueSlug];
+  const vignette = regionalManualVignettes[item.slug];
   const subTechniques = clinicalStory
     ? []
     : getRegionalSubTechniques(item.techniqueSlug, item.region);
@@ -552,7 +556,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             </aside>
           </div>
         </article>
-      ) : (
+      ) : !vignette ? (
       <aside className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-8">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">The first question</p>
         <h2 className="mt-2 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
@@ -564,8 +568,58 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           Now choose a baseline task, apply only an appropriate and safe trial, then measure the
           same task again. That is how an interesting technique becomes meaningful care.
         </p>
+        {lessonVoice ? (
+          <p className="mt-4 border-l-4 border-cyan-500 pl-4 font-serif text-base italic leading-8 text-teal-900">
+            {lessonVoice.closer}
+          </p>
+        ) : null}
       </aside>
       )}
+
+      {isTechniqueSpecific && !clinicalStory && vignette ? (
+        <article className="mt-8 overflow-hidden rounded-3xl border border-teal-200 bg-white shadow-sm" data-pna-engagement="regional-reading-v3">
+          <div className="border-b border-teal-100 bg-gradient-to-r from-teal-50 to-white p-6 sm:p-8">
+            <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-800">The clinical scene · Not just another list of steps</p>
+            <h2 className="mt-3 font-serif text-2xl font-bold leading-snug text-slate-900">{vignette.title}</h2>
+            <p className="mt-2 text-xs leading-6 text-slate-500">A fictional situation used to teach clinical judgment, not a reported treatment result.</p>
+          </div>
+          <div className="space-y-5 p-6 sm:p-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Scene 1 · The patient's problem</p>
+              <p className="mt-2 text-[15px] leading-8 text-slate-700">{vignette.scene}</p>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Scene 2 · What the clinician considers</p>
+              <p className="mt-2 text-[15px] leading-8 text-slate-700">{vignette.decision}</p>
+            </div>
+            <p className="border-l-4 border-cyan-500 pl-4 font-serif text-lg italic leading-8 text-slate-800">{vignette.sticky}</p>
+            {lessonVoice ? (
+              <aside className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-800">Behind the technique · The clever part</p>
+                <p className="mt-2 text-[15px] leading-8 text-slate-700">{lessonVoice.method}</p>
+              </aside>
+            ) : null}
+            <div className="rounded-xl border border-teal-100 bg-teal-50/60 p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-800">Scene 3 · The patient gets the final say</p>
+              <p className="mt-2 text-[15px] leading-8 text-slate-700">
+                The chosen comparable sign is <strong>{item.reassess[0]}</strong>.
+                After the trial, repeat it under similar conditions and let the response guide the next clinical decision.
+              </p>
+            </div>
+            <a href={"/manual-therapy/" + item.techniqueSlug + "#clinical-story"}
+              className="inline-flex text-sm font-bold text-indigo-800 underline underline-offset-4">
+              Explore the complete story behind this manual therapy family
+            </a>
+          </div>
+        </article>
+      ) : null}
+
+      {isTechniqueSpecific && clinicalStory && lessonVoice ? (
+        <aside className="mt-6 rounded-2xl border-l-4 border-indigo-500 bg-indigo-50/70 px-5 py-5">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-800">One more scientific plot twist</p>
+          <p className="mt-3 text-[15px] leading-8 text-slate-700">{lessonVoice.science}</p>
+        </aside>
+      ) : null}
 
       <section className="mt-8">
         <div className="flex items-end justify-between gap-4">

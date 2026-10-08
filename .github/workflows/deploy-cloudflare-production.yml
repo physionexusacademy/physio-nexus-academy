@@ -49,6 +49,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:msk
 
+      - name: Validate PNA story depth and clinical content
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-manual-therapy-stories.mjs
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:
@@ -99,11 +103,28 @@ jobs:
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-content-revision="storytelling-v1"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-editorial="v2"'
-          check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="clinical-story-v2"'
-          check_url "https://physionexusacademy.com/manual-therapy/strain-counterstrain" 'data-pna-reading="clinical-story-v2"'
+          check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="clinical-story-v3"'
+          check_url "https://physionexusacademy.com/manual-therapy/strain-counterstrain" 'data-pna-reading="clinical-story-v3"'
           check_url "https://physionexusacademy.com/manual-therapy/regions" "general overviews"
           check_url "https://physionexusacademy.com/manual-therapy/regions" 'data-pna-regions-lite="v1"'
           check_url "https://physionexusacademy.com/manual-therapy/regions/by-region/cervical" 'data-pna-region-overviews="v1"'
           check_url "https://physionexusacademy.com/manual-therapy/regions/guide-facilitated-positional-release-wrist-and-hand" 'data-pna-content-depth="general-overview"'
           check_url "https://physionexusacademy.com/manual-therapy/regions/scs-quadratus-lumborum-lumbar" 'data-pna-content-depth="authored-clinical-story"'
           check_url "https://physionexusacademy.com/manual-therapy/regions/mulligan-hip-lateral-mwm" 'data-pna-content-depth="authored-clinical-story"'
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-content-revision="storytelling-v1"'
+          check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-engagement="clinical-curveball-v1"'
+          check_url "https://physionexusacademy.com/manual-therapy/regions/maitland-cervical-pa-mobilization" 'data-pna-engagement="regional-reading-v3"'
+          for slug in \
+            maitland-joint-mobilization kaltenborn-evjenth-mobilization \
+            mulligan-mobilization-with-movement mulligan-snags-nags \
+            cyriax-deep-transverse-friction muscle-energy-technique \
+            strain-counterstrain myofascial-release soft-tissue-mobilization \
+            trigger-point-compression iastm neurodynamic-mobilization \
+            manual-traction high-velocity-low-amplitude-thrust \
+            pnf-manual-techniques fascial-manipulation \
+            active-release-style-soft-tissue manual-lymphatic-drainage \
+            scar-mobilization paivm-ppivm-spinal-assessment \
+            myofascial-decompression-dry-cupping facilitated-positional-release
+          do
+            check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-reading="clinical-story-v3"'
+          done
