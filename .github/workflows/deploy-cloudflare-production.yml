@@ -82,14 +82,13 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
           NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
-          # 35 editorial technique covers are reviewed and the publish validator is mandatory.
-          MANUAL_THERAPY_VISUALS_LIVE: "true"
-
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
           PAYMENTS_ENABLED: "false"
         run: |
-          if [ "$MANUAL_THERAPY_VISUALS_LIVE" = "true" ]; then
+          # Publish is controlled by the reviewed 35-cover manifest (not a
+          # GitHub-only env variable unavailable inside Cloudflare Workers).
+          if node -e "process.exit(require('./src/data/manual-therapy-visual-manifest.json').publish ? 0 : 1)"; then
             node scripts/validate-manual-visuals.mjs --publish
           fi
           npx wrangler whoami
@@ -127,6 +126,13 @@ jobs:
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-editorial-design="anatomy-luxe-v1"'
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-editorial-card="maitland-joint-mobilization"'
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-editorial-card="paris-approach"'
+          # Regression: an accessible AVIF URL is not enough. The actual SSR
+          # encyclopedia HTML must choose all unique PNA picture elements, not
+          # the old repeated Cloudinary fallback illustration.
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-manual-cover="maitland-joint-mobilization"'
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-manual-cover="mulligan-snags-nags"'
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-manual-cover="paivm-ppivm-spinal-assessment"'
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-manual-cover="craniosacral-therapy"'
           check_url "https://physionexusacademy.com/manual-therapy" "World Manual Therapy Encyclopedia"
           check_url "https://physionexusacademy.com/manual-therapy/world-approaches" 'data-pna-library="unified-35-v1"'
           for slug in \
