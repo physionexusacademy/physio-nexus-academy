@@ -1,0 +1,93 @@
+name: Stage Manual Therapy AVIF/WebP Covers
+
+# Safe by design: only a manual run can create a DRAFT image PR.
+# This workflow itself never publishes the site.
+on:
+  workflow_dispatch:
+    inputs:
+      inbox_branch:
+        description: "Git branch containing assets/manual-therapy/inbox/manual-therapy-masters.zip"
+        required: true
+        default: "assets/manual-visuals-inbox"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: pna-manual-visual-optimizer
+  cancel-in-progress: true
+
+jobs:
+  optimize-and-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout protected source
+        uses: actions/checkout@v4
+        with:
+          ref: cloudflare-deploy
+
+      - name: Checkout source image ZIP from separate non-production branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.inbox_branch }}
+          path: .asset-inbox
+
+      - name: Extract source ZIP without copying originals into site output
+        shell: bash
+        run: |
+          set -euo pipefail
+          input=".asset-inbox/assets/manual-therapy/inbox/manual-therapy-masters.zip"
+          test -s "$input" || { echo "::error::Missing technique image ZIP on selected branch"; exit 1; }
+          cp "$input" "$RUNNER_TEMP/manual-therapy-masters.zip"
+          rm -rf .asset-inbox
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install lossless cropping and AVIF/WebP encoders
+        run: pip install -r scripts/requirements-manual-visuals.txt
+
+      - name: Verify manifest is exactly the canonical 35 techniques
+        run: node scripts/validate-manual-visuals.mjs
+
+      - name: Crop and optimize the source ZIP, generate private proof sheet
+        run: |
+          python scripts/optimize-manual-visuals.py \
+            --zip "$RUNNER_TEMP/manual-therapy-masters.zip" \
+            --output "public/images/manual-therapy/cards" \
+            --report-dir ".manual-visual-preview"
+
+      - name: Verify signatures, duplicate detection and byte limits
+        run: node scripts/validate-manual-visuals.mjs
+
+      - name: Publish preview as private CI artifact ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-therapy-visual-review
+          path: |
+            .manual-visual-preview/manual-therapy-contact-sheet.jpg
+            .manual-visual-preview/manual-therapy-report.json
+          retention-days: 14
+
+      - name: Stage image files as draft PR, not as production changes
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: cloudflare-deploy
+          branch: staging/manual-therapy-avif-webp
+          draft: true
+          add-paths: public/images/manual-therapy/cards/**
+          commit-message: "Stage optimized manual therapy images for private review"
+          title: "Visual QA ONLY — manual therapy AVIF/WebP cards"
+          body: |
+            Automated optimized image pack. DO NOT MERGE until:
+            - 35 original visuals are clinically reviewed.
+            - Manifest status is approved for every one of 35.
+            - node scripts/validate-manual-visuals.mjs --publish passes.
+            - Original source ZIP is kept only on the separate inbox branch.
+            - Live publishing remains intentionally disabled by default.
+            Proof sheet and byte-size report are attached to the workflow run.
