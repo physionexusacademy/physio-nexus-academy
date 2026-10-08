@@ -108,7 +108,14 @@ for (const [slug, lesson] of Object.entries(authoredDepth)) {
     slug + ": needs two realistic reasoning checks");
   assert(lesson.sources.length >= 1 && lesson.sources.every((r) => r.url.startsWith("https://")),
     slug + ": missing contextual sources");
-  const approximateWords = JSON.stringify(lesson).trim().split(/\\s+/).length;
+  const passages = [];
+  const collect = (value) => {
+    if (typeof value === "string") passages.push(value);
+    else if (Array.isArray(value)) value.forEach(collect);
+    else if (value && typeof value === "object") Object.values(value).forEach(collect);
+  };
+  collect(lesson);
+  const approximateWords = passages.join(" ").trim().split(/\s+/).length;
   assert(approximateWords >= 700, slug + ": less than 700 words of additional depth");
 }
 assert(chapter.includes("<WorldApproachDeepDive chapter={deep} />"),
