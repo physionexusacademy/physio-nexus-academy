@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { getCloudinaryUrl } from "@/lib/cloudinary";
 import { getEditorialArt } from "@/lib/manual-therapy-editorial-art";
+import type { ManualCoverMap } from "@/lib/manual-therapy-cover-publishing";
 
 export type EncyclopediaItem = {
   slug: string;
@@ -28,8 +29,9 @@ function readableHook(item: EncyclopediaItem) {
   return hook.length > 154 ? hook.slice(0, 151).trimEnd() + "…" : hook;
 }
 
-function Card({ item, index }: { item: EncyclopediaItem; index: number }) {
+function Card({ item, index, visualCovers }: { item: EncyclopediaItem; index: number; visualCovers: ManualCoverMap }) {
   const art = getEditorialArt(item.slug, item.family);
+  const newCover = visualCovers[item.slug];
   const artUrl = art
     ? getCloudinaryUrl(art.publicId, { width: 560, quality: 64, format: "auto" })
     : "";
@@ -44,19 +46,22 @@ function Card({ item, index }: { item: EncyclopediaItem; index: number }) {
       className="pna-editorial-card group"
       aria-label={item.name + ". Explore the clinical story"}
     >
-      {artUrl ? (
+      {newCover || artUrl ? (
         <div className="pna-editorial-card-art" aria-hidden="true">
-          {/* A cached, CDN-compressed illustrative PNA asset; not a technique demonstration. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={artUrl}
-            loading="lazy"
-            decoding="async"
-            width="560"
-            height="420"
-            alt=""
-            style={{ objectPosition: art?.position ?? "center" }}
-          />
+          {newCover ? (
+            <picture data-pna-manual-cover={item.slug}>
+              <source type="image/avif" srcSet={newCover.avif} />
+              {/* This WebP also provides a browser fallback if AVIF is unavailable. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={newCover.webp} loading="lazy" decoding="async" width="480" height="600" alt="" style={{ objectPosition: newCover.position }} />
+            </picture>
+          ) : (
+            <>
+              {/* Original Cloudinary illustration retained until the complete 35-cover release. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={artUrl} loading="lazy" decoding="async" width="560" height="420" alt="" style={{ objectPosition: art?.position ?? "center" }} />
+            </>
+          )}
         </div>
       ) : (
         <div className="pna-editorial-card-art pna-editorial-card-art-empty" aria-hidden="true" />
@@ -88,9 +93,11 @@ function Card({ item, index }: { item: EncyclopediaItem; index: number }) {
 export function EditorialManualEncyclopedia({
   items,
   families,
+  visualCovers,
 }: {
   items: EncyclopediaItem[];
   families: string[];
+  visualCovers: ManualCoverMap;
 }) {
   const [query, setQuery] = useState("");
   const [family, setFamily] = useState("All approaches");
@@ -199,7 +206,7 @@ export function EditorialManualEncyclopedia({
                 </div>
               </div>
               <div className="pna-editorial-grid">
-                {group.results.map((item, index) => <Card key={item.slug} item={item} index={index} />)}
+                {group.results.map((item, index) => <Card key={item.slug} item={item} index={index} visualCovers={visualCovers} />)}
               </div>
             </section>
           ))}
