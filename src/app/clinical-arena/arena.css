@@ -29,3 +29,20 @@
 .pna-arena button:focus-visible,.pna-arena a:focus-visible{outline:2px solid #078c86;outline-offset:3px}
 @media(max-width:640px){.pna-arena .pna-hero{padding:1.25rem}.pna-arena .pna-shell{padding:1.15rem}.pna-arena .pna-title{font-size:1.8rem}.pna-arena .pna-step{font-size:10px;padding:.65rem .3rem}}
 @media(prefers-reduced-motion:reduce){.pna-arena *{transition:none!important;transform:none!important}}
+
+/* Contrast hardening: protects against global theme overrides and stale utility layers. */
+html body .pna-arena{background:#f8fbfc!important;color:#183647!important;color-scheme:light!important}
+html body .pna-arena .pna-hero{background:linear-gradient(130deg,#fff 0%,#f3faf9 100%)!important;color:#183647!important;border-color:#dce9eb!important}
+html body .pna-arena .pna-title{color:#102f43!important;-webkit-text-fill-color:#102f43!important;text-shadow:none!important}
+html body .pna-arena .pna-eyebrow{color:#087b79!important}
+html body .pna-arena .pna-kicker{background:#e6f5f2!important;color:#116f6b!important}
+html body .pna-arena .pna-subtitle{color:#536b7a!important}
+html body .pna-arena .pna-filter{background:#fff!important;color:#16364a!important;border-color:#d5e3e7!important;color-scheme:light!important}
+html body .pna-arena .pna-filter option{background:#fff!important;color:#16364a!important}
+html body .pna-arena .pna-shell{background:rgba(255,255,255,.95)!important;color:#183647!important}
+html body .pna-arena .pna-back{color:#087b79!important}
+html body .pna-arena .pna-muted{color:#617785!important}
+html body .pna-arena .pna-primary{color:#fff!important}
+html body .pna-arena .pna-question{color:#163647!important}
+html body .pna-arena .pna-patient{color:#183647!important}
+@media(max-width:640px){html body .pna-arena .pna-hero .pna-title{font-size:clamp(1.7rem,7vw,2.15rem)!important;line-height:1.2!important}html body .pna-arena .pna-filter{min-height:44px}}
