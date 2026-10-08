@@ -1,0 +1,1 @@
+Upload manual-therapy-masters.zip only to the separate assets/manual-visuals-inbox branch. Never merge raw PNG/JPEG source ZIP files into cloudflare-deploy. See docs/manual-therapy-visual-upload.md.\n
