@@ -5,6 +5,7 @@ import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
+import { getPublishedManualCoverMap } from "@/lib/manual-therapy-cover-publishing";
 
 const worldLibraryFamily: Record<string, string> = {
   "paris-approach": "Orthopedic Assessment & Reasoning",
@@ -66,6 +67,7 @@ export default function ManualTherapyPage() {
       <EditorialManualEncyclopedia
         items={libraryItems}
         families={libraryFamilies}
+        visualCovers={getPublishedManualCoverMap()}
       />
     </div>
   );
