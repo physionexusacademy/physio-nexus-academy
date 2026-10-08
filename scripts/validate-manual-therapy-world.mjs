@@ -61,6 +61,12 @@ assert(!hub.includes('data-pna-world-entry="v1"'), "Remove standalone worldwide 
 assert(!hub.includes("Explore the worldwide collection"), "No second collection call-to-action");
 assert(detail.includes("...worldManualApproaches.map") && detail.includes("<WorldApproachChapter lesson={worldLesson} />"),
   "13 additional chapters must resolve on the same /manual-therapy/[slug] route");
+assert(chapter.includes('data-pna-world-final="v1"') &&
+  chapter.includes('data-pna-quick-recap="v1"') &&
+  chapter.includes('data-pna-extra-sources="v1"'),
+  "Final editorial flow must keep the short recap optional and preserve sources");
+assert(content("src/components/manual-therapy/WorldApproachChallenge.tsx").includes('href="#world-deep-safety"'),
+  "Clinical quiz should link to the visible research evidence section");
 assert(chapter.includes('data-pna-world-story="v1"') && chapter.includes("lesson.stop")
   && chapter.includes("lesson.evidence"), "Worldwide chapters need narrative, safety and evidence sections");
 assert(content("src/app/manual-therapy/world-approaches/page.tsx").includes('redirect("/manual-therapy")'),

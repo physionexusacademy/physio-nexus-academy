@@ -47,7 +47,7 @@ export function WorldApproachChallenge({ lesson }: { lesson: WorldManualApproach
           </div>
         )}
       </div>
-      <a href="#world-evidence" className="mx-5 mb-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-800 hover:underline sm:mx-8">
+      <a href="#world-deep-safety" className="mx-5 mb-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-800 hover:underline sm:mx-8">
         See what the research actually says <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </a>
     </section>

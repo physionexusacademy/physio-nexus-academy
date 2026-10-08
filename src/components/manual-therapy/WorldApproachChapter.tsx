@@ -13,7 +13,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
   const next = worldManualApproaches[(worldManualApproaches.findIndex((x) => x.slug === lesson.slug) + 1) % worldManualApproaches.length];
   const deep = worldManualDeepChapters[lesson.slug];
   return (
-    <main className="container-content section-padding" data-pna-world-story="v1">
+    <main className="container-content section-padding" data-pna-world-story="v1" data-pna-world-final="v1">
       <a href="/manual-therapy" className="inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> World Manual Therapy Encyclopedia
       </a>
@@ -66,39 +66,39 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
         </div>
       </article>
 
-      <section className="mt-8 overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50/60 via-white to-teal-50/60">
-        <div className="border-b border-indigo-100 p-6 sm:p-8">
-          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-indigo-800">
-            <Stethoscope className="h-5 w-5" aria-hidden="true" /> Scene 03 · How the clinician thinks
-          </p>
-          <h2 className="mt-3 font-serif text-2xl font-bold text-slate-900">From a memorable scene to a real clinical decision</h2>
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-700">{lesson.approach}</p>
-          <p className="mt-3 text-xs font-medium leading-6 text-slate-600">{lesson.origin}</p>
+      <details data-pna-quick-recap="v1" className="group mt-7 rounded-2xl border border-indigo-200 bg-indigo-50/40">
+        <summary className="flex cursor-pointer items-center gap-3 p-5 text-sm font-bold text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 sm:p-6">
+          <Stethoscope className="h-5 w-5 flex-none" aria-hidden="true" />
+          Already familiar with the method? Open the four-step clinical recap
+          <span className="ml-auto text-xs font-semibold text-indigo-700">Optional</span>
+        </summary>
+        <div className="border-t border-indigo-200 p-5 sm:p-7">
+          <p className="max-w-4xl text-[15px] leading-8 text-slate-700">{lesson.approach}</p>
+          <p className="mt-2 text-xs font-medium leading-6 text-slate-500">{lesson.origin}</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {lesson.clinicFlow.map((step, i) => (
+              <section key={step} className="rounded-xl border border-slate-200 bg-white p-4">
+                <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-teal-800">
+                  {i + 1} · {["Screen first", "Assess the real task", "Choose a safe clinical trial", "Retest and integrate"][i]}
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-slate-700">{step}</p>
+              </section>
+            ))}
+          </div>
+          <p className="mt-5 text-xs font-bold uppercase tracking-[0.14em] text-teal-800">Explain it to the patient</p>
+          <p className="mt-2 text-[15px] leading-8 text-slate-700">{lesson.patientExplanation}</p>
         </div>
-        <div className="grid gap-4 p-5 sm:p-8 lg:grid-cols-2">
-          {lesson.clinicFlow.map((step, i) => (
-            <div key={step} className="rounded-2xl border border-slate-200 bg-white p-5">
-              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-teal-800">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-800 text-white">{i + 1}</span>
-                {["Before any hands-on contact", "What to assess", "A responsible clinical trial", "Reassess and integrate"][i]}
-              </p>
-              <p className="mt-3 text-sm leading-8 text-slate-700">{step}</p>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-teal-100 bg-teal-50/50 p-6 sm:p-8">
-          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-teal-800">
-            <HeartPulse className="h-4 w-4" aria-hidden="true" /> For patients · In human words
-          </p>
-          <p className="mt-3 max-w-4xl text-[15px] leading-8 text-slate-800">{lesson.patientExplanation}</p>
-        </div>
-      </section>
+      </details>
 
       {deep ? <WorldApproachDeepDive chapter={deep} /> : null}
 
       <WorldApproachChallenge lesson={lesson} />
 
-      <section id="world-evidence" className="mt-8 scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+      <details id="world-evidence" data-pna-extra-sources="v1" className="mt-8 scroll-mt-24 rounded-2xl border border-slate-200 bg-white">
+        <summary className="cursor-pointer p-5 text-sm font-bold text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 sm:p-6">
+          More evidence context, myths and original reading links · Optional appendix
+        </summary>
+        <div className="border-t border-slate-100 p-5 sm:p-8">
         <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-indigo-700">
           <Microscope className="h-5 w-5" aria-hidden="true" /> Evidence reality check
         </p>
@@ -131,7 +131,8 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
             it is contextual reading—not proof of the named method. Clinical teaching does not replace certified technique training, consent or personalized care.
           </p>
         </div>
-      </section>
+        </div>
+      </details>
 
       <nav className="mt-9 flex flex-wrap justify-between gap-4 rounded-3xl border border-teal-200 bg-teal-50/70 p-5 sm:p-6" aria-label="More manual therapy chapters">
         <a className="inline-flex items-center gap-2 text-sm font-bold text-teal-900" href="/manual-therapy">

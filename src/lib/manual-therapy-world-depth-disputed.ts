@@ -78,8 +78,8 @@ export const worldDepthFascialAndDisputed: Record<string, WorldDeepChapter> = {
     "dose": "FDM includes diverse historical procedures and some can involve painful pressures. No universal safe dose or evidence-based requirement for forceful contact exists. Exact execution, if pursued, belongs to properly trained professionals after informed consent and screening; this chapter does not endorse high-pain manipulation.",
     "caution": "Avoid forceful soft-tissue methods over acute tears, bruising/hematoma, bleeding risk, suspected DVT, vascular structures, fragile skin, infection, tumor-related tissue concerns or impaired sensation. Never use pain intensity as a surrogate for efficacy.",
     "evidence": {
-      "known": "FDM has descriptive literature, historical classifications and some small studies or case reports. The model's six categories and gestures are documented, allowing learners to understand the theory accurately.",
-      "unknown": "The six proposed microscopic distortion types and their diagnosis by hand gesture lack robust independent validation. Some studies report short-term differences, but small samples, bias and heterogeneity limit broad claims; the method should not be advertised as demonstrably superior to established treatment.",
+      "known": "A July 2026 systematic review/meta-analysis included 14 FDM studies with 644 participants. It reported a modest statistically significant average pain advantage compared with alternative care (mean difference −0.92; 95% CI −1.70 to −0.14), but the authors judged that difference below a clinically meaningful threshold. Larger pain improvements from baseline cannot, by themselves, identify an FDM-specific effect.",
+      "unknown": "The 2026 review does not independently validate the model's six proposed fascial distortions, tissue diagnoses inferred from hand gestures or the claimed mechanisms. Differences between studies and limitations in trial designs leave important clinical uncertainty; evidence for pain outcomes is not evidence that a named distortion physically existed or was corrected.",
       "communication": "'Your gesture tells me where the pain feels important. Some practitioners organize those gestures with an FDM model, but that doesn't prove an actual fascial tear or twist. Let's assess the underlying problem and test a safe plan.'"
     },
     "memoryHook": "The hand gesture is the patient's subtitle—not an MRI of fascia.",
@@ -94,6 +94,10 @@ export const worldDepthFascialAndDisputed: Record<string, WorldDeepChapter> = {
       }
     ],
     "sources": [
+      {
+        "label": "July 2026 systematic review/meta-analysis of FDM pain outcomes (14 studies, 644 participants)",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42441315/"
+      },
       {
         "label": "Des Moines University FDM teaching: six model categories",
         "url": "https://cme.dmu.edu/FDM-2023"

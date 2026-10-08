@@ -133,6 +133,7 @@ jobs:
           do
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-story="v1"'
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-depth="full-chapter-v2"'
+            check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-final="v1"'
           done
           check_url "https://physionexusacademy.com/manual-therapy/world-approaches/paris-approach" 'data-pna-world-story="v1"'
           for slug in \
