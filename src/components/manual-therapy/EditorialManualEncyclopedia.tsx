@@ -56,7 +56,7 @@ function Card({ item, index }: { item: EncyclopediaItem; index: number }) {
             width="400"
             height="500"
             alt=""
-            style={{ objectPosition: art?.position ?? "center" }}
+            style={{ objectPosition: approvedManualAvifCards[item.slug] ? "center center" : art?.position ?? "center" }}
           />
         </div>
       ) : (
