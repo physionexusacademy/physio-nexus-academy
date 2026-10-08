@@ -243,6 +243,12 @@ function DeepTechniqueCard({
             <h3 className="mt-3 text-xl font-bold leading-tight text-navy-900 sm:text-2xl">
               {sub.name}
             </h3>
+            <p className="mt-3 text-sm leading-7 text-navy-600">
+              Picture a patient whose familiar movement still feels difficult. Before choosing this
+              variation, ask: <strong className="text-navy-900">what change would convince us
+              that this is helping?</strong> Keep the answer tied to the same movement or task
+              before and after the trial.
+            </p>
           </div>
         </div>
 
@@ -251,7 +257,7 @@ function DeepTechniqueCard({
             <Target className="mt-0.5 h-5 w-5 flex-none" />
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy-500">
-                Clinical goal
+                The change we are looking for
               </p>
               <p className="mt-1 text-sm font-semibold leading-6 text-navy-800">
                 {sub.clinicalGoal}
@@ -286,7 +292,7 @@ function DeepTechniqueCard({
             <div className="flex items-center gap-2 text-teal-800">
               <RotateCcw className="h-4 w-4" />
               <p className="text-xs font-bold uppercase tracking-wide">
-                Best reassessment
+                The movement that tells us
               </p>
             </div>
             <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
@@ -436,6 +442,11 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           <h1 className="mt-2 max-w-4xl text-3xl font-bold leading-tight text-white sm:text-5xl">
             {item.title}
           </h1>
+          <p className="mt-5 max-w-3xl text-base leading-8 text-indigo-50 sm:text-lg">
+            What changes when {item.techniqueName} meets the {item.region.toLowerCase()}?
+            The answer begins with the patient's real movement, not a memorized hand position.
+            Follow the clinical clues, choose the safest useful input, and discover what the re-test reveals.
+          </p>
 
           <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
@@ -477,6 +488,19 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           </div>
         </section>
       ) : null}
+
+      <aside className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">The first question</p>
+        <h2 className="mt-2 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
+          Would this approach change what the patient can actually do?
+        </h2>
+        <p className="mt-3 text-sm leading-7 text-navy-700">
+          Imagine a person struggling with a movement in the {item.region.toLowerCase()} region.
+          The first clue is whether the clinical presentation fits: {item.clinicalUse[0]}
+          Now choose a baseline task, apply only an appropriate and safe trial, then measure the
+          same task again. That is how an interesting technique becomes meaningful care.
+        </p>
+      </aside>
 
       <section className="mt-8">
         <div className="flex items-end justify-between gap-4">
@@ -599,12 +623,12 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
                   Deep Technique Library
                 </p>
                 <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
-                  Specific variations for {item.region}
+                  Every variation changes the clinical story
                 </h2>
                 <p className="mt-3 max-w-3xl text-sm leading-6 text-indigo-100">
-                  Each card now combines a mini anatomy target map, force-direction
-                  cue, best reassessment, patient focus and therapist check before
-                  opening into the full four-step application sequence.
+                  Explore the variations for {item.region} one by one. Each starts with a clinical
+                  decision, then reveals its target, positioning, direction, dose, safety and
+                  the movement you must recheck afterward.
                 </p>
               </div>
 
