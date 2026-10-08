@@ -1,0 +1,61 @@
+name: Validate PNA MSK Storytelling
+
+on:
+  push:
+    branches:
+      - "feature/msk-*"
+    paths:
+      - "src/lib/msk-clinical-stories.ts"
+      - "src/components/msk/**"
+      - "src/app/msk-injuries/**"
+      - "scripts/validate-msk-stories.mjs"
+      - ".github/workflows/msk-storytelling-check.yml"
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/lib/msk-clinical-stories.ts"
+      - "src/components/msk/**"
+      - "src/app/msk-injuries/**"
+      - "scripts/validate-msk-stories.mjs"
+      - ".github/workflows/msk-storytelling-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate clinical stories cover all conditions
+        run: node --experimental-strip-types scripts/validate-msk-stories.mjs
+
+      - name: Validate MSK symptom screening regression
+        run: npm run validate:msk
+
+      - name: Check TypeScript
+        run: npx tsc --noEmit
+
+      - name: Build full Next.js site
+        env:
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+          NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+          NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+          PAYMENTS_ENABLED: "false"
+        run: npm run build
