@@ -36,11 +36,16 @@ const flows:Record<string,Flow>={
 "achilles-01":{"chief":"I felt a snap behind my ankle while sprinting and can't push off.","historyQuestions":[["Was there a sudden pop and immediate difficulty pushing off?","Yes, exactly. It felt like someone kicked me from behind."],["Do you prefer morning or evening runs?","Evenings, but this happened suddenly during sprinting."]],"bestHistory":0,"differential":["Achilles tendon rupture and calf muscle tear","Only chronic plantar fasciitis","Only knee osteoarthritis"],"differentialCorrect":0,"differentialWhy":"The snap and loss of push-off warrant urgent examination for tendon rupture; calf injury can mimic parts of the history.","treatment":["Protect and immobilize appropriately; arrange urgent specialist assessment","Aggressively stretch the Achilles immediately","Return to sprinting to test recovery"],"treatmentCorrect":0,"treatmentWhy":"Suspected rupture requires protection and prompt orthopedic/sports medicine assessment. Avoid loading or stretching a potentially ruptured tendon."},
 "shoulder-02":{"chief":"My shoulder hurts when I paint ceilings or reach overhead.","historyQuestions":[["Is pain provoked by overhead loading, and can someone else move your shoulder further?","Overhead activity hurts. Passive movement is easier than lifting it myself."],["What brand of paint do you use?","Different brands; that doesn't explain the painful movement."]],"bestHistory":0,"differential":["Rotator cuff-related pain, cervical referral and adhesive capsulitis","Only knee osteoarthritis","Only Achilles tendon rupture"],"differentialCorrect":0,"differentialWhy":"Overhead load pain with preserved passive motion suggests rotator cuff-related pain, but screen cervical and other shoulder causes.","treatment":["Education, activity modification and progressive rotator cuff/scapular strengthening","Forcefully stretch into severe pain at every visit","Immobilize indefinitely"],"treatmentCorrect":0,"treatmentWhy":"Progressive exercise and education tailored to irritability and functional demands are common initial management options."}
 };
-type Stage="history"|"differential"|"diagnosis"|"treatment";
-const stages:Stage[]=["history","differential","diagnosis","treatment"];
-const stageNames:Record<Stage,string>={history:"History taking",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning"};
+type Stage="history"|"examination"|"differential"|"diagnosis"|"treatment";
+const stages:Stage[]=["history","examination","differential","diagnosis","treatment"];
+const stageNames:Record<Stage,string>={history:"History taking",examination:"Clinical examination",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning"};
 export default function ClinicalArenaPage(){
  const [specialty,setSpecialty]=useState("All specialties");
+ const [difficulty,setDifficulty]=useState("Student");
+ const [xp,setXp]=useState(0);
+ const [completed,setCompleted]=useState(0);
+ useEffect(()=>{try{const v=JSON.parse(localStorage.getItem("pna-arena-progress-v2")||"{}");setXp(Number(v.xp)||0);setCompleted(Number(v.completed)||0);}catch{}},[]);
+ useEffect(()=>{if(xp||completed){try{localStorage.setItem("pna-arena-progress-v2",JSON.stringify({xp,completed}));}catch{}}},[xp,completed]);
  const [position,setPosition]=useState(0);
  const [stage,setStage]=useState<Stage>("history");
  const [selected,setSelected]=useState<number|null>(null);
@@ -57,33 +62,35 @@ export default function ClinicalArenaPage(){
  const filtered=useMemo(()=>cases.filter(c=>specialty==="All specialties"||c.specialty===specialty),[specialty]);
  const item=filtered[position];
  const flow=item?flows[item.id]:undefined;
- const current=stage==="differential"?{question:"Which differential diagnoses should you prioritize?",options:flow?.differential||[],correct:flow?.differentialCorrect??0,why:flow?.differentialWhy||""}:stage==="diagnosis"?{question:item?.question||"",options:item?.options||[],correct:item?.correct??0,why:item?.explanation||""}:{question:"Which is the most appropriate management plan?",options:flow?.treatment||[],correct:flow?.treatmentCorrect??0,why:flow?.treatmentWhy||""};
+ const current=stage==="examination"?{question:"Which examination finding is most useful to investigate in this case?",options:[item?.findings[0]||"", "The patient’s favorite sports team", "An unrelated cosmetic observation"],correct:0,why:"Prioritize examination findings that help test your hypothesis and assess safety. "+(item?.clue||"")}:stage==="differential"?{question:"Which differential diagnoses should you prioritize?",options:flow?.differential||[],correct:flow?.differentialCorrect??0,why:flow?.differentialWhy||""}:stage==="diagnosis"?{question:item?.question||"",options:item?.options||[],correct:item?.correct??0,why:item?.explanation||""}:{question:"Which is the most appropriate management plan?",options:flow?.treatment||[],correct:flow?.treatmentCorrect??0,why:flow?.treatmentWhy||""};
  function reset(next:string){setSpecialty(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setScore(0);setFinished(false);setAsked([]);}
  function respond(ok:boolean,why:string){
   const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):feedbackLine(ok?"correct":"incorrect",seen,stage);
-  setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok)setScore(v=>v+1);
+  setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok){setScore(v=>v+1);setXp(v=>v+(difficulty==="Expert"?30:difficulty==="Clinician"?20:10));}
  }
  function submit(){if(selected===null||revealed||stage==="history")return;respond(selected===current.correct,current.why);}
  function advance(){
   const nextIndex=stages.indexOf(stage)+1;
   if(nextIndex<stages.length){setStage(stages[nextIndex]);setSelected(null);setRevealed(false);setFeedback("");return;}
-  if(position+1>=filtered.length){setFinished(true);return;}
+  if(position+1>=filtered.length){setFinished(true);setCompleted(v=>v+1);return;}
   setPosition(v=>v+1);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setAsked([]);
  }
  if(!item||!flow)return <main className="container-content py-12">No cases available.</main>;
  const [quip,explanation]=feedback.split("|");
+ const shift=item?Array.from(item.id).reduce((n,ch)=>n+ch.charCodeAt(0),0)%Math.max(current.options.length,1):0;
+ const orderedOptions=current.options.map((_,i)=>({original:(i+shift)%current.options.length,text:current.options[(i+shift)%current.options.length]}));
  return <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-12 text-white"><div className="container-content max-w-4xl">
  <Link href="/" className="text-sm text-teal-300 hover:text-teal-200">← Back to PNA</Link>
  <header className="mt-7 rounded-3xl border border-teal-400/20 bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-2xl sm:p-9">
  <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest text-teal-300"><BrainCircuit className="h-5 w-5"/> Physio Nexus Academy <span className="rounded-full bg-teal-400/10 px-3 py-1">Clinical Challenge Arena · Beta</span></div>
  <h1 className="mt-4 text-3xl font-extrabold sm:text-4xl">Take the history. Think. Diagnose. Treat. 😂</h1>
  <p className="mt-3 text-slate-300">Four-stage clinical reasoning challenges with friendly roasts and clear explanations. No AI calls or heavy graphics.</p>
- <div className="mt-6 flex flex-wrap items-center gap-3"><label htmlFor="specialty" className="text-sm font-semibold">Specialty</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="max-w-full rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select><span className="text-xs text-slate-400">{filtered.length} starter cases · expanding after review</span></div>
+ <div className="mt-6 flex flex-wrap items-center gap-3"><label htmlFor="specialty" className="text-sm font-semibold">Specialty</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="max-w-full rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select><label htmlFor="difficulty" className="text-sm font-semibold">Level</label><select id="difficulty" value={difficulty} onChange={e=>{setDifficulty(e.target.value);reset(specialty);}} className="rounded-xl border border-slate-600 bg-slate-800 px-3 py-3 text-sm text-white">{["Student","Intern","Clinician","Expert"].map(v=><option key={v}>{v}</option>)}</select><span className="text-xs text-slate-400">{filtered.length} reviewed starter cases · 5 clinical stages</span></div>
  </header>
  <main className="mt-6 rounded-3xl border border-slate-700 bg-white p-6 text-slate-900 shadow-xl sm:p-9">
  {!finished?<div>
- <div className="flex flex-wrap items-center justify-between gap-3 text-sm font-semibold"><span className="text-teal-700">Patient {position+1} / {filtered.length}</span><span className="flex items-center gap-1 text-slate-600"><Trophy className="h-4 w-4"/> {score} correct decisions</span></div>
- <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">{stages.map((s,i)=><div key={s} className={"rounded-lg px-2 py-3 text-center text-xs font-bold "+(s===stage?"bg-teal-700 text-white":i<stages.indexOf(stage)?"bg-teal-50 text-teal-800":"bg-slate-100 text-slate-500")}>{i+1}. {stageNames[s]}</div>)}</div>
+ <div className="flex flex-wrap items-center justify-between gap-3 text-sm font-semibold"><span className="text-teal-700">Patient {position+1} / {filtered.length}</span><span className="flex items-center gap-1 text-slate-600"><Trophy className="h-4 w-4"/> {score} correct decisions · {xp} XP · {completed} rounds</span></div>
+ <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">{stages.map((s,i)=><div key={s} className={"rounded-lg px-2 py-3 text-center text-xs font-bold "+(s===stage?"bg-teal-700 text-white":i<stages.indexOf(stage)?"bg-teal-50 text-teal-800":"bg-slate-100 text-slate-500")}>{i+1}. {stageNames[s]}</div>)}</div>
  <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Red-flag case</span>}</div>
  <h2 className="mt-3 text-2xl font-bold">{item.title}</h2>
  <div className="mt-5 rounded-2xl bg-slate-50 p-5"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Patient · {item.patient}</p><p className="mt-2 font-semibold">“{flow.chief}”</p></div>
@@ -94,11 +101,11 @@ export default function ClinicalArenaPage(){
  </section>:<section className="mt-6">
  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs font-bold uppercase text-slate-500">Findings available after history</p><p className="mt-2 text-sm leading-6">{item.history}</p><ul className="mt-3 list-disc space-y-2 pl-5 text-sm">{item.findings.map(f=><li key={f}>{f}</li>)}</ul></div>
  <h3 className="mt-6 text-lg font-bold">Stage {stages.indexOf(stage)+1}: {stageNames[stage]}</h3><p className="mt-3 font-semibold">{current.question}</p>
- <div className="mt-4 grid gap-3">{current.options.map((o,i)=><button key={o} disabled={revealed} aria-pressed={selected===i} onClick={()=>setSelected(i)} className={"rounded-xl border p-4 text-left text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-500 "+(selected===i?"border-teal-600 bg-teal-50 text-teal-950":"border-slate-200 bg-white hover:border-teal-400")}>{String.fromCharCode(65+i)}. {o}</button>)}</div>
+ <div className="mt-4 grid gap-3">{orderedOptions.map(({text:o,original},i)=><button key={o} disabled={revealed} aria-pressed={selected===original} onClick={()=>setSelected(original)} className={"rounded-xl border p-4 text-left text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-500 "+(selected===original?"border-teal-600 bg-teal-50 text-teal-950":"border-slate-200 bg-white hover:border-teal-400")}>{String.fromCharCode(65+i)}. {o}</button>)}</div>
  {!revealed?<button onClick={submit} disabled={selected===null} className="mt-6 w-full rounded-xl bg-teal-700 px-5 py-4 font-bold text-white disabled:opacity-50">Check my decision <ArrowRight className="ml-2 inline h-4 w-4"/></button>:null}
  </section>}
  {revealed&&<div aria-live="polite" className="mt-6 rounded-2xl border border-teal-200 bg-teal-50 p-5"><div className="flex items-center gap-2 font-bold"><CheckCircle2 className="h-5 w-5 text-teal-700"/> Clinical feedback</div><p className="mt-3 font-semibold">{quip}</p>{stage!=="history"&&<p className="mt-3 text-sm"><strong>Best answer:</strong> {current.options[current.correct]}</p>}<p className="mt-3 text-sm leading-7"><strong>Why:</strong> {explanation}</p><button onClick={advance} className="mt-5 w-full rounded-xl bg-slate-900 px-5 py-4 font-bold text-white">{stage==="treatment"?(position+1===filtered.length?"View results":"Next patient"):"Continue to "+stageNames[stages[stages.indexOf(stage)+1]]} <ArrowRight className="ml-2 inline h-4 w-4"/></button></div>}
- </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Clinical round complete!</h2><p className="mt-3 text-xl font-semibold">{score} / {filtered.length*4} correct decisions</p><p className="mt-3 text-slate-600">Review clinical reasoning, not just answers.</p><button onClick={()=>reset(specialty)} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 font-semibold text-white"><RotateCcw className="mr-2 h-4 w-4"/> Play again</button></div>}
+ </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Clinical round complete!</h2><p className="mt-3 text-xl font-semibold">{score} / {filtered.length*stages.length} correct decisions</p><p className="mt-3 text-slate-600">Review clinical reasoning, not just answers.</p><button onClick={()=>reset(specialty)} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 font-semibold text-white"><RotateCcw className="mr-2 h-4 w-4"/> Play again</button></div>}
  </main><p className="mt-5 text-center text-xs leading-6 text-slate-400">Educational simulation only. Multiple-choice history is a starter experience, not free-text interviewing. Clinical cases are simplified; serious safety concerns require urgent action. Scores do not indicate clinical competence.</p>
  </div></div>;
 }
