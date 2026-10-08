@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
-import { getClinicalNarrative } from "@/lib/manual-therapy-clinical-narratives";
+import { getClinicalEpisode } from "@/lib/manual-therapy-episodes";
+import { ClinicalStoryChapter } from "@/components/manual-therapy/ClinicalStoryChapter";
 import { getManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
 import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
@@ -59,7 +60,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const story = getManualTherapyStory(slug);
-  const narrative = getClinicalNarrative(slug);
+  const episode = getClinicalEpisode(slug);
   const aha = getManualTherapyAhaMoment(slug);
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
@@ -100,12 +101,9 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <div className="mt-7 max-w-4xl">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-200">The clinical story</p>
             <h2 className="mt-3 text-2xl font-bold leading-snug text-white sm:text-3xl">{story.headline}</h2>
-            <p className="mt-4 max-w-3xl text-base leading-8 text-indigo-50 sm:text-lg">{story.scene}</p>
+            <p className="mt-4 max-w-3xl text-base leading-8 text-indigo-50 sm:text-lg">{technique.summary}</p>
             <p className="mt-5 border-l-4 border-teal-300 pl-4 text-base font-semibold leading-7 text-white">
               {story.question}
-            </p>
-            <p className="mt-5 text-sm leading-6 text-indigo-100">
-              <strong className="text-white">In clinical terms:</strong> {technique.summary}
             </p>
           </div>
         ) : (
@@ -114,13 +112,114 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
       </section>
 
-      {narrative ? (
-        <section className="mt-8 rounded-3xl border border-cyan-200 bg-white p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.19em] text-teal-700">Chapter 1 · Follow the clues</p>
-          <h2 className="mt-3 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
-            Before the first touch, the patient has already told you something important.
+      {episode ? <ClinicalStoryChapter episode={episode} challenge={aha} /> : null}
+
+      <section id="clinical-method" className="mt-8 scroll-mt-28 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
+        <div className="border-b border-violet-100 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
+            Practical Application
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+            Here is how the technique is actually applied
           </h2>
-          <p className="mt-4 max-w-4xl text-base leading-8 text-navy-700">{narrative.clue}</p>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+            Follow the scene into the clinic. Start with patient setup,
+            therapist setup, hand placement, force direction, step-by-step application,
+            what you should expect, when to stop and the mistakes that commonly spoil the technique.
+          </p>
+        </div>
+        <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
+          <EditorialBlock title="Patient Position" items={guide.patientPosition} icon={Hand} tone="border-cyan-100 bg-cyan-50/70" />
+          <EditorialBlock title="Therapist Position" items={guide.therapistPosition} icon={Hand} tone="border-indigo-100 bg-indigo-50/70" />
+          <EditorialBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
+          <EditorialBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
+        </div>
+        <div className="border-t border-violet-100 p-5 sm:p-8">
+          <EditorialBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
+        </div>
+        <div className="grid gap-5 border-t border-violet-100 p-5 sm:p-8 lg:grid-cols-2">
+          <EditorialBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
+          <EditorialBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
+          <EditorialBlock title="Where Good Intentions Go Wrong" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
+        </div>
+<details className="mx-5 mb-6 rounded-2xl border border-violet-200 bg-white sm:mx-8">
+          <summary className="cursor-pointer p-5 text-sm font-semibold text-violet-800 hover:bg-violet-50">
+            Another worked clinical example · Open when you want more practice
+          </summary>
+          <div className="border-t border-violet-100 p-4 sm:p-5">
+            <EditorialBlock title="See It Through a Patient's Eyes" items={guide.clinicalExample} icon={Lightbulb} />
+          </div>
+        </details>
+      </section>
+
+      <section className="mt-8" aria-labelledby="clinical-essentials">
+        <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">The non-negotiables</p>
+        <h2 id="clinical-essentials" className="mt-2 font-serif text-2xl font-bold text-slate-900">Useful, safe and worth repeating?</h2>
+        <p className="mt-3 max-w-3xl text-[15px] leading-7 text-slate-600">
+          Indications, dosage, precautions and contraindications deserve to be easy to find.
+          The story makes them memorable; this section keeps them unmistakably clear.
+        </p>
+      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        <EditorialBlock
+          title="How Much Is Enough?"
+          items={technique.dosage}
+          icon={Gauge}
+          tone="border-blue-100 bg-blue-50/70"
+        />
+        <EditorialBlock
+          title="Indications"
+          items={technique.indications}
+          icon={ClipboardCheck}
+          tone="border-emerald-100 bg-emerald-50/70"
+        />
+        <EditorialBlock
+          title="Precautions"
+          items={technique.precautions}
+          icon={ShieldAlert}
+          tone="border-amber-100 bg-amber-50/70"
+        />
+        <EditorialBlock
+          title="Contraindications"
+          items={technique.contraindications}
+          icon={ShieldAlert}
+          tone="border-rose-100 bg-rose-50/70"
+        />
+        <EditorialBlock
+          title="Small Details That Change Everything"
+          items={technique.pearls}
+          icon={Lightbulb}
+          tone="border-indigo-100 bg-indigo-50/70"
+        />
+      </div>
+
+      </section>
+
+      {visuals.length ? (
+        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8">
+          <div className="mb-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
+              Clinical Visual Atlas
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
+              From the story to the treatment room
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
+              These PNA teaching visuals show positioning, contact, force direction and safety cues.
+              Images are delivered directly from the external image CDN and load only when needed.
+            </p>
+          </div>
+          <div className="grid gap-6">
+            {visuals.map((visual, index) => (
+              <ClinicalImage
+                key={visual.id}
+                path={visual.path}
+                alt={visual.alt}
+                caption={visual.caption}
+                label={visual.group + " · " + visual.title}
+                eager={index === 0}
+              />
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -155,7 +254,11 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="grid gap-5 border-t border-indigo-100 p-5 sm:p-8 lg:grid-cols-2">
+        <details className="border-t border-indigo-100">
+          <summary className="cursor-pointer px-5 py-5 text-sm font-bold text-indigo-800 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500 sm:px-8">
+            Want the full science? Open mechanisms, physiology and what we still cannot claim
+          </summary>
+          <div className="grid gap-5 border-t border-indigo-100 p-5 sm:p-8 lg:grid-cols-2">
           <EditorialBlock
             title="The Response: What Could Be Happening"
             items={mechanism.stepByStep}
@@ -182,6 +285,8 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           />
         </div>
 
+        </details>
+
         <div className="border-t border-indigo-100 p-5 sm:p-8">
           <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
             <p className="font-bold text-navy-800">Evidence note</p>
@@ -206,62 +311,14 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {aha ? (
-        <section data-pna-reading="learn-and-smile-v1" className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Clinical aha moment">
-          <div className="flex items-center gap-2 text-teal-700">
-            <Lightbulb className="h-5 w-5" aria-hidden="true" />
-            <p className="text-xs font-bold uppercase tracking-[0.2em]">The Aha Moment</p>
-          </div>
-          <h2 className="mt-3 max-w-3xl font-serif text-2xl font-bold leading-tight text-navy-900 sm:text-3xl">
-            {aha.hook}
-          </h2>
-          <p className="mt-4 max-w-4xl text-base leading-8 text-slate-700">
-            {aha.analogy}
-          </p>
-          <div className="mt-6 border-t border-slate-200 pt-5">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-700">A quick clinical curveball</p>
-            <p className="mt-2 text-[15px] font-medium leading-7 text-slate-800">{aha.challenge}</p>
-            <details className="group mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-teal-800 [&::-webkit-details-marker]:hidden">
-                Reveal the clinical answer
-                <ArrowRight className="h-4 w-4 flex-none transition-transform group-open:rotate-90" aria-hidden="true" />
-              </summary>
-              <p className="mt-3 border-t border-slate-200 pt-3 text-sm leading-7 text-slate-700">{aha.reveal}</p>
-            </details>
-          </div>
-          <p className="mt-4 text-xs leading-5 text-slate-500">A memorable teaching analogy—not a replacement for clinical assessment or technique training.</p>
-        </section>
-      ) : null}
-
-      {visuals.length ? (
-        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8">
-          <div className="mb-6">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
-              Clinical Visual Atlas
-            </p>
-            <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-              From the story to the treatment room
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-              These PNA teaching visuals show positioning, contact, force direction and safety cues.
-              Images are delivered directly from the external image CDN and load only when needed.
-            </p>
-          </div>
-          <div className="grid gap-6">
-            {visuals.map((visual, index) => (
-              <ClinicalImage
-                key={visual.id}
-                path={visual.path}
-                alt={visual.alt}
-                caption={visual.caption}
-                label={visual.group + " · " + visual.title}
-                eager={index === 0}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
+      <details id="advanced-clinician" className="mt-9 rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <summary className="cursor-pointer p-6 text-base font-bold leading-7 text-slate-900 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-600 sm:p-8">
+          For the curious clinician · Open the advanced decision-making notes
+          <span className="mt-1 block text-sm font-normal text-slate-600">
+            Classification, dosing, progression, documentation and evidence—available whenever you are ready.
+          </span>
+        </summary>
+        <div className="border-t border-slate-200 p-4 sm:p-5">
       <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
         <div className="border-b border-slate-200 p-6 sm:p-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-700">
@@ -289,63 +346,14 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {story ? (
-        <aside className="mt-8 rounded-3xl border border-teal-200 bg-gradient-to-r from-teal-50 via-white to-cyan-50 p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700">The turning point</p>
-          <p className="mt-3 text-xl font-semibold leading-8 text-navy-900">{story.bridge}</p>
-          <p className="mt-3 text-sm leading-7 text-navy-600">
-            Before you treat, choose one movement or task to measure. After you treat, repeat that same task.
-            If the response is unhelpful or symptoms worsen, reconsider rather than simply applying more force.
-          </p>
-        </aside>
-      ) : null}
+        </div>
+      </details>
 
-      {narrative ? (
-        <section className="mt-8 rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50 to-white p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.19em] text-violet-700">Chapter 2 · The careful trial</p>
-          <h2 className="mt-3 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
-            One clinical hypothesis. One controlled attempt. One meaningful question.
-          </h2>
-          <p className="mt-4 max-w-4xl text-base leading-8 text-navy-700">{narrative.trial}</p>
-          <p className="mt-4 text-sm leading-7 text-navy-600">
-            The practical guide below provides the exact positioning, contact, dosage and safety
-            limits. The story is an introduction—not a substitute for technique training.
-          </p>
-        </section>
-      ) : null}
-
-      <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
-        <div className="border-b border-violet-100 p-6 sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-700">
-            Practical Application
-          </p>
-          <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-            Now imagine you are beside the treatment table
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-            Follow the scene into the clinic. Start with patient setup,
-            therapist setup, hand placement, force direction, step-by-step application,
-            what you should expect, when to stop and the mistakes that commonly spoil the technique.
-          </p>
-        </div>
-        <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
-          <EditorialBlock title="Patient Position" items={guide.patientPosition} icon={Hand} tone="border-cyan-100 bg-cyan-50/70" />
-          <EditorialBlock title="Therapist Position" items={guide.therapistPosition} icon={Hand} tone="border-indigo-100 bg-indigo-50/70" />
-          <EditorialBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
-          <EditorialBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
-        </div>
-        <div className="border-t border-violet-100 p-5 sm:p-8">
-          <EditorialBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
-        </div>
-        <div className="grid gap-5 border-t border-violet-100 p-5 sm:p-8 lg:grid-cols-2">
-          <EditorialBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
-          <EditorialBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
-          <EditorialBlock title="Where Good Intentions Go Wrong" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
-          <EditorialBlock title="See It Through a Patient's Eyes" items={guide.clinicalExample} icon={Lightbulb} tone="border-purple-100 bg-purple-50/70" />
-        </div>
-      </section>
-
-      <div className="mt-8 grid gap-5 lg:grid-cols-2">
+      <details className="mt-7 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <summary className="cursor-pointer text-sm font-bold text-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700">
+          Need a quick technical recap? Open the complete original reference notes
+        </summary>
+        <div className="mt-5 grid gap-5 border-t border-slate-100 pt-5 lg:grid-cols-2">
         <EditorialBlock
           title="The Science: What May Explain the Response"
           items={technique.science}
@@ -359,58 +367,13 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           tone="border-cyan-100 bg-cyan-50/70"
         />
         <EditorialBlock
-          title="How Much Is Enough?"
-          items={technique.dosage}
-          icon={Gauge}
-          tone="border-blue-100 bg-blue-50/70"
-        />
-        <EditorialBlock
-          title="Indications"
-          items={technique.indications}
-          icon={ClipboardCheck}
-          tone="border-emerald-100 bg-emerald-50/70"
-        />
-        <EditorialBlock
-          title="Precautions"
-          items={technique.precautions}
-          icon={ShieldAlert}
-          tone="border-amber-100 bg-amber-50/70"
-        />
-        <EditorialBlock
-          title="Contraindications"
-          items={technique.contraindications}
-          icon={ShieldAlert}
-          tone="border-rose-100 bg-rose-50/70"
-        />
-        <EditorialBlock
           title="Did It Make a Meaningful Difference?"
           items={technique.reassessment}
           icon={ShieldCheck}
           tone="border-teal-100 bg-teal-50/70"
         />
-        <EditorialBlock
-          title="Small Details That Change Everything"
-          items={technique.pearls}
-          icon={Lightbulb}
-          tone="border-indigo-100 bg-indigo-50/70"
-        />
-      </div>
-
-      {narrative ? (
-        <section className="mt-9 rounded-3xl border border-teal-200 bg-gradient-to-r from-teal-50 via-white to-cyan-50 p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.19em] text-teal-700">Chapter 3 · After the hands leave</p>
-          <h2 className="mt-3 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
-            The final answer belongs to the patient's movement—not the technique.
-          </h2>
-          <p className="mt-4 max-w-4xl text-base leading-8 text-navy-700">{narrative.ending}</p>
-          <a
-            href={"/manual-therapy/regions"}
-            className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-teal-800 hover:text-teal-900"
-          >
-            Follow the story into regional applications <ArrowRight className="h-4 w-4" />
-          </a>
-        </section>
-      ) : null}
+        </div>
+      </details>
 
       {regionalApplications.length ? (
         <section className="mt-10">
@@ -524,16 +487,6 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           </div>
         </section>
       ) : null}
-
-      <section className="mt-8 rounded-2xl border border-grey-200 bg-white p-6">
-        <h2 className="font-bold text-navy-800">Mastery sequence</h2>
-        <p className="mt-2 text-sm leading-6 text-navy-600">
-          Screen → identify a meaningful comparable sign → choose the lowest-risk technique
-          likely to help → obtain consent → apply an appropriate dose → reassess immediately
-          → keep only techniques that improve pain, movement or function → transfer the gain
-          into active exercise and self-management.
-        </p>
-      </section>
 
       <div className="mt-8 flex flex-wrap gap-3">
         <a

@@ -44,7 +44,7 @@ const sectionIntros: Record<string, string> = {
 
 function kindFor(title: string): "sequence" | "safety" | "case" | "narrative" {
   if (/step.by.step|complete applying method|the method:|application sequence/i.test(title)) return "sequence";
-  if (/stop|contraindication|precaution|mistake|what the evidence does not|should not claim/i.test(title)) return "safety";
+  if (/stop|contraindication|precaution|mistake|where good intentions go wrong|what the evidence does not|should not claim/i.test(title)) return "safety";
   if (/patient.s eyes|clinical example/i.test(title)) return "case";
   return "narrative";
 }

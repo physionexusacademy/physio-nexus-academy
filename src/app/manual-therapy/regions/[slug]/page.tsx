@@ -207,10 +207,9 @@ function DeepTechniqueCard({
               {sub.name}
             </h3>
             <p className="mt-3 text-sm leading-7 text-navy-600">
-              Picture a patient whose familiar movement still feels difficult. Before choosing this
-              variation, ask: <strong className="text-navy-900">what change would convince us
-              that this is helping?</strong> Keep the answer tied to the same movement or task
-              before and after the trial.
+              One question matters more than the name of this variation: will the patient notice
+              a useful change in <strong className="text-navy-900">{sub.reassess}</strong>?
+              The careful re-test gets the final word.
             </p>
           </div>
         </div>
