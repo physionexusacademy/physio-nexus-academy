@@ -17,6 +17,7 @@ import {
   MapPinned,
 } from "lucide-react";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
+import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
 import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
 import {
@@ -83,6 +84,7 @@ function ListBlock({
 export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
+  const story = getManualTherapyStory(slug);
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
   const expert = getManualTherapyExpertProfile(slug);
@@ -118,9 +120,22 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">
           {technique.name}
         </h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-violet-50">
-          {technique.summary}
-        </p>
+        {story ? (
+          <div className="mt-7 max-w-4xl">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-200">The clinical story</p>
+            <h2 className="mt-3 text-2xl font-bold leading-snug text-white sm:text-3xl">{story.headline}</h2>
+            <p className="mt-4 max-w-3xl text-base leading-8 text-indigo-50 sm:text-lg">{story.scene}</p>
+            <p className="mt-5 border-l-4 border-teal-300 pl-4 text-base font-semibold leading-7 text-white">
+              {story.question}
+            </p>
+            <p className="mt-5 text-sm leading-6 text-indigo-100">
+              <strong className="text-white">In clinical terms:</strong> {technique.summary}
+            </p>
+          </div>
+        ) : (
+          <p className="mt-4 max-w-3xl text-base leading-7 text-violet-50">{technique.summary}</p>
+        )}
+
       </section>
 
       <section className="mt-8 overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
@@ -134,7 +149,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
                 Mechanism & Physiology
               </p>
               <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-                How does this technique actually work?
+                Why might this technique work—and what is still uncertain?
               </h2>
               <p className="mt-3 max-w-4xl text-sm leading-7 text-navy-600">
                 {mechanism.simpleExplanation}
@@ -156,25 +171,25 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
         <div className="grid gap-5 border-t border-indigo-100 p-5 sm:p-8 lg:grid-cols-2">
           <ListBlock
-            title="Step-by-Step Physiological Pathway"
+            title="The Response: What Could Be Happening"
             items={mechanism.stepByStep}
             icon={Brain}
             tone="border-indigo-100 bg-indigo-50/70"
           />
           <ListBlock
-            title="Deep Physiology — What Happens in the Body"
+            title="Under the Surface: The Science"
             items={mechanism.physiology}
             icon={Microscope}
             tone="border-cyan-100 bg-cyan-50/70"
           />
           <ListBlock
-            title="What This Means Clinically"
+            title="Bring the Science Back to the Patient"
             items={mechanism.clinicalTranslation}
             icon={Lightbulb}
             tone="border-emerald-100 bg-emerald-50/70"
           />
           <ListBlock
-            title="What You Should NOT Claim"
+            title="What the Evidence Does Not Let Us Promise"
             items={mechanism.myths}
             icon={ShieldAlert}
             tone="border-rose-100 bg-rose-50/70"
@@ -212,7 +227,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
               Clinical Visual Atlas
             </p>
             <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-              See the technique, not just the text
+              From the story to the treatment room
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
               These PNA teaching visuals show positioning, contact, force direction and safety cues.
@@ -240,7 +255,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
             Expert Clinical Layer
           </p>
           <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-            Selection, dosing, progression and documentation
+            The decisions that separate a technique from a treatment plan
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
             This layer goes beyond memorizing the maneuver. It shows how an experienced clinician
@@ -250,16 +265,27 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </div>
         <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
           <ListBlock title="Variants & Classifications" items={expert.variants} icon={Microscope} tone="border-violet-100 bg-violet-50/70" />
-          <ListBlock title="Clinical Selection Rules" items={expert.selectionRules} icon={Brain} tone="border-cyan-100 bg-cyan-50/70" />
+          <ListBlock title="When Would You Choose This?" items={expert.selectionRules} icon={Brain} tone="border-cyan-100 bg-cyan-50/70" />
           <ListBlock title="Technical Variables That Change the Dose" items={expert.technicalVariables} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
           <ListBlock title="Progression & Regression" items={expert.progressionRegression} icon={ShieldCheck} tone="border-emerald-100 bg-emerald-50/70" />
-          <ListBlock title="Integration With Active Rehabilitation" items={expert.integration} icon={Lightbulb} tone="border-teal-100 bg-teal-50/70" />
+          <ListBlock title="Turn the Gain Into Real Movement" items={expert.integration} icon={Lightbulb} tone="border-teal-100 bg-teal-50/70" />
           <ListBlock title="Documentation Standard" items={expert.documentation} icon={ClipboardCheck} tone="border-slate-200 bg-slate-50/70" />
         </div>
         <div className="border-t border-slate-200 p-5 sm:p-8">
-          <ListBlock title="Evidence Position — What We Can and Cannot Claim" items={expert.evidencePosition} icon={Microscope} tone="border-amber-100 bg-amber-50/70" />
+          <ListBlock title="Where Evidence Supports Us—and Where It Does Not" items={expert.evidencePosition} icon={Microscope} tone="border-amber-100 bg-amber-50/70" />
         </div>
       </section>
+
+      {story ? (
+        <aside className="mt-8 rounded-3xl border border-teal-200 bg-gradient-to-r from-teal-50 via-white to-cyan-50 p-6 shadow-sm sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700">The turning point</p>
+          <p className="mt-3 text-xl font-semibold leading-8 text-navy-900">{story.bridge}</p>
+          <p className="mt-3 text-sm leading-7 text-navy-600">
+            Before you treat, choose one movement or task to measure. After you treat, repeat that same task.
+            If the response is unhelpful or symptoms worsen, reconsider rather than simply applying more force.
+          </p>
+        </aside>
+      ) : null}
 
       <section className="mt-8 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
         <div className="border-b border-violet-100 p-6 sm:p-8">
@@ -267,10 +293,10 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
             Practical Application
           </p>
           <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-            Exactly how to apply this technique
+            Now imagine you are beside the treatment table
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-            Read this section in order. It is written like a practical class: patient setup,
+            Follow the scene into the clinic. Start with patient setup,
             therapist setup, hand placement, force direction, step-by-step application,
             what you should expect, when to stop and the mistakes that commonly spoil the technique.
           </p>
@@ -285,28 +311,28 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <ListBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
         </div>
         <div className="grid gap-5 border-t border-violet-100 p-5 sm:p-8 lg:grid-cols-2">
-          <ListBlock title="What a Good Response Looks Like" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
+          <ListBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
           <ListBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
-          <ListBlock title="Common Practical Mistakes" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
-          <ListBlock title="Clinical Example" items={guide.clinicalExample} icon={Lightbulb} tone="border-purple-100 bg-purple-50/70" />
+          <ListBlock title="Where Good Intentions Go Wrong" items={guide.commonMistakes} icon={ShieldAlert} tone="border-amber-100 bg-amber-50/70" />
+          <ListBlock title="See It Through a Patient's Eyes" items={guide.clinicalExample} icon={Lightbulb} tone="border-purple-100 bg-purple-50/70" />
         </div>
       </section>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         <ListBlock
-          title="Science & Clinical Rationale"
+          title="The Science: What May Explain the Response"
           items={technique.science}
           icon={Lightbulb}
           tone="border-violet-100 bg-violet-50/70"
         />
         <ListBlock
-          title="Step-by-Step Process"
+          title="The Method: From First Contact to Did It Make a Meaningful Difference?"
           items={technique.procedure}
           icon={Hand}
           tone="border-cyan-100 bg-cyan-50/70"
         />
         <ListBlock
-          title="Dosage & Application"
+          title="How Much Is Enough?"
           items={technique.dosage}
           icon={Gauge}
           tone="border-blue-100 bg-blue-50/70"
@@ -330,13 +356,13 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           tone="border-rose-100 bg-rose-50/70"
         />
         <ListBlock
-          title="Reassessment"
+          title="Did It Make a Meaningful Difference?"
           items={technique.reassessment}
           icon={ShieldCheck}
           tone="border-teal-100 bg-teal-50/70"
         />
         <ListBlock
-          title="Clinical Pearls"
+          title="Small Details That Change Everything"
           items={technique.pearls}
           icon={Lightbulb}
           tone="border-indigo-100 bg-indigo-50/70"
