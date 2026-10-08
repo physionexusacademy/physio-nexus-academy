@@ -8,6 +8,10 @@ on:
       - "src/lib/manual-therapy-world.ts"
       - "src/app/manual-therapy/**"
       - "src/components/manual-therapy/WorldApproachChallenge.tsx"
+      - "src/components/manual-therapy/EditorialManualEncyclopedia.tsx"
+      - "src/lib/manual-therapy-editorial-art.ts"
+      - "src/components/manual-therapy/EditorialManualEncyclopedia.tsx"
+      - "src/lib/manual-therapy-editorial-art.ts"
       - "scripts/validate-manual-therapy-world.mjs"
       - ".github/workflows/manual-world-validation.yml"
   pull_request:
@@ -53,7 +57,7 @@ jobs:
           npx tsc --noEmit --pretty false > /tmp/type-errors.txt 2>&1
           type_status=$?
           set -e
-          if grep -E '^src/(app/manual-therapy/world-approaches/|components/manual-therapy/WorldApproachChallenge|lib/manual-therapy-world)' /tmp/type-errors.txt; then
+          if grep -E '^src/(app/manual-therapy/|components/manual-therapy/(WorldApproachChallenge|EditorialManualEncyclopedia)|lib/manual-therapy-(world|editorial-art))' /tmp/type-errors.txt; then
             echo "::error::TypeScript error in the new encyclopedia files."
             exit 1
           fi
