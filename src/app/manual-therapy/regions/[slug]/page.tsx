@@ -45,6 +45,7 @@ import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import { regionalClinicalStories, regionalClinicalChallenges } from "@/lib/manual-therapy-regional-stories";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { regionalManualVignettes } from "@/lib/manual-therapy-regional-vignettes";
+import { generalRegionStoryPrompts } from "@/lib/manual-therapy-general-region-scenes";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -556,17 +557,19 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             </aside>
           </div>
         </article>
-      ) : !vignette ? (
-      <aside className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-8">
+      ) : null}
+      {!clinicalStory && !vignette ? (
+      <aside data-pna-story="regional-overview-v1" className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-8">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">The first question</p>
         <h2 className="mt-2 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
           Would this approach change what the patient can actually do?
         </h2>
+        <p className="mt-3 text-sm leading-8 text-navy-700">{generalRegionStoryPrompts[item.region].scene}</p>
         <p className="mt-3 text-sm leading-7 text-navy-700">
-          Imagine a person struggling with a movement in the {item.region.toLowerCase()} region.
-          The first clue is whether the clinical presentation fits: {item.clinicalUse[0]}
-          Now choose a baseline task, apply only an appropriate and safe trial, then measure the
-          same task again. That is how an interesting technique becomes meaningful care.
+          Bring the general principles back to this presentation: {item.clinicalUse[0]}
+        </p>
+        <p className="mt-3 text-sm font-semibold leading-7 text-teal-900">
+          {generalRegionStoryPrompts[item.region].question}
         </p>
         {lessonVoice ? (
           <p className="mt-4 border-l-4 border-cyan-500 pl-4 font-serif text-base italic leading-8 text-teal-900">
@@ -574,7 +577,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           </p>
         ) : null}
       </aside>
-      )}
+      ) : null}
 
       {isTechniqueSpecific && !clinicalStory && vignette ? (
         <article className="mt-8 overflow-hidden rounded-3xl border border-teal-200 bg-white shadow-sm" data-pna-engagement="regional-reading-v3">
