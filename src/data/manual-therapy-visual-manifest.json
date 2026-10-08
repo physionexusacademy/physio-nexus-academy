@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "publish": false,
+  "publish": true,
   "targetSize": {
     "width": 480,
     "height": 600
@@ -8,318 +8,318 @@
   "entries": [
     {
       "slug": "maitland-joint-mobilization",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "kaltenborn-evjenth-mobilization",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "mulligan-mobilization-with-movement",
-      "status": "pending",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "mulligan-snags-nags",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "cyriax-deep-transverse-friction",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "muscle-energy-technique",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "strain-counterstrain",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "myofascial-release",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "soft-tissue-mobilization",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "trigger-point-compression",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "iastm",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "neurodynamic-mobilization",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "manual-traction",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "high-velocity-low-amplitude-thrust",
-      "status": "pending",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "pnf-manual-techniques",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "fascial-manipulation",
-      "status": "pending",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "active-release-style-soft-tissue",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "manual-lymphatic-drainage",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "scar-mobilization",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "paivm-ppivm-spinal-assessment",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "myofascial-decompression-dry-cupping",
-      "status": "pending",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "facilitated-positional-release",
-      "status": "pending",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "paris-approach",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "mckenzie-mdt",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "mennell-joint-play",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "fascial-distortion-model",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "balanced-ligamentous-tension",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "spencer-shoulder-sequence",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "still-technique",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "osteopathic-articulatory",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "osteopathic-lymphatic-pump",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "rolfing-structural-integration",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "bowen-technique",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "visceral-manipulation",
-      "status": "review",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     },
     {
       "slug": "craniosacral-therapy",
-      "status": "pending",
+      "status": "approved",
       "crop": {
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
+      "reviewNote": "Final user-requested editorial cover release: decorative concept illustration, not a clinical positioning or procedure demonstration; chapter text and evidence govern technique guidance."
     }
   ]
 }
