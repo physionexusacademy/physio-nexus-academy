@@ -11,12 +11,16 @@ export type ManualCoverMap = Record<string, ManualCover>;
  * Fail closed. This is evaluated on the server while Next builds the static
  * encyclopedia. The regular PNA Cloudinary cards remain unchanged unless:
  *   1. every technique has been clinically approved in the manifest,
- *   2. the manifest has publish=true, AND
- *   3. the deployment sets MANUAL_THERAPY_VISUALS_LIVE=true.
- * The CI publish validator also checks all actual asset files and sizes.
+ *   2. the manifest has publish=true.
+ * The CI publish validator also checks every AVIF/WebP asset and size before
+ * release. Do not use a process.env flag here: the Cloudflare Workers runtime
+ * does not necessarily inherit the GitHub Actions build-time environment.
+ * A missing runtime flag silently displayed repeated old Cloudinary artwork
+ * even when all 35 unique optimized files were successfully deployed.
+ * To roll back, set manifest.publish=false and redeploy.
  */
 export function getPublishedManualCoverMap(): ManualCoverMap {
-  if (!manifest.publish || process.env.MANUAL_THERAPY_VISUALS_LIVE !== "true") {
+  if (!manifest.publish) {
     return {};
   }
 
