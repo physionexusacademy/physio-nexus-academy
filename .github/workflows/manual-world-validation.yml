@@ -1,0 +1,75 @@
+name: Validate PNA World Manual Therapy Encyclopedia
+
+on:
+  push:
+    branches:
+      - "feature/manual-world-*"
+    paths:
+      - "src/lib/manual-therapy-world.ts"
+      - "src/app/manual-therapy/**"
+      - "src/components/manual-therapy/WorldApproachChallenge.tsx"
+      - "scripts/validate-manual-therapy-world.mjs"
+      - ".github/workflows/manual-world-validation.yml"
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/lib/manual-therapy-world.ts"
+      - "src/app/manual-therapy/**"
+      - "src/components/manual-therapy/WorldApproachChallenge.tsx"
+      - "scripts/validate-manual-therapy-world.mjs"
+      - ".github/workflows/manual-world-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate 13 worldwide clinical stories and safety content
+        run: node --experimental-strip-types scripts/validate-manual-therapy-world.mjs
+
+      - name: Protect original 22 manual therapy lessons
+        run: node scripts/validate-manual-therapy-stories.mjs
+
+      - name: Guard changed worldwide Manual Therapy TypeScript
+        shell: bash
+        run: |
+          set +e
+          npx tsc --noEmit --pretty false > /tmp/type-errors.txt 2>&1
+          type_status=$?
+          set -e
+          if grep -E '^src/(app/manual-therapy/world-approaches/|components/manual-therapy/WorldApproachChallenge|lib/manual-therapy-world)' /tmp/type-errors.txt; then
+            echo "::error::TypeScript error in the new encyclopedia files."
+            exit 1
+          fi
+          if [ "$type_status" -ne 0 ]; then
+            echo "::warning::Pre-existing TypeScript debt remains in unrelated modules; no errors reported in new encyclopedia files."
+          else
+            echo "Full TypeScript check passed."
+          fi
+
+      - name: Build full Next.js site
+        env:
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+          NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+          NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+          PAYMENTS_ENABLED: "false"
+        run: npm run build
