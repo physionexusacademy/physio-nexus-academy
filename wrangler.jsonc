@@ -9,6 +9,10 @@
     {
       "pattern": "physionexusacademy.com",
       "custom_domain": true
+    },
+    {
+      "pattern": "www.physionexusacademy.com",
+      "custom_domain": true
     }
   ],
   "compatibility_date": "2026-09-19",
