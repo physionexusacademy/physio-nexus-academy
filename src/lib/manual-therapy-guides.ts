@@ -210,15 +210,49 @@ export const manualApplicationGuides: Record<string, ManualApplicationGuide> = {
     clinicalExample: ["Example: a highly irritable upper trapezius tender point is positioned into comfort, held, slowly returned, then cervical motion and scapular control are reassessed."]
   },
   "myofascial-release": {
-    patientPosition: ["Expose and support the region so the target tissues are relaxed.", "Choose prone, supine, side-lying or sitting based on access and patient comfort."],
-    therapistPosition: ["Stand with a wide stable base and use body weight rather than excessive thumb force.", "Keep wrists neutral for sustained contacts."],
-    handPlacement: ["Use palms, forearms, fingertips or cross-hand contacts depending on the region.", "For sustained fascial work, little or no lubricant is often used so the skin does not slide excessively under the hands."],
-    forceDirection: ["Direct MFR gradually engages the perceived restriction and follows it without forcing.", "Indirect MFR follows the direction of ease and comfort.", "Force is slow, broad and sustained rather than sudden."],
-    applicationSteps: ["1. Measure the painful/restricted movement before touching the tissue.", "2. Establish a broad comfortable contact.", "3. Slowly take up skin/tissue slack until you feel resistance or the direction of ease.", "4. Maintain the load while monitoring the patient's breathing, comfort and tissue response.", "5. Do not chase a dramatic 'release' sensation; keep the pressure tolerable.", "6. Release gradually and reassess the original movement.", "7. Follow with active mobility, strength or functional movement."],
-    expectedResponse: ["Short-term reduction in perceived stiffness/pain and easier movement."],
-    stopCriteria: ["Sharp pain, burning, bruising, neurological symptoms, skin compromise or worsening symptoms."],
-    commonMistakes: ["Using too much oil for a sustained fascial technique.", "Pressing harder because no 'release' is felt.", "Claiming adhesions have been permanently broken.", "Failing to follow passive work with active rehabilitation."],
-    clinicalExample: ["Example: pectoral tightness limiting comfortable shoulder elevation receives a slow cross-hand or longitudinal fascial load, then elevation is retested and followed by scapular/rotator-cuff exercise."]
+    patientPosition: [
+      "Before making contact, identify the patient's most relevant painful or restricted movement. Then expose only the treatment area and support it so the surrounding muscles can settle without unnecessary effort. A comfortable starting position often makes the response easier to interpret.",
+      "Prone, supine, side-lying and sitting are all possible choices. Select the position that gives clear access, respects the patient's symptoms and allows them to report any change without having to brace against the table."
+    ],
+    therapistPosition: [
+      "Stand close enough to keep your shoulders relaxed, your wrists comfortably aligned and your base of support stable. Think of controlled weight transfer from the body rather than trying to generate sustained pressure with the thumbs alone.",
+      "Position yourself so you can gradually reduce or redirect the load at any moment. You should be able to watch the patient's response, hear their feedback and maintain an unhurried, steady contact."
+    ],
+    handPlacement: [
+      "Begin with a broad, comfortable contact over the relevant soft-tissue region. Depending on its size and shape, the contact may come from the palms, forearms, fingertips or a supported cross-hand position; precision and tolerance determine the choice.",
+      "When sustained skin-and-fascia contact is intended, little or no lubricant is often used so the hands do not slide excessively. Check skin tolerance and avoid unnecessary pressure over vulnerable structures rather than chasing a particular feeling under the fingers."
+    ],
+    forceDirection: [
+      "In direct myofascial release, gently take up the perceived tissue slack toward the direction of resistance and maintain a controlled, tolerable load. This should be progressive and never forced through pain.",
+      "In indirect myofascial release, follow the direction in which the region feels easier or less guarded. The emphasis is comfortable positioning and monitoring the response, not aggressively stretching into a barrier.",
+      "In both approaches, the input is usually broad, gradual and sustained rather than sudden. A change in sensation is something to observe, not proof that adhesions have been physically broken."
+    ],
+    applicationSteps: [
+      "1. Start with a baseline. Ask the patient to perform the movement that matters, and note pain, range or the functional difficulty before touching the treatment area.",
+      "2. Help the region relax. Position and support the patient, obtain consent, and settle your hands into a broad contact that feels comfortable and easy to control.",
+      "3. Find a useful direction. For direct MFR, gently take up tissue slack toward resistance; for indirect MFR, move toward the direction of ease. Do not force either approach.",
+      "4. Maintain a measured contact while observing breathing, guarding, comfort and any familiar symptoms. Adjust or reduce the load if the response becomes uncomfortable.",
+      "5. Resist the urge to press harder in search of a dramatic 'release'. Keep the pressure tolerable; the treatment's value will be judged after it ends.",
+      "6. Return gradually to neutral, remove your hands and invite the same baseline movement again. Compare the response rather than relying only on what the tissue felt like during contact.",
+      "7. If the trial was useful, follow it with appropriate active mobility, strengthening or a relevant functional task. Manual work should support rehabilitation, not become its entire purpose."
+    ],
+    expectedResponse: [
+      "The patient may notice less perceived tightness, a short-term reduction in discomfort or an easier movement. Some patients will notice little change, and that is useful feedback too; avoid promising a permanent structural correction.",
+      "Repeat the movement measured at the start and ask what is different in a meaningful, reproducible way. If no benefit appears, reconsider the clinical hypothesis instead of automatically increasing pressure."
+    ],
+    stopCriteria: [
+      "Stop or modify the technique immediately for sharp pain, burning, bruising, new neurological symptoms, skin compromise or a clear worsening of the patient's familiar symptoms. Unusual or progressive symptoms require appropriate clinical assessment rather than more manual force."
+    ],
+    commonMistakes: [
+      "Using too much lubricant can make a sustained skin-and-fascia contact difficult to control, while unnecessary thumb pressure can fatigue the therapist and irritate the patient.",
+      "Another common mistake is pressing harder simply because no dramatic 'release' sensation is felt. A strong sensation is not evidence that the technique is working.",
+      "Do not claim that fascia has been permanently rearranged or that adhesions have been broken by touch alone. Keep explanations evidence-conscious, and always connect any short-term gain with active rehabilitation."
+    ],
+    clinicalExample: [
+      "Imagine a patient who feels a pulling sensation across the front of the chest when reaching overhead. First, check their comfortable shoulder elevation and ask which part of the reach is troublesome.",
+      "With the patient supported, a trained clinician may trial a slow cross-hand or longitudinal soft-tissue contact over a relevant pectoral region, staying within comfort and watching the response. The clinician then retests the same overhead reach and follows any useful change with appropriate scapular and rotator-cuff exercise.",
+      "The lesson is not that the fascia was 'freed'. It is whether the patient can use the shoulder more comfortably afterward—and what active rehabilitation helps sustain that progress."
+    ]
   },
   "soft-tissue-mobilization": {
     patientPosition: ["Support the treated muscle so it can relax.", "Choose a position that exposes the tissue without putting it on painful stretch unless movement is intentionally part of the technique."],
