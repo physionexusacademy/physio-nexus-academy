@@ -38,6 +38,7 @@ const flows:Record<string,Flow>={
 };
 type Stage="history"|"differential"|"diagnosis"|"treatment";
 const stages:Stage[]=["history","differential","diagnosis","treatment"];
+const stageNames:Record<Stage,string>={history:"History taking",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning"};
 export default function ClinicalArenaPage(){
  const [specialty,setSpecialty]=useState("All specialties");
  const [position,setPosition]=useState(0);
