@@ -262,12 +262,12 @@ export function SymptomCheckerClient() {
                   >
                     <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 transition-opacity group-hover:opacity-100" />
                     <span className="flex items-center gap-4">
-                      <span className="relative flex h-24 w-20 flex-none items-center justify-center overflow-hidden rounded-2xl border border-cyan-100 bg-[radial-gradient(circle_at_center,#f0fbfc_0%,#e4f5f7_58%,#d7edf0_100%)] shadow-inner">
+                      <span className="relative flex h-24 w-20 flex-none items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-inner">
                         <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.75),transparent_55%)]" />
                         <AnatomyRegionVisual
                           region={item.id}
                           compact
-                          className="relative h-[88px] w-[44px] transition-transform duration-300 group-hover:scale-105"
+                          className="relative h-[88px] w-[64px] transition-transform duration-300 group-hover:scale-105"
                         />
                       </span>
                       <span className="min-w-0 flex-1">
@@ -309,7 +309,7 @@ export function SymptomCheckerClient() {
                   <p className="mt-2 text-sm text-navy-600">Choose the closest match for your main symptom location.</p>
                 </div>
                 <div className="hidden justify-self-end sm:block">
-                  <div className="relative flex h-44 w-32 items-center justify-center overflow-hidden rounded-3xl border border-cyan-100 bg-[radial-gradient(circle_at_center,#f2fcfd_0%,#e6f5f7_62%,#d9edf0_100%)] shadow-sm">
+                  <div className="relative flex h-44 w-32 items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
                     <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.78),transparent_58%)]" />
                     <AnatomyRegionVisual region={region.id} className="relative h-40 w-auto" />
                   </div>
