@@ -32,6 +32,9 @@ const content = (path) => readFileSync(path, "utf8");
 const hub = content("src/app/manual-therapy/page.tsx");
 const detail = content("src/app/manual-therapy/[slug]/page.tsx");
 const chapter = content("src/components/manual-therapy/WorldApproachChapter.tsx");
+const editorial = content("src/components/manual-therapy/EditorialManualEncyclopedia.tsx");
+const editorialCss = content("src/app/manual-therapy/encyclopedia.css");
+const artwork = content("src/lib/manual-therapy-editorial-art.ts");
 const nextConfig = content("next.config.js");
 
 const oldSource = [
@@ -44,11 +47,16 @@ assert.equal(new Set(originalSlugs).size, 22, "Duplicate original chapters");
 assert(worldManualApproaches.every((item) => !originalSlugs.includes(item.slug)),
   "Worldwide approaches must not overwrite existing technique URLs");
 
-assert(hub.includes('data-pna-library="unified-35-v1"'), "Unified main library marker missing");
-assert(hub.includes("World Manual Therapy Encyclopedia"), "Main heading was not renamed");
+assert(hub.includes("<EditorialManualEncyclopedia"), "Unified library must render editorial chapter component");
+assert(editorial.includes('data-pna-library="unified-35-v1"'), "Unified main library marker missing");
+assert(editorial.includes("World Manual Therapy Encyclopedia"), "Main heading was not renamed");
 assert(hub.includes("...manualTherapyTechniques.map") && hub.includes("...worldManualApproaches.map"),
   "Main library must render all 22 existing and 13 worldwide items");
-assert(hub.includes("href={technique.href}"), "All library cards must open their own chapter");
+assert(editorial.includes("href={item.href}"), "All library cards must open their own chapter");
+assert(editorial.includes('data-pna-editorial-design="anatomy-luxe-v1"'), "New editorial design marker missing");
+assert(editorial.includes('loading="lazy"') && editorial.includes('decoding="async"'), "Illustrative anatomy previews must lazy-load and decode asynchronously");
+assert(editorialCss.includes("@media(max-width:740px)") && editorialCss.includes("prefers-reduced-motion"), "Mobile and motion accessibility rules missing");
+assert(artwork.includes("getEditorialArt"), "Cached image mapping missing");
 assert(!hub.includes('data-pna-world-entry="v1"'), "Remove standalone worldwide promo card");
 assert(!hub.includes("Explore the worldwide collection"), "No second collection call-to-action");
 assert(detail.includes("...worldManualApproaches.map") && detail.includes("<WorldApproachChapter lesson={worldLesson} />"),
