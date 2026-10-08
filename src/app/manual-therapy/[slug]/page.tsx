@@ -19,6 +19,7 @@ import {
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { getClinicalNarrative } from "@/lib/manual-therapy-clinical-narratives";
+import { getManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
 import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
 import {
@@ -59,6 +60,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const story = getManualTherapyStory(slug);
   const narrative = getClinicalNarrative(slug);
+  const aha = getManualTherapyAhaMoment(slug);
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
   const expert = getManualTherapyExpertProfile(slug);
@@ -204,8 +206,35 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </div>
       </section>
 
+      {aha ? (
+        <section data-pna-reading="learn-and-smile-v1" className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Clinical aha moment">
+          <div className="flex items-center gap-2 text-teal-700">
+            <Lightbulb className="h-5 w-5" aria-hidden="true" />
+            <p className="text-xs font-bold uppercase tracking-[0.2em]">The Aha Moment</p>
+          </div>
+          <h2 className="mt-3 max-w-3xl font-serif text-2xl font-bold leading-tight text-navy-900 sm:text-3xl">
+            {aha.hook}
+          </h2>
+          <p className="mt-4 max-w-4xl text-base leading-8 text-slate-700">
+            {aha.analogy}
+          </p>
+          <div className="mt-6 border-t border-slate-200 pt-5">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-700">A quick clinical curveball</p>
+            <p className="mt-2 text-[15px] font-medium leading-7 text-slate-800">{aha.challenge}</p>
+            <details className="group mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-teal-800 [&::-webkit-details-marker]:hidden">
+                Reveal the clinical answer
+                <ArrowRight className="h-4 w-4 flex-none transition-transform group-open:rotate-90" aria-hidden="true" />
+              </summary>
+              <p className="mt-3 border-t border-slate-200 pt-3 text-sm leading-7 text-slate-700">{aha.reveal}</p>
+            </details>
+          </div>
+          <p className="mt-4 text-xs leading-5 text-slate-500">A memorable teaching analogy—not a replacement for clinical assessment or technique training.</p>
+        </section>
+      ) : null}
+
       {visuals.length ? (
-        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8">
+        <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8>
           <div className="mb-6">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
               Clinical Visual Atlas
@@ -324,7 +353,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           tone="border-violet-100 bg-violet-50/70"
         />
         <EditorialBlock
-          title="The Method: From First Contact to Did It Make a Meaningful Difference?"
+          title="The Method: From First Contact to Reassessment"
           items={technique.procedure}
           icon={Hand}
           tone="border-cyan-100 bg-cyan-50/70"
