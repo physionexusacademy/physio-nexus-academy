@@ -10,6 +10,9 @@ import {
   ShieldCheck,
   Stethoscope,
   Eye,
+  Clapperboard,
+  Lightbulb,
+  Sparkles,
 } from "lucide-react";
 import { mskCategories, mskConditionIndex, mskRegions } from "@/lib/msk-injury-index";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
@@ -70,6 +73,48 @@ export default function MSKInjuryHubPage() {
             Explore 3D Clinical Visual Atlas
           </a>
         ) : null}
+      </section>
+
+      <section data-pna-msk-story-library="v1" className="mt-8 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-indigo-50/70 p-6 shadow-sm sm:p-8">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-teal-800">
+          <Clapperboard className="h-5 w-5" aria-hidden="true" />
+          New · MSK stories you can almost see happening
+        </div>
+        <h2 className="mt-3 max-w-3xl font-serif text-2xl font-bold leading-tight text-navy-900 sm:text-3xl">
+          Real clinical reasoning. Fictional patients. Zero boring textbook openings.
+        </h2>
+        <p className="mt-4 max-w-4xl text-[15px] leading-7 text-navy-700">
+          Every condition now begins inside the clinic, where a patient arrives with clues and a
+          perfectly human misconception. Read the scene, discover the diagnostic twist, meet the Aha Moment,
+          then make your own call in a three-choice clinical challenge. Humor helps the lesson stick;
+          clinical safety and the full original examination and rehabilitation protocols stay front and center.
+        </p>
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          {[
+            { icon: Clapperboard, title: "Enter the scene", text: "A distinct patient story for each condition." },
+            { icon: Lightbulb, title: "Catch the twist", text: "Memorable clinical insights, never one-test diagnoses." },
+            { icon: Sparkles, title: "Pick your lens", text: "Simple patient language or deeper clinician reasoning, plus a mini challenge." },
+          ].map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <div key={feature.title} className="rounded-2xl border border-white bg-white/80 p-4">
+                <Icon className="h-5 w-5 text-teal-700" aria-hidden="true" />
+                <h3 className="mt-3 text-sm font-bold text-navy-900">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-navy-600">{feature.text}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href="/msk-injuries/cervical-radiculopathy#msk-clinical-story" className="inline-flex items-center gap-2 rounded-full bg-teal-800 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-900">
+            Start a neck-and-arm mystery
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+          <a href="/msk-injuries/acl-injury#msk-clinical-story" className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-5 py-3 text-sm font-bold text-teal-900 transition hover:bg-teal-50">
+            Meet the ACL plot twist
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
       </section>
 
       <section className="mt-8 grid gap-4 md:grid-cols-4">

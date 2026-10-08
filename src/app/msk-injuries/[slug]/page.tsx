@@ -16,6 +16,8 @@ import {
   Eye,
 } from "lucide-react";
 import { mskConditions, type MSKTest } from "@/lib/msk-injury-hub";
+import { mskClinicalStories } from "@/lib/msk-clinical-stories";
+import { MSKStoryExperience } from "@/components/msk/MSKStoryExperience";
 import { getAtlasEntriesForCondition } from "@/lib/clinical-visual-atlas";
 import { getCloudinaryUrl } from "@/lib/cloudinary";
 
@@ -126,6 +128,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
   const item = mskConditions.find((condition) => condition.slug === slug);
   if (!item) notFound();
   const visualEntries = getAtlasEntriesForCondition(item.slug);
+  const story = mskClinicalStories[item.slug];
 
   return (
     <div className="container-content section-padding">
@@ -143,6 +146,8 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">{item.name}</h1>
         <p className="mt-4 max-w-4xl text-base leading-7 text-orange-50">{item.summary}</p>
       </section>
+
+      {story ? <MSKStoryExperience story={story} /> : null}
 
       {visualEntries.length ? (
         <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50/50">
@@ -211,7 +216,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <ListSection title="Red Flags & Referral Clues" items={item.redFlags} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
       </div>
 
-      <section className="mt-10">
+      <section id="msk-clinical-tests" className="mt-10 scroll-mt-24">
         <p className="text-sm font-bold uppercase tracking-widest text-cyan-700">Diagnostic Examination</p>
         <h2 className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">How to perform the tests — step by step</h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
@@ -228,7 +233,7 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <ListSection title="Investigations / Imaging" items={item.investigations} icon={Stethoscope} tone="border-blue-100 bg-blue-50/70" />
       </div>
 
-      <section className="mt-10 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
+      <section id="msk-rehab" className="mt-10 scroll-mt-24 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
         <div className="border-b border-emerald-100 p-6 sm:p-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">Complete Rehabilitation Plan</p>
           <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">From protection to full function</h2>
