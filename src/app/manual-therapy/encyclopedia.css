@@ -106,7 +106,7 @@
 .pna-editorial-card[data-tone="teal"] .pna-editorial-card-cta{background:linear-gradient(125deg,#168cae,#2657b5 64%,#5b36bd)}
 .pna-editorial-evidence{margin-top:9px;display:inline-flex;align-items:center;gap:5px;font-size:.65rem;font-weight:600;color:#735526;border-radius:6px;background:rgba(255,241,209,.78);padding:5px 7px}
 .pna-editorial-no-results{padding:36px 20px;border:1px dashed #bbc6dc;border-radius:20px;text-align:center;background:#f9fbff}
-.pna-editorial-bottom{margin-top:35px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pna-editorial-bottom{margin-top:35px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .pna-editorial-bottom a,.pna-editorial-bottom aside{display:block;border:1px solid #dedff4;border-radius:21px;padding:21px 22px;background:linear-gradient(140deg,#fff,#f8f7fe);box-shadow:0 7px 19px rgba(42,69,124,.045)}
 .pna-editorial-bottom h2{font-size:1.1rem;font-weight:800;color:#1c3158}
 .pna-editorial-bottom p{font-size:.81rem;line-height:1.65;color:#556580;margin-top:7px}
