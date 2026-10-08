@@ -62,6 +62,14 @@ const portalActions = [
       ]
     : []),
   {
+    title: "Clinical Challenge Arena",
+    description: "Take a history, choose differentials, diagnose and plan treatment — with friendly clinical roasts.",
+    href: "/clinical-arena",
+    icon: BrainCircuit,
+    tone: "from-teal-500 to-cyan-600",
+    soft: "bg-teal-50 border-teal-100",
+  },
+  {
     title: "Clinical Case Lab",
     description: "Work through symptoms, differential diagnosis, reasoning and treatment planning.",
     href: "/case-lab",
