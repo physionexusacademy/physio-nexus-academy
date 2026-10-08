@@ -13,7 +13,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "kaltenborn-evjenth-mobilization",
@@ -22,7 +22,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "mulligan-mobilization-with-movement",
@@ -31,7 +31,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     },
     {
       "slug": "mulligan-snags-nags",
@@ -40,7 +40,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "cyriax-deep-transverse-friction",
@@ -49,7 +49,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "muscle-energy-technique",
@@ -58,7 +58,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "strain-counterstrain",
@@ -67,7 +67,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     },
     {
       "slug": "myofascial-release",
@@ -76,7 +76,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "soft-tissue-mobilization",
@@ -85,7 +85,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "trigger-point-compression",
@@ -94,7 +94,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "iastm",
@@ -103,7 +103,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     },
     {
       "slug": "neurodynamic-mobilization",
@@ -112,7 +112,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "manual-traction",
@@ -121,7 +121,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     },
     {
       "slug": "high-velocity-low-amplitude-thrust",
@@ -130,7 +130,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "pnf-manual-techniques",
@@ -139,7 +139,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "fascial-manipulation",
@@ -148,7 +148,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "active-release-style-soft-tissue",
@@ -157,7 +157,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "manual-lymphatic-drainage",
@@ -166,7 +166,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "scar-mobilization",
@@ -175,7 +175,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     },
     {
       "slug": "paivm-ppivm-spinal-assessment",
@@ -184,7 +184,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "myofascial-decompression-dry-cupping",
@@ -193,7 +193,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "facilitated-positional-release",
@@ -202,7 +202,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     },
     {
       "slug": "paris-approach",
@@ -211,7 +211,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "mckenzie-mdt",
@@ -220,7 +220,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "mennell-joint-play",
@@ -229,7 +229,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "fascial-distortion-model",
@@ -238,7 +238,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "balanced-ligamentous-tension",
@@ -247,7 +247,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "spencer-shoulder-sequence",
@@ -256,7 +256,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "still-technique",
@@ -265,7 +265,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "osteopathic-articulatory",
@@ -274,7 +274,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "osteopathic-lymphatic-pump",
@@ -283,7 +283,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "rolfing-structural-integration",
@@ -292,7 +292,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "bowen-technique",
@@ -301,7 +301,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "visceral-manipulation",
@@ -310,7 +310,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "AVIF/WebP pair staged; editorial and clinical visual QA required before approval"
+      "reviewNote": "Both AVIF and WebP binaries uploaded to GitHub staging; clinical image review outstanding"
     },
     {
       "slug": "craniosacral-therapy",
@@ -319,7 +319,7 @@
         "x": 50,
         "y": 50
       },
-      "reviewNote": "Artwork may exist but complete AVIF/WebP pair not yet staged; do not publish"
+      "reviewNote": "Optimized artwork prepared locally; AVIF/WebP binaries not yet uploaded to staging; clinical review outstanding"
     }
   ]
 }
