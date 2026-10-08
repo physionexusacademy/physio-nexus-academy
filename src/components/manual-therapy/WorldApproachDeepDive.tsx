@@ -3,8 +3,9 @@ import {
   Lightbulb, Microscope, ShieldAlert, Sparkles, Stethoscope,
 } from "lucide-react";
 import type { WorldDeepChapter } from "@/lib/manual-therapy-world-depth-types";
+import { AttentionReset } from "@/components/manual-therapy/AttentionReset";
 
-export function WorldApproachDeepDive({ chapter }: { chapter: WorldDeepChapter }) {
+export function WorldApproachDeepDive({ chapter, slug }: { chapter: WorldDeepChapter; slug: string }) {
   return (
     <article data-pna-world-depth="full-chapter-v2" className="mt-9 space-y-8" aria-label="In-depth approach chapter">
       <header className="overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-teal-50 p-6 sm:p-9">
@@ -46,6 +47,7 @@ export function WorldApproachDeepDive({ chapter }: { chapter: WorldDeepChapter }
         </div>
       </section>
 
+      <AttentionReset slug={slug} moment="wake" />
       <section id="world-deep-assessment" className="scroll-mt-24 overflow-hidden rounded-3xl border border-cyan-200 bg-white shadow-sm">
         <div className="bg-cyan-50/60 p-6 sm:p-8">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-cyan-800">
@@ -89,6 +91,7 @@ export function WorldApproachDeepDive({ chapter }: { chapter: WorldDeepChapter }
         </div>
       </section>
 
+      <AttentionReset slug={slug} moment="think" />
       <section id="world-deep-case" className="scroll-mt-24 overflow-hidden rounded-3xl border border-indigo-200 bg-white shadow-sm">
         <div className="bg-gradient-to-r from-indigo-900 to-teal-900 p-6 text-white sm:p-8">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.17em] text-indigo-100">
@@ -121,6 +124,7 @@ export function WorldApproachDeepDive({ chapter }: { chapter: WorldDeepChapter }
         </div>
       </section>
 
+      <AttentionReset slug={slug} moment="remember" />
       <section id="world-deep-safety" className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
         <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-indigo-700">
           <Microscope className="h-5 w-5" aria-hidden="true" /> Chapter V · Claims under the microscope

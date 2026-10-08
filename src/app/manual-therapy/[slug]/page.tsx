@@ -22,6 +22,7 @@ import { WorldApproachChapter } from "@/components/manual-therapy/WorldApproachC
 import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { getClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import { ClinicalStoryChapter } from "@/components/manual-therapy/ClinicalStoryChapter";
+import { AttentionReset } from "@/components/manual-therapy/AttentionReset";
 import { getManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
@@ -149,6 +150,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <EditorialBlock title="Exact Hand Placement" items={guide.handPlacement} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
           <EditorialBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
         </div>
+        <div className="px-5 sm:px-8"><AttentionReset slug={slug} moment="wake" /></div>
         {weave ? (
           <aside className="mx-5 mt-1 rounded-2xl border-l-4 border-teal-500 bg-white px-5 py-5 sm:mx-8 sm:px-7">
             <p className="text-xs font-bold uppercase tracking-[0.19em] text-teal-800">The subtle move · What textbook shorthand misses</p>
@@ -158,6 +160,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         <div className="border-t border-violet-100 p-5 sm:p-8">
           <EditorialBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} tone="border-emerald-100 bg-emerald-50/70" />
         </div>
+        <div className="px-5 sm:px-8"><AttentionReset slug={slug} moment="think" /></div>
         <div className="grid gap-5 border-t border-violet-100 p-5 sm:p-8 lg:grid-cols-2">
           <EditorialBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} tone="border-teal-100 bg-teal-50/70" />
           <EditorialBlock title="Stop / Modify Immediately If…" items={guide.stopCriteria} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
@@ -186,6 +189,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </section>
       ) : null}
 
+      <AttentionReset slug={slug} moment="remember" />
       <section className="mt-8" aria-labelledby="clinical-essentials">
         <p className="text-xs font-bold uppercase tracking-[0.17em] text-teal-700">The non-negotiables</p>
         <h2 id="clinical-essentials" className="mt-2 font-serif text-2xl font-bold text-slate-900">Useful, safe and worth repeating?</h2>

@@ -90,7 +90,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
         </div>
       </details>
 
-      {deep ? <WorldApproachDeepDive chapter={deep} /> : null}
+      {deep ? <WorldApproachDeepDive chapter={deep} slug={lesson.slug} /> : null}
 
       <WorldApproachChallenge lesson={lesson} />
 

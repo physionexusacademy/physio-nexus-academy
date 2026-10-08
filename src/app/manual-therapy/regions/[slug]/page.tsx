@@ -45,6 +45,8 @@ import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import { regionalClinicalStories, regionalClinicalChallenges } from "@/lib/manual-therapy-regional-stories";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { regionalManualVignettes } from "@/lib/manual-therapy-regional-vignettes";
+import { RegionalAttentionReset } from "@/components/manual-therapy/AttentionReset";
+import { RegionalLearningLab } from "@/components/manual-therapy/RegionalLearningLab";
 import { generalRegionStoryPrompts } from "@/lib/manual-therapy-general-region-scenes";
 
 type PageProps = {
@@ -860,6 +862,12 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
         </div>
       </section>
 
+      {isTechniqueSpecific ? (
+        <RegionalAttentionReset techniqueSlug={item.techniqueSlug}
+          region={item.region} comparableSign={item.reassess[0] ?? "the original movement"}
+          simpleStory={vignette?.sticky} />
+      ) : null}
+
       <section className="mt-8 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 shadow-sm">
         <div className="border-b border-emerald-100 p-6 sm:p-8">
           <div className="flex items-center gap-3">
@@ -891,6 +899,8 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           ))}
         </div>
       </section>
+
+      {isTechniqueSpecific ? <RegionalLearningLab slug={item.slug} /> : null}
 
       <section className="mt-8 grid gap-5 lg:grid-cols-2">
         <div className="overflow-hidden rounded-3xl border border-rose-200 bg-white shadow-sm">

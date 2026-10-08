@@ -61,6 +61,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-therapy-stories.mjs
 
+      - name: Validate accessible-English technique attention and deep guides
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-manual-therapy-attention.mjs
+
       - name: Validate Manual Therapy visual manifest (inactive until 35 approved)
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-visuals.mjs
@@ -134,6 +138,7 @@ jobs:
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-story="v1"'
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-depth="full-chapter-v2"'
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-world-final="v1"'
+            check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-attention="wake-v1"'
           done
           check_url "https://physionexusacademy.com/manual-therapy/world-approaches/paris-approach" 'data-pna-world-story="v1"'
           for slug in \
@@ -159,6 +164,11 @@ jobs:
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-content-revision="storytelling-v1"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-engagement="clinical-curveball-v1"'
           check_url "https://physionexusacademy.com/manual-therapy/regions/maitland-cervical-pa-mobilization" 'data-pna-engagement="regional-reading-v3"'
+          check_url "https://physionexusacademy.com/manual-therapy/regions/maitland-cervical-pa-mobilization" 'data-pna-attention="regional-brain-v1"'
+          for slug in pnf-lower-limb-d1 neurodynamic-ulnar-slider met-hamstring scs-upper-trapezius
+          do
+            check_url "https://physionexusacademy.com/manual-therapy/regions/$slug" 'data-pna-learning-depth="what-how-why-v1"'
+          done
           for slug in \
             maitland-joint-mobilization kaltenborn-evjenth-mobilization \
             mulligan-mobilization-with-movement mulligan-snags-nags \
@@ -172,4 +182,5 @@ jobs:
             myofascial-decompression-dry-cupping facilitated-positional-release
           do
             check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-reading="clinical-story-v3"'
+            check_url "https://physionexusacademy.com/manual-therapy/$slug" 'data-pna-attention="think-v1"'
           done
