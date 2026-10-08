@@ -64,7 +64,8 @@ jobs:
             mld-upper-limb
           do
             url="https://physionexusacademy.com/manual-therapy/regions/$slug"
-            if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 1 "$url" | grep -Fq 'data-pna-engagement="regional-reading-v3"'; then
+            body="$(curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 1 "$url" || true)"
+            if grep -Fq 'data-pna-engagement="regional-reading-v3"' <<< "$body"; then
               echo "PASS authored region $slug"
               success=$((success+1))
             else
@@ -83,7 +84,8 @@ jobs:
             mfr-thoracic-paraspinals
           do
             url="https://physionexusacademy.com/manual-therapy/regions/$slug"
-            if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 1 "$url" | grep -Fq 'data-pna-content-depth="authored-clinical-story"'; then
+            body="$(curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 1 "$url" || true)"
+            if grep -Fq 'data-pna-content-depth="authored-clinical-story"' <<< "$body"; then
               echo "PASS eight authored episodes $slug"
               success=$((success+1))
             else
@@ -92,7 +94,8 @@ jobs:
             fi
           done
           overview="https://physionexusacademy.com/manual-therapy/regions/guide-facilitated-positional-release-wrist-and-hand"
-          if curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 "$overview" | grep -Fq 'data-pna-story="regional-overview-v1"'; then
+          general_body="$(curl -fsSL --connect-timeout 8 --max-time 25 --retry 2 "$overview" || true)"
+          if grep -Fq 'data-pna-story="regional-overview-v1"' <<< "$general_body"; then
             echo "PASS safe general regional overview with imaginative scene"
           else
             echo "::error::General overview did not show its introductory story"
