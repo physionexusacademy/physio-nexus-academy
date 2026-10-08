@@ -1,0 +1,104 @@
+name: Decode final PNA Manual Therapy cover assets
+on:
+  push:
+    branches:
+      - "staging/manual-all-35-covers-*"
+    paths:
+      - "automation/manual-asset-transfer/*.txt"
+      - ".github/workflows/manual-final-seven-intake.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pna-manual-final-intake
+  cancel-in-progress: false
+
+jobs:
+  decode-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout staging (never production)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          persist-credentials: true
+      - name: Install AVIF image support
+        run: python -m pip install 'Pillow>=11,<13' 'pillow-avif-plugin>=1.4,<2'
+      - name: Decode last seven exact technique images
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, hashlib
+          from pathlib import Path
+          from PIL import Image
+          import pillow_avif
+          transfer=Path('automation/manual-asset-transfer')
+          sources=sorted(transfer.glob('*.txt')) if transfer.exists() else []
+          if not sources:
+            print('No remaining transfer payloads; already decoded.')
+            raise SystemExit(0)
+          allowed={
+            'mulligan-mobilization-with-movement','strain-counterstrain','iastm',
+            'manual-traction','scar-mobilization','facilitated-positional-release',
+            'craniosacral-therapy'}
+          outputs=Path('public/images/manual-therapy/cards')
+          outputs.mkdir(parents=True,exist_ok=True)
+          pairs={}
+          hashes=set()
+          for source in sources:
+            for line in source.read_text().splitlines():
+              if not line.strip(): continue
+              parts=line.split('|')
+              if len(parts) != 2: raise ValueError(f'{source}: malformed payload')
+              name,encoded=parts
+              slug,ext=name.rsplit('.',1)
+              if slug not in allowed or ext not in {'avif','webp'}:
+                raise ValueError(f'{source}: unapproved image name {name}')
+              dst=outputs/name
+              if dst.exists(): raise ValueError(f'Refusing to overwrite existing {dst}')
+              if pairs.get(name): raise ValueError(f'Duplicate transfer filename {name}')
+              raw=base64.b64decode(encoded,validate=True)
+              if not (1024<=len(raw)<=(65000 if ext=='avif' else 85000)):
+                raise ValueError(f'{name} fails byte-size budget')
+              if ext=='avif' and raw[4:12]!=b'ftypavif': raise ValueError(f'{name}: invalid AVIF')
+              if ext=='webp' and (raw[:4]!=b'RIFF' or raw[8:12]!=b'WEBP'):
+                raise ValueError(f'{name}: invalid WebP')
+              key=hashlib.sha256(raw).hexdigest()
+              if key in hashes: raise ValueError(f'Repeated file payload {name}')
+              hashes.add(key)
+              dst.write_bytes(raw)
+              with Image.open(dst) as pic:
+                if pic.size!=(480,600):
+                  raise ValueError(f'{name}: got {pic.size}, expected 480x600')
+                pic.verify()
+              pairs[name]=len(raw)
+          expected={f'{slug}.{ext}' for slug in allowed for ext in ('avif','webp')}
+          if set(pairs)!=expected:
+            raise ValueError(f'Missing assets: {sorted(expected-set(pairs))}; unexpected: {sorted(set(pairs)-expected)}')
+          print(f'Validated and decoded {len(pairs)} optimized assets for {len(allowed)} unique techniques.')
+          for source in sources: source.unlink()
+          PY
+      - name: Check all 35 technique covers and performance caps
+        run: |
+          node scripts/validate-manual-visuals.mjs
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('public/images/manual-therapy/cards')
+          a=list(p.glob('*.avif')); w=list(p.glob('*.webp'))
+          assert len(a)==35 and len(w)==35, (len(a),len(w))
+          print('Complete staged 35 AVIF + 35 WebP assets verified')
+          PY
+      - name: Commit real images to staging; remove transfer files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A public/images/manual-therapy/cards automation/manual-asset-transfer
+          if git diff --cached --quiet; then
+            echo "No change needed"
+          else
+            git commit -m "Complete all 35 PNA Manual Therapy AVIF and WebP cover pairs"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
