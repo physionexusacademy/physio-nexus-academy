@@ -15,94 +15,107 @@ const cases: Case[] = [
 {id:"neck-01",specialty:"MSK & Orthopedic",title:"Neck Pain Into the Arm",patient:"41-year-old man",history:"Neck pain radiates into the right arm with tingling. Symptoms increase with certain neck positions.",findings:["Reduced sensation in a dermatomal pattern.","Myotomal weakness on examination.","Symptoms reproduced by a compatible cervical provocation maneuver."],question:"Which condition is most consistent with the pattern?",options:["Isolated upper trapezius soreness","Cervical radiculopathy","Adhesive capsulitis","Carpal tunnel syndrome only"],correct:1,explanation:"Radiating arm symptoms with corresponding sensory and motor findings support cervical radiculopathy. Assess reflexes, progressive weakness, myelopathy signs and other neurological or peripheral nerve causes.",clue:"Look for matching neurological deficits."},
 {id:"safety-01",specialty:"MSK & Orthopedic",title:"The Urgent Back Pain Case",patient:"57-year-old man",history:"Severe new low back pain with bilateral leg symptoms and new difficulty urinating.",findings:["Altered saddle-area sensation.","New bladder dysfunction.","Bilateral neurological symptoms."],question:"What is the most appropriate immediate action?",options:["Start routine lumbar stretching","Provide massage and review next week","Urgent emergency assessment for possible cauda equina syndrome","Reassure and discharge without further action"],correct:2,explanation:"New bladder dysfunction and saddle sensory disturbance with back/leg symptoms are red flags for possible cauda equina syndrome. Arrange immediate emergency evaluation. Do not delay referral for routine treatment.",clue:"Recognize neurological emergency red flags.",safety:true}
 ];
-const positive = [
+
+type Flow = { chief:string; historyQuestions:[string,string][]; bestHistory:number; differential:string[]; differentialCorrect:number; differentialWhy:string; treatment:string[]; treatmentCorrect:number; treatmentWhy:string };
+const flows:Record<string,Flow>={
+"shoulder-01":{chief:"My shoulder has become painful and stiff. I struggle to put on my shirt.",historyQuestions:[["Has your shoulder gradually become stiffer over months?","Yes. Both pain and stiffness have slowly worsened over four months."],["Do you usually sleep on your left side?","Sometimes, but that does not explain when the stiffness began."]],bestHistory:0,differential:["Adhesive capsulitis and glenohumeral osteoarthritis","Ankle sprain and carpal tunnel syndrome","Only cervical radiculopathy"],differentialCorrect:0,differentialWhy:"Both adhesive capsulitis and glenohumeral OA can restrict active and passive ROM; age, onset, examination and imaging when indicated help distinguish them.",treatment:["Aggressive painful stretching regardless of irritability","Education, symptom-guided mobility and progressive functional exercise","Immobilize the shoulder for six weeks"],treatmentCorrect:1,treatmentWhy:"Match mobility and exercise intensity to irritability, function and response. Avoid forcing painful end ranges."},
+"knee-01":{chief:"I twisted my knee during football and it feels unstable.",historyQuestions:[["Did you hear a pop and develop swelling soon after?","Yes. I heard a pop and my knee swelled within a few hours."],["Which football team do you support?","That does not help explain the mechanism or swelling."]],bestHistory:0,differential:["ACL injury, meniscal injury and other ligament injury","Only patellar tendinopathy","Carpal tunnel syndrome"],differentialCorrect:0,differentialWhy:"Pivoting trauma and rapid effusion warrant assessment of ACL and associated knee structures; do not assume an isolated injury.",treatment:["Continue pivoting sport immediately","Protect the knee, manage swelling, assess function and arrange appropriate sports/orthopedic follow-up","High-force knee manipulation to restore stability"],treatmentCorrect:1,treatmentWhy:"Early care should protect the injured knee, restore tolerable movement and strength as appropriate, and obtain specialist assessment when indicated."},
+"hand-01":{chief:"My fingers tingle at night and I shake my hand for relief.",historyQuestions:[["Which fingers are affected, and is it worse at night?","Mostly the thumb, index and middle fingers. Night-time is worst."],["Do you prefer a firm or soft pillow?","I am not sure; it does not change which fingers go numb."]],bestHistory:0,differential:["Median neuropathy at wrist and cervical radiculopathy","Achilles tendinopathy and hip OA","Only ulnar neuropathy"],differentialCorrect:0,differentialWhy:"Median-distribution paresthesia suggests carpal tunnel syndrome, but proximal nerve conditions should be considered if symptoms or examination point that way.",treatment:["Consider neutral wrist splinting at night and activity modification, with referral if weakness progresses","Perform forceful nerve stretching through numbness","Ignore thenar weakness"],treatmentCorrect:0,treatmentWhy:"Conservative management may include night splinting and activity advice. Progressive weakness, persistent sensory loss or severe symptoms warrant further evaluation."},
+"back-01":{chief:"My lower back hurts and sometimes pain goes into my buttock.",historyQuestions:[["Do repeated movements change where the pain travels?","Yes. With repeated extension the buttock pain moves back toward my lower back."],["What brand of shoes are you wearing?","That has not changed the pain pattern."]],bestHistory:0,differential:["Mechanical low back pain with directional preference, while screening for nerve-related causes","Cauda equina syndrome confirmed from this alone","Shoulder adhesive capsulitis"],differentialCorrect:0,differentialWhy:"Centralization suggests a mechanical response to movement, not a proven tissue diagnosis. Screen neurological symptoms and red flags.",treatment:["Use tolerable movements matching directional preference and monitor symptom response","Push through worsening peripheralizing pain without reassessment","Strict bed rest for several weeks"],treatmentCorrect:0,treatmentWhy:"A symptom-guided exercise approach may be appropriate when red flags are absent. Reassess if symptoms peripheralize or neurological findings worsen."},
+"ankle-01":{chief:"I rolled my ankle landing from a jump.",historyQuestions:[["Which way did the ankle roll, and can you bear weight?","It rolled inward while my foot was pointed down. Weight bearing is painful."],["What is your favorite basketball jersey number?","That is not relevant to the injury assessment."]],bestHistory:0,differential:["Lateral ligament sprain and fracture or syndesmotic injury to exclude","Only plantar fasciitis","Cervical radiculopathy"],differentialCorrect:0,differentialWhy:"Inversion-plantarflexion suggests lateral ligament injury, but assess bony tenderness, weight-bearing and Ottawa Ankle Rule indications.",treatment:["Apply appropriate protection and progressive loading, and assess need for imaging","Return to competitive jumping immediately","Force painful inversion repeatedly"],treatmentCorrect:0,treatmentWhy:"Functional support and progressive rehabilitation are typical for uncomplicated sprains, after appropriate fracture and other injury screening."},
+"hip-01":{chief:"The outside of my hip hurts, especially on stairs or when lying on it.",historyQuestions:[["Is pain over the side of your hip and worse lying on that side?","Yes, exactly. It also hurts climbing stairs."],["Do you drink tea or coffee in the morning?","That has not changed my hip symptoms."]],bestHistory:0,differential:["Greater trochanteric pain syndrome and lumbar/hip joint referral","Only carpal tunnel syndrome","ACL rupture"],differentialCorrect:0,differentialWhy:"Lateral hip pain with load sensitivity fits gluteal tendinopathy/GTPS; examine hip joint and lumbar spine when indicated.",treatment:["Progressive hip abductor strengthening with load management and reduced compressive positions","Aggressive deep pressure over painful tendon every day","Complete avoidance of walking indefinitely"],treatmentCorrect:0,treatmentWhy:"Education, load management and progressive hip abductor exercise are reasonable first-line strategies, individualized to symptoms."},
+"neck-01":{chief:"My neck hurts and I get tingling down one arm.",historyQuestions:[["Does tingling follow a particular arm distribution, and have you noticed weakness?","Yes. There is numbness in a consistent area and some weakness."],["What chair color do you have at home?","The chair color does not explain the neurological findings."]],bestHistory:0,differential:["Cervical radiculopathy and peripheral nerve entrapment","Only ankle ligament sprain","Adhesive capsulitis as the only diagnosis"],differentialCorrect:0,differentialWhy:"Arm paresthesia can have cervical or peripheral origins. Neurological examination and symptom behavior help discriminate; screen for myelopathy.",treatment:["Assess neurological status and use individualized conservative care when appropriate; refer if progressive deficit","Perform high-velocity neck thrust regardless of neurological findings","Ignore increasing weakness"],treatmentCorrect:0,treatmentWhy:"Monitor strength, sensation and reflexes. Progressive deficit or myelopathic signs require prompt medical evaluation."},
+"safety-01":{chief:"I have severe new back pain and my legs feel strange.",historyQuestions:[["Any new bladder or bowel changes or numbness around the saddle area?","Yes. I am having new trouble urinating and numbness around the saddle area."],["What kind of mattress do you own?","I do not know, but I am worried about the new bladder symptoms."]],bestHistory:0,differential:["Possible cauda equina syndrome and other urgent spinal pathology","Simple muscular strain only","Routine post-exercise soreness"],differentialCorrect:0,differentialWhy:"New bladder dysfunction, saddle sensory change and bilateral symptoms are emergency red flags. Do not delay escalation for further quiz-style investigation.",treatment:["Immediate emergency referral and urgent assessment","Book a routine exercise session next week","Massage and reassess in a month"],treatmentCorrect:0,treatmentWhy:"Possible cauda equina syndrome needs immediate emergency assessment. Routine physiotherapy is inappropriate until urgent pathology is excluded."}
+};
+type Stage="history"|"differential"|"diagnosis"|"treatment";
+const stages:Stage[]=["history","differential","diagnosis","treatment"];
+const positive=[
 "Clinical reasoning just got promoted to consultant! 😂",
-"Even the textbook said: okay, this one knows the assignment. 🧠",
 "Sherlock Holmes called. He wants his diagnostic skills back! 🔍",
-"Excellent! Your neurons finally formed a multidisciplinary team. 😎",
-"Evidence-based practice is giving you a standing ovation. 👏",
-"Your differential list just gave you a high five. 🏆",
+"Even the textbook said: okay, this one knows the assignment. 🧠",
+"Your neurons finally formed a multidisciplinary team. 😎",
 "That was cleaner than a freshly documented SOAP note! ✨",
+"Evidence-based practice is giving you a standing ovation! 👏",
+"Your differential list just gave you a high five. 🏆",
 "Diagnosis secured. The examiner can put the red pen away! 😂"
 ];
-const roast = [
-"Doctor, your confidence is consultant-level; the diagnosis is still on internship! 😂",
-"That answer took a wrong turn before the clinical round even started. 🧭",
+const roasts=[
+"Doctor, your confidence is consultant-level; the reasoning is still on internship! 😂",
 "The patient gave you clues, not a lucky-draw ticket! 🎟️",
 "Your neurons held a meeting, but nobody read the agenda. 🧠",
-"The differential diagnosis list is requesting a second opinion on you! 😭",
 "Clinical reasoning has left the chat. Please invite it back. 😂",
+"The textbook saw that answer and quietly closed itself. 📚",
 "Even the goniometer is asking you to measure your reasoning first! 📐",
-"That diagnosis traveled farther than the patient's symptoms. 🌍",
-"The textbook saw your answer and quietly closed itself. 📚",
-"Your assessment was good; the conclusion went on an unscheduled holiday. 🏖️",
-"Doctor, this isn't MCQ roulette. Follow the clinical clues! 🎯",
-"That was a bold choice. The evidence would like a word. 😅"
+"That answer went on an unscheduled holiday from evidence. 🏖️",
+"This isn't MCQ roulette. Follow the clinical clues! 🎯",
+"The differential diagnosis list is requesting a second opinion on you! 😭",
+"That was a bold choice. The evidence would like a word. 😅",
+"Doctor, the clinical compass is pointing toward the cafeteria! 🧭",
+"The assessment was invited, but the conclusion arrived without it. 😂"
 ];
-function pick(pool:string[],used:string[]):string {
- const available=pool.filter(v=>!used.includes(v));
- return (available.length?available:pool)[Math.floor(Math.random()*(available.length?available:pool).length)];
+const stageNames:Record<Stage,string>={history:"History taking",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning"};
+function draw(pool:string[],used:string[]):string{
+ const remaining=pool.filter(x=>!used.includes(x));
+ const available=remaining.length?remaining:pool;
+ return available[Math.floor(Math.random()*available.length)];
 }
 export default function ClinicalArenaPage(){
  const [specialty,setSpecialty]=useState("All specialties");
  const [position,setPosition]=useState(0);
+ const [stage,setStage]=useState<Stage>("history");
  const [selected,setSelected]=useState<number|null>(null);
  const [revealed,setRevealed]=useState(false);
- const [line,setLine]=useState("");
+ const [feedback,setFeedback]=useState("");
  const [seen,setSeen]=useState<string[]>([]);
- const [correctCount,setCorrectCount]=useState(0);
+ const [score,setScore]=useState(0);
  const [finished,setFinished]=useState(false);
+ const [asked,setAsked]=useState<number[]>([]);
  const specialties=["All specialties",...Array.from(new Set(cases.map(c=>c.specialty)))];
  const filtered=useMemo(()=>cases.filter(c=>specialty==="All specialties"||c.specialty===specialty),[specialty]);
  const item=filtered[position];
- function reset(next:string){setSpecialty(next);setPosition(0);setSelected(null);setRevealed(false);setLine("");setCorrectCount(0);setFinished(false);}
- function submit(){
-  if(selected===null||revealed)return;
-  const ok=selected===item.correct;
-  const bank=item.safety?[]:ok?positive:roast;
-  const chosen=item.safety?(ok?"Correct. You recognized an urgent safety concern.":"Safety alert: This presentation needs urgent emergency evaluation, not routine treatment."):pick(bank,seen);
-  setLine(chosen);setSeen(v=>[...v,chosen]);setRevealed(true);
-  if(ok)setCorrectCount(v=>v+1);
+ const flow=item?flows[item.id]:undefined;
+ const current=stage==="differential"?{question:"Which differential diagnoses should you prioritize?",options:flow?.differential||[],correct:flow?.differentialCorrect??0,why:flow?.differentialWhy||""}:stage==="diagnosis"?{question:item?.question||"",options:item?.options||[],correct:item?.correct??0,why:item?.explanation||""}:{question:"Which is the most appropriate management plan?",options:flow?.treatment||[],correct:flow?.treatmentCorrect??0,why:flow?.treatmentWhy||""};
+ function reset(next:string){setSpecialty(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setScore(0);setFinished(false);setAsked([]);}
+ function respond(ok:boolean,why:string){
+  const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):draw(ok?positive:roasts,seen);
+  setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok)setScore(v=>v+1);
  }
- function next(){if(position+1>=filtered.length){setFinished(true)}else{setPosition(v=>v+1);setSelected(null);setRevealed(false);setLine("");}}
- return <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-12 text-white">
- <div className="container-content max-w-4xl">
+ function submit(){if(selected===null||revealed||stage==="history")return;respond(selected===current.correct,current.why);}
+ function advance(){
+  const nextIndex=stages.indexOf(stage)+1;
+  if(nextIndex<stages.length){setStage(stages[nextIndex]);setSelected(null);setRevealed(false);setFeedback("");return;}
+  if(position+1>=filtered.length){setFinished(true);return;}
+  setPosition(v=>v+1);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setAsked([]);
+ }
+ if(!item||!flow)return <main className="container-content py-12">No cases available.</main>;
+ const [quip,explanation]=feedback.split("|");
+ return <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-12 text-white"><div className="container-content max-w-4xl">
  <Link href="/" className="text-sm text-teal-300 hover:text-teal-200">← Back to PNA</Link>
- <div className="mt-7 rounded-3xl border border-teal-400/20 bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-2xl sm:p-9">
+ <header className="mt-7 rounded-3xl border border-teal-400/20 bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-2xl sm:p-9">
  <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest text-teal-300"><BrainCircuit className="h-5 w-5"/> Physio Nexus Academy <span className="rounded-full bg-teal-400/10 px-3 py-1">Clinical Challenge Arena · Beta</span></div>
- <h1 className="mt-4 text-3xl font-extrabold sm:text-4xl">Think like a clinician. Get roasted like a student. 😂</h1>
- <p className="mt-3 text-slate-300">Realistic educational cases, instant reasoning feedback and friendly roasts when your diagnosis goes on vacation.</p>
- <div className="mt-6 flex flex-wrap items-center gap-3">
- <label htmlFor="specialty" className="text-sm font-semibold">Specialty</label>
- <select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="max-w-full rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select>
- <span className="text-xs text-slate-400">{filtered.length} reviewed starter cases · more coming</span>
- </div>
- </div>
- <div className="mt-6 rounded-3xl border border-slate-700 bg-white p-6 text-slate-900 shadow-xl sm:p-9">
- {!finished&&item?<div>
- <div className="flex items-center justify-between gap-3 text-sm font-semibold"><span className="text-teal-700">Case {position+1} / {filtered.length}</span><span className="flex items-center gap-1 text-slate-600"><Trophy className="h-4 w-4"/> {correctCount} correct</span></div>
- <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-teal-600 transition-all" style={{width:((position+1)/filtered.length*100)+"%"}}/></div>
- <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Safety case</span>}</div>
+ <h1 className="mt-4 text-3xl font-extrabold sm:text-4xl">Take the history. Think. Diagnose. Treat. 😂</h1>
+ <p className="mt-3 text-slate-300">Four-stage clinical reasoning challenges with friendly roasts and clear explanations. No AI calls or heavy graphics.</p>
+ <div className="mt-6 flex flex-wrap items-center gap-3"><label htmlFor="specialty" className="text-sm font-semibold">Specialty</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="max-w-full rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select><span className="text-xs text-slate-400">{filtered.length} starter cases · expanding after review</span></div>
+ </header>
+ <main className="mt-6 rounded-3xl border border-slate-700 bg-white p-6 text-slate-900 shadow-xl sm:p-9">
+ {!finished?<div>
+ <div className="flex flex-wrap items-center justify-between gap-3 text-sm font-semibold"><span className="text-teal-700">Patient {position+1} / {filtered.length}</span><span className="flex items-center gap-1 text-slate-600"><Trophy className="h-4 w-4"/> {score} correct decisions</span></div>
+ <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">{stages.map((s,i)=><div key={s} className={"rounded-lg px-2 py-3 text-center text-xs font-bold "+(s===stage?"bg-teal-700 text-white":i<stages.indexOf(stage)?"bg-teal-50 text-teal-800":"bg-slate-100 text-slate-500")}>{i+1}. {stageNames[s]}</div>)}</div>
+ <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Red-flag case</span>}</div>
  <h2 className="mt-3 text-2xl font-bold">{item.title}</h2>
- <div className="mt-5 space-y-4 rounded-2xl bg-slate-50 p-5">
- <div><div className="text-xs font-bold uppercase tracking-wide text-slate-500">Patient</div><p className="mt-1 font-semibold">{item.patient}</p></div>
- <div><div className="text-xs font-bold uppercase tracking-wide text-slate-500">History</div><p className="mt-1 text-sm leading-7">{item.history}</p></div>
- <div><div className="text-xs font-bold uppercase tracking-wide text-slate-500">Examination findings</div><ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-6">{item.findings.map(f=><li key={f}>{f}</li>)}</ul></div>
- </div>
- <h3 className="mt-7 text-lg font-bold">{item.question}</h3>
- <div className="mt-4 grid gap-3">{item.options.map((o,i)=><button key={o} disabled={revealed} onClick={()=>setSelected(i)} aria-pressed={selected===i} className={"rounded-xl border p-4 text-left text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-500 "+(selected===i?"border-teal-600 bg-teal-50 text-teal-950":"border-slate-200 bg-white hover:border-teal-400")}>{String.fromCharCode(65+i)}. {o}</button>)}</div>
- {!revealed?<button onClick={submit} disabled={selected===null} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-5 py-4 font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">Check my answer <ArrowRight className="h-5 w-5"/></button>:<div aria-live="polite" className="mt-6 space-y-4">
- <div className={"rounded-2xl border p-5 "+(selected===item.correct?"border-emerald-200 bg-emerald-50":"border-amber-200 bg-amber-50")}>
- <div className="flex items-center gap-2 font-bold">{selected===item.correct?<CheckCircle2 className="h-5 w-5 text-emerald-700"/>:<Sparkles className="h-5 w-5 text-amber-700"/>}{selected===item.correct?"Correct!":"Not quite — here's the clinical clue"}</div>
- <p className="mt-3 font-semibold">{line}</p>
- <p className="mt-4 text-sm"><strong>Best answer:</strong> {item.options[item.correct]}</p>
- <p className="mt-3 text-sm leading-7"><strong>Why:</strong> {item.explanation}</p>
- <p className="mt-3 rounded-lg bg-white/70 p-3 text-sm"><strong>Remember:</strong> {item.clue}</p>
- </div>
- <button onClick={next} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-4 font-bold text-white hover:bg-slate-800">{position+1===filtered.length?"View results":"Next case"} <ArrowRight className="h-5 w-5"/></button>
- </div>}
- </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Round complete!</h2><p className="mt-3 text-xl font-semibold">{correctCount} / {filtered.length} correct</p><p className="mt-3 text-slate-600">Great effort. Revisit the reasoning, not just the answer.</p><button onClick={()=>reset(specialty)} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 font-semibold text-white"><RotateCcw className="h-4 w-4"/> Play again</button></div>}
- </div>
- <p className="mt-5 text-center text-xs leading-6 text-slate-400">For physiotherapy education only. Cases are simplified and do not replace patient assessment, clinical judgment, or emergency referral. Roast lines avoid serious safety cases. No account or AI calls required.</p>
+ <div className="mt-5 rounded-2xl bg-slate-50 p-5"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Patient · {item.patient}</p><p className="mt-2 font-semibold">“{flow.chief}”</p></div>
+ {stage==="history"?<section className="mt-6">
+ <h3 className="text-lg font-bold">Stage 1: Take the history</h3><p className="mt-2 text-sm text-slate-600">Choose questions to ask. Answers appear only when you ask; select the most useful history question to proceed.</p>
+ <div className="mt-4 space-y-3">{flow.historyQuestions.map(([q,a],i)=><div key={q} className="rounded-xl border border-slate-200 p-4"><button onClick={()=>setAsked(v=>v.includes(i)?v:[...v,i])} className="w-full text-left font-semibold text-teal-800">{asked.includes(i)?"✓ ":"Ask: "}{q}</button>{asked.includes(i)&&<p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm leading-6">Patient: “{a}”</p>}</div>)}</div>
+ {!revealed?<button disabled={asked.length===0} onClick={()=>respond(asked.includes(flow.bestHistory),asked.includes(flow.bestHistory)?"Good history taking focuses on onset, symptom behavior and safety-relevant details. In a real consultation, ask broader history and screen for red flags.":"Try asking the question that clarifies onset, distribution or mechanism. A real clinical history also requires appropriate red-flag screening.")} className="mt-6 w-full rounded-xl bg-teal-700 px-5 py-4 font-bold text-white disabled:opacity-50">Finish history stage <ArrowRight className="ml-2 inline h-4 w-4"/></button>:null}
+ </section>:<section className="mt-6">
+ <div className="rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs font-bold uppercase text-slate-500">Findings available after history</p><p className="mt-2 text-sm leading-6">{item.history}</p><ul className="mt-3 list-disc space-y-2 pl-5 text-sm">{item.findings.map(f=><li key={f}>{f}</li>)}</ul></div>
+ <h3 className="mt-6 text-lg font-bold">Stage {stages.indexOf(stage)+1}: {stageNames[stage]}</h3><p className="mt-3 font-semibold">{current.question}</p>
+ <div className="mt-4 grid gap-3">{current.options.map((o,i)=><button key={o} disabled={revealed} aria-pressed={selected===i} onClick={()=>setSelected(i)} className={"rounded-xl border p-4 text-left text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-500 "+(selected===i?"border-teal-600 bg-teal-50 text-teal-950":"border-slate-200 bg-white hover:border-teal-400")}>{String.fromCharCode(65+i)}. {o}</button>)}</div>
+ {!revealed?<button onClick={submit} disabled={selected===null} className="mt-6 w-full rounded-xl bg-teal-700 px-5 py-4 font-bold text-white disabled:opacity-50">Check my decision <ArrowRight className="ml-2 inline h-4 w-4"/></button>:null}
+ </section>}
+ {revealed&&<div aria-live="polite" className="mt-6 rounded-2xl border border-teal-200 bg-teal-50 p-5"><div className="flex items-center gap-2 font-bold"><CheckCircle2 className="h-5 w-5 text-teal-700"/> Clinical feedback</div><p className="mt-3 font-semibold">{quip}</p>{stage!=="history"&&<p className="mt-3 text-sm"><strong>Best answer:</strong> {current.options[current.correct]}</p>}<p className="mt-3 text-sm leading-7"><strong>Why:</strong> {explanation}</p><button onClick={advance} className="mt-5 w-full rounded-xl bg-slate-900 px-5 py-4 font-bold text-white">{stage==="treatment"?(position+1===filtered.length?"View results":"Next patient"):"Continue to "+stageNames[stages[stages.indexOf(stage)+1]]} <ArrowRight className="ml-2 inline h-4 w-4"/></button></div>}
+ </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Clinical round complete!</h2><p className="mt-3 text-xl font-semibold">{score} / {filtered.length*4} correct decisions</p><p className="mt-3 text-slate-600">Review clinical reasoning, not just answers.</p><button onClick={()=>reset(specialty)} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 font-semibold text-white"><RotateCcw className="mr-2 h-4 w-4"/> Play again</button></div>}
+ </main><p className="mt-5 text-center text-xs leading-6 text-slate-400">Educational simulation only. Multiple-choice history is a starter experience, not free-text interviewing. Clinical cases are simplified; serious safety concerns require urgent action. Scores do not indicate clinical competence.</p>
  </div></div>;
 }
