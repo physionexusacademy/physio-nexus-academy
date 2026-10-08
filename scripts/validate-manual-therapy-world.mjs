@@ -124,7 +124,7 @@ for (const [slug, lesson] of Object.entries(authoredDepth)) {
   const approximateWords = passages.join(" ").trim().split(/\s+/).length;
   assert(approximateWords >= 700, slug + ": less than 700 words of additional depth");
 }
-assert(chapter.includes("<WorldApproachDeepDive chapter={deep} />"),
+assert(chapter.includes("<WorldApproachDeepDive chapter={deep} slug={lesson.slug} />"),
   "Deep clinical encyclopedia chapters must actually render on each approach page");
 const longChapterComponent = content("src/components/manual-therapy/WorldApproachDeepDive.tsx");
 assert(longChapterComponent.includes('data-pna-world-depth="full-chapter-v2"') &&
