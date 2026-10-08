@@ -142,6 +142,9 @@ export function EditorialManualEncyclopedia({
           <p className="pna-editorial-lead">
             Trusted approaches. Memorable clinical stories. A deeper way to learn.
           </p>
+          <p className="pna-editorial-illustration-note">
+            Illustrative 3D cover art — not a step-by-step clinical technique demonstration.
+          </p>
           <div className="pna-editorial-stats" aria-label="Encyclopedia highlights">
             <span className="pna-editorial-stat"><BookOpenCheck className="h-4 w-4" aria-hidden="true" /> {items.length} clinical chapters</span>
             <span className="pna-editorial-stat"><Compass className="h-4 w-4" aria-hidden="true" /> {families.length} groups</span>

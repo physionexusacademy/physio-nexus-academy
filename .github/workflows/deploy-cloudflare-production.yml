@@ -82,8 +82,8 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
           NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
-          # Disabled until complete 35/35 clinical QA and image checks are finished.
-          MANUAL_THERAPY_VISUALS_LIVE: "false"
+          # 35 editorial technique covers are reviewed and the publish validator is mandatory.
+          MANUAL_THERAPY_VISUALS_LIVE: "true"
 
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}

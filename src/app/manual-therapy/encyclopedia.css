@@ -143,3 +143,7 @@
 /* The <picture> element must fill the same 3D art slot as earlier CDN <img> elements. */
 .pna-editorial-card-art picture { display: block; width: 100%; height: 100%; }
 .pna-editorial-card-art picture img { display: block; width: 100%; height: 100%; }
+
+/* Subtle disclosure: 3D cover visuals are conceptual, not a clinical instruction sequence. */
+.pna-editorial-illustration-note{max-width:480px;margin-top:12px;font-size:.73rem;line-height:1.5;color:#586987;font-weight:500}
+@media(max-width:740px){.pna-editorial-illustration-note{font-size:.67rem;max-width:250px;line-height:1.42}}
