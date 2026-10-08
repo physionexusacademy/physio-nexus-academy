@@ -1,4 +1,5 @@
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
+import { authoredRegionalManualApplications } from "@/lib/manual-therapy-regional-authored";
 
 export type ManualRegion =
   | "Cervical"
@@ -1362,12 +1363,13 @@ const generatedRegionalApplications: RegionalManualApplication[] =
     );
 
     return manualRegions
-      .filter((region) => !explicitRegions.has(region))
+      .filter((region) => !explicitRegions.has(region) && !authoredRegionalManualApplications.some((item) => item.techniqueSlug === technique.slug && item.region === region))
       .map((region) => buildGeneratedApplication(technique, region));
   });
 
 export const completeRegionalManualApplications: RegionalManualApplication[] = [
   ...regionalManualApplications.map((item) => ({ ...item, applicability: item.applicability ?? "Detailed" as const })),
+  ...authoredRegionalManualApplications,
   ...generatedRegionalApplications,
 ];
 

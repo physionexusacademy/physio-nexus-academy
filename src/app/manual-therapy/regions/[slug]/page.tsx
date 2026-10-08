@@ -42,6 +42,7 @@ import {
 } from "@/lib/manual-therapy-3d-assets";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
+import { regionalClinicalStories, regionalClinicalChallenges } from "@/lib/manual-therapy-regional-stories";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -367,10 +368,10 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
   if (!item) notFound();
 
   const isTechniqueSpecific = isTechniqueSpecificRegionalApplication(item);
-  const subTechniques = getRegionalSubTechniques(
-    item.techniqueSlug,
-    item.region,
-  );
+  const clinicalStory = regionalClinicalStories[item.slug];
+  const subTechniques = clinicalStory
+    ? []
+    : getRegionalSubTechniques(item.techniqueSlug, item.region);
   const techniqueVisuals = getManualTherapyVisuals(item.slug);
 
   return (
@@ -408,15 +409,15 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             {item.title}
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-8 text-indigo-50 sm:text-lg">
-            What changes when {item.techniqueName} meets the {item.region.toLowerCase()}?
-            The answer begins with the patient's real movement, not a memorized hand position.
-            Follow the clinical clues, choose the safest useful input, and discover what the re-test reveals.
+            {clinicalStory
+              ? clinicalStory.title + " — Step into the treatment room, follow the clinical clues, and discover what deserves the next decision."
+              : "What changes when " + item.techniqueName + " meets the " + item.region.toLowerCase() + "? Start with the patient's movement, assess safely, and see what the re-test reveals."}
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
               <Sparkles className="h-4 w-4" />
-              {subTechniques.length} specific variations
+              {clinicalStory ? "A complete region-specific lesson" : subTechniques.length + " specific variations"}
             </span>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
               <ShieldCheck className="h-4 w-4" />
@@ -504,6 +505,54 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
         </aside>
       ) : null}
 
+      {clinicalStory ? (
+        <article data-pna-content-depth="authored-clinical-story" className="mt-8 overflow-hidden rounded-3xl border border-teal-200 bg-white shadow-sm">
+          <div className="border-b border-teal-100 bg-gradient-to-r from-teal-50 via-white to-indigo-50 px-6 py-7 sm:px-9">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-800">Inside the clinic · Learn it, see it, remember it</p>
+            <h2 className="mt-3 font-serif text-2xl font-bold leading-snug text-slate-900 sm:text-3xl">{clinicalStory.title}</h2>
+            <p className="mt-3 text-sm leading-7 text-slate-600">A fictional clinical teaching case. The reasoning matters more than any single expected outcome.</p>
+          </div>
+          <div className="grid gap-7 px-6 py-7 sm:px-9 sm:py-9">
+            <section aria-label="First clinical clue">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-teal-700">01 · The patient arrives</p>
+              <p className="mt-2 text-base leading-8 text-slate-800">{clinicalStory.scene}</p>
+            </section>
+            <section aria-label="Therapist's decision">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-teal-700">02 · The therapist's decision</p>
+              <p className="mt-2 text-base leading-8 text-slate-800">{clinicalStory.clinicalDecision}</p>
+            </section>
+            <section aria-label="Reassessment">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-teal-700">03 · After the hands leave</p>
+              <p className="mt-2 text-base leading-8 text-slate-800">{clinicalStory.retest}</p>
+            </section>
+            <p className="border-l-4 border-teal-400 pl-5 font-serif text-lg italic leading-8 text-slate-800">{clinicalStory.punchline}</p>
+            {regionalClinicalChallenges[item.slug] ? (
+              <section className="rounded-2xl border border-teal-200 bg-teal-50/50 p-5" aria-label="Clinical reasoning challenge">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-800">Your clinical curveball</p>
+                <p className="mt-3 text-sm font-semibold leading-7 text-slate-800">
+                  {regionalClinicalChallenges[item.slug].question}
+                </p>
+                <details className="group mt-4 border-t border-teal-200 pt-4">
+                  <summary className="cursor-pointer font-bold text-teal-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">
+                    Think first, then reveal the reasoning
+                  </summary>
+                  <p className="mt-3 rounded-xl bg-white p-4 text-sm leading-7 text-slate-700">
+                    <strong className="text-teal-900">Clinical reasoning:</strong> {regionalClinicalChallenges[item.slug].answer}
+                  </p>
+                </details>
+              </section>
+            ) : null}
+            <aside className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-800">The evidence reality check</p>
+              <p className="mt-2 text-sm leading-7 text-slate-700">{clinicalStory.evidenceCaveat}</p>
+              <a className="mt-3 inline-flex text-sm font-bold text-indigo-800 underline underline-offset-4"
+                href={clinicalStory.evidenceUrl} target="_blank" rel="noopener noreferrer">
+                Read the supporting publication or guideline
+              </a>
+            </aside>
+          </div>
+        </article>
+      ) : (
       <aside className="mt-8 rounded-3xl border border-cyan-200 bg-gradient-to-r from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-8">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">The first question</p>
         <h2 className="mt-2 text-xl font-bold leading-8 text-navy-900 sm:text-2xl">
@@ -516,6 +565,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           same task again. That is how an interesting technique becomes meaningful care.
         </p>
       </aside>
+      )}
 
       <section className="mt-8">
         <div className="flex items-end justify-between gap-4">

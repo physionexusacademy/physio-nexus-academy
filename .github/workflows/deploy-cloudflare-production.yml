@@ -103,3 +103,5 @@ jobs:
           check_url "https://physionexusacademy.com/manual-therapy/strain-counterstrain" 'data-pna-reading="clinical-story-v2"'
           check_url "https://physionexusacademy.com/manual-therapy/regions" "general overviews"
           check_url "https://physionexusacademy.com/manual-therapy/regions/guide-facilitated-positional-release-wrist-and-hand" 'data-pna-content-depth="general-overview"'
+          check_url "https://physionexusacademy.com/manual-therapy/regions/scs-quadratus-lumborum-lumbar" 'data-pna-content-depth="authored-clinical-story"'
+          check_url "https://physionexusacademy.com/manual-therapy/regions/mulligan-hip-lateral-mwm" 'data-pna-content-depth="authored-clinical-story"'
