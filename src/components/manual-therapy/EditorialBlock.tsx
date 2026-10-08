@@ -81,6 +81,7 @@ export function EditorialBlock({ title, items, icon: Icon }: EditorialBlockProps
   return (
     <section
       aria-label={title}
+      data-pna-editorial="v2"
       className={`h-full overflow-hidden rounded-[1.6rem] border bg-white shadow-sm transition-shadow duration-200 hover:shadow-md ${
         isSafety ? "border-rose-200" : isCase ? "border-violet-200" : "border-slate-200"
       }`}
