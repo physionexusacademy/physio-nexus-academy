@@ -11,7 +11,8 @@ import { WorldApproachChallenge } from "@/components/manual-therapy/WorldApproac
 type Props = { params: Promise<{ slug: string }> };
 
 export const dynamic = "force-static";
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return worldManualApproaches.map((item) => ({ slug: item.slug }));
