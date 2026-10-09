@@ -2,11 +2,34 @@
 import {FormEvent,useCallback,useEffect,useRef,useState} from "react";
 import Link from "next/link";
 import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Flame,LockKeyhole,Play,RotateCcw,ShieldCheck,Sparkles,Timer,Trophy} from "lucide-react";
-import {startDailyChallenge,submitDailyChallenge} from "./actions";
 
 type PublicQuestion={id:string;topic:string;question:string;options:{value:string;label:string}[]};
 type ActiveChallenge={attemptId:string;token:string;date:string;expiresAt:string;resetAt:string;questions:PublicQuestion[];timePerQuestionSeconds:number};
 type Completed={expired:boolean;score:number;correctCount:number;total:number;elapsedMs:number;explanations:{id:string;correctValue:string;explanation:string}[]};
+type StartResponse={ok:true;challenge:ActiveChallenge}|{ok:false;error:string};
+async function dailyRequest<T>(action:"start"|"submit",payload:unknown):Promise<T>{
+ const timeout=new AbortController();
+ const timer=window.setTimeout(()=>timeout.abort(),20000);
+ try{
+  const response=await fetch("/api/daily-challenge/"+action,{
+   method:"POST",credentials:"same-origin",cache:"no-store",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify(payload),signal:timeout.signal
+  });
+  const json=await response.json().catch(()=>null) as ({error?:string}&T)|null;
+  if(!response.ok){
+   throw new Error(json?.error || (response.status===503
+    ?"Challenge service is temporarily unavailable. Please try again shortly."
+    :"Connection interrupted. Refresh the page and try again."));
+  }
+  if(!json)throw new Error("Unexpected server response. Please reload and try again.");
+  return json;
+ }catch(e){
+  if(e instanceof Error && e.name==="AbortError")throw new Error("The request timed out. Please check your connection and retry.");
+  throw e;
+ }finally{window.clearTimeout(timer)}
+}
+
 const motivational=[
  "Clinical reasoning activated. The diagnosis is in the details.",
  "Nice work. The best clinicians are curious, not just quick.",
@@ -75,14 +98,14 @@ export function DailyChallengeClient(){
   inFlight.current=true;
   setLoading(true);setError("");
   try{
-   const saved=await submitDailyChallenge({
+   const saved=await dailyRequest<Completed>("submit",{
     attemptId:active.attemptId,token:active.token,answers:answersRef.current
    });
    setResult(saved);
    try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}
    window.dispatchEvent(new Event("pna-daily-score-saved"));
-  }catch{
-   setError("Your attempt couldn't be saved. Please check your connection and contact PNA if this continues.");
+  }catch(e){
+   setError(e instanceof Error?e.message:"Your attempt couldn't be saved. Please check your connection.");
   }finally{setLoading(false);inFlight.current=false;}
  },[active]);
  const advance=useCallback(async()=>{
@@ -114,7 +137,7 @@ export function DailyChallengeClient(){
   if(loading)return;
   setError("");setLoading(true);
   try{
-   const outcome=await startDailyChallenge({fullName:name,email,consent});
+   const outcome=await dailyRequest<StartResponse>("start",{fullName:name,email,consent});
    if(!outcome.ok){setError(outcome.error);return;}
    const session=outcome.challenge;
    setActive(session);setStep(0);setSelected({});answersRef.current={};
@@ -123,7 +146,7 @@ export function DailyChallengeClient(){
    setError("");
    setDeadline(Math.min(Date.now()+session.timePerQuestionSeconds*1000,Date.parse(session.expiresAt)));
    setSeconds(session.timePerQuestionSeconds);
-  }catch{setError("Could not begin the challenge. Please try again.");}
+  }catch(e){setError(e instanceof Error?e.message:"Could not begin the challenge. Please try again.");}
   finally{setLoading(false)}
  }
  function pick(value:string){
