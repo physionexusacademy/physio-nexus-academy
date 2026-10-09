@@ -26,6 +26,21 @@ const templates=parts.flatMap(part=>{
  const source=read("src/lib/clinical-arena-"+part+".ts");
  return JSON.parse(source.slice(source.indexOf("=[")+1,source.lastIndexOf(";\n")));
 });
+const msks=read("src/lib/case-lab-msk-differentials.ts");
+const starts=msks.indexOf(">=");
+const jsonStart=msks.indexOf("={",starts);
+const jsonEnd=msks.indexOf(";\nexport function",jsonStart);
+assert(jsonStart>0&&jsonEnd>jsonStart,"MSK differential library missing");
+const alternatives=JSON.parse(msks.slice(jsonStart+1,jsonEnd));
+assert.equal(Object.keys(alternatives).length,36,"Expected thirty-six curated MSK differential sets");
+for(const c of parsedExpanded){
+ const key=c.title.split(": Scenario")[0];
+ const set=alternatives[key];
+ assert(set?.length===3,c.id+": MSK case needs three plausible differentials");
+ const names=[c.options[c.correct],...set.map(x=>x.name)];
+ assert.equal(new Set(names).size,4,c.id+": duplicate diagnosis options");
+ for(const a of set)assert(a.why.length>35,c.id+": insufficient explanation for alternative");
+}
 const total=featured.length+authored.length+parsedExpanded.length+templates.length*5;
 assert.equal(featured.length,9,"Should preserve nine original in-depth cases");
 assert.equal(authored.length,20,"Missing original MSK patient encounters");
@@ -44,6 +59,9 @@ const sections=["keyQuestions","examinationSequence","decisionLogic","practicalM
 for(const [key,guide] of Object.entries(added)){
  for(const section of sections)assert(Array.isArray(guide[section])&&guide[section].length>=3,key+": insufficient "+section);
 }
+assert(files.library.includes("router.push(next.href)"),"Surprise patient option missing");
+assert(files.library.includes("c.keywords"),"Search should find diagnosis terms while keeping titles hidden");
+assert(files.episodes.includes("richerMskDiagnosisOptions"),"MSK Case Lab does not use improved clinical distractors");
 const checks={
  premiumCss:read("src/app/case-lab/case-lab.css").includes(".cl-hero"),
  filter:files.library.includes("Search patient cases")&&files.library.includes("setCategorySafe"),
