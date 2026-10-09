@@ -3,7 +3,6 @@ import Image from "next/image";
 import {
   ArrowRight,
   BookOpen,
-  Brain,
   BrainCircuit,
   CalendarDays,
   FileBadge2,
@@ -33,6 +32,7 @@ import { featuredFaculty } from "@/lib/faculty";
 import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard";
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
 import "./daily-challenge/daily-challenge.css";
+import "./home-premium.css";
 
 export const metadata: Metadata = {
   title: { absolute: "Physio Nexus Academy | Physiotherapy Learning & Patient Care Pakistan" },
@@ -166,6 +166,56 @@ const portalActions = [
   },
 ] as const;
 
+/** Editorial groups preserve every portal destination while removing the equal-weight card wall. */
+const portalGroups = [
+  {
+    id: "learn",
+    number: "01",
+    kicker: "Understand deeply",
+    title: "Knowledge & clinical science",
+    description: "Move from clear foundations to hands-on clinical application.",
+    headline: "Study the science. See the connection.",
+    hrefs: ["/knowledge-hub", "/clinical-visual-atlas", "/manual-therapy", "/treatment-plans", "/resources"],
+    extras: [] as { href: string; title: string; description: string }[],
+  },
+  {
+    id: "practice",
+    number: "02",
+    kicker: "Put thinking to work",
+    title: "Clinical reasoning & challenges",
+    description: "Explore realistic cases, test decisions and compete with fellow learners.",
+    headline: "Go beyond memorizing answers.",
+    hrefs: ["/case-lab", "/clinical-arena", "/clinical-quiz", "/daily-challenge"],
+    extras: [] as { href: string; title: string; description: string }[],
+  },
+  {
+    id: "professional",
+    number: "03",
+    kicker: "Grow with purpose",
+    title: "Workshops & professional growth",
+    description: "Develop practical confidence with learning, research and people.",
+    headline: "Learning that travels into practice.",
+    hrefs: ["/workshops", "/research"],
+    extras: [
+      { href: "/training", title: "Training archive", description: "Revisit professional learning" },
+      { href: "/faculty", title: "Meet PNA faculty", description: "Learn from clinical educators" },
+    ],
+  },
+  {
+    id: "care",
+    number: "04",
+    kicker: "For patients & visitors",
+    title: "Care & trusted services",
+    description: "From useful symptom guidance to appointments and verified learning.",
+    headline: "Clear next steps. Human-centered care.",
+    hrefs: ["/symptom-checker", "/patient-services", "/verify"],
+    extras: [
+      { href: "/appointment", title: "Book an appointment", description: "Request a consultation" },
+      { href: "/home-visit", title: "Request a home visit", description: "Physiotherapy where supported" },
+    ],
+  },
+];
+
 export default async function HomePage() {
   const supabase = createPublicClient();
 
@@ -246,137 +296,115 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-navy-900 via-navy-800 to-teal-800 text-white">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 left-1/3 h-72 w-72 rounded-full bg-violet-500/10 blur-3xl" />
-        <div className="container-content grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-20">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-teal-300">
-              Physiotherapy Education · Workshops · Patient Care
+      <section className="pna-home-intro" aria-label="Meet Physio Nexus Academy">
+        <div className="container-content pna-home-intro-inner">
+          <div className="pna-home-intro-copy">
+            <p className="pna-home-kicker"><span className="pna-home-signal"/> THE ACADEMY BEHIND THE EXPERIENCE</p>
+            <h2>Built for curious minds. <span>Made for real clinical life.</span></h2>
+            <p>
+              Physio Nexus Academy connects clinical knowledge, applied skills, research,
+              professional training and patient care in one thoughtful learning experience.
+              Students, clinicians and patients each have a place here.
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-white sm:text-5xl">
-              Learn better. Practice confidently. Find the care you need.
-            </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-grey-200 sm:text-lg">
-              Physio Nexus Academy brings practical physiotherapy learning, clinical workshops
-              and patient services together in one clear place.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/knowledge-hub" size="lg">Start Learning</Button>
-              <Button
-                href="/workshops"
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white/10"
-              >
-                View Workshops
-              </Button>
-              <Button
-                href="/appointment"
-                variant="secondary"
-                size="lg"
-                className="bg-white text-navy-800 hover:bg-grey-100"
-              >
-                Book Physiotherapy
-              </Button>
-              <Button
-                href="/symptom-checker"
-                variant="secondary"
-                size="lg"
-                className="bg-teal-300 text-navy-900 hover:bg-teal-200"
-              >
-                <Stethoscope className="h-4 w-4" />
-                Check Symptoms
-              </Button>
-              <Button
-                href="/resources#order-book"
-                variant="secondary"
-                size="lg"
-                className="bg-amber-300 text-navy-900 hover:bg-amber-200"
-              >
-                <BookOpen className="h-4 w-4" />
-                Order Book
-              </Button>
+            <div className="pna-home-intro-actions">
+              <a href="#explore-pna" className="pna-home-intro-primary">
+                Discover the platform <ArrowRight className="h-4 w-4" aria-hidden="true"/>
+              </a>
+              <a href="/about" className="pna-home-intro-secondary">Our story <ArrowRight className="h-4 w-4" aria-hidden="true"/></a>
             </div>
-
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-grey-300">
-              <a href="/case-lab" className="hover:text-white">Clinical Case Lab →</a>
-              <a href="/clinical-quiz" className="hover:text-white">Weekly Clinical Quiz →</a>
-              <a href="/verify" className="hover:text-white">Verify Certificate →</a>
+            <div className="pna-home-audiences" aria-label="Who PNA serves">
+              <a href="#pna-zone-learn">For students</a>
+              <span aria-hidden="true">·</span>
+              <a href="#pna-zone-professional">For professionals</a>
+              <span aria-hidden="true">·</span>
+              <a href="#pna-zone-care">For patients</a>
             </div>
           </div>
-
-          <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
-            <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-              <Image
-                src={siteConfig.founder.photo}
-                alt={siteConfig.founder.name + ", Founder of Physio Nexus Academy"}
-                width={480}
-                height={600}
-                className="h-full w-full object-cover"
-                priority
-              />
+          <a href="/founder" className="pna-home-founder-card">
+            <Image
+              src={siteConfig.founder.photo}
+              alt={siteConfig.founder.name + ", founder of Physio Nexus Academy"}
+              width={148}
+              height={174}
+              sizes="(max-width: 640px) 96px, 148px"
+              className="pna-home-founder-photo"
+            />
+            <div className="pna-home-founder-copy">
+              <span className="pna-home-founder-overline">FOUNDER · MAIN INSTRUCTOR</span>
+              <strong>{siteConfig.founder.name}</strong>
+              <span>{siteConfig.founder.credentialsShort}</span>
+              <span className="pna-home-founder-link">Meet the founder <ArrowRight className="h-4 w-4" aria-hidden="true"/></span>
             </div>
-            <div className="absolute -bottom-5 left-1/2 w-[92%] -translate-x-1/2 rounded-xl bg-white p-4 text-center shadow-lg">
-              <p className="font-heading text-sm font-semibold text-navy-800">
-                {siteConfig.founder.name}
-              </p>
-              <p className="mt-1 text-xs text-navy-500">
-                Founder & Main Instructor · {siteConfig.founder.credentialsShort}
-              </p>
-            </div>
-          </div>
+          </a>
         </div>
       </section>
 
-      <section className="section-padding bg-gradient-to-b from-grey-50 via-white to-cyan-50/40">
+      <section id="explore-pna" className="pna-home-explore" aria-labelledby="pna-home-explore-title">
         <div className="container-content">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="pna-home-section-heading">
             <div>
-              <p className="text-sm font-bold uppercase tracking-widest text-teal-700">
-                PNA Portal
-              </p>
-              <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-                What do you want to do today?
-              </h2>
-              <p className="mt-3 max-w-2xl text-navy-500">
-                Every major part of the academy has its own clear entry point.
-              </p>
+              <p className="pna-home-kicker"><span className="pna-home-signal"/> ONE PLATFORM · FOUR CLEAR PATHWAYS</p>
+              <h2 id="pna-home-explore-title">Discover everything PNA can do.</h2>
+              <p>Explore by purpose, not by a crowded list. Every original feature is still here.</p>
             </div>
-            <a
-              href="/about"
-              className="text-sm font-semibold text-navy-500 hover:text-teal-700"
-            >
-              About PNA →
-            </a>
+            <a href="/knowledge-hub" className="pna-home-heading-action">Start with Knowledge Hub <ArrowRight className="h-4 w-4" aria-hidden="true"/></a>
           </div>
 
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {portalActions.map((action) => {
-              const Icon = action.icon;
+          <div className="pna-home-zones">
+            {portalGroups.map((group) => {
+              const groupActions = portalActions.filter((action) => group.hrefs.includes(action.href));
+              const ZoneIcon = group.id === "learn" ? BookOpen : group.id === "practice" ? BrainCircuit : group.id === "professional" ? CalendarDays : HeartPulse;
               return (
-                <a
-                  key={action.href}
-                  href={action.href}
-                  className={"group relative overflow-hidden rounded-3xl border p-5 transition hover:-translate-y-1 hover:shadow-xl " + action.soft}
-                >
-                  <div className={"absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br opacity-20 blur-2xl " + action.tone} />
-                  <div className="relative">
-                    <span className={"flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-md " + action.tone}>
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <h3 className="mt-4 text-lg font-bold text-navy-800">{action.title}</h3>
-                    <p className="mt-2 min-h-[72px] text-sm leading-6 text-navy-600">
-                      {action.description}
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-navy-700">
-                      Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </span>
+                <section key={group.id} id={"pna-zone-" + group.id} className={"pna-home-zone pna-home-zone-" + group.id} aria-labelledby={"pna-zone-heading-" + group.id}>
+                  <div className="pna-home-zone-top">
+                    <span className="pna-home-zone-number">{group.number}</span>
+                    <div className="pna-home-zone-top-copy">
+                      <span className="pna-home-zone-kicker">{group.kicker}</span>
+                      <h3 id={"pna-zone-heading-" + group.id}>{group.title}</h3>
+                    </div>
+                    <span className="pna-home-zone-icon"><ZoneIcon className="h-6 w-6" aria-hidden="true"/></span>
                   </div>
-                </a>
+                  <p className="pna-home-zone-lead">{group.headline}</p>
+                  <p className="pna-home-zone-description">{group.description}</p>
+                  <div className="pna-home-zone-links">
+                    {groupActions.map((action) => {
+                      const Icon = action.icon;
+                      return (
+                        <a key={action.href} className="pna-home-zone-link" href={action.href}>
+                          <span className="pna-home-zone-link-icon"><Icon className="h-5 w-5" aria-hidden="true"/></span>
+                          <span className="pna-home-zone-link-content">
+                            <strong>{action.title}</strong>
+                            <span>{action.description}</span>
+                          </span>
+                          <ArrowRight className="pna-home-zone-arrow h-4 w-4" aria-hidden="true"/>
+                        </a>
+                      );
+                    })}
+                    {group.extras.map((action) => (
+                      <a key={action.href} className="pna-home-zone-link pna-home-zone-extra" href={action.href}>
+                        <span className="pna-home-zone-link-icon"><ArrowRight className="h-4 w-4" aria-hidden="true"/></span>
+                        <span className="pna-home-zone-link-content">
+                          <strong>{action.title}</strong>
+                          <span>{action.description}</span>
+                        </span>
+                        <ArrowRight className="pna-home-zone-arrow h-4 w-4" aria-hidden="true"/>
+                      </a>
+                    ))}
+                  </div>
+                </section>
               );
             })}
+          </div>
+
+          <div className="pna-home-journey">
+            <span className="pna-home-kicker">A CONNECTED WAY TO LEARN</span>
+            <div className="pna-home-journey-steps">
+              <a href="/knowledge-hub"><BookOpen className="h-4 w-4" aria-hidden="true"/> Understand the topic</a>
+              <ArrowRight className="h-4 w-4" aria-hidden="true"/>
+              <a href="/case-lab"><ClipboardList className="h-4 w-4" aria-hidden="true"/> See the clinical case</a>
+              <ArrowRight className="h-4 w-4" aria-hidden="true"/>
+              <a href="/clinical-arena"><BrainCircuit className="h-4 w-4" aria-hidden="true"/> Challenge your reasoning</a>
+            </div>
           </div>
         </div>
       </section>
