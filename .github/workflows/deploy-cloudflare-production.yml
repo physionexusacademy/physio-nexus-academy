@@ -172,7 +172,7 @@ jobs:
           }
 
           check_url "https://physionexusacademy.com/" "Check Symptoms"
-          check_url "https://physionexusacademy.com/" 'data-pna-home-premium="cohesive-v1"'
+          check_url "https://physionexusacademy.com/" 'data-pna-home-signature="v2"'
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           check_url "https://physionexusacademy.com/case-lab" 'data-pna-case-lab="specialty-first-v4"'
           check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
