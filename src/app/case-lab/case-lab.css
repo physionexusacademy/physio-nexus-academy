@@ -76,3 +76,44 @@
  .case-lab-v3 .cl-specialty-choice .cl-specialty-count{align-self:flex-start}
  .case-lab-v3 .cl-patient-file{min-height:235px}
 }
+
+
+/* CASE LAB CLINICAL NOVEL V2 – editorial storytelling in the existing PNA white/teal system. */
+.case-lab-v3 .cl-novel-hero{background:radial-gradient(ellipse at 96% 12%,rgba(13,146,140,.11),transparent 49%),linear-gradient(128deg,#fff 30%,#f6fbfb 100%)}
+.case-lab-v3 .cl-novel-page{position:relative;isolation:isolate;overflow:hidden;background:#fff;box-shadow:0 24px 65px -49px rgba(8,53,65,.4)}
+.case-lab-v3 .cl-novel-page:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,#087e79,#a8e0d6 55%,transparent);opacity:.75;z-index:-1}
+.case-lab-v3 .cl-novel-readerbar{font-variant-numeric:tabular-nums}
+.case-lab-v3 .cl-novel-act{font-size:.69rem;letter-spacing:.22em;font-weight:850;color:#097a78;text-transform:uppercase}
+.case-lab-v3 .cl-novel-scene{border:1px solid #d5e6e6;border-radius:21px;background:radial-gradient(circle at 92% 8%,#eaf7f4 0,transparent 38%),linear-gradient(140deg,#fff 45%,#fafdfc);padding:clamp(1.15rem,3vw,2rem);box-shadow:0 10px 30px -29px #0d5260}
+.case-lab-v3 .cl-novel-scene-head{display:flex;gap:.85rem;align-items:center;font-size:.63rem;line-height:1.5;letter-spacing:.13em;text-transform:uppercase;font-weight:850;color:#42817b}
+.case-lab-v3 .cl-novel-mark{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:#e8f5f2;color:#097f7a;font-family:Georgia,serif;font-size:2.25rem;font-weight:700;line-height:1}
+.case-lab-v3 .cl-novel-prose{font-family:Georgia,Cambria,"Times New Roman",serif;color:#263e4b;font-size:clamp(1.05rem,1.35vw,1.2rem);line-height:1.95;letter-spacing:.002em;max-width:73ch}
+.case-lab-v3 .cl-novel-prose p{margin:0 0 1.15rem;orphans:3;widows:3}
+.case-lab-v3 .cl-novel-prose p:first-child:first-letter{float:left;font-size:3.1rem;line-height:.85;margin:.18rem .42rem 0 0;color:#087f7a;font-weight:700}
+.case-lab-v3 .cl-novel-beat{font-family:Georgia,Cambria,serif;border-top:1px solid #d6eae6;padding-top:1rem;margin-bottom:0;color:#186b65;font-size:1rem;font-style:italic;line-height:1.75}
+.case-lab-v3 .cl-novel-decision{border:1px solid #cfe6e4;border-radius:20px;background:#f1f9f7;padding:clamp(1.1rem,3vw,1.6rem)}
+.case-lab-v3 .cl-novel-insight{transition:background .2s}
+.case-lab-v3 .cl-novel-insight:hover{background:#fcfffe}
+.case-lab-v3 .cl-novel-insight summary{list-style:none}
+.case-lab-v3 .cl-novel-insight summary::-webkit-details-marker{display:none}
+.case-lab-v3 .cl-novel-insight[open] summary svg{transform:rotate(180deg)}
+.case-lab-v3 .cl-novel-facts summary{list-style:none}
+.case-lab-v3 .cl-novel-facts summary::-webkit-details-marker{display:none}
+.case-lab-v3 .cl-novel-facts[open] summary svg{transform:rotate(180deg)}
+.case-lab-v3 .cl-novel-facts summary:focus-visible,.case-lab-v3 .cl-novel-insight summary:focus-visible{outline:2px solid #0b948b;outline-offset:5px;border-radius:5px}
+.case-lab-v3 .cl-novel-next{background:linear-gradient(to right,transparent,#f7fbfa);border-radius:12px}
+.case-lab-v3 .cl-reading-focus>section{width:min(100%,940px);margin-inline:auto}
+.case-lab-v3 .cl-reading-focus .cl-novel-prose{max-width:68ch;margin-inline:auto}
+.case-lab-v3 .cl-reading-focus .cl-novel-scene{padding:clamp(1.5rem,4vw,3rem)}
+.case-lab-v3 .cl-reading-focus .cl-novel-page{padding:clamp(1.5rem,4vw,3rem)}
+@media(max-width:700px){
+ .case-lab-v3 .cl-novel-prose{font-size:1.02rem;line-height:1.83}
+ .case-lab-v3 .cl-novel-prose p:first-child:first-letter{font-size:2.55rem}
+ .case-lab-v3 .cl-novel-scene{border-radius:16px}
+ .case-lab-v3 .cl-novel-decision{border-radius:16px}
+ .case-lab-v3 .cl-novel-readerbar{align-items:flex-start}
+ .case-lab-v3 .cl-novel-readerbar .cl-eyebrow{font-size:.61rem;letter-spacing:.11em}
+}
+@media(prefers-reduced-motion:reduce){
+ .case-lab-v3 .cl-novel-insight{transition:none}
+}
