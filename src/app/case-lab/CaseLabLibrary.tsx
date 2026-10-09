@@ -123,16 +123,15 @@ export function CaseLabLibrary({cases,categories}:Props){
  return (
   <div className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab="specialty-first-v4">
    <div className="container-content pt-7 sm:pt-10">
-    <header className="cl-hero p-6 sm:p-9">
+    <header className="cl-hero cl-novel-hero p-6 sm:p-9">
      <div className="relative">
       <div className="flex flex-wrap items-center gap-2">
        <span className="cl-eyebrow"><BrainCircuit className="h-4 w-4"/> PHYSIO NEXUS ACADEMY</span>
-       <span className="cl-kicker">INTERACTIVE CASE LAB</span>
+       <span className="cl-kicker">THE CLINICAL STORY COLLECTION</span>
       </div>
-      <h1 className="cl-display mt-5 max-w-4xl">Choose a specialty.<br/><span className="cl-gradient-word">Meet your patient.</span></h1>
+      <h1 className="cl-display mt-5 max-w-4xl">Every patient has a story.<br/><span className="cl-gradient-word">Explore the clinical mystery.</span></h1>
       <p className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 sm:text-base">
-       Every patient has a story. Select a specialty and learn through a realistic patient interview,
-       clinical examination, differential reasoning, treatment planning and follow-up. Then test yourself in Clinical Arena.
+       Select a specialty, open a patient file and follow the story like a clinical novel—history, examination, reasoning, a safe plan and the next chapter. Then test your decisions in Clinical Arena.
       </p>
       <div className="mt-6 flex flex-wrap items-center gap-2.5 text-xs font-bold">
        <span className="cl-kicker"><BookOpen className="h-3.5 w-3.5"/> {cases.length} patient encounters</span>
@@ -296,19 +295,19 @@ export function CaseLabLibrary({cases,categories}:Props){
          {visible.length?(
           <div className="mt-4 grid gap-4 md:grid-cols-2">
            {visible.map((patient,i)=>(
-            <Link key={patient.id} href={patient.href} className="cl-story cl-patient-file" aria-label={"Open case: "+patient.hook}>
+            <Link key={patient.id} href={patient.href} className="cl-story cl-patient-file cl-storybook-card" aria-label={"Open case: "+patient.hook}>
              <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="cl-number">PATIENT FILE {String(i+1).padStart(3,"0")}</span>
+              <span className="cl-number">PATIENT STORY {String(i+1).padStart(3,"0")}</span>
               {patient.safety?<span className="cl-category">SAFETY FIRST</span>:<span className="cl-category">{patient.kind==="Clinical deep dive"?"MASTERCLASS":"CLINICAL LESSON"}</span>}
              </div>
              <div className="mt-6">
-              <p className="cl-story-label">{patient.focus} · {patient.difficulty}</p>
+              <p className="cl-story-label">{patient.focus} · {patient.difficulty} · 7 CHAPTERS</p>
               <h4 className="cl-case-title mt-3 line-clamp-3">{patient.hook}</h4>
               <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{patient.patient}</p>
              </div>
              <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-5">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500"><Clock3 className="h-4 w-4"/>{patient.minutes}</span>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-800">Open patient file <ArrowRight className="h-4 w-4"/></span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-800">Read the story <ArrowRight className="h-4 w-4"/></span>
              </div>
             </Link>
            ))}
