@@ -14,6 +14,7 @@ const quiz=read("src/app/daily-challenge/DailyChallengeClient.tsx");
 const board=read("src/components/daily-challenge/DailyLeaderboard.tsx");
 const css=read("src/app/daily-challenge/daily-challenge.css");
 const home=read("src/app/page.tsx");
+const pathwayBrowser=read("src/components/home/PremiumPathwayBrowser.tsx");
 const hub=read("src/app/knowledge-hub/page.tsx");
 const migration=read("supabase/migrations/20261009_pna_daily_challenge.sql");
 const nav=read("src/lib/site-config.ts");
@@ -47,11 +48,11 @@ const tests={
   refreshSafeResume:quiz.includes("pna-daily-running-v1")&&quiz.includes("setDeadline(time)")&&quiz.includes("sessionStorage.removeItem"),
   premiumCss:css.includes(".dc-mission-mast")&&css.includes(".dc-table"),
   responsive:css.includes("@media(max-width:480px)"),
-  landingLinked:home.includes('href: "/daily-challenge"')&&hub.includes('href="/daily-challenge"'),
+  landingLinked:pathwayBrowser.includes('href: "/daily-challenge"')&&hub.includes('href="/daily-challenge"'),
   noIdentityOverclaim:quiz.includes("Email ownership is not verified"),
   noGeneratedFakeRanks:!board.includes("Demo Participant"),
   challengeMarker:quiz.includes('data-pna-daily-challenge="v1"'),
-  homepageFlagshipFirst:home.includes('data-pna-home-flagship="daily-clinical-challenge-v2"') && home.indexOf('data-pna-home-flagship') < home.indexOf('data-pna-home-premium="cohesive-v1"'),
+  homepageFlagshipAccessible:home.includes('data-pna-home-flagship="daily-clinical-challenge-v2"') && home.includes("<PremiumHomeHero />") && home.indexOf("<PremiumHomeHero />") < home.indexOf('data-pna-home-flagship'),
   flagshipSingleHero:(home.match(/data-pna-home-flagship/g)||[]).length===1 && (home.match(/<DailyLeaderboard compact/g)||[]).length===1,
   flagshipActivePlay:home.includes('href="/daily-challenge#play-daily"'),
   flagshipLiveBoard:home.includes('title="Today\'s Top 5"') && home.includes("DailyChallengeCountdown"),
@@ -59,7 +60,7 @@ const tests={
   mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
   desktopChallengeHighlight:desktop.includes('item.href === "/daily-challenge"') && desktop.includes('bg-teal-700'),
   midnightCounter:countdown.includes('timeZone: "Asia/Karachi"') && countdown.includes('Date.UTC('),
-  retainedKnowledgeSections:home.includes('href="/symptom-checker"') && home.includes('href="/case-lab"') && home.includes('portalActions.filter') && home.includes('portalGroups.map'),
+  retainedKnowledgeSections:home.includes('href="/symptom-checker"') && home.includes('href="/case-lab"') && pathwayBrowser.includes('href: "/knowledge-hub"') && pathwayBrowser.includes('href: "/symptom-checker"') && pathwayBrowser.includes('href: "/case-lab"'),
   themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)"),
   stableApiStart:quiz.includes('dailyRequest<StartResponse>("start"') && startEndpoint.includes('startDailyChallenge('),
   stableApiSubmit:quiz.includes('dailyRequest<Completed>("submit"') && submitEndpoint.includes('submitDailyChallenge('),
