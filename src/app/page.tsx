@@ -33,6 +33,9 @@ import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard"
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
 import "./daily-challenge/daily-challenge.css";
 import "./home-premium.css";
+import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
+import { PnaPathwayArtwork } from "@/components/home/PnaPathwayArtwork";
+import "./premium-vision.css";
 
 export const metadata: Metadata = {
   title: { absolute: "Physio Nexus Academy | Physiotherapy Learning & Patient Care Pakistan" },
@@ -245,99 +248,7 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Flagship destination: open to every PNA visitor, not nested under the MSK Hub. */}
-      <section data-pna-home-flagship="daily-clinical-challenge-v2" className="dc-flagship-shell" aria-labelledby="pna-daily-flagship-title">
-        <div className="container-content dc-flagship-container">
-          <div className="dc-flagship-stage">
-            <div className="dc-flagship-copy">
-              <div className="dc-flagship-eyebrow"><Flame className="h-4 w-4" aria-hidden="true"/> PNA'S DAILY FEATURED EXPERIENCE <span className="dc-flagship-eyebrow-dot"/></div>
-              <div className="dc-flagship-category"><Sparkles className="h-4 w-4" aria-hidden="true"/> LEARN · COMPETE · LEAD</div>
-              <h1 id="pna-daily-flagship-title" className="dc-flagship-heading">
-                Five questions.<br/>
-                One big <span>challenge.</span>
-              </h1>
-              <p className="dc-flagship-description">
-                Meet the <strong>PNA Daily Clinical Challenge</strong> — a fresh physiotherapy
-                knowledge mission every day. Test your clinical thinking, earn points,
-                and climb the public leaderboard with learners across PNA.
-              </p>
-              <div className="dc-flagship-stats" aria-label="Daily challenge format">
-                <div className="dc-flagship-stat"><span className="dc-flagship-stat-icon"><Sparkles className="h-4 w-4"/></span><div><strong>05</strong><span>questions daily</span></div></div>
-                <div className="dc-flagship-stat"><span className="dc-flagship-stat-icon"><Timer className="h-4 w-4"/></span><div><strong>30s</strong><span>per question</span></div></div>
-                <div className="dc-flagship-stat"><span className="dc-flagship-stat-icon"><Trophy className="h-4 w-4"/></span><div><strong>100</strong><span>maximum points</span></div></div>
-              </div>
-              <div className="dc-flagship-actions">
-                <a href="/daily-challenge#play-daily" className="dc-flagship-play">
-                  <span className="dc-flagship-play-icon"><ArrowRight className="h-5 w-5"/></span>
-                  PLAY TODAY'S CHALLENGE
-                  <ArrowRight className="h-4 w-4 dc-flagship-end-arrow" aria-hidden="true"/>
-                </a>
-                <a href="/daily-challenge#hall-of-fame" className="dc-flagship-hall">
-                  <Medal className="h-4 w-4"/> Hall of Fame <ArrowRight className="h-4 w-4"/>
-                </a>
-              </div>
-              <DailyChallengeCountdown/>
-            </div>
-            <div className="dc-flagship-ranking">
-              <div className="dc-flagship-ranking-heading">
-                <span className="dc-flagship-ranking-live"><span/> LIVE CHAMPIONS BOARD</span>
-                <span className="dc-flagship-ranking-subtitle">The competition is open to everyone</span>
-              </div>
-              <DailyLeaderboard compact title="Today's Top 5"/>
-              <a href="/daily-challenge#full-leaderboard" className="dc-flagship-ranking-more">
-                Explore all scores, monthly leaders and yearly champions <ArrowRight className="h-4 w-4"/>
-              </a>
-            </div>
-          </div>
-          <div className="dc-flagship-bottom">
-            <span><Trophy className="h-4 w-4" aria-hidden="true"/> A new mission at midnight Pakistan time</span>
-            <span>Public scores · Monthly & yearly rankings · Clinical explanations</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="pna-home-intro" aria-label="Meet Physio Nexus Academy">
-        <div className="container-content pna-home-intro-inner">
-          <div className="pna-home-intro-copy">
-            <p className="pna-home-kicker"><span className="pna-home-signal"/> THE ACADEMY BEHIND THE EXPERIENCE</p>
-            <h2>Built for curious minds. <span>Made for real clinical life.</span></h2>
-            <p>
-              Physio Nexus Academy connects clinical knowledge, applied skills, research,
-              professional training and patient care in one thoughtful learning experience.
-              Students, clinicians and patients each have a place here.
-            </p>
-            <div className="pna-home-intro-actions">
-              <a href="#explore-pna" className="pna-home-intro-primary">
-                Discover the platform <ArrowRight className="h-4 w-4" aria-hidden="true"/>
-              </a>
-              <a href="/about" className="pna-home-intro-secondary">Our story <ArrowRight className="h-4 w-4" aria-hidden="true"/></a>
-            </div>
-            <div className="pna-home-audiences" aria-label="Who PNA serves">
-              <a href="#pna-zone-learn">For students</a>
-              <span aria-hidden="true">·</span>
-              <a href="#pna-zone-professional">For professionals</a>
-              <span aria-hidden="true">·</span>
-              <a href="#pna-zone-care">For patients</a>
-            </div>
-          </div>
-          <a href="/founder" className="pna-home-founder-card">
-            <Image
-              src={siteConfig.founder.photo}
-              alt={siteConfig.founder.name + ", founder of Physio Nexus Academy"}
-              width={148}
-              height={174}
-              sizes="(max-width: 640px) 96px, 148px"
-              className="pna-home-founder-photo"
-            />
-            <div className="pna-home-founder-copy">
-              <span className="pna-home-founder-overline">FOUNDER · MAIN INSTRUCTOR</span>
-              <strong>{siteConfig.founder.name}</strong>
-              <span>{siteConfig.founder.credentialsShort}</span>
-              <span className="pna-home-founder-link">Meet the founder <ArrowRight className="h-4 w-4" aria-hidden="true"/></span>
-            </div>
-          </a>
-        </div>
-      </section>
+      <PremiumHomeHero />
 
       <section id="explore-pna" data-pna-home-premium="cohesive-v1" className="pna-home-explore" aria-labelledby="pna-home-explore-title">
         <div className="container-content">
@@ -350,12 +261,25 @@ export default async function HomePage() {
             <a href="/knowledge-hub" className="pna-home-heading-action">Start with Knowledge Hub <ArrowRight className="h-4 w-4" aria-hidden="true"/></a>
           </div>
 
+          <nav className="pna-vision-pathways" aria-label="PNA learning and services pathways">
+            {portalGroups.map((group) => (
+              <a href={"#pna-zone-" + group.id} key={group.id} className={"pna-vision-pathway " + group.id}>
+                <span className="pna-vision-pathway-num">{group.number}</span>
+                <strong>{group.title}</strong>
+                <span>{group.description}</span>
+                <PnaPathwayArtwork kind={group.id === "learn" ? "learn" : group.id === "practice" ? "practice" : group.id === "professional" ? "professional" : "care"} className="pna-vision-pathway-art" />
+                <span className="pna-vision-pathway-arrow"><ArrowRight size={17} aria-hidden="true"/></span>
+              </a>
+            ))}
+          </nav>
+          <h3 className="pna-vision-pathways-title">Discover what is inside</h3>
           <div className="pna-home-zones">
             {portalGroups.map((group) => {
               const groupActions = portalActions.filter((action) => group.hrefs.includes(action.href));
               const ZoneIcon = group.id === "learn" ? BookOpen : group.id === "practice" ? BrainCircuit : group.id === "professional" ? CalendarDays : HeartPulse;
               return (
                 <section key={group.id} id={"pna-zone-" + group.id} className={"pna-home-zone pna-home-zone-" + group.id} aria-labelledby={"pna-zone-heading-" + group.id}>
+                  <PnaPathwayArtwork kind={group.id === "learn" ? "learn" : group.id === "practice" ? "practice" : group.id === "professional" ? "professional" : "care"} className="pna-home-zone-art" />
                   <div className="pna-home-zone-top">
                     <span className="pna-home-zone-number">{group.number}</span>
                     <div className="pna-home-zone-top-copy">
@@ -405,6 +329,57 @@ export default async function HomePage() {
               <ArrowRight className="h-4 w-4" aria-hidden="true"/>
               <a href="/clinical-arena"><BrainCircuit className="h-4 w-4" aria-hidden="true"/> Challenge your reasoning</a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Flagship destination: open to every PNA visitor, not nested under the MSK Hub. */}
+      <section data-pna-home-flagship="daily-clinical-challenge-v2" className="dc-flagship-shell" aria-labelledby="pna-daily-flagship-title">
+        <div className="container-content dc-flagship-container">
+          <div className="dc-flagship-stage">
+            <div className="dc-flagship-copy">
+              <div className="dc-flagship-eyebrow"><Flame className="h-4 w-4" aria-hidden="true"/> PNA'S DAILY FEATURED EXPERIENCE <span className="dc-flagship-eyebrow-dot"/></div>
+              <div className="dc-flagship-category"><Sparkles className="h-4 w-4" aria-hidden="true"/> LEARN · COMPETE · LEAD</div>
+              <h1 id="pna-daily-flagship-title" className="dc-flagship-heading">
+                Five questions.<br/>
+                One big <span>challenge.</span>
+              </h1>
+              <p className="dc-flagship-description">
+                Meet the <strong>PNA Daily Clinical Challenge</strong> — a fresh physiotherapy
+                knowledge mission every day. Test your clinical thinking, earn points,
+                and climb the public leaderboard with learners across PNA.
+              </p>
+              <div className="dc-flagship-stats" aria-label="Daily challenge format">
+                <div className="dc-flagship-stat"><span className="dc-flagship-stat-icon"><Sparkles className="h-4 w-4"/></span><div><strong>05</strong><span>questions daily</span></div></div>
+                <div className="dc-flagship-stat"><span className="dc-flagship-stat-icon"><Timer className="h-4 w-4"/></span><div><strong>30s</strong><span>per question</span></div></div>
+                <div className="dc-flagship-stat"><span className="dc-flagship-stat-icon"><Trophy className="h-4 w-4"/></span><div><strong>100</strong><span>maximum points</span></div></div>
+              </div>
+              <div className="dc-flagship-actions">
+                <a href="/daily-challenge#play-daily" className="dc-flagship-play">
+                  <span className="dc-flagship-play-icon"><ArrowRight className="h-5 w-5"/></span>
+                  PLAY TODAY'S CHALLENGE
+                  <ArrowRight className="h-4 w-4 dc-flagship-end-arrow" aria-hidden="true"/>
+                </a>
+                <a href="/daily-challenge#hall-of-fame" className="dc-flagship-hall">
+                  <Medal className="h-4 w-4"/> Hall of Fame <ArrowRight className="h-4 w-4"/>
+                </a>
+              </div>
+              <DailyChallengeCountdown/>
+            </div>
+            <div className="dc-flagship-ranking">
+              <div className="dc-flagship-ranking-heading">
+                <span className="dc-flagship-ranking-live"><span/> LIVE CHAMPIONS BOARD</span>
+                <span className="dc-flagship-ranking-subtitle">The competition is open to everyone</span>
+              </div>
+              <DailyLeaderboard compact title="Today's Top 5"/>
+              <a href="/daily-challenge#full-leaderboard" className="dc-flagship-ranking-more">
+                Explore all scores, monthly leaders and yearly champions <ArrowRight className="h-4 w-4"/>
+              </a>
+            </div>
+          </div>
+          <div className="dc-flagship-bottom">
+            <span><Trophy className="h-4 w-4" aria-hidden="true"/> A new mission at midnight Pakistan time</span>
+            <span>Public scores · Monthly & yearly rankings · Clinical explanations</span>
           </div>
         </div>
       </section>
