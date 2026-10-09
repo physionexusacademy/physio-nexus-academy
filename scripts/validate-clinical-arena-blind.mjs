@@ -44,7 +44,7 @@ for (const marker of [
   assert(page.includes(marker), "Case auto-scroll safeguard missing: " + marker);
 }
 
-assert(/function advance\\(\\)\\{\\s*setScrollRequest\\(n=>n\\+1\\);/.test(page),
+assert(/function advance\(\)\{\s*setScrollRequest\(n=>n\+1\);/.test(page),
   "Stage transitions must also scroll back to the start of the case");
 
 const start=expanded.indexOf("export const expandedCases");
