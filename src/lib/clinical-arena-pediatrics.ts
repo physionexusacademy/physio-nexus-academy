@@ -167,7 +167,7 @@ export const pediatricTemplates:Template[]=[
   "region": "Child Development",
   "cohort": "infant",
   "chief": "My baby needs more time and help with movement.",
-  "history": "Child with confirmed Down syndrome has delayed transitional movement and generalized low muscle tone; family asks about safe play.",
+  "history": "A baby with a documented genetic developmental condition has delayed transitional movement and generalized low muscle tone; family asks about safe play.",
   "findings": [
    "Low postural tone and delayed transitions",
    "Caregiver reports fatigue with supported upright play"
@@ -199,7 +199,7 @@ export const pediatricTemplates:Template[]=[
   "region": "Child Development",
   "cohort": "child",
   "chief": "My child struggles with catching, writing and learning new movements.",
-  "history": "With an established developmental coordination assessment, the child is slower learning motor skills despite opportunities to practice.",
+  "history": "The child is slower learning and coordinating age-appropriate motor tasks despite opportunities to practice, affecting school and home routines.",
   "findings": [
    "Difficulty coordinating age-appropriate ball and fine-motor tasks",
    "Task performance affects school participation"
@@ -231,7 +231,7 @@ export const pediatricTemplates:Template[]=[
   "region": "Child Development",
   "cohort": "child",
   "chief": "My child avoids some playground games and finds busy places overwhelming.",
-  "history": "Autistic child presents with sensory-related movement avoidance and coordination challenges affecting preferred play activities.",
+  "history": "A child with documented neurodevelopmental differences has sensory-related movement avoidance and coordination challenges affecting preferred play activities.",
   "findings": [
    "Movement planning and sensory tolerance vary by task",
    "Engagement improves with predictable cues and familiar routines"
@@ -328,7 +328,7 @@ export const pediatricTemplates:Template[]=[
   "region": "Child Development",
   "cohort": "infant",
   "chief": "My baby moves one arm much less than the other.",
-  "history": "Caregiver reports persistent asymmetric arm movement since birth with medical history consistent with peripheral brachial plexus injury.",
+  "history": "Caregiver reports persistent asymmetric arm movement since birth, with a peripheral pattern of weakness requiring specialist follow-up.",
   "findings": [
    "Reduced active shoulder and elbow movement on affected side",
    "Hand movement pattern may help characterize nerve level"
