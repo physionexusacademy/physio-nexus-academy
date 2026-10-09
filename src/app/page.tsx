@@ -409,6 +409,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <div className="pna-home-lower">
       <section className="border-y border-grey-200 bg-white py-6">
         <div className="container-content flex flex-col items-center justify-between gap-5 sm:flex-row">
           <div className="flex items-center gap-4">
@@ -445,7 +446,7 @@ export default async function HomePage() {
       </section>
 
 
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-white pna-home-feature-section">
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -509,7 +510,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding">
+      <section className="section-padding pna-home-feature-section">
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -532,7 +533,7 @@ export default async function HomePage() {
                 <a
                   key={workshop.id}
                   href={"/workshops/" + workshop.slug}
-                  className="rounded-2xl border border-grey-200 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="pna-home-section-card rounded-2xl border border-grey-200 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <CalendarDays className="h-6 w-6 text-teal-500" />
                   <h3 className="mt-3 text-lg font-semibold text-navy-800">{workshop.title}</h3>
@@ -562,7 +563,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-gradient-to-b from-violet-50/60 via-white to-cyan-50/50">
+      <section className="section-padding pna-home-feature-section pna-home-learning-notes">
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -586,7 +587,7 @@ export default async function HomePage() {
               <a
                 key={article.slug}
                 href={"/knowledge-hub/" + article.slug}
-                className="rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-md"
+                className="pna-home-section-card rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-md"
               >
                 <p className="text-xs font-semibold uppercase tracking-wide text-teal-600">
                   {article.category}
@@ -598,27 +599,10 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <a
-            href="/clinical-quiz"
-            className="mt-6 flex flex-col gap-4 rounded-2xl bg-navy-800 p-6 text-white transition hover:bg-navy-700 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-start gap-3">
-              <Brain className="mt-0.5 h-7 w-7 flex-shrink-0 text-teal-300" />
-              <div>
-                <p className="font-semibold text-white">Weekly Clinical Challenge</p>
-                <p className="mt-1 text-sm text-grey-200">
-                  5 questions · 30 seconds per question · one Gmail attempt · weekly top scorers
-                </p>
-              </div>
-            </div>
-            <span className="inline-flex items-center gap-1 text-sm font-semibold text-teal-200">
-              Take the quiz <ArrowRight className="h-4 w-4" />
-            </span>
-          </a>
         </div>
       </section>
 
-      <section className="section-padding">
+      <section className="section-padding pna-home-feature-section">
         <div className="container-content">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -655,7 +639,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-gradient-to-br from-emerald-800 via-teal-800 to-navy-800 text-white">
+      <section className="section-padding pna-home-light-patient">
         <div className="container-content">
           <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
             <div>
@@ -665,14 +649,14 @@ export default async function HomePage() {
               <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
                 Need physiotherapy support?
               </h2>
-              <p className="mt-3 max-w-xl text-grey-200">
+              <p className="pna-home-patient-note mt-3 max-w-xl">
                 Check your symptoms first, then book a consultation or request a home visit. Our team confirms availability before care is scheduled.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               <a
                 href="/symptom-checker"
-                className="rounded-2xl border border-teal-300 bg-teal-500/10 p-5 transition hover:border-teal-200 hover:bg-white/10"
+                className="rounded-2xl border p-5 transition"
               >
                 <Stethoscope className="h-6 w-6 text-teal-300" />
                 <p className="mt-3 font-semibold text-white">Check Your Symptoms</p>
@@ -680,7 +664,7 @@ export default async function HomePage() {
               </a>
               <a
                 href="/appointment"
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-teal-300 hover:bg-white/10"
+                className="rounded-2xl border p-5 transition"
               >
                 <Stethoscope className="h-6 w-6 text-teal-300" />
                 <p className="mt-3 font-semibold text-white">Book Appointment</p>
@@ -688,7 +672,7 @@ export default async function HomePage() {
               </a>
               <a
                 href="/home-visit"
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-teal-300 hover:bg-white/10"
+                className="rounded-2xl border p-5 transition"
               >
                 <Home className="h-6 w-6 text-teal-300" />
                 <p className="mt-3 font-semibold text-white">Request Home Visit</p>
@@ -722,7 +706,7 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
-
+      </div>
     </>
   );
 }
