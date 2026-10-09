@@ -1,6 +1,6 @@
 "use client";
 
-import {useMemo,useRef,useState} from "react";
+import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {
@@ -50,6 +50,15 @@ export function CaseLabLibrary({cases,categories}:Props){
  const [limit,setLimit]=useState(12);
  const resultRef=useRef<HTMLElement|null>(null);
 
+ useEffect(()=>{
+  // On return from a patient file, keep the user's last specialty.
+  // Read only on the client to avoid hydration mismatches.
+  try{
+   const saved=window.sessionStorage.getItem("pna-case-lab-specialty-v4");
+   if(saved&&(saved==="All cases"||categories.includes(saved)))setCategory(saved);
+  }catch{}
+ },[categories]);
+
  const totals=useMemo(()=>new Map<string,number>(categories.map(name=>[
   name,cases.filter(c=>c.category===name).length
  ])),[categories,cases]);
@@ -83,6 +92,7 @@ export function CaseLabLibrary({cases,categories}:Props){
 
  function chooseSpecialty(next:string){
   setCategory(next);
+  try{window.sessionStorage.setItem("pna-case-lab-specialty-v4",next)}catch{}
   setQuery("");
   setFocus("All focuses");
   setLevel("All levels");
