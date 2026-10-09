@@ -81,7 +81,7 @@ export function DailyLeaderboard({compact=false,initialPeriod="today",title,prev
   <div className="dc-board-period">
    <div>
     <p className="text-sm font-bold text-[#25465a]">{labelPeriod(period,chosen)}</p>
-    <p className="mt-1 text-xs text-slate-500">{period==="today"?"Resets nightly at 12:00 AM PKT":"Cumulative verified-in-app scores for this period"}</p>
+    <p className="mt-1 text-xs text-slate-500">{period==="today"?"Resets nightly at 12:00 AM PKT":"Total points earned from daily challenges in this period"}</p>
    </div>
    {!compact&&period!=="today"&&<div className="flex items-center gap-1">
     <button type="button" onClick={()=>shift(-1)} className="dc-nav-btn" aria-label="Previous period"><ArrowLeft className="h-4 w-4"/></button>
