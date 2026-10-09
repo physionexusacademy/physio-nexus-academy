@@ -28,6 +28,19 @@ export function DailyChallengeClient(){
  const [reviewOpen,setReviewOpen]=useState(false);
  const inFlight=useRef(false);
  const current=active?.questions[step];
+ useEffect(()=>{
+  if(!active)return;
+  const interval=window.setInterval(()=>{
+   const parts=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Karachi",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+   const get=(type:string)=>parts.find(x=>x.type===type)?.value||"";
+   const today=get("year")+"-"+get("month")+"-"+get("day");
+   if(today!==active.date&&result){
+    setActive(null);setResult(null);setSelected({});answersRef.current={};
+    setError("A new daily challenge has arrived! You can enter again.");
+   }
+  },5000);
+  return()=>window.clearInterval(interval);
+ },[active,result]);
  const finish=useCallback(async()=>{
   if(!active||inFlight.current)return;
   inFlight.current=true;
@@ -76,6 +89,7 @@ export function DailyChallengeClient(){
    const session=outcome.challenge;
    setActive(session);setStep(0);setSelected({});answersRef.current={};
    setResult(null);
+   setError("");
    setDeadline(Math.min(Date.now()+session.timePerQuestionSeconds*1000,Date.parse(session.expiresAt)));
    setSeconds(session.timePerQuestionSeconds);
   }catch{setError("Could not begin the challenge. Please try again.");}
