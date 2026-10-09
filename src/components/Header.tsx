@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Menu, X, Calendar, Home } from "lucide-react";
+import { Menu, X, Calendar, Home, Trophy } from "lucide-react";
 import { mainNav, siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -106,7 +106,7 @@ export function Header() {
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-4 lg:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-3 xl:flex" aria-label="Main navigation">
           {mainNav.filter((item) => item.href !== "/").map((item) => (
             <a
               key={item.href}
@@ -114,15 +114,17 @@ export function Header() {
               aria-current={pathname === item.href ? "page" : undefined}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-teal-600",
-                pathname === item.href ? "text-teal-600" : "text-navy-700"
+                item.href === "/daily-challenge" && "inline-flex items-center gap-1.5 rounded-full bg-teal-700 px-3 py-2 font-bold text-white shadow-sm hover:bg-teal-800 hover:text-white",
+                pathname === item.href ? (item.href === "/daily-challenge" ? "bg-teal-900 text-white" : "text-teal-600") : (item.href === "/daily-challenge" ? "" : "text-navy-700")
               )}
             >
+              {item.href === "/daily-challenge" && <Trophy className="h-4 w-4" aria-hidden="true" />}
               {item.label}
             </a>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <Button href="/appointment" variant="outline" size="md">
             <Calendar className="h-4 w-4" /> Book Appointment
           </Button>
@@ -134,7 +136,7 @@ export function Header() {
         {/* Mobile toggle */}
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md p-2 text-navy-800 lg:hidden"
+          className="inline-flex items-center justify-center rounded-md p-2 text-navy-800 xl:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -147,7 +149,7 @@ export function Header() {
       <div
         aria-hidden={!open}
         className={cn(
-          "absolute left-0 right-0 top-full z-[60] h-[calc(100dvh-5rem)] bg-white transition-transform duration-300 lg:hidden",
+          "absolute left-0 right-0 top-full z-[60] h-[calc(100dvh-5rem)] bg-white transition-transform duration-300 xl:hidden",
           open ? "visible translate-x-0" : "invisible pointer-events-none translate-x-full"
         )}
       >
@@ -172,7 +174,7 @@ export function Header() {
               tabIndex={open ? 0 : -1}
               aria-current={pathname === item.href ? "page" : undefined}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-3 text-base font-medium text-navy-800 hover:bg-navy-50"
+              className={cn("rounded-md px-3 py-3 text-base font-medium text-navy-800 hover:bg-navy-50", item.href === "/daily-challenge" && "bg-teal-50 font-bold text-teal-800")}
             >
               {item.label}
             </a>
