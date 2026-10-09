@@ -138,6 +138,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
               <strong>{group.title}</strong>
               <span>{group.description}</span>
               <PnaPathwayArtwork kind={group.id} className="pna-vision-pathway-art" />
+              <span className="pna-vision-pathway-state" aria-hidden="true">{selected === group.id ? "Selected" : "Explore"}</span>
               <span className="pna-vision-pathway-arrow"><ChevronRight size={18} aria-hidden="true"/></span>
             </button>
           ))}
@@ -145,6 +146,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
 
         <section id="pna-pathway-details" className={"pna-sig-detail pna-sig-detail-" + active.id}
           aria-labelledby="pna-sig-active-heading" aria-live="polite">
+          <div className="pna-sig-detail-meta" aria-hidden="true"><span><span className="pna-sig-detail-meta-dot"/> SELECTED PATHWAY</span><strong>{active.number} / 04</strong></div>
           <div className="pna-sig-detail-head">
             <div className="pna-sig-detail-head-main">
               <span className="pna-sig-overline">{active.kicker}</span>
@@ -160,7 +162,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
               return (
                 <a key={link.href} className={"pna-sig-link" + (link.featured ? " pna-sig-link-featured" : "")} href={link.href}>
                   <span className="pna-sig-link-icon"><Icon size={22} aria-hidden="true"/></span>
-                  <span className="pna-sig-link-copy"><strong>{link.title}</strong><span>{link.description}</span></span>
+                  <span className="pna-sig-link-copy"><strong>{link.title}{link.featured && <em className="pna-sig-featured-tag">Featured</em>}</strong><span>{link.description}</span></span>
                   <ArrowRight className="pna-sig-link-arrow" size={19} aria-hidden="true"/>
                 </a>
               );

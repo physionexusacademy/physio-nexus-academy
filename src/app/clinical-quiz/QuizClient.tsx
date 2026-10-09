@@ -50,6 +50,19 @@ export function QuizClient() {
   const [error, setError] = useState("");
   const submittingRef = useRef(false);
   const advancingRef = useRef(false);
+  const liveViewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!quiz) return;
+    const frame = window.requestAnimationFrame(() => {
+      const panel = liveViewRef.current;
+      if (!panel) return;
+      const top = window.scrollY + panel.getBoundingClientRect().top - 88;
+      window.scrollTo({ top: Math.max(0, top), behavior: "instant" as ScrollBehavior });
+      if (!result) document.getElementById("weekly-quiz-question")?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [quiz, currentIndex, result]);
 
   async function handleStart(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -241,7 +254,7 @@ export function QuizClient() {
 
   if (result) {
     return (
-      <div className="mt-8">
+      <div ref={liveViewRef} className="mt-8 scroll-mt-24">
         <div className="rounded-2xl bg-navy-800 p-6 text-white sm:p-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-teal-300">
             {result.expired ? "Quiz time finished" : "Your result"}
@@ -313,8 +326,9 @@ export function QuizClient() {
   const selected = answers[question.id];
 
   return (
-    <div className="mt-8">
-      <div className="sticky top-20 z-30 mb-6 rounded-xl border border-grey-200 bg-white/95 p-4 shadow-md backdrop-blur">
+    <div ref={liveViewRef} className="mt-8 scroll-mt-24">
+      <div className="sticky top-20 z-30 mb-6 rounded-2xl border border-teal-200 bg-white/95 p-4 shadow-[0_14px_35px_-23px_rgba(8,93,110,.4)] backdrop-blur">
+        <p role="status" className="mb-3 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-[11px] font-bold text-teal-800"><span className="h-2 w-2 rounded-full bg-teal-500"/> QUIZ IS LIVE · CHOOSE YOUR ANSWER</p>
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
@@ -348,11 +362,11 @@ export function QuizClient() {
         </div>
       </div>
 
-      <section className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm sm:p-7">
+      <section className="rounded-2xl border border-[#c8e8e5] bg-gradient-to-b from-[#f5fcfb] to-white p-5 shadow-[0_17px_34px_-27px_rgba(11,80,100,.35)] sm:p-7">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-600">
           Question {currentIndex + 1} of {quiz.questions.length}
         </p>
-        <h2 className="mt-3 text-xl font-semibold leading-8 text-navy-800">
+        <h2 id="weekly-quiz-question" tabIndex={-1} className="mt-3 text-xl font-semibold leading-8 text-navy-800 focus:outline-none">
           {question.question}
         </h2>
 
@@ -364,8 +378,8 @@ export function QuizClient() {
               <label
                 key={option.value}
                 className={[
-                  "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition hover:border-grey-300",
-                  checked ? "border-teal-400 bg-teal-50" : "border-grey-200",
+                  "flex min-h-16 cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] p-4 transition hover:border-teal-300 hover:bg-teal-50/40",
+                  checked ? "border-teal-500 bg-teal-50 shadow-[0_0_0_2px_rgba(8,145,129,.1)]" : "border-grey-200 bg-white",
                 ].join(" ")}
               >
                 <input
@@ -380,8 +394,9 @@ export function QuizClient() {
                       [question.id]: option.value,
                     }))
                   }
-                  className="mt-1 h-4 w-4 accent-teal-600"
+                  className="sr-only"
                 />
+                <span aria-hidden="true" className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${checked ? "bg-teal-700 text-white" : "bg-teal-50 text-teal-800"}`}>{option.value}</span>
                 <span className="text-sm leading-6 text-navy-700">
                   {option.label}
                 </span>
@@ -396,7 +411,7 @@ export function QuizClient() {
           </p>
         ) : null}
 
-        <div className="mt-6 flex items-center justify-between gap-3 border-t border-grey-100 pt-5">
+        <div className="mt-6 flex flex-col items-stretch justify-between gap-3 border-t border-grey-100 pt-5 sm:flex-row sm:items-center">
           <p className="text-xs text-navy-400">
             If time reaches 0, this question closes automatically.
           </p>
@@ -404,7 +419,7 @@ export function QuizClient() {
             type="button"
             onClick={() => void moveToNextQuestion()}
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-lg bg-teal-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-600 disabled:opacity-60"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800 disabled:opacity-60"
           >
             {currentIndex === quiz.questions.length - 1 ? "Finish quiz" : "Next question"}
             <ChevronRight className="h-4 w-4" />

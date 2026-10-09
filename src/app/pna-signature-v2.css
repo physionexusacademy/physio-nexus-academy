@@ -253,3 +253,94 @@
   .pna-vision-founder-photo {right:-9%;width:63%;}
   .pna-vision-founder-cta {font-size:8px;}
 }
+
+/* PNA October mobile finish: premium pathways and their expanded link panel. */
+.pna-sig-explore .pna-vision-pathway{
+  isolation:isolate;overflow:hidden;border-color:rgba(70,157,175,.28);
+  box-shadow:0 12px 25px -23px rgba(17,72,103,.46),inset 0 1px 0 rgba(255,255,255,.78);
+  transition:transform .23s ease,box-shadow .23s ease,border-color .23s ease,filter .23s ease;
+}
+.pna-sig-explore .pna-vision-pathway::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.42),transparent 53%);
+}
+.pna-sig-explore .pna-vision-pathway.is-selected{
+  border-color:#098992;box-shadow:0 0 0 2px rgba(22,169,171,.24),0 17px 30px -22px rgba(0,91,115,.49),inset 0 1px 0 #fff;
+}
+.pna-sig-explore .pna-vision-pathway:active{transform:scale(.985);}
+.pna-sig-explore .pna-vision-pathway-num{position:relative;z-index:2;background:#fff;border:1px solid rgba(255,255,255,.9);box-shadow:0 4px 12px rgba(15,76,92,.06)}
+.pna-sig-explore .pna-vision-pathway strong{position:relative;z-index:2;text-wrap:balance;color:#133653}
+.pna-sig-explore .pna-vision-pathway>span:nth-child(3){position:relative;z-index:2;color:#365e70;font-weight:520}
+.pna-sig-explore .pna-vision-pathway-art{opacity:.30;bottom:-13%;right:-13%;width:92%;height:60%;filter:saturate(.82);z-index:1}
+.pna-vision-pathway-state{
+  position:absolute;top:19px;right:16px;z-index:3;border:1px solid rgba(11,107,120,.15);
+  background:rgba(255,255,255,.65);border-radius:999px;padding:5px 8px;color:#317788;
+  font:800 9px/1.15 Calibri,"Segoe UI",sans-serif;letter-spacing:.025em;
+}
+.pna-sig-explore .pna-vision-pathway.is-selected .pna-vision-pathway-state{
+  color:#075c65;background:#fff;border-color:#a8dad9;
+}
+.pna-sig-explore .pna-vision-pathway-arrow{
+  border:1px solid rgba(255,255,255,.35);box-shadow:0 9px 17px -9px rgba(5,54,79,.52);
+}
+.pna-sig-detail{border-color:#c5e2e8;box-shadow:0 22px 45px -35px rgba(16,75,102,.35)}
+.pna-sig-detail-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 23px 0;color:#18747f;font-size:10px;font-weight:900;letter-spacing:.12em;
+}
+.pna-sig-detail-meta>span{display:inline-flex;align-items:center;gap:7px}
+.pna-sig-detail-meta-dot{width:7px;height:7px;border-radius:50%;background:#11a691;box-shadow:0 0 0 4px rgba(17,166,145,.12)}
+.pna-sig-detail-meta>strong{color:#517889;letter-spacing:.07em}
+.pna-sig-detail-head{border-bottom-color:#dceef0}
+.pna-sig-detail-grid{counter-reset:pathwaylink;gap:12px;padding:16px}
+.pna-sig-link{
+  position:relative;overflow:hidden;min-height:86px;gap:14px;border:1px solid #dce9ec;border-radius:19px;
+  background:linear-gradient(135deg,#fff 50%,#fbfeff);
+  box-shadow:0 10px 22px -22px rgba(12,74,105,.42);
+  transition:transform .2s,border-color .2s,box-shadow .2s,background .2s;
+}
+.pna-sig-link:hover,.pna-sig-link:focus-visible{
+  border-color:#8acfd1;background:#f7fcfb;box-shadow:0 16px 28px -23px rgba(0,100,117,.45)
+}
+.pna-sig-link-featured{border-color:#92d7d4;background:linear-gradient(115deg,#e9faf6,#fff 73%)}
+.pna-sig-link-featured::before{content:"";position:absolute;inset:12px auto 12px 0;width:3px;border-radius:0 5px 5px 0;background:#10a69a}
+.pna-sig-link-icon{width:47px;height:47px;border-radius:15px;box-shadow:inset 0 1px 0 #fff}
+.pna-sig-link-copy strong{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:14px;color:#193e55}
+.pna-sig-link-copy>span{font-size:12px;color:#657f8e}
+.pna-sig-featured-tag{
+  border:1px solid #bae4df;border-radius:999px;padding:2px 6px;
+  background:#eaf8f3;font-size:9px;font-style:normal;font-weight:850;color:#08796f;
+}
+.pna-sig-link-arrow{border-radius:50%;width:29px;height:29px;padding:5px;background:#f0f9fa;color:#04758d}
+.pna-sig-access-note{padding-top:4px;padding-bottom:20px}
+@media(max-width:560px){
+  .pna-sig-explore .pna-vision-pathways{gap:11px;margin-bottom:18px}
+  .pna-sig-explore .pna-vision-pathway{
+    min-height:222px;padding:15px 13px;border-radius:21px;
+    box-shadow:0 10px 22px -20px rgba(20,69,101,.48),inset 0 1px 0 #fff;
+  }
+  .pna-sig-explore .pna-vision-pathway-num{width:32px;height:32px;font-size:12px}
+  .pna-sig-explore .pna-vision-pathway strong{margin-top:11px;font-size:17px;line-height:1.18;max-width:100%}
+  .pna-sig-explore .pna-vision-pathway>span:nth-child(3){margin-top:8px;font-size:10px;line-height:1.48;max-width:93%}
+  .pna-sig-explore .pna-vision-pathway-art{height:49%;width:90%;right:-18%;bottom:-10%;opacity:.22}
+  .pna-vision-pathway-state{top:17px;right:10px;font-size:8px;padding:5px 7px}
+  .pna-sig-explore .pna-vision-pathway-arrow{width:37px;height:37px;right:10px;bottom:10px}
+  .pna-sig-detail{border-radius:23px}
+  .pna-sig-detail-meta{padding:15px 17px 0;font-size:9px}
+  .pna-sig-detail-head{padding:14px 17px 17px;min-height:126px}
+  .pna-sig-detail-grid{gap:10px;padding:11px}
+  .pna-sig-link{min-height:85px;gap:12px;padding:13px;border-radius:17px}
+  .pna-sig-link-icon{width:43px;height:43px}
+  .pna-sig-link-copy strong{font-size:14px}
+  .pna-sig-link-copy>span{font-size:11px;line-height:1.5}
+  .pna-sig-link-arrow{width:27px;height:27px;padding:5px}
+  body:has(.pna-sig-explore) a[aria-label="Chat with Physio Nexus Academy on WhatsApp"]{bottom:calc(112px + env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){
+  .pna-sig-explore .pna-vision-pathway{min-height:228px;padding:12px 10px}
+  .pna-sig-explore .pna-vision-pathway strong{font-size:16px}
+  .pna-sig-explore .pna-vision-pathway>span:nth-child(3){font-size:9.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .pna-sig-explore .pna-vision-pathway:active{transform:none}
+}

@@ -132,3 +132,39 @@
 @media(max-width:1100px){.dc-flagship-stage{grid-template-columns:1fr;gap:22px}.dc-flagship-copy{padding:0}.dc-flagship-ranking{width:100%}.dc-flagship-stats{max-width:650px}.dc-flagship-heading{font-size:clamp(2.65rem,6vw,4.7rem)}}
 @media(max-width:560px){.dc-flagship-container{padding-top:24px;padding-bottom:21px}.dc-flagship-category{margin-top:21px}.dc-flagship-heading{font-size:clamp(2.5rem,11vw,3.5rem)}.dc-flagship-description{line-height:1.75;margin-top:22px}.dc-flagship-stats{gap:6px;margin-top:18px}.dc-flagship-stat{padding:10px 7px;gap:5px;flex-direction:column;align-items:start}.dc-flagship-stat-icon{width:27px;height:27px;border-radius:8px}.dc-flagship-stat strong{font-size:20px}.dc-flagship-play{width:100%;font-size:12px;justify-content:flex-start}.dc-flagship-end-arrow{margin-left:auto}.dc-flagship-hall{padding-left:4px}.dc-flagship-countdown{margin-top:10px}.dc-flagship-ranking{padding:10px;border-radius:20px}.dc-flagship-bottom{margin-top:18px}}
 @media(prefers-reduced-motion:reduce){.dc-flagship-shell *, .dc-flagship-shell *::before, .dc-flagship-shell *::after{animation:none!important;transition:none!important}}
+
+/* High-clarity timed quiz experience: visible on entry and comfortable on phones. */
+.dc-play{scroll-margin-top:88px}
+.dc-question-panel{background:linear-gradient(160deg,#f5fcfa 0%,#fff 31%);min-height:500px}
+.dc-live-banner{
+  display:flex;align-items:center;gap:10px;margin-bottom:19px;padding:12px 14px;
+  border:1px solid #acdcd5;border-radius:13px;background:#eaf9f4;color:#07675e;
+  font-size:12px;font-weight:800;line-height:1.45;
+}
+.dc-live-dot{display:inline-block;flex:0 0 9px;height:9px;border-radius:50%;background:#00a78e;box-shadow:0 0 0 4px #c7ede4}
+.dc-live-head{border-bottom:1px solid #e5efed;padding-bottom:15px}
+.dc-question-panel .dc-timer{font-size:17px;padding:10px 15px;background:#fff;border-width:1.5px;box-shadow:0 5px 14px -11px #066960}
+.dc-question-panel .dc-timer-urgent{background:#fff3ed;border-color:#e9b39c}
+.dc-question-title:focus{outline:none}
+.dc-question-panel .dc-eyebrow{font-size:11px;line-height:1.5;letter-spacing:.1em}
+.dc-question-panel .dc-option{
+  min-height:62px;border:1.5px solid #dae8e9;border-radius:16px;padding:15px;
+  box-shadow:0 5px 16px -17px rgba(21,72,94,.45);background:#fff;
+}
+.dc-question-panel .dc-option:focus-visible{outline:3px solid #0b9f94;outline-offset:2px}
+.dc-question-panel .dc-option-selected{background:linear-gradient(110deg,#e7f8f3,#f9fffc);border-color:#0a9085;box-shadow:0 0 0 2px #c8ece6}
+.dc-question-panel .dc-option-letter{width:37px;height:37px;border-radius:11px;font-size:14px}
+.dc-question-panel .dc-option-selected .dc-option-letter{background:#078a7e;color:#fff}
+.dc-action-row .dc-primary{min-height:49px;font-size:13px;box-shadow:0 11px 18px -14px #096859}
+@media(max-width:560px){
+  .dc-question-panel{padding:17px;min-height:550px}
+  .dc-live-banner{margin-bottom:14px;padding:11px 12px;font-size:11px}
+  .dc-question-panel .dc-mission-stamp{font-size:9px;padding:7px 10px}
+  .dc-question-panel .dc-timer{font-size:16px;padding:7px 11px}
+  .dc-question-panel .dc-question-title{font-size:22px;line-height:1.38}
+  .dc-question-panel .dc-option{min-height:60px;padding:12px 11px;gap:11px}
+  .dc-question-panel .dc-option-letter{width:34px;height:34px}
+  .dc-action-row{flex-direction:column;align-items:stretch}
+  .dc-action-row .dc-primary{order:0;width:100%}
+  .dc-action-row p{order:1;text-align:center}
+}

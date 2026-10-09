@@ -18,9 +18,9 @@ export function MobilePortalNav() {
   return (
     <nav
       aria-label="Mobile quick navigation"
-      className="fixed inset-x-0 bottom-0 z-[80] border-t border-grey-200 bg-white/95 px-2 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-8px_25px_rgba(2,20,44,0.08)] backdrop-blur lg:hidden"
+      className="pna-mobile-dock lg:hidden"
     >
-      <div className="mx-auto grid max-w-lg grid-cols-5">
+      <div className="pna-mobile-dock-grid mx-auto grid max-w-lg grid-cols-5">
         {items.map((item) => {
           const Icon = item.icon;
           const active =
@@ -34,14 +34,14 @@ export function MobilePortalNav() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold transition",
+                "pna-mobile-dock-item flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold transition",
                 active
-                  ? "bg-teal-50 text-teal-700"
+                  ? "is-active text-teal-800"
                   : "text-navy-500 hover:bg-grey-50 hover:text-navy-800"
               )}
             >
-              <Icon className="h-5 w-5" />
-              <span>{item.label}</span>
+              <Icon className="pna-mobile-dock-icon h-5 w-5" aria-hidden="true" />
+              <span className="pna-mobile-dock-label">{item.label}</span>
             </a>
           );
         })}

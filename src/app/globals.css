@@ -63,3 +63,36 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Floating mobile destination dock — accessible, restrained white/teal glass. */
+.pna-mobile-dock{
+  position:fixed;left:12px;right:12px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:80;
+  max-width:590px;margin-inline:auto;padding:7px;border:1px solid rgba(171,208,212,.83);border-radius:24px;
+  background:rgba(255,255,255,.96);box-shadow:0 14px 40px -13px rgba(8,45,67,.28),0 0 0 1px rgba(255,255,255,.7) inset;
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+}
+.pna-mobile-dock-grid{gap:3px}
+.pna-mobile-dock-item{
+  position:relative;min-width:0;min-height:59px;border:1px solid transparent;border-radius:17px;
+  color:#345c70;transition:color .18s,background .18s,border-color .18s,transform .18s;
+}
+.pna-mobile-dock-icon{width:21px;height:21px;stroke-width:2.1}
+.pna-mobile-dock-label{font-size:10px;line-height:1.2;font-weight:850;letter-spacing:-.01em}
+.pna-mobile-dock-item.is-active{
+  color:#075a66;background:linear-gradient(140deg,#e5f6f3,#f0fbfc);border-color:#cfebe8;
+  box-shadow:0 4px 10px -9px rgba(0,104,110,.7);
+}
+.pna-mobile-dock-item.is-active::before{
+  content:"";position:absolute;top:-7px;left:31%;right:31%;height:3px;
+  border-radius:999px;background:#08a99d;
+}
+.pna-mobile-dock-item:active{transform:scale(.96)}
+.pna-mobile-dock-item:focus-visible{outline:2px solid #048e95;outline-offset:1px}
+@media(max-width:1023px){body{padding-bottom:calc(104px + env(safe-area-inset-bottom))!important}}
+@media(min-width:1024px){.pna-mobile-dock{display:none}}
+@media(max-width:380px){
+  .pna-mobile-dock{left:7px;right:7px;padding:5px}
+  .pna-mobile-dock-item{min-height:56px}
+  .pna-mobile-dock-label{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.pna-mobile-dock-item{transition:none}}

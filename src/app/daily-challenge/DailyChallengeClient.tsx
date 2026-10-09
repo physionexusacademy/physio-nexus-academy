@@ -50,7 +50,21 @@ export function DailyChallengeClient(){
  const [error,setError]=useState("");
  const [reviewOpen,setReviewOpen]=useState(false);
  const inFlight=useRef(false);
+ const playRef=useRef<HTMLDivElement>(null);
+ const questionTitleRef=useRef<HTMLHeadingElement>(null);
  const current=active?.questions[step];
+ useEffect(()=>{
+  if(!active)return;
+  // Align the active question immediately: the 30s timer should never run off-screen.
+  const frame=window.requestAnimationFrame(()=>{
+   const panel=playRef.current;
+   if(!panel)return;
+   const top=window.scrollY+panel.getBoundingClientRect().top-88;
+   window.scrollTo({top:Math.max(0,top),behavior:"instant" as ScrollBehavior});
+   if(!result)questionTitleRef.current?.focus({preventScroll:true});
+  });
+  return()=>window.cancelAnimationFrame(frame);
+ },[active,step,result]);
  useEffect(()=>{
   try{
    const raw=sessionStorage.getItem("pna-daily-running-v1");
@@ -157,7 +171,7 @@ export function DailyChallengeClient(){
  }
  function replayReview(){setReviewOpen(v=>!v)}
  const currentSelection=current?selected[current.id]:undefined;
- return <div className="dc-play" data-pna-daily-challenge="v1">
+ return <div ref={playRef} className="dc-play" data-pna-daily-challenge="v2">
   {!active?<div className="dc-onboarding">
    <div className="dc-mission-mast">
     <span className="dc-mission-stamp"><Flame className="h-4 w-4"/> A NEW MISSION EVERY DAY</span>
@@ -211,7 +225,8 @@ export function DailyChallengeClient(){
    <p className="mt-6 text-xs text-slate-500">A fresh question set unlocks at midnight Pakistan time. Your monthly and yearly points are retained.</p>
    <Link className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-teal-800 hover:underline" href="/knowledge-hub">Explore Knowledge Hub <ArrowRight className="h-4 w-4"/></Link>
   </div>:<div className="dc-question-panel">
-   <div className="flex flex-wrap items-center justify-between gap-3">
+   <div className="dc-live-banner" role="status"><span className="dc-live-dot"/> Challenge started — select one answer before time runs out.</div>
+   <div className="dc-live-head flex flex-wrap items-center justify-between gap-3">
     <span className="dc-mission-stamp"><Sparkles className="h-4 w-4"/> LIVE MISSION</span>
     <span className={"dc-timer "+(seconds<=8?"dc-timer-urgent":"")} aria-live="off"><Timer className="h-4 w-4"/> {seconds}s</span>
    </div>
@@ -220,8 +235,8 @@ export function DailyChallengeClient(){
    </div>
    <div className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-teal-600 transition-[width] duration-200" style={{width:Math.max(0,seconds/active.timePerQuestionSeconds*100)+"%"}}/></div>
    <div className="mt-7">
-    <p className="dc-eyebrow">QUESTION {String(step+1).padStart(2,"0")} / 05 · {current?.topic}</p>
-    <h2 className="mt-3 font-serif text-2xl font-bold leading-snug text-[#163446] sm:text-3xl">{current?.question}</h2>
+    <p className="dc-eyebrow">QUESTION {String(step+1).padStart(2,"0")} / {String(active.questions.length).padStart(2,"0")} · {current?.topic}</p>
+    <h2 ref={questionTitleRef} tabIndex={-1} className="dc-question-title mt-3 font-serif text-2xl font-bold leading-snug text-[#163446] sm:text-3xl">{current?.question}</h2>
    </div>
    <div className="mt-7 space-y-3">
     {current?.options.map((option)=><button type="button" key={option.value} onClick={()=>pick(option.value)}
@@ -232,7 +247,7 @@ export function DailyChallengeClient(){
     </button>)}
    </div>
    {error&&<p role="alert" className="mt-4 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
-   <div className="mt-7 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
+   <div className="dc-action-row mt-7 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
     <p className="text-xs text-slate-500"><ShieldCheck className="mr-1 inline h-4 w-4 text-teal-700"/> Answer is locked after advancing.</p>
     <button className="dc-primary" type="button" disabled={loading} onClick={()=>void advance()}>
      {loading?"Saving score…":step===active.questions.length-1?"Finish mission":"Next question"} <ArrowRight className="h-4 w-4"/>
