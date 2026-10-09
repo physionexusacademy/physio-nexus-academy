@@ -35,7 +35,6 @@ import "./daily-challenge/daily-challenge.css";
 import "./home-premium.css";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
-import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
 
