@@ -34,12 +34,6 @@ type Guidance={
  caution:string[];
 };
 
-const commonQuestions=[
- "What was the timeline, how did the problem begin, and what has changed?",
- "Which activities matter most to the person, and what makes them easier or harder?",
- "What features would make routine rehabilitation unsafe or require medical review?"
-];
-
 /** Category-specific clinical teaching principles, not claims about measured patient findings. */
 const guidance:Record<string,Guidance>={
  "MSK & Sports":{
@@ -134,9 +128,9 @@ export function buildCaseLearningGuide(story:CaseStory):CaseLearningGuide{
  const advice=guidance[group]||guidance["MSK & Sports"];
  const saved=story.guide;
  const relevant=story.differentials;
- const condition=story.diagnosisCorrect>=0
+ const condition=story.teachingDiagnosis || (story.diagnosisCorrect>=0
   ?story.diagnosisChoices[story.diagnosisCorrect]
-  :relevant[0]?.diagnosis||"Clinical working hypothesis";
+  :relevant[0]?.diagnosis||"Clinical working hypothesis");
  const clinical=story.diagnosisReason;
  const guidedHistory=story.history.slice(0,5).map(([q,a])=>q+" — Teaching clue: "+a);
  const meaningful=story.findings.slice(0,3);
