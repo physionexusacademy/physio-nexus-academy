@@ -253,7 +253,7 @@ export const cardiopulmTemplates:Template[]=[
    "Exercise through unexplained chest pain or unstable vital signs.",
    "Use rigid universal sternal restrictions without individual surgical guidance."
   ],
-  "why": "Safe graded mobilization begins after appropriate team clearance.",
+  "why": "Early bedside and corridor mobilization should follow hemodynamic clearance, incision-related precautions, symptom surveillance and coordinated supervision by the cardiac surgical team.",
   "safety": false
  },
  {
@@ -285,7 +285,7 @@ export const cardiopulmTemplates:Template[]=[
    "Disregard new palpitations, faintness or unexplained chest symptoms.",
    "Treat anticoagulated patients as having no relevant safety considerations."
   ],
-  "why": "Coordinate rehabilitation with surgical and cardiology teams.",
+  "why": "Individualized cardiac rehabilitation after valve surgery requires medical clearance, monitoring for abnormal rhythm symptoms, and attention to medications and surgical recovery.",
   "safety": false
  },
  {
