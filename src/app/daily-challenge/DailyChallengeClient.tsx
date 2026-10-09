@@ -29,12 +29,41 @@ export function DailyChallengeClient(){
  const inFlight=useRef(false);
  const current=active?.questions[step];
  useEffect(()=>{
+  try{
+   const raw=sessionStorage.getItem("pna-daily-running-v1");
+   if(!raw)return;
+   const saved=JSON.parse(raw) as {
+    active:ActiveChallenge;step:number;selected:Record<string,string>;deadline:number
+   };
+   if(!saved?.active?.attemptId||!saved.active.token||!Array.isArray(saved.active.questions))return;
+   const dayParts=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Karachi",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+   const part=(type:string)=>dayParts.find(x=>x.type===type)?.value||"";
+   const date=part("year")+"-"+part("month")+"-"+part("day");
+   if(saved.active.date!==date){sessionStorage.removeItem("pna-daily-running-v1");return;}
+   setActive(saved.active);
+   setStep(Math.min(Math.max(0,saved.step||0),saved.active.questions.length-1));
+   const answers=saved.selected||{};
+   answersRef.current=answers;
+   setSelected(answers);
+   const time=Math.min(saved.deadline||Date.now(),Date.parse(saved.active.expiresAt));
+   setDeadline(time);
+   setSeconds(Math.max(0,Math.ceil((time-Date.now())/1000)));
+  }catch{try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}}
+ },[]);
+ useEffect(()=>{
+  if(!active||result)return;
+  try{sessionStorage.setItem("pna-daily-running-v1",JSON.stringify({
+   active,step,selected,deadline
+  }));}catch{}
+ },[active,step,selected,deadline,result]);
+ useEffect(()=>{
   if(!active)return;
   const interval=window.setInterval(()=>{
    const parts=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Karachi",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
    const get=(type:string)=>parts.find(x=>x.type===type)?.value||"";
    const today=get("year")+"-"+get("month")+"-"+get("day");
    if(today!==active.date&&result){
+    try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}
     setActive(null);setResult(null);setSelected({});answersRef.current={};
     setError("A new daily challenge has arrived! You can enter again.");
    }
@@ -50,6 +79,7 @@ export function DailyChallengeClient(){
     attemptId:active.attemptId,token:active.token,answers:answersRef.current
    });
    setResult(saved);
+   try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}
    window.dispatchEvent(new Event("pna-daily-score-saved"));
   }catch{
    setError("Your attempt couldn't be saved. Please check your connection and contact PNA if this continues.");
@@ -89,6 +119,7 @@ export function DailyChallengeClient(){
    const session=outcome.challenge;
    setActive(session);setStep(0);setSelected({});answersRef.current={};
    setResult(null);
+   setReviewOpen(false);
    setError("");
    setDeadline(Math.min(Date.now()+session.timePerQuestionSeconds*1000,Date.parse(session.expiresAt)));
    setSeconds(session.timePerQuestionSeconds);
