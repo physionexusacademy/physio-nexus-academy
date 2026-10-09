@@ -86,6 +86,23 @@ export default function ClinicalArenaPage(){
  const [position,setPosition]=useState(0);
  const [caseOrder,setCaseOrder]=useState<string[]>([]);
  const [caseReady,setCaseReady]=useState(false);
+ const casePanelRef=useRef<HTMLElement|null>(null);
+ const [scrollRequest,setScrollRequest]=useState(0);
+ // Scroll only after a user-driven submission/transition, never on initial load.
+ useEffect(()=>{
+  if(scrollRequest===0)return;
+  const frame=window.requestAnimationFrame(()=>{
+   const panel=casePanelRef.current;
+   if(!panel)return;
+   // Remove focus from an old submit/continue button before scrolling.
+   panel.focus({preventScroll:true});
+   panel.scrollIntoView({
+    behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",
+    block:"start",
+   });
+  });
+  return ()=>window.cancelAnimationFrame(frame);
+ },[scrollRequest]);
  const initialCaseChosen=useRef(false);
  const [stage,setStage]=useState<Stage>("history");
  const [selected,setSelected]=useState<number|null>(null);
@@ -181,7 +198,7 @@ export default function ClinicalArenaPage(){
   initialCaseChosen.current=true;
   randomizeCases("All specialties",ALL_CLINICAL_REGIONS);
  },[]);
- function reset(next:string,nextRegion:ClinicalRegionSelection=ALL_CLINICAL_REGIONS){setSpecialty(next);setRegion(nextRegion);randomizeCases(next,nextRegion);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());}
+ function reset(next:string,nextRegion:ClinicalRegionSelection=ALL_CLINICAL_REGIONS){setSpecialty(next);setRegion(nextRegion);randomizeCases(next,nextRegion);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());setScrollRequest(n=>n+1);}
  function respond(ok:boolean,why:string){
   if(stages.indexOf(stage)<stages.indexOf("diagnosis")){
     const best=stage==="history"
@@ -190,10 +207,11 @@ export default function ClinicalArenaPage(){
     setPreDiagnosisReview(v=>[...v.filter(x=>x.stage!==stage),{stage,correct:ok,best,why}]);
   }
   const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):feedbackLine(ok?"correct":"incorrect",seen,stage);
-  setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok){setCaseScore(v=>v+1);setScore(v=>v+1);setXp(v=>v+(difficulty==="Expert"?30:difficulty==="Clinician"?20:10));}
+  setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);setScrollRequest(n=>n+1);if(ok){setCaseScore(v=>v+1);setScore(v=>v+1);setXp(v=>v+(difficulty==="Expert"?30:difficulty==="Clinician"?20:10));}
  }
  function submit(){if(selected===null||revealed||stage==="history")return;respond(selected===current.correct,current.why);}
  function advance(){
+  setScrollRequest(n=>n+1);
   const nextIndex=stages.indexOf(stage)+1;
   if(nextIndex<stages.length){setStage(stages[nextIndex]);setSelected(null);setRevealed(false);setFeedback("");return;}
   if(position+1>=filtered.length){setFinished(true);setCompleted(v=>v+1);setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));return;}
@@ -227,7 +245,7 @@ export default function ClinicalArenaPage(){
   <div><p className="text-xs font-bold uppercase tracking-wider text-teal-800">MSK Examination Reference</p><p className="mt-1 text-sm text-slate-600">Need to revise a special test before making your clinical decision?</p></div>
   <Link href="/msk-special-tests" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Study MSK Special Tests <ArrowRight className="h-4 w-4"/></Link>
  </div>
- <main className="pna-shell mt-6 rounded-3xl p-6 text-slate-900 sm:p-9">
+ <main ref={casePanelRef} tabIndex={-1} id="clinical-arena-case" className="pna-shell mt-6 scroll-mt-28 rounded-3xl p-6 text-slate-900 sm:p-9">
  {!finished?<div>
  <div className="pna-round-overview flex flex-wrap items-center justify-between gap-4">
   <div className="pna-case-counter"><span className="pna-counter-label">CURRENT PATIENT</span><span className="pna-counter-value">{String(position+1).padStart(2,"0")}<span className="pna-counter-total"> / {filtered.length}</span></span></div>
