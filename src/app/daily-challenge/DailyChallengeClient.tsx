@@ -171,7 +171,7 @@ export function DailyChallengeClient(){
  }
  function replayReview(){setReviewOpen(v=>!v)}
  const currentSelection=current?selected[current.id]:undefined;
- return <div ref={playRef} className="dc-play" data-pna-daily-challenge="v2">
+ return <div ref={playRef} className="dc-play" data-pna-daily-challenge="v1">
   {!active?<div className="dc-onboarding">
    <div className="dc-mission-mast">
     <span className="dc-mission-stamp"><Flame className="h-4 w-4"/> A NEW MISSION EVERY DAY</span>
