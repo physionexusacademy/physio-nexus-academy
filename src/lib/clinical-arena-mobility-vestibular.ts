@@ -190,8 +190,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Ignore fainting or chest symptoms if they emerge."
   ],
   "why": "Address hemodynamic contributors to dizziness and falls.",
-  "safety": true,
-  "urgency": "Standing can make me feel faint; I need an assessment before high-risk balance training."
+  "safety": false
  },
  {
   "key": "vest-posterior",
