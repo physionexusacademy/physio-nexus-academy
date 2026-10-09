@@ -170,6 +170,28 @@ jobs:
           check_url "https://physionexusacademy.com/case-lab" 'data-pna-case-lab="specialty-first-v4"'
           check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
+          check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
+
+          # Exercise real POST route handling without creating fake attempts or scores.
+          start_http="$(curl -sS --connect-timeout 10 --max-time 25 -o "$smoke_tmp/daily-start.json" \
+            -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
+            --data '{"fullName":"","email":"","consent":false}' \
+            'https://physionexusacademy.com/api/daily-challenge/start')"
+          if [ "$start_http" != "400" ] || ! grep -Fq 'Enter a name' "$smoke_tmp/daily-start.json"; then
+            echo "::error::Daily start API failed to return expected 400 validation response (HTTP $start_http)"
+            exit 1
+          fi
+          echo "Smoke test passed: Daily Challenge start POST validation"
+
+          submit_http="$(curl -sS --connect-timeout 10 --max-time 25 -o "$smoke_tmp/daily-submit.json" \
+            -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
+            --data '{"attemptId":"invalid","token":"invalid","answers":{}}' \
+            'https://physionexusacademy.com/api/daily-challenge/submit')"
+          if [ "$submit_http" != "400" ] || ! grep -Fq 'not found' "$smoke_tmp/daily-submit.json"; then
+            echo "::error::Daily submit API failed to return expected 400 validation response (HTTP $submit_http)"
+            exit 1
+          fi
+          echo "Smoke test passed: Daily Challenge submit POST validation"
           check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "A real-world style patient story."
           check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" 'data-pna-case-lab-lesson="clinical-novel-v2"'
           check_url "https://physionexusacademy.com/case-lab/episode" "Opening your patient file"
