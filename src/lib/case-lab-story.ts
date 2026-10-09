@@ -17,6 +17,7 @@ export type CaseStory={
  urgent:boolean;fullyAuthored:boolean;
  references:{title:string;organization:string;url:string;year?:string}[];
  guide?:ClinicalCaseGuide;
+ teachingDiagnosis?:string;
 };
 export function getLabEpisode(id:string):CaseStory|null{
  const core=coreMskCases.find(c=>c.id===id);
@@ -87,19 +88,21 @@ export function getLabEpisode(id:string):CaseStory|null{
  };
 }
 export function adaptDetailedCase(item:ClinicalCase,guide?:ClinicalCaseGuide):CaseStory{
- const urgent=!!item.redFlags?.length;
+ const urgent=item.specialty.includes("Red Flags") || item.slug==="low-back-pain-new-bladder-saddle-symptoms";
  return{
   id:"deep-"+item.slug,category:labCategory(item.specialty,urgent),patient:"Detailed teaching consultation",
   opening:item.presentation[0]||item.summary,
   scene:[...item.presentation,item.summary],
-  history:(guide?.keyQuestions||item.presentation.slice(1)).slice(0,6).map((q,i)=>[q,
-    item.presentation[(i+1)%item.presentation.length]||item.summary] as [string,string]),
+  history:item.presentation.slice(0,5).map((answer,i)=>[
+   ["What brings you to rehabilitation today?","What changes have you noticed recently?","How has this affected your usual activities?","What is your biggest concern or goal right now?","Is there anything else you want us to understand?"][i],
+   answer
+  ] as [string,string]),
   bestHistory:0,findings:item.keyFindings,
   examPrompt:"Which clinical examination step would you prioritize? Several steps may be useful; record your choice, then compare the full assessment sequence in the debrief.",
   examChoices:(guide?.examinationSequence||item.keyFindings).slice(0,4),examCorrect:-1,examReason:item.reasoning[0]||"",
   diagnosisPrompt:"Which clinical explanation best fits the full picture?",
   diagnosisChoices:item.differentials.map(d=>d.diagnosis),diagnosisCorrect:-1,diagnosisReason:item.reasoning.join(" "),
   differentials:item.differentials,management:item.management,progression:item.progression||[],learning:item.learningPoints,
-  urgent,fullyAuthored:true,references:item.references,guide
+  urgent,fullyAuthored:true,references:item.references,guide,teachingDiagnosis:item.finalDiagnosis
  };
 }
