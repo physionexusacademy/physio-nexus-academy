@@ -35,15 +35,6 @@ const openingFrames=[
  "This is where clinical reasoning begins: listen first, then decide what really needs investigating.",
  "Every condition has a textbook name; every person experiences the problem differently. Start with the latter."
 ];
-const chapterTurns=[
- ["The chart opens","An opening story is not the final explanation. Keep the person's functional priorities in view."],
- ["The first useful question","Ask before you assume. Answers can strengthen, weaken or redirect your hypothesis."],
- ["Evidence enters the room","Choose what the examination must answer. More tests are not always better tests."],
- ["The competing explanations","Several diagnoses may look similar from a distance. The details decide which deserves priority."],
- ["The plan meets the person","Treatment is not a catalogue. It must match the working hypothesis, safety and the person's aims."],
- ["The unanswered follow-up","No outcome is reported unless the case provides one. Plan what should be measured next."],
- ["Close the file, keep the questions","The last page should teach you how to think when a different patient walks in."]
-] as const;
 const lowRiskPrompts=[
  "Quick plot twist: the most exciting test in your toolkit may not be the most useful one.",
  "The chart is not a crossword. You don't get bonus points for filling every box.",
