@@ -6,6 +6,10 @@ on:
     paths:
       - "src/app/page.tsx"
       - "src/app/premium-vision.css"
+      - "src/app/pna-signature-v2.css"
+      - "public/images/pna-founder-hero.avif"
+      - "scripts/validate-premium-homepage.mjs"
+      - ".github/workflows/deploy-cloudflare-production.yml"
       - "src/components/home/**"
       - ".github/workflows/pna-home-ui-check.yml"
   workflow_dispatch:
@@ -22,6 +26,8 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
+      - name: Validate homepage links, image bytes and layout
+        run: node scripts/validate-premium-homepage.mjs
       - name: Check changed homepage code (repository has existing unrelated TS errors)
         shell: bash
         run: |
