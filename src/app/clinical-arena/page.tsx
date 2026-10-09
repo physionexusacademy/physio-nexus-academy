@@ -165,13 +165,30 @@ export default function ClinicalArenaPage(){
  <Link href="/" className="pna-back text-sm">← Back to PNA</Link>
  <header className="pna-hero mt-7 rounded-3xl p-6 sm:p-9">
  <div className="pna-eyebrow flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest"><BrainCircuit className="h-5 w-5"/> Physio Nexus Academy <span className="pna-kicker rounded-full px-3 py-1">Clinical Challenge Arena · Clinical Reasoning</span></div>
- <h1 className="pna-title mt-4 text-3xl font-extrabold sm:text-4xl">Take the history. Think. Diagnose. Treat. 😂</h1>
- <p className="pna-subtitle mt-3">Six-stage clinical reasoning challenges with friendly roasts and clear explanations. No AI calls or heavy graphics.</p>
- <div className="mt-6 flex flex-wrap items-center gap-3"><label htmlFor="specialty" className="text-sm font-semibold">Specialty</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="pna-filter max-w-full rounded-xl px-4 py-3 text-sm">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select><label htmlFor="difficulty" className="text-sm font-semibold">Level</label><select id="difficulty" value={difficulty} onChange={e=>{setDifficulty(e.target.value);reset(specialty);}} className="pna-filter rounded-xl px-3 py-3 text-sm">{["Student","Intern","Clinician","Expert"].map(v=><option key={v}>{v}</option>)}</select><span className="pna-muted text-xs">{filtered.length} clinical scenarios · 6 clinical stages</span></div>
+ <h1 className="pna-title mt-4 text-3xl font-extrabold sm:text-4xl">Take the history. Think. Diagnose. Treat.</h1>
+ <p className="pna-subtitle mt-3">A structured six-stage clinical reasoning experience designed to strengthen patient assessment, differential diagnosis, treatment planning and reassessment.</p>
+ <div className="pna-hero-highlights mt-6 flex flex-wrap gap-2.5" aria-label="Clinical challenge features">
+  <span className="pna-hero-chip"><BrainCircuit className="h-4 w-4" aria-hidden="true"/>{cases.length} clinical scenarios</span>
+  <span className="pna-hero-chip"><CheckCircle2 className="h-4 w-4" aria-hidden="true"/>6 clinical stages</span>
+  <span className="pna-hero-chip"><Sparkles className="h-4 w-4" aria-hidden="true"/>Clinical decision feedback</span>
+ </div>
+ <div className="pna-controls mt-7 flex flex-wrap items-end gap-4 rounded-2xl p-4 sm:p-5">
+  <div className="pna-control-group"><label htmlFor="specialty" className="pna-control-label">Specialty</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="pna-filter rounded-xl px-4 py-3 text-sm">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select></div>
+  <div className="pna-control-group"><label htmlFor="difficulty" className="pna-control-label">Clinical level</label><select id="difficulty" value={difficulty} onChange={e=>{setDifficulty(e.target.value);reset(specialty);}} className="pna-filter rounded-xl px-4 py-3 text-sm">{["Student","Intern","Clinician","Expert"].map(v=><option key={v}>{v}</option>)}</select></div>
+  <span className="pna-available-count">{filtered.length} cases available</span>
+ </div>
  </header>
  <main className="pna-shell mt-6 rounded-3xl p-6 text-slate-900 sm:p-9">
  {!finished?<div>
- <div className="flex flex-wrap items-center justify-between gap-3 text-sm font-semibold"><span className="text-teal-700">Patient {position+1} / {filtered.length}</span><span className="flex items-center gap-1 text-slate-600"><Trophy className="h-4 w-4"/> {score} correct decisions · {xp} XP · {completed} rounds · {xp>=1000?"🏆 Clinical Master":xp>=400?"🥈 Case Solver":xp>=100?"🥉 Rising Clinician":"🌱 Rookie"}</span></div>
+ <div className="pna-round-overview flex flex-wrap items-center justify-between gap-4">
+  <div className="pna-case-counter"><span className="pna-counter-label">CURRENT PATIENT</span><span className="pna-counter-value">{String(position+1).padStart(2,"0")}<span className="pna-counter-total"> / {filtered.length}</span></span></div>
+  <div className="pna-performance flex flex-wrap items-center gap-2" aria-label="Your clinical challenge progress">
+   <span className="pna-performance-chip"><CheckCircle2 className="h-4 w-4" aria-hidden="true"/>{score} correct</span>
+   <span className="pna-performance-chip"><Trophy className="h-4 w-4" aria-hidden="true"/>{xp} XP</span>
+   <span className="pna-performance-chip">{completed} rounds</span>
+   <span className="pna-performance-rank">{xp>=1000?"Clinical Master":xp>=400?"Case Solver":xp>=100?"Rising Clinician":"Rookie"}</span>
+  </div>
+ </div>
  <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-6">{stages.map((s,i)=><div key={s} data-status={s===stage?"current":i<stages.indexOf(stage)?"done":"upcoming"} className="pna-step rounded-xl px-2 py-3 text-center text-xs font-bold">{i+1}. {stageNames[s]}</div>)}</div>
  <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Red-flag case</span>}</div>
  <h2 className="mt-3 text-2xl font-bold">{item.title}</h2>
