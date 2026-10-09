@@ -15,8 +15,17 @@ assert(start>=0&&arrayStart>=0&&arrayEnd>arrayStart);
 const expandedCases=JSON.parse(expanded.slice(arrayStart+1,arrayEnd));
 assert.equal(authoredIds.length,20,"Unexpected count for authored starter cases");
 assert.equal(expandedCases.length,180,"Unexpected count for expanded cases");
-const idList=[...authoredIds,...expandedCases.map(c=>c.id)];
-assert.equal(new Set(idList).size,200,"All patient case IDs must be unique");
+const seeds=[
+ "neuro","pediatrics","cardiopulm","mobility-vestibular","specialist"
+].flatMap(name=>{
+ const source=readFileSync("src/lib/clinical-arena-"+name+".ts","utf8");
+ const start=source.indexOf("=[");
+ const items=JSON.parse(source.slice(start+1,source.lastIndexOf(";\\n".replace("\\n","\n"))));
+ return items.flatMap(template=>Array.from({length:5},(_,i)=>"multi-"+template.key+"-"+(i+1)));
+});
+assert.equal(seeds.length,300,"Expected 300 multidisciplinary patient variants");
+const idList=[...authoredIds,...expandedCases.map(c=>c.id),...seeds];
+assert.equal(new Set(idList).size,500,"All patient case IDs must be unique");
 const allowed=new Set(clinicalRegions);
 const counts=new Map(clinicalRegions.map(name=>[name,0]));
 for(const id of idList){
@@ -24,8 +33,8 @@ for(const id of idList){
   assert(allowed.has(region),`${id}: unmapped region`);
   counts.set(region,counts.get(region)+1);
 }
-assert.equal([...counts.values()].reduce((a,b)=>a+b,0),200);
-assert.equal(clinicalRegions.length,8);
+assert.equal([...counts.values()].reduce((a,b)=>a+b,0),500);
+assert.equal(clinicalRegions.length,16);
 for(const [name,count] of counts)assert(count>0,`Empty filter: ${name}`);
 
 const baseExpectations={
@@ -51,4 +60,4 @@ const regular=expandedCases.filter(c=>!c.safety);
 const risk=expandedCases.filter(c=>c.safety);
 assert.equal(regular.length+risk.length,180);
 assert.equal(ALL_CLINICAL_REGIONS,"All regions");
-console.log("Clinical Arena region filters PASS:",Object.fromEntries(counts),`200 mapped cases, ${risk.length} expanded red-flag cases retained`);
+console.log("Clinical Arena region filters PASS:",Object.fromEntries(counts),`500 mapped cases, ${risk.length} expanded MSK red-flag cases retained`);
