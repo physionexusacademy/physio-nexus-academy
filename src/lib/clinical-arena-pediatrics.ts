@@ -286,8 +286,7 @@ export const pediatricTemplates:Template[]=[
    "Start maximal resistance exercises before specialist review."
   ],
   "why": "Early specialist assessment is essential for progressive pediatric weakness.",
-  "safety": true,
-  "urgency": "The weakness has been getting worse with more falls, and our clinician said a specialist needs to assess it promptly."
+  "safety": false
  },
  {
   "key": "peds-jia",
