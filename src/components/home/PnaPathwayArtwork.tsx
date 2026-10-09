@@ -4,17 +4,20 @@ type ArtworkKind = "learn" | "practice" | "professional" | "care";
 export function PnaPathwayArtwork({kind,className=""}:{kind:ArtworkKind;className?:string}) {
   return (
     <svg className={className} viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" role="img"
-      aria-label={kind==="learn"?"Shoulder anatomy illustration":kind==="practice"?"Clinical reasoning illustration":kind==="professional"?"Male physiotherapist demonstrating a technique with a male patient":"Male physiotherapist caring for a male patient"}>
+      aria-label={kind==="learn"?"Medical learning books and clinical science illustration":kind==="practice"?"Clinical reasoning illustration":kind==="professional"?"Male physiotherapist demonstrating a technique with a male patient":"Male physiotherapist caring for a male patient"}>
       <circle cx="211" cy="111" r="104" fill="#b2f0f8" opacity=".48"/>
       <circle cx="211" cy="111" r="88" stroke="#55bcd0" strokeWidth="1.6" strokeDasharray="5 7" fill="none" opacity=".7"/>
       <path d="M115 194h199M196 18v198" stroke="#0e97b5" strokeWidth="1" opacity=".19"/>
       {kind==="learn" && <g>
-        <path d="M204 29c-24 3-36 20-34 45 1 19 13 29 9 43-3 11-24 16-37 28-24 21-28 40-28 69h163c-2-34-10-56-33-69-14-8-22-24-19-40 3-18 11-22 11-41 0-22-12-38-32-35Z" fill="#8dc5e0" fillOpacity=".67" stroke="#3282a6" strokeWidth="3"/>
-        <path d="M198 35v87m-17-72 17 15 17-15m-34 27 17 12 17-12m-35 27 18 12 17-12" fill="none" stroke="#f0feff" strokeWidth="4" strokeLinecap="round"/>
-        <path d="M196 125c-25-23-56-23-77-2m79 2c31-23 65-18 82-2" fill="none" stroke="#eafaff" strokeWidth="7" strokeLinecap="round"/>
-        <path d="M141 124c-29 8-43 31-39 58 3 15 14 23 26 22 20-1 37-31 42-59Z" fill="#ef999d" stroke="#bb5e69" strokeWidth="3"/>
-        <path d="M138 130c-15 16-22 34-21 54m23-45 11 29m-14-13 18 9" stroke="#ffd5de" strokeWidth="3" fill="none"/>
-        <circle cx="150" cy="132" r="12" fill="#fbd8b4" stroke="#c87874" strokeWidth="3"/>
+        {/* Decorative learning illustration: a book, not an anatomical claim. */}
+        <circle cx="229" cy="88" r="42" fill="#f3fdff" stroke="#2d9db4" strokeWidth="2.5"/>
+        <path d="M229 62v51M204 88h50" stroke="#0e9e9e" strokeWidth="10" strokeLinecap="round"/>
+        <path d="M86 134q56-22 112 1v71q-51-23-112-7Z" fill="#effdff" stroke="#238db1" strokeWidth="4" strokeLinejoin="round"/>
+        <path d="M198 135q52-24 110-2v69q-55-20-110 4Z" fill="#dcf6ff" stroke="#238db1" strokeWidth="4" strokeLinejoin="round"/>
+        <path d="M198 136v70" stroke="#0b789f" strokeWidth="4" strokeLinecap="round"/>
+        <path d="M102 150q35-11 79 2m-79 16q38-11 79 3m-79 16q35-8 79 5m34-40q34-12 76-5m-76 23q34-12 76-6m-76 24q34-12 76-7" fill="none" stroke="#76bdd5" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M92 207q55-16 106 7 57-24 111-6" fill="none" stroke="#176b8f" strokeWidth="5" strokeLinecap="round"/>
+        <path d="m113 114 7-20 19-4-14 23Z" fill="#6dd4cc" opacity=".82" stroke="#199c9c" strokeWidth="2"/>
       </g>}
       {kind==="practice" && <g>
         <path d="M237 39c-44-21-93-1-108 46-12 36-1 61 17 72l-10 35h110v-28c24-10 36-37 29-69-6-27-18-46-38-56Z" fill="#c5f6fc" stroke="#1685b0" strokeWidth="3"/>
