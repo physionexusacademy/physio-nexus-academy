@@ -89,6 +89,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-case-lab-premium.mjs
 
+      - name: Validate PNA Daily Challenge question bank, scoring, privacy and midnight rankings
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-daily-challenge.mjs
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:
@@ -142,6 +146,8 @@ jobs:
           check_url "https://physionexusacademy.com/" "Check Symptoms"
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           check_url "https://physionexusacademy.com/case-lab" 'data-pna-case-lab="specialty-first-v4"'
+          check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
+          check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
           check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "A real-world style patient story."
           check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" 'data-pna-case-lab-lesson="clinical-novel-v2"'
           check_url "https://physionexusacademy.com/case-lab/episode" "Opening your patient file"
