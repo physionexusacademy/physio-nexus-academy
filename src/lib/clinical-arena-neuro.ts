@@ -135,7 +135,7 @@ export const neuroTemplates:Template[]=[
   "region": "Neurological Function",
   "cohort": "adult",
   "chief": "I run out of energy quickly, and I feel less steady as the day goes on.",
-  "history": "Established multiple sclerosis with fluctuating fatigue, heat sensitivity and walking limitation; no reported acute relapse.",
+  "history": "A person with a relapsing central nervous system condition reports fluctuating fatigue, heat sensitivity and walking limitation; no new acute neurological change is reported.",
   "findings": [
    "Balance decreases during prolonged activity",
    "Self-reported fatigue and perceived exertion rise with workload"
@@ -167,7 +167,7 @@ export const neuroTemplates:Template[]=[
   "region": "Neurological Function",
   "cohort": "adult",
   "chief": "My legs move, but balance and walking still need a lot of attention.",
-  "history": "After medically stabilized incomplete spinal cord injury, assisted standing is possible with residual sensory and motor deficits.",
+  "history": "After a medically stabilized traumatic event affecting the spine, assisted standing is possible with residual sensory and motor deficits below a neurological level.",
   "findings": [
    "Segmental motor and sensory deficits below injury level",
    "Assisted gait and transfers vary with fatigue and support"
@@ -199,7 +199,7 @@ export const neuroTemplates:Template[]=[
   "region": "Neurological Function",
   "cohort": "adult",
   "chief": "I cannot always feel pressure when I sit for a long time.",
-  "history": "Established spinal cord injury with wheelchair use and reduced skin sensation; caregiver requests safer pressure management.",
+  "history": "A wheelchair user after a prior major neurological injury has reduced seated skin sensation; caregiver requests safer pressure management.",
   "findings": [
    "Reduced sensation over weight-bearing seated areas",
    "Prolonged sitting without reliable pressure-relief strategy"
@@ -231,7 +231,7 @@ export const neuroTemplates:Template[]=[
   "region": "Neurological Function",
   "cohort": "adult",
   "chief": "Walking feels fine until I have to think about two things at once.",
-  "history": "Following medically stabilized mild-to-moderate traumatic brain injury, distraction worsens balance and community navigation.",
+  "history": "Following a medically stabilized head injury, distraction worsens balance and community navigation.",
   "findings": [
    "Reduced gait performance while performing a cognitive task",
    "Attention and fatigue affect movement consistency"
@@ -327,7 +327,7 @@ export const neuroTemplates:Template[]=[
   "region": "Neurological Function",
   "cohort": "adult",
   "chief": "Daily tasks take more effort now, and I want to plan ahead.",
-  "history": "A person with an established progressive motor neuron disorder reports worsening functional weakness and difficulty conserving energy.",
+  "history": "A person with gradually worsening multisite muscle weakness reports greater difficulty with daily tasks and conserving energy.",
   "findings": [
    "Progressive bilateral weakness affects transfers and self-care",
    "Swallowing or respiratory problems require ongoing multidisciplinary review"
