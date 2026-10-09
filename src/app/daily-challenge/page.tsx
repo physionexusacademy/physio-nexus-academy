@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import Link from "next/link";
-import {ArrowLeft,ArrowRight,BookOpen,CalendarClock,ChartNoAxesCombined,CheckCircle2,Flame,ShieldCheck,Sparkles,Trophy} from "lucide-react";
+import {ArrowLeft,ArrowRight,BookOpen,CalendarClock,BarChart3,CheckCircle2,Flame,ShieldCheck,Sparkles,Trophy} from "lucide-react";
 import {DailyChallengeClient} from "./DailyChallengeClient";
 import {DailyHallOfFame,DailyLeaderboard} from "@/components/daily-challenge/DailyLeaderboard";
 import "./daily-challenge.css";
@@ -30,7 +30,7 @@ export default function DailyChallengePage(){
      <div className="dc-hero-banner mt-6">
       <span className="dc-hero-chip"><CalendarClock className="h-5 w-5"/> New quiz at 12:00 AM PKT</span>
       <span className="dc-hero-chip"><Trophy className="h-5 w-5"/> All scores visible</span>
-      <span className="dc-hero-chip"><ChartNoAxesCombined className="h-5 w-5"/> Monthly & yearly champions</span>
+      <span className="dc-hero-chip"><BarChart3 className="h-5 w-5"/> Monthly & yearly champions</span>
      </div>
     </div>
    </header>
