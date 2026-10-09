@@ -59,6 +59,7 @@ const flows:Record<string,Flow>={
 "shoulder-02":{"chief":"My shoulder hurts when I paint ceilings or reach overhead.","historyQuestions":[["Is pain provoked by overhead loading, and can someone else move your shoulder further?","Overhead activity hurts. Passive movement is easier than lifting it myself."],["What brand of paint do you use?","Different brands; that doesn't explain the painful movement."]],"bestHistory":0,"differential":["Rotator cuff-related pain, cervical referral and adhesive capsulitis","Only knee osteoarthritis","Only Achilles tendon rupture"],"differentialCorrect":0,"differentialWhy":"Overhead load pain with preserved passive motion suggests rotator cuff-related pain, but screen cervical and other shoulder causes.","treatment":["Education, activity modification and progressive rotator cuff/scapular strengthening","Forcefully stretch into severe pain at every visit","Immobilize indefinitely"],"treatmentCorrect":0,"treatmentWhy":"Progressive exercise and education tailored to irritability and functional demands are common initial management options."}
 };
 type Stage="history"|"examination"|"differential"|"diagnosis"|"treatment"|"reassessment";
+type PreDiagnosisDecision={stage:Stage;correct:boolean;best:string;why:string};
 const stages:Stage[]=["history","examination","differential","diagnosis","treatment","reassessment"];
 const stageNames:Record<Stage,string>={history:"History taking",examination:"Clinical examination",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning",reassessment:"Reassessment"};
 export default function ClinicalArenaPage(){
@@ -76,6 +77,7 @@ export default function ClinicalArenaPage(){
  const [selected,setSelected]=useState<number|null>(null);
  const [revealed,setRevealed]=useState(false);
  const [feedback,setFeedback]=useState("");
+ const [preDiagnosisReview,setPreDiagnosisReview]=useState<PreDiagnosisDecision[]>([]);
  const [seen,setSeen]=useState<string[]>([]);
  const [seenReady,setSeenReady]=useState(false);
  useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem("pna-arena-feedback-seen-v1")||"[]");if(Array.isArray(saved))setSeen(saved.filter((x):x is string=>typeof x==="string").slice(-2400));}catch{}setSeenReady(true);},[]);
@@ -144,8 +146,14 @@ export default function ClinicalArenaPage(){
   initialCaseChosen.current=true;
   randomizeCases("All specialties");
  },[]);
- function reset(next:string){setSpecialty(next);randomizeCases(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());}
+ function reset(next:string){setSpecialty(next);randomizeCases(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());}
  function respond(ok:boolean,why:string){
+  if(stages.indexOf(stage)<stages.indexOf("diagnosis")){
+    const best=stage==="history"
+      ? flow?.historyQuestions[flow.bestHistory]?.[0] || "Ask the key history question"
+      : current.options[current.correct];
+    setPreDiagnosisReview(v=>[...v.filter(x=>x.stage!==stage),{stage,correct:ok,best,why}]);
+  }
   const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):feedbackLine(ok?"correct":"incorrect",seen,stage);
   setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok){setCaseScore(v=>v+1);setScore(v=>v+1);setXp(v=>v+(difficulty==="Expert"?30:difficulty==="Clinician"?20:10));}
  }
@@ -154,11 +162,12 @@ export default function ClinicalArenaPage(){
   const nextIndex=stages.indexOf(stage)+1;
   if(nextIndex<stages.length){setStage(stages[nextIndex]);setSelected(null);setRevealed(false);setFeedback("");return;}
   if(position+1>=filtered.length){setFinished(true);setCompleted(v=>v+1);setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));return;}
-  setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));setPosition(v=>v+1);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setAsked([]);setExamNotes(false);setHistoryHint(false);
+  setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));setPosition(v=>v+1);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setCaseScore(0);setNotes([]);setBranchAnswers([]);setAsked([]);setExamNotes(false);setHistoryHint(false);
  }
  if(!caseReady)return <main className="container-content py-12" role="status">Preparing your clinical challenge…</main>;
  if(!item||!flow)return <main className="container-content py-12">No cases available.</main>;
  const [quip,explanation]=feedback.split("|");
+ const diagnosisUnlocked=stages.indexOf(stage)>stages.indexOf("diagnosis") || (stage==="diagnosis"&&revealed);
  const shift=item?(Array.from(item.id).reduce((n,ch)=>n+ch.charCodeAt(0),0)+["Student","Intern","Clinician","Expert"].indexOf(difficulty))%Math.max(current.options.length,1):0;
  const orderedOptions=current.options.map((_,i)=>({original:(i+shift)%current.options.length,text:current.options[(i+shift)%current.options.length]}));
  return <div className="pna-arena py-10 sm:py-14"><div className="container-content max-w-4xl">
@@ -187,15 +196,16 @@ export default function ClinicalArenaPage(){
  <div className="pna-round-overview flex flex-wrap items-center justify-between gap-4">
   <div className="pna-case-counter"><span className="pna-counter-label">CURRENT PATIENT</span><span className="pna-counter-value">{String(position+1).padStart(2,"0")}<span className="pna-counter-total"> / {filtered.length}</span></span></div>
   <div className="pna-performance flex flex-wrap items-center gap-2" aria-label="Your clinical challenge progress">
-   <span className="pna-performance-chip"><CheckCircle2 className="h-4 w-4" aria-hidden="true"/>{score} correct</span>
-   <span className="pna-performance-chip"><Trophy className="h-4 w-4" aria-hidden="true"/>{xp} XP</span>
+   <span className="pna-performance-chip"><CheckCircle2 className="h-4 w-4" aria-hidden="true"/>{diagnosisUnlocked?score:"—"} correct</span>
+   <span className="pna-performance-chip"><Trophy className="h-4 w-4" aria-hidden="true"/>{diagnosisUnlocked?xp:"—"} XP</span>
    <span className="pna-performance-chip">{completed} rounds</span>
-   <span className="pna-performance-rank">{xp>=1000?"Clinical Master":xp>=400?"Case Solver":xp>=100?"Rising Clinician":"Rookie"}</span>
+   <span className="pna-performance-rank">{diagnosisUnlocked?(xp>=1000?"Clinical Master":xp>=400?"Case Solver":xp>=100?"Rising Clinician":"Rookie"):"Diagnosis locked"}</span>
   </div>
  </div>
  <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-6">{stages.map((s,i)=><div key={s} data-status={s===stage?"current":i<stages.indexOf(stage)?"done":"upcoming"} className="pna-step rounded-xl px-2 py-3 text-center text-xs font-bold">{i+1}. {stageNames[s]}</div>)}</div>
- <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Red-flag case</span>}</div>
- <h2 className="mt-3 text-2xl font-bold">{item.title}</h2>
+ <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&diagnosisUnlocked&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Red-flag case</span>}</div>
+ <h2 data-pna-blind-case="v1" className="mt-3 text-2xl font-bold">{diagnosisUnlocked?item.title:`Patient ${String(position+1).padStart(2,"0")} · Unsolved clinical case`}</h2>
+  {!diagnosisUnlocked&&<p className="mt-2 text-sm text-slate-500">The condition is hidden. Collect clues, examine, and build your differential before submitting a working diagnosis.</p>}
  <div className="pna-patient mt-5 rounded-2xl p-5"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Patient · {item.patient}</p><p className="mt-2 font-semibold">“{flow.chief}”</p></div>
  {stage==="history"?<section className="mt-6">
  <h3 className="text-lg font-bold">Stage 1: Patient history</h3>
@@ -217,7 +227,28 @@ export default function ClinicalArenaPage(){
  <div className="mt-4 grid gap-3">{orderedOptions.map(({text:o,original},i)=><button key={o} disabled={revealed} aria-pressed={selected===original} onClick={()=>setSelected(original)} className="pna-question rounded-xl p-4 text-left text-sm font-medium">{String.fromCharCode(65+i)}. {o}</button>)}</div>
  {!revealed?<button onClick={submit} disabled={selected===null} className="pna-primary mt-6 w-full rounded-xl px-5 py-4 font-bold disabled:opacity-50">Check my decision <ArrowRight className="ml-2 inline h-4 w-4"/></button>:null}
  </section>}
- {revealed&&<div aria-live="polite" className="pna-feedback mt-6 rounded-2xl border p-5"><div className="flex items-center gap-2 font-bold"><CheckCircle2 className="h-5 w-5 text-teal-700"/> Clinical feedback</div><p className="mt-3 font-semibold">{quip}</p>{stage!=="history"&&<p className="mt-3 text-sm"><strong>Best answer:</strong> {current.options[current.correct]}</p>}{stage==="examination" && examQuestion && selected!==null && selected!==0 && <p className="mt-3 rounded-xl bg-amber-50 p-3 text-sm leading-6 text-amber-950"><strong>Why your option was less appropriate:</strong> {examQuestion.alternatives[selected-1]}</p>}<p className="mt-3 text-sm leading-7"><strong>Clinical reasoning:</strong> {explanation}</p><button onClick={advance} className="pna-primary mt-5 w-full rounded-xl px-5 py-4 font-bold">{stage==="reassessment"?(position+1===filtered.length?"View results":"Next patient"):"Continue to "+stageNames[stages[stages.indexOf(stage)+1]]} <ArrowRight className="ml-2 inline h-4 w-4"/></button></div>}
+
+  {revealed&&<div aria-live="polite" data-pna-diagnosis-feedback={diagnosisUnlocked?"unlocked":"locked"} className="pna-feedback mt-6 rounded-2xl border p-5">
+    {diagnosisUnlocked?<>
+      <div className="flex items-center gap-2 font-bold"><CheckCircle2 className="h-5 w-5 text-teal-700"/> Clinical feedback</div>
+      <p className="mt-3 font-semibold">{quip}</p>
+      {stage!=="history"&&<p className="mt-3 text-sm"><strong>Best answer:</strong> {current.options[current.correct]}</p>}
+      {stage==="examination" && examQuestion && selected!==null && selected!==0 && <p className="mt-3 rounded-xl bg-amber-50 p-3 text-sm leading-6 text-amber-950"><strong>Why your option was less appropriate:</strong> {examQuestion.alternatives[selected-1]}</p>}
+      <p className="mt-3 text-sm leading-7"><strong>Clinical reasoning:</strong> {explanation}</p>
+      {stage==="diagnosis"&&preDiagnosisReview.length>0&&<div data-pna-clinical-review="v1" className="mt-5 space-y-3 rounded-xl border border-teal-200 bg-white p-4">
+        <h3 className="font-bold text-slate-900">Your first three decisions · Review after diagnosis</h3>
+        {preDiagnosisReview.map(d=><div key={d.stage} className="border-t border-slate-100 pt-3 text-sm leading-7 text-slate-700">
+          <p className="font-semibold text-slate-900">{stageNames[d.stage]} · {d.correct?"Good decision":"Needs another look"}</p>
+          <p><strong>Best answer:</strong> {d.best}</p>
+          <p><strong>Why:</strong> {d.why}</p>
+        </div>)}
+      </div>}
+    </>:<>
+      <div className="flex items-center gap-2 font-bold text-teal-800"><CheckCircle2 className="h-5 w-5"/> Decision saved</div>
+      <p className="mt-3 text-sm leading-7 text-slate-700">Your choice is recorded. Answers, scores, and clinical explanations unlock after you submit your working diagnosis in Stage 4. No spoilers before then.</p>
+    </>}
+    <button onClick={advance} className="pna-primary mt-5 w-full rounded-xl px-5 py-4 font-bold">{stage==="reassessment"?(position+1===filtered.length?"View results":"Next patient"):"Continue to "+stageNames[stages[stages.indexOf(stage)+1]]} <ArrowRight className="ml-2 inline h-4 w-4"/></button>
+  </div>}
  </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Clinical round complete!</h2><p className="mt-3 text-xl font-semibold">{score} / {filtered.length*stages.length} correct decisions</p><p className="mt-3 text-slate-600">Review clinical reasoning, not just answers. Your recent case activity is stored on this device.</p><div className="mx-auto mt-5 max-w-md rounded-xl border border-slate-200 p-4 text-left"><h3 className="font-bold">Recent case activity</h3><p className="mt-2 text-sm text-slate-600">{caseHistory.length} recorded cases · {completed} completed rounds · {xp} lifetime XP</p><div className="mt-3 space-y-1 text-xs text-slate-600">{caseHistory.slice(-5).reverse().map((h,i)=><p key={h.id+i}>{h.id} · {h.score}/{h.total} decisions · {new Date(h.at).toLocaleDateString()}</p>)}</div></div><button onClick={()=>reset(specialty)} className="pna-primary mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold"><RotateCcw className="mr-2 h-4 w-4"/> Play again</button></div>}
  </main><p className="pna-muted mt-5 text-center text-xs leading-6">Educational simulation only. Multiple-choice history is a starter experience, not free-text interviewing. Clinical cases are simplified; serious safety concerns require urgent action. Scores do not indicate clinical competence.</p>
  </div></div>;
