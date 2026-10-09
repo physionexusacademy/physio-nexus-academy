@@ -124,22 +124,44 @@ jobs:
         run: |
           set -euo pipefail
 
+          # A lesson page may have 3-6 assertions. Fetch its HTML only once:
+          # repeated full-size SSR responses can overload the origin and produce
+          # false-negative 503 / 30-second timeout errors.
+          smoke_tmp="$(mktemp -d)"
+          trap 'rm -rf "$smoke_tmp"' EXIT
+          declare -A smoke_cache=()
+
           check_url() {
             local url="$1"
             local marker="$2"
-
-            for attempt in 1 2 3 4 5 6; do
-              body="$(curl -fsSL --connect-timeout 10 --max-time 30 "$url?deploy=${GITHUB_SHA}" || true)"
-              if grep -Fq "$marker" <<< "$body"; then
-                echo "Smoke test passed: $url"
+            local cached="${smoke_cache[$url]:-}"
+            if [ -n "$cached" ]; then
+              if grep -Fq "$marker" "$cached"; then
+                echo "Smoke test passed (cached): $url"
                 return 0
+              fi
+              echo "::error::Marker missing in cached successful response: $url :: $marker"
+              return 1
+            fi
+
+            local html
+            html="$(mktemp "$smoke_tmp/page.XXXXXXXX")"
+            for attempt in 1 2 3 4 5 6; do
+              if curl -fsSL --connect-timeout 10 --max-time 25 \
+                -o "$html" "$url?deploy=${GITHUB_SHA}"; then
+                if grep -Fq "$marker" "$html"; then
+                  smoke_cache["$url"]="$html"
+                  echo "Smoke test passed: $url"
+                  sleep 0.2
+                  return 0
+                fi
               fi
 
               echo "Smoke test attempt $attempt failed for $url"
-              sleep 5
+              sleep 4
             done
 
-            echo "Smoke test failed: $url did not contain expected marker: $marker"
+            echo "::error::Smoke test failed: $url did not return the expected marker after retries: $marker"
             return 1
           }
 
