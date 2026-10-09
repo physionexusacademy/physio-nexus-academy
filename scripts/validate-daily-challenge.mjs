@@ -27,7 +27,7 @@ const tests={
   oldScoresNotCleared:!migration.includes("truncate table")&&!migration.includes("delete from"),
   serverMidnightDeadline:actions.includes("time>=midnight")&&actions.includes("Today's challenge is closing"),
   publicPager:board.includes('Next</button>')&&board.includes('Previous</button>'),
-  topFive:board.includes("compact?5:30")&&home.includes("<DailyLeaderboard compact"),
+  topFive:board.includes("compact||preview?5:30")&&home.includes("<DailyLeaderboard compact"),
   allRankings:board.includes('"month"')&&board.includes('"year"')&&board.includes('"today"'),
   monthAndYearChampions:board.includes('initialPeriod="month"')&&board.includes('initialPeriod="year"'),
   archiveArrows:board.includes("changeAnchor")&&board.includes("onClick={()=>shift(-1)}"),
