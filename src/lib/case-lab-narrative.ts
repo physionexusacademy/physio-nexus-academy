@@ -82,7 +82,7 @@ export function buildClinicalEpisodes(story:CaseStory,guide:CaseLearningGuide):C
  ).slice(0,2);
  const differentialNames=story.differentials.map(d=>d.diagnosis).filter(Boolean);
  const examination=first(story.findings,0,"The assessment must still be selected according to the history.");
- const keyHistory=first(story.history,0);
+ const keyHistory=story.history[0]; // History entries are [question, answer] tuples, not strings.
  const strongest=first(guide.chapters.examination,0,"Choose the examination that most safely answers the clinical question.");
  const plan=first(story.management,0,"Choose a patient-specific plan informed by assessment and clinical guidance.");
  const monitoring=first(story.progression,0,"The same meaningful functional goal should be reviewed at follow-up.");
