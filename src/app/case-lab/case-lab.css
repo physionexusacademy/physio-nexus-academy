@@ -117,3 +117,11 @@
 @media(prefers-reduced-motion:reduce){
  .case-lab-v3 .cl-novel-insight{transition:none}
 }
+
+
+/* Clinical novels appear as refined casebook covers without replacing specialty navigation. */
+.case-lab-v3 .cl-storybook-card{isolation:isolate;background:linear-gradient(155deg,#fff 55%,#f5faf9);box-shadow:0 12px 34px -30px #155867}
+.case-lab-v3 .cl-storybook-card:after{position:absolute;content:"";pointer-events:none;right:18px;top:64px;width:58px;height:58px;border:1px solid #d8ebe8;border-radius:50%;background:radial-gradient(circle at center,transparent 38%,#eef8f5 39%,#eef8f5 43%,transparent 45%);opacity:.58;z-index:-1}
+.case-lab-v3 .cl-storybook-card:hover{border-color:#7cc3bc;transform:translateY(-3px);box-shadow:0 20px 45px -35px #0b525c}
+.case-lab-v3 .cl-storybook-card:hover .cl-case-title{color:#0a7772}
+.case-lab-v3 .cl-storybook-card .cl-story-label{max-width:100%;overflow-wrap:anywhere}
