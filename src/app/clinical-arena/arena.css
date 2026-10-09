@@ -32,7 +32,7 @@
 
 /* Contrast hardening: protects against global theme overrides and stale utility layers. */
 html body .pna-arena{background:#f8fbfc!important;color:#183647!important;color-scheme:light!important}
-html body .pna-arena .pna-hero{background:linear-gradient(130deg,#fff 0%,#f3faf9 100%)!important;color:#183647!important;border-color:#dce9eb!important}
+html body .pna-arena .pna-hero{background:linear-gradient(128deg,#ffffff 0%,#fbfefe 58%,#f2faf8 100%)!important;color:#183647!important;border-color:#dce9eb!important}
 html body .pna-arena .pna-title{color:#102f43!important;-webkit-text-fill-color:#102f43!important;text-shadow:none!important}
 html body .pna-arena .pna-eyebrow{color:#087b79!important}
 html body .pna-arena .pna-kicker{background:#e6f5f2!important;color:#116f6b!important}
@@ -46,3 +46,165 @@ html body .pna-arena .pna-primary{color:#fff!important}
 html body .pna-arena .pna-question{color:#163647!important}
 html body .pna-arena .pna-patient{color:#183647!important}
 @media(max-width:640px){html body .pna-arena .pna-hero .pna-title{font-size:clamp(1.7rem,7vw,2.15rem)!important;line-height:1.2!important}html body .pna-arena .pna-filter{min-height:44px}}
+
+/* Clinical Challenge 2.1 — quiet, premium white-and-teal design system.
+   Scoped under .pna-arena so the academy-wide layout remains untouched. */
+.pna-arena .pna-hero {
+  isolation: isolate;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px -35px rgba(18, 62, 76, .26), 0 4px 20px -15px rgba(18, 62, 76, .13), inset 0 1px rgba(255,255,255,.96);
+}
+.pna-arena .pna-hero:after { display: none; }
+.pna-arena .pna-eyebrow { position: relative; z-index: 1; letter-spacing: .11em; }
+.pna-arena .pna-kicker { border-radius: 999px; padding: .45rem .8rem; letter-spacing: .08em; font-size: .64rem; }
+.pna-arena .pna-title {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+.pna-arena .pna-subtitle {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  font-size: 1rem;
+  line-height: 1.8;
+  font-weight: 450;
+}
+.pna-arena .pna-hero-highlights { position: relative; z-index: 1; }
+.pna-arena .pna-hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 37px;
+  padding: .48rem .85rem;
+  border: 1px solid #e0eaed;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .93);
+  box-shadow: 0 3px 12px -10px rgba(16, 72, 81, .32);
+  color: #31505f;
+  font-size: .75rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.pna-arena .pna-hero-chip svg { flex: none; color: #09837e; }
+.pna-arena .pna-controls {
+  position: relative;
+  z-index: 1;
+  border: 1px solid #dce9ec;
+  background: rgba(255,255,255,.74);
+  box-shadow: 0 8px 30px -23px rgba(20,73,83,.3), inset 0 1px rgba(255,255,255,.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.pna-arena .pna-control-group {
+  display: flex;
+  flex: 0 1 248px;
+  min-width: 190px;
+  flex-direction: column;
+  gap: .5rem;
+}
+.pna-arena .pna-control-group:nth-child(2) { flex-basis: 170px; min-width: 150px; }
+.pna-arena .pna-control-label {
+  display: block;
+  padding-left: .15rem;
+  color: #3f5a68;
+  font-size: .7rem;
+  font-weight: 750;
+  letter-spacing: .075em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+html body .pna-arena .pna-filter {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid #d4e4e7 !important;
+  background: #fff !important;
+  color: #19384a !important;
+  box-shadow: 0 3px 12px -10px rgba(17,68,79,.22);
+  font-weight: 600;
+  transition: border-color .2s,box-shadow .2s;
+}
+html body .pna-arena .pna-filter:hover { border-color: #91c9c2 !important; }
+html body .pna-arena .pna-filter:focus-visible {
+  outline: 2px solid #0d8d84;
+  outline-offset: 2px;
+  border-color: #0d8d84 !important;
+  box-shadow: 0 0 0 4px rgba(13,141,132,.1);
+}
+.pna-arena .pna-available-count {
+  display: inline-flex;
+  margin-left: auto;
+  align-self: end;
+  align-items: center;
+  min-height: 48px;
+  padding: .45rem .85rem;
+  border: 1px solid #d9e9e9;
+  border-radius: 12px;
+  color: #466472;
+  background: #f6fbfa;
+  font-size: .78rem;
+  font-weight: 650;
+}
+.pna-arena .pna-round-overview {
+  border-bottom: 1px solid #e8eff0;
+  padding-bottom: 1.15rem;
+}
+.pna-arena .pna-case-counter { display: flex; flex-direction: column; gap: .2rem; }
+.pna-arena .pna-counter-label {
+  color: #61818a;
+  font-size: .68rem;
+  font-weight: 750;
+  letter-spacing: .13em;
+}
+.pna-arena .pna-counter-value {
+  color: #087d77;
+  font-size: 1.5rem;
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  font-variant-numeric: tabular-nums;
+}
+.pna-arena .pna-counter-total { color: #72929a; font-size: .95rem; font-weight: 550; }
+.pna-arena .pna-performance { justify-content: flex-end; }
+.pna-arena .pna-performance-chip,
+.pna-arena .pna-performance-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 33px;
+  border: 1px solid #e2eaed;
+  border-radius: 10px;
+  padding: .4rem .7rem;
+  color: #4b6371;
+  background: #fbfdfd;
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+.pna-arena .pna-performance-chip svg { color: #168c85; }
+.pna-arena .pna-performance-rank {
+  border-color: #cfe8e4;
+  color: #116e6a;
+  background: #edf9f6;
+}
+.pna-arena .pna-shell { border-radius: 24px; }
+.pna-arena .pna-step { border-radius: 12px; font-weight: 700; }
+.pna-arena .pna-patient { border-radius: 16px; }
+.pna-arena .pna-question:focus-visible { outline: 2px solid #0a867e; outline-offset: 3px; }
+@media (max-width: 640px) {
+ .pna-arena .pna-hero { border-radius: 22px; }
+ .pna-arena .pna-title { font-size: clamp(1.7rem, 7vw, 2.15rem); }
+ .pna-arena .pna-subtitle { font-size: .93rem; line-height: 1.7; }
+ .pna-arena .pna-hero-chip { font-size: .7rem; padding: .4rem .67rem; }
+ .pna-arena .pna-controls { padding: 1rem; gap: 1rem; }
+ .pna-arena .pna-control-group,
+ .pna-arena .pna-control-group:nth-child(2) { flex: 1 1 100%; min-width: 0; }
+ .pna-arena .pna-available-count { margin-left: 0; min-height: 34px; }
+ .pna-arena .pna-performance { justify-content: flex-start; }
+}
