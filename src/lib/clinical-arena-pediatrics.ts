@@ -349,7 +349,7 @@ export const pediatricTemplates:Template[]=[
    "Forcefully stretch weak shoulder into pain.",
    "Delay all follow-up until school age."
   ],
-  "why": "Avoid traction injury and monitor neurological recovery.",
+  "why": "Avoid traction on the injured limb, protect passive shoulder range, track return of active elbow and shoulder movement, and coordinate time-sensitive brachial-plexus specialist review.",
   "safety": false
  },
  {
