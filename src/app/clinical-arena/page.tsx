@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import "./arena.css";
 import { feedbackLine } from "@/lib/clinical-arena-humor";
@@ -68,6 +68,9 @@ export default function ClinicalArenaPage(){
  useEffect(()=>{try{const v=JSON.parse(localStorage.getItem("pna-arena-progress-v2")||"{}");setXp(Number(v.xp)||0);setCompleted(Number(v.completed)||0);}catch{}},[]);
  useEffect(()=>{if(xp||completed){try{localStorage.setItem("pna-arena-progress-v2",JSON.stringify({xp,completed}));}catch{}}},[xp,completed]);
  const [position,setPosition]=useState(0);
+ const [caseOrder,setCaseOrder]=useState<string[]>([]);
+ const [caseReady,setCaseReady]=useState(false);
+ const initialCaseChosen=useRef(false);
  const [stage,setStage]=useState<Stage>("history");
  const [selected,setSelected]=useState<number|null>(null);
  const [revealed,setRevealed]=useState(false);
@@ -89,7 +92,12 @@ export default function ClinicalArenaPage(){
  useEffect(()=>{try{const raw=JSON.parse(localStorage.getItem("pna-arena-case-history-v1")||"[]");if(Array.isArray(raw))setCaseHistory(raw.slice(-60));}catch{}},[]);
  useEffect(()=>{try{localStorage.setItem("pna-arena-case-history-v1",JSON.stringify(caseHistory.slice(-60)));}catch{}},[caseHistory]);
  const specialties=["All specialties",...Array.from(new Set(cases.map(c=>c.specialty)))];
- const filtered=useMemo(()=>cases.filter(c=>specialty==="All specialties"||c.specialty===specialty),[specialty]);
+ const filtered=useMemo(()=>{
+  const pool=cases.filter(c=>specialty==="All specialties"||c.specialty===specialty);
+  if(!caseOrder.length)return pool;
+  const ranks=new Map(caseOrder.map((id,i)=>[id,i]));
+  return pool.sort((a,b)=>(ranks.get(a.id)??Number.MAX_SAFE_INTEGER)-(ranks.get(b.id)??Number.MAX_SAFE_INTEGER));
+ },[specialty,caseOrder]);
  const item=filtered[position];
  const extraQuestions=item?[
   {q:"When did the symptoms start, and how have they changed?",a:item.history,tag:"onset"},
@@ -99,7 +107,42 @@ export default function ClinicalArenaPage(){
  ]:[];
  const flow=item?flows[item.id]:undefined;
  const current=stage==="examination"?{question:"Which examination approach best helps you test the leading hypothesis?",options:[`Assess and interpret: ${item?.findings.join(" ")||""}`, "Perform only an unrelated joint examination and ignore the presenting symptoms", "Skip the physical examination and diagnose from age alone"],correct:0,why:"Choose targeted, clinically relevant examination findings while checking for safety concerns. "+(item?.clue||"")}:stage==="reassessment"?{question:item?.safety?"What is the safest next step after identifying urgent red flags?":"At follow-up, how should you judge whether the management plan is helping?",options:item?.safety?["Confirm urgent referral and appropriate medical handover; do not delay for routine treatment","Continue manual therapy and wait several weeks","Dismiss the neurological symptoms if pain decreases"]:["Recheck patient goals, symptoms, function and relevant objective measures; adjust the plan based on response","Continue the same treatment indefinitely without measuring progress","Increase treatment intensity automatically even if symptoms deteriorate"],correct:0,why:item?.safety?"Suspected serious spinal pathology needs urgent assessment and safe handover.":"Monitor meaningful outcomes, adverse responses and functional progress. Reconsider the diagnosis or refer when the course is unexpected."}:stage==="differential"?{question:"Which differential diagnoses should you prioritize?",options:flow?.differential||[],correct:flow?.differentialCorrect??0,why:flow?.differentialWhy||""}:stage==="diagnosis"?{question:item?.question||"",options:item?.options||[],correct:item?.correct??0,why:item?.explanation||""}:{question:"Which is the most appropriate management plan?",options:flow?.treatment||[],correct:flow?.treatmentCorrect??0,why:flow?.treatmentWhy||""};
- function reset(next:string){setSpecialty(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setNotes([]);setCaseStart(Date.now());}
+ function randomizeCases(nextSpecialty:string){
+  const pool=cases.filter(c=>nextSpecialty==="All specialties"||c.specialty===nextSpecialty);
+  const shuffled=[...pool];
+  for(let i=shuffled.length-1;i>0;i--){
+   const j=Math.floor(Math.random()*(i+1));
+   [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  let startedIds:string[]=[];
+  let previousId="";
+  try{
+   const saved=JSON.parse(localStorage.getItem("pna-arena-started-case-ids-v1")||"[]");
+   if(Array.isArray(saved))startedIds=saved.filter((id):id is string=>typeof id==="string");
+   previousId=localStorage.getItem("pna-arena-last-started-case-id-v1")||"";
+  }catch{}
+  let starterIndex=shuffled.findIndex(c=>!startedIds.includes(c.id));
+  if(starterIndex<0){
+   const poolIds=new Set(pool.map(c=>c.id));
+   startedIds=startedIds.filter(id=>!poolIds.has(id));
+   starterIndex=shuffled.findIndex(c=>c.id!==previousId);
+  }
+  if(starterIndex<0)starterIndex=0;
+  const [starter]=shuffled.splice(starterIndex,1);
+  if(!starter){setCaseOrder([]);setCaseReady(true);return;}
+  setCaseOrder([starter.id,...shuffled.map(c=>c.id)]);
+  setCaseReady(true);
+  try{
+   localStorage.setItem("pna-arena-started-case-ids-v1",JSON.stringify([...new Set([...startedIds,starter.id])]));
+   localStorage.setItem("pna-arena-last-started-case-id-v1",starter.id);
+  }catch{}
+ }
+ useEffect(()=>{
+  if(initialCaseChosen.current)return;
+  initialCaseChosen.current=true;
+  randomizeCases("All specialties");
+ },[]);
+ function reset(next:string){setSpecialty(next);randomizeCases(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());}
  function respond(ok:boolean,why:string){
   const message=item.safety?(ok?"Good safety reasoning. Protect the patient and escalate promptly.":"Safety warning: recognize and act on urgent red flags."):feedbackLine(ok?"correct":"incorrect",seen,stage);
   setSeen(v=>[...v,message]);setFeedback(message+"|"+why);setRevealed(true);if(ok){setCaseScore(v=>v+1);setScore(v=>v+1);setXp(v=>v+(difficulty==="Expert"?30:difficulty==="Clinician"?20:10));}
@@ -111,6 +154,7 @@ export default function ClinicalArenaPage(){
   if(position+1>=filtered.length){setFinished(true);setCompleted(v=>v+1);setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));return;}
   setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));setPosition(v=>v+1);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setAsked([]);setExamNotes(false);setHistoryHint(false);
  }
+ if(!caseReady)return <main className="container-content py-12" role="status">Preparing your clinical challenge…</main>;
  if(!item||!flow)return <main className="container-content py-12">No cases available.</main>;
  const [quip,explanation]=feedback.split("|");
  const shift=item?(Array.from(item.id).reduce((n,ch)=>n+ch.charCodeAt(0),0)+["Student","Intern","Clinician","Expert"].indexOf(difficulty))%Math.max(current.options.length,1):0;
