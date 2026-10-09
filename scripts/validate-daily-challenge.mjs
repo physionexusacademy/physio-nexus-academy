@@ -3,6 +3,11 @@ import assert from "node:assert/strict";
 const read=(path)=>fs.readFileSync(path,"utf8");
 const data=read("src/lib/daily-challenge.ts");
 const actions=read("src/app/daily-challenge/actions.ts");
+const service=read("src/lib/daily-challenge-service.ts");
+const startEndpoint=read("src/app/api/daily-challenge/start/route.ts");
+const submitEndpoint=read("src/app/api/daily-challenge/submit/route.ts");
+const statusEndpoint=read("src/app/api/daily-challenge/status/route.ts");
+const serverPermissions=read("supabase/migrations/20261009_fix_daily_challenge_service_permissions.sql");
 const api=read("src/app/api/daily-challenge/leaderboard/route.ts");
 const page=read("src/app/daily-challenge/page.tsx");
 const quiz=read("src/app/daily-challenge/DailyChallengeClient.tsx");
@@ -23,7 +28,7 @@ const tests={
   exactlyKarachiTimezone:data.includes('timeZone:"Asia/Karachi"')&&data.includes("formatToParts(now)"),
   midnightCalculatedInUTC:data.includes("date+\"T00:00:00Z\"")&&data.includes("19*3600000"),
   noAnswerKeyInPublicPayload:data.includes("publicDailyQuestions(date:string)")&&!data.slice(data.indexOf("export function publicDailyQuestions"),data.indexOf("export function pakistanMidnightUTC")).includes("correct:"),
-  serverOwnedScore:actions.includes("correctCount*20")&&actions.includes("questions.reduce"),
+  serverOwnedScore:service.includes("correctCount*20")&&service.includes("questions.reduce"),
   oneAttemptEveryDay:migration.includes("unique (challenge_date, email_key)"),
   databaseRls:migration.includes("enable row level security")&&migration.includes("revoke all on public.daily_challenge_attempts from anon, authenticated"),
   noPublicEmailInApi:!api.includes("email_key")&&!api.includes("select(\"email")&&api.includes("name:String(r.display_name)"),
@@ -36,7 +41,7 @@ const tests={
   monthAndYearChampions:board.includes('initialPeriod="month"')&&board.includes('initialPeriod="year"'),
   archiveArrows:board.includes("changeAnchor")&&board.includes("onClick={()=>shift(-1)}"),
   liveRefresh:board.includes("45000"),
-  quizScoring:quiz.includes("submitDailyChallenge")&&quiz.includes("30"),
+  quizScoring:quiz.includes('dailyRequest<Completed>("submit"')&&quiz.includes("30"),
   completedExplanations:quiz.includes("Review all answers")&&quiz.includes("explanations.find"),
   quizMidnightUnlock:quiz.includes("today!==active.date&&result"),
   refreshSafeResume:quiz.includes("pna-daily-running-v1")&&quiz.includes("setDeadline(time)")&&quiz.includes("sessionStorage.removeItem"),
@@ -55,7 +60,16 @@ const tests={
   desktopChallengeHighlight:desktop.includes('item.href === "/daily-challenge"') && desktop.includes('bg-teal-700'),
   midnightCounter:countdown.includes('timeZone: "Asia/Karachi"') && countdown.includes('Date.UTC('),
   retainedKnowledgeSections:home.includes('href="/symptom-checker"') && home.includes('href="/case-lab"') && home.includes('portalActions.map'),
-  themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)")
+  themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)"),
+  stableApiStart:quiz.includes('dailyRequest<StartResponse>("start"') && startEndpoint.includes('startDailyChallenge('),
+  stableApiSubmit:quiz.includes('dailyRequest<Completed>("submit"') && submitEndpoint.includes('submitDailyChallenge('),
+  appNoActionBinding:!quiz.includes('from "./actions"'),
+  privateApiOrigins:startEndpoint.includes('Invalid request origin.') && submitEndpoint.includes('Invalid request origin.'),
+  apiErrorHandling:startEndpoint.includes("START_SERVICE_ERROR") && submitEndpoint.includes("SUBMIT_SERVICE_ERROR"),
+  serviceOnlySecrets:service.includes('import "server-only"') && !quiz.includes("SUPABASE_SERVICE_ROLE_KEY"),
+  healthRoute:statusEndpoint.includes('select("id").limit(0)') && statusEndpoint.includes('code:"CONFIG_UNAVAILABLE"'),
+  permissionsFixed:serverPermissions.includes("grant select, insert, update on table public.daily_challenge_attempts to service_role") &&
+   serverPermissions.includes("revoke all on table public.daily_challenge_attempts from anon, authenticated")
 };
 for(const [name,ok] of Object.entries(tests)){
  assert(ok,"Daily Challenge check failed: "+name);
