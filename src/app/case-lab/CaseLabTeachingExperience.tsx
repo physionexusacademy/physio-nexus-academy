@@ -167,6 +167,27 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
        {story.urgent?<ShieldAlert className="mr-2 inline h-4 w-4"/>:<Sparkles className="mr-2 inline h-4 w-4"/>}
        {safeNote}
       </div>
+      <section className="cl-novel-scene mt-6" aria-label="Patient story scene">
+       <div className="cl-novel-scene-head"><span className="cl-novel-mark">“</span><span>AN EPISODE FROM THE PATIENT FILE · EDUCATIONAL SIMULATION</span></div>
+       <div className="cl-novel-prose mt-4">
+        {scene.narrative.map((paragraph,i)=><p key={i}>{paragraph}</p>)}
+       </div>
+       <p className="cl-novel-beat mt-5">{scene.moment}</p>
+      </section>
+      <section className="cl-novel-decision mt-5" aria-label="Think about the clinical turning point">
+       <div className="flex items-start gap-3">
+        <Lightbulb className="mt-1 h-5 w-5 shrink-0 text-teal-800"/>
+        <div className="min-w-0 flex-1">
+         <p className="text-xs font-extrabold uppercase tracking-widest text-teal-800">PAUSE THE STORY</p>
+         <p className="mt-2 font-serif text-xl font-bold leading-7 text-slate-900">{scene.question}</p>
+         <p className="mt-2 text-sm leading-7 text-slate-600">{scene.tension}</p>
+        </div>
+       </div>
+       <details key={chapter} className="cl-novel-insight mt-4 rounded-xl border border-teal-100 bg-white p-4">
+        <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-bold text-teal-800">Reveal the clinical insight <ChevronDown className="h-4 w-4"/></summary>
+        <p className="mt-3 text-sm leading-7 text-slate-700">{scene.insight}</p>
+       </details>
+      </section>
 
       {chapter===0&&<div className="mt-6 space-y-5">
        <div className="rounded-2xl border border-teal-100 bg-[#f4fbfa] p-5">
@@ -174,12 +195,11 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
         <p className="mt-2 text-sm font-bold text-slate-700">{story.patient}</p>
         <blockquote className="cl-story-quote mt-4 text-base">“{story.opening}”</blockquote>
        </div>
-       <div className="space-y-3">
-        {lesson.chapters.context.filter(x=>x!==story.opening).map((text,i)=><p key={i} className="rounded-xl border border-slate-100 bg-white p-4 text-sm leading-8 text-slate-700">{text}</p>)}
-       </div>
-       <div className="cl-reveal">
-        <strong>Pause and imagine the consultation.</strong> What would you need to know before choosing an examination? The answers begin in the next chapter.
-       </div>
+       <details className="cl-novel-facts rounded-xl border border-slate-200 p-4">
+        <summary className="flex cursor-pointer items-center justify-between gap-2 text-sm font-bold text-teal-800">Read the documented case facts <ChevronDown className="h-4 w-4"/></summary>
+        <div className="mt-4 space-y-3">{lesson.chapters.context.filter(x=>x!==story.opening).map((line,i)=><p key={i} className="text-sm leading-7 text-slate-700">{line}</p>)}</div>
+       </details>
+       <div className="cl-reveal"><strong>On the next page:</strong> The interview begins—and the clinical picture becomes clearer.</div>
       </div>}
 
       {chapter===1&&<div className="mt-6 space-y-5">
@@ -239,7 +259,7 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
        </div>
       </div>}
 
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
+      <div className="cl-novel-next mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
        <button type="button" disabled={chapter===0} onClick={()=>jump(Math.max(0,chapter-1))}
         className="cl-button cl-button-secondary disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft className="h-4 w-4"/> Previous chapter</button>
        {chapter<chapters.length-1?<button type="button" onClick={next} className="cl-button">Continue reading <ArrowRight className="h-4 w-4"/></button>:
