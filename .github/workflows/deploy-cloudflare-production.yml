@@ -85,6 +85,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-visuals.mjs
 
+      - name: Validate premium PNA Case Lab and all patient-story links
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-case-lab-premium.mjs
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:
