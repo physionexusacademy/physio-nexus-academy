@@ -9,6 +9,7 @@ on:
       - "src/app/pna-signature-v2.css"
       - "public/images/pna-founder-hero.avif"
       - "scripts/validate-premium-homepage.mjs"
+      - "scripts/validate-daily-challenge.mjs"
       - ".github/workflows/deploy-cloudflare-production.yml"
       - "src/components/home/**"
       - ".github/workflows/pna-home-ui-check.yml"
@@ -28,6 +29,8 @@ jobs:
       - run: npm ci
       - name: Validate homepage links, image bytes and layout
         run: node scripts/validate-premium-homepage.mjs
+      - name: Validate Daily Challenge safety and homepage integration
+        run: node scripts/validate-daily-challenge.mjs
       - name: Check changed homepage code (repository has existing unrelated TS errors)
         shell: bash
         run: |
