@@ -1,0 +1,62 @@
+import {clinicalCaseIndex} from "./clinical-case-index";
+import {expandedCases,expandedFlows} from "./clinical-arena-expanded";
+import {multidisciplinaryCases,multidisciplinaryFlows} from "./clinical-arena-multispecialty";
+export type LabCaseCard={
+ id:string; href:string; category:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
+ kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;
+};
+export const labCategories=[
+ "MSK & Sports","Neurological Rehabilitation","Pediatric Rehabilitation",
+ "Cardiopulmonary Rehabilitation","Geriatrics & Falls","Vestibular Rehabilitation",
+ "Pelvic Health","Oncology Rehabilitation","Critical Care & ICU","Clinical Red Flags",
+] as const;
+export function labCategory(specialty:string,safety=false):string{
+ if(specialty==="Clinical Red Flags"||specialty.includes("Red Flags")||safety)return "Clinical Red Flags";
+ if(specialty==="Neurological Rehabilitation"||specialty==="Neurological")return "Neurological Rehabilitation";
+ if(specialty==="Pediatric Rehabilitation")return "Pediatric Rehabilitation";
+ if(specialty==="Cardiopulmonary Rehabilitation"||specialty==="Cardiopulmonary")return "Cardiopulmonary Rehabilitation";
+ if(specialty==="Geriatrics & Falls"||specialty==="Geriatrics")return "Geriatrics & Falls";
+ if(specialty==="Vestibular Rehabilitation")return "Vestibular Rehabilitation";
+ if(specialty==="Women's Health & Pelvic Floor"||specialty.includes("Pelvic"))return "Pelvic Health";
+ if(specialty==="Oncology Rehabilitation")return "Oncology Rehabilitation";
+ if(specialty==="Critical Care & ICU")return "Critical Care & ICU";
+ return "MSK & Sports";
+}
+const featuredHooks:Record<string,string>={
+ "postpartum-running-stress-urinary-incontinence":"A new parent wants to run again. What should we ask first?",
+ "older-adult-recurrent-falls-orthostatic-symptoms":"The falls keep happening. Is the balance test enough?",
+ "overhead-athlete-shoulder-load-capacity":"A painter can lift—but can they tolerate another shift?",
+ "runner-anterior-knee-pain-load-capacity":"The knee feels fine at rest. Stairs tell a different story.",
+ "copd-rehab-exertional-desaturation-clinical-reasoning":"The walk starts normally. Then one vital sign changes.",
+ "low-back-pain-new-bladder-saddle-symptoms":"A routine back-pain appointment suddenly becomes urgent.",
+ "stroke-gait-balance-task-specific-rehab":"The patient is walking again. What does progress really mean?",
+ "copd-post-exacerbation-pulmonary-rehab":"After discharge, every small walk feels like a mountain.",
+ "acl-reconstruction-return-to-sport-readiness":"The athlete passed a hop test. Is that really enough?",
+};
+export const labCaseCards:LabCaseCard[]=[
+ ...clinicalCaseIndex.map(c=>({
+   id:"deep-"+c.slug,href:"/case-lab/"+c.slug,
+   category:labCategory(c.specialty),patient:"Detailed teaching case",
+   hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,
+   kind:"Clinical deep dive" as const,minutes:c.estimatedTime,safety:c.specialty.includes("Red Flags")
+ })),
+ ...multidisciplinaryCases.map((c)=>{
+   const flow=multidisciplinaryFlows[c.id];
+   return {
+    id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
+    category:labCategory(c.specialty,c.safety),patient:c.patient,
+    hook:flow?.chief||c.history.split(".")[0],
+    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
+   };
+ }),
+ ...expandedCases.map((c)=>{
+   const flow=expandedFlows[c.id];
+   return {
+    id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
+    category:labCategory(c.specialty,c.safety),patient:c.patient,
+    hook:flow?.chief||c.history.split(".")[0],
+    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
+   };
+ })
+];
+export const labCaseTotal=labCaseCards.length;
