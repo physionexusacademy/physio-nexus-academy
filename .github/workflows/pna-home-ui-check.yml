@@ -1,0 +1,25 @@
+name: PNA Homepage UI Check
+
+on:
+  pull_request:
+    branches: [cloudflare-deploy]
+    paths:
+      - "src/app/page.tsx"
+      - "src/app/premium-vision.css"
+      - "src/components/home/**"
+      - ".github/workflows/pna-home-ui-check.yml"
+  workflow_dispatch:
+
+jobs:
+  typecheck:
+    name: TypeScript / responsive homepage code
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
