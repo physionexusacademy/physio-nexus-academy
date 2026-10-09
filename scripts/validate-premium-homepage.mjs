@@ -13,7 +13,7 @@ const header=read("src/components/Header.tsx");
 const mobile=read("src/components/MobilePortalNav.tsx");
 const whatsapp=read("src/components/WhatsAppButton.tsx");
 
-const portraitPath="public/images/pna-founder-hero.avif";
+const portraitPath="public/images/pna-founder-hero-sharp-v2.avif";
 const portrait=fs.readFileSync(portraitPath);
 const hrefs=[...browser.matchAll(/href:\s*"(\/[a-z0-9/-]+)"/g)].map(match=>match[1]);
 const mandatoryPaths=[
@@ -33,8 +33,8 @@ const tests={
   allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
   fourInteractivePathways:zones.every(label=>browser.includes(label))&&browser.includes("setSelected")&&browser.includes("aria-pressed="),
   conditionalAtlas:browser.includes('showAtlas || link.href !== "/clinical-visual-atlas"'),
-  portraitExistsAndValid:portrait.length>3000&&portrait.toString("latin1",4,8)==="ftyp"&&portrait.includes(Buffer.from("avif")),
-  approvedHeroImageUsed:hero.includes('src="/images/pna-founder-hero.avif"')&&hero.includes("fill priority unoptimized"),
+  portraitExistsAndValid:portrait.length>20000&&portrait.toString("latin1",4,8)==="ftyp"&&portrait.includes(Buffer.from("avif")),
+  approvedHeroImageUsed:hero.includes('src="/images/pna-founder-hero-sharp-v2.avif"')&&hero.includes("fill priority unoptimized"),
   noBoxedPortrait:signatureCss.includes("mask-image:none!important")&&signatureCss.includes("object-fit:contain!important"),
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
   originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),

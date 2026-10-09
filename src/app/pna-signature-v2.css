@@ -209,7 +209,7 @@
 
 
 /* Final approved hero: TRUE transparent cutout (no boxed photograph or faux gradient mask).
- * src = /images/pna-founder-hero.avif; rest of site still uses the founder's standard photo.
+ * src = /images/pna-founder-hero-sharp-v2.avif; rest of site still uses the founder's standard photo.
  */
 .pna-vision-founder-photo {
   right:-1%;bottom:46px;min-width:0;width:43%;height:94%;
