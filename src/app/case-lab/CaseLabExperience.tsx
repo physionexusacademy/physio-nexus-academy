@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from "react";
 import Link from "next/link";
 import {ArrowLeft,ArrowRight,BookOpen,BrainCircuit,Check,CheckCircle2,ChevronDown,ClipboardList,Clock3,LockKeyhole,RotateCcw,ShieldAlert,Sparkles,Stethoscope,Target} from "lucide-react";
 import type {CaseStory} from "@/lib/case-lab-story";
+import {patientAnswer} from "@/lib/clinical-arena-patient-dialogue";
 
 const chapters=["The encounter","Take the history","Examine the clues","Your working hypothesis","Clinical debrief"];
 const prompts=[
@@ -24,17 +25,33 @@ export function CaseLabExperience({story}: {story:CaseStory}){
  const [exam,setExam]=useState<number|null>(null);
  const [diagnosis,setDiagnosis]=useState<number|null>(null);
  const [notes,setNotes]=useState<string[]>([]);
+ const [encounter,setEncounter]=useState(0);
+ useEffect(()=>{
+  try{
+   const key="pna-case-lab-encounters-v1-"+story.id;
+   const next=(Number(localStorage.getItem(key))||0)+1;
+   localStorage.setItem(key,String(next));
+   setEncounter(next);
+  }catch{}
+ },[story.id]);
  const target=useRef<HTMLElement|null>(null);
  const initial=useRef(true);
  useEffect(()=>{if(initial.current){initial.current=false;return;}const timer=window.requestAnimationFrame(()=>goTo(target.current));return()=>window.cancelAnimationFrame(timer)},[step]);
  const advance=()=>setStep(n=>Math.min(4,n+1));
  const restart=()=>{setOpened([]);setExam(null);setDiagnosis(null);setNotes([]);setStep(0);};
  const reveal=step===4;
+ const playfulCategory=(story.category==="MSK & Sports"||story.category==="Vestibular Rehabilitation");
+ const safePatientHumor=!story.urgent&&!story.fullyAuthored&&playfulCategory;
+ const patientLine=(text:string,key:string,canAddHumor=true)=>story.fullyAuthored?text:patientAnswer({
+  caseId:story.id,questionKey:key,clinicalAnswer:text,encounter,
+  urgent:story.urgent,allowHumor:safePatientHumor&&canAddHumor
+ });
  const questions=story.history;
  const patientLabel=story.category==="Pediatric Rehabilitation"?"Patient / caregiver":"Patient";
  const correctExam=story.examCorrect>=0&&exam!==null&&exam===story.examCorrect;
  const correctDx=story.diagnosisCorrect>=0&&diagnosis!==null&&diagnosis===story.diagnosisCorrect;
- const safeNudge=story.urgent?"Clinical safety note: when symptoms suggest a time-critical emergency, escalation takes priority over routine exercise or provocative testing.":pickPrompt(story.id,step);
+ const seriousTrack=story.urgent||["Oncology Rehabilitation","Critical Care & ICU","Clinical Red Flags"].includes(story.category);
+ const safeNudge=story.urgent?"Clinical safety note: when symptoms suggest a time-critical emergency, escalation takes priority over routine exercise or provocative testing.":seriousTrack?"Pause and think: which finding changes your next action, and how can you protect this patient's goals and safety?":pickPrompt(story.id,step);
  return <article className="case-lab-v3 min-h-screen pb-20">
   <div className="container-content pt-7 sm:pt-10">
    <Link href="/case-lab" className="cl-breadcrumb"><ArrowLeft className="h-4 w-4"/> Back to patient files</Link>
@@ -57,7 +74,7 @@ export function CaseLabExperience({story}: {story:CaseStory}){
       <h2 className="mt-3 font-heading text-3xl font-bold tracking-tight sm:text-[2.25rem]">{chapters[step]}</h2>
       <p className="cl-nudge mt-5">{story.urgent?<ShieldAlert className="mr-2 inline h-4 w-4 text-rose-700"/>:<Sparkles className="mr-2 inline h-4 w-4 text-teal-700"/>}{safeNudge}</p>
       {step===0?<div className="mt-7 space-y-5">
-       <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5"><p className="cl-story-label">MEET YOUR PATIENT</p><p className="mt-2 text-sm font-bold text-slate-700">{story.patient}</p><p className="cl-story-quote mt-5 text-[1.05rem]">“{story.opening}”</p></div>
+       <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5"><p className="cl-story-label">MEET YOUR PATIENT</p><p className="mt-2 text-sm font-bold text-slate-700">{story.patient}</p><p className="cl-story-quote mt-5 text-[1.05rem]">“{patientLine(story.opening,"opening")}”</p></div>
        <div className="space-y-4">{story.scene.map((line,i)=><div key={i} className="flex items-start gap-4"><span className="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-xs font-extrabold text-teal-700">{i+1}</span><p className="text-[.96rem] leading-8 text-slate-700">{line}</p></div>)}</div>
        <div className="cl-reveal"><strong>The opening question:</strong> What details would make you change your first impression? Watch for onset, function, safety and symptom behavior.</div>
        <button className="cl-button w-full sm:w-auto" onClick={advance}>Start the patient interview <ArrowRight className="h-4 w-4"/></button>
@@ -65,7 +82,7 @@ export function CaseLabExperience({story}: {story:CaseStory}){
       {step===1?<div className="mt-7">
        <p className="max-w-3xl text-sm leading-7 text-slate-600">Ask the questions in any order. The patient answers gradually—just like a real consultation. Save useful details to your clinical notes before continuing.</p>
        <div className="mt-5 space-y-3">{questions.map(([q,a],i)=><div key={i} className="rounded-2xl border border-slate-200 bg-white p-4"><button onClick={()=>setOpened(v=>v.includes(i)?v:[...v,i])} className="flex w-full items-start justify-between gap-3 text-left text-sm font-semibold leading-7 text-slate-800" aria-expanded={opened.includes(i)}><span className="flex items-start gap-3"><span className="flex h-7 w-7 flex-none items-center justify-center rounded-lg bg-slate-100 text-xs font-extrabold text-teal-800">{i+1}</span>{q}</span><ChevronDown className={"mt-1 h-4 w-4 flex-none text-teal-700 transition "+(opened.includes(i)?"rotate-180":"")}/></button>
-       {opened.includes(i)?<div className="mt-4 rounded-xl bg-teal-50/70 p-4"><p className="text-sm leading-7 text-slate-700"><strong>{patientLabel}:</strong> “{a}”</p><button type="button" className="mt-3 text-xs font-bold text-teal-800" onClick={()=>setNotes(v=>v.includes(a)?v.filter(x=>x!==a):[...v,a])}>{notes.includes(a)?"✓ Remove from notes":"+ Save clue to case notes"}</button></div>:null}</div>)}</div>
+       {opened.includes(i)?<div className="mt-4 rounded-xl bg-teal-50/70 p-4"><p className="text-sm leading-7 text-slate-700"><strong>{patientLabel}:</strong> “{patientLine(a,"history-"+i,i>0)}”</p><button type="button" className="mt-3 text-xs font-bold text-teal-800" onClick={()=>setNotes(v=>v.includes(a)?v.filter(x=>x!==a):[...v,a])}>{notes.includes(a)?"✓ Remove from notes":"+ Save clue to case notes"}</button></div>:null}</div>)}</div>
        {notes.length>0?<details className="mt-5 rounded-xl border border-teal-200 bg-white p-4"><summary className="text-sm font-semibold text-teal-800">Your notebook ({notes.length} clues)</summary><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">{notes.map(n=><li key={n}>{n}</li>)}</ul></details>:null}
        <button className="cl-button mt-6 w-full sm:w-auto disabled:cursor-not-allowed disabled:opacity-45" disabled={opened.length===0} onClick={advance}>Proceed to clinical examination <ArrowRight className="h-4 w-4"/></button>
       </div>:null}
