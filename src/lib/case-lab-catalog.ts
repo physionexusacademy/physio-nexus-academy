@@ -13,7 +13,8 @@ export const labCategories=[
  "Pelvic Health","Oncology Rehabilitation","Critical Care & ICU","Clinical Red Flags",
 ] as const;
 export function labCategory(specialty:string,safety=false):string{
- if(specialty==="Clinical Red Flags"||specialty.includes("Red Flags")||safety)return "Clinical Red Flags";
+ // Keep medical emergencies in their primary specialty as well as the Red Flags collection.
+ if(specialty==="Clinical Red Flags"||specialty.includes("Red Flags"))return "Clinical Red Flags";
  if(specialty==="Neurological Rehabilitation"||specialty==="Neurological")return "Neurological Rehabilitation";
  if(specialty==="Pediatric Rehabilitation")return "Pediatric Rehabilitation";
  if(specialty==="Cardiopulmonary Rehabilitation"||specialty==="Cardiopulmonary")return "Cardiopulmonary Rehabilitation";
