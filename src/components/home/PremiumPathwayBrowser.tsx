@@ -113,7 +113,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
   };
 
   return (
-    <section id="explore-pna" className="pna-sig-explore" aria-labelledby="pna-sig-heading">
+    <section id="explore-pna" data-pna-home-signature="v2" className="pna-sig-explore" aria-labelledby="pna-sig-heading">
       <div className="container-content">
         <div className="pna-sig-header">
           <div>
