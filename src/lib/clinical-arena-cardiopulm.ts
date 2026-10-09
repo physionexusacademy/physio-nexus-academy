@@ -7,7 +7,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "I get out of breath when walking farther than usual.",
-  "history": "Established chronic obstructive pulmonary disease with stable symptoms; activity tolerance is limited but no acute exacerbation signs reported.",
+  "history": "A medically stable patient with a long history of smoking-related obstructive breathing symptoms has exertional breathlessness and limited activity tolerance, without signs of a new flare.",
   "findings": [
    "Reduced functional walk distance and increased exertional dyspnea",
    "Breathing pattern and peripheral muscle endurance contribute to limitation"
@@ -39,7 +39,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "adult",
   "chief": "My chest feels tight and I cough during harder exercise.",
-  "history": "Known asthma with exertion-related wheeze, variable symptoms and a prescribed medical action plan; not acutely unwell today.",
+  "history": "Exertion-related wheeze and variable chest tightness occur with triggers; there is a medical inhaler action plan and no severe symptoms at rest today.",
   "findings": [
    "Symptoms fluctuate with exertion and triggers",
    "Exercise confidence and participation have reduced"
@@ -71,7 +71,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "I bring up mucus most days, and physical activity tires me.",
-  "history": "Established bronchiectasis with chronic productive cough and activity limitation; currently medically stable without new blood-streaked sputum.",
+  "history": "A patient with longstanding daily productive cough has difficulty clearing mucus and reduced activity tolerance; no new blood-streaked sputum is reported.",
   "findings": [
    "Ongoing sputum burden and reduced airway clearance confidence",
    "Decreased functional exercise tolerance"
@@ -103,7 +103,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "I feel weak and tired after my recent chest infection.",
-  "history": "Following medically managed pneumonia, the patient has improving symptoms but reduced walking and transfer endurance.",
+  "history": "After a medically treated chest infection, the patient is improving but has reduced walking and transfer endurance.",
   "findings": [
    "Decreased walking distance with activity-related exertion",
    "No resting instability; recovery and oxygen response need monitoring"
@@ -167,7 +167,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "I tire more quickly walking than I used to, but my medicines are steady.",
-  "history": "Known chronic heart failure under active medical care with stable weight and no new edema or resting breathlessness.",
+  "history": "A patient under long-term cardiology care reports exertional fatigue but stable weight, no new peripheral edema and no worsening resting breathlessness.",
   "findings": [
    "Reduced exercise capacity in a medically stable phase",
    "Blood pressure, heart rate and perceived exertion require monitoring"
@@ -199,7 +199,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "adult",
   "chief": "I want to exercise again, but I am nervous after the heart attack.",
-  "history": "Following treated myocardial infarction, medically cleared patient is referred for structured cardiac rehabilitation.",
+  "history": "After treatment for a recent cardiac event, a medically cleared patient is referred for monitored functional reconditioning.",
   "findings": [
    "Reduced confidence and aerobic activity after hospitalization",
    "Symptoms and medication effects influence exertional response"
@@ -231,7 +231,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "Getting out of bed and walking the corridor takes more effort after surgery.",
-  "history": "After coronary artery bypass surgery the medical team reports physiological stability and approves assisted early mobilization.",
+  "history": "After major heart surgery involving a chest incision, the team reports physiological stability and approves assisted early mobilization.",
   "findings": [
    "Postoperative fatigue and reduced transfer tolerance",
    "Incision and sternal healing considerations require team-approved movement precautions"
@@ -263,7 +263,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "I am recovering from valve surgery and want to get my stamina back.",
-  "history": "After medically managed cardiac valve surgery, fatigue limits daily tasks during a stable recovery period.",
+  "history": "After medically managed surgery for a structural heart condition, fatigue limits daily tasks during a stable recovery period.",
   "findings": [
    "Reduced aerobic capacity after surgery",
    "Medication and rhythm monitoring considerations affect progression"
@@ -295,7 +295,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "older",
   "chief": "I get breathless quickly and need more rest during walking.",
-  "history": "Established fibrotic interstitial lung disease with reduced exertional tolerance and ongoing respiratory specialist follow-up.",
+  "history": "A patient with chronic progressive restriction of pulmonary gas exchange reports reduced exertional tolerance and is under respiratory specialist follow-up.",
   "findings": [
    "Exertional oxygen desaturation tendency",
    "Functional activity limited by breathlessness and fatigue"
@@ -327,7 +327,7 @@ export const cardiopulmTemplates:Template[]=[
   "region": "Heart & Lungs",
   "cohort": "adult",
   "chief": "I nearly faint when I walk uphill and my breathlessness has worsened.",
-  "history": "Known or suspected pulmonary hypertension with new exertional presyncope and progressive activity intolerance.",
+  "history": "A patient with known pulmonary vascular disease has new exertional near-fainting and progressive activity intolerance.",
   "findings": [
    "Near-syncope during exertion",
    "Reduced exercise capacity with possible hemodynamic compromise"
