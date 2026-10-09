@@ -178,6 +178,10 @@ export default function ClinicalArenaPage(){
   <span className="pna-available-count">{filtered.length} cases available</span>
  </div>
  </header>
+ <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#dce9ea] bg-white/95 px-5 py-4 shadow-sm">
+  <div><p className="text-xs font-bold uppercase tracking-wider text-teal-800">MSK Examination Reference</p><p className="mt-1 text-sm text-slate-600">Need to revise a special test before making your clinical decision?</p></div>
+  <Link href="/msk-special-tests" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Study MSK Special Tests <ArrowRight className="h-4 w-4"/></Link>
+ </div>
  <main className="pna-shell mt-6 rounded-3xl p-6 text-slate-900 sm:p-9">
  {!finished?<div>
  <div className="pna-round-overview flex flex-wrap items-center justify-between gap-4">
