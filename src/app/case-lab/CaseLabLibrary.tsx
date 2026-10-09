@@ -1,6 +1,7 @@
 "use client";
 import {useMemo,useState} from "react";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 import {ArrowRight,ArrowUpRight,BookOpen,BrainCircuit,Check,ChevronRight,Clock3,Compass,Search,ShieldAlert,Sparkles,Stethoscope} from "lucide-react";
 import type {LabCaseCard} from "@/lib/case-lab-catalog";
 
@@ -12,6 +13,7 @@ const intros=[
  "The next clue might change the whole treatment plan."
 ];
 export function CaseLabLibrary({cases,categories}:Props){
+ const router=useRouter();
  const [category,setCategory]=useState("All cases");
  const [search,setSearch]=useState("");
  const [type,setType]=useState("All experiences");
@@ -22,9 +24,15 @@ export function CaseLabLibrary({cases,categories}:Props){
   if(type==="Deep dives"&&c.kind!=="Clinical deep dive")return false;
   if(type==="Story challenges"&&c.kind!=="Interactive scenario")return false;
   const needle=search.toLocaleLowerCase().trim();
-  return !needle||[c.patient,c.hook,c.category,c.kind].join(" ").toLocaleLowerCase().includes(needle);
+  return !needle||[c.patient,c.hook,c.category,c.kind,c.keywords].join(" ").toLocaleLowerCase().includes(needle);
  }),[cases,category,search,type]);
  const shown=filtered.slice(0,limit);
+ const surprise=()=>{
+  const selection=filtered.length?filtered:cases;
+  if(!selection.length)return;
+  const next=selection[Math.floor(Math.random()*selection.length)];
+  router.push(next.href);
+ };
  const setCategorySafe=(c:string)=>{setCategory(c);setLimit(18);};
  return <div className="case-lab-v3 min-h-screen pb-20">
   <div className="container-content pt-7 sm:pt-12">
@@ -36,7 +44,8 @@ export function CaseLabLibrary({cases,categories}:Props){
       <p className="mt-5 max-w-2xl text-[.97rem] leading-8 text-slate-600 sm:text-lg">Step inside a clinical encounter, collect the clues, challenge your first instinct and reveal the reasoning. Learn like a clinician. Stay curious like a detective.</p>
       <div className="mt-7 flex flex-wrap gap-3">
        <a href="#case-lab-library" className="cl-button">Explore patient files <ArrowRight className="h-4 w-4"/></a>
-       <Link href="/clinical-arena" className="cl-button cl-button-secondary">Practice in Clinical Arena <ArrowUpRight className="h-4 w-4"/></Link>
+       <button type="button" onClick={surprise} className="cl-button cl-button-secondary">Surprise patient <Sparkles className="h-4 w-4"/></button>
+       <Link href="/clinical-arena" className="cl-button cl-button-secondary">Clinical Arena <ArrowUpRight className="h-4 w-4"/></Link>
       </div>
       <p className="mt-6 flex items-center gap-2 text-xs font-semibold text-slate-500"><Check className="h-4 w-4 text-teal-700"/> Evidence-informed simulations · Not real patient records</p>
      </div>
