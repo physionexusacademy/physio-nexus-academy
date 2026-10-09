@@ -60,7 +60,7 @@ const tests={
   mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
   desktopChallengeHighlight:desktop.includes('item.href === "/daily-challenge"') && desktop.includes('bg-teal-700'),
   midnightCounter:countdown.includes('timeZone: "Asia/Karachi"') && countdown.includes('Date.UTC('),
-  retainedKnowledgeSections:home.includes('href="/symptom-checker"') && home.includes('href="/case-lab"') && pathwayBrowser.includes('href: "/knowledge-hub"') && pathwayBrowser.includes('href: "/symptom-checker"') && pathwayBrowser.includes('href: "/case-lab"'),
+  retainedKnowledgeSections:home.includes("<PremiumPathwayBrowser") && ["/knowledge-hub","/symptom-checker","/case-lab"].every(url=>pathwayBrowser.includes('href: "'+url+'"')),
   themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)"),
   stableApiStart:quiz.includes('dailyRequest<StartResponse>("start"') && startEndpoint.includes('startDailyChallenge('),
   stableApiSubmit:quiz.includes('dailyRequest<Completed>("submit"') && submitEndpoint.includes('submitDailyChallenge('),
