@@ -22,6 +22,9 @@ export async function startDailyChallenge(input:{fullName:string;email:string;co
  try{identity=normalizeParticipantEmail(input.email||"");}
  catch{return {ok:false as const,error:"Please enter a valid Gmail address."};}
  const day=pakistanChallengeDate();
+ if(Date.parse(pakistanMidnightUTC(day))-Date.now()<TOTAL_LIMIT_MS+GRACE_MS+2000){
+  return {ok:false as const,error:"Today's challenge is closing. A fresh challenge opens at 12:00 AM Pakistan time."};
+ }
  const supabase=createAdminClient();
  const {data,error}=await supabase.from("daily_challenge_attempts").insert({
   challenge_date:day,full_name:fullName,email:identity.email,email_key:identity.emailKey,status:"started"
