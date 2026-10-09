@@ -264,7 +264,7 @@ export const mobilityVestibularTemplates:Template[]=[
   "region": "Vestibular & Balance",
   "cohort": "adult",
   "chief": "Moving my head makes the world bounce and walking is less steady.",
-  "history": "Following a medically assessed vestibular insult, head movement causes gaze instability and balance problems.",
+  "history": "Following a medically assessed inner-ear balance problem, head movement causes gaze instability and unsteadiness.",
   "findings": [
    "Reduced vestibulo-ocular reflex gain or corrective saccades on appropriate test",
    "Dynamic visual acuity and balance may be impaired"
@@ -296,7 +296,7 @@ export const mobilityVestibularTemplates:Template[]=[
   "region": "Vestibular & Balance",
   "cohort": "adult",
   "chief": "I get dizzy episodes with headaches and bright environments bother me.",
-  "history": "Recurrent episodic dizziness with migraine features and visual motion sensitivity; medical assessment has ruled out immediate danger.",
+  "history": "Recurrent episodic dizziness sometimes comes with headache, light sensitivity and visual motion sensitivity; no acute focal neurological symptoms are reported.",
   "findings": [
    "Sensory motion sensitivity during busy visual tasks",
    "Variable balance between episodes"
