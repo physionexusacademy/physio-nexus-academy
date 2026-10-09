@@ -61,11 +61,12 @@ for(const [key,guide] of Object.entries(added)){
 }
 assert(files.library.includes("router.push(next.href)"),"Surprise patient option missing");
 assert(files.library.includes("c.keywords"),"Search should find diagnosis terms while keeping titles hidden");
+assert(files.catalog.includes("focus:string"),"All case cards must expose a body region or clinical focus");
 assert(files.episodes.includes("richerMskDiagnosisOptions"),"MSK Case Lab does not use improved clinical distractors");
 const checks={
  premiumCss:read("src/app/case-lab/case-lab.css").includes(".cl-hero"),
- filter:files.library.includes("Search patient cases")&&files.library.includes("setCategorySafe"),
- showCount:files.library.includes("{cases.length}"),
+ filter:files.library.includes("pna-case-search")&&files.library.includes("chooseSpecialty(next:string)"),
+ showCount:files.library.includes("{cases.length}")&&files.library.includes("{selectedTotal} cases"),
  queryLinks:files.catalog.includes("/case-lab/episode?id="),
  bookmarkable:files.episodeLoader.includes('params.get("id")'),
  episodeExists:files.episodes.includes("export function getLabEpisode("),
@@ -77,6 +78,14 @@ const checks={
  gradeReview:files.experience.includes("story.diagnosisCorrect<0")&&files.experience.includes("story.diagnosisCorrect"),
  reducedMotion:files.experience.includes("prefers-reduced-motion: reduce"),
  categories:files.catalog.includes("Critical Care & ICU")&&files.catalog.includes("Oncology Rehabilitation"),
+ specialtyFirst:files.library.includes('data-pna-case-lab="specialty-first-v4"')&&files.library.includes("!category?("),
+ categoryNavigation:files.library.includes('aria-pressed={active}')&&files.library.includes('className="cl-specialty-choice'),
+ categoryCaseFiltering:files.library.includes('if(category!=="All cases"&&c.category!==category)return false;'),
+ regions:files.library.includes('c.focus!==focus')&&files.library.includes("focusOptions"),
+ clinicalLevels:files.library.includes('c.difficulty!==level'),
+ caseModes:files.library.includes('c.kind!=="Interactive scenario"')&&files.library.includes('c.kind!=="Clinical deep dive"'),
+ mobile:files.library.includes('(max-width: 1023px)')&&files.library.includes('scrollIntoView'),
+ pagination:files.library.includes('setLimit(n=>n+12)'),
 };
 for(const [name,passed] of Object.entries(checks))assert(passed,"Missing Case Lab feature: "+name);
 const typeCounts={};for(const t of templates)typeCounts[t.track]=(typeCounts[t.track]||0)+5;
