@@ -3,6 +3,7 @@ import type {ClinicalCaseGuide} from "./clinical-case-guides";
 import {expandedCases,expandedFlows} from "./clinical-arena-expanded";
 import {getClinicalExamination} from "./clinical-arena-examinations";
 import {coreMskCases,coreMskFlows} from "./case-lab-msk-core";
+import {richerMskDiagnosisOptions} from "./case-lab-msk-differentials";
 import {multidisciplinaryCases,multidisciplinaryFlows,multidisciplinaryExams,multidisciplinaryTemplates} from "./clinical-arena-multispecialty";
 import {labCategory} from "./case-lab-catalog";
 
@@ -66,6 +67,7 @@ export function getLabEpisode(id:string):CaseStory|null{
  if(!flow)return null;
  const options=flow.differential;
  const examined=getClinicalExamination(e);
+ const enriched=richerMskDiagnosisOptions(e.title.split(": Scenario")[0],e.correct);
  return{
   id,category:labCategory(e.specialty,e.safety),patient:e.patient,opening:flow.chief,
   scene:[e.history,"The patient's initial words give you a starting point, not a diagnosis. Listen for timing, what provokes symptoms and what matters to them.",
@@ -75,8 +77,8 @@ export function getLabEpisode(id:string):CaseStory|null{
   examPrompt:examined.question,
   examChoices:[...examined.options],
   examCorrect:examined.correct,examReason:examined.why,
-  diagnosisPrompt:e.question,diagnosisChoices:e.options,diagnosisCorrect:e.correct,diagnosisReason:e.explanation,
-  differentials:options.map((name,i)=>({diagnosis:name,reasoning:i===flow.differentialCorrect?flow.differentialWhy:"Compare this alternative with the history and examination findings; avoid assuming one sign is diagnostic."})),
+  diagnosisPrompt:e.question,diagnosisChoices:enriched?.names||e.options,diagnosisCorrect:e.correct,diagnosisReason:e.explanation,
+  differentials:enriched?[{diagnosis:e.title.split(": Scenario")[0],reasoning:e.explanation},...enriched.alternatives.map(a=>({diagnosis:a.name,reasoning:a.why}))]:options.map((name,i)=>({diagnosis:name,reasoning:i===flow.differentialCorrect?flow.differentialWhy:"Compare this alternative with the history and examination findings; avoid assuming one sign is diagnostic."})),
   management:[flow.treatment[flow.treatmentCorrect],flow.treatmentWhy],
   progression:["Agree a specific functional goal and document a baseline before changing the plan.",
    e.safety?"Urgent referral precedes routine rehabilitation.":"Monitor symptom behavior, tolerability and relevant objective tests at follow-up."],
