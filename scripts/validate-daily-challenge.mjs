@@ -35,6 +35,7 @@ const tests={
   quizScoring:quiz.includes("submitDailyChallenge")&&quiz.includes("30"),
   completedExplanations:quiz.includes("Review all answers")&&quiz.includes("explanations.find"),
   quizMidnightUnlock:quiz.includes("today!==active.date&&result"),
+  refreshSafeResume:quiz.includes("pna-daily-running-v1")&&quiz.includes("setDeadline(time)")&&quiz.includes("sessionStorage.removeItem"),
   premiumCss:css.includes(".dc-mission-mast")&&css.includes(".dc-table"),
   responsive:css.includes("@media(max-width:480px)"),
   landingLinked:home.includes('href: "/daily-challenge"')&&hub.includes('href="/daily-challenge"'),
