@@ -339,7 +339,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="explore-pna" className="pna-home-explore" aria-labelledby="pna-home-explore-title">
+      <section id="explore-pna" data-pna-home-premium="cohesive-v1" className="pna-home-explore" aria-labelledby="pna-home-explore-title">
         <div className="container-content">
           <div className="pna-home-section-heading">
             <div>
@@ -659,7 +659,7 @@ export default async function HomePage() {
                 className="rounded-2xl border p-5 transition"
               >
                 <Stethoscope className="h-6 w-6 text-teal-300" />
-                <p className="mt-3 font-semibold text-white">Check Your Symptoms</p>
+                <p className="mt-3 font-semibold text-white">Check Symptoms</p>
                 <p className="mt-1 text-sm text-grey-200">Screen possible MSK patterns before booking.</p>
               </a>
               <a
