@@ -53,6 +53,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-clinical-arena-blind.mjs
 
+      - name: Validate 200 Clinical Arena body-region filters
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-clinical-arena-regions.mjs
+
       - name: Validate 1000+ varied patient replies and safe clinical dialogue
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-clinical-arena-patient-dialogue.mjs
