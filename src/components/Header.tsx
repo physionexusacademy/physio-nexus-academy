@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Menu, X, Calendar, Home, Trophy, ChevronDown, BookOpen, FileBadge2 } from "lucide-react";
+import { Menu, X, Calendar, Home, Trophy, ChevronDown, BookOpen, FileBadge2, Hand, Info } from "lucide-react";
 import { mainNav, siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -129,9 +129,9 @@ export function Header() {
             <div className="absolute right-0 top-full z-[90] mt-2 w-60 rounded-2xl border border-[#dbeae6] bg-white p-2 shadow-[0_18px_44px_-25px_rgba(15,74,80,.35)]">
               {[
                 {label:"Books & Resources",href:"/resources",icon:BookOpen},
-                {label:"Manual Therapy",href:"/manual-therapy",icon:Home},
+                {label:"Manual Therapy",href:"/manual-therapy",icon:Hand},
                 {label:"Verify Certificate",href:"/verify",icon:FileBadge2},
-                {label:"About PNA",href:"/about",icon:Home},
+                {label:"About PNA",href:"/about",icon:Info},
               ].map((item)=>{
                 const Icon=item.icon;
                 return <a key={item.href} href={item.href} className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-navy-700 hover:bg-teal-50 hover:text-teal-800">
