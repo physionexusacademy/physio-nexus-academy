@@ -29,6 +29,21 @@ assert(page.includes('stages.indexOf(stage)<stages.indexOf("diagnosis")'),
 assert(page.includes('stage==="diagnosis"&&preDiagnosisReview.length>0'),
   "Earlier decisions must be reviewed only after diagnosis submission");
 
+// Regression: submitting, moving to the next stage and resetting a case
+// should return the student to the case heading instead of leaving them near the footer.
+for (const marker of [
+  'ref={casePanelRef} tabIndex={-1} id="clinical-arena-case"',
+  'scroll-mt-28',
+  'panel.scrollIntoView({',
+  'panel.focus({preventScroll:true})',
+  'if(scrollRequest===0)return;',
+  'setRevealed(true);setScrollRequest(n=>n+1)',
+  'function advance(){\\n  setScrollRequest(n=>n+1);'.replace('\\n','\\n'),
+  'setCaseStart(Date.now());setScrollRequest(n=>n+1)',
+]) {
+  assert(page.includes(marker), "Case auto-scroll safeguard missing: " + marker);
+}
+
 const start=expanded.indexOf("export const expandedCases");
 const arrayStart=expanded.indexOf("=[",start);
 const arrayEnd=expanded.indexOf(";\n",arrayStart);
