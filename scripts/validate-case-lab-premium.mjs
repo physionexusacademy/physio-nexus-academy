@@ -74,7 +74,7 @@ assert(files.episodes.includes("history:item.presentation.slice(0,5).map"),"Pati
 const novel=read("src/lib/case-lab-narrative.ts");
 const style=read("src/app/case-lab/case-lab.css");
 assert(novel.includes("export function buildClinicalEpisodes"),"Case-grounded narrative builder missing");
-assert(novel.includes("educational simulation")||novel.includes("teaching case"),"Novel engine must label simulated evidence");
+assert(novel.includes("teaching encounter")&&novel.includes("Never assert a measured result"),"Novel engine must label simulated evidence");
 assert(files.experience.includes('data-pna-case-lab-lesson="clinical-novel-v2"'),"Novel reader not connected to patient files");
 assert(files.experience.includes("scene.narrative.map"),"Story prose not rendering");
 assert(files.experience.includes("scene.insight"),"Reflective clinical insight missing");
