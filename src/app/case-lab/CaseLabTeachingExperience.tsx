@@ -1,13 +1,14 @@
 "use client";
-import {useEffect,useRef,useState} from "react";
+import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {
  ArrowLeft,ArrowRight,BookOpen,BrainCircuit,CheckCircle2,ChevronDown,
- ClipboardList,HeartPulse,Lightbulb,RotateCcw,ShieldAlert,Sparkles,Stethoscope,
+ ClipboardList,HeartPulse,Eye,EyeOff,BookmarkCheck,Lightbulb,RotateCcw,ShieldAlert,Sparkles,Stethoscope,
  Target
 } from "lucide-react";
 import type {CaseStory} from "@/lib/case-lab-story";
 import {buildCaseLearningGuide} from "@/lib/case-lab-learning";
+import {buildClinicalEpisodes} from "@/lib/case-lab-narrative";
 import {patientAnswer} from "@/lib/clinical-arena-patient-dialogue";
 
 const chapters=[
@@ -45,12 +46,25 @@ function LearningCard({label,title,items}:{label:string;title:string;items:strin
  </section>;
 }
 export function CaseLabTeachingExperience({story}:{story:CaseStory}){
- const lesson=buildCaseLearningGuide(story);
+ const lesson=useMemo(()=>buildCaseLearningGuide(story),[story]);
+ const episodes=useMemo(()=>buildClinicalEpisodes(story,lesson),[story,lesson]);
  const [chapter,setChapter]=useState(0);
  const [asked,setAsked]=useState<number[]>([]);
  const [showThinking,setShowThinking]=useState(false);
+ const [focusMode,setFocusMode]=useState(false);
+ const [maxRead,setMaxRead]=useState(0);
  const [encounter,setEncounter]=useState(0);
  const chapterRef=useRef<HTMLElement|null>(null);
+ useEffect(()=>{
+  try{
+   const saved=Number(sessionStorage.getItem("pna-lab-read-v2-"+story.id));
+   if(Number.isInteger(saved)&&saved>=0&&saved<chapters.length){setChapter(saved);setMaxRead(saved);}
+  }catch{}
+ },[story.id]);
+ useEffect(()=>{
+  try{sessionStorage.setItem("pna-lab-read-v2-"+story.id,String(chapter));}catch{}
+  setMaxRead(n=>Math.max(n,chapter));
+ },[story.id,chapter]);
  const first=useRef(true);
  useEffect(()=>{
   try{
@@ -88,15 +102,16 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
  function jump(to:number){
   setShowThinking(false);setChapter(to);
  }
+ const scene=episodes[chapter];
  const safeNote=story.urgent
   ?"Safety first: recognize the danger signs and arrange appropriate urgent medical assessment before routine physiotherapy."
   :story.category==="Oncology Rehabilitation"||story.category==="Critical Care & ICU"
    ?"Clinical safety and dignity take priority. Use the person's medical status and goals to guide every step."
    :prompts[chapter];
- return <article className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab-lesson="reading-first-v1">
+ return <article className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab-lesson="clinical-novel-v2">
   <div className="container-content pt-6 sm:pt-10">
    <Link href="/case-lab" className="cl-breadcrumb"><ArrowLeft className="h-4 w-4"/> Back to specialties and patient files</Link>
-   <header className="cl-hero mt-5 p-6 sm:p-9">
+   <header className="cl-hero cl-novel-hero mt-5 p-6 sm:p-9">
     <div className="flex flex-wrap items-center gap-2">
      <span className="cl-kicker">{story.category}</span>
      <span className="cl-kicker">{lesson.isFullyAuthored?"Authored clinical masterclass":"Case-guided clinical lesson"}</span>
@@ -115,8 +130,8 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
     </div>
    </header>
 
-   <div className="mt-5 grid gap-5 lg:grid-cols-[235px_minmax(0,1fr)]">
-    <aside className="cl-paper self-start p-4 lg:sticky lg:top-28" aria-label="Case Lab learning chapters">
+   <div className={"mt-5 grid gap-5 "+(focusMode?"cl-reading-focus lg:grid-cols-1":"lg:grid-cols-[235px_minmax(0,1fr)]")}>
+    <aside className={"cl-paper self-start p-4 lg:sticky lg:top-28 "+(focusMode?"hidden":"")} aria-label="Case Lab learning chapters">
      <p className="px-2 pt-2 text-xs font-bold uppercase tracking-widest text-teal-800">Reading chapters</p>
      <div className="mt-4 flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
       {chapters.map((item,i)=><button key={item.name} type="button"
@@ -126,11 +141,18 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
        <span>{item.name}</span>
       </button>)}
      </div>
-     <p className="mt-3 border-t border-slate-100 px-2 pt-4 text-xs leading-6 text-slate-500">Read in order, or jump directly to the clinical topic you want to revise. Every case is a simulation, not a real person's medical record.</p>
+     <p className="mt-3 border-t border-slate-100 px-2 pt-4 text-xs leading-6 text-slate-500">You've explored {Math.round((maxRead+1)/chapters.length*100)}% of chapters. This is a simulation, not a real patient's medical record.</p>
     </aside>
 
     <section ref={chapterRef} tabIndex={-1} className="min-w-0 scroll-mt-28 outline-none">
-     <div className="cl-paper p-5 sm:p-7">
+     <div className="cl-paper cl-novel-page p-5 sm:p-7">
+      <div className="cl-novel-readerbar flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+       <span className="cl-eyebrow"><BookmarkCheck className="h-4 w-4"/> CLINICAL STORYBOOK · {story.category}</span>
+       <button type="button" onClick={()=>setFocusMode(v=>!v)} aria-pressed={focusMode}
+        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-teal-800 hover:bg-teal-50">
+        {focusMode?<><Eye className="h-4 w-4"/> Show menu</>:<><EyeOff className="h-4 w-4"/> Focus reading</>}
+       </button>
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
        <p className="cl-eyebrow">{chapters[chapter].label}</p>
        <span className="rounded-full bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-800">Chapter {chapter+1} / {chapters.length}</span>
@@ -138,7 +160,9 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
       <div className="mt-4 flex gap-1.5" aria-label={"Reading chapter "+(chapter+1)+" of "+chapters.length}>
        {chapters.map((_,i)=><div key={i} className={"h-1.5 flex-1 rounded-full "+(i<=chapter?"bg-teal-700":"bg-slate-100")}/>)}
       </div>
-      <h2 className="mt-6 font-serif text-2xl font-bold text-[#102e40] sm:text-3xl">{chapters[chapter].name}</h2>
+      <p className="cl-novel-act mt-6">{scene.act}</p>
+      <h2 className="mt-3 font-serif text-3xl font-bold leading-tight text-[#102e40] sm:text-[2.55rem]">{scene.sceneTitle}</h2>
+      <p className="mt-2 text-sm font-semibold text-slate-500">{chapters[chapter].name}</p>
       <div className={"cl-nudge mt-5 "+(story.urgent?"border-amber-200 bg-amber-50 text-amber-950":"")}>
        {story.urgent?<ShieldAlert className="mr-2 inline h-4 w-4"/>:<Sparkles className="mr-2 inline h-4 w-4"/>}
        {safeNote}
