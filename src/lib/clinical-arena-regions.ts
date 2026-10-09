@@ -13,6 +13,14 @@ export const clinicalRegions = [
   "Knee",
   "Foot & Ankle",
   "General / Other",
+  "Neurological Function",
+  "Child Development",
+  "Heart & Lungs",
+  "Falls & Mobility",
+  "Vestibular & Balance",
+  "Pelvic Health",
+  "Cancer Rehabilitation",
+  "ICU & Acute Care",
 ] as const;
 
 export type ClinicalRegion = typeof clinicalRegions[number];
@@ -42,8 +50,75 @@ const authoredRegions:Record<string,ClinicalRegion> = {
   "achilles-01":"Foot & Ankle",
 };
 
+const multidisciplinaryRegionByPrefix:Record<string,ClinicalRegion>={
+ "multi-neuro-stroke-motor": "Neurological Function",
+ "multi-neuro-neglect": "Neurological Function",
+ "multi-neuro-aphasia": "Neurological Function",
+ "multi-neuro-parkinson": "Neurological Function",
+ "multi-neuro-ms": "Neurological Function",
+ "multi-neuro-sci-incomplete": "Neurological Function",
+ "multi-neuro-sci-pressure": "Neurological Function",
+ "multi-neuro-tbi": "Neurological Function",
+ "multi-neuro-neuropathy": "Neurological Function",
+ "multi-neuro-gbs": "Neurological Function",
+ "multi-neuro-als": "Neurological Function",
+ "multi-neuro-fnd": "Neurological Function",
+ "multi-peds-cp-unilateral": "Child Development",
+ "multi-peds-cp-bilateral": "Child Development",
+ "multi-peds-motor-delay": "Child Development",
+ "multi-peds-torticollis": "Child Development",
+ "multi-peds-plagio": "Child Development",
+ "multi-peds-down": "Child Development",
+ "multi-peds-dcd": "Child Development",
+ "multi-peds-autism": "Child Development",
+ "multi-peds-dmd": "Child Development",
+ "multi-peds-jia": "Child Development",
+ "multi-peds-bpi": "Child Development",
+ "multi-peds-scoliosis": "Child Development",
+ "multi-cardio-copd": "Heart & Lungs",
+ "multi-cardio-asthma": "Heart & Lungs",
+ "multi-cardio-bronchiectasis": "Heart & Lungs",
+ "multi-cardio-pneumonia": "Heart & Lungs",
+ "multi-cardio-longcovid": "Heart & Lungs",
+ "multi-cardio-hf": "Heart & Lungs",
+ "multi-cardio-postmi": "Heart & Lungs",
+ "multi-cardio-cabg": "Heart & Lungs",
+ "multi-cardio-valve": "Heart & Lungs",
+ "multi-cardio-ild": "Heart & Lungs",
+ "multi-cardio-ph": "Heart & Lungs",
+ "multi-cardio-pe": "Heart & Lungs",
+ "multi-ger-frailty": "Falls & Mobility",
+ "multi-ger-sarcopenia": "Falls & Mobility",
+ "multi-ger-hip-fracture": "Falls & Mobility",
+ "multi-ger-falls": "Falls & Mobility",
+ "multi-ger-osteoporosis": "Falls & Mobility",
+ "multi-ger-orthostatic": "Falls & Mobility",
+ "multi-vest-posterior": "Vestibular & Balance",
+ "multi-vest-horizontal": "Vestibular & Balance",
+ "multi-vest-uvh": "Vestibular & Balance",
+ "multi-vest-migraine": "Vestibular & Balance",
+ "multi-vest-pppd": "Vestibular & Balance",
+ "multi-vest-central": "Vestibular & Balance",
+ "multi-women-sui": "Pelvic Health",
+ "multi-women-uui": "Pelvic Health",
+ "multi-women-prolapse": "Pelvic Health",
+ "multi-women-diastasis": "Pelvic Health",
+ "multi-women-pgp": "Pelvic Health",
+ "multi-onc-breast": "Cancer Rehabilitation",
+ "multi-onc-cipn": "Cancer Rehabilitation",
+ "multi-onc-fatigue": "Cancer Rehabilitation",
+ "multi-onc-mscc": "Cancer Rehabilitation",
+ "multi-icu-weakness": "ICU & Acute Care",
+ "multi-icu-vent": "ICU & Acute Care",
+ "multi-icu-unstable": "ICU & Acute Care"
+};
+
 export function regionOfClinicalCase(id:string):ClinicalRegion {
   if(Object.prototype.hasOwnProperty.call(authoredRegions,id)) return authoredRegions[id];
+  const multiMatch=/^(multi-.+)-[1-5]$/.exec(id);
+  if(multiMatch&&Object.prototype.hasOwnProperty.call(multidisciplinaryRegionByPrefix,multiMatch[1])){
+    return multidisciplinaryRegionByPrefix[multiMatch[1]];
+  }
   const match=/^expanded-(\d{2})-[1-5]$/.exec(id);
   if(!match) return "General / Other";
   const condition=Number(match[1]);
