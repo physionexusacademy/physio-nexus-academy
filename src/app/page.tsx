@@ -26,6 +26,8 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { knowledgeArticles } from "@/lib/knowledge-content";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 import { featuredFaculty } from "@/lib/faculty";
+import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard";
+import "./daily-challenge/daily-challenge.css";
 
 export const metadata: Metadata = {
   title: { absolute: "Physio Nexus Academy | Physiotherapy Learning & Patient Care Pakistan" },
@@ -91,6 +93,14 @@ const portalActions = [
     href: "/treatment-plans",
     icon: ClipboardList,
     tone: "from-teal-500 to-emerald-600",
+    soft: "bg-teal-50 border-teal-100",
+  },
+  {
+    title: "Daily Clinical Challenge",
+    description: "Five questions every day, live scores, and monthly and yearly champion leaderboards.",
+    href: "/daily-challenge",
+    icon: Trophy,
+    tone: "from-teal-600 to-emerald-700",
     soft: "bg-teal-50 border-teal-100",
   },
   {
@@ -261,6 +271,32 @@ export default async function HomePage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f8fcfb] py-10 sm:py-14" aria-label="PNA daily learning competition">
+        <div className="container-content grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(350px,.85fr)]">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-3 py-2 text-xs font-extrabold uppercase tracking-[.12em] text-teal-800">
+              <Trophy className="h-4 w-4"/> PNA Daily Clinical Challenge
+            </span>
+            <h2 className="mt-5 font-serif text-3xl font-bold leading-tight text-[#153446] sm:text-4xl">
+              Today's challenge. <span className="text-teal-700">Tomorrow's champion.</span>
+            </h2>
+            <p className="mt-4 text-sm leading-8 text-slate-600 sm:text-base">
+              A fresh physiotherapy knowledge quiz every midnight Pakistan time.
+              Compete for points and see who's leading today, this month and this year.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2 text-xs font-bold text-teal-800">
+              <span className="rounded-full border border-teal-100 bg-white px-3 py-2">5 questions</span>
+              <span className="rounded-full border border-teal-100 bg-white px-3 py-2">100 points maximum</span>
+              <span className="rounded-full border border-teal-100 bg-white px-3 py-2">Public champions</span>
+            </div>
+            <a href="/daily-challenge" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-teal-800">
+              Play today's challenge <ArrowRight className="h-4 w-4"/>
+            </a>
+          </div>
+          <DailyLeaderboard compact title="Today's Top 5"/>
         </div>
       </section>
 
