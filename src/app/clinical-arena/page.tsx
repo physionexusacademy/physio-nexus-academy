@@ -265,7 +265,7 @@ export default function ClinicalArenaPage(){
     <div><p className="text-sm font-bold text-teal-900">Want to understand this case in depth?</p>
      <p className="mt-1 text-xs leading-6 text-teal-800">Read the same patient's story, assessment reasoning, treatment principles and follow-up in Case Lab.</p>
     </div>
-    <Link href={"/case-lab/episode?id="+encodeURIComponent(item.id)}
+    <Link href={"/case-lab/episode?id="+encodeURIComponent(item.id)} target="_blank" rel="noopener noreferrer"
      className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white hover:bg-teal-800">
      Study this case in Case Lab <ArrowRight className="h-4 w-4"/>
     </Link>
