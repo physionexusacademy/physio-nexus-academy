@@ -206,3 +206,50 @@
 @media (prefers-reduced-motion:reduce){
   .pna-sig-explore *{scroll-behavior:auto!important;transition:none!important;}
 }
+
+
+/* Final approved hero: TRUE transparent cutout (no boxed photograph or faux gradient mask).
+ * src = /images/pna-founder-hero.avif; rest of site still uses the founder's standard photo.
+ */
+.pna-vision-founder-photo {
+  right:-1%;bottom:46px;min-width:0;width:43%;height:94%;
+  overflow:visible;z-index:2;
+}
+.pna-vision-founder-photo img {
+  width:100%;height:100%;object-fit:contain!important;
+  object-position:center bottom!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  border:0!important;border-radius:0!important;
+  filter:drop-shadow(0 9px 15px rgba(9,81,104,.15))!important;
+}
+.pna-vision-founder-label { display:none!important; }
+.pna-vision-copy { position:relative;z-index:3;max-width:61%; }
+.pna-vision-banner-actions { position:relative;z-index:5; }
+@media(max-width:900px) {
+  .pna-vision-founder-photo {right:-2%;width:48%;height:87%;bottom:51px;}
+}
+@media(max-width:720px) {
+  .pna-vision-banner {min-height:383px;}
+  .pna-vision-founder-photo {right:-5%;bottom:48px;width:57%;height:82%;z-index:2;}
+  .pna-vision-copy {max-width:70%;padding-bottom:108px;}
+  .pna-vision-copy h1 {font-size:clamp(29px,6.75vw,42px);letter-spacing:-.035em;}
+  .pna-vision-founder-cta {display:inline-flex!important;font-size:10px;}
+  .pna-vision-banner-actions {gap:8px;margin-top:18px;}
+  .pna-vision-primary {padding:8px 12px;min-height:41px;font-size:11px;}
+}
+@media(max-width:440px) {
+  .pna-vision-banner {min-height:354px;}
+  .pna-vision-founder-photo {right:-7.5%;bottom:51px;width:61%;height:76%;}
+  .pna-vision-copy {max-width:71%;padding-top:23px;padding-left:15px;}
+  .pna-vision-copy h1 {font-size:clamp(28px,7.4vw,32px);line-height:1.04;}
+  .pna-vision-subtitle {max-width:204px;font-size:13px;margin-top:13px;}
+  .pna-vision-primary {padding:8px 11px;font-size:10px;}
+  .pna-vision-founder-cta {font-size:9px;gap:3px;white-space:nowrap;}
+  .pna-vision-founder-cta svg {width:12px;height:12px;}
+  .pna-vision-promise {z-index:6;}
+}
+@media(max-width:370px) {
+  .pna-vision-copy h1 {font-size:27px;}
+  .pna-vision-founder-photo {right:-9%;width:63%;}
+  .pna-vision-founder-cta {font-size:8px;}
+}
