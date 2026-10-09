@@ -50,7 +50,7 @@ export function CaseLabLibrary({cases,categories}:Props){
  const [limit,setLimit]=useState(12);
  const resultRef=useRef<HTMLElement|null>(null);
 
- const totals=useMemo(()=>new Map(categories.map(name=>[
+ const totals=useMemo(()=>new Map<string,number>(categories.map(name=>[
   name,cases.filter(c=>c.category===name).length
  ])),[categories,cases]);
 
