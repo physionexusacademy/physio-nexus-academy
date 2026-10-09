@@ -1,0 +1,84 @@
+/* PNA Daily Clinical Challenge — light, premium, motivating without heavy media. */
+.dc-page{background:radial-gradient(circle at 95% 5%,#e9f8f5 0,transparent 36%),linear-gradient(180deg,#fbfdfc,#fff 570px);color:#193a4d;min-height:100vh}
+.dc-hero{position:relative;overflow:hidden;border:1px solid #d7e9e5;border-radius:28px;background:linear-gradient(126deg,#fff 35%,#effaf7 100%);box-shadow:0 24px 60px -51px #0c5663}
+.dc-hero:before{content:"";position:absolute;right:-78px;top:-110px;width:315px;height:315px;border:1px solid #d3eae5;border-radius:50%;box-shadow:0 0 0 35px #edf8f54a,0 0 0 75px #edf8f534;pointer-events:none}
+.dc-overline,.dc-eyebrow{display:inline-flex;align-items:center;gap:5px;color:#087973;font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}
+.dc-hero-logo{display:inline-flex;align-items:center;gap:9px;border-radius:999px;border:1px solid #bee1d9;background:white;padding:7px 13px;font-size:11px;color:#0b726c;font-weight:800;letter-spacing:.09em}
+.dc-hero-heading{font-family:Georgia,Cambria,serif;font-size:clamp(2.05rem,4.15vw,3.6rem);font-weight:750;line-height:1.14;letter-spacing:-.026em;color:#153446}
+.dc-hero-heading span{color:#07837b}
+.dc-hero-banner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:530px}
+.dc-hero-chip{display:flex;gap:9px;align-items:center;border:1px solid #d7ece5;border-radius:14px;background:#fffdfdc9;padding:10px;font-size:11px;line-height:1.5;font-weight:800;color:#2b5860}
+.dc-hero-chip svg{flex-shrink:0;color:#0a8279}
+.dc-play{border:1px solid #dceae8;border-radius:24px;background:white;box-shadow:0 20px 50px -45px #215f64;overflow:hidden}
+.dc-onboarding{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr)}
+.dc-mission-mast{padding:clamp(20px,3.7vw,38px);background:radial-gradient(circle at 8% 90%,#dff3ec 0,transparent 58%),linear-gradient(145deg,#f7fcfa,#fff);border-right:1px solid #e2f0ec}
+.dc-mission-stamp{display:inline-flex;align-items:center;gap:7px;border:1px solid #bfe1d9;color:#078079;border-radius:999px;background:#fff;padding:8px 13px;font-size:10px;letter-spacing:.11em;font-weight:850}
+.dc-mission-stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:1px solid #d8e9e6;border-radius:15px;padding:12px;background:#ffffffcf}
+.dc-mission-stat strong{font-size:24px;line-height:1.1;font-weight:850;letter-spacing:-.04em;color:#143b4b}
+.dc-mission-stat span{font-size:10px;font-weight:750;color:#637985;line-height:1.45}
+.dc-signup{padding:clamp(20px,3.7vw,38px)}
+.dc-label{display:block;margin-top:17px;margin-bottom:6px;color:#314d5f;font-size:12px;font-weight:800}
+.dc-input{width:100%;border:1px solid #cbdedc;border-radius:13px;padding:13px 14px;font-size:14px;color:#163447;background:#fff;outline:0;transition:border .2s,box-shadow .2s}
+.dc-input:focus{border-color:#087f79;box-shadow:0 0 0 3px #0d8c8522}
+.dc-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;border-radius:13px;background:#087d76;color:white;padding:11px 20px;font-size:12px;font-weight:850;letter-spacing:.035em;transition:background .2s,transform .2s,box-shadow .2s;box-shadow:0 12px 23px -17px #00695e}
+.dc-primary:not(:disabled):hover{background:#086b66;transform:translateY(-1px);box-shadow:0 16px 24px -19px #00695e}
+.dc-primary:disabled{cursor:not-allowed;opacity:.55}
+.dc-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:1px solid #beddd7;border-radius:13px;padding:10px 16px;background:white;color:#08746d;font-size:12px;font-weight:800;transition:background .2s}
+.dc-secondary:hover{background:#eff9f6}
+.dc-question-panel{padding:clamp(20px,4vw,38px);min-height:450px}
+.dc-timer{display:inline-flex;align-items:center;gap:7px;border:1px solid #b6ddd7;background:#eef9f5;border-radius:999px;padding:9px 14px;color:#086d66;font-size:15px;font-weight:850;font-variant-numeric:tabular-nums}
+.dc-timer-urgent{background:#fff4ed;border-color:#f5c1a6;color:#ac4b2c;animation:dc-pulse 1s ease-in-out infinite}
+.dc-progress-segment{height:7px;flex:1;border-radius:10px;background:#eaf1ef}
+.dc-progress-on{background:#0d847c}
+.dc-option{display:flex;align-items:center;gap:13px;text-align:left;width:100%;border:1px solid #d9e7e6;background:white;border-radius:14px;padding:13px 16px;color:#263f4e;transition:background .15s,border .15s,transform .15s}
+.dc-option:hover{border-color:#7fbbb2;background:#f4fbf8;transform:translateX(2px)}
+.dc-option-selected{border-color:#0a8279;background:#eef9f5}
+.dc-option-letter{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;border-radius:9px;background:#eff5f4;color:#2d6660;font-size:13px;font-weight:900}
+.dc-option-selected .dc-option-letter{background:#087f79;color:white}
+.dc-result{text-align:center;padding:clamp(25px,4vw,45px)}
+.dc-result-orbit{display:flex;align-items:center;justify-content:center;width:86px;height:86px;border-radius:50%;border:1px solid #c8e5dd;background:radial-gradient(circle,#fff,#dcf2eb);box-shadow:0 0 0 9px #edf8f4;margin-inline:auto}
+.dc-score-number{font-size:clamp(4rem,8vw,6rem);font-weight:900;letter-spacing:-.08em;line-height:1.15;color:#087b74;margin-top:10px;font-variant-numeric:tabular-nums}
+.dc-score-number span{font-size:20px;letter-spacing:0;color:#8da8a4}
+.dc-review-item{text-align:left;border:1px solid #ddebe7;background:#fafdfb;border-radius:15px;padding:16px}
+.dc-board{border:1px solid #dceae8;border-radius:24px;background:white;overflow:hidden;box-shadow:0 20px 50px -44px #164b5a}
+.dc-board-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px;border-bottom:1px solid #e2efea}
+.dc-hero-icon{display:flex;align-items:center;justify-content:center;width:43px;height:43px;flex-shrink:0;border-radius:13px;background:#ecf8f4;color:#087f78}
+.dc-live{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border:1px solid #cfebe0;border-radius:999px;background:#f1fbf6;padding:5px 8px;color:#24775f;font-size:10px;font-weight:800}
+.dc-live-dot{display:inline-block;width:6px;height:6px;background:#20a77d;border-radius:50%;box-shadow:0 0 0 3px #a3ebd55c;animation:dc-pulse 2s ease-in-out infinite}
+.dc-tabs{display:flex;gap:5px;margin:16px;padding:4px;border:1px solid #e1ecea;border-radius:13px;background:#f4f8f7}
+.dc-tab{flex:1;padding:9px 7px;text-align:center;color:#56747d;font-size:12px;font-weight:750;border-radius:9px;transition:background .2s}
+.dc-tab-active{background:white;color:#08776f;box-shadow:0 1px 6px #0d514b12}
+.dc-board-period{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 18px}
+.dc-nav-btn{display:inline-flex;align-items:center;justify-content:center;width:31px;height:31px;border:1px solid #d7e8e3;border-radius:9px;background:white;color:#087c75}
+.dc-nav-btn:disabled{cursor:not-allowed;opacity:.3}
+.dc-table-wrap{overflow-x:auto}
+.dc-table{width:100%;border-collapse:collapse;text-align:left;font-size:12px}
+.dc-table thead{background:#f7faf9;color:#71858c;font-size:10px;letter-spacing:.065em;text-transform:uppercase}
+.dc-table th{font-weight:850;padding:10px 12px}
+.dc-table td{padding:12px;border-top:1px solid #edf3f1;vertical-align:middle}
+.dc-table tr.dc-champion{background:#f2fbf7}
+.dc-rank{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-size:11px;font-weight:850;color:#607782;background:#f0f5f4}
+.dc-rank-medal{background:#e2f4ed;color:#12806f}
+.dc-board-action{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e0eee8;padding:15px 19px;color:#087c74;font-size:12px;font-weight:850;transition:background .2s}
+.dc-board-action:hover{background:#f4faf7}
+.dc-page-btn{border:1px solid #d2e7e1;border-radius:9px;background:white;padding:7px 11px;font-size:11px;font-weight:800;color:#087970}
+.dc-page-btn:disabled{opacity:.35;cursor:not-allowed}
+.dc-champion-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.dc-footnote{font-size:12px;line-height:1.8;color:#6b8489}
+.dc-page button:focus-visible,.dc-page a:focus-visible{outline:3px solid #0aa296;outline-offset:3px}
+@keyframes dc-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@media(max-width:860px){.dc-onboarding{grid-template-columns:1fr}.dc-mission-mast{border-right:0;border-bottom:1px solid #e2f0ec}}
+@media(max-width:480px){
+ .dc-hero,.dc-board,.dc-play{border-radius:18px}
+ .dc-board-title{padding:14px}
+ .dc-live{font-size:9px}
+ .dc-hero-banner{grid-template-columns:1fr 1fr}
+ .dc-hero-chip:last-child{grid-column:span 2}
+ .dc-mission-stat{padding:8px}
+ .dc-option{gap:9px;padding:11px}
+ .dc-table th,.dc-table td{padding:10px 7px}
+ .dc-table{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .dc-page *, .dc-page *:before,.dc-page *:after{animation:none!important;transition:none!important}
+}
