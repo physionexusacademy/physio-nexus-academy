@@ -93,7 +93,7 @@ export const specialistTemplates:Template[]=[
    "Advise maximal straining as the preferred strengthening method.",
    "Dismiss symptomatic protrusion without discussion."
   ],
-  "why": "Shared decision-making supports conservative prolapse management.",
+  "why": "Symptom-guided pelvic floor muscle training and pressure management are conservative options; discuss pessary or specialist evaluation according to informed patient preference.",
   "safety": false
  },
  {
@@ -318,7 +318,7 @@ export const specialistTemplates:Template[]=[
    "Use heavy strengthening despite unstable vital signs.",
    "Skip nursing and respiratory team coordination."
   ],
-  "why": "Early rehabilitation is individualized to readiness and safety.",
+  "why": "Monitor vital signs, delirium, line safety and strength while progressing bed mobility toward transfers through coordinated early multidisciplinary rehabilitation.",
   "safety": false
  },
  {
@@ -382,7 +382,7 @@ export const specialistTemplates:Template[]=[
    "Proceed with out-of-bed walking despite worsening pressure.",
    "Use exercise intensity to correct an unstable circulation."
   ],
-  "why": "Physiological safety takes priority over mobilization goals.",
+  "why": "Worsening hypotension or escalating circulatory support requires pausing active mobilization and prioritizing stabilization with the ICU team before reassessment.",
   "safety": true,
   "urgency": "The blood pressure keeps dropping and the team is adjusting support."
  }
