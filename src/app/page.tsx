@@ -340,10 +340,10 @@ export default async function HomePage() {
             <div className="dc-flagship-copy">
               <div className="dc-flagship-eyebrow"><Flame className="h-4 w-4" aria-hidden="true"/> PNA'S DAILY FEATURED EXPERIENCE <span className="dc-flagship-eyebrow-dot"/></div>
               <div className="dc-flagship-category"><Sparkles className="h-4 w-4" aria-hidden="true"/> LEARN · COMPETE · LEAD</div>
-              <h1 id="pna-daily-flagship-title" className="dc-flagship-heading">
+              <h2 id="pna-daily-flagship-title" className="dc-flagship-heading">
                 Five questions.<br/>
                 One big <span>challenge.</span>
-              </h1>
+              </h2>
               <p className="dc-flagship-description">
                 Meet the <strong>PNA Daily Clinical Challenge</strong> — a fresh physiotherapy
                 knowledge mission every day. Test your clinical thinking, earn points,
