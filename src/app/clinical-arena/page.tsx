@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import "./arena.css";
 import { feedbackLine } from "@/lib/clinical-arena-humor";
+import { patientAnswer, everydayImpact } from "@/lib/clinical-arena-patient-dialogue";
 import { expandedCases, expandedFlows } from "@/lib/clinical-arena-expanded";
 import { getClinicalExamination } from "@/lib/clinical-arena-examinations";
 import { ArrowRight, BrainCircuit, CheckCircle2, RotateCcw, ShieldAlert, Sparkles, Trophy } from "lucide-react";
@@ -99,6 +100,7 @@ export default function ClinicalArenaPage(){
  const [caseStart,setCaseStart]=useState<number>(0);
  const [caseScore,setCaseScore]=useState(0);
  const [branchAnswers,setBranchAnswers]=useState<number[]>([]);
+ const [dialogueRun,setDialogueRun]=useState(0);
  const [caseHistory,setCaseHistory]=useState<{id:string;score:number;total:number;at:string}[]>([]);
  useEffect(()=>{try{const raw=JSON.parse(localStorage.getItem("pna-arena-case-history-v1")||"[]");if(Array.isArray(raw))setCaseHistory(raw.slice(-60));}catch{}},[]);
  useEffect(()=>{try{localStorage.setItem("pna-arena-case-history-v1",JSON.stringify(caseHistory.slice(-60)));}catch{}},[caseHistory]);
@@ -111,14 +113,28 @@ export default function ClinicalArenaPage(){
  },[specialty,caseOrder]);
  const item=filtered[position];
  const extraQuestions=item?[
-  {q:"When did the symptoms start, and how have they changed?",a:item.history,tag:"onset"},
-  {q:"What activities make symptoms worse or better?",a:item.clue,tag:"behavior"},
-  {q:"Are there any concerning symptoms that need urgent attention?",a:item.safety?"Yes. New neurological or bladder/bowel symptoms need emergency assessment.":"No urgent warning features are described in this simplified case, but always screen appropriately.",tag:"safety"},
-  {q:"What is your main functional problem?",a:item.findings[0]||"Function needs further assessment.",tag:"function"}
+  {q:"When did these symptoms start, and how have they affected you?",a:patientAnswer({caseId:item.id,questionKey:"onset",clinicalAnswer:item.history,encounter:dialogueRun,urgent:!!item.safety,allowHumor:true}),tag:"onset"},
+  {q:"How have your symptoms affected your usual activities?",a:patientAnswer({caseId:item.id,questionKey:"behavior",clinicalAnswer:everydayImpact(item.history),encounter:dialogueRun,urgent:!!item.safety,allowHumor:false}),tag:"behavior"},
+  {q:"Have you noticed anything serious or unusual that needs urgent attention?",a:item.safety?"Yes. I have noticed concerning symptoms and I need urgent medical assessment.":"I have not described any emergency warning symptoms so far. Please still check for them.",tag:"safety"},
+  {q:"What would you most like to get back to doing?",a:patientAnswer({caseId:item.id,questionKey:"function",clinicalAnswer:everydayImpact(item.history),encounter:dialogueRun,urgent:!!item.safety,allowHumor:true}),tag:"function"}
  ]:[];
- const flow=item?flows[item.id]:undefined;
+ const rawFlow=item?flows[item.id]:undefined;
+ const flow=rawFlow&&item?{
+  ...rawFlow,
+  chief:patientAnswer({caseId:item.id,questionKey:"chief",clinicalAnswer:rawFlow.chief,encounter:dialogueRun,urgent:!!item.safety,allowHumor:true}),
+  historyQuestions:rawFlow.historyQuestions.map(([q,a],i)=>[q,patientAnswer({caseId:item.id,questionKey:"history-"+i,clinicalAnswer:a,encounter:dialogueRun,urgent:!!item.safety,allowHumor:i>0})] as [string,string])
+ }:undefined;
  const examQuestion=item?getClinicalExamination(item):null;
  const current=stage==="examination"?examQuestion!:stage==="reassessment"?{question:item?.safety?"What is the safest next step after identifying urgent red flags?":"At follow-up, how should you judge whether the management plan is helping?",options:item?.safety?["Confirm urgent referral and appropriate medical handover; do not delay for routine treatment","Continue manual therapy and wait several weeks","Dismiss the neurological symptoms if pain decreases"]:["Recheck patient goals, symptoms, function and relevant objective measures; adjust the plan based on response","Continue the same treatment indefinitely without measuring progress","Increase treatment intensity automatically even if symptoms deteriorate"],correct:0,why:item?.safety?"Suspected serious spinal pathology needs urgent assessment and safe handover.":"Monitor meaningful outcomes, adverse responses and functional progress. Reconsider the diagnosis or refer when the course is unexpected."}:stage==="differential"?{question:"Which differential diagnoses should you prioritize?",options:flow?.differential||[],correct:flow?.differentialCorrect??0,why:flow?.differentialWhy||""}:stage==="diagnosis"?{question:item?.question||"",options:item?.options||[],correct:item?.correct??0,why:item?.explanation||""}:{question:"Which is the most appropriate management plan?",options:flow?.treatment||[],correct:flow?.treatmentCorrect??0,why:flow?.treatmentWhy||""};
+ function rotatePatientConversation(){
+  // Persist the encounter sequence so revisiting patients changes their lines.
+  let next=dialogueRun+1;
+  try{
+   next=(Number(localStorage.getItem("pna-arena-dialogue-encounters-v1"))||0)+1;
+   localStorage.setItem("pna-arena-dialogue-encounters-v1",String(next));
+  }catch{}
+  setDialogueRun(next);
+ }
  function randomizeCases(nextSpecialty:string){
   const pool=cases.filter(c=>nextSpecialty==="All specialties"||c.specialty===nextSpecialty);
   const shuffled=[...pool];
@@ -142,6 +158,7 @@ export default function ClinicalArenaPage(){
   if(starterIndex<0)starterIndex=0;
   const [starter]=shuffled.splice(starterIndex,1);
   if(!starter){setCaseOrder([]);setCaseReady(true);return;}
+  rotatePatientConversation();
   setCaseOrder([starter.id,...shuffled.map(c=>c.id)]);
   setCaseReady(true);
   try{
@@ -170,7 +187,7 @@ export default function ClinicalArenaPage(){
   const nextIndex=stages.indexOf(stage)+1;
   if(nextIndex<stages.length){setStage(stages[nextIndex]);setSelected(null);setRevealed(false);setFeedback("");return;}
   if(position+1>=filtered.length){setFinished(true);setCompleted(v=>v+1);setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));return;}
-  setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));setPosition(v=>v+1);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setCaseScore(0);setNotes([]);setBranchAnswers([]);setAsked([]);setExamNotes(false);setHistoryHint(false);
+  setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));setPosition(v=>v+1);rotatePatientConversation();setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setCaseScore(0);setNotes([]);setBranchAnswers([]);setAsked([]);setExamNotes(false);setHistoryHint(false);
  }
  if(!caseReady)return <main className="container-content py-12" role="status">Preparing your clinical challenge…</main>;
  if(!item||!flow)return <main className="container-content py-12">No cases available.</main>;
