@@ -61,7 +61,7 @@ const sections=["keyQuestions","examinationSequence","decisionLogic","practicalM
 for(const [key,guide] of Object.entries(added)){
  for(const section of sections)assert(Array.isArray(guide[section])&&guide[section].length>=3,key+": insufficient "+section);
 }
-assert(files.library.includes("router.push(next.href)"),"Surprise patient option missing");
+assert(files.library.includes("router.push(pool[Math.floor(Math.random()*pool.length)].href)") && files.library.includes("onClick={surprise}"),"Surprise patient option missing");
 assert(files.library.includes("c.keywords"),"Search should find diagnosis terms while keeping titles hidden");
 assert(files.catalog.includes("focus:string"),"All case cards must expose a body region or clinical focus");
 assert(files.episodes.includes("richerMskDiagnosisOptions"),"MSK Case Lab does not use improved clinical distractors");
