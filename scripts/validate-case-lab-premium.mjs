@@ -65,6 +65,12 @@ assert(files.library.includes("router.push(next.href)"),"Surprise patient option
 assert(files.library.includes("c.keywords"),"Search should find diagnosis terms while keeping titles hidden");
 assert(files.catalog.includes("focus:string"),"All case cards must expose a body region or clinical focus");
 assert(files.episodes.includes("richerMskDiagnosisOptions"),"MSK Case Lab does not use improved clinical distractors");
+assert(files.library.includes("Case lessons"),"Case Lab must be explicitly labelled as a learning library");
+assert(files.episodes.includes("teachingDiagnosis:item.finalDiagnosis"),"Author's clinical conclusion missing from deep-dive lesson");
+assert(files.learning.includes("story.teachingDiagnosis ||"),"Deep-dive clinical conclusion not used in teaching");
+assert(files.episodes.includes('const urgent=item.specialty.includes("Red Flags")'),"Routine safety screens must not turn every authored case into an emergency");
+assert(!files.episodes.includes("const urgent=!!item.redFlags?.length"),"A red-flag checklist alone does not mean an emergency is present");
+assert(files.episodes.includes("history:item.presentation.slice(0,5).map"),"Patient interview answers must be based on case-provided history");
 const checks={
  premiumCss:read("src/app/case-lab/case-lab.css").includes(".cl-hero"),
  filter:files.library.includes("pna-case-search")&&files.library.includes("chooseSpecialty(next:string)"),
