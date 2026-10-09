@@ -48,3 +48,31 @@
 .case-lab-v3 .cl-breadcrumb{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;color:#0d7678;font-size:.79rem;font-weight:750}
 @media(max-width:640px){.case-lab-v3 .cl-hero{border-radius:21px}.case-lab-v3 .cl-overview{border-radius:18px}.case-lab-v3 .cl-story{min-height:250px;padding:1.2rem}.case-lab-v3 .cl-step{font-size:.67rem;padding:.49rem .59rem}}
 @media(prefers-reduced-motion:reduce){.case-lab-v3 .cl-story,.case-lab-v3 .cl-button{transition:none!important;transform:none!important}}
+
+
+/* Case Lab v4: specialty-first navigation inspired by the MSK Special Tests explorer. */
+.case-lab-v3 .cl-specialty-panel{min-width:0}
+.case-lab-v3 .cl-specialty-choice{color:#476070;background:#fff;position:relative}
+.case-lab-v3 .cl-specialty-choice[data-active="true"]{background:#087c7c;color:white;border-color:#087c7c;box-shadow:0 10px 24px -17px rgba(5,86,90,.65)}
+.case-lab-v3 .cl-specialty-choice[data-active="true"] svg{color:white}
+.case-lab-v3 .cl-specialty-choice[data-active="true"] .cl-specialty-count{background:rgba(255,255,255,.2);color:white}
+.case-lab-v3 .cl-specialty-choice:hover:not([data-active="true"]){color:#086e72}
+.case-lab-v3 .cl-specialty-choice:focus-visible,.case-lab-v3 .cl-all-specialties:focus-visible{outline:3px solid #12a9a1;outline-offset:3px}
+.case-lab-v3 .cl-all-specialties{transition:background .16s,border-color .16s}
+.case-lab-v3 .cl-all-specialties:hover{background:#dcf2ed}
+.case-lab-v3 .cl-all-specialties[data-active="true"]{color:white;background:#087c7c;border-color:#087c7c}
+.case-lab-v3 .cl-all-specialties[data-active="true"] span:last-child{color:#075b5c}
+.case-lab-v3 .cl-select{width:100%;height:48px;border-radius:12px;border:1px solid #d5e4e8;background:#fff;color:#214457;padding:0 .75rem;outline:none;font-size:.83rem;font-weight:600;cursor:pointer}
+.case-lab-v3 .cl-select:focus{border-color:#08918c;box-shadow:0 0 0 3px #d5f3ee}
+.case-lab-v3 .cl-patient-file{min-height:270px}
+.case-lab-v3 .cl-patient-file:hover .cl-case-title{color:#087976}
+.case-lab-v3 .cl-patient-file .cl-story-label{line-height:1.65}
+.case-lab-v3 #case-lab-results:focus{outline:0}
+@media(min-width:1024px){
+ .case-lab-v3 .cl-specialty-panel{max-height:calc(100vh - 7.8rem);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#b8d5d9 transparent}
+}
+@media(max-width:640px){
+ .case-lab-v3 .cl-specialty-choice{min-height:106px}
+ .case-lab-v3 .cl-specialty-choice .cl-specialty-count{align-self:flex-start}
+ .case-lab-v3 .cl-patient-file{min-height:235px}
+}
