@@ -61,6 +61,14 @@ const flows:Record<string,Flow>={
 type Stage="history"|"examination"|"differential"|"diagnosis"|"treatment"|"reassessment";
 type PreDiagnosisDecision={stage:Stage;correct:boolean;best:string;why:string};
 const stages:Stage[]=["history","examination","differential","diagnosis","treatment","reassessment"];
+const stageNudges:Record<Stage,string[]>={
+ history:["Every great diagnosis starts with a good question. Your crystal ball is on annual leave.","Be curious, not psychic. Patients bring clues, not answer keys.","The patient has the story. Your job is to ask the right chapter."],
+ examination:["Your hands can test a hypothesis; they cannot read minds.","Choose the examination that changes your next decision, not just the one with the fanciest name.","One useful test beats five impressive-looking guesses."],
+ differential:["Keep more than one possibility alive. Even Sherlock checked the clues.","A favorite diagnosis is not a diagnosis. Make the evidence earn it.","Think of alternatives before the case thinks of them for you."],
+ diagnosis:["Time to connect the dots. No peeking at the answer sheet.","Commit to the best working diagnosis, and leave room for new evidence.","A working diagnosis is a reasoned hypothesis, not a magic trick."],
+ treatment:["The best plan fits the patient, not just the textbook.","A clever treatment is useless if it ignores safety and patient goals.","Choose a plan that the patient can actually follow outside this screen."],
+ reassessment:["Did it help? The patient gets the final vote.","Reassessment: where confident guesses meet actual outcomes.","No victory lap until you check what changed."]
+};
 const stageNames:Record<Stage,string>={history:"History taking",examination:"Clinical examination",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning",reassessment:"Reassessment"};
 export default function ClinicalArenaPage(){
  const [specialty,setSpecialty]=useState("All specialties");
@@ -208,7 +216,7 @@ export default function ClinicalArenaPage(){
   {!diagnosisUnlocked&&<p className="mt-2 text-sm text-slate-500">The condition is hidden. Collect clues, examine, and build your differential before submitting a working diagnosis.</p>}
  <div className="pna-patient mt-5 rounded-2xl p-5"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Patient · {item.patient}</p><p className="mt-2 font-semibold">“{flow.chief}”</p></div>
  {stage==="history"?<section className="mt-6">
- <h3 className="text-lg font-bold">Stage 1: Patient history</h3>
+ <h3 className="text-lg font-bold">Stage 1: Patient history</h3><p className="mt-2 rounded-xl border border-teal-100 bg-teal-50/60 px-4 py-3 text-sm font-medium italic leading-6 text-teal-900">{stageNudges.history[(position+asked.length)%stageNudges.history.length]}</p>
  <p className="mt-2 text-sm text-slate-600">All history questions are together below. Ask any question to reveal the patient’s answer, and save important clues to your notes.</p>
  <div className="mt-4 rounded-2xl border border-slate-200 bg-white/90 p-4 sm:p-5">
  <div className="flex flex-wrap items-center justify-between gap-2"><h4 className="font-bold text-slate-800">History questions</h4><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">{asked.length+branchAnswers.length} / {flow.historyQuestions.length+extraQuestions.length} asked</span></div>
@@ -223,7 +231,7 @@ export default function ClinicalArenaPage(){
  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs font-bold uppercase text-slate-500">Findings available after history</p><p className="mt-2 text-sm leading-6">{item.history}</p><ul className="mt-3 list-disc space-y-2 pl-5 text-sm">{item.findings.map(f=><li key={f}>{f}</li>)}</ul></div>
  {stage==="examination"&&<div className="mt-4 rounded-xl border border-teal-200 p-4"><button type="button" onClick={()=>setExamNotes(v=>!v)} className="text-sm font-bold text-teal-800">{examNotes?"Hide":"Review"} available examination observations</button>{examNotes&&<ul className="mt-3 list-disc pl-5 text-sm">{item.findings.map(f=><li key={f}>{f}</li>)}</ul>}</div>}
  {notes.length>0&&<details className="mt-4 rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-bold text-teal-800">Review your interview notes ({notes.length})</summary><ul className="mt-3 list-disc pl-5 text-sm">{notes.map(n=><li key={n}>{n}</li>)}</ul></details>}
- <h3 className="mt-6 text-lg font-bold">Stage {stages.indexOf(stage)+1}: {stageNames[stage]}</h3><p className="mt-3 font-semibold">{current.question}</p>
+ <h3 className="mt-6 text-lg font-bold">Stage {stages.indexOf(stage)+1}: {stageNames[stage]}</h3><p className="mt-3 rounded-xl border border-teal-100 bg-teal-50/60 px-4 py-3 text-sm font-medium italic leading-6 text-teal-900">{stageNudges[stage][position%stageNudges[stage].length]}</p><p className="mt-3 font-semibold">{current.question}</p>
  <div className="mt-4 grid gap-3">{orderedOptions.map(({text:o,original},i)=><button key={o} disabled={revealed} aria-pressed={selected===original} onClick={()=>setSelected(original)} className="pna-question rounded-xl p-4 text-left text-sm font-medium">{String.fromCharCode(65+i)}. {o}</button>)}</div>
  {!revealed?<button onClick={submit} disabled={selected===null} className="pna-primary mt-6 w-full rounded-xl px-5 py-4 font-bold disabled:opacity-50">Check my decision <ArrowRight className="ml-2 inline h-4 w-4"/></button>:null}
  </section>}
@@ -245,7 +253,7 @@ export default function ClinicalArenaPage(){
       </div>}
     </>:<>
       <div className="flex items-center gap-2 font-bold text-teal-800"><CheckCircle2 className="h-5 w-5"/> Decision saved</div>
-      <p className="mt-3 text-sm leading-7 text-slate-700">Your choice is recorded. Answers, scores, and clinical explanations unlock after you submit your working diagnosis in Stage 4. No spoilers before then.</p>
+      <p className="mt-3 text-sm leading-7 text-slate-700">Your choice is recorded. Answers, scores, and clinical explanations unlock after you submit your working diagnosis in Stage 4. No spoilers before then. Keep collecting evidence; even your inner detective needs a few more clues.</p>
     </>}
     <button onClick={advance} className="pna-primary mt-5 w-full rounded-xl px-5 py-4 font-bold">{stage==="reassessment"?(position+1===filtered.length?"View results":"Next patient"):"Continue to "+stageNames[stages[stages.indexOf(stage)+1]]} <ArrowRight className="ml-2 inline h-4 w-4"/></button>
   </div>}
