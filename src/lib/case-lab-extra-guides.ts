@@ -48,7 +48,8 @@ export const supplementalCaseGuides:Record<string,ClinicalCaseGuide>={
     ],
     "masterTakeaway": [
       "The outcome is meaningful participation with improved bladder control—not a perfect-looking abdominal exercise.",
-      "Ask, examine, obtain consent, retrain function and progress impact according to symptom response."
+      "Ask, examine, obtain consent, retrain function and progress impact according to symptom response.",
+      "If symptoms persist or there is pain, pelvic heaviness, or uncertainty about pelvic-floor function, arrange appropriate pelvic-health assessment rather than assuming every runner needs the same exercise plan."
     ]
   },
   "older-adult-recurrent-falls-orthostatic-symptoms": {
@@ -98,7 +99,8 @@ export const supplementalCaseGuides:Record<string,ClinicalCaseGuide>={
     ],
     "masterTakeaway": [
       "Recurrent falls need a detective's approach: understand the event, identify combined risks and act on the causes.",
-      "Safety comes before challenge; meaningful mobility comes after the causes are addressed."
+      "Safety comes before challenge; meaningful mobility comes after the causes are addressed.",
+      "Document positional symptoms and discuss suspected orthostatic or medication-related contributors with the relevant medical team; safe mobility training should address identified risks rather than hiding the cause."
     ]
   },
   "overhead-athlete-shoulder-load-capacity": {
@@ -148,7 +150,8 @@ export const supplementalCaseGuides:Record<string,ClinicalCaseGuide>={
     ],
     "masterTakeaway": [
       "Load management and capacity development should be linked to the exact overhead demands of the patient.",
-      "Progression is a conversation between symptoms, function, strength and training exposure."
+      "Progression is a conversation between symptoms, function, strength and training exposure.",
+      "An effective return-to-overhead plan is measured by tolerated real tasks and their next-day response, not just whether one strength test looks normal."
     ]
   },
   "runner-anterior-knee-pain-load-capacity": {
@@ -198,7 +201,8 @@ export const supplementalCaseGuides:Record<string,ClinicalCaseGuide>={
     ],
     "masterTakeaway": [
       "Rehabilitation aims to increase the runner's load tolerance while reducing symptom sensitivity.",
-      "Measure what the runner actually needs to do, then make progress reproducible."
+      "Measure what the runner actually needs to do, then make progress reproducible.",
+      "Progression works best when stair tolerance, running exposure, lower-limb capacity and the following day's symptom response are considered together."
     ]
   },
   "acl-reconstruction-return-to-sport-readiness": {
@@ -248,7 +252,8 @@ export const supplementalCaseGuides:Record<string,ClinicalCaseGuide>={
     ],
     "masterTakeaway": [
       "Good ACL rehabilitation prepares the athlete for the unpredictability and intensity of the sport, not only for a neat clinic test.",
-      "Multiple domains of readiness must tell a consistent story before clearance."
+      "Multiple domains of readiness must tell a consistent story before clearance.",
+      "Where physical or psychological readiness remains inadequate, use focused rehabilitation and repeat the relevant tests rather than granting clearance based on elapsed time alone."
     ]
   }
 };
