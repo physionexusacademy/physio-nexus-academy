@@ -3,6 +3,7 @@ import {notFound} from "next/navigation";
 import {getClinicalCase} from "@/lib/all-clinical-cases";
 import {clinicalCaseIndex} from "@/lib/clinical-case-index";
 import {clinicalCaseGuides} from "@/lib/clinical-case-guides";
+import {supplementalCaseGuides} from "@/lib/case-lab-extra-guides";
 import {adaptDetailedCase} from "@/lib/case-lab-story";
 import {CaseLabExperience} from "../CaseLabExperience";
 import "../case-lab.css";
@@ -27,5 +28,5 @@ export default async function ClinicalCasePage({params}:{params:Promise<{slug:st
  const {slug}=await params;
  const item=getClinicalCase(slug);
  if(!item)notFound();
- return <CaseLabExperience story={adaptDetailedCase(item,clinicalCaseGuides[slug])}/>;
+ return <CaseLabExperience story={adaptDetailedCase(item,clinicalCaseGuides[slug]||supplementalCaseGuides[slug])}/>;
 }
