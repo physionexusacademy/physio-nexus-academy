@@ -13,7 +13,7 @@ import type {LabCaseCard} from "@/lib/case-lab-catalog";
 
 type Props={cases:LabCaseCard[];categories:string[]};
 type Level="All levels"|"Clinical"|"Advanced";
-type Mode="All experiences"|"Story challenges"|"Deep dives";
+type Mode="All experiences"|"Case lessons"|"Deep dives";
 
 const icons:Record<string,LucideIcon>={
  "MSK & Sports":Activity,
@@ -79,7 +79,7 @@ export function CaseLabLibrary({cases,categories}:Props){
    if(category!=="All cases"&&c.category!==category)return false;
    if(focus!=="All focuses"&&c.focus!==focus)return false;
    if(level!=="All levels"&&c.difficulty!==level)return false;
-   if(mode==="Story challenges"&&c.kind!=="Interactive scenario")return false;
+   if(mode==="Case lessons"&&c.kind!=="Interactive scenario")return false;
    if(mode==="Deep dives"&&c.kind!=="Clinical deep dive")return false;
    return !needle||[c.patient,c.hook,c.category,c.kind,c.keywords,c.focus]
     .join(" ").toLocaleLowerCase().includes(needle);
@@ -131,8 +131,8 @@ export function CaseLabLibrary({cases,categories}:Props){
       </div>
       <h1 className="cl-display mt-5 max-w-4xl">Choose a specialty.<br/><span className="cl-gradient-word">Meet your patient.</span></h1>
       <p className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 sm:text-base">
-       Every patient has a story. Select a specialty, explore the symptoms and make
-       the decisions before the clinical reasoning is revealed.
+       Every patient has a story. Select a specialty and learn through a realistic patient interview,
+       clinical examination, differential reasoning, treatment planning and follow-up. Then test yourself in Clinical Arena.
       </p>
       <div className="mt-6 flex flex-wrap items-center gap-2.5 text-xs font-bold">
        <span className="cl-kicker"><BookOpen className="h-3.5 w-3.5"/> {cases.length} patient encounters</span>
@@ -154,8 +154,8 @@ export function CaseLabLibrary({cases,categories}:Props){
     <div className="mt-5 grid gap-3 sm:grid-cols-3">
      {[
       {icon:Stethoscope,label:"01 / Discover",text:"Select the clinical specialty you want to practice."},
-      {icon:BrainCircuit,label:"02 / Investigate",text:"Ask questions, examine clues and consider alternatives."},
-      {icon:Check,label:"03 / Learn",text:"Submit your decisions to unlock the clinical debrief."},
+      {icon:BrainCircuit,label:"02 / Understand",text:"Read the patient story, assessment, differential reasoning and treatment guide."},
+      {icon:Check,label:"03 / Apply",text:"Take the learning to Clinical Arena when you are ready for an independent challenge."},
      ].map(({icon:Icon,label,text})=>(
       <div key={label} className="cl-ministat p-4 sm:p-5">
        <Icon className="h-5 w-5 text-teal-700"/>
@@ -277,7 +277,7 @@ export function CaseLabLibrary({cases,categories}:Props){
              Learning format
              <select className="cl-select mt-2" value={mode}
               onChange={e=>{setMode(e.target.value as Mode);setLimit(12)}}>
-              <option>All experiences</option><option>Story challenges</option><option>Deep dives</option>
+              <option>All experiences</option><option>Case lessons</option><option>Deep dives</option>
              </select>
             </label>
            </div>
@@ -299,7 +299,7 @@ export function CaseLabLibrary({cases,categories}:Props){
             <Link key={patient.id} href={patient.href} className="cl-story cl-patient-file" aria-label={"Open case: "+patient.hook}>
              <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="cl-number">PATIENT FILE {String(i+1).padStart(3,"0")}</span>
-              {patient.safety?<span className="cl-category">SAFETY FIRST</span>:<span className="cl-category">{patient.kind==="Clinical deep dive"?"MASTERCLASS":"INTERACTIVE"}</span>}
+              {patient.safety?<span className="cl-category">SAFETY FIRST</span>:<span className="cl-category">{patient.kind==="Clinical deep dive"?"MASTERCLASS":"CLINICAL LESSON"}</span>}
              </div>
              <div className="mt-6">
               <p className="cl-story-label">{patient.focus} · {patient.difficulty}</p>
