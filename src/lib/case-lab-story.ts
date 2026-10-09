@@ -1,6 +1,7 @@
 import type {ClinicalCase} from "./clinical-cases";
 import type {ClinicalCaseGuide} from "./clinical-case-guides";
 import {expandedCases,expandedFlows} from "./clinical-arena-expanded";
+import {getClinicalExamination} from "./clinical-arena-examinations";
 import {multidisciplinaryCases,multidisciplinaryFlows,multidisciplinaryExams,multidisciplinaryTemplates} from "./clinical-arena-multispecialty";
 import {labCategory} from "./case-lab-catalog";
 
@@ -44,15 +45,16 @@ export function getLabEpisode(id:string):CaseStory|null{
  const flow=expandedFlows[id];
  if(!flow)return null;
  const options=flow.differential;
+ const examined=getClinicalExamination(e);
  return{
   id,category:labCategory(e.specialty,e.safety),patient:e.patient,opening:flow.chief,
   scene:[e.history,"The patient's initial words give you a starting point, not a diagnosis. Listen for timing, what provokes symptoms and what matters to them.",
    "Your next decision should test a clinical hypothesis while keeping safety in view."],
   history:flow.historyQuestions,bestHistory:flow.bestHistory,
   findings:e.findings,
-  examPrompt:"Which initial examination direction will best clarify this clinical presentation?",
-  examChoices:[...options],
-  examCorrect:flow.differentialCorrect,examReason:flow.differentialWhy,
+  examPrompt:examined.question,
+  examChoices:[...examined.options],
+  examCorrect:examined.correct,examReason:examined.why,
   diagnosisPrompt:e.question,diagnosisChoices:e.options,diagnosisCorrect:e.correct,diagnosisReason:e.explanation,
   differentials:options.map((name,i)=>({diagnosis:name,reasoning:i===flow.differentialCorrect?flow.differentialWhy:"Compare this alternative with the history and examination findings; avoid assuming one sign is diagnostic."})),
   management:[flow.treatment[flow.treatmentCorrect],flow.treatmentWhy],
@@ -69,7 +71,7 @@ export function adaptDetailedCase(item:ClinicalCase,guide?:ClinicalCaseGuide):Ca
   opening:item.presentation[0]||item.summary,
   scene:[...item.presentation,item.summary],
   history:(guide?.keyQuestions||item.presentation.slice(1)).slice(0,6).map((q,i)=>[q,
-    "Consider how the patient's symptom pattern, onset and meaningful goals would change the next clinical decision. Compare with the documented presentation."] as [string,string]),
+    item.presentation[(i+1)%item.presentation.length]||item.summary] as [string,string]),
   bestHistory:0,findings:item.keyFindings,
   examPrompt:"Which differential would you prioritize at this point? Record a working hypothesis before you see the clinical analysis.",
   examChoices:item.differentials.map(d=>d.diagnosis),examCorrect:-1,examReason:item.reasoning[0]||"",
