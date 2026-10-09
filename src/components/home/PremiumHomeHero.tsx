@@ -7,8 +7,6 @@ import {
   ClipboardList, HeartPulse, Search, ShieldCheck, Stethoscope,
   Trophy, Hand, Eye, LibraryBig, FlaskConical, FileBadge2, Sparkles
 } from "lucide-react";
-import { siteConfig } from "@/lib/site-config";
-import { PnaPathwayArtwork } from "@/components/home/PnaPathwayArtwork";
 
 const destinations = [
   { title:"Knowledge Hub", description:"MSK, neurology, cardiopulmonary, sports and more", href:"/knowledge-hub", icon:LibraryBig },
@@ -47,7 +45,6 @@ export function PremiumHomeHero() {
       <div className="container-content">
         <div className="pna-vision-banner">
           <div className="pna-vision-orbits" aria-hidden="true"/>
-          <PnaPathwayArtwork kind="learn" className="pna-vision-anatomy" />
           <div className="pna-vision-copy">
             <p className="pna-vision-eyebrow"><Sparkles size={15} aria-hidden="true"/> LEARN · PRACTICE · GROW</p>
             <h1>Physio Nexus <span>Academy</span></h1>
@@ -59,8 +56,8 @@ export function PremiumHomeHero() {
             </div>
           </div>
           <a href="/founder" className="pna-vision-founder-photo" aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy">
-            <Image src={siteConfig.founder.photo} alt="Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
-              fill priority sizes="(max-width: 600px) 170px, (max-width: 1024px) 300px, 410px" />
+            <Image src="/images/pna-founder-hero.avif" alt="Dr. Sajjad Raza PT in navy PNA physiotherapy scrubs, arms folded"
+              fill priority unoptimized sizes="(max-width: 600px) 240px, (max-width: 1024px) 360px, 510px" />
             <span className="pna-vision-founder-label">Dr. Sajjad Raza PT <small>Founder, PNA</small></span>
           </a>
           <div className="pna-vision-promise" aria-label="Our platform focus">
@@ -93,11 +90,7 @@ export function PremiumHomeHero() {
           </div>
         </div>
 
-        <div className="pna-vision-introduction">
-          <p><ShieldCheck size={16} aria-hidden="true"/> A learning home for students, professionals and patients</p>
-          <h2>Explore PNA <span>— one connected platform.</span></h2>
-          <p>Choose a pathway below, then explore its tools, learning and services.</p>
-        </div>
+
       </div>
     </section>
   );

@@ -83,7 +83,7 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-grey-200 bg-white/95 backdrop-blur-sm">
+    <header className={cn("sticky top-0 z-50 border-b border-grey-200 bg-white/95 backdrop-blur-sm", pathname === "/" && "pna-home-header")}>
       <div className="container-content flex h-20 items-center justify-between">
         <a href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
           <Image

@@ -1,0 +1,255 @@
+/* PNA Signature UI V2 — mobile-first finishing over the original premium system.
+ * Scope: homepage only. No new fonts, remote requests or animation libraries.
+ */
+.pna-sig-explore{
+  position:relative;
+  padding:clamp(24px,4vw,52px) 0 clamp(35px,5vw,65px);
+  background:radial-gradient(circle at 92% 11%,#e5f7fd,transparent 32%),
+    linear-gradient(180deg,#f9fdff 0%,#f4fafc 65%,#fff 100%);
+  color:#143b53;
+  scroll-margin-top:96px;
+}
+.pna-sig-header{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:25px;
+  margin:0 0 22px;
+}
+.pna-sig-overline{
+  color:#078c88;letter-spacing:.16em;text-transform:uppercase;
+  font-size:10px;font-weight:900;line-height:1.5;
+}
+.pna-sig-header h2{
+  margin:7px 0 8px;
+  color:#123554;font:800 clamp(31px,4vw,49px)/1.08 Georgia,Cambria,serif;
+  letter-spacing:-.045em;
+}
+.pna-sig-header p{color:#67818f;font-size:13px;line-height:1.6;max-width:560px;}
+.pna-sig-header-aside{
+  display:flex;align-items:center;gap:7px;white-space:nowrap;
+  color:#0d8a89;border:1px solid #d6e9ed;background:#fff;
+  border-radius:999px;padding:9px 13px;font-size:11px;font-weight:800;
+}
+.pna-sig-explore .pna-vision-pathways{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;
+  margin-bottom:17px;
+}
+.pna-sig-explore .pna-vision-pathway{
+  width:100%;min-height:255px;text-align:left;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  border-width:1.5px;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.pna-sig-explore .pna-vision-pathway.is-selected{
+  border-color:#189eaa;
+  box-shadow:0 0 0 3px #b5f0ed,0 19px 34px -24px rgba(17,94,124,.45);
+}
+.pna-sig-explore .pna-vision-pathway.is-selected .pna-vision-pathway-arrow{
+  background:#064a77;
+}
+.pna-sig-explore .pna-vision-pathway:focus-visible{
+  outline:3px solid #047f96;outline-offset:3px;
+}
+.pna-sig-explore .pna-vision-pathway strong{max-width:230px}
+.pna-sig-explore .pna-vision-pathway-art{opacity:.71;bottom:-20px;}
+.pna-sig-detail{
+  overflow:hidden;border:1px solid #d1e6ed;border-radius:25px;
+  background:linear-gradient(170deg,#f1faff 0%,#fff 42%);
+  box-shadow:0 20px 44px -39px rgba(19,93,115,.44);
+  scroll-margin-top:100px;
+}
+.pna-sig-detail-practice{background:linear-gradient(170deg,#eafff9,#fff 42%);}
+.pna-sig-detail-professional{background:linear-gradient(170deg,#f6f1ff,#fff 42%);}
+.pna-sig-detail-care{background:linear-gradient(170deg,#e8faf8,#fff 42%);}
+.pna-sig-detail-head{
+  display:flex;position:relative;align-items:center;justify-content:space-between;
+  min-height:157px;padding:25px 30px 20px;border-bottom:1px solid #e4f0f1;
+  isolation:isolate;
+}
+.pna-sig-detail-head-main{position:relative;z-index:2;max-width:78%}
+.pna-sig-detail h3{
+  margin:5px 0 11px;font:800 clamp(22px,2.7vw,34px)/1.15 Georgia,Cambria,serif;
+  letter-spacing:-.028em;color:#113a56;
+}
+.pna-sig-detail-lead{color:#194a5d;font-weight:850;font-size:13px;}
+.pna-sig-detail-description{margin-top:5px;color:#6e8791;font-size:12px;line-height:1.6;}
+.pna-sig-detail-art{
+  position:absolute;right:1%;top:-10%;height:150%;width:36%;
+  opacity:.31;z-index:1;pointer-events:none;
+}
+.pna-sig-detail-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:11px;padding:15px;
+}
+.pna-sig-link{
+  display:flex;align-items:center;gap:12px;min-height:84px;
+  padding:15px;border:1px solid #e1edf0;border-radius:17px;
+  background:#fff;box-shadow:0 9px 19px -24px #153f58;
+  transition:background .2s,transform .2s,border-color .2s;
+}
+.pna-sig-link:hover{
+  transform:translateY(-2px);border-color:#9ad6e0;
+  background:#f9fdfe;
+}
+.pna-sig-link-featured{
+  border-color:#b7e7e5;
+  background:linear-gradient(125deg,#edfbf8,#fff 68%);
+}
+.pna-sig-link-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;flex-shrink:0;border-radius:13px;
+  color:#087e95;background:linear-gradient(135deg,#dcf7f6,#f4fdff);
+  border:1px solid #d3ebe8;
+}
+.pna-sig-link-copy{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.pna-sig-link-copy strong{
+  color:#244c5e;font-size:13px;line-height:1.4;font-weight:850;
+}
+.pna-sig-link-copy>span{color:#6a8290;font-size:11px;line-height:1.5;}
+.pna-sig-link-arrow{flex-shrink:0;color:#28869b;transition:transform .2s;}
+.pna-sig-link:hover .pna-sig-link-arrow{transform:translateX(3px)}
+.pna-sig-access-note{
+  padding:0 17px 17px;text-align:center;
+  color:#768b95;font-size:11px;line-height:1.6;
+}
+.pna-sig-link:focus-visible{outline:3px solid #0d919a;outline-offset:3px;}
+
+/* Make the real founder photograph feel like part of the hero, not a pasted rectangle. */
+.pna-vision-founder-photo{overflow:visible;}
+.pna-vision-founder-photo img{
+  object-fit:cover;object-position:53% 32%;
+  border-radius:0;
+  -webkit-mask-image:radial-gradient(ellipse 82% 88% at 65% 46%,#000 58%,rgba(0,0,0,.9) 67%,transparent 100%);
+  mask-image:radial-gradient(ellipse 82% 88% at 65% 46%,#000 58%,rgba(0,0,0,.9) 67%,transparent 100%);
+  filter:drop-shadow(0 9px 15px rgba(8,72,95,.13));
+}
+.pna-vision-founder-cta{position:relative;z-index:5}
+.pna-vision-copy h1{text-wrap:balance}
+
+/* Homepage only: calmer, less obstructive mobile chrome. */
+@media (max-width:900px){
+  .pna-sig-explore .pna-vision-pathways{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .pna-sig-explore .pna-vision-pathway{min-height:223px;}
+  .pna-sig-header-aside{display:none;}
+}
+@media (max-width:720px){
+  .pna-vision-banner{min-height:377px;}
+  .pna-vision-copy{padding-bottom:100px;max-width:69%;}
+  .pna-vision-copy h1{font-size:clamp(30px,6.7vw,44px);}
+  .pna-vision-founder-photo{
+    right:-3%;bottom:54px;width:48%;height:78%;min-width:0;
+  }
+  .pna-vision-founder-photo img{object-position:55% 36%;}
+  .pna-vision-founder-cta{display:none;}
+  .pna-sig-explore{padding-top:15px;}
+  .pna-sig-explore .pna-vision-pathway{min-height:214px;}
+  .pna-sig-detail-head{padding:19px 20px;min-height:132px;}
+  .pna-sig-detail h3{font-size:22px;}
+  .pna-sig-detail-grid{gap:9px;padding:10px;}
+  .pna-sig-link{padding:12px;gap:9px;min-height:73px;}
+  .pna-sig-link-icon{width:37px;height:37px;}
+  .pna-sig-link-copy strong{font-size:12px;}
+  .pna-sig-link-copy>span{font-size:10px;}
+}
+@media (max-width:560px){
+  .pna-home-header>.container-content{height:66px;}
+  .pna-home-header>.container-content>a:first-child{gap:7px;}
+  .pna-home-header>.container-content>a:first-child img{
+    width:36px;height:36px;
+  }
+  .pna-home-header>.container-content>a:first-child span.font-heading{
+    font-size:16px;line-height:1.12;letter-spacing:-.015em;
+  }
+  .pna-home-header button[aria-label="Open menu"],
+  .pna-home-header button[aria-label="Close menu"]{padding:5px;}
+  .pna-home-header button[aria-label="Open menu"] svg,
+  .pna-home-header button[aria-label="Close menu"] svg{width:25px;height:25px;}
+  .pna-sig-header{margin-bottom:16px;}
+  .pna-sig-header h2{font-size:32px;}
+  .pna-sig-header p{font-size:12px;}
+  .pna-sig-explore .pna-vision-pathways{gap:10px;margin-bottom:13px;}
+  .pna-sig-explore .pna-vision-pathway{
+    min-height:190px;padding:12px;border-radius:19px;
+  }
+  .pna-sig-explore .pna-vision-pathway-num{width:30px;height:30px;font-size:12px;}
+  .pna-sig-explore .pna-vision-pathway strong{font-size:16px;line-height:1.17;margin-top:10px;}
+  .pna-sig-explore .pna-vision-pathway>span:nth-child(3){font-size:9px;line-height:1.4;margin-top:7px;}
+  .pna-sig-explore .pna-vision-pathway-art{height:54%;opacity:.55;}
+  .pna-sig-explore .pna-vision-pathway-arrow{width:32px;height:32px;bottom:11px;right:11px;}
+  .pna-sig-detail{border-radius:21px;}
+  .pna-sig-detail-head{padding:19px 17px 16px;min-height:129px;}
+  .pna-sig-detail-head-main{max-width:89%;}
+  .pna-sig-detail-art{opacity:.16;right:-12%;width:56%;}
+  .pna-sig-detail h3{font-size:21px;}
+  .pna-sig-detail-lead{font-size:12px;}
+  .pna-sig-detail-description{font-size:11px;}
+  .pna-sig-detail-grid{grid-template-columns:1fr;gap:8px;padding:9px;}
+  .pna-sig-link{min-height:70px;}
+  .pna-vision-copy{max-width:69%;padding-top:25px;padding-left:15px;}
+  .pna-vision-copy h1{font-size:31px;line-height:1.02;}
+  .pna-vision-subtitle{margin-top:15px;font-size:14px;max-width:212px;}
+  .pna-vision-founder-photo{right:-8%;width:52%;height:70%;bottom:58px;}
+  .pna-vision-banner-actions{margin-top:23px;}
+  .pna-vision-promise{bottom:13px;}
+  body:has(.pna-sig-explore) a[aria-label="Chat with Physio Nexus Academy on WhatsApp"]{
+    width:40px;height:40px;
+    right:9px;bottom:calc(80px + env(safe-area-inset-bottom));
+    opacity:.92;box-shadow:0 7px 19px rgba(0,52,48,.2);
+  }
+  body:has(.pna-sig-explore) a[aria-label="Chat with Physio Nexus Academy on WhatsApp"] svg{
+    width:24px;height:24px;
+  }
+}
+@media (max-width:380px){
+  .pna-vision-copy h1{font-size:28px;}
+  .pna-sig-explore .pna-vision-pathway{min-height:181px;padding:10px;}
+  .pna-sig-explore .pna-vision-pathway strong{font-size:15px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .pna-sig-explore *{scroll-behavior:auto!important;transition:none!important;}
+}
+
+
+/* Final approved hero: TRUE transparent cutout (no boxed photograph or faux gradient mask).
+ * src = /images/pna-founder-hero.avif; rest of site still uses the founder's standard photo.
+ */
+.pna-vision-founder-photo {
+  right:-1%;bottom:46px;min-width:0;width:43%;height:94%;
+  overflow:visible;z-index:2;
+}
+.pna-vision-founder-photo img {
+  width:100%;height:100%;object-fit:contain!important;
+  object-position:center bottom!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  border:0!important;border-radius:0!important;
+  filter:drop-shadow(0 9px 15px rgba(9,81,104,.15))!important;
+}
+.pna-vision-founder-label { display:none!important; }
+.pna-vision-copy { position:relative;z-index:3;max-width:61%; }
+.pna-vision-banner-actions { position:relative;z-index:5; }
+@media(max-width:900px) {
+  .pna-vision-founder-photo {right:-2%;width:48%;height:87%;bottom:51px;}
+}
+@media(max-width:720px) {
+  .pna-vision-banner {min-height:383px;}
+  .pna-vision-founder-photo {right:-5%;bottom:48px;width:57%;height:82%;z-index:2;}
+  .pna-vision-copy {max-width:70%;padding-bottom:108px;}
+  .pna-vision-copy h1 {font-size:clamp(29px,6.75vw,42px);letter-spacing:-.035em;}
+  .pna-vision-founder-cta {display:inline-flex!important;font-size:10px;}
+  .pna-vision-banner-actions {gap:8px;margin-top:18px;}
+  .pna-vision-primary {padding:8px 12px;min-height:41px;font-size:11px;}
+}
+@media(max-width:440px) {
+  .pna-vision-banner {min-height:354px;}
+  .pna-vision-founder-photo {right:-7.5%;bottom:51px;width:61%;height:76%;}
+  .pna-vision-copy {max-width:71%;padding-top:23px;padding-left:15px;}
+  .pna-vision-copy h1 {font-size:clamp(28px,7.4vw,32px);line-height:1.04;}
+  .pna-vision-subtitle {max-width:204px;font-size:13px;margin-top:13px;}
+  .pna-vision-primary {padding:8px 11px;font-size:10px;}
+  .pna-vision-founder-cta {font-size:9px;gap:3px;white-space:nowrap;}
+  .pna-vision-founder-cta svg {width:12px;height:12px;}
+  .pna-vision-promise {z-index:6;}
+}
+@media(max-width:370px) {
+  .pna-vision-copy h1 {font-size:27px;}
+  .pna-vision-founder-photo {right:-9%;width:63%;}
+  .pna-vision-founder-cta {font-size:8px;}
+}

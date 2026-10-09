@@ -1,42 +1,56 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
+
 const read=(path)=>fs.readFileSync(path,"utf8");
 const home=read("src/app/page.tsx");
-const css=read("src/app/home-premium.css");
-const dailyCss=read("src/app/daily-challenge/daily-challenge.css");
+const hero=read("src/components/home/PremiumHomeHero.tsx");
+const browser=read("src/components/home/PremiumPathwayBrowser.tsx");
+const artwork=read("src/components/home/PnaPathwayArtwork.tsx");
+const visualCss=read("src/app/premium-vision.css");
+const signatureCss=read("src/app/pna-signature-v2.css");
+const challengeCss=read("src/app/daily-challenge/daily-challenge.css");
 const header=read("src/components/Header.tsx");
 const mobile=read("src/components/MobilePortalNav.tsx");
 const whatsapp=read("src/components/WhatsAppButton.tsx");
-const portalSource=home.slice(home.indexOf("const portalActions = ["),home.indexOf("] as const;"));
-const groupsSource=home.slice(home.indexOf("const portalGroups = ["),home.indexOf("export default async function HomePage"));
-const portalUrls=[...portalSource.matchAll(/\bhref:\s*"([^"]+)"/g)].map(m=>m[1]);
-const groupedUrls=[...groupsSource.matchAll(/"\/(?:[a-z][a-z0-9-]*)(?:\/[^"]*)?"/g)].map(m=>m[0].slice(1,-1));
+
+const portraitPath="public/images/pna-founder-hero.avif";
+const portrait=fs.readFileSync(portraitPath);
+const hrefs=[...browser.matchAll(/href:\s*"(\/[a-z0-9/-]+)"/g)].map(match=>match[1]);
+const mandatoryPaths=[
+  "/knowledge-hub","/clinical-visual-atlas","/manual-therapy","/treatment-plans",
+  "/resources","/clinical-arena","/case-lab","/daily-challenge","/clinical-quiz",
+  "/workshops","/research","/training","/faculty","/symptom-checker",
+  "/patient-services","/verify","/appointment","/home-visit"
+];
+const zones=[
+  "Knowledge & Clinical Science","Clinical Reasoning & Challenges",
+  "Workshops & Professional Growth","Care & Trusted Services"
+];
 const tests={
-  noLostPortalFeatures:portalUrls.length>=13&&portalUrls.every(url=>groupedUrls.includes(url)),
-  fourClearlyNamedZones:["Knowledge & clinical science","Clinical reasoning & challenges","Workshops & professional growth","Care & trusted services"].every(label=>home.includes(label)),
-  oldCardWallRemoved:!home.includes("portalActions.map")&&home.includes("portalActions.filter")&&home.includes("portalGroups.map"),
-  noCompetingDarkHero:!home.includes("from-navy-900 via-navy-800 to-teal-800")&&home.includes("pna-home-intro"),
-  flagshipAboveAll:home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf('data-pna-home-premium="cohesive-v1"'),
-  flagshipLeaderboardKept:home.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&home.includes("<DailyChallengeCountdown/>"),
-  allMainModulesStillVisible:["Knowledge Hub","Clinical Case Lab","Clinical Challenge Arena","Manual Therapy Mastery","Treatment Plans","Daily Clinical Challenge","Weekly Clinical Quiz","Workshops & CPD","Books & Resources","Research Support","MSK Symptom Checker","Patient Care","Verify Certificate"].every(name=>home.includes('title: "'+name+'"')),
-  founderIdentityRetained:home.includes("siteConfig.founder.photo")&&home.includes("siteConfig.founder.name"),
-  existingEvidenceAndEvents:home.includes("featuredWorkshops.map")&&home.includes("latestArticles.map")&&home.includes("featuredFaculty.map"),
-  cpdRetained:home.includes("Approved CPD Provider")&&home.includes("791052"),
-  patientRoutesRetained:home.includes('href="/symptom-checker"')&&home.includes('href="/appointment"')&&home.includes('href="/home-visit"'),
-  lightPatientCare:home.includes("pna-home-light-patient")&&css.includes(".pna-home-light-patient"),
-  noRepeatedWeeklyBanner:!home.includes("Weekly Clinical Challenge</p>"),
-  designSystemPresent:css.includes(".pna-home-zone-link")&&css.includes(".pna-home-founder-card")&&css.includes(".pna-home-journey"),
-  explicitMobileLayouts:css.includes("@media(max-width:540px)")&&css.includes("@media(max-width:900px)"),
-  accessibleSemanticGrouping:home.includes('aria-labelledby={"pna-zone-heading-" + group.id}')&&home.includes('id={"pna-zone-" + group.id}'),
-  signatureLogoUntouched:header.includes('src="/images/pna-logo.png"'),
-  mainNavUnbroken:header.includes("mainNav.filter")&&header.includes('<details className="group relative">')&&mobile.includes('label: "Challenge"'),
-  mobileWhatsappLessIntrusive:whatsapp.includes("bottom-24 right-3")&&whatsapp.includes("h-12 w-12"),
-  reducedMotionRespected:css.includes("prefers-reduced-motion"),
-  flagshipCssPreserved:dailyCss.includes(".dc-flagship-stage")&&dailyCss.includes("@media(max-width:560px)"),
-  hasProductionMarker:home.includes('data-pna-home-premium="cohesive-v1"'),
+  signatureLandingRetained:home.includes("<PremiumHomeHero />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
+  semanticHomepage:home.includes("pna-home-lower")&&home.includes('data-pna-home-flagship="daily-clinical-challenge-v2"'),
+  noDuplicatedFeatureWall:!home.includes("portalActions.map")&&!home.includes("portalGroups.map")&&!home.includes("pna-home-zones"),
+  allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
+  fourInteractivePathways:zones.every(label=>browser.includes(label))&&browser.includes("setSelected")&&browser.includes("aria-pressed="),
+  conditionalAtlas:browser.includes('showAtlas || link.href !== "/clinical-visual-atlas"'),
+  portraitExistsAndValid:portrait.length>3000&&portrait.toString("latin1",4,8)==="ftyp"&&portrait.includes(Buffer.from("avif")),
+  approvedHeroImageUsed:hero.includes('src="/images/pna-founder-hero.avif"')&&hero.includes("fill priority unoptimized"),
+  noBoxedPortrait:signatureCss.includes("mask-image:none!important")&&signatureCss.includes("object-fit:contain!important"),
+  brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
+  originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),
+  maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),
+  existingProfessionalLearning:home.includes("featuredWorkshops.map")&&home.includes("latestArticles.map")&&home.includes("featuredFaculty.map"),
+  premiumChallengeKept:home.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&home.includes("<DailyChallengeCountdown/>")&&challengeCss.includes(".dc-flagship-stage"),
+  patientRoutesUnchanged:home.includes('href="/symptom-checker"')&&home.includes('href="/appointment"')&&home.includes('href="/home-visit"'),
+  existingCpdIdentityRetained:home.includes("Approved CPD Provider")&&home.includes("791052"),
+  mobileNavPreserved:header.includes("mainNav.filter")&&mobile.includes('label: "Challenge"'),
+  whatsappStillAccessible:whatsapp.includes("Chat with Physio Nexus Academy on WhatsApp")&&signatureCss.includes("bottom:calc(80px"),
+  motionRespect:signatureCss.includes("prefers-reduced-motion"),
+  responsiveHero:[visualCss,signatureCss].join("").includes("max-width:440px")&&signatureCss.includes("max-width:720px"),
+  featureSearchKept:hero.includes("role=\"search\"")&&hero.includes("results.map(")
 };
-for(const [key,ok]of Object.entries(tests)){
- assert(ok,"Premium homepage validation failed: "+key);
- console.log("✓ "+key);
+for(const [name,okay] of Object.entries(tests)){
+  assert(okay,"PNA homepage validation failed: "+name);
+  console.log("PASS: "+name);
 }
-console.log("PASS: "+Object.keys(tests).length+" PNA premium-homepage validations");
+console.log("PASS: "+Object.keys(tests).length+" signature homepage checks");
