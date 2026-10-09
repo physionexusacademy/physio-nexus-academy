@@ -37,8 +37,14 @@ const descriptions:Record<string,string>={
  "Pelvic Health":"Pelvic-floor concerns and meaningful function.",
  "Oncology Rehabilitation":"Recovery and function during cancer care.",
  "Critical Care & ICU":"Bedside safety and staged mobilization.",
- "Clinical Red Flags":"Spot danger signs and escalate safely.",
+ "Clinical Red Flags":"Safety-critical stories across specialties, including emergencies requiring escalation.",
 };
+
+function isInClinicalCategory(caseFile:LabCaseCard, selected:string){
+ if(selected==="All cases")return true;
+ if(selected==="Clinical Red Flags")return caseFile.safety||caseFile.category==="Clinical Red Flags";
+ return caseFile.category===selected;
+}
 
 export function CaseLabLibrary({cases,categories}:Props){
  const router=useRouter();
@@ -60,12 +66,12 @@ export function CaseLabLibrary({cases,categories}:Props){
  },[categories]);
 
  const totals=useMemo(()=>new Map<string,number>(categories.map(name=>[
-  name,cases.filter(c=>c.category===name).length
+  name,cases.filter(c=>isInClinicalCategory(c,name)).length
  ])),[categories,cases]);
 
  const focusOptions=useMemo(()=>{
   if(!category)return [] as {name:string;count:number}[];
-  const inCategory=cases.filter(c=>category==="All cases"||c.category===category);
+  const inCategory=cases.filter(c=>isInClinicalCategory(c,category));
   const counts=new Map<string,number>();
   for(const item of inCategory)counts.set(item.focus,(counts.get(item.focus)||0)+1);
   return [...counts.entries()].sort((a,b)=>a[0].localeCompare(b[0]))
@@ -76,7 +82,7 @@ export function CaseLabLibrary({cases,categories}:Props){
   if(!category)return [];
   const needle=query.trim().toLocaleLowerCase();
   return cases.filter(c=>{
-   if(category!=="All cases"&&c.category!==category)return false;
+   if(!isInClinicalCategory(c,category))return false;
    if(focus!=="All focuses"&&c.focus!==focus)return false;
    if(level!=="All levels"&&c.difficulty!==level)return false;
    if(mode==="Case lessons"&&c.kind!=="Interactive scenario")return false;
@@ -116,7 +122,7 @@ export function CaseLabLibrary({cases,categories}:Props){
   setMode("All experiences");setLimit(12);
  }
  function surprise(){
-  const pool=category?(matches.length?matches:cases.filter(c=>category==="All cases"||c.category===category)):cases;
+  const pool=category?(matches.length?matches:cases.filter(c=>isInClinicalCategory(c,category))):cases;
   if(pool.length)router.push(pool[Math.floor(Math.random()*pool.length)].href);
  }
 
