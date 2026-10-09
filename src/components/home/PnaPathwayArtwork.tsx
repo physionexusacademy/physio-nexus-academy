@@ -26,7 +26,7 @@ export function PnaPathwayArtwork({kind,className=""}:{kind:ArtworkKind;classNam
         <g fill="#f3ffff" stroke="#1688ad" strokeWidth="2"><circle cx="184" cy="69" r="6"/><circle cx="136" cy="104" r="6"/><circle cx="224" cy="118" r="6"/><circle cx="188" cy="143" r="6"/></g>
         <path d="M191 160v28m-33 0h69" stroke="#177fa4" strokeWidth="5" strokeLinecap="round"/>
       </g>}
-      {(kind==="professional"||kind==="care")&& <g>
+      {kind==="professional"&& <g>
         <path d="M129 118c-21 1-35 19-39 42l-7 55h120l-7-58c-3-23-20-39-43-39Z" fill="#153d76" stroke="#1c69a0" strokeWidth="3"/>
         <path d="m114 124 22 23 20-23" fill="none" stroke="#c4efff" strokeWidth="4"/>
         <rect x="128" y="93" width="20" height="35" rx="9" fill="#e6ac8b"/>
@@ -47,6 +47,25 @@ export function PnaPathwayArtwork({kind,className=""}:{kind:ArtworkKind;classNam
           <path d="M284 157c-12 13-23 17-39 17" fill="none" stroke="#e4a88b" strokeWidth="12" strokeLinecap="round"/>
           <circle cx="251" cy="146" r="17" fill="none" stroke="#05af9e" strokeDasharray="3 5" strokeWidth="3"/>
         </g>}
+      </g>}
+      {kind==="care" && <g>
+        {/* Clinic scene: a male patient resting on a plinth and a male physiotherapist. */}
+        <rect x="66" y="174" width="245" height="13" rx="6" fill="#e8fcff" stroke="#2c8eab" strokeWidth="3"/>
+        <path d="M93 188v23m193-23v23" stroke="#3d8da4" strokeWidth="7" strokeLinecap="round"/>
+        <path d="M146 147c20-13 43-13 67-5l57 16-9 22H142Z" fill="#84cfe3" stroke="#368da9" strokeWidth="3"/>
+        <path d="M155 160c32-3 67 5 92 12" stroke="#d2f4ff" strokeWidth="3" fill="none"/>
+        <path d="M106 160c-20-2-32-12-31-26 1-15 13-27 29-27 17 0 26 15 25 29-1 14-6 24-23 24Z" fill="#edb999" stroke="#bc826b" strokeWidth="2.5"/>
+        <path d="M77 135c-5-19 13-34 27-35 18-2 30 13 28 30-15-5-27-6-41 1Z" fill="#192d42"/>
+        <path d="M97 152c6 4 11 4 17 0" fill="none" stroke="#9b665d" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M216 122c-21 3-30 14-36 34l-12 53h137l-11-55c-5-21-18-32-40-32Z" fill="#123f79" stroke="#215d94" strokeWidth="3"/>
+        <path d="m221 130 22 22 20-22" fill="none" stroke="#a4eff5" strokeWidth="4"/>
+        <rect x="230" y="100" width="25" height="34" rx="9" fill="#e9b595"/>
+        <ellipse cx="244" cy="83" rx="28" ry="34" fill="#f2c6a8" stroke="#bf8b71" strokeWidth="2"/>
+        <path d="M217 86c-6-19 4-40 25-43 19-5 34 12 30 33-9-7-20-8-30-18-9 12-17 17-25 20Z" fill="#19304c"/>
+        <path d="M231 96c8 6 17 6 25 0" fill="none" stroke="#9b665d" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M213 153c-17 0-30-8-42-14l-29-10" stroke="#ebba9b" strokeWidth="14" strokeLinecap="round" fill="none"/>
+        <path d="M275 160c-22 5-41 0-58-7" stroke="#ebba9b" strokeWidth="12" strokeLinecap="round" fill="none"/>
+        <circle cx="168" cy="142" r="17" fill="none" stroke="#13a8a1" strokeDasharray="4 5" strokeWidth="3"/>
       </g>}
       <path d="m280 37 10 5 4 10 5-10 10-5-10-4-5-10-4 10Z" fill="#ffffff" opacity=".82"/>
     </svg>
