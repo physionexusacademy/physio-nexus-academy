@@ -17,7 +17,7 @@ const tests={
   thirtyUniqueQuestions:questions.length===30&&ids.size===30,
   fiveRotatingQuestions:data.includes("Array.from({length:5}"),
   exactlyKarachiTimezone:data.includes('timeZone:"Asia/Karachi"')&&data.includes("formatToParts(now)"),
-  midnightCalculatedInUTC:data.includes("day+\"T00:00:00Z\"")+data.includes("19*3600000"),
+  midnightCalculatedInUTC:data.includes("date+\"T00:00:00Z\"")&&data.includes("19*3600000"),
   noAnswerKeyInPublicPayload:data.includes("publicDailyQuestions(date:string)")&&!data.slice(data.indexOf("export function publicDailyQuestions"),data.indexOf("export function pakistanMidnightUTC")).includes("correct:"),
   serverOwnedScore:actions.includes("correctCount*20")&&actions.includes("questions.reduce"),
   oneAttemptEveryDay:migration.includes("unique (challenge_date, email_key)"),
