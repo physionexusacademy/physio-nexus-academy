@@ -168,6 +168,19 @@ export default function KnowledgeHubPage() {
         </div>
       </section>
 
+      <section className="mt-8 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/50 to-white p-6 shadow-sm sm:p-8" aria-labelledby="msk-special-tests-link">
+        <div className="flex flex-wrap items-start justify-between gap-6">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-widest text-teal-700">New Clinical Skills Library</p>
+            <h2 id="msk-special-tests-link" className="mt-2 font-serif text-2xl font-bold text-navy-900 sm:text-3xl">MSK Special Tests — purpose, procedure & positive signs</h2>
+            <p className="mt-3 text-sm leading-7 text-navy-600">Browse 84 practical clinical tests across the spine, upper limb and lower limb. Learn patient positioning, therapist hand placement, step-by-step applying methods, clinical meaning and safety notes in simple English.</p>
+          </div>
+          <a href="/msk-special-tests" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800">
+            Open MSK Tests <ArrowRight className="h-4 w-4"/>
+          </a>
+        </div>
+      </section>
+
       <section id="specialties" className="mt-12 scroll-mt-28">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
