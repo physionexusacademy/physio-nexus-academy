@@ -7,6 +7,7 @@ import { feedbackLine } from "@/lib/clinical-arena-humor";
 import { patientAnswer, everydayImpact } from "@/lib/clinical-arena-patient-dialogue";
 import { expandedCases, expandedFlows } from "@/lib/clinical-arena-expanded";
 import { getClinicalExamination } from "@/lib/clinical-arena-examinations";
+import { clinicalRegions, regionOfClinicalCase, ALL_CLINICAL_REGIONS, type ClinicalRegionSelection } from "@/lib/clinical-arena-regions";
 import { ArrowRight, BrainCircuit, CheckCircle2, RotateCcw, ShieldAlert, Sparkles, Trophy } from "lucide-react";
 
 type Case = { id:string; specialty:string; title:string; patient:string; history:string; findings:string[]; question:string; options:string[]; correct:number; explanation:string; clue:string; safety?:boolean };
@@ -73,6 +74,7 @@ const stageNudges:Record<Stage,string[]>={
 const stageNames:Record<Stage,string>={history:"History taking",examination:"Clinical examination",differential:"Differential diagnosis",diagnosis:"Working diagnosis",treatment:"Treatment planning",reassessment:"Reassessment"};
 export default function ClinicalArenaPage(){
  const [specialty,setSpecialty]=useState("All specialties");
+ const [region,setRegion]=useState<ClinicalRegionSelection>(ALL_CLINICAL_REGIONS);
  const [difficulty,setDifficulty]=useState("Student");
  const [xp,setXp]=useState(0);
  const [completed,setCompleted]=useState(0);
@@ -105,12 +107,15 @@ export default function ClinicalArenaPage(){
  useEffect(()=>{try{const raw=JSON.parse(localStorage.getItem("pna-arena-case-history-v1")||"[]");if(Array.isArray(raw))setCaseHistory(raw.slice(-60));}catch{}},[]);
  useEffect(()=>{try{localStorage.setItem("pna-arena-case-history-v1",JSON.stringify(caseHistory.slice(-60)));}catch{}},[caseHistory]);
  const specialties=["All specialties",...Array.from(new Set(cases.map(c=>c.specialty)))];
+ const regionOptions=clinicalRegions.map(name=>({
+  name,count:cases.filter(c=>(specialty==="All specialties"||c.specialty===specialty)&&regionOfClinicalCase(c.id)===name).length
+ })).filter(entry=>entry.count>0);
  const filtered=useMemo(()=>{
-  const pool=cases.filter(c=>specialty==="All specialties"||c.specialty===specialty);
+  const pool=cases.filter(c=>(specialty==="All specialties"||c.specialty===specialty)&&(region===ALL_CLINICAL_REGIONS||regionOfClinicalCase(c.id)===region));
   if(!caseOrder.length)return pool;
   const ranks=new Map(caseOrder.map((id,i)=>[id,i]));
   return pool.sort((a,b)=>(ranks.get(a.id)??Number.MAX_SAFE_INTEGER)-(ranks.get(b.id)??Number.MAX_SAFE_INTEGER));
- },[specialty,caseOrder]);
+ },[specialty,region,caseOrder]);
  const item=filtered[position];
  const extraQuestions=item?[
   {q:"When did these symptoms start, and how have they affected you?",a:patientAnswer({caseId:item.id,questionKey:"onset",clinicalAnswer:item.history,encounter:dialogueRun,urgent:!!item.safety,allowHumor:true}),tag:"onset"},
@@ -135,8 +140,8 @@ export default function ClinicalArenaPage(){
   }catch{}
   setDialogueRun(next);
  }
- function randomizeCases(nextSpecialty:string){
-  const pool=cases.filter(c=>nextSpecialty==="All specialties"||c.specialty===nextSpecialty);
+ function randomizeCases(nextSpecialty:string,nextRegion:ClinicalRegionSelection=ALL_CLINICAL_REGIONS){
+  const pool=cases.filter(c=>(nextSpecialty==="All specialties"||c.specialty===nextSpecialty)&&(nextRegion===ALL_CLINICAL_REGIONS||regionOfClinicalCase(c.id)===nextRegion));
   const shuffled=[...pool];
   for(let i=shuffled.length-1;i>0;i--){
    const j=Math.floor(Math.random()*(i+1));
@@ -169,9 +174,9 @@ export default function ClinicalArenaPage(){
  useEffect(()=>{
   if(initialCaseChosen.current)return;
   initialCaseChosen.current=true;
-  randomizeCases("All specialties");
+  randomizeCases("All specialties",ALL_CLINICAL_REGIONS);
  },[]);
- function reset(next:string){setSpecialty(next);randomizeCases(next);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());}
+ function reset(next:string,nextRegion:ClinicalRegionSelection=ALL_CLINICAL_REGIONS){setSpecialty(next);setRegion(nextRegion);randomizeCases(next,nextRegion);setPosition(0);setStage("history");setSelected(null);setRevealed(false);setFeedback("");setPreDiagnosisReview([]);setScore(0);setFinished(false);setAsked([]);setBranchAnswers([]);setCaseScore(0);setNotes([]);setExamNotes(false);setHistoryHint(false);setCaseStart(Date.now());}
  function respond(ok:boolean,why:string){
   if(stages.indexOf(stage)<stages.indexOf("diagnosis")){
     const best=stage==="history"
@@ -207,8 +212,9 @@ export default function ClinicalArenaPage(){
   <span className="pna-hero-chip"><Sparkles className="h-4 w-4" aria-hidden="true"/>Clinical decision feedback</span>
  </div>
  <div className="pna-controls mt-7 flex flex-wrap items-end gap-4 rounded-2xl p-4 sm:p-5">
-  <div className="pna-control-group"><label htmlFor="specialty" className="pna-control-label">Specialty</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value)} className="pna-filter rounded-xl px-4 py-3 text-sm">{specialties.map(s=><option key={s} value={s}>{s}</option>)}</select></div>
-  <div className="pna-control-group"><label htmlFor="difficulty" className="pna-control-label">Clinical level</label><select id="difficulty" value={difficulty} onChange={e=>{setDifficulty(e.target.value);reset(specialty);}} className="pna-filter rounded-xl px-4 py-3 text-sm">{["Student","Intern","Clinician","Expert"].map(v=><option key={v}>{v}</option>)}</select></div>
+  <div className="pna-control-group"><label htmlFor="specialty" className="pna-control-label">Clinical Track</label><select id="specialty" value={specialty} onChange={e=>reset(e.target.value,ALL_CLINICAL_REGIONS)} className="pna-filter rounded-xl px-4 py-3 text-sm">{specialties.map(s=><option key={s} value={s}>{s==="All specialties"?"All clinical tracks":s} ({s==="All specialties"?cases.length:cases.filter(c=>c.specialty===s).length})</option>)}</select></div>
+  <div className="pna-control-group"><label htmlFor="clinical-region" className="pna-control-label">Body Region / Focus</label><select id="clinical-region" value={region} onChange={e=>reset(specialty,e.target.value as ClinicalRegionSelection)} className="pna-filter rounded-xl px-4 py-3 text-sm"><option value={ALL_CLINICAL_REGIONS}>{ALL_CLINICAL_REGIONS}</option>{regionOptions.map(r=><option key={r.name} value={r.name}>{r.name} ({r.count})</option>)}</select></div>
+  <div className="pna-control-group"><label htmlFor="difficulty" className="pna-control-label">Clinical Level</label><select id="difficulty" value={difficulty} onChange={e=>{setDifficulty(e.target.value);reset(specialty,region);}} className="pna-filter rounded-xl px-4 py-3 text-sm">{["Student","Intern","Clinician","Expert"].map(v=><option key={v}>{v}</option>)}</select></div>
   <span className="pna-available-count">{filtered.length} cases available</span>
  </div>
  </header>
@@ -274,7 +280,7 @@ export default function ClinicalArenaPage(){
     </>}
     <button onClick={advance} className="pna-primary mt-5 w-full rounded-xl px-5 py-4 font-bold">{stage==="reassessment"?(position+1===filtered.length?"View results":"Next patient"):"Continue to "+stageNames[stages[stages.indexOf(stage)+1]]} <ArrowRight className="ml-2 inline h-4 w-4"/></button>
   </div>}
- </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Clinical round complete!</h2><p className="mt-3 text-xl font-semibold">{score} / {filtered.length*stages.length} correct decisions</p><p className="mt-3 text-slate-600">Review clinical reasoning, not just answers. Your recent case activity is stored on this device.</p><div className="mx-auto mt-5 max-w-md rounded-xl border border-slate-200 p-4 text-left"><h3 className="font-bold">Recent case activity</h3><p className="mt-2 text-sm text-slate-600">{caseHistory.length} recorded cases · {completed} completed rounds · {xp} lifetime XP</p><div className="mt-3 space-y-1 text-xs text-slate-600">{caseHistory.slice(-5).reverse().map((h,i)=><p key={h.id+i}>{h.id} · {h.score}/{h.total} decisions · {new Date(h.at).toLocaleDateString()}</p>)}</div></div><button onClick={()=>reset(specialty)} className="pna-primary mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold"><RotateCcw className="mr-2 h-4 w-4"/> Play again</button></div>}
+ </div>:<div className="py-12 text-center"><Trophy className="mx-auto h-14 w-14 text-amber-500"/><h2 className="mt-4 text-3xl font-bold">Clinical round complete!</h2><p className="mt-3 text-xl font-semibold">{score} / {filtered.length*stages.length} correct decisions</p><p className="mt-3 text-slate-600">Review clinical reasoning, not just answers. Your recent case activity is stored on this device.</p><div className="mx-auto mt-5 max-w-md rounded-xl border border-slate-200 p-4 text-left"><h3 className="font-bold">Recent case activity</h3><p className="mt-2 text-sm text-slate-600">{caseHistory.length} recorded cases · {completed} completed rounds · {xp} lifetime XP</p><div className="mt-3 space-y-1 text-xs text-slate-600">{caseHistory.slice(-5).reverse().map((h,i)=><p key={h.id+i}>{h.id} · {h.score}/{h.total} decisions · {new Date(h.at).toLocaleDateString()}</p>)}</div></div><button onClick={()=>reset(specialty,region)} className="pna-primary mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold"><RotateCcw className="mr-2 h-4 w-4"/> Play again</button></div>}
  </main><p className="pna-muted mt-5 text-center text-xs leading-6">Educational simulation only. Multiple-choice history is a starter experience, not free-text interviewing. Clinical cases are simplified; serious safety concerns require urgent action. Scores do not indicate clinical competence.</p>
  </div></div>;
 }
