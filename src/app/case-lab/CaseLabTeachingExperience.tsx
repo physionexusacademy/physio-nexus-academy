@@ -193,7 +193,9 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
        <div className="rounded-2xl border border-teal-100 bg-[#f4fbfa] p-5">
         <p className="cl-story-label">MEET YOUR PATIENT</p>
         <p className="mt-2 text-sm font-bold text-slate-700">{story.patient}</p>
-        <blockquote className="cl-story-quote mt-4 text-base">“{story.opening}”</blockquote>
+        {story.fullyAuthored?
+         <p className="cl-story-quote mt-4 text-base"><strong>From the documented vignette:</strong> {story.opening}</p>:
+         <blockquote className="cl-story-quote mt-4 text-base">“{story.opening}”</blockquote>}
        </div>
        <details className="cl-novel-facts rounded-xl border border-slate-200 p-4">
         <summary className="flex cursor-pointer items-center justify-between gap-2 text-sm font-bold text-teal-800">Read the documented case facts <ChevronDown className="h-4 w-4"/></summary>
@@ -213,7 +215,9 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
           <ChevronDown className={"mt-1 h-4 w-4 shrink-0 text-teal-700 transition "+(asked.includes(i)?"rotate-180":"")}/>
          </button>
          {asked.includes(i)&&<div className="cl-story-quote mt-3 text-sm">
-          <strong>{patientLabel}:</strong> “{reply(answer,i)}”
+          {story.fullyAuthored?
+           <><strong>Case history:</strong> {answer}</>:
+           <><strong>{patientLabel}:</strong> “{reply(answer,i)}”</>}
          </div>}
         </div>
        ))}</div>
