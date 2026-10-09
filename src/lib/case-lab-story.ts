@@ -2,6 +2,7 @@ import type {ClinicalCase} from "./clinical-cases";
 import type {ClinicalCaseGuide} from "./clinical-case-guides";
 import {expandedCases,expandedFlows} from "./clinical-arena-expanded";
 import {getClinicalExamination} from "./clinical-arena-examinations";
+import {coreMskCases,coreMskFlows} from "./case-lab-msk-core";
 import {multidisciplinaryCases,multidisciplinaryFlows,multidisciplinaryExams,multidisciplinaryTemplates} from "./clinical-arena-multispecialty";
 import {labCategory} from "./case-lab-catalog";
 
@@ -17,6 +18,25 @@ export type CaseStory={
  guide?:ClinicalCaseGuide;
 };
 export function getLabEpisode(id:string):CaseStory|null{
+ const core=coreMskCases.find(c=>c.id===id);
+ if(core){
+  const flow=coreMskFlows[core.id],exam=getClinicalExamination(core);
+  if(!flow)return null;
+  return{
+   id:core.id,category:labCategory(core.specialty,core.safety),patient:core.patient,opening:flow.chief,
+   scene:[core.history,"At this point you know what brought the patient to clinic, but you have not yet tested a working diagnosis. Choose what to ask and examine next.",
+    "A useful question: which finding would make you change your mind or seek urgent medical evaluation?"],
+   history:flow.historyQuestions,bestHistory:flow.bestHistory,findings:core.findings,
+   examPrompt:exam.question,examChoices:[...exam.options],examCorrect:exam.correct,examReason:exam.why,
+   diagnosisPrompt:core.question,diagnosisChoices:core.options,diagnosisCorrect:core.correct,diagnosisReason:core.explanation,
+   differentials:flow.differential.map((d,i)=>({diagnosis:d,reasoning:i===flow.differentialCorrect?flow.differentialWhy:"This alternative must be judged against the clinical pattern and examination findings."})),
+   management:[flow.treatment[flow.treatmentCorrect],flow.treatmentWhy],
+   progression:[core.safety?"Ensure emergency evaluation before starting routine physiotherapy.":"Review functional goals and objective change before changing rehabilitation load.",
+     "Document symptom behavior, function and adverse responses; adjust the plan if the pattern changes."],
+   learning:[core.explanation,flow.differentialWhy,"The patient story, safety screening, examination and decision must all fit together."],
+   urgent:!!core.safety,fullyAuthored:false,references:[]
+  };
+ }
  const m=multidisciplinaryCases.find(c=>c.id===id);
  if(m){
   const flow=multidisciplinaryFlows[id],exam=multidisciplinaryExams[id];
