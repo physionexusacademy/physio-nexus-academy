@@ -56,7 +56,7 @@ export function PremiumHomeHero() {
             </div>
           </div>
           <a href="/founder" className="pna-vision-founder-photo" aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy">
-            <Image src="/images/pna-founder-hero.avif" alt="Dr. Sajjad Raza PT in navy PNA physiotherapy scrubs, arms folded"
+            <Image src="/images/pna-founder-hero-sharp-v2.avif" alt="Dr. Sajjad Raza PT in navy PNA physiotherapy scrubs, arms folded"
               fill priority unoptimized sizes="(max-width: 600px) 240px, (max-width: 1024px) 360px, 510px" />
             <span className="pna-vision-founder-label">Dr. Sajjad Raza PT <small>Founder, PNA</small></span>
           </a>
