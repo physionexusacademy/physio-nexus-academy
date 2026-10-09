@@ -88,6 +88,12 @@ export default function KnowledgeHubPage() {
             Open Clinical Case Lab
           </a>
           <a
+            href="/daily-challenge"
+            className="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
+          >
+            Daily Challenge & Champions
+          </a>
+          <a
             href="/clinical-quiz"
             className="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
           >
