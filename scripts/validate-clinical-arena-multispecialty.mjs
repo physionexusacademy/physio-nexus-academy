@@ -44,7 +44,7 @@ assert.deepEqual(Object.fromEntries([...tracks].sort()),Object.fromEntries(Objec
 for(const required of [
  "questionKey:\"chief\"","...multidisciplinaryCases","...multidisciplinaryFlows",
  "multidisciplinaryExams[item.id]??getClinicalExamination(item)",
- "const isPediatricCase=","Caregiver","diagnosisUnlocked?item.title:",
+ "const isPediatricCase=","isPediatricCase?\\"Patient / caregiver\\"","diagnosisUnlocked?item.title:",
  "setPreDiagnosisReview([])","item.safety&&diagnosisUnlocked",
 ]){
  assert(page.includes(required),"Page integration or blind-mode regression: "+required);
