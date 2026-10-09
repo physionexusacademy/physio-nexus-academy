@@ -39,7 +39,9 @@ export const dailyQuestionBank:DailyChallengeQuestion[]=[
 {id:"pain-science",topic:"Pain Science",question:"Which statement best reflects contemporary understanding of pain intensity?",options:["It measures the exact severity of tissue damage","It is determined only by tissue imaging","It is influenced by biological, neurological and contextual factors","It becomes clinically unimportant if no structural lesion is visible"],correct:2,explanation:"Pain is a real and multifactorial experience; pain intensity is not a direct readout of tissue damage."}
 ];
 export function pakistanChallengeDate(now=new Date()):string {
- return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Karachi",year:"numeric",month:"2-digit",day:"2-digit"}).format(now);
+ const parts=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Karachi",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(now);
+ const get=(type:string)=>parts.find(item=>item.type===type)?.value||"";
+ return get("year")+"-"+get("month")+"-"+get("day");
 }
 export function challengeQuestions(date:string):DailyChallengeQuestion[]{
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error("Invalid date");
