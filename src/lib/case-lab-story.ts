@@ -30,7 +30,7 @@ export function getLabEpisode(id:string):CaseStory|null{
    history:flow.historyQuestions,bestHistory:flow.bestHistory,findings:core.findings,
    examPrompt:exam.question,examChoices:[...exam.options],examCorrect:exam.correct,examReason:exam.why,
    diagnosisPrompt:core.question,diagnosisChoices:core.options,diagnosisCorrect:core.correct,diagnosisReason:core.explanation,
-   differentials:flow.differential.map((d,i)=>({diagnosis:d,reasoning:i===flow.differentialCorrect?flow.differentialWhy:"This alternative must be judged against the clinical pattern and examination findings."})),
+   differentials:core.options.map((name,i)=>({diagnosis:name,reasoning:i===core.correct?core.explanation:"Compare this possibility with the patient history, objective findings and safety screening. Use targeted testing before drawing a conclusion."})),
    management:[flow.treatment[flow.treatmentCorrect],flow.treatmentWhy],
    progression:[core.safety?"Ensure emergency evaluation before starting routine physiotherapy.":"Review functional goals and objective change before changing rehabilitation load.",
      "Document symptom behavior, function and adverse responses; adjust the plan if the pattern changes."],
