@@ -20,7 +20,7 @@ const seeds=[
 ].flatMap(name=>{
  const source=readFileSync("src/lib/clinical-arena-"+name+".ts","utf8");
  const start=source.indexOf("=[");
- const items=JSON.parse(source.slice(start+1,source.lastIndexOf(";\\n".replace("\\n","\n"))));
+ const items=JSON.parse(source.slice(start+1,source.lastIndexOf(";\n")));
  return items.flatMap(template=>Array.from({length:5},(_,i)=>"multi-"+template.key+"-"+(i+1)));
 });
 assert.equal(seeds.length,300,"Expected 300 multidisciplinary patient variants");
