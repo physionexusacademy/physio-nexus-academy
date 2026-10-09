@@ -61,7 +61,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Assume no strengthening is worthwhile after a certain age.",
    "Use stretching alone to rebuild lost muscle."
   ],
-  "why": "Strength-focused training is a principal rehabilitation strategy.",
+  "why": "Progressive resistance training and adequate medical/nutritional support target reduced muscle strength; use function and chair-rise ability to reassess meaningful improvement.",
   "safety": false
  },
  {
@@ -125,7 +125,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Advise permanent avoidance of outdoor activity without rehabilitation planning.",
    "Treat fear as irrelevant and encourage unguarded complex tasks."
   ],
-  "why": "Multi-domain fall prevention improves safety and confidence.",
+  "why": "Multifactorial falls require linked management of balance, lower-limb strength, orthostatic symptoms, medications, vision and environmental risks, not one isolated exercise.",
   "safety": false
  },
  {
@@ -157,7 +157,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Use high-force spinal manipulation despite fragility.",
    "Restrict all safe weight-bearing activity indefinitely."
   ],
-  "why": "Safe loading and fall reduction are central to osteoporosis care.",
+  "why": "Load appropriately to support strength, posture and bone health while reducing fall risk; avoid high-risk spinal loading where vertebral fragility is suspected.",
   "safety": false
  },
  {
@@ -189,7 +189,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Encourage rapid repeated standing without support.",
    "Ignore fainting or chest symptoms if they emerge."
   ],
-  "why": "Address hemodynamic contributors to dizziness and falls.",
+  "why": "Orthostatic symptoms should prompt monitored positional blood-pressure review, medication reassessment and safe transfer advice before challenging standing activities.",
   "safety": false
  },
  {
@@ -221,7 +221,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Perform indiscriminate cervical manipulation.",
    "Treat only with balance strengthening while ignoring correctable positional vertigo."
   ],
-  "why": "Canal-specific repositioning is preferred once BPPV is supported.",
+  "why": "A characteristic positional vertigo and nystagmus pattern supports appropriate canal-specific repositioning, provided cervical and vascular contraindications have been screened.",
   "safety": false
  },
  {
@@ -253,7 +253,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Use posterior-canal treatment without recognizing a horizontal pattern.",
    "Suggest complete bed rest as definitive therapy."
   ],
-  "why": "Canal-specific maneuvers follow accurate pattern assessment.",
+  "why": "Direction-changing horizontal nystagmus during a supine roll test guides horizontal-canal assessment and selection of a tolerable canal-specific maneuver.",
   "safety": false
  },
  {
@@ -285,7 +285,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Avoid every head movement indefinitely.",
    "Perform repeated nonspecific repositioning without BPPV evidence."
   ],
-  "why": "Graded vestibular adaptation and substitution support function.",
+  "why": "Graded gaze-stabilization training, balance adaptation and walking exposure can improve functional compensation for reduced vestibular reflex gain when central signs are excluded.",
   "safety": false
  },
  {
@@ -381,7 +381,7 @@ export const mobilityVestibularTemplates:Template[]=[
    "Wait a week to see if exercises help.",
    "Use intense balance training while major stroke symptoms remain unevaluated."
   ],
-  "why": "Acute vestibular syndrome with central signs is time-sensitive.",
+  "why": "Continuous acute vertigo with inability to stand and focal neurological changes is a potential posterior-circulation stroke; activate emergency medical assessment promptly.",
   "safety": true,
   "urgency": "My new dizziness comes with inability to walk safely and another new neurological symptom."
  }
