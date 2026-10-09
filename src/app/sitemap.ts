@@ -25,6 +25,7 @@ const routes = [
   "/manual-therapy/regions",
   "/treatment-plans",
   "/msk-injuries",
+  "/msk-special-tests",
   "/case-lab",
   "/clinical-quiz",
   "/research",
