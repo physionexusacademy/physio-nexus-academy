@@ -150,19 +150,21 @@ jobs:
 
             local html
             html="$(mktemp "$smoke_tmp/page.XXXXXXXX")"
-            for attempt in 1 2 3 4 5 6; do
-              if curl -fsSL --connect-timeout 10 --max-time 25 \
+            for attempt in 1 2 3 4 5 6 7 8; do
+              if curl -fsSL --connect-timeout 10 --max-time 40 \
                 -o "$html" "$url?deploy=${GITHUB_SHA}"; then
                 if grep -Fq "$marker" "$html"; then
                   smoke_cache["$url"]="$html"
                   echo "Smoke test passed: $url"
-                  sleep 0.2
+                  # Protect Cloudflare Workers from a burst of large SSR responses.
+                  sleep 0.8
                   return 0
                 fi
               fi
 
               echo "Smoke test attempt $attempt failed for $url"
-              sleep 4
+              # Gradually back off after transient Worker 503s without masking persistent failure.
+              sleep "$((attempt * 3 + 2))"
             done
 
             echo "::error::Smoke test failed: $url did not return the expected marker after retries: $marker"
@@ -215,6 +217,8 @@ jobs:
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-manual-cover="craniosacral-therapy"'
           check_url "https://physionexusacademy.com/manual-therapy" "World Manual Therapy Encyclopedia"
           check_url "https://physionexusacademy.com/manual-therapy/world-approaches" 'data-pna-library="unified-35-v1"'
+          # Verify one large technique early, before the complete encyclopedia smoke crawl.
+          check_url "https://physionexusacademy.com/manual-therapy/facilitated-positional-release" 'data-pna-reading="clinical-story-v3"'
           for slug in \
             paris-approach mckenzie-mdt mennell-joint-play fascial-distortion-model \
             balanced-ligamentous-tension spencer-shoulder-sequence still-technique \
