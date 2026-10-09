@@ -71,6 +71,18 @@ assert(files.learning.includes("story.teachingDiagnosis ||"),"Deep-dive clinical
 assert(files.episodes.includes('const urgent=item.specialty.includes("Red Flags")'),"Routine safety screens must not turn every authored case into an emergency");
 assert(!files.episodes.includes("const urgent=!!item.redFlags?.length"),"A red-flag checklist alone does not mean an emergency is present");
 assert(files.episodes.includes("history:item.presentation.slice(0,5).map"),"Patient interview answers must be based on case-provided history");
+const novel=read("src/lib/case-lab-narrative.ts");
+const style=read("src/app/case-lab/case-lab.css");
+assert(novel.includes("export function buildClinicalEpisodes"),"Case-grounded narrative builder missing");
+assert(novel.includes("educational simulation")||novel.includes("teaching case"),"Novel engine must label simulated evidence");
+assert(files.experience.includes('data-pna-case-lab-lesson="clinical-novel-v2"'),"Novel reader not connected to patient files");
+assert(files.experience.includes("scene.narrative.map"),"Story prose not rendering");
+assert(files.experience.includes("scene.insight"),"Reflective clinical insight missing");
+assert(files.experience.includes("setFocusMode"),"Reader focus mode missing");
+assert(style.includes(".cl-novel-prose"),"Editorial reading typography missing");
+assert(files.library.includes("isInClinicalCategory(c,name)"),"Category case counts must use cross-listing");
+assert(files.library.includes('selected==="Clinical Red Flags"'),"Red flags collection must be cross-specialty");
+assert(files.catalog.includes('if(specialty==="Clinical Red Flags"||specialty.includes("Red Flags"))'),"Cross-list safety cases in home specialty");
 const checks={
  premiumCss:read("src/app/case-lab/case-lab.css").includes(".cl-hero"),
  filter:files.library.includes("pna-case-search")&&files.library.includes("chooseSpecialty(next:string)"),
@@ -81,7 +93,7 @@ const checks={
  clinicalExam:files.episodes.includes("getClinicalExamination(e)")&&files.episodes.includes("getClinicalExamination(core)"),
  safeSelection:files.experience.includes("story.urgent")&&files.learning.includes('story.urgent?"Clinical Red Flags"'),
  sevenTeachingChapters:files.experience.includes('name:"Meet the patient"')&&files.experience.includes('name:"Dosage & reassessment"')&&files.experience.includes('name:"Key lessons"'),
- readingNotQuiz:files.experience.includes("This is your clinical reading room, not an exam.")&&!files.experience.includes("Submit working diagnosis & unlock debrief"),
+ readingNotQuiz:files.experience.includes("not an exam.")&&!files.experience.includes("Submit working diagnosis & unlock debrief"),
  detailedGuides:files.deepPage.includes("supplementalCaseGuides"),
  clinicalReasoning:files.learning.includes('const comparison=relevant.map')&&files.experience.includes('lesson.chapters.differential'),
  reducedMotion:files.experience.includes("prefers-reduced-motion: reduce"),
@@ -93,7 +105,7 @@ const checks={
  categories:files.catalog.includes("Critical Care & ICU")&&files.catalog.includes("Oncology Rehabilitation"),
  specialtyFirst:files.library.includes('data-pna-case-lab="specialty-first-v4"')&&files.library.includes("!category?("),
  categoryNavigation:files.library.includes('aria-pressed={active}')&&files.library.includes('className="cl-specialty-choice'),
- categoryCaseFiltering:files.library.includes('if(category!=="All cases"&&c.category!==category)return false;'),
+ categoryCaseFiltering:files.library.includes("isInClinicalCategory(c,category)")&&files.library.includes("function isInClinicalCategory"),
  regions:files.library.includes('c.focus!==focus')&&files.library.includes("focusOptions"),
  clinicalLevels:files.library.includes('c.difficulty!==level'),
  caseModes:files.library.includes('c.kind!=="Interactive scenario"')&&files.library.includes('c.kind!=="Clinical deep dive"'),
