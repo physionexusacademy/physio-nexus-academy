@@ -260,6 +260,17 @@ export default function ClinicalArenaPage(){
  <div className="mt-7 flex flex-wrap items-center gap-2"><span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">{item.specialty}</span>{item.safety&&diagnosisUnlocked&&<span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800"><ShieldAlert className="h-4 w-4"/> Red-flag case</span>}</div>
  <h2 data-pna-blind-case="v1" className="mt-3 text-2xl font-bold">{diagnosisUnlocked?item.title:`Patient ${String(position+1).padStart(2,"0")} · Unsolved clinical case`}</h2>
   {!diagnosisUnlocked&&<p className="mt-2 text-sm text-slate-500">The condition is hidden. Collect clues, examine, and build your differential before submitting a working diagnosis.</p>}
+  {diagnosisUnlocked?
+   <div data-pna-arena-study-link="v1" className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-200 bg-teal-50/70 p-4">
+    <div><p className="text-sm font-bold text-teal-900">Want to understand this case in depth?</p>
+     <p className="mt-1 text-xs leading-6 text-teal-800">Read the same patient's story, assessment reasoning, treatment principles and follow-up in Case Lab.</p>
+    </div>
+    <Link href={"/case-lab/episode?id="+encodeURIComponent(item.id)}
+     className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white hover:bg-teal-800">
+     Study this case in Case Lab <ArrowRight className="h-4 w-4"/>
+    </Link>
+   </div>:
+   <p className="mt-2 text-xs text-slate-500">Need teaching support? <Link href="/case-lab" className="font-bold text-teal-800 underline underline-offset-2">Browse Case Lab lessons</Link>. A direct link to this patient unlocks after Stage 4.</p>}
  <div className="pna-patient mt-5 rounded-2xl p-5"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">{isPediatricCase?"Pediatric patient · Age-appropriate interview":"Patient"} · {item.patient}</p><p className="mt-2 font-semibold">“{flow.chief}”</p></div>
  {stage==="history"?<section className="mt-6">
  <h3 className="text-lg font-bold">Stage 1: Patient history</h3><p className="mt-2 rounded-xl border border-teal-100 bg-teal-50/60 px-4 py-3 text-sm font-medium italic leading-6 text-teal-900">{stageNudges.history[(position+asked.length)%stageNudges.history.length]}</p>
