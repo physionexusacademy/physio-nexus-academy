@@ -143,6 +143,7 @@ jobs:
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           check_url "https://physionexusacademy.com/case-lab" 'data-pna-case-lab="specialty-first-v4"'
           check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "A real-world style patient story."
+          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" 'data-pna-case-lab-lesson="clinical-novel-v2"'
           check_url "https://physionexusacademy.com/case-lab/episode" "Opening your patient file"
           check_url "https://physionexusacademy.com/clinical-arena" "Preparing your clinical challenge"
           check_url "https://physionexusacademy.com/msk-injuries" 'data-pna-msk-story-library="v1"'
