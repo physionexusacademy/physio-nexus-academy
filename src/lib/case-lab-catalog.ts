@@ -4,7 +4,7 @@ import {multidisciplinaryCases,multidisciplinaryFlows} from "./clinical-arena-mu
 import {coreMskCases,coreMskFlows} from "./case-lab-msk-core";
 export type LabCaseCard={
  id:string; href:string; category:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
- kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;
+ kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;keywords:string;
 };
 export const labCategories=[
  "MSK & Sports","Neurological Rehabilitation","Pediatric Rehabilitation",
@@ -34,17 +34,17 @@ const featuredHooks:Record<string,string>={
  "copd-post-exacerbation-pulmonary-rehab":"After discharge, every small walk feels like a mountain.",
  "acl-reconstruction-return-to-sport-readiness":"The athlete passed a hop test. Is that really enough?",
 };
-export const labCaseCards:LabCaseCard[]=[
+const rawLabCaseCards:LabCaseCard[]=[
  ...clinicalCaseIndex.map(c=>({
    id:"deep-"+c.slug,href:"/case-lab/"+c.slug,
    category:labCategory(c.specialty),patient:"Detailed teaching case",
-   hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,
+   hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,keywords:c.title+" "+c.summary,
    kind:"Clinical deep dive" as const,minutes:c.estimatedTime,safety:c.specialty.includes("Red Flags")
  })),
  ...coreMskCases.map(c=>({
    id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
    category:labCategory(c.specialty,c.safety),patient:c.patient,
-   hook:coreMskFlows[c.id]?.chief||c.history.split(".")[0],
+   hook:coreMskFlows[c.id]?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,
    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,
    minutes:"7–10 min",safety:!!c.safety
  })),
@@ -53,7 +53,7 @@ export const labCaseCards:LabCaseCard[]=[
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
     category:labCategory(c.specialty,c.safety),patient:c.patient,
-    hook:flow?.chief||c.history.split(".")[0],
+    hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
  }),
@@ -62,9 +62,25 @@ export const labCaseCards:LabCaseCard[]=[
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
     category:labCategory(c.specialty,c.safety),patient:c.patient,
-    hook:flow?.chief||c.history.split(".")[0],
+    hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
  })
 ];
+// Each early page of cards represents the range of clinical categories,
+// rather than showing dozens of the same specialty before anything else.
+const featured=rawLabCaseCards.filter(c=>c.kind==="Clinical deep dive");
+const grouped=new Map<string,LabCaseCard[]>();
+for(const c of rawLabCaseCards.filter(c=>c.kind==="Interactive scenario")){
+ const batch=grouped.get(c.category)||[];
+ batch.push(c);grouped.set(c.category,batch);
+}
+const interleaved:LabCaseCard[]=[];
+while([...grouped.values()].some(items=>items.length>0)){
+ for(const label of labCategories){
+  const next=grouped.get(label)?.shift();
+  if(next)interleaved.push(next);
+ }
+}
+export const labCaseCards:LabCaseCard[]=[...featured,...interleaved];
 export const labCaseTotal=labCaseCards.length;
