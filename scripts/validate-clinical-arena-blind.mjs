@@ -38,11 +38,14 @@ for (const marker of [
   'panel.focus({preventScroll:true})',
   'if(scrollRequest===0)return;',
   'setRevealed(true);setScrollRequest(n=>n+1)',
-  'function advance(){\\n  setScrollRequest(n=>n+1);'.replace('\\n','\\n'),
+  'function advance(){',
   'setCaseStart(Date.now());setScrollRequest(n=>n+1)',
 ]) {
   assert(page.includes(marker), "Case auto-scroll safeguard missing: " + marker);
 }
+
+assert(/function advance\\(\\)\\{\\s*setScrollRequest\\(n=>n\\+1\\);/.test(page),
+  "Stage transitions must also scroll back to the start of the case");
 
 const start=expanded.indexOf("export const expandedCases");
 const arrayStart=expanded.indexOf("=[",start);
