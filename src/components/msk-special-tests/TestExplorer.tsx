@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Activity, ArrowRight, CheckCircle2, ChevronDown, ClipboardCheck, Hand, RotateCcw, Search, ShieldAlert, Stethoscope, Target } from "lucide-react";
-import { MSK_TEST_REGIONS, type MskSpecialTest } from "@/lib/msk-special-tests-types";
+import { ArrowRight, CheckCircle2, ChevronDown, ClipboardCheck, Eye, Hand, MoveRight, RotateCcw, Search, ShieldAlert, Stethoscope, Target, UserRound, AlertTriangle } from "lucide-react";
+import { MSK_TEST_REGIONS } from "@/lib/msk-special-tests-types";
+import type { GuidedMskSpecialTest } from "@/lib/msk-special-tests";
 
 type Region = "All tests" | (typeof MSK_TEST_REGIONS)[number];
 
-export function TestExplorer({ tests }: { tests: MskSpecialTest[] }) {
+export function TestExplorer({ tests }: { tests: GuidedMskSpecialTest[] }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region>("All tests");
   const [visibleCount, setVisibleCount] = useState(12);
@@ -18,7 +19,7 @@ export function TestExplorer({ tests }: { tests: MskSpecialTest[] }) {
     return tests.filter((test) => {
       if (region !== "All tests" && test.region !== region) return false;
       if (!search) return true;
-      return [test.name, test.region, test.purpose, test.position, test.positive, test.meaning, ...test.steps].join(" ").toLocaleLowerCase().includes(search);
+      return [test.name, test.region, test.purpose, test.position, test.positive, test.meaning, ...test.steps, test.technique.hands, test.technique.force, test.technique.therapist].join(" ").toLocaleLowerCase().includes(search);
     });
   }, [tests, region, query]);
   const visible = matches.slice(0, visibleCount);
@@ -93,13 +94,36 @@ export function TestExplorer({ tests }: { tests: MskSpecialTest[] }) {
                       type="button" onClick={() => toggle(test.id)} aria-expanded={open} aria-controls={test.id + "-method"}
                       className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-bold text-teal-800 transition hover:border-teal-300 hover:bg-teal-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                     >
-                      {open ? "Hide technique" : "View applying method"} <ChevronDown className={"h-4 w-4 transition-transform " + (open ? "rotate-180" : "")}/>
+                      {open ? "Hide technique" : "View hands, force & applying method"} <ChevronDown className={"h-4 w-4 transition-transform " + (open ? "rotate-180" : "")}/>
                     </button>
                   </div>
                   {open && <div id={test.id + "-method"} className="border-t border-slate-100 bg-slate-50/70 px-5 py-6 sm:px-6">
                     <div className="rounded-2xl border border-slate-200 bg-white p-4">
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-teal-800"><Stethoscope className="h-4 w-4"/>Patient position</div>
                       <p className="mt-2 text-sm leading-7 text-slate-700">{test.position}</p>
+                    </div>
+                    <div className="mt-4 rounded-2xl border border-[#cfe8e5] bg-white p-4 shadow-[0_12px_30px_-24px_rgba(8,102,107,0.2)] sm:p-5" aria-label={"Therapist setup and hand placement for " + test.name}>
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-teal-700">Clinical Technique Map</p>
+                          <h3 className="mt-1 font-serif text-lg font-bold text-[#102e40]">Stand. Place hands. Apply force.</h3>
+                        </div>
+                        <span className="rounded-full border border-teal-100 bg-teal-50 px-3 py-1.5 text-[11px] font-bold text-teal-800">Therapist's viewpoint</span>
+                      </div>
+                      <div className="mt-4 space-y-3">
+                        <div className="flex items-start gap-3 rounded-xl border border-slate-100 bg-[#f8fbfc] p-4">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-teal-800 shadow-sm"><UserRound className="h-4 w-4" aria-hidden="true"/></span>
+                          <div><h4 className="text-sm font-bold text-[#153a4a]">1. Where the therapist stands</h4><p className="mt-1.5 text-sm leading-7 text-slate-700">{test.technique.therapist}</p></div>
+                        </div>
+                        <div className="flex items-start gap-3 rounded-xl border border-slate-100 bg-[#f8fbfc] p-4">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-teal-800 shadow-sm"><Hand className="h-4 w-4" aria-hidden="true"/></span>
+                          <div><h4 className="text-sm font-bold text-[#153a4a]">2. Exact hand placement & stabilization</h4><p className="mt-1.5 text-sm leading-7 text-slate-700">{test.technique.hands}</p></div>
+                        </div>
+                        <div className="flex items-start gap-3 rounded-xl border border-[#cde9e6] bg-[#f0f9f7] p-4">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-teal-800 shadow-sm"><MoveRight className="h-5 w-5" aria-hidden="true"/></span>
+                          <div><h4 className="text-sm font-bold text-[#0c625e]">3. Force / movement direction</h4><p className="mt-1.5 text-sm leading-7 text-slate-800">{test.technique.force}</p></div>
+                        </div>
+                      </div>
                     </div>
                     <div className="mt-5">
                       <h3 className="flex items-center gap-2 text-base font-bold text-slate-900"><Hand className="h-5 w-5 text-teal-700"/>How to perform — step by step</h3>
@@ -108,6 +132,14 @@ export function TestExplorer({ tests }: { tests: MskSpecialTest[] }) {
                           <span className="flex h-7 w-7 flex-none items-center justify-center rounded-lg bg-teal-700 text-xs font-bold text-white">{i+1}</span><span>{step}</span>
                         </li>)}
                       </ol>
+                    </div>
+                    <div className="mt-4 rounded-2xl border border-sky-100 bg-gradient-to-br from-white to-sky-50/70 p-5">
+                      <h3 className="flex items-center gap-2 text-sm font-bold text-[#133f52]"><Eye className="h-5 w-5 text-teal-700" aria-hidden="true"/>Picture the movement</h3>
+                      <p className="mt-2 text-sm leading-8 text-slate-700">{test.technique.visualize}</p>
+                    </div>
+                    <div className="mt-3 flex items-start gap-3 rounded-xl border border-amber-100 bg-[#fffaf0] p-4">
+                      <AlertTriangle className="mt-0.5 h-5 w-5 flex-none text-amber-700" aria-hidden="true"/>
+                      <div><h3 className="text-sm font-bold text-amber-950">Common mistake — avoid this</h3><p className="mt-1.5 text-sm leading-7 text-amber-950">{test.technique.avoid}</p></div>
                     </div>
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                       <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
@@ -138,7 +170,7 @@ export function TestExplorer({ tests }: { tests: MskSpecialTest[] }) {
         </div>}
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
           <p className="flex items-center gap-2 font-bold text-slate-800"><ClipboardCheck className="h-5 w-5 text-teal-700"/>How to study a special test</p>
-          <p className="mt-2">Remember the sequence: <strong>purpose → patient position → stabilization → movement / force → positive sign → clinical meaning.</strong> Practise under competent clinical supervision, and screen for red flags before provocative examination.</p>
+          <p className="mt-2">Remember the sequence: <strong>purpose → patient position → therapist position → exact hands → force direction → 3 steps → positive finding → meaning.</strong> Practise under competent clinical supervision, and screen for red flags before provocative examination.</p>
         </div>
       </section>
     </div>
