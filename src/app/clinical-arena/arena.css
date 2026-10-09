@@ -108,7 +108,8 @@ html body .pna-arena .pna-patient{color:#183647!important}
   flex-direction: column;
   gap: .5rem;
 }
-.pna-arena .pna-control-group:nth-child(2) { flex-basis: 170px; min-width: 150px; }
+.pna-arena .pna-control-group:nth-child(2) { flex-basis: 220px; min-width: 185px; }
+.pna-arena .pna-control-group:nth-child(3) { flex-basis: 165px; min-width: 150px; }
 .pna-arena .pna-control-label {
   display: block;
   padding-left: .15rem;
@@ -204,7 +205,8 @@ html body .pna-arena .pna-filter:focus-visible {
  .pna-arena .pna-hero-chip { font-size: .7rem; padding: .4rem .67rem; }
  .pna-arena .pna-controls { padding: 1rem; gap: 1rem; }
  .pna-arena .pna-control-group,
- .pna-arena .pna-control-group:nth-child(2) { flex: 1 1 100%; min-width: 0; }
+ .pna-arena .pna-control-group:nth-child(2),
+ .pna-arena .pna-control-group:nth-child(3) { flex: 1 1 100%; min-width: 0; }
  .pna-arena .pna-available-count { margin-left: 0; min-height: 34px; }
  .pna-arena .pna-performance { justify-content: flex-start; }
 }
