@@ -11,6 +11,10 @@ const css=read("src/app/daily-challenge/daily-challenge.css");
 const home=read("src/app/page.tsx");
 const hub=read("src/app/knowledge-hub/page.tsx");
 const migration=read("supabase/migrations/20261009_pna_daily_challenge.sql");
+const nav=read("src/lib/site-config.ts");
+const mobile=read("src/components/MobilePortalNav.tsx");
+const desktop=read("src/components/Header.tsx");
+const countdown=read("src/components/daily-challenge/DailyChallengeCountdown.tsx");
 const questions=[...data.matchAll(/\{id:"([^"]+)",topic:"([^"]+)",question:"/g)];
 const ids=new Set(questions.map(m=>m[1]));
 const tests={
@@ -41,7 +45,17 @@ const tests={
   landingLinked:home.includes('href: "/daily-challenge"')&&hub.includes('href="/daily-challenge"'),
   noIdentityOverclaim:quiz.includes("Email ownership is not verified"),
   noGeneratedFakeRanks:!board.includes("Demo Participant"),
-  challengeMarker:quiz.includes('data-pna-daily-challenge="v1"')
+  challengeMarker:quiz.includes('data-pna-daily-challenge="v1"'),
+  homepageFlagshipFirst:home.includes('data-pna-home-flagship="daily-clinical-challenge-v2"') && home.indexOf('data-pna-home-flagship') < home.indexOf('relative overflow-hidden bg-gradient-to-br from-navy-900'),
+  flagshipSingleHero:(home.match(/data-pna-home-flagship/g)||[]).length===1 && (home.match(/<DailyLeaderboard compact/g)||[]).length===1,
+  flagshipActivePlay:home.includes('href="/daily-challenge#play-daily"'),
+  flagshipLiveBoard:home.includes('title="Today\'s Top 5"') && home.includes("DailyChallengeCountdown"),
+  topLevelNav:nav.includes('label: "Daily Challenge", href: "/daily-challenge"') && !nav.includes('label: "MSK Hub", href: "/msk-injuries"'),
+  mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
+  desktopChallengeHighlight:desktop.includes('item.href === "/daily-challenge"') && desktop.includes('bg-teal-700'),
+  midnightCounter:countdown.includes('timeZone: "Asia/Karachi"') && countdown.includes('Date.UTC('),
+  retainedKnowledgeSections:home.includes('href="/symptom-checker"') && home.includes('href="/case-lab"') && home.includes('portalActions.map'),
+  themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)")
 };
 for(const [name,ok] of Object.entries(tests)){
  assert(ok,"Daily Challenge check failed: "+name);
