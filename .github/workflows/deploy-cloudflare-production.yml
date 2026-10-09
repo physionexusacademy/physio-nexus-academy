@@ -53,7 +53,11 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-clinical-arena-blind.mjs
 
-      - name: Validate 200 Clinical Arena body-region filters
+      - name: Validate Neuro, Pediatric, Cardio and advanced multidisciplinary clinical scenarios
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-clinical-arena-multispecialty.mjs
+
+      - name: Validate 500 Clinical Arena regions and case categorization
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-clinical-arena-regions.mjs
 
