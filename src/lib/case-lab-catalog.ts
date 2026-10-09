@@ -1,6 +1,7 @@
 import {clinicalCaseIndex} from "./clinical-case-index";
 import {expandedCases,expandedFlows} from "./clinical-arena-expanded";
 import {multidisciplinaryCases,multidisciplinaryFlows} from "./clinical-arena-multispecialty";
+import {coreMskCases,coreMskFlows} from "./case-lab-msk-core";
 export type LabCaseCard={
  id:string; href:string; category:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
  kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;
@@ -39,6 +40,13 @@ export const labCaseCards:LabCaseCard[]=[
    category:labCategory(c.specialty),patient:"Detailed teaching case",
    hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,
    kind:"Clinical deep dive" as const,minutes:c.estimatedTime,safety:c.specialty.includes("Red Flags")
+ })),
+ ...coreMskCases.map(c=>({
+   id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
+   category:labCategory(c.specialty,c.safety),patient:c.patient,
+   hook:coreMskFlows[c.id]?.chief||c.history.split(".")[0],
+   difficulty:"Clinical" as const,kind:"Interactive scenario" as const,
+   minutes:"7–10 min",safety:!!c.safety
  })),
  ...multidisciplinaryCases.map((c)=>{
    const flow=multidisciplinaryFlows[c.id];
