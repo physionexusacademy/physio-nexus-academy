@@ -10,10 +10,14 @@ import { knowledge20261002 } from "./2026-10-02";
 import { knowledge20261003 } from "./2026-10-03";
 import { knowledge20261004 } from "./2026-10-04";
 import { knowledge20261005 } from "./2026-10-05";
+import { knowledge20261010 } from "./2026-10-10";
+import { knowledge20261011 } from "./2026-10-11";
 // DAILY_KNOWLEDGE_IMPORTS_END
 
 export const modularKnowledgeArticles: KnowledgeArticle[] = [
   // DAILY_KNOWLEDGE_SPREADS_START
+  ...knowledge20261011,
+  ...knowledge20261010,
   ...knowledge20261005,
   ...knowledge20261004,
   ...knowledge20261003,
