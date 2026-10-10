@@ -64,6 +64,7 @@ export default async function GalleryPage() {
           >
             <Image
               src={item.image_url}
+              unoptimized
               alt={item.caption || "Physio Nexus Academy gallery photo"}
               fill
               className="object-cover"
