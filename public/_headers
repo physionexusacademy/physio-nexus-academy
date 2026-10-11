@@ -3,6 +3,10 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
 
+# Original optimized pathway photos, served directly by Cloudflare static assets.
+/images/pathway-backgrounds/*
+  Cache-Control: public,max-age=86400
+
 
 # PWA runtime files must revalidate so installed apps receive new deployments promptly.
 /sw.js

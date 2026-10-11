@@ -18,6 +18,14 @@ const icons = {
 type IconKey = keyof typeof icons;
 type GroupId = "learn" | "practice" | "professional" | "care";
 
+// Supplied 754 × 498 WebPs: preserve the original optimized image bytes.
+const pathwayBackgrounds: Record<GroupId, string> = {
+  learn: "student",
+  practice: "physiotherapist",
+  professional: "workshops",
+  care: "patient-care",
+};
+
 // Approved WebP banners are already optimized; serve their original bytes.
 // All images are 192px high. Keep each native width to avoid distortion.
 const featureVisuals: Record<string, { file: string; width: number }> = {
@@ -166,7 +174,16 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
               <span className="pna-vision-pathway-num">{group.number}</span>
               <strong>{group.title}</strong>
               <span>{group.description}</span>
-              <PnaPathwayArtwork kind={group.id} className="pna-vision-pathway-art" />
+              <img
+                className="pna-vision-pathway-photo"
+                src={`/images/pathway-backgrounds/${pathwayBackgrounds[group.id]}.webp`}
+                alt=""
+                aria-hidden="true"
+                width={754}
+                height={498}
+                loading="lazy"
+                decoding="async"
+              />
               <span className="pna-vision-pathway-state" aria-hidden="true">{selected === group.id ? "Selected" : "Explore"}</span>
               <span className="pna-vision-pathway-arrow"><ChevronRight size={18} aria-hidden="true"/></span>
             </button>

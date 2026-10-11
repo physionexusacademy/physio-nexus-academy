@@ -49,7 +49,6 @@
   outline:3px solid #047f96;outline-offset:3px;
 }
 .pna-sig-explore .pna-vision-pathway strong{max-width:230px}
-.pna-sig-explore .pna-vision-pathway-art{opacity:.71;bottom:-20px;}
 .pna-sig-detail{
   overflow:hidden;border:1px solid #d1e6ed;border-radius:25px;
   background:linear-gradient(170deg,#f1faff 0%,#fff 42%);
@@ -172,7 +171,6 @@
   .pna-sig-explore .pna-vision-pathway-num{width:30px;height:30px;font-size:12px;}
   .pna-sig-explore .pna-vision-pathway strong{font-size:16px;line-height:1.17;margin-top:10px;}
   .pna-sig-explore .pna-vision-pathway>span:nth-child(3){font-size:9px;line-height:1.4;margin-top:7px;}
-  .pna-sig-explore .pna-vision-pathway-art{height:54%;opacity:.55;}
   .pna-sig-explore .pna-vision-pathway-arrow{width:32px;height:32px;bottom:11px;right:11px;}
   .pna-sig-detail{border-radius:21px;}
   .pna-sig-detail-head{padding:19px 17px 16px;min-height:129px;}
@@ -271,7 +269,6 @@
 .pna-sig-explore .pna-vision-pathway-num{position:relative;z-index:2;background:#fff;border:1px solid rgba(255,255,255,.9);box-shadow:0 4px 12px rgba(15,76,92,.06)}
 .pna-sig-explore .pna-vision-pathway strong{position:relative;z-index:2;text-wrap:balance;color:#133653}
 .pna-sig-explore .pna-vision-pathway>span:nth-child(3){position:relative;z-index:2;color:#365e70;font-weight:520}
-.pna-sig-explore .pna-vision-pathway-art{opacity:.30;bottom:-13%;right:-13%;width:92%;height:60%;filter:saturate(.82);z-index:1}
 .pna-vision-pathway-state{
   position:absolute;top:19px;right:16px;z-index:3;border:1px solid rgba(11,107,120,.15);
   background:rgba(255,255,255,.65);border-radius:999px;padding:5px 8px;color:#317788;
@@ -322,7 +319,6 @@
   .pna-sig-explore .pna-vision-pathway-num{width:32px;height:32px;font-size:12px}
   .pna-sig-explore .pna-vision-pathway strong{margin-top:11px;font-size:17px;line-height:1.18;max-width:100%}
   .pna-sig-explore .pna-vision-pathway>span:nth-child(3){margin-top:8px;font-size:10px;line-height:1.48;max-width:93%}
-  .pna-sig-explore .pna-vision-pathway-art{height:49%;width:90%;right:-18%;bottom:-10%;opacity:.22}
   .pna-vision-pathway-state{top:17px;right:10px;font-size:8px;padding:5px 7px}
   .pna-sig-explore .pna-vision-pathway-arrow{width:37px;height:37px;right:10px;bottom:10px}
   .pna-sig-detail{border-radius:23px}
@@ -354,3 +350,27 @@
 .pna-sig-link-art{background:#e8f6f5}
 .pna-sig-link:focus-visible .pna-sig-link-art{outline:2px solid #0d919a;outline-offset:2px}
 
+
+/* Supplied realistic pathway photographs. Keep full clinical scenes visible,
+ * reserve their space before load, and leave the existing interactive UI above them. */
+.pna-sig-explore .pna-vision-pathway{
+  display:flex;flex-direction:column;align-items:flex-start;
+  min-height:290px;padding-bottom:144px;
+}
+.pna-sig-explore .pna-vision-pathway-photo{
+  position:absolute;z-index:1;right:0;bottom:0;display:block;
+  width:100%;height:144px;object-fit:contain;object-position:right bottom;
+  pointer-events:none;user-select:none;
+  -webkit-mask-image:linear-gradient(100deg,transparent 0%,#000 36%),linear-gradient(to bottom,transparent 0%,#000 12%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(100deg,transparent 0%,#000 36%),linear-gradient(to bottom,transparent 0%,#000 12%);
+  mask-composite:intersect;
+}
+@media(max-width:900px) and (min-width:561px){
+  .pna-sig-explore .pna-vision-pathway{min-height:290px;padding-bottom:148px}
+  .pna-sig-explore .pna-vision-pathway-photo{height:148px}
+}
+@media(max-width:560px){
+  .pna-sig-explore .pna-vision-pathway{min-height:266px;padding-bottom:106px}
+  .pna-sig-explore .pna-vision-pathway-photo{height:104px}
+}

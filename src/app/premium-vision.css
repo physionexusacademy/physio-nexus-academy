@@ -64,7 +64,6 @@
 .pna-vision-pathway-num{display:inline-flex;align-items:center;justify-content:center;width:35px;height:35px;border-radius:50%;background:#ffffffa8;border:1px solid #ffffffb0;font-size:13px;font-weight:900;color:#137c9a}
 .pna-vision-pathway strong{position:relative;z-index:2;display:block;max-width:250px;margin-top:15px;color:#153558;font:800 clamp(17px,1.55vw,22px)/1.14 Georgia,Cambria,serif;letter-spacing:-.025em}
 .pna-vision-pathway>span:nth-child(3){position:relative;z-index:2;display:block;max-width:220px;margin-top:8px;color:#426b7f;font-size:11px;line-height:1.5}
-.pna-vision-pathway-art{position:absolute;bottom:-17px;right:-19px;width:94%;height:60%;opacity:.87;pointer-events:none}
 .pna-vision-pathway-arrow{position:absolute;z-index:3;bottom:13px;right:13px;display:flex;align-items:center;justify-content:center;width:35px;height:35px;border-radius:50%;background:#077e99;color:white;box-shadow:0 6px 15px -8px #075c78}
 .pna-vision-pathways-title{margin:0 0 17px;color:#16455a;font:800 23px/1.2 Georgia,Cambria,serif}
 .pna-home-zones{gap:17px!important}
@@ -122,7 +121,6 @@
 .pna-vision-pathway{min-height:240px;padding:13px;border-radius:18px}
 .pna-vision-pathway strong{font-size:18px;margin-top:12px}
 .pna-vision-pathway>span:nth-child(3){font-size:10px}
-.pna-vision-pathway-art{width:115%;right:-30px;bottom:-12px;height:60%}
 .pna-home-zone-links{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:450px){
@@ -146,7 +144,6 @@
 .pna-vision-pathway{min-height:213px;padding:11px}
 .pna-vision-pathway strong{font-size:16px}
 .pna-vision-pathway>span:nth-child(3){font-size:9px}
-.pna-vision-pathway-art{bottom:-11px;height:55%}
 .pna-home-zone-links{grid-template-columns:1fr}
 .pna-home-zone-art{width:49%;opacity:.24}
 .pna-home-zone-top{min-height:107px}
@@ -157,14 +154,3 @@
 /* Make the three hero promise tiles keyboard-accessible links without changing their visual treatment. */
 .pna-vision-promise a{color:inherit;text-decoration:none;min-width:0;cursor:pointer}
 .pna-vision-promise a:focus-visible{outline:2px solid #fff;outline-offset:-4px;border-radius:12px}
-
-/* Subtle editorial image watermarks for the four Explore PNA pathways. */
-.pna-vision-pathway::before{content:"";position:absolute;z-index:0;inset:auto 0 0 auto;width:92%;height:60%;background-repeat:no-repeat;background-position:right bottom;background-size:cover;opacity:.24;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 55%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 55%,#000 100%);pointer-events:none;filter:saturate(.75)}
-.pna-vision-pathway.learn::before{background-image:url('/images/manual-therapy/cards/paivm-ppivm-spinal-assessment.avif')}
-.pna-vision-pathway.practice::before{background-image:url('/images/manual-therapy/cards/myofascial-release.avif')}
-.pna-vision-pathway.professional::before{background-image:url('/images/pna-founder-hero-sharp-v2.avif');background-size:contain;background-position:right bottom;opacity:.2}
-.pna-vision-pathway.care::before{background-image:url('/images/manual-therapy/cards/soft-tissue-mobilization.avif')}
-.pna-vision-pathway .pna-vision-pathway-art{opacity:.15}
-.pna-vision-pathway strong,.pna-vision-pathway>span:nth-child(3),.pna-vision-pathway-num,.pna-vision-pathway-state,.pna-vision-pathway-arrow{position:relative;z-index:2}
-.pna-vision-pathway .pna-vision-pathway-arrow{position:absolute}
-@media(max-width:640px){.pna-vision-pathway::before{height:52%;width:100%;opacity:.18}.pna-vision-pathway.professional::before{opacity:.16}}
