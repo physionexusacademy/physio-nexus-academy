@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
   ClipboardList, Eye, FileBadge2, FlaskConical, Hand, HeartPulse,
@@ -19,29 +18,25 @@ const icons = {
 type IconKey = keyof typeof icons;
 type GroupId = "learn" | "practice" | "professional" | "care";
 
-const liveArtwork: Record<string, string> = {
-  "/manual-therapy": "/images/manual-therapy/cards/myofascial-release.avif",
-  "/knowledge-hub": "/images/manual-therapy/cards/strain-counterstrain.avif",
-  "/clinical-visual-atlas": "/images/manual-therapy/cards/paivm-ppivm-spinal-assessment.avif",
-  "/treatment-plans": "/images/manual-therapy/cards/pnf-manual-techniques.avif",
-  "/case-lab": "/images/manual-therapy/cards/mulligan-mobilization-with-movement.avif",
-  "/clinical-arena": "/images/manual-therapy/cards/kaltenborn-evjenth-mobilization.avif",
-  "/faculty": "/images/faculty/dr-saleem-zafar-pt.webp",
-  "/patient-services": "/images/manual-therapy/cards/soft-tissue-mobilization.avif",
-  "/home-visit": "/images/manual-therapy/cards/manual-traction.avif",
+const featureVisuals: Record<string, string> = {
+  "/knowledge-hub": "knowledge-hub",
+  "/clinical-visual-atlas": "clinical-visual-atlas",
+  "/manual-therapy": "manual-therapy",
+  "/treatment-plans": "treatment-plans",
+  "/resources": "books-resources",
+  "/daily-challenge": "daily-challenge",
+  "/clinical-quiz": "weekly-quiz",
+  "/case-lab": "clinical-case-lab",
+  "/clinical-arena": "clinical-arena",
+  "/workshops": "workshops-cpd",
+  "/training": "training-archive",
+  "/research": "research-support",
+  "/faculty": "pna-faculty",
+  "/symptom-checker": "msk-symptom-checker",
+  "/patient-services": "appointment",
+  "/appointment": "appointment",
+  "/home-visit": "home-visit",
 };
-const artAlt: Record<string, string> = {
-  "/knowledge-hub": "Physiotherapy learning illustration",
-  "/clinical-visual-atlas": "Manual assessment teaching visual",
-  "/treatment-plans": "Physiotherapy exercise technique illustration",
-  "/resources": "PNA educational training photo",
-  "/case-lab": "Clinical technique teaching illustration",
-  "/clinical-arena": "Manual therapy clinical illustration",
-  "/research": "PNA training documentation",
-  "/patient-services": "Physiotherapy treatment illustration",
-  "/home-visit": "Physiotherapy care illustration",
-};
-
 type PortalLink = {
   title: string;
   description: string;
@@ -194,7 +189,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
                 <a key={link.href} className={"pna-sig-link" + (link.featured ? " pna-sig-link-featured" : "")} href={link.href}>
                   <span className="pna-sig-link-icon"><Icon size={22} aria-hidden="true"/></span>
                   <span className="pna-sig-link-copy"><strong>{link.title}{link.featured && <em className="pna-sig-featured-tag">Featured</em>}</strong><span>{link.description}</span></span>
-                  {liveArtwork[link.href] && <span className="pna-sig-link-art"><Image src={liveArtwork[link.href]} alt={artAlt[link.href] || link.title} fill sizes="(max-width: 640px) 92px, 145px" loading="lazy" /></span>}
+                  {featureVisuals[link.href] && <span className="pna-sig-link-art" aria-hidden="true"><svg className="pna-sig-feature-illustration" viewBox="0 0 400 300" focusable="false"><use href={`/images/pathway-features/pna-feature-sprite.svg#${featureVisuals[link.href]}`} /></svg></span>}
                   <ArrowRight className="pna-sig-link-arrow" size={19} aria-hidden="true"/>
                 </a>
               );
