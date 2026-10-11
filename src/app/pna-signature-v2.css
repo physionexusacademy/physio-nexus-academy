@@ -345,16 +345,12 @@
   .pna-sig-explore .pna-vision-pathway:active{transform:none}
 }
 
-/* Feature previews: optimized artwork already available in the PNA repository. */
+/* Approved WebP feature previews: preserve each complete banner in the existing card slot. */
 .pna-sig-link-art{position:relative;display:block;flex:0 0 116px;align-self:stretch;min-height:72px;border-radius:14px;overflow:hidden;background:#e8f8f9;box-shadow:inset 0 0 0 1px #d5eff0}
-.pna-sig-link-art img{object-fit:cover;transition:transform .25s ease}
-.pna-sig-link:hover .pna-sig-link-art img{transform:scale(1.045)}
+.pna-sig-link-art img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 @media(max-width:640px){.pna-sig-link-art{flex-basis:84px;min-height:76px;border-radius:11px}.pna-sig-link:has(.pna-sig-link-art){gap:9px}.pna-sig-link:has(.pna-sig-link-art) .pna-sig-link-icon{display:none}}
 @media(max-width:380px){.pna-sig-link-art{flex-basis:65px}}
-@media(prefers-reduced-motion:reduce){.pna-sig-link-art img{transition:none}.pna-sig-link:hover .pna-sig-link-art img{transform:none}}
 
-/* One cached sprite powers all 16 illustrated feature cards. */
-.pna-sig-feature-illustration{display:block;width:100%;height:100%;min-height:72px;aspect-ratio:4/3;object-fit:cover}
 .pna-sig-link-art{background:#e8f6f5}
 .pna-sig-link:focus-visible .pna-sig-link-art{outline:2px solid #0d919a;outline-offset:2px}
-@media(max-width:640px){.pna-sig-feature-illustration{min-height:76px}}
+

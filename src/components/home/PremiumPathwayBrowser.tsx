@@ -18,24 +18,27 @@ const icons = {
 type IconKey = keyof typeof icons;
 type GroupId = "learn" | "practice" | "professional" | "care";
 
-const featureVisuals: Record<string, string> = {
-  "/knowledge-hub": "knowledge-hub",
-  "/clinical-visual-atlas": "clinical-visual-atlas",
-  "/manual-therapy": "manual-therapy",
-  "/treatment-plans": "treatment-plans",
-  "/resources": "books-resources",
-  "/daily-challenge": "daily-challenge",
-  "/clinical-quiz": "weekly-quiz",
-  "/case-lab": "clinical-case-lab",
-  "/clinical-arena": "clinical-arena",
-  "/workshops": "workshops-cpd",
-  "/training": "training-archive",
-  "/research": "research-support",
-  "/faculty": "pna-faculty",
-  "/symptom-checker": "msk-symptom-checker",
-  "/patient-services": "appointment",
-  "/appointment": "appointment",
-  "/home-visit": "home-visit",
+// Approved WebP banners are already optimized; serve their original bytes.
+// All images are 192px high. Keep each native width to avoid distortion.
+const featureVisuals: Record<string, { file: string; width: number }> = {
+  "/knowledge-hub": { file: "knowledge-hub", width: 384 },
+  "/clinical-visual-atlas": { file: "clinical-visual-atlas", width: 384 },
+  "/manual-therapy": { file: "manual-therapy", width: 384 },
+  "/treatment-plans": { file: "treatment-plans", width: 384 },
+  "/resources": { file: "books-resources", width: 384 },
+  "/daily-challenge": { file: "daily-challenge", width: 384 },
+  "/clinical-quiz": { file: "weekly-quiz", width: 384 },
+  "/case-lab": { file: "clinical-case-lab", width: 384 },
+  "/clinical-arena": { file: "clinical-arena", width: 384 },
+  "/workshops": { file: "workshops-cpd", width: 384 },
+  "/training": { file: "training-archive", width: 384 },
+  "/research": { file: "research-support", width: 384 },
+  "/faculty": { file: "pna-faculty", width: 350 },
+  "/verify": { file: "verify-certificate", width: 285 },
+  "/symptom-checker": { file: "msk-symptom-checker", width: 295 },
+  "/patient-services": { file: "appointment", width: 330 },
+  "/appointment": { file: "appointment", width: 330 },
+  "/home-visit": { file: "home-visit", width: 276 },
 };
 type PortalLink = {
   title: string;
@@ -139,7 +142,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
   };
 
   return (
-    <section id="explore-pna" data-pna-home-signature="v2" className="pna-sig-explore" aria-labelledby="pna-sig-heading">
+    <section id="explore-pna" data-pna-home-signature="v2" data-pna-feature-images="realistic-webp-v1" className="pna-sig-explore" aria-labelledby="pna-sig-heading">
       <div className="container-content">
         <div className="pna-sig-header">
           <div>
@@ -185,11 +188,24 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
           <div className="pna-sig-detail-grid">
             {active.links.filter(link => showAtlas || link.href !== "/clinical-visual-atlas").map(link => {
               const Icon = icons[link.icon];
+              const visual = featureVisuals[link.href];
               return (
                 <a key={link.href} className={"pna-sig-link" + (link.featured ? " pna-sig-link-featured" : "")} href={link.href}>
                   <span className="pna-sig-link-icon"><Icon size={22} aria-hidden="true"/></span>
                   <span className="pna-sig-link-copy"><strong>{link.title}{link.featured && <em className="pna-sig-featured-tag">Featured</em>}</strong><span>{link.description}</span></span>
-                  {featureVisuals[link.href] && <span className="pna-sig-link-art" aria-hidden="true"><svg className="pna-sig-feature-illustration" viewBox="0 0 400 300" focusable="false"><use href={`/images/pathway-features/pna-feature-sprite.svg#${featureVisuals[link.href]}`} /></svg></span>}
+                  {visual && (
+                    <span className="pna-sig-link-art" aria-hidden="true">
+                      <img
+                        className="pna-sig-feature-image"
+                        src={`/images/pathway-features/${visual.file}.webp`}
+                        alt=""
+                        width={visual.width}
+                        height={192}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  )}
                   <ArrowRight className="pna-sig-link-arrow" size={19} aria-hidden="true"/>
                 </a>
               );
@@ -201,3 +217,4 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
     </section>
   );
 }
+
