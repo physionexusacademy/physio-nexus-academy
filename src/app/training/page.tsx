@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CalendarDays, MapPin, ArrowRight, History } from "lucide-react";
+import { CalendarDays, MapPin, ArrowRight, History, Camera } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 import {
   trainingCategories,
   trainingHistory,
@@ -24,7 +25,17 @@ function categoryHeading(category: TrainingCategory) {
   return "Clinical Camps";
 }
 
-export default function TrainingArchivePage() {
+export const revalidate = 60;
+
+export default async function TrainingArchivePage() {
+  const supabase = await createClient();
+  const { data: galleryPhotos } = await supabase
+    .from("gallery_items")
+    .select("id,image_url,caption")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false })
+    .limit(12);
+
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -72,6 +83,27 @@ export default function TrainingArchivePage() {
           </p>
         </div>
       </div>
+
+      {galleryPhotos && galleryPhotos.length > 0 && (
+        <section className="mt-12 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-cyan-50/40 to-white p-5 shadow-sm sm:p-8" aria-labelledby="training-moments-title">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-teal-700"><Camera className="h-4 w-4" aria-hidden="true" /> Real moments from PNA</p>
+              <h2 id="training-moments-title" className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">Workshop Moments</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">A glimpse into our hands-on workshops, training sessions and academy activities, featuring photographs from the PNA Gallery.</p>
+            </div>
+            <a href="/gallery" className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-4 py-2 text-sm font-semibold text-teal-700 transition hover:border-teal-400 hover:shadow-sm">View full gallery <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+            {galleryPhotos.map((photo, index) => (
+              <a key={photo.id} href="/gallery" className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-grey-100 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">
+                <Image src={photo.image_url} alt={photo.caption || `Physio Nexus Academy workshop gallery photograph ${index + 1}`} fill unoptimized sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" className="object-cover transition duration-300 group-hover:scale-105" />
+                {photo.caption && <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-950/85 to-transparent px-3 pb-3 pt-8 text-xs font-medium text-white">{photo.caption}</span>}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mt-12 space-y-14">
         {trainingCategories.map((category) => {
