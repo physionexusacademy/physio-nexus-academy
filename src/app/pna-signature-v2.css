@@ -352,3 +352,9 @@
 @media(max-width:640px){.pna-sig-link-art{flex-basis:84px;min-height:76px;border-radius:11px}.pna-sig-link:has(.pna-sig-link-art){gap:9px}.pna-sig-link:has(.pna-sig-link-art) .pna-sig-link-icon{display:none}}
 @media(max-width:380px){.pna-sig-link-art{flex-basis:65px}}
 @media(prefers-reduced-motion:reduce){.pna-sig-link-art img{transition:none}.pna-sig-link:hover .pna-sig-link-art img{transform:none}}
+
+/* One cached sprite powers all 16 illustrated feature cards. */
+.pna-sig-feature-illustration{display:block;width:100%;height:100%;min-height:72px;aspect-ratio:4/3;object-fit:cover}
+.pna-sig-link-art{background:#e8f6f5}
+.pna-sig-link:focus-visible .pna-sig-link-art{outline:2px solid #0d919a;outline-offset:2px}
+@media(max-width:640px){.pna-sig-feature-illustration{min-height:76px}}
