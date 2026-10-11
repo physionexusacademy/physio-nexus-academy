@@ -1,0 +1,14 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+ slug:"hip-osteoarthritis-assessment-exercise-20261012",
+ title:"Hip Osteoarthritis: Assessment, Shared Decisions and Exercise-Based Care",
+ excerpt:"Recognize a typical hip osteoarthritis pattern, screen alternatives, select functional measures and progress individualized exercise.",
+ specialty:"Musculoskeletal (MSK)", category:"Hip and Pelvis", audience:"Professionals", level:"Advanced", readTime:"8–10 min read", publishedAt:"2026-10-12",
+ learningObjectives:["Recognize typical and atypical presentations.","Choose functional outcome measures.","Plan progressive exercise and reassessment."],
+ references:[{title:"Osteoarthritis in over 16s: diagnosis and management (NG226)",organization:"NICE",year:"2022",url:"https://www.nice.org.uk/guidance/ng226/chapter/Recommendations"}],
+ sections:[
+ {heading:"Clinical pattern and assessment",bullets:["Hip OA often presents with activity-related groin/anterior-thigh pain, stiffness after rest and reduced internal rotation or flexion; buttock or knee symptoms may occur. No single finding confirms it.","Ask about onset, irritability, walking, stairs, sleep, falls and goals. Assess gait, functional tasks, hip range/strength and lumbar, knee or neurological contributors.","Consider lumbar referral, greater trochanteric pain syndrome, fracture or inflammatory disease if atypical. Suspected fracture, systemic illness with a hot joint, rapid deterioration or constitutional symptoms require medical assessment."]},
+ {heading:"Outcome measures",paragraphs:["Choose measures linked to goals: pain during a meaningful task, Patient-Specific Functional Scale, timed up-and-go, 30-second chair stand, HOOS or WOMAC. Repeat consistently and interpret change with the person's report."]},
+ {heading:"Management and progression",bullets:["Agree goals and explain that imaging changes do not determine disability by themselves. Exercise and self-management are core care; weight-management support may be relevant.","A starting template may be 2–3 strength sessions weekly, 1–3 sets of 8–12 controlled repetitions, adjusted to capacity and irritability. Combine strengthening with tolerable aerobic activity and task practice; progress one variable at a time.","Persistent flare or sustained functional decline prompts dose review and reconsideration of the diagnosis. Manual therapy should not replace exercise."]},
+ {heading:"Clinical summary",bullets:["Treat the clinical pattern, not an X-ray alone.","Use red flags to challenge the working diagnosis.","Track meaningful function and discuss medical review if disability remains substantial despite appropriate care."]}
+ ]};
