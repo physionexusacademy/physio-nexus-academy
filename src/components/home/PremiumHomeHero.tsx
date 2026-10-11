@@ -49,7 +49,7 @@ export function PremiumHomeHero() {
             <p className="pna-vision-eyebrow"><Sparkles size={15} aria-hidden="true"/> LEARN · PRACTICE · GROW</p>
             <h1>Physio Nexus <span>Academy</span></h1>
             <p className="pna-vision-subtitle">Evidence-Based Learning<br/>for Real-World Practice</p>
-            <p className="pna-vision-description">Knowledge, clinical reasoning, professional training and patient care — beautifully connected.</p>
+            <p className="pna-vision-description">Pakistan’s Emerging All-in-One Physiotherapy Learning &amp; Clinical Practice Platform.</p>
             <div className="pna-vision-banner-actions">
               <a href="#explore-pna" className="pna-vision-primary">Explore PNA <ArrowRight size={17} aria-hidden="true"/></a>
               <a href="/founder" className="pna-vision-founder-cta">Meet the founder <ArrowRight size={15} aria-hidden="true"/></a>
