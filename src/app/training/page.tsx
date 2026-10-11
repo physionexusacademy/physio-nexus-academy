@@ -75,9 +75,6 @@ export default async function TrainingArchivePage() {
           and clinical initiatives led by Dr. Sajjad Raza PT and presented as
           part of the Physio Nexus Academy professional training record.
         </p>
-        <p className="mt-4 text-xs leading-5 text-navy-500">
-          Archive note: Dates and registration details shown on past event posters are for reference only.
-        </p>
       </div>
 
       {galleryPhotos && galleryPhotos.length > 0 && (
