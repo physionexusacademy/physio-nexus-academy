@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
   ClipboardList, Eye, FileBadge2, FlaskConical, Hand, HeartPulse,
@@ -18,33 +17,6 @@ const icons = {
 
 type IconKey = keyof typeof icons;
 type GroupId = "learn" | "practice" | "professional" | "care";
-
-const featureArt: Record<string, string> = {
-  "/knowledge-hub": "knowledge-hub",
-  "/clinical-visual-atlas": "clinical-visual-atlas",
-  "/manual-therapy": "manual-therapy",
-  "/treatment-plans": "treatment-plans",
-  "/resources": "books-resources",
-  "/daily-challenge": "daily-challenge",
-  "/clinical-quiz": "weekly-quiz",
-  "/case-lab": "clinical-case-lab",
-  "/clinical-arena": "clinical-arena",
-  "/workshops": "workshops-cpd",
-  "/training": "training-archive",
-  "/research": "research-support",
-  "/faculty": "pna-faculty",
-  "/symptom-checker": "msk-symptom-checker",
-  "/patient-services": "appointment",
-  "/appointment": "appointment",
-  "/home-visit": "home-visit",
-};
-
-function FeatureArtwork({ href, title }: { href: string; title: string }) {
-  const [failed, setFailed] = useState(false);
-  const name = featureArt[href];
-  if (!name || failed) return null;
-  return <span className="pna-sig-link-art" aria-hidden="true"><Image src={`/images/pathway-features/${name}.webp`} alt="" fill unoptimized sizes="(max-width: 640px) 110px, 160px" onError={() => setFailed(true)} /></span>;
-}
 
 type PortalLink = {
   title: string;
@@ -198,7 +170,6 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
                 <a key={link.href} className={"pna-sig-link" + (link.featured ? " pna-sig-link-featured" : "")} href={link.href}>
                   <span className="pna-sig-link-icon"><Icon size={22} aria-hidden="true"/></span>
                   <span className="pna-sig-link-copy"><strong>{link.title}{link.featured && <em className="pna-sig-featured-tag">Featured</em>}</strong><span>{link.description}</span></span>
-                  <FeatureArtwork href={link.href} title={link.title} />
                   <ArrowRight className="pna-sig-link-arrow" size={19} aria-hidden="true"/>
                 </a>
               );
