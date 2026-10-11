@@ -283,7 +283,7 @@ jobs:
     permissions:
       contents: read
     env:
-      PNA_BROWSER_QA_DIR: ${{ runner.temp }}/pna-browser-qa
+      PNA_BROWSER_QA_DIR: /tmp/pna-browser-qa
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
