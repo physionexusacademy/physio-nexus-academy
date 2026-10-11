@@ -24,7 +24,6 @@ const liveArtwork: Record<string, string> = {
   "/knowledge-hub": "/images/manual-therapy/cards/strain-counterstrain.avif",
   "/clinical-visual-atlas": "/images/manual-therapy/cards/paivm-ppivm-spinal-assessment.avif",
   "/treatment-plans": "/images/manual-therapy/cards/pnf-manual-techniques.avif",
-  "/resources": "/images/training/one-month-internship-hyderabad.webp",
   "/case-lab": "/images/manual-therapy/cards/mulligan-mobilization-with-movement.avif",
   "/clinical-arena": "/images/manual-therapy/cards/kaltenborn-evjenth-mobilization.avif",
   "/workshops": "/images/training/advanced-myofascial-shahdadpur.webp",
