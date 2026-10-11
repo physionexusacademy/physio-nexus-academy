@@ -39,24 +39,30 @@ type Group = {
 const groups: Group[] = [
   {
     id: "learn", number: "01", kicker: "Understand deeply",
-    title: "Knowledge & Clinical Science",
-    headline: "Study the science. See the connection.",
-    description: "From foundational concepts to clinically useful knowledge.",
+    title: "I’m a Student",
+    headline: "Learn, practice and build clinical confidence.",
+    description: "Explore learning resources, cases, quizzes and clinical skills.",
     links: [
       { title: "Knowledge Hub", description: "Study MSK, neuro, cardio, pediatrics, sports and more.", href: "/knowledge-hub", icon: "library", featured: true },
       { title: "Clinical Visual Atlas", description: "See clinical anatomy, pathology and rehabilitation visuals.", href: "/clinical-visual-atlas", icon: "eye" },
       { title: "Manual Therapy Mastery", description: "Approaches, hand placement, dosage, safety and reasoning.", href: "/manual-therapy", icon: "hand" },
       { title: "Treatment Plans", description: "Condition-based assessment and exercise progression.", href: "/treatment-plans", icon: "clipboard" },
       { title: "Books & Resources", description: "Practical physiotherapy books, PDFs and study materials.", href: "/resources", icon: "book" },
+      { title: "Daily Clinical Challenge", description: "Practice with five clinical questions every day.", href: "/daily-challenge", icon: "trophy" },
+      { title: "Weekly Clinical Quiz", description: "Timed clinical questions and weekly rankings.", href: "/clinical-quiz", icon: "trophy" },
+      { title: "Clinical Case Lab", description: "Reason through realistic patient scenarios.", href: "/case-lab", icon: "clipboard" },
     ],
   },
   {
     id: "practice", number: "02", kicker: "Put thinking to work",
-    title: "Clinical Reasoning & Challenges",
-    headline: "Go beyond memorizing answers.",
-    description: "Practice decisions in real-feeling cases, daily missions and quizzes.",
+    title: "I’m a Physiotherapist",
+    headline: "Strengthen your clinical decisions and hands-on skills.",
+    description: "Advanced clinical learning, techniques and case-based reasoning.",
     links: [
-      { title: "Clinical Challenge Arena", description: "Take a history, consider differentials and plan care.", href: "/clinical-arena", icon: "brain", featured: true },
+      { title: "Manual Therapy Mastery", description: "Explore techniques, application, dosage and safety.", href: "/manual-therapy", icon: "hand", featured: true },
+      { title: "Treatment Plans", description: "Assessment, management and rehabilitation progression.", href: "/treatment-plans", icon: "clipboard" },
+      { title: "Knowledge Hub", description: "Evidence-informed specialty articles and clinical updates.", href: "/knowledge-hub", icon: "library" },
+      { title: "Clinical Challenge Arena", description: "Take a history, consider differentials and plan care.", href: "/clinical-arena", icon: "brain" },
       { title: "Clinical Case Lab", description: "Work through symptoms and clinical reasoning step by step.", href: "/case-lab", icon: "clipboard" },
       { title: "Daily Clinical Challenge", description: "Five questions daily, points and public leaderboards.", href: "/daily-challenge", icon: "trophy" },
       { title: "Weekly Clinical Quiz", description: "Timed clinical questions and weekly rankings.", href: "/clinical-quiz", icon: "trophy" },
@@ -76,15 +82,15 @@ const groups: Group[] = [
   },
   {
     id: "care", number: "04", kicker: "For patients & visitors",
-    title: "Care & Trusted Services",
+    title: "I Need Physiotherapy",
     headline: "Clear next steps. Human-centered care.",
-    description: "Symptom guidance, appointment requests and trusted services.",
+    description: "Explore your condition, find care and request an appointment.",
     links: [
       { title: "MSK Symptom Checker", description: "Screen possible patterns and identify safety warnings.", href: "/symptom-checker", icon: "symptoms", featured: true },
       { title: "Patient Care", description: "Explore physiotherapy services and appointment options.", href: "/patient-services", icon: "care" },
       { title: "Book an Appointment", description: "Request a physiotherapy consultation.", href: "/appointment", icon: "calendar" },
       { title: "Request a Home Visit", description: "Ask about physiotherapy where service is available.", href: "/home-visit", icon: "home" },
-      { title: "Verify Certificate", description: "Check your PNA certificate verification ID.", href: "/verify", icon: "certificate" },
+
     ],
   },
 ];
