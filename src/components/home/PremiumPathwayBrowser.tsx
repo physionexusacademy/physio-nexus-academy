@@ -78,6 +78,7 @@ const groups: Group[] = [
       { title: "Training Archive", description: "Revisit previous workshops and learning activities.", href: "/training", icon: "book" },
       { title: "Research Support", description: "Study research methods and evidence-informed practice.", href: "/research", icon: "research" },
       { title: "Meet PNA Faculty", description: "Learn about the academy's clinical educators.", href: "/faculty", icon: "people" },
+      { title: "Verify Certificate", description: "Verify your PNA workshop or training certificate.", href: "/verify", icon: "certificate" },
     ],
   },
   {
