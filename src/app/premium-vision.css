@@ -157,3 +157,14 @@
 /* Make the three hero promise tiles keyboard-accessible links without changing their visual treatment. */
 .pna-vision-promise a{color:inherit;text-decoration:none;min-width:0;cursor:pointer}
 .pna-vision-promise a:focus-visible{outline:2px solid #fff;outline-offset:-4px;border-radius:12px}
+
+/* Subtle editorial image watermarks for the four Explore PNA pathways. */
+.pna-vision-pathway::before{content:"";position:absolute;z-index:0;inset:auto 0 0 auto;width:92%;height:60%;background-repeat:no-repeat;background-position:right bottom;background-size:cover;opacity:.24;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 55%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 55%,#000 100%);pointer-events:none;filter:saturate(.75)}
+.pna-vision-pathway.learn::before{background-image:url('/images/manual-therapy/cards/paivm-ppivm-spinal-assessment.avif')}
+.pna-vision-pathway.practice::before{background-image:url('/images/manual-therapy/cards/myofascial-release.avif')}
+.pna-vision-pathway.professional::before{background-image:url('/images/pna-founder-hero-sharp-v2.avif');background-size:contain;background-position:right bottom;opacity:.2}
+.pna-vision-pathway.care::before{background-image:url('/images/manual-therapy/cards/soft-tissue-mobilization.avif')}
+.pna-vision-pathway .pna-vision-pathway-art{opacity:.15}
+.pna-vision-pathway strong,.pna-vision-pathway>span:nth-child(3),.pna-vision-pathway-num,.pna-vision-pathway-state,.pna-vision-pathway-arrow{position:relative;z-index:2}
+.pna-vision-pathway .pna-vision-pathway-arrow{position:absolute}
+@media(max-width:640px){.pna-vision-pathway::before{height:52%;width:100%;opacity:.18}.pna-vision-pathway.professional::before{opacity:.16}}
