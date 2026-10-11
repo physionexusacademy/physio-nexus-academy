@@ -93,3 +93,29 @@ After the Knee collection is approved:
 7. Wrist & Hand
 
 Use the same manifest, page templates and ImageKit folder convention so expansion is content-only rather than a new engineering project each time.
+
+## Multidisciplinary expansion — Phase 1 (October 2026)
+
+The structured editorial roadmap lives in `src/lib/clinical-visual-atlas-roadmap.ts` and currently contains 130 topic records across MSK (53), Neurology (26), Pediatrics (23), and Cardiopulmonary (28). This is a planning inventory, **not a count of published images**. The aspirational 500-visual target is not a claim of completed content.
+
+### Taxonomy and publishing
+- Retain the existing live atlas manifest and `assetReady` gates. Never mark a new item ready without a verified asset and clinical review.
+- Each topic can have three or more visual views: healthy anatomy, pathology/mechanism, and a clinically relevant comparison. Clinical assessment images are optional and require procedure-level review.
+- Cross-listed conditions (e.g. cerebral palsy) should share a canonical visual set with specialty tags rather than duplicate assets.
+- Use plain-English titles, specialty and region filters, and descriptive accessible alt text. Distinguish pathology illustrations from diagnostic imaging.
+- Record a clinical reviewer, references, review date, asset license/provenance, and approval state before publishing any visual.
+- The existing atlas documentation references ImageKit, while the current page mentions Cloudinary. Resolve the delivery-provider mismatch before expanding image upload automation.
+
+### First 20-image pilot — editorial specification
+1. MSK: cervical spine normal anatomy; cervical disc/foraminal narrowing; rotator cuff normal anatomy; supraspinatus full-thickness tear; knee normal anatomy; ACL tear; ankle lateral ligament anatomy; ATFL injury.
+2. Neurology: brain vascular territories; ischemic stroke illustration; corticospinal tract; Parkinson-related basal ganglia circuit.
+3. Pediatrics: age-appropriate developmental motor milestones; cerebral palsy motor patterns (non-stigmatizing, clinically accurate); pediatric hip anatomy; developmental dysplasia of the hip.
+4. Cardiopulmonary: normal heart anatomy; coronary artery narrowing; normal lung/airway anatomy; emphysema alveolar changes.
+
+Pilot images must have correct anatomy, no invented labels, neutral backgrounds, and human clinical sign-off. Do not publish all 20 just because files exist. Images of children should be medical illustrations without identifying real patients.
+
+### Release phases
+1. Finish the 20-image pilot and record clinical approvals.
+2. Integrate specialty/region navigation with only approved images visible.
+3. Expand the index and asset inventory in small reviewed batches, checking performance and broken links at each release.
+4. Reconcile the 500-image target against coverage gaps and quality, not arbitrary quotas.
