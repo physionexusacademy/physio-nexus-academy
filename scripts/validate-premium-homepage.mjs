@@ -23,8 +23,8 @@ const mandatoryPaths=[
   "/patient-services","/verify","/appointment","/home-visit"
 ];
 const zones=[
-  "Knowledge & Clinical Science","Clinical Reasoning & Challenges",
-  "Workshops & Professional Growth","Care & Trusted Services"
+  "I’m a Student","I’m a Physiotherapist",
+  "Workshops & Professional Growth","I Need Physiotherapy"
 ];
 const tests={
   signatureLandingRetained:home.includes("<PremiumHomeHero />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
