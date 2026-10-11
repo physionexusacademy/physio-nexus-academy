@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
   ClipboardList, Eye, FileBadge2, FlaskConical, Hand, HeartPulse,
@@ -17,6 +18,33 @@ const icons = {
 
 type IconKey = keyof typeof icons;
 type GroupId = "learn" | "practice" | "professional" | "care";
+
+const liveArtwork: Record<string, string> = {
+  "/manual-therapy": "/images/manual-therapy/cards/myofascial-release.avif",
+  "/knowledge-hub": "/images/manual-therapy/cards/strain-counterstrain.avif",
+  "/clinical-visual-atlas": "/images/manual-therapy/cards/paivm-ppivm-spinal-assessment.avif",
+  "/treatment-plans": "/images/manual-therapy/cards/pnf-manual-techniques.avif",
+  "/resources": "/images/training/one-month-internship-hyderabad.webp",
+  "/case-lab": "/images/manual-therapy/cards/mulligan-mobilization-with-movement.avif",
+  "/clinical-arena": "/images/manual-therapy/cards/kaltenborn-evjenth-mobilization.avif",
+  "/workshops": "/images/training/advanced-myofascial-shahdadpur.webp",
+  "/training": "/images/training/sciatica-workshop-hyderabad-2025.webp",
+  "/research": "/images/training/two-month-internship-hyderabad-2025.webp",
+  "/faculty": "/images/faculty/dr-saleem-zafar-pt.webp",
+  "/patient-services": "/images/manual-therapy/cards/soft-tissue-mobilization.avif",
+  "/home-visit": "/images/manual-therapy/cards/manual-traction.avif",
+};
+const artAlt: Record<string, string> = {
+  "/knowledge-hub": "Physiotherapy learning illustration",
+  "/clinical-visual-atlas": "Manual assessment teaching visual",
+  "/treatment-plans": "Physiotherapy exercise technique illustration",
+  "/resources": "PNA educational training photo",
+  "/case-lab": "Clinical technique teaching illustration",
+  "/clinical-arena": "Manual therapy clinical illustration",
+  "/research": "PNA training documentation",
+  "/patient-services": "Physiotherapy treatment illustration",
+  "/home-visit": "Physiotherapy care illustration",
+};
 
 type PortalLink = {
   title: string;
@@ -170,6 +198,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
                 <a key={link.href} className={"pna-sig-link" + (link.featured ? " pna-sig-link-featured" : "")} href={link.href}>
                   <span className="pna-sig-link-icon"><Icon size={22} aria-hidden="true"/></span>
                   <span className="pna-sig-link-copy"><strong>{link.title}{link.featured && <em className="pna-sig-featured-tag">Featured</em>}</strong><span>{link.description}</span></span>
+                  {liveArtwork[link.href] && <span className="pna-sig-link-art"><Image src={liveArtwork[link.href]} alt={artAlt[link.href] || link.title} fill sizes="(max-width: 640px) 92px, 145px" loading="lazy" /></span>}
                   <ArrowRight className="pna-sig-link-arrow" size={19} aria-hidden="true"/>
                 </a>
               );
