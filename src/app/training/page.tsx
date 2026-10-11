@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CalendarDays, MapPin, ArrowRight, History, Camera } from "lucide-react";
+import { CalendarDays, MapPin, ArrowRight, Camera } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import {
   trainingCategories,
@@ -75,13 +75,9 @@ export default async function TrainingArchivePage() {
           and clinical initiatives led by Dr. Sajjad Raza PT and presented as
           part of the Physio Nexus Academy professional training record.
         </p>
-        <div className="mt-5 flex gap-3 rounded-xl border border-grey-200 bg-grey-50 p-4 text-sm text-navy-500">
-          <History className="mt-0.5 h-5 w-5 flex-none text-teal-600" />
-          <p>
-            These are historical records. Dates, fees, seat counts and
-            registration details visible in old posters are not current offers.
-          </p>
-        </div>
+        <p className="mt-4 text-xs leading-5 text-navy-500">
+          Archive note: Dates and registration details shown on past event posters are for reference only.
+        </p>
       </div>
 
       {galleryPhotos && galleryPhotos.length > 0 && (
