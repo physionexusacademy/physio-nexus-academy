@@ -61,9 +61,9 @@ export function PremiumHomeHero() {
             <span className="pna-vision-founder-label">Dr. Sajjad Raza PT <small>Founder, PNA</small></span>
           </a>
           <div className="pna-vision-promise" aria-label="Our platform focus">
-            <span><BookOpen size={20} aria-hidden="true"/> Clinical Learning</span>
-            <span><BrainCircuit size={20} aria-hidden="true"/> Real Cases</span>
-            <span><Trophy size={20} aria-hidden="true"/> Workshops & CPD</span>
+            <a href="/knowledge-hub" aria-label="Explore Clinical Learning"><BookOpen size={20} aria-hidden="true"/> Clinical Learning</a>
+            <a href="/case-lab" aria-label="Explore Real Clinical Cases"><BrainCircuit size={20} aria-hidden="true"/> Real Cases</a>
+            <a href="/workshops" aria-label="Explore Workshops and CPD"><Trophy size={20} aria-hidden="true"/> Workshops & CPD</a>
           </div>
         </div>
 
