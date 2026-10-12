@@ -8,9 +8,11 @@ import { case20261005Pelvic } from "./2026-10-05-postpartum-running-stress-incon
 import { case20261010Myelopathy } from "./2026-10-10-cervical-myelopathy";
 import { case20261011Clubfoot } from "./2026-10-11-clubfoot-relapse";
 import { case20261012HeartFailure } from "./2026-10-12-stable-heart-failure-exercise-readiness";
+import { case20261013LateralElbow } from "./2026-10-13-lateral-elbow-tendinopathy";
 // DAILY_CASE_IMPORTS_END 
 export const modularClinicalCases: ClinicalCase[] = [
   // DAILY_CASE_SPREADS_START
+  case20261013LateralElbow,
   case20261012HeartFailure,
   case20261011Clubfoot,
   case20261010Myelopathy, 

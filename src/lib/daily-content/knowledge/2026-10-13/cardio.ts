@@ -1,0 +1,20 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+  slug: "interstitial-lung-disease-pulmonary-rehabilitation-20261013",
+  title: "Interstitial Lung Disease: Pulmonary Rehabilitation, Desaturation and Functional Goals",
+  excerpt: "An evidence-informed framework for exercise assessment and pulmonary rehabilitation in interstitial lung disease, with individualized oxygen monitoring.",
+  specialty: "Cardiopulmonary", category: "Pulmonary Rehabilitation", audience: "Professionals", level: "Advanced",
+  readTime: "8–12 min read", publishedAt: "2026-10-13",
+  learningObjectives: ["Explain the role of pulmonary rehabilitation in ILD.", "Assess dyspnea, functional capacity and exertional oxygen response.", "Individualize aerobic and resistance exercise.", "Recognize deterioration requiring medical review."],
+  references: [
+    { title: "Pulmonary Rehabilitation for Adults with Chronic Respiratory Disease: Official ATS Clinical Practice Guideline", organization: "American Thoracic Society", year: "2023", url: "https://doi.org/10.1164/rccm.202306-1066ST" },
+    { title: "Pulmonary rehabilitation", organization: "American Lung Association", url: "https://www.lung.org/lung-health-diseases/lung-procedures-and-tests/pulmonary-rehab" }
+  ],
+  sections: [
+    { heading: "Clinical framework", bullets: ["Interstitial lung diseases vary in cause and course but may cause restrictive physiology, impaired gas exchange, exertional dyspnea and reduced capacity. Resting observations can be reassuring despite exertional desaturation.", "The 2023 ATS guideline recommends pulmonary rehabilitation for adults with ILD. Exercise capacity and health-related quality of life may improve, although response and durability vary."] },
+    { heading: "Baseline assessment", bullets: ["Review diagnosis, stability, recent exacerbations, medication, oxygen prescription, comorbidities, falls, fatigue and goals. Clarify the prescribed oxygen plan during exertion.", "When medically cleared, assess with a 6-minute walk or sit-to-stand test, dyspnea and exertion ratings, heart rate, blood pressure and oxygen saturation. Follow local testing and emergency procedures.", "Track a relevant quality-of-life measure where available alongside walking capacity and a patient-specific activity goal."] },
+    { heading: "Safety and differentials", bullets: ["New or rapidly worsening breathlessness, fever, chest pain, syncope, hemoptysis, unilateral leg swelling or sudden unexplained oxygen deterioration requires prompt medical assessment.", "Do not apply one universal SpO2 stop threshold to everyone. Follow the individualized oxygen and escalation plan, local policy and symptoms; verify signal quality and allow recovery when appropriate."] },
+    { heading: "Exercise prescription", bullets: ["Use individualized walking or cycling, often interval-based when dyspnea limits continuous work, plus progressive resistance training for major muscle groups.", "For marked dyspnea, short work bouts such as 1–3 minutes with recovery may be a practical start. Resistance training can begin with light-to-moderate loads and controlled repetitions; exact dose depends on capacity, oxygen response and stability.", "Include pacing, breathlessness-management strategies and self-management education. Oxygen-flow changes belong within the prescribed medical plan, not ad hoc physiotherapy adjustment."] },
+    { heading: "Progression and summary", bullets: ["Increase total tolerable work before intensity when recovery is slow. Review dyspnea, exertion, oxygen response, recovery time and next-day response; change one variable at a time.", "Exercise limitation can reflect both deconditioning and gas-exchange impairment. Rehabilitation is beneficial, but monitoring and oxygen planning must be individualized; unexpected deterioration is not a cue simply to reduce exercise and continue."] }
+  ]
+};

@@ -1,0 +1,18 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+ slug: "intention-to-treat-vs-per-protocol-rct-analysis-20261013",
+ title: "Intention-to-Treat vs Per-Protocol Analysis: What Each Estimate Can and Cannot Tell You",
+ excerpt: "A practical interpretation guide for randomized trials covering allocation, adherence, missing data and post-randomization bias.",
+ specialty: "Research & Evidence", category: "Clinical Trial Methods", audience: "Professionals", level: "Advanced", readTime: "8–12 min read", publishedAt: "2026-10-13",
+ learningObjectives: ["Distinguish ITT, modified ITT and per-protocol approaches.", "Explain why adherence-based exclusions can undermine randomization.", "Recognize missing-data assumptions.", "Interpret trial conclusions in light of analysis populations."],
+ references: [
+  { title: "CONSORT 2010 Statement: Updated Guidelines for Reporting Parallel Group Randomised Trials", organization: "CONSORT", year: "2010", url: "https://www.consort-statement.org/consort-2010" },
+  { title: "Cochrane Handbook for Systematic Reviews of Interventions, Chapter 8: Assessing risk of bias in a randomized trial", organization: "Cochrane", url: "https://training.cochrane.org/handbook/current/chapter-08" }
+ ],
+ sections: [
+  { heading: "Start with the question", bullets: ["Intention-to-treat (ITT) generally analyzes randomized participants in the groups to which they were assigned, regardless of adherence or treatment switching, preserving the comparison created by randomization as far as possible.", "A per-protocol analysis estimates outcomes among participants meeting prespecified adherence or eligibility criteria. Because adherence is not randomized, groups can differ in prognosis and behavior after randomization.", "Modified ITT is used inconsistently; authors should state who was included, which exclusions occurred and when decisions were made."] },
+  { heading: "Post-randomization exclusions and missing data", bullets: ["Excluding participants for non-completion, missed sessions or absent final measures can break baseline comparability. Reasons for dropout may relate to adverse effects, symptom severity, access or prognosis.", "An ITT label does not solve missing outcomes. Reports should show missingness by group, reasons, assumptions, methods and sensitivity analyses where appropriate.", "Per-protocol comparisons can be biased even when criteria were prespecified. More advanced causal methods require explicit assumptions."] },
+  { heading: "Appraisal checklist", bullets: ["Check the protocol or registry for the planned analysis population, primary outcome, exclusions and missing-data approach. Compare these with the publication and note deviations.", "Look for participant flow by randomized group, numbers analyzed for each outcome, adherence, cross-over, adverse events and reasons for missing observations.", "Interpret effect size and confidence interval alongside clinical importance, risk of bias and applicability to physiotherapy practice. Statistical significance alone does not establish clinical importance."] },
+  { heading: "Reporting and clinical pearl", bullets: ["CONSORT encourages authors to report how participants were included in each analysis and the numbers analyzed in each group. If ITT and per-protocol estimates differ, do not automatically select the more favorable result; inspect adherence, missingness and assumptions.", "Ask: what population and treatment effect does this analysis estimate, what assumptions are required, and how could post-randomization events have biased it?"] }
+ ]
+};

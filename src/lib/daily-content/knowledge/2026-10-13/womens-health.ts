@@ -1,0 +1,18 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+ slug: "pelvic-organ-prolapse-conservative-care-pfmt-pessary-20261013",
+ title: "Pelvic Organ Prolapse: Conservative Physiotherapy, Pelvic Floor Training and Referral",
+ excerpt: "A consent-centered overview of symptom assessment, supervised pelvic floor training, pessary options and referral decisions.",
+ specialty: "Women's & Pelvic Health", category: "Pelvic Health", audience: "Professionals", level: "Advanced", readTime: "8–12 min read", publishedAt: "2026-10-13",
+ learningObjectives: ["Recognize common prolapse symptoms and associated bladder or bowel concerns.", "Explain the role of supervised pelvic floor muscle training.", "Discuss pessary and specialist options without overpromising.", "Identify atypical symptoms requiring medical assessment."],
+ references: [
+  { title: "Pelvic floor dysfunction: prevention and non-surgical management (NG210)", organization: "NICE", year: "2021", url: "https://www.nice.org.uk/guidance/ng210/chapter/Recommendations" },
+  { title: "Pelvic organ prolapse", organization: "NHS", url: "https://www.nhs.uk/conditions/pelvic-organ-prolapse/" }
+ ],
+ sections: [
+  { heading: "Presentation and assessment", bullets: ["Prolapse may cause a vaginal bulge or pressure, heaviness, dragging discomfort, urinary or bowel symptoms, or symptoms that worsen with prolonged standing or exertion. Symptom severity and anatomical stage do not always match.", "Take a respectful history covering obstetric and surgical history, bladder/bowel function, pain, activity goals and the person's priorities. Explain each examination step and obtain explicit consent; use a trained clinician for internal assessment when indicated.", "Assess pelvic floor contraction and relaxation, breathing and functional loading when appropriate. Consider other causes if symptoms are atypical."] },
+  { heading: "Conservative management", bullets: ["NICE advises considering supervised pelvic floor muscle training for at least 4 months for symptomatic prolapse that does not extend more than 1 cm beyond the hymen on straining. Suitability should be confirmed through appropriate assessment; this does not guarantee anatomical reversal.", "Tailor training to the person's ability to contract and fully relax. A program may include repeated contractions, endurance and coordination with lifting or coughing, with review of technique and symptoms.", "Discuss bowel regularity, avoiding unnecessary straining and symptom-guided activity. Do not prohibit exercise automatically; adapt task and dose to goals and symptoms."] },
+  { heading: "Pessary, referral and red flags", bullets: ["A pessary may reduce bulge symptoms while in place. Discuss fitting, follow-up, possible discomfort and that urinary or bowel symptoms may not all improve. Refer to gynecology/urogynecology if symptoms are bothersome, diagnosis uncertain, conservative care fails or the patient wants to discuss options.", "Severe acute pelvic pain, heavy unexpected bleeding, inability to pass urine, fever/systemic illness or a painful prolapse with concerning tissue changes needs urgent medical assessment. New postmenopausal bleeding requires medical evaluation."] },
+  { heading: "Reassessment and clinical pearl", bullets: ["Track a symptom measure or diary and the patient's goals; review during and at the end of the program. Avoid promising that exercise will reverse every prolapse, blanket advice to avoid lifting, or internal examination without informed consent.", "Conservative care is about symptom control, function and informed choice—not anatomy alone. Keep the patient's goals central and refer when indicated."] }
+ ]
+};

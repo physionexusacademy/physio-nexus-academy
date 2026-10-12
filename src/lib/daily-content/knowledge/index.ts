@@ -13,10 +13,12 @@ import { knowledge20261005 } from "./2026-10-05";
 import { knowledge20261010 } from "./2026-10-10";
 import { knowledge20261011 } from "./2026-10-11";
 import { knowledge20261012 } from "./2026-10-12";
+import { knowledge20261013 } from "./2026-10-13";
 // DAILY_KNOWLEDGE_IMPORTS_END
 
 export const modularKnowledgeArticles: KnowledgeArticle[] = [
   // DAILY_KNOWLEDGE_SPREADS_START
+  ...knowledge20261013,
   ...knowledge20261012,
   ...knowledge20261011,
   ...knowledge20261010,

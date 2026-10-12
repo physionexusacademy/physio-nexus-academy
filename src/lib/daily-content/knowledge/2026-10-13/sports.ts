@@ -1,0 +1,20 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+  slug: "achilles-tendinopathy-progressive-loading-return-to-running-20261013",
+  title: "Achilles Tendinopathy: Progressive Calf Loading and Return-to-Running Decisions",
+  excerpt: "A load-management framework for Achilles tendinopathy, from symptom monitoring and calf capacity to graded running exposure.",
+  specialty: "Sports", category: "Tendon Rehabilitation", audience: "Professionals", level: "Advanced",
+  readTime: "8–12 min read", publishedAt: "2026-10-13",
+  learningObjectives: ["Distinguish common tendinopathy patterns from possible acute rupture.", "Choose measures for pain, calf capacity and running function.", "Progress tendon loading and running according to response.", "Use shared return-to-running criteria rather than a single pain score."],
+  references: [
+    { title: "Achilles Pain, Stiffness, and Muscle Power Deficits: Midportion Achilles Tendinopathy Revision", organization: "Journal of Orthopaedic & Sports Physical Therapy", year: "2024", url: "https://www.jospt.org/doi/10.2519/jospt.2024.0302" },
+    { title: "Tendonitis", organization: "NHS", url: "https://www.nhs.uk/conditions/tendonitis/" }
+  ],
+  sections: [
+    { heading: "Anatomy and clinical pattern", bullets: ["Midportion Achilles tendinopathy typically causes load-related pain and stiffness several centimeters proximal to the insertion; insertional symptoms are concentrated near the calcaneal attachment. The patterns can overlap with other posterior ankle conditions.", "Diagnosis is mainly clinical. Imaging is not routinely required for a typical presentation but may be considered when the diagnosis is uncertain or the course is atypical."] },
+    { heading: "Assessment and outcomes", bullets: ["Ask about running volume, hills, speed sessions, recovery, footwear changes, previous symptoms, recent illness and relevant medication or medical history.", "Assess morning stiffness, walking tolerance, calf strength/endurance, single-leg heel raises and hopping when safe. Track VISA-A where appropriate, pain/stiffness and next-morning response."] },
+    { heading: "Red flags and differentials", bullets: ["A sudden snap, rapid swelling/bruising, palpable gap, marked push-off weakness or inability to perform a heel rise raises concern for acute rupture and requires prompt medical assessment.", "Consider paratenon disorders, retrocalcaneal bursitis, referred pain and inflammatory enthesitis when the pattern is atypical."] },
+    { heading: "Progressive loading", bullets: ["Temporarily reduce the most provocative running dose while maintaining tolerable conditioning. Complete rest is rarely a useful long-term strategy for uncomplicated tendinopathy.", "Begin with tolerable calf raises or isometric work if dynamic loading is highly irritable, then progress through slow raises, heavier resistance and faster energy-storage tasks as capacity improves. A practical starting structure is 3 sessions weekly with 2–4 sets, adjusted to response.", "For insertional symptoms, initially limit excessive dorsiflexion/compression at the bottom of heel raises and progress range as tolerated."] },
+    { heading: "Return to running and progression", bullets: ["Resume with a manageable walk-run or flat-surface dose once everyday walking is comfortable, calf loading is tolerable and there is no major next-day flare. Increase duration before hills or speed, changing one variable at a time.", "Use pain during activity, next-morning stiffness, heel-raise quality, hopping tolerance and sport demands together. No single threshold guarantees readiness.", "Avoid sudden mileage increases or treating imaging changes as a direct measure of pain. Return to running is graded exposure, not simply the point when pain disappears at rest."] }
+  ]
+};
