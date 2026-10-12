@@ -55,7 +55,7 @@ const libraryFamilies = Array.from(new Set(libraryItems.map((item) => item.famil
 export const metadata: Metadata = {
   title: "World Manual Therapy Encyclopedia",
   description:
-    "Explore 35 Manual Therapy techniques and approaches in one encyclopedia through entertaining clinical stories, assessment, practical skills, clinical reasoning and evidence-aware safety guidance.",
+    "Explore manual therapy techniques and clinical approaches with practical assessment, application, clinical reasoning and evidence-aware safety guidance.",
   alternates: {
     canonical: "https://physionexusacademy.com/manual-therapy",
   },
