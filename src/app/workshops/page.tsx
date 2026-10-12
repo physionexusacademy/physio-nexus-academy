@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { createPublicClient } from "@/lib/supabase/public";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Workshops in Pakistan | Karachi & Hyderabad",
+  title: "Physiotherapy Workshops | PNA",
   description:
     "Explore hands-on physiotherapy workshops from Physio Nexus Academy, including clinical skills training in Karachi, Hyderabad and other cities in Pakistan.",
   alternates: {
