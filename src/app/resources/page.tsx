@@ -12,7 +12,7 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { BookOrderForm } from "./BookOrderForm";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Books, Notes & Learning Resources",
+  title: "Physiotherapy Books & Resources",
   description:
     "Explore physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy for students and professionals.",
   alternates: {
@@ -78,6 +78,7 @@ export default async function ResourcesPage() {
     publisher: {
       "@type": "Organization",
       name: "Physio Nexus Academy",
+      logo: "https://physionexusacademy.com/images/pna-logo.png",
     },
     offers: {
       "@type": "Offer",

@@ -39,9 +39,9 @@ import "./premium-vision.css";
 import "./pna-signature-v2.css";
 
 export const metadata: Metadata = {
-  title: { absolute: "Physio Nexus Academy | Physiotherapy Learning & Patient Care Pakistan" },
+  title: { absolute: "Physio Nexus Academy | Physiotherapy in Pakistan" },
   description:
-    "Physio Nexus Academy offers a daily physiotherapy clinical challenge, real-time leaderboards, practical learning, workshops, resources and patient care in Pakistan.",
+    "Daily physiotherapy challenges, clinical learning, workshops, resources and patient care from Physio Nexus Academy in Pakistan.",
   alternates: {
     canonical: "https://physionexusacademy.com",
   },
