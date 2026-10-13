@@ -141,12 +141,18 @@ export async function POST(request: Request) {
     const body = {
       message: "I couldn't find a close match in the current PNA learning library. Try a more specific topic, or browse these sections.",
       resources: [
+        { id: "service:appointment", title: "Request an Appointment or Online Consultation", href: "/appointment", category: "Patient services", summary: "Open the appointment request form. The PNA team confirms availability." },
+        { id: "service:home-visit", title: "Request a Physiotherapy Home Visit", href: "/home-visit", category: "Patient services", summary: "Open the home-visit request form for Karachi or Hyderabad, subject to confirmation." },
+        { id: "quiz:daily", title: "Daily Clinical Challenge", href: "/daily-challenge", category: "Quiz and clinical practice", summary: "Open the daily five-question challenge and leaderboard." },
+        { id: "quiz:weekly", title: "Weekly Clinical Quiz", href: "/clinical-quiz", category: "Quiz and clinical practice", summary: "Open the weekly timed clinical quiz." },
         { id: "browse:knowledge", title: "Knowledge Hub", href: "/knowledge-hub", category: "Learning articles", summary: "Browse structured physiotherapy learning articles." },
         { id: "browse:manual", title: "Manual Therapy", href: "/manual-therapy", category: "Techniques", summary: "Explore manual therapy approaches and techniques." },
         { id: "browse:msk", title: "MSK Injuries", href: "/msk-injuries", category: "Conditions", summary: "Explore musculoskeletal conditions and clinical guidance." },
         { id: "browse:cases", title: "Clinical Case Lab", href: "/case-lab", category: "Clinical reasoning", summary: "Practise with simulated clinical cases." },
         { id: "browse:resources", title: "Books & Learning Resources", href: "/resources", category: "Books and PDFs", summary: "Browse the learning resources currently available from PNA." },
         { id: "browse:workshops", title: "Workshops & Practical Training", href: "/workshops", category: "Hands-on learning", summary: "Explore workshops and practical training opportunities." },
+        { id: "browse:contact", title: "Contact PNA", href: "/contact", category: "Contact and support", summary: "Find contact options for questions and support." },
+        { id: "tool:symptom-checker", title: "Symptom Checker", href: "/symptom-checker", category: "Website tool", summary: "Open the website symptom tool; it does not provide a diagnosis." },
       ],
       source: "local-search",
     };
