@@ -120,8 +120,65 @@ const caseResources: PnaLearningResource[] = clinicalCases.map((item) => ({
   keywords: [item.title, item.slug, item.specialty, item.summary, ...item.learningPoints].join(" "),
 }));
 
+const browseResources: PnaLearningResource[] = [
+  {
+    id: "browse:resources",
+    title: "Books & Learning Resources",
+    href: "/resources",
+    category: "Books, PDFs and study material",
+    summary: "Browse the learning resources currently available from Physio Nexus Academy.",
+    level: "All levels",
+    keywords: "books pdf ebook study guide learning material download manual therapy",
+  },
+  {
+    id: "browse:workshops",
+    title: "Workshops & Practical Training",
+    href: "/workshops",
+    category: "Hands-on learning",
+    summary: "Explore upcoming workshops and practical training opportunities.",
+    level: "Professional development",
+    keywords: "workshop course practical hands-on training registration certificate contact hours",
+  },
+  {
+    id: "browse:research",
+    title: "Research Support",
+    href: "/research",
+    category: "Research and evidence",
+    summary: "Explore research guidance, evidence-based practice, and academic support.",
+    level: "Students and professionals",
+    keywords: "research thesis synopsis systematic review meta-analysis RCT methodology evidence",
+  },
+  {
+    id: "browse:training",
+    title: "Training & Learning History",
+    href: "/training",
+    category: "Training",
+    summary: "Browse training and learning experiences recorded on the PNA website.",
+    level: "All levels",
+    keywords: "training experience learning history workshops events",
+  },
+  {
+    id: "browse:daily-challenge",
+    title: "Daily Clinical Challenge",
+    href: "/daily-challenge",
+    category: "Clinical reasoning practice",
+    summary: "Practise with daily physiotherapy questions and clinical decision-making.",
+    level: "Clinical",
+    keywords: "quiz daily challenge MCQ test questions practice exam clinical reasoning",
+  },
+  {
+    id: "browse:courses",
+    title: "Courses",
+    href: "/courses",
+    category: "Structured learning",
+    summary: "Browse the course section on Physio Nexus Academy.",
+    level: "All levels",
+    keywords: "course curriculum learning program",
+  },
+];
+
 const uniqueResources = new Map<string, PnaLearningResource>();
-for (const resource of [...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources]) {
+for (const resource of [...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
   if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
 }
 
