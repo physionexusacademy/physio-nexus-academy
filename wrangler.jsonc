@@ -25,6 +25,9 @@
       "service": "physio-nexus-academy"
     }
   ],
+  "ai": {
+    "binding": "AI"
+  },
   "images": {
     "binding": "IMAGES"
   },
