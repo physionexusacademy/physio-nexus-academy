@@ -27,7 +27,7 @@ jobs:
     env:
       NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
       NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
       NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
