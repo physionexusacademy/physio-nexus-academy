@@ -6,6 +6,7 @@ import { BackToTop } from "@/components/BackToTop";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
+import { PhysioNexusAI } from "@/components/PhysioNexusAI";
 import { siteConfig } from "@/lib/site-config";
 
 const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
@@ -166,6 +167,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <BackToTop />
         <WhatsAppButton />
+        <PhysioNexusAI />
         <MobilePortalNav />
       </body>
     </html>
