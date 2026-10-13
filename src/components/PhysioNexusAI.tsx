@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Bot, ExternalLink, LoaderCircle, Send, Sparkles, X } from "lucide-react";
 
 type Resource = {
@@ -30,6 +30,8 @@ export function PhysioNexusAI() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [nextId, setNextId] = useState(2);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -37,6 +39,10 @@ export function PhysioNexusAI() {
       text: "Hi! I’m Physio Nexus AI. Tell me what you want to learn, and I’ll guide you to the right PNA resources.",
     },
   ]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, loading]);
 
   async function sendQuery(value: string) {
     const clean = value.trim();
@@ -118,7 +124,7 @@ export function PhysioNexusAI() {
             </button>
           </header>
 
-          <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3" aria-live="polite" aria-relevant="additions text">
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain bg-slate-50 p-3" aria-live="polite" aria-relevant="additions text">
             {messages.map((message) => (
               <div key={message.id} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 <div className={message.role === "user"
@@ -157,6 +163,7 @@ export function PhysioNexusAI() {
                 Finding the right PNA resources…
               </div>
             )}
+            <div ref={messagesEndRef} aria-hidden="true" />
           </div>
 
           {messages.length === 1 && (
