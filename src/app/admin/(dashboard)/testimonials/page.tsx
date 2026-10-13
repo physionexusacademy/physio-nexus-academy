@@ -9,7 +9,7 @@ export default async function AdminTestimonialsPage() {
   const supabase = createAdminClient();
   const { data: testimonials, error } = await supabase
     .from("testimonials")
-    .select("*")
+    .select("id, name, role, content, status, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
