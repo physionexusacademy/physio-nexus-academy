@@ -1,6 +1,16 @@
 name: Physio Nexus AI safe build check
 
 on:
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/app/api/physio-nexus-ai/**"
+      - "src/components/PhysioNexusAI.tsx"
+      - "src/lib/physio-nexus-ai-index.ts"
+      - "src/app/layout.tsx"
+      - "wrangler.jsonc"
+      - ".github/workflows/physio-nexus-ai-ci.yml"
   push:
     branches:
       - feature/physio-nexus-ai-navigator
