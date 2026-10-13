@@ -196,7 +196,7 @@ export function PhysioNexusAI() {
             </button>
           </form>
           <p className="bg-white px-3 pb-3 text-[10px] leading-relaxed text-slate-500">
-            Resource finder, not a substitute for clinical assessment. Chats are not saved to your PNA account.
+            Use learning topics only; do not enter patient-identifiable details. This resource finder does not replace clinical assessment. Messages are not saved to your PNA account.
           </p>
         </section>
       )}
