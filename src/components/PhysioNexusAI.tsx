@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Bot, ExternalLink, LoaderCircle, Send, Sparkles, X } from "lucide-react";
 
 type Resource = {
@@ -201,16 +201,18 @@ export function PhysioNexusAI() {
         </section>
       )}
 
-      <button
-        type="button"
-        onClick={() => setOpen((current) => !current)}
-        aria-label={open ? "Close Physio Nexus AI" : "Open Physio Nexus AI"}
-        aria-expanded={open}
-        className="fixed bottom-24 left-3 z-[91] inline-flex h-14 items-center gap-2 rounded-full bg-gradient-to-r from-[#041E3F] to-[#01828B] px-4 text-white shadow-[0_10px_30px_rgba(4,30,63,0.3)] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30 sm:bottom-24 sm:left-5 lg:bottom-6"
-      >
-        {open ? <X className="h-5 w-5" aria-hidden="true" /> : <Sparkles className="h-5 w-5" aria-hidden="true" />}
-        <span className="text-sm font-semibold">Ask Physio Nexus AI</span>
-      </button>
+      {!open && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open Physio Nexus AI"
+          aria-expanded={false}
+          className="fixed bottom-24 left-3 z-[91] inline-flex h-14 items-center gap-2 rounded-full bg-gradient-to-r from-[#041E3F] to-[#01828B] px-4 text-white shadow-[0_10px_30px_rgba(4,30,63,0.3)] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30 sm:bottom-24 sm:left-5 lg:bottom-6"
+        >
+          <Sparkles className="h-5 w-5" aria-hidden="true" />
+          <span className="text-sm font-semibold">Ask Physio Nexus AI</span>
+        </button>
+      )}
     </>
   );
 }
