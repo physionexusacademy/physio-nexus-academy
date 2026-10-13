@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       return jsonError("PNA AI is not configured yet. Please try again later.", 503);
     }
 
-    const result = await ai.run("@cf/meta/llama-3.1-8b-instruct", {
+    const result = await ai.run("@cf/meta/llama-3.1-8b-instruct-fast", {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         ...messages.map(({ role, content }) => ({ role, content })),
