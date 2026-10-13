@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { PhysioNexusAI } from "@/components/PhysioNexusAI";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { siteConfig } from "@/lib/site-config";
@@ -165,6 +166,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <BackToTop />
+        <PhysioNexusAI />
         <WhatsAppButton />
         <MobilePortalNav />
       </body>
