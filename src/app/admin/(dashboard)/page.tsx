@@ -20,9 +20,9 @@ async function count(table: OverviewTable, allowAdminFallback = false) {
         console.warn("ADMIN_OVERVIEW_AUTH_FALLBACK", { table, error });
 
         const adminSupabase = createAdminClient();
-        const { data: adminData, error: adminError } = await adminSupabase
+        const { count: adminCount, error: adminError } = await adminSupabase
           .from(table)
-          .select("id");
+          .select("id", { count: "exact", head: true });
 
         if (!adminError) {
           return adminCount ?? 0;
