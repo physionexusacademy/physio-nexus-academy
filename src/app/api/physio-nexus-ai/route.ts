@@ -13,7 +13,7 @@ type NavigatorResponse = {
   result?: { response?: string };
 };
 
-const MODEL = "@cf/meta/llama-3.1-8b-instruct";
+const MODEL = "@cf/zai-org/glm-4.7-flash";
 const responseCache = new Map<string, { expiresAt: number; body: unknown }>();
 const requestWindows = new Map<string, { startedAt: number; count: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000;
