@@ -207,10 +207,12 @@ export function PhysioNexusAI() {
           onClick={() => setOpen(true)}
           aria-label="Open Physio Nexus AI"
           aria-expanded={false}
-          className="fixed bottom-24 left-3 z-[91] inline-flex h-14 items-center gap-2 rounded-full bg-gradient-to-r from-[#041E3F] to-[#01828B] px-4 text-white shadow-[0_10px_30px_rgba(4,30,63,0.3)] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30 sm:bottom-24 sm:left-5 lg:bottom-6"
+          className="group fixed bottom-24 left-3 z-[91] inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#041E3F] to-[#01828B] text-white shadow-[0_10px_30px_rgba(4,30,63,0.3)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_34px_rgba(4,30,63,0.38)] focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30 sm:bottom-24 sm:left-5 lg:bottom-6"
         >
-          <Sparkles className="h-5 w-5" aria-hidden="true" />
-          <span className="text-sm font-semibold">Ask Physio Nexus AI</span>
+          <Sparkles className="h-6 w-6" aria-hidden="true" />
+          <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-lg bg-[#041E3F] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block group-focus-visible:block">
+            Ask Physio Nexus AI
+          </span>
         </button>
       )}
     </>
