@@ -87,8 +87,21 @@ function getClientKey(request: Request) {
   return forwarded.slice(0, 80);
 }
 
+function rememberResponse(key: string, body: unknown) {
+  responseCache.set(key, { expiresAt: Date.now() + CACHE_TTL_MS, body });
+  const now = Date.now();
+  for (const [cacheKey, value] of responseCache) {
+    if (value.expiresAt <= now || responseCache.size > 220) responseCache.delete(cacheKey);
+  }
+}
+
 function isRateLimited(key: string) {
   const now = Date.now();
+  if (requestWindows.size > 800) {
+    for (const [windowKey, value] of requestWindows) {
+      if (now - value.startedAt >= RATE_WINDOW_MS || requestWindows.size > 700) requestWindows.delete(windowKey);
+    }
+  }
   const current = requestWindows.get(key);
   if (!current || now - current.startedAt >= RATE_WINDOW_MS) {
     requestWindows.set(key, { startedAt: now, count: 1 });
@@ -135,7 +148,7 @@ export async function POST(request: Request) {
       ],
       source: "local-search",
     };
-    responseCache.set(normalizedQuery, { expiresAt: Date.now() + CACHE_TTL_MS, body });
+    rememberResponse(normalizedQuery, body);
     return json(body);
   }
 
@@ -164,17 +177,6 @@ export async function POST(request: Request) {
     resources,
     source: selected.length ? "ai-ranked" : "local-search",
   };
-  responseCache.set(normalizedQuery, { expiresAt: Date.now() + CACHE_TTL_MS, body });
-  if (responseCache.size > 250) {
-    const now = Date.now();
-    for (const [key, value] of responseCache) {
-      if (value.expiresAt <= now || responseCache.size > 220) responseCache.delete(key);
-    }
-  }
-  if (requestWindows.size > 1000) {
-    for (const [key, value] of requestWindows) {
-      if (Date.now() - value.startedAt > RATE_WINDOW_MS) requestWindows.delete(key);
-    }
-  }
+  rememberResponse(normalizedQuery, body);
   return json(body);
 }
