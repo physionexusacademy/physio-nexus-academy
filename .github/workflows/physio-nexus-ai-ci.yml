@@ -1,0 +1,55 @@
+name: Physio Nexus AI safe build check
+
+on:
+  push:
+    branches:
+      - feature/physio-nexus-ai-navigator
+    paths:
+      - "src/app/api/physio-nexus-ai/**"
+      - "src/components/PhysioNexusAI.tsx"
+      - "src/lib/physio-nexus-ai-index.ts"
+      - "src/app/layout.tsx"
+      - "wrangler.jsonc"
+      - ".github/workflows/physio-nexus-ai-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: physio-nexus-ai-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+      NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+      NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+      NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
+      PAYMENTS_ENABLED: "false"
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Type-check the full application
+        run: npx tsc --noEmit
+
+      - name: Build the Cloudflare/OpenNext output without deploying
+        run: npx opennextjs-cloudflare build
