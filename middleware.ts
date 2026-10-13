@@ -39,24 +39,13 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const isLoginRoute = request.nextUrl.pathname === "/admin/login";
 
-  if (isAdminRoute && !isLoginRoute) {
-    if (!user) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
-    }
-    // Logged in via Supabase Auth is not enough — must have an admin
-    // profile row (created manually per README "Creating the first admin").
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id, role")
-      .eq("id", user.id)
-      .maybeSingle();
-    if (!profile || !["owner", "admin"].includes(profile.role)) {
-      const loginUrl = new URL("/admin/login", request.url);
-      loginUrl.searchParams.set("error", "not-authorized");
-      return NextResponse.redirect(loginUrl);
-    }
+  if (isAdminRoute && !isLoginRoute && !user) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
+  // Role authorization is enforced by the protected dashboard layout and
+  // requireAdmin() in every server action. Avoid a duplicate profiles query
+  // here on every admin navigation/action request.
   if (isLoginRoute && user) {
     const { data: profile } = await supabase
       .from("profiles")

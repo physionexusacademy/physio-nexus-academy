@@ -11,19 +11,21 @@ type OverviewTable =
 async function count(table: OverviewTable, allowAdminFallback = false) {
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase.from(table).select("id");
+    const { count: rowCount, error } = await supabase
+      .from(table)
+      .select("id", { count: "exact", head: true });
 
     if (error) {
       if (allowAdminFallback && error.code === "42501") {
         console.warn("ADMIN_OVERVIEW_AUTH_FALLBACK", { table, error });
 
         const adminSupabase = createAdminClient();
-        const { data: adminData, error: adminError } = await adminSupabase
+        const { count: adminCount, error: adminError } = await adminSupabase
           .from(table)
-          .select("id");
+          .select("id", { count: "exact", head: true });
 
         if (!adminError) {
-          return adminData?.length ?? 0;
+          return adminCount ?? 0;
         }
 
         console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error: adminError });
@@ -34,7 +36,7 @@ async function count(table: OverviewTable, allowAdminFallback = false) {
       return 0;
     }
 
-    return data?.length ?? 0;
+    return rowCount ?? 0;
   } catch (error) {
     console.error("ADMIN_OVERVIEW_COUNT_ERROR", { table, error });
     return 0;

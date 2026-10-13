@@ -48,29 +48,47 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-static";
-export const revalidate = 300;
+export const revalidate = 1800;
+
+async function withQueryTimeout<T>(
+  query: PromiseLike<T>,
+  timeoutMs = 1500,
+): Promise<T | null> {
+  return Promise.race([
+    Promise.resolve(query).catch(() => null),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutMs)),
+  ]);
+}
 
 export default async function HomePage() {
   const supabase = createPublicClient();
 
-  const [
-    { data: workshopRows },
-    { data: testimonialRows },
-  ] = await Promise.all([
-    supabase
-      .from("workshops")
-      .select("id,slug,title,summary,city,start_date")
-      .eq("status", "published")
-      .order("start_date", { ascending: true, nullsFirst: false })
-      .limit(3),
-    supabase
-      .from("testimonials")
-      .select("id,content,name,role,sort_order")
-      .eq("status", "published")
-      .order("sort_order", { ascending: true })
-      .limit(3),
+  // Optional database content must not hold the whole homepage response open.
+  const [workshopResult, testimonialResult] = await Promise.all([
+    withQueryTimeout(
+      supabase
+        .from("workshops")
+        .select("id,slug,title,summary,city,start_date")
+        .eq("status", "published")
+        .order("start_date", { ascending: true, nullsFirst: false })
+        .limit(3),
+    ),
+    withQueryTimeout(
+      supabase
+        .from("testimonials")
+        .select("id,content,name,role,sort_order")
+        .eq("status", "published")
+        .order("sort_order", { ascending: true })
+        .limit(3),
+    ),
   ]);
 
+  const workshopRows = workshopResult && "data" in workshopResult
+    ? workshopResult.data
+    : null;
+  const testimonialRows = testimonialResult && "data" in testimonialResult
+    ? testimonialResult.data
+    : null;
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
   const latestArticles = knowledgeArticles

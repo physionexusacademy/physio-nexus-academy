@@ -53,7 +53,7 @@ export function DailyLeaderboard({compact=false,initialPeriod="today",title,prev
   const c=new AbortController();
   setLoading(true);
   void load(c.signal);
-  const timer=window.setInterval(()=>void load(c.signal),45000);
+  const timer=window.setInterval(()=>void load(c.signal),300000);
   const onScore=()=>void load(c.signal);
   window.addEventListener("pna-daily-score-saved",onScore);
   return()=>{c.abort();window.clearInterval(timer);window.removeEventListener("pna-daily-score-saved",onScore)}
