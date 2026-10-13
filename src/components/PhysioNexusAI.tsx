@@ -30,7 +30,7 @@ export function PhysioNexusAI() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [nextId, setNextId] = useState(2);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -41,7 +41,13 @@ export function PhysioNexusAI() {
   ]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages, loading]);
 
   async function sendQuery(value: string) {
@@ -102,7 +108,7 @@ export function PhysioNexusAI() {
         <section
           aria-label="Physio Nexus AI learning navigator"
           className="fixed bottom-40 right-3 z-[90] flex w-[min(24rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:bottom-40 sm:right-5 lg:bottom-40"
-          style={{ maxHeight: "min(70dvh, 42rem)" }}
+          style={{ height: "min(70dvh, 42rem)" }}
         >
           <header className="flex items-center justify-between gap-3 bg-gradient-to-r from-[#041E3F] to-[#01828B] px-4 py-3 text-white">
             <div className="flex min-w-0 items-center gap-3">
@@ -124,7 +130,7 @@ export function PhysioNexusAI() {
             </button>
           </header>
 
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain bg-slate-50 p-3" aria-live="polite" aria-relevant="additions text">
+          <div ref={messagesContainerRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain bg-slate-50 p-3" aria-live="polite" aria-relevant="additions text">
             {messages.map((message) => (
               <div key={message.id} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 <div className={message.role === "user"
@@ -163,7 +169,6 @@ export function PhysioNexusAI() {
                 Finding the right PNA resources…
               </div>
             )}
-            <div ref={messagesEndRef} aria-hidden="true" />
           </div>
 
           {messages.length === 1 && (
