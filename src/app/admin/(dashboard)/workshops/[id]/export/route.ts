@@ -6,7 +6,8 @@ function toCsvRow(values: (string | number | boolean | null)[]) {
     .map((value) => {
       const raw = value === null || value === undefined ? "" : String(value);
       // Prevent spreadsheet formula execution from user-controlled CSV fields.
-      const safe = /^[\\u0000-\\u0020]*[=+\\-@]/.test(raw) ? `'${raw}` : raw;
+      const firstNonWhitespace = raw.trimStart()[0] ?? "";
+      const safe = ["=", "+", "-", "@"].includes(firstNonWhitespace) ? "'" + raw : raw;
       return `"${safe.replace(/"/g, '""')}"`;
     })
     .join(",");
