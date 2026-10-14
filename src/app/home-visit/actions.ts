@@ -1,6 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isPublicFormRateLimited } from "@/lib/security/public-form-protection";
+import { homeVisitSubmissionSchema } from "@/lib/validation/public-form-schemas";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
@@ -47,19 +50,17 @@ async function sendEmail({
   }
 }
 
-export async function submitHomeVisit(values: {
-  fullName: string;
-  phone: string;
-  email?: string;
-  city: string;
-  area: string;
-  address: string;
-  preferredDate: string;
-  preferredTime: string;
-  mobilitySummary: string;
-  accessibilityNotes?: string;
-  specialInstructions?: string;
-}) {
+export async function submitHomeVisit(input: unknown) {
+  const parsed = homeVisitSubmissionSchema.safeParse(input);
+  if (!parsed.success) throw new Error("Please check the form details and try again.");
+
+  const requestHeaders = await headers();
+  const clientIp = requestHeaders.get("cf-connecting-ip") ?? "unknown";
+  if (isPublicFormRateLimited(`home-visit:${clientIp}`)) {
+    throw new Error("Too many requests. Please wait a few minutes and try again.");
+  }
+
+  const values = parsed.data;
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -79,7 +80,10 @@ export async function submitHomeVisit(values: {
     .select("reference_id")
     .single();
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("Home visit request insert failed", { code: error.code });
+    throw new Error("Unable to submit your request right now. Please try again later.");
+  }
 
   const referenceId = data.reference_id as string;
 
