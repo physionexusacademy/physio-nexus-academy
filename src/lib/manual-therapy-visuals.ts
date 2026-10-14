@@ -1,3 +1,5 @@
+import type { CloudinaryCrop } from "@/lib/cloudinary";
+
 export type ManualTherapyVisual = {
   id: string;
   title: string;
@@ -7,7 +9,7 @@ export type ManualTherapyVisual = {
   target?: string;
   force?: string;
   group: string;
-  crop?: string;
+  crop?: CloudinaryCrop;
 };
 
 /**
