@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function updateFounderProfile(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const messageBody = String(formData.get("message_body") ?? "")
     .split("\n")
@@ -40,6 +42,7 @@ export async function updateFounderProfile(formData: FormData) {
 }
 
 export async function addQualification(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("qualifications").insert({
     title: formData.get("title"),
@@ -52,6 +55,7 @@ export async function addQualification(formData: FormData) {
 }
 
 export async function deleteQualification(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const supabase = await createClient();
   const { error } = await supabase.from("qualifications").delete().eq("id", id);
@@ -60,6 +64,7 @@ export async function deleteQualification(formData: FormData) {
 }
 
 export async function updateSiteSetting(formData: FormData) {
+  await requireAdmin();
   const key = String(formData.get("key"));
   const value = String(formData.get("value"));
   const supabase = await createClient();
@@ -71,6 +76,7 @@ export async function updateSiteSetting(formData: FormData) {
 }
 
 export async function updateAboutContent(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const content = {
     purpose: formData.get("purpose"),
