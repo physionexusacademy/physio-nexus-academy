@@ -11,10 +11,13 @@ const windows = new Map<string, WindowEntry>();
 export function isPublicFormRateLimited(key: string, now = Date.now()) {
   if (windows.size >= MAX_TRACKED_KEYS) {
     for (const [entryKey, entry] of windows) {
-      if (now - entry.startedAt >= WINDOW_MS || windows.size >= MAX_TRACKED_KEYS) {
-        windows.delete(entryKey);
-      }
-      if (windows.size < MAX_TRACKED_KEYS * 0.8) break;
+      if (now - entry.startedAt >= WINDOW_MS) windows.delete(entryKey);
+    }
+    // If every entry is still active, evict oldest entries to keep memory bounded.
+    while (windows.size >= MAX_TRACKED_KEYS) {
+      const oldestKey = windows.keys().next().value;
+      if (!oldestKey) break;
+      windows.delete(oldestKey);
     }
   }
 
