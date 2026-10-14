@@ -6,6 +6,8 @@ export type ManualTherapyVisual = {
   caption?: string;
   target?: string;
   force?: string;
+  group: string;
+  crop?: string;
 };
 
 /**
