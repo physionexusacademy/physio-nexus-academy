@@ -28,7 +28,7 @@ export const trainingHistory: TrainingHistoryItem[] = [
   {
     slug: "advanced-myofascial-therapy-mastery-shahdadpur-2026",
     title: "Advanced Myofascial Therapy Mastery",
-    category: "Workshop",
+    category: "Workshop" as const,
     date: "2026-08-30",
     displayDate: "30 August 2026",
     time: "10:00 AM – 2:00 PM",
@@ -58,7 +58,7 @@ export const trainingHistory: TrainingHistoryItem[] = [
   {
     slug: "cupping-therapy-workshop-hyderabad-2025",
     title: "Cupping Therapy — One Day Hands-On Workshop",
-    category: "Workshop",
+    category: "Workshop" as const,
     date: "2025-08-24",
     displayDate: "24 August 2025",
     city: "Hyderabad",
@@ -85,7 +85,7 @@ export const trainingHistory: TrainingHistoryItem[] = [
   {
     slug: "two-month-physiotherapy-internship-hyderabad-2025",
     title: "2-Month Physiotherapy Internship Program",
-    category: "Internship Program",
+    category: "Internship Program" as const,
     date: "2025-08-10",
     displayDate: "Started 10 August 2025",
     city: "Hyderabad",
@@ -117,7 +117,7 @@ export const trainingHistory: TrainingHistoryItem[] = [
   {
     slug: "sciatica-hands-on-workshop-hyderabad-2025",
     title: "Sciatica Free Hands-On Workshop",
-    category: "Workshop",
+    category: "Workshop" as const,
     date: "2025-07-13",
     displayDate: "13 July 2025",
     time: "5:00 PM",
@@ -143,7 +143,7 @@ export const trainingHistory: TrainingHistoryItem[] = [
   {
     slug: "free-physiotherapy-camp-hyderabad-2025",
     title: "One Day Free Physiotherapy Camp",
-    category: "Clinical Camp",
+    category: "Clinical Camp" as const,
     date: "2025-06-15",
     displayDate: "15 June 2025",
     time: "3:00 PM – 8:00 PM",
@@ -175,7 +175,7 @@ export const trainingHistory: TrainingHistoryItem[] = [
   {
     slug: "one-month-physiotherapy-internship-hyderabad",
     title: "1-Month Physiotherapy Internship Program",
-    category: "Internship Program",
+    category: "Internship Program" as const,
     displayDate: "Past program",
     city: "Hyderabad",
     role: "Clinical training program",

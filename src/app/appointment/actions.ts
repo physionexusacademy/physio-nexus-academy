@@ -1,6 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isPublicFormRateLimited } from "@/lib/security/public-form-protection";
+import { appointmentSubmissionSchema } from "@/lib/validation/public-form-schemas";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
@@ -47,18 +50,17 @@ async function sendEmail({
   }
 }
 
-export async function submitAppointment(values: {
-  fullName: string;
-  age?: string;
-  gender?: string;
-  phone: string;
-  email?: string;
-  city: string;
-  reason: string;
-  preferredDate: string;
-  preferredTime: string;
-  appointmentType: "in-person" | "online";
-}) {
+export async function submitAppointment(input: unknown) {
+  const parsed = appointmentSubmissionSchema.safeParse(input);
+  if (!parsed.success) throw new Error("Please check the form details and try again.");
+
+  const requestHeaders = await headers();
+  const clientIp = requestHeaders.get("cf-connecting-ip") ?? "unknown";
+  if (isPublicFormRateLimited(`appointment:${clientIp}`)) {
+    throw new Error("Too many requests. Please wait a few minutes and try again.");
+  }
+
+  const values = parsed.data;
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -78,7 +80,10 @@ export async function submitAppointment(values: {
     .select("reference_id")
     .single();
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("Appointment request insert failed", { code: error.code });
+    throw new Error("Unable to submit your request right now. Please try again later.");
+  }
 
   const referenceId = data.reference_id as string;
 
