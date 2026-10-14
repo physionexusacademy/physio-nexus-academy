@@ -9,9 +9,11 @@ import { case20261010Myelopathy } from "./2026-10-10-cervical-myelopathy";
 import { case20261011Clubfoot } from "./2026-10-11-clubfoot-relapse";
 import { case20261012HeartFailure } from "./2026-10-12-stable-heart-failure-exercise-readiness";
 import { case20261013LateralElbow } from "./2026-10-13-lateral-elbow-tendinopathy";
+import { case20261015PainFlare } from "./2026-10-15-persistent-pain-flare-plan";
 // DAILY_CASE_IMPORTS_END 
 export const modularClinicalCases: ClinicalCase[] = [
   // DAILY_CASE_SPREADS_START
+  case20261015PainFlare,
   case20261013LateralElbow,
   case20261012HeartFailure,
   case20261011Clubfoot,

@@ -1,0 +1,14 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+ slug:"menopause-bone-health-exercise-referral-20261015",
+ title:"Menopause, Bone Health and Exercise: A Physiotherapy Framework",
+ excerpt:"Support strength, balance and bone-health behaviors through individualized exercise, risk awareness and coordinated care.",
+ specialty:"Women's & Pelvic Health", category:"Midlife Musculoskeletal Health", audience:"Professionals", level:"Clinical", readTime:"7 min read", publishedAt:"2026-10-15",
+ learningObjectives:["Discuss how midlife changes may intersect with bone and musculoskeletal health.","Choose functional goals and progressive exercise options.","Recognize fracture-risk features and the need for medical review."],
+ references:[{title:"The clinician's guide to prevention and treatment of osteoporosis",organization:"Osteoporosis International",year:"2022",url:"https://doi.org/10.1007/s00198-021-05900-y"},{title:"Physical activity and exercise guidelines for adults",organization:"World Health Organization",year:"2020",url:"https://www.who.int/publications/i/item/9789240015128"}],
+ sections:[
+ {heading:"Clinical framework",paragraphs:["The menopausal transition can coincide with changes in bone health, sleep, symptoms and activity. Exercise supports strength, balance and general health, but it does not replace individualized fracture-risk assessment or medical management when indicated.","Avoid attributing every new musculoskeletal symptom to menopause; use the history and examination to consider other causes."]},
+ {heading:"Assessment and goals",bullets:["Ask about activity, falls, prior fragility fracture, family history, medications, smoking, nutrition, symptoms affecting participation and the person's goals.","Choose functional measures such as chair-rise performance, balance, walking tolerance and a patient-specific task. Coordinate bone-health risk assessment with the appropriate clinician.","New severe focal bone pain after minor trauma, height loss with acute back pain or suspected fracture warrants medical assessment before routine loading."]},
+ {heading:"Exercise and progression",bullets:["Combine progressive resistance, weight-bearing activity and balance training according to ability, fracture risk and prior experience. Start at a tolerable level and progress load or complexity gradually.","For people with vertebral fracture or high fracture risk, adapt impact and spinal-loading tasks to the individualized plan and relevant professional guidance.","Track strength, balance, participation and adherence. Encourage sustainable activity rather than a short, overly aggressive programme."]},
+ {heading:"Clinical pearl",paragraphs:["Use a life-stage-aware but not diagnosis-by-age approach: screen fracture risk, prescribe individualized strength and balance work, and coordinate medical care when symptoms or history indicate higher risk."]}
+ ]};
