@@ -79,4 +79,8 @@ const nextConfig = {
 
 module.exports = nextConfig;
 
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
+// OpenNext's Cloudflare adapter needs this hook for local development only.
+// Avoid starting Wrangler's remote proxy during CI/production builds.
+if (process.env.NODE_ENV === 'development') {
+  import('@opennextjs/cloudflare').then((m) => m.initOpenNextCloudflareForDev());
+}
