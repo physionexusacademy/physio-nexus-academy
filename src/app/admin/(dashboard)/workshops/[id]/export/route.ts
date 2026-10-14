@@ -29,7 +29,7 @@ export async function GET(
     .order("created_at", { ascending: true });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Unable to export registrations." }, { status: 500 });
   }
 
   const header = toCsvRow([
