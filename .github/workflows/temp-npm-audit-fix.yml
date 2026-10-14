@@ -1,0 +1,60 @@
+name: Temporary non-breaking npm audit remediation
+
+on:
+  push:
+    branches:
+      - security/npm-audit-fix
+
+permissions:
+  contents: write
+
+jobs:
+  remediate:
+    if: ${{ !contains(github.event.head_commit.message, '[audit-fix-bot]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Apply non-breaking advisory fixes only
+        shell: bash
+        run: |
+          npm audit fix || true
+          npm audit --omit=dev --json > "$RUNNER_TEMP/pna-audit-after-fix.json" || true
+          node - "$RUNNER_TEMP/pna-audit-after-fix.json" <<'NODE'
+          const fs = require("node:fs");
+          try {
+            const report = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+            console.log("Production dependency audit after npm audit fix:");
+            console.log(JSON.stringify(report.metadata?.vulnerabilities || {}, null, 2));
+            console.log(JSON.stringify(Object.entries(report.vulnerabilities || {}).map(([name, item]) => ({
+              name, severity: item.severity, direct: item.isDirect, fixAvailable: item.fixAvailable
+            })), null, 2));
+          } catch (error) {
+            console.log("Could not parse npm audit report:", String(error));
+          }
+          NODE
+      - name: Commit only lockfile/package manifest changes and remove temporary workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/temp-npm-audit-fix.yml
+          git add -A package.json package-lock.json .github/workflows/temp-npm-audit-fix.yml
+          if git diff --cached --quiet; then
+            echo "No dependency changes were produced; nothing to commit."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "[audit-fix-bot] apply non-breaking npm audit fixes"
+            git push origin security/npm-audit-fix
+          fi
+      - name: Verify updated dependency tree
+        run: npm run typecheck
