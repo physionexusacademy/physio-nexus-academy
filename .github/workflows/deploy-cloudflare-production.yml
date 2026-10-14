@@ -47,6 +47,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm ci
 
+      - name: Run TypeScript checks
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run typecheck
+
       - name: Validate MSK screening engine
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:msk
