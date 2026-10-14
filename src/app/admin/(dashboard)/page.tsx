@@ -1,6 +1,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+// This authenticated dashboard depends on request cookies and must never be prerendered.
+export const dynamic = "force-dynamic";
+
 type OverviewTable =
   | "workshops"
   | "resources"
