@@ -7,9 +7,9 @@ const siteUrl = "https://physionexusacademy.com";
 const pageUrl = `${siteUrl}/locations/karachi`;
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Home Visits & Workshops in Karachi",
+  title: "Physiotherapy Home Visits in Karachi",
   description:
-    "Physio Nexus Academy provides physiotherapy home-visit requests, appointment support and hands-on physiotherapy workshops in Karachi, Pakistan.",
+    "Request home physiotherapy in Karachi through Physio Nexus Academy. Share your area and preferred time; visit coverage and scheduling are confirmed before booking.",
   alternates: {
     canonical: pageUrl,
   },
@@ -77,12 +77,14 @@ export default function KarachiLocationPage() {
         Karachi
       </p>
       <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-        Physiotherapy Services &amp; Workshops in Karachi
+        Physiotherapy Home Visits in Karachi
       </h1>
       <p className="mt-4 max-w-3xl text-navy-600">
-        Physio Nexus Academy supports patients and physiotherapy learners in Karachi
-        through appointment requests, home-visit requests and scheduled hands-on
-        clinical workshops. Availability is confirmed before each appointment or visit.
+        Looking for physiotherapy at home in Karachi? Physio Nexus Academy lets you
+        request a home visit by sharing your Karachi area, preferred date and time, and
+        a brief description of the patient’s needs. Our team confirms service coverage
+        and schedule availability before any visit is finalized. We also publish hands-on
+        physiotherapy workshops and clinical learning opportunities in Karachi.
       </p>
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -92,9 +94,15 @@ export default function KarachiLocationPage() {
             Physiotherapy Home Visits in Karachi
           </h2>
           <p className="mt-3 text-sm leading-6 text-navy-600">
-            Patients can request a physiotherapy home visit by sharing their Karachi
-            area, preferred date and time, and a brief condition summary. The team
-            confirms coverage and schedule availability before finalizing the visit.
+            Request a home physiotherapy visit in Karachi by sharing your area,
+            preferred date and time, contact details, and a brief condition summary.
+            The team confirms whether your location and requested time are covered
+            before finalizing the visit.
+          </p>
+          <p className="mt-3 text-sm leading-6 text-navy-600">
+            Home visits can be useful for patients who find travel difficult or prefer
+            assessment and rehabilitation planning in their home environment. The exact
+            service and visit plan depend on clinical needs and confirmed availability.
           </p>
           <Button href="/home-visit" className="mt-5">
             Request a Home Visit
