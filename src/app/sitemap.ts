@@ -28,6 +28,7 @@ const routes = [
   "/msk-special-tests",
   "/case-lab",
   "/clinical-quiz",
+  "/daily-challenge",
   "/research",
   "/patient-services",
   "/symptom-checker",
