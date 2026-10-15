@@ -7,9 +7,9 @@ const siteUrl = "https://physionexusacademy.com";
 const pageUrl = `${siteUrl}/locations/hyderabad`;
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Home Visits & Workshops in Hyderabad",
+  title: "Physiotherapy Home Visits in Hyderabad",
   description:
-    "Physio Nexus Academy provides physiotherapy home-visit requests and scheduled hands-on physiotherapy workshops in Hyderabad, Sindh.",
+    "Request home physiotherapy in Hyderabad, Sindh through Physio Nexus Academy. Share your area and preferred time; coverage and scheduling are confirmed before booking.",
   alternates: {
     canonical: pageUrl,
   },
@@ -81,12 +81,14 @@ export default function HyderabadLocationPage() {
         Hyderabad, Sindh
       </p>
       <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-        Physiotherapy Services &amp; Workshops in Hyderabad
+        Physiotherapy Home Visits in Hyderabad
       </h1>
       <p className="mt-4 max-w-3xl text-navy-600">
-        Physio Nexus Academy supports patients and physiotherapy learners in Hyderabad
-        through home-visit requests and scheduled hands-on clinical workshops.
-        Availability, venue and appointment details are confirmed for each request or event.
+        Need physiotherapy at home in Hyderabad, Sindh? Submit a home-visit request
+        with your area, preferred date and time, contact details, and a brief summary of
+        the patient’s needs. Physio Nexus Academy confirms service coverage and scheduling
+        before a visit is finalized. We also publish practical physiotherapy workshops when
+        training events are scheduled in Hyderabad.
       </p>
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -96,9 +98,14 @@ export default function HyderabadLocationPage() {
             Physiotherapy Home Visits in Hyderabad
           </h2>
           <p className="mt-3 text-sm leading-6 text-navy-600">
-            Patients can submit a home-visit request with their Hyderabad area,
-            preferred date and time, contact details and a brief condition summary.
-            The team confirms service coverage and schedule before the visit is finalized.
+            Request a home physiotherapy visit in Hyderabad, Sindh, by sharing your
+            area, preferred date and time, contact details, and a brief condition summary.
+            The team confirms location coverage and scheduling before finalizing the visit.
+          </p>
+          <p className="mt-3 text-sm leading-6 text-navy-600">
+            A home visit may help when travel is difficult or when rehabilitation needs
+            to be planned around the patient’s home environment. The assessment and
+            treatment plan depend on clinical needs and confirmed service availability.
           </p>
           <Button href="/home-visit" className="mt-5">
             Request a Home Visit
