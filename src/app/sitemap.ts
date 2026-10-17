@@ -109,7 +109,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const worldManualApproachRoutes: MetadataRoute.Sitemap = worldManualApproaches.map((item) => ({
+  const worldManualApproachRoutes: MetadataRoute.Sitemap = worldManualApproaches
+    .filter((item) => !manualTherapyTechniques.some((technique) => technique.slug === item.slug))
+    .map((item) => ({
     url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
     priority: 0.8,
