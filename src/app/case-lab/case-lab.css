@@ -125,3 +125,57 @@
 .case-lab-v3 .cl-storybook-card:hover{border-color:#7cc3bc;transform:translateY(-3px);box-shadow:0 20px 45px -35px #0b525c}
 .case-lab-v3 .cl-storybook-card:hover .cl-case-title{color:#0a7772}
 .case-lab-v3 .cl-storybook-card .cl-story-label{max-width:100%;overflow-wrap:anywhere}
+
+
+/* Mobile reading fix for Leaderboard → Real Cases → individual case pages.
+   Keep all clinical wording unchanged; prevent prose and nested cards from clipping. */
+.case-lab-v3,
+.case-lab-v3 .container-content,
+.case-lab-v3 .cl-novel-page,
+.case-lab-v3 .cl-novel-scene,
+.case-lab-v3 .cl-novel-decision,
+.case-lab-v3 .cl-novel-prose {
+  min-width: 0;
+  max-width: 100%;
+}
+.case-lab-v3 .cl-novel-page {
+  overflow: visible;
+}
+.case-lab-v3 .cl-novel-prose,
+.case-lab-v3 .cl-novel-prose p,
+.case-lab-v3 .cl-novel-scene,
+.case-lab-v3 .cl-novel-beat,
+.case-lab-v3 .cl-novel-decision,
+.case-lab-v3 .cl-story-quote,
+.case-lab-v3 .cl-reveal,
+.case-lab-v3 .cl-paper,
+.case-lab-v3 h1,
+.case-lab-v3 h2,
+.case-lab-v3 h3,
+.case-lab-v3 p,
+.case-lab-v3 li,
+.case-lab-v3 summary {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+@media (max-width: 640px) {
+  .case-lab-v3 .cl-novel-page {
+    padding: 1rem;
+  }
+  .case-lab-v3 .cl-novel-prose {
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+  .case-lab-v3 .cl-novel-prose p {
+    max-width: 100%;
+  }
+  .case-lab-v3 .cl-novel-scene-head {
+    align-items: flex-start;
+    letter-spacing: .06em;
+    overflow-wrap: anywhere;
+  }
+  .case-lab-v3 .cl-novel-mark {
+    flex: 0 0 38px;
+  }
+}
