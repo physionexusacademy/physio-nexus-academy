@@ -34,22 +34,6 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000',
           },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=()',
-          },
         ],
       },
     ];
@@ -70,6 +54,12 @@ const nextConfig = {
         hostname: 'd2ol7oe51mr4n9.cloudfront.net',
       },
     ],
+  },
+
+  // Type errors now fail the build instead of being hidden. `npm run typecheck`
+  // reports them locally in the same way.
+  typescript: {
+    ignoreBuildErrors: false,
   },
 
   eslint: {
