@@ -34,15 +34,28 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000',
           },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=()',
+          },
         ],
       },
     ];
   },
   images: {
-    // Prefer modern, smaller formats for optimized Next/Image responses.
     formats: ['image/avif', 'image/webp'],
-    // Keep transformed images warm between repeat visits without making
-    // replaced images stale for an excessive period.
     minimumCacheTTL: 60 * 60 * 24 * 7,
     remotePatterns: [
       {
@@ -55,13 +68,9 @@ const nextConfig = {
       },
     ],
   },
-
-  // Type errors now fail the build instead of being hidden. `npm run typecheck`
-  // reports them locally in the same way.
   typescript: {
     ignoreBuildErrors: false,
   },
-
   eslint: {
     ignoreDuringBuilds: true,
   },
