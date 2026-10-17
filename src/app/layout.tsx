@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -169,6 +170,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WhatsAppButton />
         <PhysioNexusAI />
         <MobilePortalNav />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-FY98RYN1GP');
+var gaScript = document.createElement('script');
+gaScript.async = true;
+gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-FY98RYN1GP';
+document.head.appendChild(gaScript);`}
+        </Script>
       </body>
     </html>
   );
