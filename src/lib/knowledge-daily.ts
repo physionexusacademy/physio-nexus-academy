@@ -1155,8 +1155,8 @@ export const dailyKnowledgeArticles: KnowledgeArticle[] = [
 {
   "slug": "mcid-mic-mdc-outcome-measure-interpretation",
   "specialty": "Research & Evidence",
-  "title": "MCID, MIC and MDC: How to Interpret Change in Clinical Outcome Measures",
-  "excerpt": "A research-methods lesson on measurement error, smallest detectable change, minimal important change, responsiveness and why statistical significance does not automatically equal clinical importance.",
+  "title": "MCID vs MDC vs MIC: Meaningful Change and Measurement Error in Physiotherapy",
+  "excerpt": "Understand MCID vs MDC, minimal important change, and measurement error in physiotherapy outcome measures—with clinical examples explaining whether a score change is real, meaningful, both or neither.",
   "category": "Outcome Measurement",
   "audience": "Students",
   "level": "Advanced",
