@@ -55,7 +55,10 @@ const nextConfig = {
     ];
   },
   images: {
+    // Prefer modern, smaller formats for optimized Next/Image responses.
     formats: ['image/avif', 'image/webp'],
+    // Keep transformed images warm between repeat visits without making
+    // replaced images stale for an excessive period.
     minimumCacheTTL: 60 * 60 * 24 * 7,
     remotePatterns: [
       {
@@ -68,9 +71,7 @@ const nextConfig = {
       },
     ],
   },
-  typescript: {
-    ignoreBuildErrors: false,
-  },
+
   eslint: {
     ignoreDuringBuilds: true,
   },
