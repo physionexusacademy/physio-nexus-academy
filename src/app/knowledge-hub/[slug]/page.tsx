@@ -68,20 +68,20 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
       : "bg-amber-100 text-amber-800";
 
   return (
-    <article className="container-content section-padding">
+    <article className="container-content section-padding min-w-0 w-full max-w-full break-words [overflow-wrap:anywhere]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c") }} />
       <a href="/knowledge-hub" className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700">
         <ArrowLeft className="h-4 w-4" /> Back to Knowledge Hub
       </a>
 
-      <header className="mx-auto mt-7 max-w-4xl overflow-hidden rounded-3xl border border-grey-200 bg-gradient-to-br from-white via-cyan-50 to-indigo-50 p-6 shadow-sm sm:p-9">
+      <header className="mx-auto mt-7 min-w-0 w-full max-w-4xl rounded-3xl border border-grey-200 bg-gradient-to-br from-white via-cyan-50 to-indigo-50 p-5 shadow-sm sm:p-9">
         <div className="flex flex-wrap gap-2">
           <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-800">{article.specialty}</span>
           <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-navy-600">{article.category}</span>
           <span className={"rounded-full px-3 py-1 text-xs font-bold " + levelTone}>{level} Level</span>
           <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-navy-500">{article.audience}</span>
         </div>
-        <h1 className="mt-5 text-3xl font-bold leading-tight text-navy-800 sm:text-4xl">{article.title}</h1>
+        <h1 className="mt-5 break-words text-2xl font-bold leading-tight text-navy-800 sm:text-4xl [overflow-wrap:anywhere]">{article.title}</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-navy-600">{article.excerpt}</p>
         <div className="mt-6 flex flex-wrap gap-5 border-t border-grey-200 pt-5 text-xs text-navy-400">
           <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{new Date(article.publishedAt).toLocaleDateString("en-PK", { day: "numeric", month: "long", year: "numeric" })}</span>
@@ -90,7 +90,7 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
         </div>
       </header>
 
-      <div className="mx-auto mt-9 max-w-4xl">
+      <div className="mx-auto mt-9 min-w-0 w-full max-w-4xl break-words [overflow-wrap:anywhere]">
         {article.learningObjectives?.length ? (
           <section className="mb-9 rounded-3xl border border-amber-100 bg-amber-50 p-6">
             <div className="flex items-center gap-3"><Target className="h-6 w-6 text-amber-700" /><h2 className="text-2xl font-semibold text-navy-800">What You Should Be Able to Explain After Reading</h2></div>
@@ -101,10 +101,10 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
         ) : null}
 
         {article.sections.map((section) => (
-          <section key={section.heading} className="mb-9">
-            <h2 className="text-2xl font-semibold text-navy-800">{section.heading}</h2>
-            {section.paragraphs?.map((paragraph) => <p key={paragraph} className="mt-4 leading-7 text-navy-600">{paragraph}</p>)}
-            {section.bullets?.length ? <ul className="mt-4 space-y-2 pl-5 text-navy-600">{section.bullets.map((bullet) => <li key={bullet} className="list-disc leading-7">{bullet}</li>)}</ul> : null}
+          <section key={section.heading} className="mb-9 min-w-0 break-words [overflow-wrap:anywhere]">
+            <h2 className="break-words text-xl font-semibold leading-snug text-navy-800 sm:text-2xl [overflow-wrap:anywhere]">{section.heading}</h2>
+            {section.paragraphs?.map((paragraph) => <p key={paragraph} className="mt-4 break-words leading-7 text-navy-600 [overflow-wrap:anywhere]">{paragraph}</p>)}
+            {section.bullets?.length ? <ul className="mt-4 space-y-2 pl-5 text-navy-600 [overflow-wrap:anywhere]">{section.bullets.map((bullet) => <li key={bullet} className="list-disc break-words leading-7 [overflow-wrap:anywhere]">{bullet}</li>)}</ul> : null}
           </section>
         ))}
 
