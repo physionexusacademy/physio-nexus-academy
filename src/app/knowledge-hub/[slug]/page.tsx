@@ -90,7 +90,7 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
         </div>
       </header>
 
-      <div className="mx-auto mt-9 min-w-0 w-full max-w-4xl break-words [overflow-wrap:anywhere]">
+      <div className="mx-auto mt-8 min-w-0 w-full max-w-4xl break-words rounded-3xl border border-slate-200 bg-white p-5 shadow-sm [overflow-wrap:anywhere] sm:mt-9 sm:p-9">
         {article.learningObjectives?.length ? (
           <section className="mb-9 rounded-3xl border border-amber-100 bg-amber-50 p-6">
             <div className="flex items-center gap-3"><Target className="h-6 w-6 text-amber-700" /><h2 className="text-2xl font-semibold text-navy-800">What You Should Be Able to Explain After Reading</h2></div>
@@ -101,9 +101,9 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
         ) : null}
 
         {article.sections.map((section) => (
-          <section key={section.heading} className="mb-9 min-w-0 break-words [overflow-wrap:anywhere]">
+          <section key={section.heading} className="mb-8 min-w-0 break-words border-b border-slate-100 pb-7 last:border-b-0 last:pb-0 [overflow-wrap:anywhere]">
             <h2 className="break-words text-xl font-semibold leading-snug text-navy-800 sm:text-2xl [overflow-wrap:anywhere]">{section.heading}</h2>
-            {section.paragraphs?.map((paragraph) => <p key={paragraph} className="mt-4 break-words leading-7 text-navy-600 [overflow-wrap:anywhere]">{paragraph}</p>)}
+            {section.paragraphs?.map((paragraph) => <p key={paragraph} className="mt-4 break-words text-[15px] leading-8 text-navy-600 [overflow-wrap:anywhere]">{paragraph}</p>)}
             {section.bullets?.length ? <ul className="mt-4 space-y-2 pl-5 text-navy-600 [overflow-wrap:anywhere]">{section.bullets.map((bullet) => <li key={bullet} className="list-disc break-words leading-7 [overflow-wrap:anywhere]">{bullet}</li>)}</ul> : null}
           </section>
         ))}
