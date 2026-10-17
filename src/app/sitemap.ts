@@ -6,7 +6,7 @@ import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
-import { regionalManualApplications } from "@/lib/manual-therapy-regional";
+import { regionalManualApplications, isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regional";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { mskConditions } from "@/lib/msk-injury-hub";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
@@ -129,7 +129,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.82,
   }));
 
-  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
+  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications
+    .filter((item) => isTechniqueSpecificRegionalApplication(item))
+    .map((item) => ({
     url: `${base}/manual-therapy/regions/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
     priority: 0.82,
