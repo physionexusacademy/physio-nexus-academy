@@ -36,6 +36,8 @@ import ClinicalImage from "@/components/clinical/ClinicalImage";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
+import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
+import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -81,6 +83,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const guide = manualApplicationGuides[slug];
   const mechanism = manualTherapyMechanisms[slug];
   const expert = getManualTherapyExpertProfile(slug);
+  const mastery = getMasteryGuide(slug);
   const visuals = getManualTherapyVisuals(slug);
   const regionalApplications = getApplicationsForTechnique(slug);
   const totalRegionalVariations = regionalApplications.reduce(
@@ -113,22 +116,30 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">
           {technique.name}
         </h1>
-        {story ? (
-          <div className="mt-7 max-w-4xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-200">The clinical story</p>
-            <h2 className="mt-3 text-2xl font-bold leading-snug text-white sm:text-3xl">{story.headline}</h2>
-            <p className="mt-4 max-w-3xl text-base leading-8 text-indigo-50 sm:text-lg">{technique.summary}</p>
-            <p className="mt-5 border-l-4 border-teal-300 pl-4 text-base font-semibold leading-7 text-white">
-              {story.question}
-            </p>
-          </div>
-        ) : (
-          <p className="mt-4 max-w-3xl text-base leading-7 text-violet-50">{technique.summary}</p>
-        )}
+        <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-white">
+          {mastery?.oneLine ?? technique.summary}
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3 text-sm font-bold">
+          <a href="#mastery" className="rounded-full bg-white px-4 py-2 text-violet-800">Start the lesson</a>
+          <a href="#clinical-method" className="rounded-full border border-white/30 px-4 py-2 text-white">Hands-on detail</a>
+          <a href="#clinical-essentials" className="rounded-full border border-white/30 px-4 py-2 text-white">Safety &amp; dose</a>
+        </div>
 
       </section>
 
-      {episode ? <ClinicalStoryChapter slug={slug} episode={episode} challenge={aha} weave={weave} /> : null}
+      <MasteryGuide slug={slug} />
+
+      {episode ? (
+        <details className="mt-8 rounded-3xl border border-indigo-200 bg-indigo-50/40">
+          <summary className="cursor-pointer p-5 text-sm font-bold text-indigo-900 sm:p-6">
+            Memory aid · See the technique as a short patient story (optional)
+            {story ? <span className="mt-1 block text-sm font-normal text-slate-600">{story.headline}</span> : null}
+          </summary>
+          <div className="border-t border-indigo-100 p-2 sm:p-4">
+            <ClinicalStoryChapter slug={slug} episode={episode} challenge={aha} weave={weave} />
+          </div>
+        </details>
+      ) : null}
 
       <section id="clinical-method" className="mt-8 scroll-mt-28 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-cyan-50">
         <div className="border-b border-violet-100 p-6 sm:p-8">
@@ -139,9 +150,9 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
             Here is how the technique is actually applied
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-            Follow the scene into the clinic. Start with patient setup,
-            therapist setup, hand placement, force direction, step-by-step application,
-            what you should expect, when to stop and the mistakes that commonly spoil the technique.
+            You have the idea and the steps. This section adds the finer detail: patient setup,
+            therapist setup, hand placement and force direction, what you should expect,
+            when to stop and the mistakes that commonly spoil the technique.
           </p>
         </div>
         <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
@@ -232,22 +243,6 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
       </section>
 
-      <section className="mt-9 rounded-3xl border border-slate-200 bg-slate-50/70 p-6 sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-800">Evidence compass</p>
-        <h2 className="mt-2 font-serif text-xl font-bold text-slate-900">What can science actually support?</h2>
-        <p className="mt-3 text-sm leading-7 text-slate-700">
-          The 2025 living review describes several possible mechanisms of manual therapy,
-          but cautions that we cannot confidently say which one produced an individual
-          patient's improvement. Do not turn a useful clinical response into an unsupported
-          claim that tissue was permanently repositioned or adhesions were broken.
-          A review of general manual therapy mechanisms does not establish the
-          effectiveness of this exact named technique for every diagnosis.
-        </p>
-        <a href="https://pubmed.ncbi.nlm.nih.gov/40100908/" target="_blank" rel="noopener noreferrer"
-          className="mt-3 inline-flex text-sm font-bold text-indigo-800 underline underline-offset-4">
-          Read the 2025 living review of manual therapy mechanisms
-        </a>
-      </section>
 
       {visuals.length ? (
         <section className="mt-8 overflow-hidden rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-5 sm:p-8">
