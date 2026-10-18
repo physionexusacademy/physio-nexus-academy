@@ -6,32 +6,69 @@ import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { getPublishedManualCoverMap } from "@/lib/manual-therapy-cover-publishing";
+import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 
-const worldLibraryFamily: Record<string, string> = {
-  "paris-approach": "Orthopedic Assessment & Reasoning",
-  "mckenzie-mdt": "Orthopedic Assessment & Reasoning",
-  "mennell-joint-play": "Orthopedic Assessment & Reasoning",
-  "fascial-distortion-model": "Fascial & Soft-Tissue",
-  "balanced-ligamentous-tension": "Osteopathic & Neuromuscular",
-  "spencer-shoulder-sequence": "Osteopathic & Neuromuscular",
-  "still-technique": "Osteopathic & Neuromuscular",
-  "osteopathic-articulatory": "Osteopathic & Neuromuscular",
-  "osteopathic-lymphatic-pump": "Specialized Manual Therapy",
-  "rolfing-structural-integration": "Fascial & Soft-Tissue",
-  "bowen-technique": "Soft-Tissue Mobilization",
-  "visceral-manipulation": "Specialized Manual Therapy",
-  "craniosacral-therapy": "Specialized Manual Therapy",
+/**
+ * One clear group per purpose, in the order a learner should meet them.
+ * (Replaces 12 overlapping groups such as "Soft-Tissue Mobilization" vs "Fascial & Soft-Tissue".)
+ */
+const libraryFamilyOrder = [
+  "Joint Mobilization, Traction & Manipulation",
+  "Assessment & Clinical Reasoning",
+  "Osteopathic & Neuromuscular",
+  "Soft-Tissue & Fascial",
+  "Instrument & Cupping",
+  "Neural & Specialized",
+];
+
+const libraryFamilyBySlug: Record<string, string> = {
+  "maitland-joint-mobilization": libraryFamilyOrder[0],
+  "kaltenborn-evjenth-mobilization": libraryFamilyOrder[0],
+  "manual-traction": libraryFamilyOrder[0],
+  "mulligan-mobilization-with-movement": libraryFamilyOrder[0],
+  "mulligan-snags-nags": libraryFamilyOrder[0],
+  "high-velocity-low-amplitude-thrust": libraryFamilyOrder[0],
+  "paivm-ppivm-spinal-assessment": libraryFamilyOrder[1],
+  "mennell-joint-play": libraryFamilyOrder[1],
+  "paris-approach": libraryFamilyOrder[1],
+  "mckenzie-mdt": libraryFamilyOrder[1],
+  "muscle-energy-technique": libraryFamilyOrder[2],
+  "strain-counterstrain": libraryFamilyOrder[2],
+  "facilitated-positional-release": libraryFamilyOrder[2],
+  "pnf-manual-techniques": libraryFamilyOrder[2],
+  "balanced-ligamentous-tension": libraryFamilyOrder[2],
+  "spencer-shoulder-sequence": libraryFamilyOrder[2],
+  "still-technique": libraryFamilyOrder[2],
+  "osteopathic-articulatory": libraryFamilyOrder[2],
+  "cyriax-deep-transverse-friction": libraryFamilyOrder[3],
+  "soft-tissue-mobilization": libraryFamilyOrder[3],
+  "trigger-point-compression": libraryFamilyOrder[3],
+  "active-release-style-soft-tissue": libraryFamilyOrder[3],
+  "myofascial-release": libraryFamilyOrder[3],
+  "fascial-manipulation": libraryFamilyOrder[3],
+  "fascial-distortion-model": libraryFamilyOrder[3],
+  "rolfing-structural-integration": libraryFamilyOrder[3],
+  "bowen-technique": libraryFamilyOrder[3],
+  "iastm": libraryFamilyOrder[4],
+  "myofascial-decompression-dry-cupping": libraryFamilyOrder[4],
+  "neurodynamic-mobilization": libraryFamilyOrder[5],
+  "manual-lymphatic-drainage": libraryFamilyOrder[5],
+  "scar-mobilization": libraryFamilyOrder[5],
+  "osteopathic-lymphatic-pump": libraryFamilyOrder[5],
+  "visceral-manipulation": libraryFamilyOrder[5],
+  "craniosacral-therapy": libraryFamilyOrder[5],
 };
 
 const libraryItems = [
   ...manualTherapyTechniques.map((technique) => ({
     slug: technique.slug,
     href: "/manual-therapy/" + technique.slug,
-    family: technique.family,
+    family: libraryFamilyBySlug[technique.slug] ?? technique.family,
+    artFamily: technique.family,
     name: technique.name,
     summary: technique.summary,
     tag: technique.level,
-    story: getManualTherapyStory(technique.slug)?.headline ?? "",
+    story: getMasteryGuide(technique.slug)?.oneLine ?? getManualTherapyStory(technique.slug)?.headline ?? "",
     scene: getManualTherapyStory(technique.slug)?.scene ?? "",
     closer: manualTherapyLessonWeaves[technique.slug]?.closer ?? "",
     evidence: "",
@@ -39,17 +76,18 @@ const libraryItems = [
   ...worldManualApproaches.map((approach) => ({
     slug: approach.slug,
     href: "/manual-therapy/" + approach.slug,
-    family: worldLibraryFamily[approach.slug] ?? "Specialized Manual Therapy",
+    family: libraryFamilyBySlug[approach.slug] ?? "Neural & Specialized",
+    artFamily: "Specialized Manual Therapy",
     name: approach.title,
     summary: approach.summary,
     tag: "World approach",
-    story: approach.headline,
+    story: getMasteryGuide(approach.slug)?.oneLine ?? approach.headline,
     scene: approach.scene,
     closer: approach.aha,
     evidence: approach.evidenceLabel,
   })),
 ];
-const libraryFamilies = Array.from(new Set(libraryItems.map((item) => item.family)));
+const libraryFamilies = libraryFamilyOrder.filter((name) => libraryItems.some((item) => item.family === name));
 
 
 export const metadata: Metadata = {
