@@ -12,6 +12,7 @@ on:
       - "src/lib/manual-therapy-additions.ts"
       - "src/lib/manual-therapy-world.ts"
       - "scripts/validate-manual-therapy-*.mjs"
+      - "next.config.js"
       - ".github/workflows/manual-therapy-content-check.yml"
   workflow_dispatch:
 
