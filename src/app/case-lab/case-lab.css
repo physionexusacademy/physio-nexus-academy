@@ -179,3 +179,69 @@
     flex: 0 0 38px;
   }
 }
+
+
+/* Root-level mobile viewport containment for individual Real Cases story readers.
+   The earlier prose-only rules did not constrain the full reader layout width. */
+.case-lab-v3,
+.case-lab-v3 * {
+  box-sizing: border-box;
+}
+.case-lab-v3 {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+.case-lab-v3 .container-content,
+.case-lab-v3 .cl-reading-focus,
+.case-lab-v3 .cl-reading-focus > section,
+.case-lab-v3 .cl-novel-hero,
+.case-lab-v3 .cl-novel-page,
+.case-lab-v3 .cl-novel-readerbar,
+.case-lab-v3 .cl-novel-scene,
+.case-lab-v3 .cl-novel-scene-head,
+.case-lab-v3 .cl-novel-prose,
+.case-lab-v3 .cl-novel-prose > *,
+.case-lab-v3 .cl-novel-decision {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.case-lab-v3 .cl-novel-page,
+.case-lab-v3 .cl-novel-scene,
+.case-lab-v3 .cl-novel-decision {
+  overflow-wrap: anywhere;
+}
+.case-lab-v3 h1,
+.case-lab-v3 h2,
+.case-lab-v3 h3,
+.case-lab-v3 .cl-display {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .case-lab-v3 .cl-reading-focus {
+    width: 100%;
+    max-width: 100%;
+    padding-inline: 0;
+  }
+  .case-lab-v3 .cl-reading-focus > section {
+    margin-inline: 0;
+  }
+  .case-lab-v3 .cl-novel-page {
+    padding: 1rem;
+  }
+  .case-lab-v3 .cl-novel-scene {
+    padding: 1rem;
+  }
+  .case-lab-v3 .cl-novel-scene-head {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .case-lab-v3 .cl-novel-prose {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+}
