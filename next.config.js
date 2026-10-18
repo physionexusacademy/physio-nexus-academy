@@ -79,4 +79,7 @@ const nextConfig = {
 
 module.exports = nextConfig;
 
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
+// OpenNext's dev-binding bridge is for local development, not CI/production builds.
+if (process.env.NODE_ENV === 'development') {
+  import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
+}
