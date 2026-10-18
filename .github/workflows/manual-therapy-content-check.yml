@@ -14,6 +14,19 @@ on:
       - "scripts/validate-manual-therapy-*.mjs"
       - "next.config.js"
       - ".github/workflows/manual-therapy-content-check.yml"
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/app/manual-therapy/**"
+      - "src/components/manual-therapy/**"
+      - "src/lib/manual-therapy-mastery*.ts"
+      - "src/lib/manual-therapy.ts"
+      - "src/lib/manual-therapy-additions.ts"
+      - "src/lib/manual-therapy-world.ts"
+      - "scripts/validate-manual-therapy-*.mjs"
+      - "next.config.js"
+      - ".github/workflows/manual-therapy-content-check.yml"
   workflow_dispatch:
 
 permissions:
