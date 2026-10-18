@@ -7,11 +7,14 @@ import { worldManualApproaches, type WorldManualApproach } from "@/lib/manual-th
 import { WorldApproachChallenge } from "@/components/manual-therapy/WorldApproachChallenge";
 import { WorldApproachDeepDive } from "@/components/manual-therapy/WorldApproachDeepDive";
 import { worldManualDeepChapters } from "@/lib/manual-therapy-world-depth";
+import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
+import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
   const next = worldManualApproaches[(worldManualApproaches.findIndex((x) => x.slug === lesson.slug) + 1) % worldManualApproaches.length];
   const deep = worldManualDeepChapters[lesson.slug];
+  const mastery = getMasteryGuide(lesson.slug);
   return (
     <main className="container-content section-padding" data-pna-world-story="v1" data-pna-world-final="v1">
       <a href="/manual-therapy" className="inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
@@ -24,12 +27,20 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
           <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5">{lesson.kind}</span>
         </div>
         <h1 className="mt-5 max-w-4xl font-serif text-3xl font-bold leading-tight text-white sm:text-5xl">{lesson.title}</h1>
-        <p className="mt-5 max-w-4xl text-[16px] leading-8 text-indigo-50">{lesson.summary}</p>
+        <p className="mt-5 max-w-4xl text-lg font-semibold leading-8 text-white">{mastery?.oneLine ?? lesson.summary}</p>
         <p className="mt-5 max-w-4xl border-l-4 border-teal-300 pl-4 text-sm font-semibold leading-7 text-white">
           Evidence position: {lesson.evidenceLabel}
         </p>
       </header>
 
+      <MasteryGuide slug={lesson.slug} />
+
+      <details className="mt-8 rounded-3xl border border-indigo-200 bg-indigo-50/40">
+        <summary className="cursor-pointer p-5 text-sm font-bold text-indigo-900 sm:p-6">
+          Memory aid · Read the short patient story (optional)
+          <span className="mt-1 block text-sm font-normal text-slate-600">{lesson.headline}</span>
+        </summary>
+        <div className="border-t border-indigo-100 p-2 sm:p-4">
       <article className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         <div className="border-b border-slate-100 bg-gradient-to-r from-indigo-50/70 to-teal-50/70 p-6 sm:p-8">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-teal-800">
@@ -65,6 +76,8 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
           </section>
         </div>
       </article>
+        </div>
+      </details>
 
       <details data-pna-quick-recap="v1" className="group mt-7 rounded-2xl border border-indigo-200 bg-indigo-50/40">
         <summary className="flex cursor-pointer items-center gap-3 p-5 text-sm font-bold text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 sm:p-6">
@@ -90,7 +103,16 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
         </div>
       </details>
 
-      {deep ? <WorldApproachDeepDive chapter={deep} slug={lesson.slug} /> : null}
+      {deep ? (
+        <details className="mt-8 rounded-3xl border border-slate-200 bg-white">
+          <summary className="cursor-pointer p-5 text-sm font-bold text-slate-900 sm:p-6">
+            Go deeper · The full chapter with extra cases and clinical reasoning (optional)
+          </summary>
+          <div className="border-t border-slate-100 p-2 sm:p-4">
+            <WorldApproachDeepDive chapter={deep} slug={lesson.slug} />
+          </div>
+        </details>
+      ) : null}
 
       <WorldApproachChallenge lesson={lesson} />
 
