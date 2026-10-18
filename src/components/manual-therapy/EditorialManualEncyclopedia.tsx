@@ -18,6 +18,7 @@ export type EncyclopediaItem = {
   summary: string;
   tag: string;
   story: string;
+  artFamily?: string;
   scene: string;
   closer: string;
   evidence: string;
@@ -26,11 +27,11 @@ export type EncyclopediaItem = {
 function readableHook(item: EncyclopediaItem) {
   // The cinematic chapter itself retains its full case, humor and clinical content.
   const hook = item.story || item.summary || item.scene;
-  return hook.length > 154 ? hook.slice(0, 151).trimEnd() + "…" : hook;
+  return hook.length > 200 ? hook.slice(0, 197).trimEnd() + "…" : hook;
 }
 
 function Card({ item, index, visualCovers }: { item: EncyclopediaItem; index: number; visualCovers: ManualCoverMap }) {
-  const art = getEditorialArt(item.slug, item.family);
+  const art = getEditorialArt(item.slug, item.artFamily ?? item.family);
   const newCover = visualCovers[item.slug];
   const artUrl = art
     ? getCloudinaryUrl(art.publicId, { width: 560, quality: 64, format: "auto" })
@@ -44,7 +45,7 @@ function Card({ item, index, visualCovers }: { item: EncyclopediaItem; index: nu
       data-pna-editorial-card={item.slug}
       data-tone={tone}
       className="pna-editorial-card group"
-      aria-label={item.name + ". Explore the clinical story"}
+      aria-label={item.name + ". Open the lesson"}
     >
       {newCover || artUrl ? (
         <div className="pna-editorial-card-art" aria-hidden="true">
@@ -82,7 +83,7 @@ function Card({ item, index, visualCovers }: { item: EncyclopediaItem; index: nu
           </span>
         ) : null}
         <span className="pna-editorial-card-cta">
-          Explore this story
+          Open the lesson
           <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true" />
         </span>
       </div>
@@ -140,10 +141,10 @@ export function EditorialManualEncyclopedia({
             World Manual Therapy Encyclopedia
           </h1>
           <p className="pna-editorial-lead">
-            Trusted approaches. Memorable clinical stories. A deeper way to learn.
+            35 techniques explained step by step: what each one is, when to use it, how to do it, and how to check it worked.
           </p>
           <p className="pna-editorial-illustration-note">
-            Illustrative 3D cover art — not a step-by-step clinical technique demonstration.
+            Cover art is illustrative only. The lesson inside each chapter explains the technique in full.
           </p>
           <div className="pna-editorial-stats" aria-label="Encyclopedia highlights">
             <span className="pna-editorial-stat"><BookOpenCheck className="h-4 w-4" aria-hidden="true" /> {items.length} clinical chapters</span>
@@ -158,7 +159,7 @@ export function EditorialManualEncyclopedia({
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[.18em] text-violet-700">Complete clinical library</p>
             <h2 className="mt-1 font-heading text-2xl font-extrabold leading-tight text-navy-900">
-              Choose your next clinical mystery
+              Choose a technique to master
             </h2>
           </div>
           <p aria-live="polite" className="text-xs font-semibold text-slate-600">
@@ -205,7 +206,7 @@ export function EditorialManualEncyclopedia({
                 </div>
                 <div>
                   <h3 className="pna-editorial-family-title">{group.name}</h3>
-                  <span className="pna-editorial-family-count">{group.results.length} approaches · Clinical story collection</span>
+                  <span className="pna-editorial-family-count">{group.results.length} {group.results.length === 1 ? "technique" : "techniques"} · Step-by-step lessons</span>
                 </div>
               </div>
               <div className="pna-editorial-grid">
