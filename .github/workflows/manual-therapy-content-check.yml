@@ -1,0 +1,69 @@
+name: Manual Therapy Content Build Check
+
+on:
+  push:
+    branches:
+      - pna-content-upgrade-v1
+    paths:
+      - "src/app/manual-therapy/**"
+      - "src/components/manual-therapy/**"
+      - "src/lib/manual-therapy-mastery*.ts"
+      - "src/lib/manual-therapy.ts"
+      - "src/lib/manual-therapy-additions.ts"
+      - "src/lib/manual-therapy-world.ts"
+      - "scripts/validate-manual-therapy-*.mjs"
+      - ".github/workflows/manual-therapy-content-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: manual-therapy-content-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-build:
+    name: Manual therapy validation and non-deploy build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+      NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+      NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+      NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
+      PAYMENTS_ENABLED: "false"
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Checkout this branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate worldwide manual therapy chapters
+        run: node scripts/validate-manual-therapy-world.mjs
+
+      - name: Validate manual therapy stories
+        run: node scripts/validate-manual-therapy-stories.mjs
+
+      - name: Validate manual therapy attention and deep guides
+        run: node scripts/validate-manual-therapy-attention.mjs
+
+      - name: Type-check (report separately from build)
+        continue-on-error: true
+        run: npx tsc --noEmit
+
+      - name: Build Cloudflare/OpenNext output only (does not deploy)
+        run: npx opennextjs-cloudflare build
