@@ -191,7 +191,6 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: clip;
 }
 .case-lab-v3 .container-content,
 .case-lab-v3 .cl-reading-focus,
@@ -243,5 +242,66 @@
   .case-lab-v3 .cl-novel-prose {
     font-size: 1rem;
     line-height: 1.8;
+  }
+}
+
+
+/* Focused mobile layout fixes: preserve readable text and keep every chapter reachable. */
+.case-lab-v3,
+.case-lab-v3 * {
+  min-width: 0;
+}
+.case-lab-v3 h1,
+.case-lab-v3 h2,
+.case-lab-v3 h3,
+.case-lab-v3 p,
+.case-lab-v3 li,
+.case-lab-v3 summary,
+.case-lab-v3 .cl-case-title,
+.case-lab-v3 .cl-novel-prose,
+.case-lab-v3 .cl-novel-prose p {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* Do not truncate case titles or summaries in the library cards. */
+.case-lab-v3 .cl-storybook-card .cl-case-title.line-clamp-3,
+.case-lab-v3 .cl-storybook-card p.line-clamp-2 {
+  display: block;
+  overflow: visible;
+  -webkit-box-orient: initial;
+  -webkit-line-clamp: unset;
+}
+
+/* The chapter picker becomes a wrapping grid on phones instead of a clipped
+   horizontal strip, so all seven chapter controls remain discoverable. */
+@media (max-width: 700px) {
+  .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 > button {
+    width: 100%;
+    min-width: 0;
+    flex: initial;
+    align-items: flex-start;
+    padding: 0.65rem;
+    white-space: normal;
+  }
+
+  .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 > button > span:last-child {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+}
+
+@media (max-width: 380px) {
+  .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
