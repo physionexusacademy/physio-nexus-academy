@@ -33,6 +33,7 @@ import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard"
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
 import "./daily-challenge/daily-challenge.css";
 import "./home-premium.css";
+import { InstallApp } from "@/components/InstallApp";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import "./premium-vision.css";
@@ -80,6 +81,10 @@ export default async function HomePage() {
   return (
     <>
       <PremiumHomeHero />
+
+      <div className="container-content flex justify-end pt-3">
+        <InstallApp />
+      </div>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
