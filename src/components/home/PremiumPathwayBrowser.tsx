@@ -7,6 +7,7 @@ import {
   Home, LibraryBig, ShieldCheck, Stethoscope, Trophy, Users
 } from "lucide-react";
 import { PnaPathwayArtwork } from "./PnaPathwayArtwork";
+import { InstallApp } from "@/components/InstallApp";
 
 const icons = {
   library: LibraryBig, eye: Eye, hand: Hand, clipboard: ClipboardList,
@@ -159,6 +160,10 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
             <p>Choose where you want to begin. Everything you need is one tap away.</p>
           </div>
           <span className="pna-sig-header-aside"><ShieldCheck size={17} aria-hidden="true"/> Learn · Practice · Grow · Care</span>
+        </div>
+
+        <div className="mt-4 flex justify-start">
+          <InstallApp />
         </div>
 
         <div className="pna-vision-pathways" role="group" aria-label="Choose a PNA pathway">
