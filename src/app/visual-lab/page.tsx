@@ -1,9 +1,18 @@
 import { ArrowRight, BookOpen, Images, Sparkles } from "lucide-react";
 
 export const metadata = {
-  title: "Visual Lab | Physio Nexus Academy",
+  title: "Clinical Visual Lab for Physiotherapy",
   description:
-    "PNA Visual Lab: clinically organized anatomy, pathology and technique visuals for physiotherapy learning.",
+    "Explore organized clinical anatomy, pathology and manual therapy visuals designed to support physiotherapy learning, examination skills and clinical reasoning.",
+  keywords: ["physiotherapy clinical visuals", "clinical anatomy physiotherapy", "manual therapy visuals", "physiotherapy learning resources"],
+  alternates: { canonical: "https://physionexusacademy.com/visual-lab" },
+  openGraph: {
+    title: "Clinical Visual Lab | Physio Nexus Academy",
+    description: "Clinical anatomy, pathology and manual therapy visuals for physiotherapy students and professionals.",
+    url: "https://physionexusacademy.com/visual-lab",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+  },
 };
 
 export default function VisualLabPage() {
