@@ -40,9 +40,26 @@ import "./premium-vision.css";
 import "./pna-signature-v2.css";
 
 export const metadata: Metadata = {
-  title: { absolute: "Physio Nexus Academy | Physiotherapy in Pakistan" },
+  title: { absolute: "Physio Nexus Academy | Physiotherapy Education & Workshops in Pakistan" },
   description:
-    "Daily physiotherapy challenges, clinical learning, workshops, resources and patient care from Physio Nexus Academy in Pakistan.",
+    "Learn physiotherapy with practical clinical resources, MSK and manual therapy guides, case-based learning, student quizzes and hands-on workshops from Physio Nexus Academy in Pakistan.",
+  keywords: [
+    "Physio Nexus Academy",
+    "physiotherapy education in Pakistan",
+    "physiotherapy workshops in Pakistan",
+    "MSK physiotherapy resources",
+    "manual therapy learning",
+    "physiotherapy clinical case studies",
+    "physiotherapy students Pakistan",
+  ],
+  openGraph: {
+    title: "Physio Nexus Academy | Physiotherapy Education & Workshops in Pakistan",
+    description: "Practical physiotherapy education, MSK and manual therapy learning, clinical cases, quizzes and hands-on workshops for students and professionals in Pakistan.",
+    url: "https://physionexusacademy.com",
+    siteName: "Physio Nexus Academy",
+    locale: "en_PK",
+    type: "website",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com",
   },
