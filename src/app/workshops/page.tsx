@@ -25,6 +25,9 @@ export const revalidate = 300; // refresh public workshop data at most every 5 m
 
 export default async function WorkshopsPage() {
   const supabase = createPublicClient();
+  const todayInPakistan = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Karachi", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
   const { data: workshops } = await supabase
     .from("workshops")
     .select("id,slug,title,summary,start_date,city,seat_limit,topics,is_past")
@@ -72,7 +75,7 @@ export default async function WorkshopsPage() {
             className="flex flex-col rounded-xl border border-grey-200 p-6"
           >
             <span className="inline-block w-fit rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-              {w.is_past ? "Past" : "Upcoming"}
+              {w.is_past || (w.start_date && String(w.start_date).slice(0, 10) < todayInPakistan) ? "Past" : "Upcoming"}
             </span>
             <h2 className="mt-4 font-heading text-lg font-semibold text-navy-800">
               {w.title}
