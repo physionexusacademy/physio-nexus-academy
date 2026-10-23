@@ -91,9 +91,10 @@ const libraryFamilies = libraryFamilyOrder.filter((name) => libraryItems.some((i
 
 
 export const metadata: Metadata = {
-  title: "World Manual Therapy Encyclopedia",
+  title: "Manual Therapy Techniques & Clinical Guide",
   description:
-    "Explore manual therapy techniques and clinical approaches with practical assessment, application, clinical reasoning and evidence-aware safety guidance.",
+    "Explore manual therapy techniques with clinical reasoning, application principles, safety considerations and evidence-informed learning for physiotherapy students and professionals in Pakistan.",
+  keywords: ["manual therapy techniques", "manual therapy physiotherapy", "Maitland mobilization", "Mulligan concept", "myofascial release", "strain counterstrain", "physiotherapy clinical skills"],
   alternates: {
     canonical: "https://physionexusacademy.com/manual-therapy",
   },
