@@ -114,11 +114,25 @@ export const metadata: Metadata = {
     template: "%s | Physio Nexus Academy",
   },
   description:
-    "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
+    "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, offers practical physiotherapy education, MSK clinical learning, manual therapy resources, hands-on workshops and professional development in Pakistan.",
+  keywords: [
+    "Physio Nexus Academy",
+    "physiotherapy education Pakistan",
+    "physiotherapy workshops Pakistan",
+    "MSK physiotherapy learning",
+    "manual therapy training",
+    "physiotherapy clinical skills",
+    "physiotherapy resources for students",
+    "physiotherapy workshops Karachi",
+    "physiotherapy workshops Hyderabad",
+  ],
+  applicationName: "Physio Nexus Academy",
+  creator: "Physio Nexus Academy",
+  publisher: "Physio Nexus Academy",
   openGraph: {
-    title: "Physio Nexus Academy",
+    title: "Physio Nexus Academy | Physiotherapy Education & Workshops",
     description:
-      "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
+      "Practical physiotherapy education, MSK clinical learning, manual therapy resources, clinical cases and hands-on workshops in Pakistan.",
     siteName: "Physio Nexus Academy",
     url: "https://physionexusacademy.com",
     locale: "en_PK",
@@ -129,7 +143,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Physio Nexus Academy",
     description:
-      "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training and learning resources in Pakistan.",
+      "Practical physiotherapy education, MSK clinical learning, clinical cases and hands-on workshops from Physio Nexus Academy in Pakistan.",
     images: ["/images/pna-logo.png"],
   },
   manifest: "/manifest.webmanifest",
