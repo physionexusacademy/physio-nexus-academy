@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   title: "Physiotherapy Treatment Plans",
   description:
     "Condition-based physiotherapy treatment plans covering assessment, red flags, modalities, manual therapy, exercise, progression and referral criteria.",
+  keywords: ["physiotherapy treatment plans", "rehabilitation protocols", "MSK rehabilitation", "physiotherapy exercise prescription", "clinical pathways physiotherapy"],
+  openGraph: {
+    title: "Physiotherapy Treatment Plans | Physio Nexus Academy",
+    description: "Condition-based physiotherapy pathways covering assessment, red flags, exercise progression, self-management and referral criteria.",
+    url: "https://physionexusacademy.com/treatment-plans",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/treatment-plans",
   },

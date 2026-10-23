@@ -24,6 +24,14 @@ export const metadata: Metadata = {
   title: "MSK Clinical Injury & Rehabilitation Hub",
   description:
     "Whole-body musculoskeletal injury and condition library with diagnostic tests, exact test performance, positive signs, differential diagnosis and phased physiotherapy rehabilitation.",
+  keywords: ["MSK physiotherapy", "musculoskeletal injuries", "physiotherapy rehabilitation", "orthopaedic special tests", "differential diagnosis physiotherapy", "sports injury rehabilitation"],
+  openGraph: {
+    title: "MSK Injury & Rehabilitation Hub | Physio Nexus Academy",
+    description: "Explore musculoskeletal conditions, examination tests, differential screening and phased physiotherapy rehabilitation.",
+    url: "https://physionexusacademy.com/msk-injuries",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+  },
   alternates: { canonical: "https://physionexusacademy.com/msk-injuries" },
 };
 
