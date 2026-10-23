@@ -4,9 +4,17 @@ import { Button } from "@/components/ui/Button";
 import { createPublicClient } from "@/lib/supabase/public";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Workshops | PNA",
+  title: "Physiotherapy Workshops in Pakistan",
   description:
     "Explore hands-on physiotherapy workshops from Physio Nexus Academy, including clinical skills training in Karachi, Hyderabad and other cities in Pakistan.",
+  keywords: ["physiotherapy workshops Pakistan", "manual therapy workshops", "physiotherapy training Karachi", "physiotherapy workshops Hyderabad", "clinical skills workshops"],
+  openGraph: {
+    title: "Physiotherapy Workshops in Pakistan | Physio Nexus Academy",
+    description: "Explore practical physiotherapy workshops and clinical skills training in Karachi, Hyderabad and other Pakistani cities.",
+    url: "https://physionexusacademy.com/workshops",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/workshops",
   },
