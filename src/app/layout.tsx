@@ -76,9 +76,9 @@ const siteJsonLd = {
       sameAs: [
         "https://pk.linkedin.com/in/dr-sajjad-raza-pt-8a7455372",
       ],
-      jobTitle: "Physiotherapist, Clinical Supervisor and Founder",
+      jobTitle: "Physiotherapist, Clinical Educator and Founder",
       description:
-        "Dr. Sajjad Raza PT is a physiotherapist, clinical educator, Clinical Supervisor and Founder of Physio Nexus Academy in Pakistan.",
+        "Dr. Sajjad Raza PT is a physiotherapist, clinical educator and Founder of Physio Nexus Academy in Pakistan.",
       worksFor: {
         "@id": "https://physionexusacademy.com/#organization",
       },
@@ -113,7 +113,21 @@ export const metadata: Metadata = {
     template: "%s | Physio Nexus Academy",
   },
   description:
-    "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, provides physiotherapy education, clinical workshops, skills training, CPD professional development and learning resources in Pakistan.",
+    "Physio Nexus Academy, founded by Dr. Sajjad Raza PT, offers practical physiotherapy education, MSK clinical learning, manual therapy resources, hands-on workshops and professional development in Pakistan.",
+  keywords: [
+    "Physio Nexus Academy",
+    "physiotherapy education Pakistan",
+    "physiotherapy workshops Pakistan",
+    "MSK physiotherapy learning",
+    "manual therapy training",
+    "physiotherapy clinical skills",
+    "physiotherapy resources for students",
+    "physiotherapy workshops Karachi",
+    "physiotherapy workshops Hyderabad",
+  ],
+  applicationName: "Physio Nexus Academy",
+  creator: "Physio Nexus Academy",
+  publisher: "Physio Nexus Academy",
   openGraph: {
     title: "Physio Nexus Academy",
     description:
