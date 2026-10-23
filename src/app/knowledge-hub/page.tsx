@@ -21,9 +21,10 @@ import {
 import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Knowledge Hub",
+  title: "Physiotherapy Knowledge Hub for Students & Clinicians",
   description:
-    "Explore evidence-informed physiotherapy learning by specialty, level and clinical topic, with a dedicated case-based reasoning lab.",
+    "Study physiotherapy by specialty with evidence-informed MSK, neuro, cardiopulmonary and rehabilitation guides, clinical cases, quizzes and practical learning resources for students and clinicians in Pakistan.",
+  keywords: ["physiotherapy knowledge hub", "physiotherapy study resources", "MSK physiotherapy", "clinical reasoning physiotherapy", "physiotherapy students Pakistan", "evidence-informed physiotherapy"],
   alternates: {
     canonical: "https://physionexusacademy.com/knowledge-hub",
   },
