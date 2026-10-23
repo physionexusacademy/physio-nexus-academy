@@ -70,6 +70,9 @@ export const revalidate = 300;
 
 export default async function HomePage() {
   const supabase = createPublicClient();
+  const todayInPakistan = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Karachi", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
 
   const [
     { data: workshopRows },
@@ -79,6 +82,7 @@ export default async function HomePage() {
       .from("workshops")
       .select("id,slug,title,summary,city,start_date")
       .eq("status", "published")
+      .gte("start_date", todayInPakistan)
       .order("start_date", { ascending: true, nullsFirst: false })
       .limit(3),
     supabase

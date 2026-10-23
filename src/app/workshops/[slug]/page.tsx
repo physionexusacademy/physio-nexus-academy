@@ -83,6 +83,11 @@ export default async function WorkshopDetailPage({
   if (!workshop) notFound();
 
   const url = `${siteUrl}/workshops/${slug}`;
+  const todayInPakistan = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Karachi", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+  const eventEndDate = String(workshop.end_date || workshop.start_date || "").slice(0, 10);
+  const workshopHasPassed = Boolean(eventEndDate && eventEndDate < todayInPakistan);
   const description = getWorkshopDescription(workshop);
   const image =
     typeof workshop.poster_image_url === "string" && workshop.poster_image_url.trim()
@@ -122,7 +127,7 @@ export default async function WorkshopDetailPage({
       : workshop.created_at;
 
   const offer =
-    workshop.registration_status !== "closed" &&
+    !workshopHasPassed && workshop.registration_status !== "closed" &&
     currentPrice !== null &&
     Number.isFinite(currentPrice)
       ? {
@@ -167,7 +172,9 @@ export default async function WorkshopDetailPage({
     url,
     ...(workshop.start_date ? { startDate: workshop.start_date } : {}),
     ...(workshop.end_date ? { endDate: workshop.end_date } : {}),
-    eventStatus: "https://schema.org/EventScheduled",
+    eventStatus: workshopHasPassed
+      ? "https://schema.org/EventCompleted"
+      : "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     image: [image],
     ...(workshop.city || workshop.venue
@@ -317,15 +324,31 @@ export default async function WorkshopDetailPage({
           ) : null}
 
           <div className="rounded-xl border border-grey-200 bg-white p-6 shadow-sm">
-            <h2 className="font-heading text-lg font-semibold text-navy-800">
-              Register for this workshop
-            </h2>
-            <p className="mt-1 text-sm text-navy-400">
-              Registration status: {workshop.registration_status}
-            </p>
-            <div className="mt-4">
-              <RegistrationForm workshopId={workshop.id} />
-            </div>
+            {workshopHasPassed ? (
+              <>
+                <h2 className="font-heading text-lg font-semibold text-navy-800">
+                  This workshop has concluded
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-navy-500">
+                  Registration is closed because this workshop date has passed. Please visit our workshops page for future training announcements.
+                </p>
+                <a href="/workshops" className="mt-4 inline-flex font-semibold text-teal-700 hover:underline">
+                  Explore workshops
+                </a>
+              </>
+            ) : (
+              <>
+                <h2 className="font-heading text-lg font-semibold text-navy-800">
+                  Register for this workshop
+                </h2>
+                <p className="mt-1 text-sm text-navy-400">
+                  Registration status: {workshop.registration_status}
+                </p>
+                <div className="mt-4">
+                  <RegistrationForm workshopId={workshop.id} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
