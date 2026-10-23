@@ -9,7 +9,8 @@ import { trainingHistory } from "@/lib/training-history";
 export const metadata: Metadata = {
   title: "Dr. Sajjad Raza PT — Physiotherapist, Clinical Educator & Founder",
   description:
-    "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator, Clinical Supervisor and Founder of Physio Nexus Academy in Pakistan.",
+    "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy in Pakistan.",
+  keywords: ["Dr Sajjad Raza PT", "Physio Nexus Academy founder", "physiotherapy educator Pakistan", "physiotherapy clinical workshops"],
   alternates: {
     canonical: "https://physionexusacademy.com/founder",
   },
