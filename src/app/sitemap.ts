@@ -31,6 +31,7 @@ const routes = [
   "/daily-challenge",
   "/clinical-arena",
   "/visual-lab",
+  "/visual-lab/manual-therapy",
   "/research",
   "/patient-services",
   "/symptom-checker",
