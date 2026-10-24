@@ -69,6 +69,4 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Build Cloudflare/OpenNext output only (does not deploy)
-        # Temporary validation workaround: Next.js 15 reached its two-year support cutoff.
-        # This does not make the runtime supported; production should migrate to a supported Next.js release.
-        run: npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
+        run: npx opennextjs-cloudflare build
