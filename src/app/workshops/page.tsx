@@ -24,6 +24,15 @@ export const dynamic = "force-static";
 export const revalidate = 300; // refresh public workshop data at most every 5 minutes
 
 export default async function WorkshopsPage() {
+  const dateParts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Karachi",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const datePart = (type: string) => dateParts.find((part) => part.type === type)?.value ?? "";
+  const todayInPakistan = `${datePart("year")}-${datePart("month")}-${datePart("day")}`;
+
   const supabase = createPublicClient();
   const { data: workshops } = await supabase
     .from("workshops")
@@ -66,13 +75,17 @@ export default async function WorkshopsPage() {
       )}
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {workshops?.map((w) => (
+        {workshops?.map((w) => {
+          const isPast = Boolean(
+            w.is_past || (w.start_date && String(w.start_date).slice(0, 10) < todayInPakistan),
+          );
+          return (
           <div
             key={w.id}
             className="flex flex-col rounded-xl border border-grey-200 p-6"
           >
             <span className="inline-block w-fit rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-              {w.is_past ? "Past" : "Upcoming"}
+              {isPast ? "Past" : "Upcoming"}
             </span>
             <h2 className="mt-4 font-heading text-lg font-semibold text-navy-800">
               {w.title}
@@ -115,10 +128,11 @@ export default async function WorkshopsPage() {
               variant="outline"
               className="mt-5"
             >
-              View details &amp; register
+              {isPast ? "View workshop details" : "View details &amp; register"}
             </Button>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <section className="mt-14 rounded-2xl border border-grey-200 bg-grey-50 p-6 sm:p-8">
