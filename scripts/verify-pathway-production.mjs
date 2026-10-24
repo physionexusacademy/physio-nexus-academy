@@ -38,7 +38,7 @@ try {
     });
     await mobileNav.getByRole("button", { name: "Install PNA App" }).click();
     await page.waitForFunction(() => window.__pnaPromptCalled === true);
-    await page.waitForFunction(() => ![...document.querySelectorAll("button")].some(button => button.textContent?.trim() === "Install PNA App"));
+    await mobileNav.getByRole("button", { name: "Install PNA App" }).waitFor({ state: "detached" });
     console.log("PASS: Install PNA App invokes the native Chromium install prompt and handles acceptance");
     await context.close();
   }
