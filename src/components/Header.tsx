@@ -7,6 +7,7 @@ import { Menu, X, Calendar, Home, Trophy, ChevronDown, BookOpen, FileBadge2, Han
 import { mainNav, siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { InstallApp } from "@/components/InstallApp";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -185,6 +186,9 @@ export function Header() {
     The CPD Group · #791052
   </p>
 </a>
+          <div className="px-3 py-2">
+            <InstallApp />
+          </div>
           {mainNav.map((item) => (
             <a
               key={item.href}
