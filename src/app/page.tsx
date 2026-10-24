@@ -34,7 +34,6 @@ import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChall
 import "./daily-challenge/daily-challenge.css";
 import "./home-premium.css";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
-import { InstallApp } from "@/components/InstallApp";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
@@ -103,9 +102,6 @@ export default async function HomePage() {
     <>
       <PremiumHomeHero />
 
-      <div className="container-content flex justify-end pt-3">
-        <InstallApp />
-      </div>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
