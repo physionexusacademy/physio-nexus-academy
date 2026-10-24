@@ -19,6 +19,7 @@ jobs:
       NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: true
       NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: false
       PAYMENTS_ENABLED: false
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
