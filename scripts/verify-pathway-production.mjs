@@ -17,6 +17,59 @@ await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 
 try {
+  // Verify the custom Install PNA App button actually invokes the browser's
+  // native install prompt when Chromium exposes beforeinstallprompt.
+  {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    await page.goto(`${origin}/?pwa-install-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
+    await page.evaluate(() => {
+      const promptEvent = new Event("beforeinstallprompt", { cancelable: true });
+      Object.defineProperties(promptEvent, {
+        prompt: { value: async () => { window.__pnaPromptCalled = true; } },
+        userChoice: { value: Promise.resolve({ outcome: "accepted" }) }
+      });
+      window.dispatchEvent(promptEvent);
+    });
+    await page.getByRole("button", { name: "Open menu" }).click();
+    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
+    await mobileNav.getByRole("button", { name: "Install PNA App" }).click();
+    await page.waitForFunction(() => window.__pnaPromptCalled === true);
+    await page.waitForFunction(() => ![...document.querySelectorAll("button")].some(button => button.textContent?.trim() === "Install PNA App"));
+    console.log("PASS: Install PNA App invokes the native Chromium install prompt and handles acceptance");
+    await context.close();
+  }
+
+  // Verify the supported fallback for browsers that do not expose the prompt.
+  {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    await page.goto(`${origin}/?pwa-fallback-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("button", { name: "Install PNA App" }).click();
+    await page.getByRole("dialog", { name: "Add PNA to your device" }).getByText("Install app", { exact: true }).waitFor();
+    console.log("PASS: Unsupported-browser install guidance opens from the mobile menu");
+    await context.close();
+  }
+
+  // iOS cannot be programmatically installed by a website; verify Safari steps.
+  {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true,
+      userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
+    });
+    const page = await context.newPage();
+    await page.goto(`${origin}/?pwa-ios-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("button", { name: "Install PNA App" }).click();
+    const dialog = page.getByRole("dialog", { name: "Add PNA to your device" });
+    await dialog.getByText("Open this website in Safari.").waitFor();
+    await dialog.getByText("Tap the Share button.").waitFor();
+    await dialog.getByText("Add to Home Screen", { exact: false }).waitFor();
+    console.log("PASS: iPhone user-agent receives Safari Add to Home Screen guidance");
+    await context.close();
+  }
+
   const request = await browser.newContext();
   for (const photo of photos) {
     const asset = `/images/pathway-backgrounds/${photo}.webp`;
