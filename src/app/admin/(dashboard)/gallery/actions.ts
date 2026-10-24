@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function addGalleryItem(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const file = formData.get("image") as File | null;
   if (!file || file.size === 0) throw new Error("Please choose an image.");
@@ -24,6 +26,7 @@ export async function addGalleryItem(formData: FormData) {
 }
 
 export async function deleteGalleryItem(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const supabase = await createClient();
   const { error } = await supabase.from("gallery_items").delete().eq("id", id);

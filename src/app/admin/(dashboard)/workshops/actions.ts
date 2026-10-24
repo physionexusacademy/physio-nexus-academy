@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 function slugify(input: string) {
   return input
@@ -41,6 +42,7 @@ async function uploadPoster(supabase: Awaited<ReturnType<typeof createClient>>, 
 }
 
 export async function createWorkshop(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const title = String(formData.get("title") ?? "");
   const posterFile = formData.get("poster") as File | null;
@@ -73,6 +75,7 @@ export async function createWorkshop(formData: FormData) {
 }
 
 export async function updateWorkshop(id: string, formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const title = String(formData.get("title") ?? "");
   const posterFile = formData.get("poster") as File | null;
@@ -107,6 +110,7 @@ export async function updateWorkshop(id: string, formData: FormData) {
 }
 
 export async function deleteWorkshop(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const supabase = await createClient();
   const { error } = await supabase.from("workshops").delete().eq("id", id);
@@ -115,6 +119,7 @@ export async function deleteWorkshop(formData: FormData) {
 }
 
 export async function updateWorkshopRegistration(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id") ?? "").trim();
   const workshopId = String(formData.get("workshop_id") ?? "").trim();
   const status = String(formData.get("status") ?? "New").trim();

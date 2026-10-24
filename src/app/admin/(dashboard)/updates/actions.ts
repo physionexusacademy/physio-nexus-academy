@@ -2,12 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 function slugify(input: string) {
   return input.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 export async function createPost(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const title = String(formData.get("title") ?? "");
   const status = String(formData.get("status") ?? "draft");
@@ -25,6 +27,7 @@ export async function createPost(formData: FormData) {
 }
 
 export async function togglePostStatus(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const nextStatus = String(formData.get("next_status"));
   const supabase = await createClient();
@@ -41,6 +44,7 @@ export async function togglePostStatus(formData: FormData) {
 }
 
 export async function deletePost(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const supabase = await createClient();
   const { error } = await supabase.from("blog_posts").delete().eq("id", id);

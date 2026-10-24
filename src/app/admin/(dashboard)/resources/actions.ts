@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 async function uploadFile(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -19,6 +20,7 @@ async function uploadFile(
 }
 
 export async function createResource(formData: FormData) {
+  await requireAdmin();
   const supabase = await createClient();
   const coverFile = formData.get("cover") as File | null;
   const pdfFile = formData.get("file") as File | null;
@@ -53,6 +55,7 @@ export async function createResource(formData: FormData) {
 }
 
 export async function deleteResource(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const supabase = await createClient();
   const { error } = await supabase.from("resources").delete().eq("id", id);
@@ -61,6 +64,7 @@ export async function deleteResource(formData: FormData) {
 }
 
 export async function updateResourceVisibility(formData: FormData) {
+  await requireAdmin();
   const id = String(formData.get("id"));
   const visibility = String(formData.get("visibility"));
   const supabase = await createClient();
