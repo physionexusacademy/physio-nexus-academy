@@ -1,0 +1,35 @@
+name: Temporary dependency and build validation
+on:
+  push:
+    branches:
+      - feature/understand-this-page-v1
+    paths:
+      - '.github/workflows/validate-feature-temporary.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+      NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+      NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: true
+      NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: false
+      PAYMENTS_ENABLED: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/understand-this-page-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Confirm lockfile consistency
+        run: npm ci
+      - name: TypeScript check
+        run: npm run typecheck
+      - name: Cloudflare OpenNext build
+        run: npx opennextjs-cloudflare build
