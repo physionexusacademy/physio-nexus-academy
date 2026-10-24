@@ -8,7 +8,7 @@ import "./daily-challenge.css";
 export const dynamic="force-dynamic";
 export const revalidate=0;
 export const metadata:Metadata={
- title:"Daily Clinical Challenge | PNA Champions Leaderboard",
+ title:"Daily Physiotherapy Quiz & Clinical Challenge",
  description:"Return every day for five clinical knowledge questions, compete for a public ranking, and explore monthly and yearly physiotherapy champions.",
  alternates:{canonical:"https://physionexusacademy.com/daily-challenge"}
 };

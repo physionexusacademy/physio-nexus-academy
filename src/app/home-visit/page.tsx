@@ -3,9 +3,9 @@ import { Building2, Home, ShieldCheck } from "lucide-react";
 import { HomeVisitForm } from "./HomeVisitForm";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Home Visit Service",
+  title: "Home Physiotherapy Visits in Karachi & Hyderabad",
   description:
-    "Request a physiotherapy home visit from Physio Nexus Academy. Choose your area, preferred date and time, then share essential patient details for confirmation.",
+    "Request a home physiotherapy visit in Karachi or Hyderabad from Physio Nexus Academy. Share your area, preferred date and time for coverage and schedule confirmation.",
   alternates: {
     canonical: "https://physionexusacademy.com/home-visit",
   },
@@ -16,7 +16,7 @@ export default function HomeVisitPage() {
     "@context": "https://schema.org",
     "@type": "Service",
     "@id": "https://physionexusacademy.com/home-visit#service",
-    name: "Physiotherapy Home Visit Service",
+    name: "Home Physiotherapy Visits in Karachi and Hyderabad",
     serviceType: "Physiotherapy home visit",
     url: "https://physionexusacademy.com/home-visit",
     description:
@@ -44,12 +44,12 @@ export default function HomeVisitPage() {
       <div className="text-center">
         <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Patient Services</p>
         <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-          Physiotherapy Home Visit Service
+          Home Physiotherapy Visits in Karachi &amp; Hyderabad
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-navy-600">
-          Request a home physiotherapy visit by sharing your area, preferred date and time,
-          and essential patient details. Current service coverage includes Karachi and Hyderabad,
-          subject to team and schedule confirmation before any visit is finalized.
+          Request physiotherapy at home in Karachi or Hyderabad by sharing the patient’s area,
+          preferred date and time, and essential contact details. Physio Nexus Academy confirms
+          whether the location and requested time are covered before any visit is finalized.
         </p>
         <p className="mx-auto mt-3 max-w-2xl text-sm text-navy-500">
           See local information for{" "}
