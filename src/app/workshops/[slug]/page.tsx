@@ -44,9 +44,12 @@ export async function generateMetadata({
 
   if (!workshop) notFound();
 
-  const title = `${workshop.title} | Physio Nexus Academy`;
+  // The root metadata template appends " | Physio Nexus Academy" to page titles.
+  // Keep the page title brand-free here to avoid duplicating the brand in browser/search titles.
+  const title = workshop.title;
+  const socialTitle = `${workshop.title} | Physio Nexus Academy`;
   const description = getWorkshopDescription(workshop);
-  const canonicalUrl = `${siteUrl}/workshops/${slug}`;
+  const canonicalUrl = `${siteUrl}/workshops/${encodeURIComponent(slug)}`;
   const image =
     typeof workshop.poster_image_url === "string" && workshop.poster_image_url.trim()
       ? workshop.poster_image_url.trim()
@@ -57,7 +60,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title,
+      title: socialTitle,
       description,
       url: canonicalUrl,
       type: "website",
@@ -65,7 +68,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
       images: [image],
     },
