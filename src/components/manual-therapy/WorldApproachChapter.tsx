@@ -33,10 +33,10 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
         <p className="mt-5 max-w-4xl border-l-4 border-teal-300 pl-4 text-sm font-semibold leading-7 text-white">
           Evidence position: {lesson.evidenceLabel}
         </p>
+        {manualTherapyUrduContent[lesson.slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[lesson.slug]} /> : null}
       </header>
 
       <MasteryGuide slug={lesson.slug} />
-      {manualTherapyUrduContent[lesson.slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[lesson.slug]} /> : null}
 
       <details className="mt-8 rounded-3xl border border-indigo-200 bg-indigo-50/40">
         <summary className="cursor-pointer p-5 text-sm font-bold text-indigo-900 sm:p-6">
