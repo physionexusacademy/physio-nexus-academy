@@ -155,20 +155,43 @@ jobs:
             fi
 
             local html
+            local headers
             html="$(mktemp "$smoke_tmp/page.XXXXXXXX")"
+            headers="$(mktemp "$smoke_tmp/headers.XXXXXXXX")"
             for attempt in 1 2 3 4 5; do
-              if curl -fsSL --connect-timeout 10 --max-time 25 \
-                -o "$html" "$url?deploy=${GITHUB_SHA}"; then
-                if grep -Fq "$marker" "$html"; then
-                  smoke_cache["$url"]="$html"
-                  echo "Smoke test passed: $url"
-                  # Protect Cloudflare Workers from a burst of large SSR responses.
-                  sleep 0.8
-                  return 0
-                fi
+              local curl_meta=""
+              local curl_exit=0
+              if curl_meta="$(curl -sS -L --connect-timeout 10 --max-time 25 \
+                -D "$headers" -o "$html" -w '%{http_code} %{time_total}' "$url?deploy=${GITHUB_SHA}")"; then
+                curl_exit=0
+              else
+                curl_exit=$?
               fi
 
-              echo "Smoke test attempt $attempt failed for $url"
+              local http_code="${curl_meta%% *}"
+              local duration="${curl_meta#* }"
+              local cf_ray
+              local content_type
+              local cache_control
+              cf_ray="$(grep -i '^cf-ray:' "$headers" | tail -n 1 | cut -d: -f2- | tr -d '\r' | xargs || true)"
+              content_type="$(grep -i '^content-type:' "$headers" | tail -n 1 | cut -d: -f2- | tr -d '\r' | xargs || true)"
+              cache_control="$(grep -i '^cache-control:' "$headers" | tail -n 1 | cut -d: -f2- | tr -d '\r' | xargs || true)"
+
+              if [ "$curl_exit" -eq 0 ] && grep -Fq "$marker" "$html"; then
+                smoke_cache["$url"]="$html"
+                echo "Smoke test passed: $url (HTTP $http_code, ${duration}s)"
+                # Protect Cloudflare Workers from a burst of large SSR responses.
+                sleep 0.8
+                return 0
+              fi
+
+              echo "Smoke test attempt $attempt failed: url=$url curl_exit=$curl_exit http_status=${http_code:-unknown} duration=${duration:-unknown}s cf_ray=${cf_ray:-missing} content_type=${content_type:-missing} cache_control=${cache_control:-missing} marker_expected=$marker"
+              if [ -s "$html" ]; then
+                # Keep the response preview short and neutralize GitHub Actions workflow-command syntax.
+                local body_preview
+                body_preview="$(head -c 240 "$html" | tr '\n\r' '  ' | tr -cd '\11\12\15\40-\176' | sed 's/::/ : : /g')"
+                echo "Response preview (max 240 bytes): $body_preview"
+              fi
               # Gradually back off after transient Worker 503s without masking persistent failure.
               sleep "$((attempt * 3 + 2))"
             done
