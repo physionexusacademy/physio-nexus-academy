@@ -1,6 +1,7 @@
 "use client";
 import {FormEvent,useCallback,useEffect,useRef,useState} from "react";
 import Link from "next/link";
+import { recordLearningActivity } from "@/lib/unified-progress";
 import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Flame,LockKeyhole,Play,RotateCcw,ShieldCheck,Sparkles,Timer,Trophy} from "lucide-react";
 
 type PublicQuestion={id:string;topic:string;question:string;options:{value:string;label:string}[]};
@@ -116,6 +117,9 @@ export function DailyChallengeClient(){
     attemptId:active.attemptId,token:active.token,answers:answersRef.current
    });
    setResult(saved);
+   if(!saved.expired){
+    recordLearningActivity("daily-challenge",10+saved.correctCount*5,"daily:"+active.date,"Daily Clinical Challenge completed");
+   }
    try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}
    window.dispatchEvent(new Event("pna-daily-score-saved"));
   }catch(e){

@@ -36,6 +36,7 @@ import "./home-premium.css";
 import { InstallApp } from "@/components/InstallApp";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
+import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
 
@@ -166,6 +167,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <UnifiedProgressCard />
 
       <div className="pna-home-lower">
       <section className="border-y border-grey-200 bg-white py-6">
