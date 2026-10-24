@@ -171,5 +171,110 @@ export const manualTherapyUrduContent: Record<string, TechniqueUrduContent> = {
       { heading: "Pearl — yaad rakhne wali baat", text: "Neural mobilization se distal symptoms ko baar baar provoke nahi karna chahiye." },
       { heading: "Misal — sirf samjhane ke liye", text: "Farz karein leg raise test ke dauran patient ko leg mein familiar pulling sensation hoti hai. Assessment ke baad clinician low-irritability slider ka response check kar sakta hai aur symptoms ko monitor karta hai. Yeh fictional example hai, patient-specific prescription nahi." }
     ]
+  },
+  "manual-traction": {
+    short: "Manual traction ya joint distraction mein joint ko controlled direction mein ahista kheench kar compression-sensitive symptoms ka response dekha jata hai. Har spinal ya disc problem mein traction ko effective samajhna durust nahi.",
+    details: [
+      { heading: "Summary — khulasa", text: "Joint ko long-axis ya us ki specific direction mein distract kiya jata hai, taake compression kam karne, symptoms modulate karne ya unloading ka response test karne mein madad mile." },
+      { heading: "Science — source ka bayan", text: "Traction kuch waqt ke liye joint compression aur pain kam kar sakti hai ya comfortable movement ka mauqa de sakti hai. Response har patient mein mukhtalif hota hai; lasting faide ke liye underlying functional problem ko address karna zaroori hai. Spinal traction ko radiculopathy ya disc disorders ke liye har surat mein effective nahi kehna chahiye." },
+      { heading: "Procedure — tareeqa", text: "1. Instability, fracture, neurological aur vascular concerns ki screening karein.\n2. Patient ko comfortable position dein.\n3. Desired line mein distraction force dheere apply karein.\n4. Symptoms ke centralize ya peripheralize hone aur comfort ko monitor karein.\n5. Force ahista release karke reassess karein." },
+      { heading: "Dosage — miqdaar", text: "Symptoms ke response ke mutabiq brief intermittent ya sustained bouts use karein. Agar neurological symptoms barhein ya door ke hissay ki taraf phailen, to rok dein." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Compression-sensitive joint pain; selected radicular presentations jin mein traction ka wazeh favorable response milta ho." },
+      { heading: "Precautions — ehtiyati baatein", text: "Hypermobility, osteoporosis, region aur position ke mutabiq pregnancy, aur inflammatory instability." },
+      { heading: "Contraindications — kab na karein", text: "Fracture, instability, us region mein malignancy, severe myelopathy ya progressive neurological deficit." },
+      { heading: "Reassessment — dobara jaanch", text: "Pain ki distribution, range, neurological symptoms aur function." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Traction ko patient ke response ka test samjhein, sirf diagnosis ki bunyaad par automatic treatment nahi." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein assessment ke dauran controlled unloading se patient ki familiar movement asaan hoti hai. Clinician response note karta hai aur baad mein movement dobara check karta hai. Agar symptoms barhein to traction continue nahi ki jati. Yeh illustrative example hai." }
+    ]
+  },
+  "high-velocity-low-amplitude-thrust": {
+    short: "HVLA manipulation ek rapid aur chhoti-range thrust hai jo sirf appropriate examination, informed consent aur safety screening ke baad trained clinician perform karta hai. Joint ko 'wapis jagah par bithana' iska proven explanation nahi.",
+    details: [
+      { heading: "Summary — khulasa", text: "Joint par tez magar low-amplitude thrust apply ki jati hai, lekin sirf munasib examination, consent aur safety screening ke baad." },
+      { heading: "Science — source ka bayan", text: "Faide ko neurophysiological aur movement-related effects se samjhana zyada munasib hai, na ke haddi ko 'wapis jagah par bithane' se. Asraat aam tor par short-term ho sakte hain aur active rehabilitation ke sath pair karne chahiye. Cervical thrust ke liye advanced training, informed consent aur vascular/neurological risk assessment zaroori hain." },
+      { heading: "Procedure — tareeqa", text: "1. Clinical indication confirm karein aur contraindications exclude karein.\n2. Options, mumkin faide, uncertainty aur risks samjha kar informed consent lein.\n3. Patient ko aisi position dein jahan end-range symptoms provoke na hon.\n4. Minimal force ke sath controlled pre-thrust tension lein.\n5. Thrust sirf tab dein jab safety aur patient comfort acceptable hon.\n6. Foran reassess karein aur active follow-up care dein." },
+      { heading: "Dosage — miqdaar", text: "Aam tor par ek ya chand attempts, na ke baar baar high-force thrust. Sirf audible cavitation hasil karne ke liye repeat na karein." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Selected mechanical joint pain ya hypomobility jab lower-risk options munasib hon aur kafi na hon; active care ko facilitate karne ke liye short-term improvement." },
+      { heading: "Precautions — ehtiyati baatein", text: "Barhti umar ya bone fragility, connective-tissue disorder, anticoagulation, recent trauma aur cervical vascular risk factors." },
+      { heading: "Contraindications — kab na karein", text: "Fracture ya instability, severe osteoporosis, active inflammatory instability, region mein malignancy, myelopathy, suspected cervical arterial pathology, ya patient ka consent na dena." },
+      { heading: "Reassessment — dobara jaanch", text: "Pain, range, neurological status aur relevant functional task." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Joint se awaaz aana correction ka saboot nahi aur achay outcome ke liye zaroori bhi nahi. Thrust manipulation sirf munasib formal training walay clinicians karein." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Yeh high-risk skill hai, is liye is example ko self-practice guide na samjhein: clinician pehle alternatives, risks aur consent discuss karta hai, screening karta hai aur phir sirf tab aage barhta hai jab technique munasib ho. Yeh kisi patient ke liye recommendation nahi." }
+    ]
+  },
+  "pnf-manual-techniques": {
+    short: "PNF manual techniques mein therapist ki resistance, stretch aur diagonal movement patterns use hotay hain taake coordinated movement aur functional motor control ko facilitate kiya ja sake. Pattern khud goal nahi; behtar function goal hai.",
+    details: [
+      { heading: "Summary — khulasa", text: "Manual resistance, stretch aur diagonal movement patterns ke zariye coordinated movement aur functional motor control ko facilitate kiya jata hai." },
+      { heading: "Science — source ka bayan", text: "Task-specific sensory input, resistance aur patterned movement motor output ko influence kar sakte hain. Techniques mein rhythmic initiation, repeated contractions, hold-relax, contract-relax, stabilizing reversals aur rhythmic stabilization shamil hain. PNF ek flexible clinical framework hai, sirf ek technique nahi." },
+      { heading: "Procedure — tareeqa", text: "1. Functional goal aur relevant diagonal ya movement pattern select karein.\n2. Therapist ke contacts aise rakhein ke direction guide ho aur dard na ho.\n3. Verbal cues, visual tracking aur graded manual resistance use karein.\n4. Mobility, movement initiation, strength ya stability ke goal ke mutabiq PNF technique choose karein.\n5. Behtari ko kisi functional task mein apply karwayein." },
+      { heading: "Dosage — miqdaar", text: "Aam tor par achi quality wali repetitions ke chhote sets aur darmiyan mein rest. Resistance itni ho ke movement smooth rahe; jab tak specifically strength test na ho, maximum effort ki zaroorat nahi." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Neurological rehabilitation, sports aur orthopedic rehabilitation, aur movement coordination deficits." },
+      { heading: "Precautions — ehtiyati baatein", text: "Painful acute injury aur sustained isometrics ke sath cardiovascular limitations." },
+      { heading: "Contraindications — kab na karein", text: "Jab medical ya surgical restrictions ki wajah se movement ya contraction mana ho." },
+      { heading: "Reassessment — dobara jaanch", text: "Movement quality, strength, functional task, balance ya control." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Pattern function ko behtar banane ke liye use karein; diagonal movement khud final goal nahi." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein patient ko chair se uthte waqt movement coordinate karne mein mushkil hoti hai. Therapist suitable pattern aur graded resistance practice karwa kar chair se uthne ka task dobara assess karta hai. Yeh sirf learning example hai." }
+    ]
+  },
+  "fascial-manipulation": {
+    short: "Fascial Manipulation ek system hai jisme movement dysfunction ke patterns ko dekh kar selected fascial regions par focused manual loading ki jati hai. Is system ke specific mechanisms ke kai daway abhi investigation mein hain, is liye unhein established fact na batayein.",
+    details: [
+      { heading: "Summary — khulasa", text: "Movement dysfunction ke patterns ki bunyaad par selected fascial regions ko assess karke focused manual loading di jati hai." },
+      { heading: "Science — source ka bayan", text: "Proposed mechanisms mein fascial tissue behavior aur nociceptive modulation shamil hain, lekin system-specific claims mein se kai abhi research ke zair-e-ghaur hain. Established observations ko theoretical concepts se alag rakhna chahiye. Treatment ke baad active movement dobara assess karna zaroori hai." },
+      { heading: "Procedure — tareeqa", text: "1. Patient ke movement problem aur relevant regions ka map banayein.\n2. Istemal kiye ja rahe system ke mutabiq clinically relevant tender ya densified areas identify karein.\n3. Tolerance ke andar controlled focused friction ya pressure dein.\n4. Excessive soreness se bachne ke liye treatment volume limited rakhein.\n5. Movement aur symptoms dobara assess karein." },
+      { heading: "Dosage — miqdaar", text: "Selected point par short focused treatment karein aur aggressive tissue trauma se bachein. Is ke baad movement aur load ko munasib tareeqay se progress karein." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Selected myofascial movement disorders mein adjunct ke taur par." },
+      { heading: "Precautions — ehtiyati baatein", text: "Nazuk skin, high pain sensitivity aur anticoagulation." },
+      { heading: "Contraindications — kab na karein", text: "Khula zakhm, acute infection, DVT ya acute hematoma." },
+      { heading: "Reassessment — dobara jaanch", text: "Movement pattern, pain aur functional task." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "System-specific explanations ko hypotheses ke taur par pesh karein, settled scientific facts ke taur par nahi." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein kisi patient ka movement pattern ek region ke manual input ke baad badalta hai. Clinician change ko function ke hawale se check karta hai, magar is se akelay kisi theoretical fascial diagnosis ki tasdeeq nahi hoti. Yeh illustrative example hai." }
+    ]
+  },
+  "active-release-style-soft-tissue": {
+    short: "Active Soft-Tissue Release mein clinician soft tissue par targeted contact maintain karta hai jab patient related joint ya muscle ko active movement se range mein le jata hai. Pressure movement ko guide kare, overpower nahi.",
+    details: [
+      { heading: "Summary — khulasa", text: "Clinician soft tissue par targeted contact rakhta hai aur patient related joint ya muscle ko actively range mein move karta hai." },
+      { heading: "Science — source ka bayan", text: "Yeh local pressure ko active tissue excursion aur movement exposure ke sath combine karta hai. Is se short-term flexibility, pain aur movement tolerance mein behtari ho sakti hai. Technique names aur branded systems mukhtalif hain; underlying clinical concept ko generic taur par sikhaya ja sakta hai." },
+      { heading: "Procedure — tareeqa", text: "1. Clinically relevant soft-tissue region identify karein.\n2. Tissue par controlled contact rakhein.\n3. Agar munasib ho to tissue ko shortened position mein rakhein.\n4. Contact maintain karte hue patient se actively tissue lengthen ya range mein move karwayein.\n5. Target movement dobara assess karein." },
+      { heading: "Dosage — miqdaar", text: "Aksar har target area par 3–8 slow repetitions. Pressure bardasht ke qabil rakhein aur bruising paida karne se bachein." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Movement-related soft-tissue discomfort; selected muscle ya tendon stiffness." },
+      { heading: "Precautions — ehtiyati baatein", text: "Acute strain, bruising ka rujhan ya neuropathy." },
+      { heading: "Contraindications — kab na karein", text: "Khula zakhm, aisa acute tear jise protection chahiye, DVT ya infection." },
+      { heading: "Reassessment — dobara jaanch", text: "Range, pain aur functional movement." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Active movement is concept ki key feature hai; pressure tissue ko guide kare, overpower nahi." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein elbow bend karne par forearm ke ek soft-tissue area mein tightness mehsoos hoti hai. Clinician controlled contact ke sath patient se ahista movement karwata hai aur phir range dobara check karta hai. Yeh sirf illustrative example hai." }
+    ]
+  },
+  "manual-lymphatic-drainage": {
+    short: "Manual Lymphatic Drainage mein bohat halkay, rhythmical skin-stretch strokes use hotay hain aur yeh lymphedema ke comprehensive management ka ek hissa hai. Isay sirf appropriately trained clinician ko medical screening ke baad karna chahiye.",
+    details: [
+      { heading: "Summary — khulasa", text: "Yeh specialized, gentle skin-stretch techniques hain jo comprehensive lymphedema management mein trained clinicians use karte hain." },
+      { heading: "Science — source ka bayan", text: "Maqsad lymphatic fluid movement aur edema management ko support karna hai. Aam tor par yeh complete decongestive therapy ka ek hissa hota hai, akela treatment nahi. Long-term control mein compression, exercise, skin care aur self-management bhi central ho sakte hain." },
+      { heading: "Procedure — tareeqa", text: "1. Swelling ki wajah aur medical contraindications screen karein.\n2. Munasib drainage sequence ke mutabiq halkay, rhythmical skin-stretch strokes dein.\n3. Nazuk tissues ko nuqsan se bachane ke liye deep pressure na dein.\n4. Indication ho to compression aur therapeutic exercise ke sath combine karein.\n5. Limb response measure karein aur self-management samjhayein." },
+      { heading: "Dosage — miqdaar", text: "Session ka duration aur frequency lymphedema ki severity, care ke phase aur compression plan par depend karti hai. Individual clinical planning zaroori hai." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Medical assessment ke baad selected lymphedema; cancer treatment ke baad swelling jab medical team clearance de." },
+      { heading: "Precautions — ehtiyati baatein", text: "Cardiac ya renal disease, nazuk skin, aur cancer-related ehtiyat jahan medical coordination chahiye." },
+      { heading: "Contraindications — kab na karein", text: "Acute cellulitis, untreated DVT, acute decompensated heart failure, ya nayi unexplained swelling jiska medical assessment na hua ho." },
+      { heading: "Reassessment — dobara jaanch", text: "Limb circumference ya volume, skin condition, symptoms aur function." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Ek taraf ki nayi swelling ko medical screening ke baghair simple lymphedema assume nahi karna chahiye." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Agar kisi patient ke limb mein swelling ho, to pehla qadam cause aur red flags ka medical assessment hai. Sirf swelling dekh kar drainage shuru nahi ki jati. Yeh example safety principle samjhata hai, treatment prescription nahi." }
+    ]
+  },
+  "scar-mobilization": {
+    short: "Scar Mobilization mein healed scar aur aas-paas ke tissue par graded manual loading di jati hai taake comfort, mobility aur movement tolerance par kaam ho. Unhealed incision ya khulay zakhm par mobilization nahi karni chahiye.",
+    details: [
+      { heading: "Summary — khulasa", text: "Healed scar aur surrounding tissue par dheere dheere barhta manual load diya jata hai taake comfort, mobility aur movement tolerance behtar ho sake." },
+      { heading: "Science — source ka bayan", text: "Mature scar progressive mechanical loading ke mutabiq adapt kar sakta hai. Manual contact se pain, sensitivity aur local mobility mein madad ho sakti hai, khaas taur par jab movement ke sath combine ho. Sirf scar ki appearance se yeh decide nahi hota ke treatment zaroori hai." },
+      { heading: "Procedure — tareeqa", text: "1. Confirm karein ke wound band ho chuka hai aur healing status munasib hai.\n2. Scar ki sensitivity, adherence aur movement par asar assess karein.\n3. Halki skin movement se shuru karke multidirectional loading ki taraf progress karein.\n4. Aisi movement add karein jo scar region ko tension mein laaye.\n5. Function aur sensitivity dobara assess karein." },
+      { heading: "Dosage — miqdaar", text: "Jab healing kafi ho aur patient ko sahi instruction mil chuki ho, to short daily self-mobilization use ki ja sakti hai. Intensity tissue integrity ko disturb nahi karni chahiye." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Healed postoperative ya traumatic scar jo comfort ya movement ko limit karta ho." },
+      { heading: "Precautions — ehtiyati baatein", text: "Recent wound closure, radiated ya nazuk tissue, aur altered sensation." },
+      { heading: "Contraindications — kab na karein", text: "Khula zakhm, infection, wound dehiscence ya unhealed surgical site." },
+      { heading: "Reassessment — dobara jaanch", text: "Scar mobility, sensitivity, range aur functional task." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Sirf stiffness mehsoos hone ki wajah se unhealed incision ko mobilize na karein." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Surgery ke baad scar tabhi assess aur mobilize kiya jata hai jab healing status confirm ho aur treating team ki restrictions follow ki ja saken. Phir gentle contact ke sath relevant movement check ki ja sakti hai. Yeh illustrative example hai." }
+    ]
   }
 };
