@@ -144,6 +144,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 xl:flex">
+          <InstallApp />
           <Button href="/appointment" variant="outline" size="md">
             <Calendar className="h-4 w-4" /> Book Appointment
           </Button>
