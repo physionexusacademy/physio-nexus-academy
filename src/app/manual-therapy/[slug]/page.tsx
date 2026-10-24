@@ -38,6 +38,8 @@ import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
+import { UnderstandThisTechnique } from "@/components/manual-therapy/UnderstandThisTechnique";
+import { manualTherapyUrduContent } from "@/lib/manual-therapy-urdu-content";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -128,6 +130,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
       </section>
 
       <MasteryGuide slug={slug} />
+      {manualTherapyUrduContent[slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[slug]} /> : null}
 
       {episode ? (
         <details className="mt-8 rounded-3xl border border-indigo-200 bg-indigo-50/40">
