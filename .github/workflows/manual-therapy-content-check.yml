@@ -9,6 +9,11 @@ on:
       - "src/app/page.tsx"
       - "src/app/sitemap.ts"
       - "src/app/workshops/**"
+      - "src/app/daily-challenge/**"
+      - "src/app/clinical-arena/**"
+      - "src/components/learning/**"
+      - "src/lib/unified-progress.ts"
+      - "scripts/validate-unified-progress.ts"
       - "src/components/manual-therapy/**"
       - "src/lib/manual-therapy-mastery*.ts"
       - "src/lib/manual-therapy.ts"
@@ -66,6 +71,9 @@ jobs:
 
       - name: Validate manual therapy attention and deep guides
         run: node scripts/validate-manual-therapy-attention.mjs
+
+      - name: Validate unified learning streaks and XP
+        run: node --experimental-strip-types scripts/validate-unified-progress.ts
 
       - name: Type-check (report separately from build)
         continue-on-error: true
