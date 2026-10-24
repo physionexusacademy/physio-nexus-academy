@@ -1,0 +1,35 @@
+name: Temporary dependency lockfile refresh
+on:
+  push:
+    branches:
+      - feature/understand-this-page-v1
+    paths:
+      - '.github/workflows/refresh-lockfile-temporary.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  refresh-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/understand-this-page-v1
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Regenerate package lock without installing modules
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Commit refreshed lockfile
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "Lockfile already matches package.json"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "Refresh lockfile for supported Next.js patch"
+          git push origin HEAD:feature/understand-this-page-v1
