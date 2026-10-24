@@ -385,5 +385,61 @@ export const manualTherapyUrduContent: Record<string, TechniqueUrduContent> = {
       { heading: "Self-test", text: "Model mein kitni distortion types hain? Chhe. Kya model proven hai? Nahi, evidence limited hai." },
       { heading: "Recap aur evidence", text: "Model ko hypothesis ke taur par use karein, result measure karein aur safety ko priority dein. FDM ke evidence bohat limited hain, zyada tar chhoti studies aur case reports; proposed mechanisms unproven hain." }
     ]
+  },
+  "balanced-ligamentous-tension": {
+    short: "Balanced Ligamentous Tension (BLT) ek bohat gentle osteopathic approach hai jisme joint ko us position mein rakha jata hai jahan ligament tension barabar mehsoos ho. Mehsoos hone wali 'release' subjective hai, is liye outcome patient ke pain aur function se judge karein.",
+    details: [
+      { heading: "Yeh kya hai?", text: "BLT mein joint ko aisi position mein hold kiya jata hai jahan ligament tension mukhtalif directions mein barabar mehsoos ho. Practitioner phir tissue ke settle hone ka intezar karta hai. Approach slow aur gentle hoti hai." },
+      { heading: "Misal se samjhein", text: "Tension ropes wali tent ko balance karne jaisa: ropes ko adjust karte hain jab tak pull barabar na lage, phir tent stable hota hai. Yeh analogy hai, mechanism ka saboot nahi." },
+      { heading: "Bunyadi ideas aur terms", text: "Barrier ko push karne ke bajaye balance ka neutral point dhoondhein, halkay contact ke sath wait karein, aur result ko patient-reported change se judge karein. Point of balance woh position hai jahan tissue tension barabar mehsoos ho. Ligamentous tension ligament ka pull hai; release practitioner ka mehsoos kiya hua softening/settling hai; neutral joint ki mid-position hai jahan tension kam hoti hai." },
+      { heading: "Kab use karein / kab nahi", text: "Aise logon mein gentle joint ya soft-tissue treatment ke liye jo firm techniques tolerate nahi karte, aur sirf osteopathic methods mein trained practitioners ke liye. Fracture, instability, infection, unexplained severe pain ya zaroori medical care ko replace karne ke liye use na karein." },
+      { heading: "Steps", text: "1. Red flags screen karke slow, light technique samjhayein.\n2. Joint ko support karein, jaise wrist ko comfortable position mein.\n3. Halki movement se woh position dhoondhein jahan tension even mehsoos ho.\n4. Minimal pressure ke sath hold karke changes ka intezar karein.\n5. Tissue settle hota mehsoos ho to ahista release karein.\n6. Pain ya movement dobara check karein." },
+      { heading: "Dose", text: "Teaching mein takreeban 1–5 minute ka light hold bataya jata hai, lekin koi proven optimum duration nahi." },
+      { heading: "Clinical example — source ka scenario", text: "Source mein Tom, 62 saal ke, fall ke baad wrist pain rakhte hain; fracture exclude hai aur firm touch painful hai. Wrist ko halkay contact se balanced position mein 3 minutes hold kiya jata hai. Baad mein guarding kam aur rotation asaan mehsoos hoti hai, phir gentle exercise add hoti hai. Yeh teaching scenario hai." },
+      { heading: "Aam ghaltiyan aur self-test", text: "Force use karna; mehsoos hone wali release ko ligament change ka proof samajhna; red flags ignore karna. Kya dhoondhna hai? Balanced neutral point. Success kaise judge hogi? Patient-reported pain aur function se." },
+      { heading: "Recap aur evidence", text: "Balance, halka hold, wait aur retest. Evidence minimal hai; faida relaxation aur patient context se aa sakta hai, zaroori nahi ke ligament par specific effect ho." }
+    ]
+  },
+  "spencer-shoulder-sequence": {
+    short: "Spencer technique shoulder ke liye saat gentle, rhythmic movements ka osteopathic sequence hai. Stiff shoulder mein selected cases ke liye use ho sakta hai, magar force nahi karni aur fracture, dislocation ya doosri serious causes pehle screen karni hain.",
+    details: [
+      { heading: "Yeh kya hai?", text: "Patient side-lying position mein hota hai aur shoulder ko saat movements ke fixed sequence se gently move kiya jata hai. Adhesive capsulitis jaisi stiffness mein istemal kiya jata raha hai; har step shoulder ko rhythm ke sath comfortable limit ki taraf le jata hai." },
+      { heading: "Misal se samjhein", text: "Warm-up routine ki tarah saat chhoti movements shoulder ko planned order mein dheere dheere move karti hain. Yeh analogy hai, cure ka claim nahi." },
+      { heading: "Bunyadi ideas aur terms", text: "Sequence mein extension, flexion, circumduction compression aur traction ke sath, abduction, adduction with internal rotation aur aakhir mein traction shamil hoti hai. Rhythm aur gentle pressure force se zyada aham hain. Adhesive capsulitis frozen shoulder hai; circumduction arm ko circle mein move karna; side-lying unaffected side par letna; articulation repeated gentle joint movement hai." },
+      { heading: "Kab use karein / kab nahi", text: "Screening ke baad stiff ya recovery phase ke shoulder mein, aur trained practitioners ke liye. Shoulder fracture, dislocation, severe pain, infection, neurological signs, ya steps ke dauran dard tez barhne par use na karein." },
+      { heading: "Steps", text: "1. Range record karein.\n2. Patient ko unaffected side par shoulder support ke sath litaayein.\n3. Extension aur flexion gently karein.\n4. Circumduction pehle gentle compression aur phir traction ke sath karein.\n5. Abduction, phir adduction with internal rotation karein.\n6. Gentle rhythmic traction se finish karke range dobara check karein." },
+      { heading: "Dose", text: "Har step ki chand gentle rhythmic repetitions; apni training follow karein aur patient ke comfort ke andar rahein." },
+      { heading: "Clinical example — source ka scenario", text: "Source mein Margaret, 63 saal ki, chaar mahine se stiff right shoulder rakhti hain aur 90 degrees tak lift kar pati hain. Fracture aur nerve signs nahi. Side-lying mein gentle seven-step sequence ke baad lift 105 degrees tak aur pain thora behtar hota hai; home exercise plan follow hota hai. Yeh teaching scenario hai." },
+      { heading: "Aam ghaltiyan aur self-test", text: "Pain ke aage force karna, screening skip karna, ya sequence ko cure samajhna. Kitne steps? Saat. Aam use? Adhesive capsulitis jaisa stiff shoulder." },
+      { heading: "Recap aur evidence", text: "Saat gentle steps, phir retest aur exercise. Evidence chhoti studies tak limited hai; kuch logon ki stiffness mein madad ho sakti hai, magar doosri approaches se behtar hona prove nahi." }
+    ]
+  },
+  "still-technique": {
+    short: "Still technique mein pehle tissue ko ease ki direction mein le jate hain, phir gentle compression ya traction add karke restricted direction mein guide karte hain. Maqsad smooth movement hai, forceful stretch ya thrust nahi.",
+    details: [
+      { heading: "Yeh kya hai?", text: "Yeh combined approach pehle indirect position of ease, phir gentle compression/traction, aur aakhir mein direct direction mein restricted movement ko guide karti hai. Maqsad fast thrust ke baghair tension kam karna hai." },
+      { heading: "Misal se samjhein", text: "Stiff zipper ko pehle kapray ko ease de kar phir slider ko guide karne jaisa; zor se kheenchna maqsad nahi. Yeh sirf analogy hai." },
+      { heading: "Bunyadi ideas aur terms", text: "Pehle indirect, phir direct; pehli position guarding kam karne ke liye hoti hai. Movement ke dauran halki steady force rehti hai. Somatic dysfunction osteopathic term hai impaired body-region movement ke liye. Indirect ka matlab easy direction; direct ka matlab restriction ki taraf; facilitating force gentle compression ya traction hai." },
+      { heading: "Kab use karein / kab nahi", text: "Stiff ya tender joint/region mein jab gentle method chahiye aur practitioner osteopathic technique mein trained ho. Fracture, instability, infection, blood-vessel concerns, ya technique ke dauran barhte pain/neurological symptoms mein nahi." },
+      { heading: "Steps", text: "1. Restriction palpate aur test karein.\n2. Region ko easiest direction mein position karein.\n3. Gentle compression ya traction add karein.\n4. Force maintain karte hue restricted direction mein ahista guide karein.\n5. Neutral par wapas aakar movement retest karein." },
+      { heading: "Dose", text: "Koi fixed dose nahi; aam tor par ek se chand smooth repetitions. Force light rakhein." },
+      { heading: "Clinical example — source ka scenario", text: "Source mein Priyanka, 33 saal ki, buri neend ke baad stiff neck rakhti hain aur left rotation limited hai. Red flags nahi aur left neck muscles tender hain. Head ko comfort ki taraf rakh kar light traction aur phir gentle left rotation guide ki jati hai; rotation behtar aur discomfort kam hota hai. Yeh teaching scenario hai." },
+      { heading: "Aam ghaltiyan aur self-test", text: "Ease step skip karna, guarding ke through force lagana, ya neck safety screening bhoolna. Indirect then direct ka matlab? Pehle ease, phir restriction ki taraf guide. Force? Halki." },
+      { heading: "Recap aur evidence", text: "Pehle ease, phir guide, phir retest. Evidence limited hai, zyada tar case reports aur chhoti studies; results gentle manual therapy ke general effects se bhi ho sakte hain." }
+    ]
+  },
+  "osteopathic-articulatory": {
+    short: "Osteopathic articulatory techniques mein joint ko slow, rhythmic aur repeated movements se gradually restricted direction ki taraf le jaya jata hai. Yeh thrust technique nahi; movement smooth aur patient ke comfort ke andar rehni chahiye.",
+    details: [
+      { heading: "Yeh kya hai?", text: "Low-speed, moderate-amplitude movements mein joint ko gently restricted range ke andar aur kabhi thora aage le jaya jata hai. Rhythmically repeat karte hue comfort monitor hota hai." },
+      { heading: "Misal se samjhein", text: "Rusty hinge ko aahista aagay-peechay move karna, har dafa thora aur range lena, jab tak movement asaan ho. Yeh analogy hai." },
+      { heading: "Bunyadi ideas aur terms", text: "Repetition aur rhythm range ko dheere barha sakte hain; sudden thrust nahi hota; patient ke comfort ke andar kaam karke retest karein. Articulation repeated passive joint movement hai. Amplitude movement ka size; barrier resistance shuru hone ka point; thoracic spine mid-back region hai." },
+      { heading: "Kab use karein / kab nahi", text: "Stiff joints, misal ke taur par mid-back, jahan gentle repeated movement munasib ho; ya un logon mein jo non-thrust method pasand karte hon. Fracture, osteoporosis concern, infection, instability ya pain sharply barhne par nahi." },
+      { heading: "Steps", text: "1. Patient ko support ke sath position karein.\n2. Restricted direction, jaise rotation ya side bending, identify karein.\n3. Joint ko ahista limit ki taraf aur wapas rhythmically move karein.\n4. Har repetition mein comfort ke andar range thori barhayein.\n5. Pain, breathing aur guarding monitor karein.\n6. Original movement retest karein." },
+      { heading: "Dose", text: "Teaching range mein har direction ke liye takreeban 5–10 slow repetitions ho sakti hain, response ke mutabiq. Comfort ke andar rahein." },
+      { heading: "Clinical example — source ka scenario", text: "Source mein Victor, 50 saal ke, mid-back stiffness aur right rotation limitation rakhte hain. Red flags nahi. Sitting mein arms crossed rakh kar trunk ko right rotation ki taraf gentle 8 repetitions rock kiya jata hai, range thori barhti hai. Retest ke baad mobility exercises di jati hain. Yeh teaching scenario hai." },
+      { heading: "Aam ghaltiyan aur self-test", text: "Bohat tez move karna, pain ke aage force karna, ya retest na karna. Kya yeh thrust hai? Nahi. Range kaise barhti hai? Har repetition mein ahista, comfort ke andar." },
+      { heading: "Recap aur evidence", text: "Rhythm, repetition, gradual range aur retest. Evidence limited hai; gentle repeated mobilization kuch logon ko short-term faida de sakti hai." }
+    ]
   }
 };
