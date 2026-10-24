@@ -23,6 +23,11 @@ try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-install-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Open menu" }).click();
+    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
+    // Wait until the app is hydrated and its navigation is interactive before
+    // dispatching the synthetic browser event, so the component listener sees it.
+    await mobileNav.getByRole("button", { name: "Install PNA App" }).waitFor();
     await page.evaluate(() => {
       const promptEvent = new Event("beforeinstallprompt", { cancelable: true });
       Object.defineProperties(promptEvent, {
@@ -31,8 +36,6 @@ try {
       });
       window.dispatchEvent(promptEvent);
     });
-    await page.getByRole("button", { name: "Open menu" }).click();
-    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
     await mobileNav.getByRole("button", { name: "Install PNA App" }).click();
     await page.waitForFunction(() => window.__pnaPromptCalled === true);
     await page.waitForFunction(() => ![...document.querySelectorAll("button")].some(button => button.textContent?.trim() === "Install PNA App"));
