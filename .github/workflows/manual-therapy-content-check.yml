@@ -55,8 +55,8 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Upgrade to patched supported Next.js 15.5.28
-        run: npm install next@15.5.28 eslint-config-next@15.5.28 --save
+      - name: Upgrade Next.js and Cloudflare adapter to compatible patched versions
+        run: npm install next@15.5.28 eslint-config-next@15.5.28 @opennextjs/cloudflare@1.20.13 wrangler@^4.148.0 --save
 
       - name: Validate worldwide manual therapy chapters
         run: node scripts/validate-manual-therapy-world.mjs
@@ -80,5 +80,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
           git diff --cached --quiet && exit 0
-          git commit -m "Fix Cloudflare build with patched Next.js 15.5.28"
+          git commit -m "Fix Cloudflare build with supported OpenNext adapter"
           git push origin HEAD:pna-content-upgrade-v1
