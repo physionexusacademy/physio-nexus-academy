@@ -6,6 +6,9 @@ on:
       - pna-content-upgrade-v1
     paths:
       - "src/app/manual-therapy/**"
+      - "src/app/page.tsx"
+      - "src/app/sitemap.ts"
+      - "src/app/workshops/**"
       - "src/components/manual-therapy/**"
       - "src/lib/manual-therapy-mastery*.ts"
       - "src/lib/manual-therapy.ts"
