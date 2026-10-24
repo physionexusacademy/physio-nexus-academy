@@ -97,7 +97,6 @@ export function InstallApp() {
         deferredPrompt = null;
         setPrompt(null);
         if (choice.outcome === "accepted") setInstalled(true);
-        else setHelpOpen(true);
       } catch {
         setHelpOpen(true);
       } finally {
