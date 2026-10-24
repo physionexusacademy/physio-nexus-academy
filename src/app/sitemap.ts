@@ -114,7 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...worldManualApproaches.map((item) => ({
       url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
       changeFrequency: "monthly" as const,
-      priority: 0.8,
+      priority: 0.85,
     })),
   ];
 
