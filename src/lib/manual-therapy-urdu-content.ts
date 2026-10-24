@@ -126,5 +126,50 @@ export const manualTherapyUrduContent: Record<string, TechniqueUrduContent> = {
       { heading: "Pearl — yaad rakhne wali baat", text: "Pressure ka maqsad clinically useful hona hai, patient ki pain tolerance ko test karna nahi." },
       { heading: "Misal — sirf samjhane ke liye", text: "Farz karein exercise se pehle patient ko thigh mein tightness mehsoos hoti hai. Screening ke baad clinician comfortable soft-tissue contact use karta hai aur phir squat ya doosri relevant movement dobara check karta hai. Yeh sirf concept samjhane ki misal hai." }
     ]
+  },
+  "trigger-point-compression": {
+    short: "Trigger-Point Pressure Release mein muscle ke ek sensitive hissay par ahista, bardasht ke qabil pressure diya jata hai aur symptoms ka response dekha jata hai. Maqsad kisi painful point ko zor se 'torna' nahi hota.",
+    details: [
+      { heading: "Summary — khulasa", text: "Muscle ke clinically relevant hypersensitive area par sustained pressure diya jata hai, aur symptom reproduction ya relief ko monitor kiya jata hai." },
+      { heading: "Science — source ka bayan", text: "Pressure se pain sensitivity aur muscle tone mein aarzi tabdeeli aa sakti hai. Trigger points ko proven fixed structural knot ke bajaye clinical pain phenomenon samajhna zyada munasib hai. Long-term improvement ke liye load, movement, sleep, stress aur exercise jaise factors ko address karna aam tor par zaroori hota hai." },
+      { heading: "Procedure — tareeqa", text: "1. Aisa sensitive area identify karein jo patient ke relevant symptoms ko reproduce karta ho.\n2. Achanak ya bohat zyada force ke bajaye pressure dheere barhayein.\n3. Symptoms settle hon to pressure maintain ya modify karein.\n4. Pressure ahista release karke movement dobara assess karein.\n5. Impairment ke mutabiq mobility ya strengthening add karein." },
+      { heading: "Dosage — miqdaar", text: "Aksar har site par 20–90 seconds ke qareeb pressure, ek ya chand repetitions ke sath istemal hota hai. Discomfort ko bardasht ke qabil rakhein aur treatment ke baad symptoms ke flare se bachein." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Localized myofascial pain; muscle se related referred pain patterns." },
+      { heading: "Precautions — ehtiyati baatein", text: "Anticoagulation, allodynia, ya sensation mein kami." },
+      { heading: "Contraindications — kab na karein", text: "Khula zakhm, acute muscle tear, hematoma, DVT ya infection." },
+      { heading: "Reassessment — dobara jaanch", text: "Tenderness, pain-free movement aur relevant functional task." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Yeh tasur na dein ke painful point ko 'destroy' karna ya aggressively release karna zaroori hai." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein shoulder ke paas ek sensitive muscle area dabane se patient ka pehchana hua dard reproduce hota hai. Clinician gentle pressure ka response dekhta hai aur baad mein relevant movement dobara check karta hai. Yeh sirf illustrative example hai." }
+    ]
+  },
+  "iastm": {
+    short: "IASTM mein ek rigid instrument se soft tissue par controlled pressure aur gliding ki jati hai. Yeh active rehabilitation ka adjunct ho sakta hai; redness, bruising ya petechiae paida karna treatment ka goal nahi.",
+    details: [
+      { heading: "Summary — khulasa", text: "Rigid instrument ka istemal karke soft tissue par controlled pressure aur gliding di jati hai, aam tor par active rehabilitation ke sath adjunct ke taur par." },
+      { heading: "Science — source ka bayan", text: "Sensory aur mechanical loading ke zariye pain aur range mein short-term tabdeeli aa sakti hai. Skin ka laal hona ya petechiae nazar aana effectiveness ke liye zaroori nahi. Tissue ko jaan-boojh kar bruise karna therapeutic goal nahi aur evidence isay support nahi karta." },
+      { heading: "Procedure — tareeqa", text: "1. Skin, circulation, sensation aur bleeding risk ki screening karein.\n2. Instrument ka edge aur angle aisa choose karein ke contact controlled rahe.\n3. Relevant region par light-to-moderate strokes apply karein.\n4. Dose ko symptoms ke response ke mutabiq rakhein.\n5. Active mobility ya loading follow karein." },
+      { heading: "Dosage — miqdaar", text: "Aksar ek region par 30 seconds se kuch minutes tak. Bar bar aggressive passes se bachein jo bruising ya lambi soreness paida karein." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Adjunct ke taur par soft-tissue pain ya stiffness; loading se pehle warm-up." },
+      { heading: "Precautions — ehtiyati baatein", text: "Anticoagulation, nazuk skin, neuropathy ya varicosities." },
+      { heading: "Contraindications — kab na karein", text: "Khula zakhm, active infection, uncontrolled bleeding disorder, DVT ka shak ya acute hematoma." },
+      { heading: "Reassessment — dobara jaanch", text: "Pain, range aur loading tolerance." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Instrument ki awaaz ya texture se scar tissue ki diagnosis nahi hoti." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein patient ko calf movement mein stiffness mehsoos hoti hai. Screening ke baad clinician controlled instrument strokes ka short trial karta hai aur phir movement dobara check karta hai. Bruising paida karna maqsad nahi. Yeh illustrative example hai." }
+    ]
+  },
+  "neurodynamic-mobilization": {
+    short: "Neurodynamic mobilization mein nervous system aur us ke aas-paas ke tissues ki movement tolerance par kaam kiya jata hai. Slider aam tor par tensioner se kam strain paida karta hai aur zyada sensitive halat mein pehle consider ho sakta hai.",
+    details: [
+      { heading: "Summary — khulasa", text: "Neurodynamic assessment ki bunyaad par nervous system aur us ke surrounding interfaces ki graded movement karwai jati hai. Is mein slider ya tensioner strategy choose ki ja sakti hai." },
+      { heading: "Science — source ka bayan", text: "Maqsad neural movement tolerance behtar karna, mechanosensitivity kam karna aur function restore karna hai. Slider aam tor par tensioner ke muqablay mein kam strain paida karta hai aur shuru mein zyada tolerate ho sakta hai. Neurodynamic test ko akelay interpret nahi karna chahiye; neurological examination bhi zaroori hai." },
+      { heading: "Procedure — tareeqa", text: "1. Neurological screening karein aur comparable neurodynamic test establish karein.\n2. Irritability ke mutabiq slider ya tensioner choose karein.\n3. Ek ya zyada joints ko rhythmic tareeqay se non-threatening range mein move karein.\n4. Neurological symptoms ko musalsal reproduce karne se bachein.\n5. Test aur patient ki functional complaint dobara assess karein." },
+      { heading: "Dosage — miqdaar", text: "Aksar 10–20 gentle repetitions ke 1–3 sets istemal kiye jate hain. Zyada irritability mein chhoti range aur sliders ko tarjeeh di ja sakti hai." },
+      { heading: "Indications — source mein di gayi surat-e-haal", text: "Selected radicular ya peripheral nerve mechanosensitivity; immobilization ke baad neural movement restriction." },
+      { heading: "Precautions — ehtiyati baatein", text: "Acute radiculopathy, diabetes ya neuropathy, aur recent nerve repair." },
+      { heading: "Contraindications — kab na karein", text: "Barhta hua neurological deficit, cauda equina symptoms, aisi acute nerve injury jise protection chahiye, ya unexplained severe neurological signs." },
+      { heading: "Reassessment — dobara jaanch", text: "Neurodynamic test, neurological symptoms, function aur zaroorat par strength, sensation aur reflexes." },
+      { heading: "Pearl — yaad rakhne wali baat", text: "Neural mobilization se distal symptoms ko baar baar provoke nahi karna chahiye." },
+      { heading: "Misal — sirf samjhane ke liye", text: "Farz karein leg raise test ke dauran patient ko leg mein familiar pulling sensation hoti hai. Assessment ke baad clinician low-irritability slider ka response check kar sakta hai aur symptoms ko monitor karta hai. Yeh fictional example hai, patient-specific prescription nahi." }
+    ]
   }
 };
