@@ -127,10 +127,10 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <a href="#clinical-essentials" className="rounded-full border border-white/30 px-4 py-2 text-white">Safety &amp; dose</a>
         </div>
 
+        {manualTherapyUrduContent[slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[slug]} /> : null}
       </section>
 
       <MasteryGuide slug={slug} />
-      {manualTherapyUrduContent[slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[slug]} /> : null}
 
       {episode ? (
         <details className="mt-8 rounded-3xl border border-indigo-200 bg-indigo-50/40">
