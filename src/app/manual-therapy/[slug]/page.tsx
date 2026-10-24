@@ -56,17 +56,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const worldLesson = worldManualApproaches.find((item) => item.slug === slug);
 
   if (worldLesson) return {
-    title: worldLesson.title + " | World Manual Therapy Encyclopedia",
+    title: worldLesson.title + " | Physio Nexus Academy",
     description: worldLesson.summary,
+    keywords: [worldLesson.title, "manual therapy", "physiotherapy", "clinical techniques", "Physio Nexus Academy"],
     alternates: { canonical: "https://physionexusacademy.com/manual-therapy/" + slug },
+    openGraph: {
+      title: worldLesson.title + " | Physio Nexus Academy",
+      description: worldLesson.summary,
+      url: "https://physionexusacademy.com/manual-therapy/" + slug,
+      type: "article",
+    },
   };
   if (!technique) return {};
 
+  const pageTitle = technique.name + " | Physio Nexus Academy";
+  const pageDescription = technique.summary;
+
   return {
-    title: technique.name + " | World Manual Therapy Encyclopedia",
-    description: technique.summary,
+    title: pageTitle,
+    description: pageDescription,
+    keywords: [
+      technique.name,
+      technique.name + " physiotherapy",
+      technique.name + " technique",
+      "manual therapy techniques",
+      "clinical application",
+      "physiotherapy education",
+      "Physio Nexus Academy",
+    ],
     alternates: {
       canonical: "https://physionexusacademy.com/manual-therapy/" + technique.slug,
+    },
+    openGraph: {
+      title: pageTitle,
+      description: pageDescription,
+      url: "https://physionexusacademy.com/manual-therapy/" + technique.slug,
+      type: "article",
     },
   };
 }
