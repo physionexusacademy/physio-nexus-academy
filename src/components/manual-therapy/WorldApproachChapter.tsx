@@ -9,6 +9,8 @@ import { WorldApproachDeepDive } from "@/components/manual-therapy/WorldApproach
 import { worldManualDeepChapters } from "@/lib/manual-therapy-world-depth";
 import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
+import { UnderstandThisTechnique } from "@/components/manual-therapy/UnderstandThisTechnique";
+import { manualTherapyUrduContent } from "@/lib/manual-therapy-urdu-content";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
@@ -34,6 +36,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       </header>
 
       <MasteryGuide slug={lesson.slug} />
+      {manualTherapyUrduContent[lesson.slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[lesson.slug]} /> : null}
 
       <details className="mt-8 rounded-3xl border border-indigo-200 bg-indigo-50/40">
         <summary className="cursor-pointer p-5 text-sm font-bold text-indigo-900 sm:p-6">
