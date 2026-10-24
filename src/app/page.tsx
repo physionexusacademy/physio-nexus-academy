@@ -71,6 +71,16 @@ export const revalidate = 300;
 export default async function HomePage() {
   const supabase = createPublicClient();
 
+  // Use Pakistan-local calendar dates so the homepage never promotes an expired workshop.
+  const dateParts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Karachi",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const datePart = (type: string) => dateParts.find((part) => part.type === type)?.value ?? "";
+  const todayInPakistan = `${datePart("year")}-${datePart("month")}-${datePart("day")}`;
+
   const [
     { data: workshopRows },
     { data: testimonialRows },
@@ -79,6 +89,7 @@ export default async function HomePage() {
       .from("workshops")
       .select("id,slug,title,summary,city,start_date")
       .eq("status", "published")
+      .gte("start_date", todayInPakistan)
       .order("start_date", { ascending: true, nullsFirst: false })
       .limit(3),
     supabase
