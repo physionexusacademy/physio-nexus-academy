@@ -151,7 +151,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.84,
     }));
 
-  return [
+  const sitemapEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...workshopRoutes,
     ...trainingRoutes,
@@ -165,4 +165,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...facultyRoutes,
     ...atlasRoutes,
   ];
+
+  // Keep each canonical URL only once if content collections overlap.
+  const uniqueEntries = new Map<string, MetadataRoute.Sitemap[number]>();
+  for (const entry of sitemapEntries) {
+    if (!uniqueEntries.has(entry.url)) uniqueEntries.set(entry.url, entry);
+  }
+
+  return [...uniqueEntries.values()];
 }
