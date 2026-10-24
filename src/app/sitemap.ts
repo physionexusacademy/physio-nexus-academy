@@ -20,8 +20,10 @@ const routes = [
   "/training",
   "/verify",
   "/resources",
+  "/courses",
   "/knowledge-hub",
   "/manual-therapy",
+  "/manual-therapy/world-approaches",
   "/manual-therapy/regions",
   "/treatment-plans",
   "/msk-injuries",
@@ -46,6 +48,7 @@ const routes = [
   "/locations/hyderabad",
   "/legal/privacy",
   "/legal/terms",
+  "/legal/refund",
   "/legal/disclaimer",
   ...(atlasPublished ? ["/clinical-visual-atlas"] : []),
 ];
