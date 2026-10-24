@@ -40,6 +40,7 @@ import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { UnderstandThisTechnique } from "@/components/manual-therapy/UnderstandThisTechnique";
 import { manualTherapyUrduContent } from "@/lib/manual-therapy-urdu-content";
+import { manualTherapyUrduDepth } from "@/lib/manual-therapy-urdu-depth";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -127,7 +128,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <a href="#clinical-essentials" className="rounded-full border border-white/30 px-4 py-2 text-white">Safety &amp; dose</a>
         </div>
 
-        {manualTherapyUrduContent[slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[slug]} /> : null}
+        {manualTherapyUrduContent[slug] ? <UnderstandThisTechnique content={manualTherapyUrduContent[slug]} extraDetails={manualTherapyUrduDepth[slug]} /> : null}
       </section>
 
       <MasteryGuide slug={slug} />

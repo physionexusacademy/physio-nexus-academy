@@ -6,7 +6,7 @@ import { BookOpenText, ChevronDown, ChevronUp, Languages } from "lucide-react";
 export type TechniqueUrduSection = { heading: string; text: string };
 export type TechniqueUrduContent = { short: string; details: TechniqueUrduSection[] };
 
-export function UnderstandThisTechnique({ content }: { content: TechniqueUrduContent }) {
+export function UnderstandThisTechnique({ content, extraDetails = [] }: { content: TechniqueUrduContent; extraDetails?: TechniqueUrduSection[] }) {
   const [introOpen, setIntroOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -44,7 +44,7 @@ export function UnderstandThisTechnique({ content }: { content: TechniqueUrduCon
 
           {expanded ? (
             <div id="pna-understand-technique-details" className="mt-4 space-y-3">
-              {content.details.map((section, index) => (
+              {[...content.details, ...extraDetails].map((section, index) => (
                 <section key={section.heading} className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
                   <h3 className="font-bold text-slate-900">{index + 1}. {section.heading}</h3>
                   <p className="mt-2 whitespace-pre-line text-sm leading-7 text-slate-700">{section.text}</p>
