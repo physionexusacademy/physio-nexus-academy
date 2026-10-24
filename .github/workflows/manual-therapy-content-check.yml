@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: manual-therapy-content-check-${{ github.ref }}
@@ -55,6 +55,9 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Upgrade to patched supported Next.js 15.5.28
+        run: npm install next@15.5.28 eslint-config-next@15.5.28 --save
+
       - name: Validate worldwide manual therapy chapters
         run: node scripts/validate-manual-therapy-world.mjs
 
@@ -70,3 +73,12 @@ jobs:
 
       - name: Build Cloudflare/OpenNext output only (does not deploy)
         run: npx opennextjs-cloudflare build
+
+      - name: Commit patched dependency lockfile after successful build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix Cloudflare build with patched Next.js 15.5.28"
+          git push origin HEAD:pna-content-upgrade-v1
