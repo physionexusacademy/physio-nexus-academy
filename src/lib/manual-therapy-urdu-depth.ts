@@ -31,5 +31,547 @@ export const manualTherapyUrduDepth: Record<string, TechniqueUrduSection[]> = {
     { heading: "Clinical reasoning aur positioning", text: "Tenderness ki baseline note karein. Body part ko ahista position karein aur patient se poochhein ke tenderness kam hui ya nahi. Position comfort aur response ke mutabiq adjust karein; kisi fixed posture ko force na karein. Patient ko relaxed rehne dein aur unnecessary muscle contraction se bachein." },
     { heading: "Common mistakes aur reassessment", text: "Tender point par hard pressure dena, painful position mein rakhna aur tenderness kam hone ko complete recovery samajhna aam ghaltiyan hain. Position se pehle aur baad tenderness compare karein, phir original movement ya functional task dobara check karein. Symptoms unchanged ya worse hon to plan reconsider karein." },
     { heading: "Evidence aur expectations", text: "Strain-counterstrain ko har pain ka proven solution ya muscle ko permanently reset karne wali technique na kahein. Response vary karta hai aur evidence condition ke hisaab se mukhtalif ho sakta hai. Isay assessment aur broader rehabilitation ka ek mumkin hissa samjhayen." }
+  ],
+
+  "maitland-joint-mobilization": [
+    [
+      "Clinical reasoning",
+      "Maitland approach mein passive joint movement ko symptoms aur examination findings ke mutabiq select kiya jata hai. Pehle comparable sign, irritability, range aur patient ka goal samjhein. Har painful joint ko same grade ya same direction ki mobilization dena sahi nahi."
+    ],
+    [
+      "Grades aur application ka concept",
+      "Oscillatory mobilization ke grades amplitude aur available range ke relation mein samjhe jate hain. Grade ka selection pain, stiffness, irritability aur treatment objective par depend karta hai. Exact joint handling aur force control supervised practical training se seekhein."
+    ],
+    [
+      "Common mistakes aur reassessment",
+      "Baseline record kiye baghair treatment karna, har patient par ek hi grade repeat karna aur symptoms barhne ke bawajood continue karna avoid karein. Session ke baad wahi movement, pain aur function dobara assess karein."
+    ],
+    [
+      "Evidence aur limits",
+      "Mobilization short-term pain ya movement mein kuch patients ko madad de sakti hai, magar response har condition mein same nahi. Isay guaranteed joint correction ya standalone cure ke taur par explain na karein."
+    ]
+  ],
+  "cyriax-deep-transverse-friction": [
+    [
+      "Clinical reasoning",
+      "Cyriax deep transverse friction massage mein target tissue aur clinical question ko pehle identify karna zaroori hai. Sirf tenderness ki bunyaad par tendon ya ligament pathology confirm nahi hoti; history, load response aur differential assessment bhi dekhein."
+    ],
+    [
+      "Technique ka concept",
+      "Friction ko target tissue ke fibres ki direction ke transverse apply karne ka concept sikhaya jata hai. Tissue identification, patient position aur contact accuracy important hain; exact site aur application trained clinician ke assessment se decide honi chahiye."
+    ],
+    [
+      "Safety aur common mistakes",
+      "Zyada pressure ko zyada effective samajhna, bruising ya symptom flare ko ignore karna, aur contraindications check na karna ghalat hai. Skin condition, acute injury, bleeding risk aur patient tolerance ko consider karein; concerning response par stop karein."
+    ],
+    [
+      "Outcome aur evidence",
+      "Treatment ke baad pain, loading tolerance aur relevant function reassess karein. Is technique ke proposed effects aur clinical benefit har diagnosis mein equally established nahi; evidence aur uncertainty ko honestly communicate karein."
+    ]
+  ],
+  "muscle-energy-technique": [
+    [
+      "Clinical reasoning",
+      "Muscle Energy Technique (MET) mein patient ki controlled muscle contraction ko therapist-guided positioning ke saath use kiya jata hai. Pehle movement restriction, pain irritability, strength aur patient ki ability to follow instructions assess karein."
+    ],
+    [
+      "Contraction ka concept",
+      "Patient ko samjhayen ke contraction comfortable aur controlled honi chahiye, maximum force lagana zaroori nahi. Therapist resistance aur positioning ko clinical context ke mutabiq set karta hai; specific setup body region aur method par depend karta hai."
+    ],
+    [
+      "Common mistakes aur reassessment",
+      "Patient ko breath hold karwana, excessive force demand karna ya pain ko ignore karna avoid karein. Treatment ke baad comparable range, symptoms aur functional movement ko dobara check karein; worsening response par technique modify ya stop karein."
+    ],
+    [
+      "Evidence aur limits",
+      "MET mobility ya symptoms mein selected patients ko help kar sakti hai, lekin har restriction ka cause muscle tightness nahi hota. Isay universal realignment technique na kahein; active exercise aur wider rehabilitation ke saath consider karein."
+    ]
+  ],
+  "soft-tissue-mobilization": [
+    [
+      "Clinical reasoning",
+      "Soft-tissue mobilization ek broad term hai jo muscles, tendons aur surrounding soft tissues par manual contact ko describe karti hai. Target tissue select karne se pehle symptoms, tissue irritability, healing stage aur functional limitation samjhein."
+    ],
+    [
+      "Application ko samjhein",
+      "Contact, direction, pressure aur movement patient ke response ke mutabiq adjust hote hain. Technique ka naam akela application define nahi karta; tissue-specific handling aur safe progression practical supervised training se seekhna zaroori hai."
+    ],
+    [
+      "Common mistakes aur retest",
+      "Har tightness ko adhesions kehna, uncomfortable pressure ko effective samajhna aur functional retest skip karna avoid karein. Patient ke symptoms aur chosen movement ko pehle aur baad compare karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "Soft-tissue techniques ka effect technique, condition aur outcome ke mutabiq vary karta hai. Temporary symptom change ko tissue permanently lengthen ya repair hone ka proof na samjhein."
+    ]
+  ],
+  "trigger-point-compression": [
+    [
+      "Clinical reasoning",
+      "Trigger-point compression mein clinician symptomatic muscle area par pressure apply karta hai, lekin palpation findings ko akelay definitive diagnosis na samjhein. Pain pattern, activity, neurological signs aur alternate causes bhi assess karein."
+    ],
+    [
+      "Pressure aur feedback",
+      "Pressure gradual aur patient-tolerated hona chahiye. Patient se regular feedback lein; intense pain, numbness, tingling ya symptoms ka spread ho to pressure release karke reassess karein. Fixed pressure ya duration har person ke liye suitable nahi."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Trigger point ko har pain ka sabab samajhna aur bruising ya marked flare ko normal treatment response kehna ghalat hai. Relevant medical history, tissue sensitivity aur contraindications ko pehle consider karein."
+    ],
+    [
+      "Reassessment aur evidence",
+      "Compression ke baad movement, pain aur activity tolerance dobara check karein. Relief temporary ho sakta hai aur trigger-point theory ki interpretation par scientific debate maujood hai; certainty overstate na karein."
+    ]
+  ],
+  "iastm": [
+    [
+      "Clinical reasoning",
+      "Instrument-Assisted Soft Tissue Mobilization (IASTM) mein tool soft tissue par controlled contact ke liye use hota hai. Instrument ko diagnosis ka substitute na banayein; history, movement testing aur functional goals se target decide karein."
+    ],
+    [
+      "Tool contact ka concept",
+      "Tool angle, pressure, stroke direction aur treatment area trained clinician ke control mein hone chahiye. Skin par excessive drag ya aggressive scraping zaroori nahi; technique ko tissue response aur patient tolerance ke mutabiq adjust karein."
+    ],
+    [
+      "Common mistakes aur precautions",
+      "Bruising ko effectiveness ka marker samajhna, skin damage karna, aur bleeding risk ya skin problems ignore karna avoid karein. Treatment ke dauran pain, skin response aur symptoms monitor karein; unusual response par stop karein."
+    ],
+    [
+      "Evidence aur outcome",
+      "IASTM ke benefits condition aur outcome ke mutabiq mixed ho sakte hain. Session ke baad functional change assess karein aur bruising ko treatment success ka proof na kahein."
+    ]
+  ],
+  "neurodynamic-mobilization": [
+    [
+      "Clinical reasoning",
+      "Neurodynamic mobilization ka maqsad nervous system ki movement aur sensitivity ko assess ya influence karna hota hai. Pehle symptom distribution, neurological status, irritability aur differential diagnoses evaluate karein; har radiating pain nerve mechanosensitivity nahi hota."
+    ],
+    [
+      "Slider aur tensioner ka farq",
+      "Slider movement mein aam tor par nerve bed ke do ends par relative movement coordinate hoti hai, jabke tensioner zyada neural loading create kar sakta hai. Selection symptoms aur irritability ke mutabiq hoti hai; inhein interchangeable na samjhein."
+    ],
+    [
+      "Safety aur common mistakes",
+      "Symptoms ko force karna, end range par aggressively hold karna aur worsening numbness ya weakness ignore karna unsafe hai. Low-irritability approach se start karne ka faisla clinical assessment par depend karta hai; new neurological deficit ho to prompt evaluation karein."
+    ],
+    [
+      "Reassessment aur evidence",
+      "Symptoms, range aur functional task ko treatment se pehle aur baad compare karein. Neurodynamic techniques selected conditions mein useful ho sakti hain, magar nerve ko mechanically 'release' karne ka claim evidence se zyada strong na banayein."
+    ]
+  ],
+  "manual-traction": [
+    [
+      "Clinical reasoning",
+      "Manual traction mein therapist controlled pulling force se joint surfaces ko temporarily separate ya unload karne ki koshish karta hai. Is se pehle body region, diagnosis, symptom response aur relevant contraindications assess karein."
+    ],
+    [
+      "Force aur positioning",
+      "Force direction, patient position, stabilization aur dose region-specific hote hain. Traction ko generic routine na banayein; comfortable setup aur patient feedback important hain. Exact application practical supervision mein seekhein."
+    ],
+    [
+      "Safety aur common mistakes",
+      "Traction ko har disc problem ya nerve pain ka guaranteed solution samajhna ghalat hai. Symptoms worsen hon, new tingling/weakness ho ya patient distressed ho to stop aur reassess karein; relevant joint instability ya other contraindications consider karein."
+    ],
+    [
+      "Outcome aur limits",
+      "Treatment ke baad pain, movement aur functional activity retest karein. Response variable hota hai aur traction akelay har patient ke liye effective nahi; broader management ke saath clinically justified use karein."
+    ]
+  ],
+  "high-velocity-low-amplitude-thrust": [
+    [
+      "Clinical reasoning",
+      "HVLA thrust ek high-skill manual technique hai jisme joint par fast, small-amplitude thrust use hota hai. Isay routine stiffness ka shortcut na samjhein; history, red flags, neurological status, contraindications aur informed consent pehle zaroori hain."
+    ],
+    [
+      "Technique aur training",
+      "Patient positioning, preload, direction aur controlled delivery region-specific skills hain. Yeh text supervised competency ka substitute nahi; qualified training aur local scope-of-practice ke baghair perform na karein. Patient ko alternatives aur expected sensations samjhayen."
+    ],
+    [
+      "Safety aur common mistakes",
+      "Forceful self-manipulation, unscreened cervical thrust, ya symptoms ke bawajood repeat attempts se parhez karein. Unusual severe pain, dizziness, neurological symptoms ya unexpected response par stop karein aur appropriate medical evaluation arrange karein."
+    ],
+    [
+      "Evidence aur shared decision-making",
+      "Thrust techniques kuch musculoskeletal presentations mein short-term benefit de sakti hain, lekin har patient ke liye zaroori nahi. Alternatives, risks, preferences aur expected benefit discuss karein; audible pop ko success ya joint repositioning ka proof na kahein."
+    ]
+  ],
+  "pnf-manual-techniques": [
+    [
+      "Clinical reasoning",
+      "PNF manual techniques movement, coordination, strength aur motor control ko facilitate karne ke liye diagonal ya spiral patterns aur sensory cues use kar sakti hain. Pehle patient ka functional goal, strength, range aur motor control assess karein."
+    ],
+    [
+      "Patterns aur resistance",
+      "Manual contact, verbal cues, visual feedback aur resistance task ke mutabiq coordinate kiye jate hain. Resistance itni honi chahiye ke movement quality maintain rahe; har patient ko maximal resistance dena sahi nahi."
+    ],
+    [
+      "Common mistakes aur adaptation",
+      "Pattern ko patient ke goal se alag practice karna, fatigue ignore karna aur pain ke through movement force karna avoid karein. Task ko patient ki ability ke mutabiq simplify karein aur quality, symptoms aur effort monitor karein."
+    ],
+    [
+      "Outcome aur evidence",
+      "Progress ko relevant functional task, coordination, strength ya activity tolerance se measure karein. PNF ko guaranteed neurological recovery technique na kahein; diagnosis-specific evidence aur broader rehab plan ko saath rakhein."
+    ]
+  ],
+  "fascial-manipulation": [
+    [
+      "Clinical reasoning",
+      "Fascial Manipulation systems fascia ke selected areas aur movement-related assessment par focus karte hain. Assessment framework ko established diagnosis ka replacement na banayein; patient history, comparable movements aur differential reasoning zaroor include karein."
+    ],
+    [
+      "Assessment aur treatment concept",
+      "Practitioner proposed movement restrictions aur tissue sensitivity ko map karke treatment area select karta hai. Specific points aur pressure protocol method-specific training se seekhein; palpation finding ko objective pathology ka definitive proof na samjhein."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Har symptom ko fascial dysfunction se explain karna, aggressive pressure dena aur measurable outcomes record na karna avoid karein. Skin, tissue sensitivity, medical history aur patient tolerance ko consider karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "Fascial Manipulation ke proposed mechanisms aur clinical effects par evidence condition ke mutabiq vary karta hai. Improvement ko functional outcomes se assess karein aur claims ko available research ki strength se zyada broad na banayein."
+    ]
+  ],
+  "active-release-style-soft-tissue": [
+    [
+      "Clinical reasoning",
+      "Active-release-style soft tissue approaches mein therapist contact ke saath patient ya limb ki active/passive movement coordinate ki jati hai. Pehle determine karein ke symptoms kis movement aur load se linked hain; naam se tissue entrapment automatically confirm nahi hota."
+    ],
+    [
+      "Movement coordination",
+      "Contact aur movement ki direction target region aur trained method par depend karti hai. Patient ko movement ka purpose samjhayen, comfortable range mein guide karein aur excessive compression ya forced excursion se bachein."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Painful tissue ko aggressively squeeze karna, nerve symptoms ignore karna aur har limitation ko adhesion kehna avoid karein. Numbness, tingling ya radiating symptoms change hon to stop karke neurological status reassess karein."
+    ],
+    [
+      "Outcome aur evidence",
+      "Treatment ke baad relevant movement, strength ya task tolerance check karein. Branded ya style-based techniques ke evidence ko universal proof na samjhein; active loading aur broader rehabilitation ki importance maintain karein."
+    ]
+  ],
+  "manual-lymphatic-drainage": [
+    [
+      "Clinical reasoning",
+      "Manual Lymphatic Drainage (MLD) ek gentle, specialized approach hai jo selected swelling/lymphatic conditions mein use hoti hai. Swelling ki cause pehle assess karna zaroori hai; har edema ko routine massage se treat nahi karna chahiye."
+    ],
+    [
+      "Pressure aur direction ka concept",
+      "MLD mein superficial aur gentle skin-stretching movements use hoti hain, deep painful pressure nahi. Treatment sequence aur drainage pathways clinical condition aur formal training ke mutabiq hotay hain; generic online instructions ko individualized treatment na banayein."
+    ],
+    [
+      "Precautions aur red flags",
+      "Sudden unexplained swelling, suspected infection, acute thrombosis, breathlessness ya significant cardiac/renal concerns mein medical assessment zaroori ho sakta hai. Contraindications aur precautions ko trained clinician ke saath screen karein."
+    ],
+    [
+      "Integrated care aur evidence",
+      "Selected lymphoedema cases mein MLD broader decongestive care ka hissa ho sakti hai; compression, exercise, skin care aur education ki zaroorat diagnosis par depend karti hai. Results ko swelling, symptoms aur function se monitor karein."
+    ]
+  ],
+  "scar-mobilization": [
+    [
+      "Clinical reasoning",
+      "Scar mobilization ka faisla scar ki healing stage, skin integrity, pain, mobility aur functional restriction ko dekh kar hota hai. Fresh, open, infected ya poorly healed wound par routine mobilization na karein."
+    ],
+    [
+      "Application ka concept",
+      "Healed tissue par contact gradual aur patient-tolerated hona chahiye. Direction aur technique scar ki location, tissue layer aur clinical goal ke mutabiq select hoti hai. Surgical restrictions aur treating team's guidance ko follow karein."
+    ],
+    [
+      "Common mistakes aur precautions",
+      "Healing complete hone se pehle aggressive friction, wound changes ignore karna, aur scar appearance ko akela outcome banana avoid karein. Redness, heat, discharge, wound separation ya increasing pain par stop karke medical advice lein."
+    ],
+    [
+      "Outcome aur evidence",
+      "Mobility, sensitivity, range aur daily function ko reassess karein. Scar techniques kuch patients mein comfort ya mobility improve kar sakti hain, lekin scar ko completely erase ya normal tissue mein convert karne ka promise na karein."
+    ]
+  ],
+  "paivm-ppivm-spinal-assessment": [
+    [
+      "Clinical reasoning",
+      "PAIVM aur PPIVM spinal assessment ke manual examination approaches hain. PAIVM mein therapist spinal segment par accessory movement assess karta hai, jabke PPIVM mein physiological movement ko passively examine kiya jata hai. Findings ko history aur neurological assessment ke saath interpret karein."
+    ],
+    [
+      "Assessment ka purpose",
+      "Segmental mobility, symptom response aur movement quality clinical information de sakte hain, magar palpation ki reliability limited ho sakti hai. Comparable signs, patient comfort aur overall pattern ko priority dein; single finding se diagnosis final na karein."
+    ],
+    [
+      "Safety aur common mistakes",
+      "Spinal assessment se pehle red flags, trauma, neurological changes aur relevant contraindications screen karein. Forceful testing, pain provoke karke repeat karna, ya uncertain segmental finding ko definitive lesion kehna avoid karein."
+    ],
+    [
+      "Clinical interpretation",
+      "Assessment finding ko functional limitation aur management plan se link karein. Retest ka maqsad sirf segment ko 'feel' karna nahi, balkay symptoms aur movement ke meaningful change ko dekhna hai."
+    ]
+  ],
+  "myofascial-decompression-dry-cupping": [
+    [
+      "Clinical reasoning",
+      "Dry cupping mein cups ke zariye skin par suction create ki jati hai; myofascial decompression isay movement ke saath combine kar sakti hai. Pehle patient goal, skin condition, sensitivity aur relevant medical history assess karein."
+    ],
+    [
+      "Suction aur movement",
+      "Suction intensity aur duration ko method training, region aur patient tolerance ke mutabiq select karein. Cup ke saath movement karwana har case mein zaroori ya suitable nahi. Skin par excessive force ya prolonged suction se bachein."
+    ],
+    [
+      "Common mistakes aur precautions",
+      "Bruise marks ko toxins nikalne ya treatment success ka proof samajhna ghalat hai. Skin fragility, bleeding risk, anticoagulants, sensation problems aur patient concerns ko consider karein; blistering, severe pain ya skin injury par stop karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "Cupping se kuch patients ko temporary symptom relief mil sakta hai, lekin proposed mechanisms aur long-term benefits ke liye evidence limited ya variable ho sakta hai. Isay established rehabilitation ka automatic replacement na banayein."
+    ]
+  ],
+  "facilitated-positional-release": [
+    [
+      "Clinical reasoning",
+      "Facilitated Positional Release (FPR) ek osteopathic manual approach hai jisme body region ko comfortable position mein la kar gentle facilitating force use ki ja sakti hai. Pehle symptoms, movement limitation aur safety context assess karein."
+    ],
+    [
+      "Positioning ka concept",
+      "Patient ko comfortable position mein support diya jata hai aur clinician trained method ke mutabiq subtle positioning/force apply karta hai. Exact hand placement aur tissue-specific steps supervised osteopathic training ka hissa hain."
+    ],
+    [
+      "Common mistakes aur reassessment",
+      "Patient ko uncomfortable posture mein rakhna, force ko zaroorat se zyada barhana aur subjective tissue feel ko objective diagnosis samajhna avoid karein. Symptoms aur comparable movement ko pehle aur baad reassess karein."
+    ],
+    [
+      "Evidence aur limits",
+      "FPR ke clinical effects aur mechanisms par evidence ki strength condition ke mutabiq vary kar sakti hai. Isay guaranteed tissue reset ya structural correction na kahein; informed, goal-directed care mein consider karein."
+    ]
+  ],
+  "paris-approach": [
+    [
+      "Approach ka overview",
+      "Paris approach manual therapy ko examination, joint mechanics, clinical reasoning aur graded intervention ke framework mein dekhta hai. Isay sirf aik specific hand technique samajhne ke bajaye assessment se treatment aur reassessment tak ka process samjhein."
+    ],
+    [
+      "Clinical decision-making",
+      "Patient history, irritability, movement restriction aur functional goals se decide karein ke manual therapy relevant hai ya nahi. Treatment ka choice assessment se justify hona chahiye, na ke therapist ki favourite technique se."
+    ],
+    [
+      "Common mistakes aur reassessment",
+      "Mechanical findings ko patient ke symptoms se alag interpret karna, repeated treatment without retest aur exercise/education ko ignore karna avoid karein. Meaningful movement aur function ko pre/post compare karein."
+    ],
+    [
+      "Evidence aur patient-centred care",
+      "Kisi named approach ka label effectiveness guarantee nahi karta. Individual technique ke evidence, patient preference aur overall rehabilitation plan ko weigh karein; uncertainty ko transparent rakhein."
+    ]
+  ],
+  "mckenzie-mdt": [
+    [
+      "Clinical reasoning",
+      "Mechanical Diagnosis and Therapy (MDT), jise aksar McKenzie method kaha jata hai, repeated movements, sustained positions aur symptom response se classification aur self-management guide karta hai. Har patient ko extension ya aik fixed direction prescribe nahi hoti."
+    ],
+    [
+      "Directional preference aur response",
+      "Assessment mein symptoms ka centralize, peripheralize, improve ya worsen hona observe kiya ja sakta hai. Repeated movement ka selection individual response aur safety screening par depend karta hai; symptoms spread ya neurological signs worsen hon to reassess karein."
+    ],
+    [
+      "Common mistakes aur self-management",
+      "Sab low-back pain patients ko same exercise dena, symptom response record na karna aur red flags ignore karna avoid karein. Patient ko safe self-management aur clear stop/review guidance dein."
+    ],
+    [
+      "Evidence aur limits",
+      "MDT selected spinal pain presentations mein useful framework ho sakta hai, magar har diagnosis ya patient ke liye superior nahi. Classification ko evolving clinical picture ke saath update karein aur exercise, education aur function ko central rakhein."
+    ]
+  ],
+  "mennell-joint-play": [
+    [
+      "Clinical reasoning",
+      "Mennell joint-play concepts accessory joint movement ko examine karne aur restriction ko samajhne par focus karte hain. Assessment ko symptoms, functional movement aur medical history ke saath integrate karein; joint-play finding akelay diagnosis establish nahi karti."
+    ],
+    [
+      "Joint play ka concept",
+      "Therapist joint surfaces ke relative movement ko controlled, small-range handling se assess karta hai. Direction, stabilization aur force body region aur training ke mutabiq hote hain. Painful ya unstable joint par forceful testing se bachein."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Normal variation ko pathology kehna, force barha kar mobility 'prove' karna aur symptom response ignore karna avoid karein. Relevant precautions screen karein aur test ke baad patient ke comparable movement ko dobara check karein."
+    ],
+    [
+      "Clinical use aur evidence",
+      "Joint-play assessment treatment planning mein aik input ho sakta hai, magar palpatory accuracy aur clinical meaning ki limitations hain. Findings ko functional outcomes aur broader evidence ke saath interpret karein."
+    ]
+  ],
+  "fascial-distortion-model": [
+    [
+      "Model ko samjhein",
+      "Fascial Distortion Model (FDM) pain aur movement limitation ko proposed fascial distortion patterns ke through interpret karta hai. Yeh aik specific clinical model hai; iski terminology ko universally proven anatomical diagnosis ke barabar na samjhein."
+    ],
+    [
+      "Assessment aur communication",
+      "Patient ke symptom description, gestures, injury context aur movement ko carefully note karein. Model-specific classification trained practitioner ki interpretation par depend karti hai; differential diagnoses aur red flags ko nazarandaz na karein."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Aggressive pressure ya forceful positioning ko model ki bunyaad par justify na karein. Tissue irritability, fracture risk, acute injury, neurological symptoms aur patient consent ko consider karein; worsening response par stop karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "FDM ke proposed mechanisms aur outcomes par evidence ki quality aur consensus vary kar sakte hain. Isay guaranteed structural correction na kahein; measurable function aur patient-reported outcomes se progress judge karein."
+    ]
+  ],
+  "balanced-ligamentous-tension": [
+    [
+      "Clinical reasoning",
+      "Balanced Ligamentous Tension (BLT) osteopathic approach mein joint ya region ko aisi position mein gently balance karne ka concept hai jahan tissue tension relatively comfortable ho. Pehle symptoms, mobility aur relevant safety factors assess karein."
+    ],
+    [
+      "Positioning ka concept",
+      "Clinician subtle positioning aur gentle contact se balance dhoondhta hai; exact method body region aur formal training par depend karta hai. Forceful stretching ya joint ko end range mein dhakelna is gentle concept ke opposite hai."
+    ],
+    [
+      "Common mistakes aur reassessment",
+      "Therapist ki subjective feel ko definitive pathology samajhna, patient feedback ignore karna aur outcome retest na karna avoid karein. Comfort, movement aur functional goal ko before/after compare karein."
+    ],
+    [
+      "Evidence aur limits",
+      "BLT ke proposed mechanisms aur specific clinical effects ke liye evidence har condition mein established nahi. Isay universal correction technique ke bajaye carefully selected manual option ke taur par discuss karein."
+    ]
+  ],
+  "spencer-shoulder-sequence": [
+    [
+      "Clinical reasoning",
+      "Spencer shoulder sequence osteopathic manual approach hai jo shoulder region ki mobility ko a series of movements ke zariye assess ya treat kar sakta hai. Pehle shoulder history, trauma, irritability, active range aur neurological/vascular signs assess karein."
+    ],
+    [
+      "Sequence aur adaptation",
+      "Sequence ke movements patient ki tolerance aur clinical findings ke mutabiq adapt kiye jate hain. Exact sequence aur hand placements supervised training se seekhein; painful range mein mechanically complete karna zaroori nahi."
+    ],
+    [
+      "Common mistakes aur precautions",
+      "Acute fracture/dislocation suspicion, post-operative restrictions ya severe pain ko ignore karke sequence perform na karein. Symptoms barhne, guarding ya unusual response par stop karein aur relevant medical assessment consider karein."
+    ],
+    [
+      "Reassessment aur evidence",
+      "Shoulder range, pain aur daily tasks ko sequence se pehle aur baad compare karein. Aik manual sequence har shoulder diagnosis ka solution nahi; exercise, load management aur condition-specific care ko saath rakhein."
+    ]
+  ],
+  "still-technique": [
+    [
+      "Approach ka concept",
+      "Still Technique osteopathic manual therapy ki aik approach hai jo positioning aur gentle movement ko combine kar sakti hai. Isay exact clinical procedure ke taur par seekhne ke liye formal practical instruction zaroori hai; sirf naam ya description kafi nahi."
+    ],
+    [
+      "Clinical reasoning",
+      "Patient ki symptoms, mobility, irritability aur goals assess karke decide karein ke manual approach appropriate hai ya nahi. Technique selection ke liye diagnosis aur safety screening ko priority dein, na ke assumed tissue restriction ko."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Forceful movement, patient comfort ignore karna aur post-treatment change ko permanent structural correction kehna avoid karein. Relevant contraindications screen karein aur symptoms ya function ko before/after retest karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "Still Technique ke specific effects aur mechanisms par available evidence condition ke mutabiq vary kar sakta hai. Patient ko balanced explanation dein aur treatment ko broader evidence-informed plan ke andar rakhein."
+    ]
+  ],
+  "osteopathic-articulatory": [
+    [
+      "Clinical reasoning",
+      "Osteopathic articulatory techniques mein joint ko controlled repetitive movement ke through mobilize kiya jata hai. Pehle target joint, range restriction, symptoms aur functional limitation assess karein."
+    ],
+    [
+      "Movement ka concept",
+      "Rhythmic articulation available range aur patient tolerance ke andar hoti hai. Direction, amplitude aur stabilization joint-specific hote hain; exact technique trained supervision mein seekhein aur movement ko force na karein."
+    ],
+    [
+      "Common mistakes aur precautions",
+      "Har restriction par same rhythm use karna, end range force karna aur acute injury/instability screen na karna avoid karein. Pain, guarding aur unexpected symptoms monitor karein; worsening par stop karein."
+    ],
+    [
+      "Outcome aur evidence",
+      "Mobility aur functional movement ko treatment se pehle aur baad compare karein. Articulatory treatment ko guaranteed realignment na samjhein; evidence, patient preference aur active rehabilitation ke saath integrate karein."
+    ]
+  ],
+  "osteopathic-lymphatic-pump": [
+    [
+      "Clinical reasoning",
+      "Osteopathic lymphatic pump techniques rhythmic manual forces ke zariye fluid movement ko influence karne ke liye describe ki jati hain. Patient ki medical condition, cardiopulmonary status aur swelling ki cause samajhna pehle zaroori hai."
+    ],
+    [
+      "Technique aur training",
+      "Different lymphatic pump methods region-specific positioning aur rhythmic pressure use kar sakti hain. Yeh gentle-looking technique bhi har patient ke liye suitable nahi; exact application qualified osteopathic training se seekhein."
+    ],
+    [
+      "Precautions aur common mistakes",
+      "Acute infection, suspected thrombosis, unstable cardiopulmonary condition ya unexplained swelling mein bina appropriate medical assessment use na karein. Forceful pressure aur symptoms worsening ko ignore karna avoid karein."
+    ],
+    [
+      "Evidence aur limits",
+      "Physiological mechanisms aur clinical benefit ke claims ko established patient outcomes se alag rakhein. Isay medical treatment ya established lymphoedema care ka replacement na kahein; condition-specific evidence aur safety follow karein."
+    ]
+  ],
+  "rolfing-structural-integration": [
+    [
+      "Approach ka overview",
+      "Rolfing Structural Integration ek structured bodywork approach hai jo fascia, posture aur movement ke relationship par focus karti hai. Iske framework ko posture ki har problem ka proven cause ya solution na samjhein."
+    ],
+    [
+      "Assessment aur sessions",
+      "Practitioner movement, posture aur patient goals ko assess karke treatment plan banata hai. Pressure aur session structure trained practitioner aur individual tolerance par depend karte hain; patient comfort aur informed consent central hain."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Painful pressure ko necessary samajhna, dramatic posture changes promise karna aur medical red flags ko bodywork se treat karne ki koshish avoid karein. Symptoms, function aur patient response monitor karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "Structural integration ke outcomes aur proposed mechanisms par evidence condition ke mutabiq limited ya variable ho sakta hai. Progress ko patient-relevant function se judge karein, aur claims ko evidence se aage na le jayein."
+    ]
+  ],
+  "bowen-technique": [
+    [
+      "Approach ka overview",
+      "Bowen Technique mein gentle, specific soft-tissue moves ke darmiyan pauses use kiye jate hain. Is approach ke proposed effects ko established physiological mechanism samajhne se pehle evidence ki limitations ko samajhna zaroori hai."
+    ],
+    [
+      "Clinical reasoning aur comfort",
+      "Patient history, symptoms aur goals assess karein. Touch gentle aur tolerated hona chahiye; exact move placement aur pauses formal training ke mutabiq hotay hain. Har diagnosis ke liye same sequence copy na karein."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Bowen ko serious disease ka alternative treatment samajhna, prescribed care delay karna ya worsening symptoms ko normal kehna unsafe hai. Red flags aur relevant contraindications screen karein aur patient ko medical review ki zaroorat samjhayen."
+    ],
+    [
+      "Evidence aur expectations",
+      "Bowen Technique ke clinical benefits ke liye high-quality evidence limited ho sakta hai. Patient-reported response ko honestly record karein aur guaranteed cure, detox ya permanent correction jaise claims avoid karein."
+    ]
+  ],
+  "visceral-manipulation": [
+    [
+      "Clinical reasoning",
+      "Visceral Manipulation naam se jani jane wali approach abdomen ya body cavities ke surrounding tissues par gentle manual contact use karti hai. Abdominal pain ya organ symptoms ki medical causes ko pehle consider karna zaroori hai."
+    ],
+    [
+      "Assessment aur boundaries",
+      "Manual findings ko internal organ disease ka diagnosis na samjhein. Patient history, medical workup, surgical history aur red flags ko priority dein; abdominal treatment ke liye appropriate training aur informed consent zaroori hain."
+    ],
+    [
+      "Precautions aur common mistakes",
+      "Unexplained abdominal pain, fever, vomiting, bleeding, pregnancy-related concerns ya recent surgery mein bina suitable medical clearance manual pressure na dein. Forceful pressure aur serious symptoms ko bodywork se manage karne ki koshish avoid karein."
+    ],
+    [
+      "Evidence aur expectations",
+      "Visceral mobility ke proposed concepts aur musculoskeletal outcomes ke liye evidence debated ya limited ho sakta hai. Isay organ repositioning ya internal disease cure ke taur par present na karein; patient safety aur evidence-informed care first."
+    ]
+  ],
+  "craniosacral-therapy": [
+    [
+      "Approach ka overview",
+      "Craniosacral Therapy ek gentle manual approach hai jisme light touch aur cranial/sacral region par attention use hoti hai. Proposed craniosacral rhythm aur related explanations ko established diagnostic facts samajhne se pehle evidence quality ko consider karein."
+    ],
+    [
+      "Clinical reasoning aur consent",
+      "Symptoms, patient goals aur medical history assess karein. Touch comfortable, transparent aur consent-based hona chahiye. Serious neurological, systemic ya progressive symptoms ko gentle manual therapy ke zariye delay na karein."
+    ],
+    [
+      "Common mistakes aur safety",
+      "Very light touch ko automatically risk-free ya curative samajhna, unsupported claims karna aur objective outcomes record na karna avoid karein. Patient response monitor karein aur symptoms worsen hon to stop/refer appropriately."
+    ],
+    [
+      "Evidence aur expectations",
+      "Craniosacral Therapy ke proposed mechanisms aur benefits par evidence limited/contested ho sakta hai. Guaranteed treatment, structural cranial correction ya disease cure ka promise na karein; balanced explanation aur evidence-based alternatives discuss karein."
+    ]
   ]
+
 };
