@@ -10,6 +10,8 @@ import {
   Target,
 } from "lucide-react";
 import { allKnowledgeArticles, getAllKnowledgeArticle } from "@/lib/all-knowledge-content";
+import { UnderstandThisPage } from "@/components/learning/UnderstandThisPage";
+import { understandThisPageContent } from "@/lib/understand-this-page-content";
 
 const siteUrl = "https://physionexusacademy.com";
 
@@ -43,6 +45,7 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
   if (!article) notFound();
 
   const level = article.level ?? "Clinical";
+  const romanUrduLearning = understandThisPageContent[article.slug];
   const url = siteUrl + "/knowledge-hub/" + article.slug;
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -89,6 +92,8 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
           {article.references?.length ? <span className="inline-flex items-center gap-1.5 font-semibold text-teal-700"><BookOpenCheck className="h-4 w-4" />Evidence sources included</span> : null}
         </div>
       </header>
+
+      {romanUrduLearning ? <UnderstandThisPage content={romanUrduLearning} /> : null}
 
       <div className="mx-auto mt-8 min-w-0 w-full max-w-4xl break-words rounded-3xl border border-slate-200 bg-white p-5 shadow-sm [overflow-wrap:anywhere] sm:mt-9 sm:p-9">
         {article.learningObjectives?.length ? (
