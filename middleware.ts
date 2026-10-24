@@ -2,6 +2,29 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
+  const isLoginRoute = request.nextUrl.pathname === "/admin/login";
+
+  // Avoid initializing Supabase and verifying a user for anonymous requests.
+  // This is only a fast-path redirect; requests with an auth cookie still go
+  // through getUser() and the database role check below.
+  const hasSupabaseAuthCookie = request.cookies
+    .getAll()
+    .some(({ name }) =>
+      /^sb-.+-auth-token(?:\.\d+)?$/.test(name) ||
+      name === "sb-access-token" ||
+      name === "sb-refresh-token"
+    );
+
+  if (!hasSupabaseAuthCookie) {
+    if (isAdminRoute && !isLoginRoute) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+    if (isLoginRoute) {
+      return NextResponse.next();
+    }
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -31,13 +54,10 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // Refresh the session if expired — required for Server Components.
+  // Refresh and verify the session — required for Server Components.
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-  const isLoginRoute = request.nextUrl.pathname === "/admin/login";
 
   if (isAdminRoute && !isLoginRoute) {
     if (!user) {
