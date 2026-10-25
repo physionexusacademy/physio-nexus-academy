@@ -62,7 +62,7 @@ const rawLabCaseCards:LabCaseCard[]=[
  })),
  ...coreMskCases.map((c,index)=>({
    id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-   category:labCategory(c.specialty,c.safety),patient:patientDisplayName(c.id,clinicalCaseIndex.length+index),
+   category:labCategory(c.specialty,c.safety),patient:c.patient,
    hook:coreMskFlows[c.id]?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,
    minutes:"7–10 min",safety:!!c.safety
@@ -71,7 +71,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    const flow=multidisciplinaryFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-    category:labCategory(c.specialty,c.safety),patient:patientDisplayName(c.id,clinicalCaseIndex.length+coreMskCases.length+index),
+    category:labCategory(c.specialty,c.safety),patient:c.patient,
     hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
@@ -80,7 +80,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    const flow=expandedFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-    category:labCategory(c.specialty,c.safety),patient:patientDisplayName(c.id,clinicalCaseIndex.length+coreMskCases.length+multidisciplinaryCases.length+index),
+    category:labCategory(c.specialty,c.safety),patient:c.patient,
     hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
