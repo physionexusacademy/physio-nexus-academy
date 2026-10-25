@@ -42,7 +42,7 @@ try {
   await page.locator('[data-pna-unified-progress="v1"]').waitFor({ state: "visible", timeout: 20_000 });
   await page.locator("#dc-name").waitFor({ state: "visible", timeout: 20_000 });
   await page.locator("#dc-email").waitFor({ state: "visible", timeout: 20_000 });
-  if (!(await page.locator("#dc-name").getAttribute("required")) || !(await page.locator("#dc-email").getAttribute("required"))) {
+  if (!(await page.locator("#dc-name").evaluate((element) => element.hasAttribute("required"))) || !(await page.locator("#dc-email").evaluate((element) => element.hasAttribute("required")))) {
     throw new Error("Daily Challenge onboarding fields are missing required validation.");
   }
   console.log("PASS Daily Challenge: progress card and required onboarding fields render (no real submission made)");
@@ -91,4 +91,8 @@ try {
 } finally {
   if (browser) await browser.close();
   server.kill("SIGTERM");
+  // Do not let a lingering npm/Next child keep the CI runner alive after the assertions finish.
+  const shutdownDeadline = Date.now() + 3_000;
+  while (server.exitCode === null && Date.now() < shutdownDeadline) await delay(100);
+  if (server.exitCode === null) server.kill("SIGKILL");
 }
