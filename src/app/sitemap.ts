@@ -6,7 +6,7 @@ import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
-import { regionalManualApplications, isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regional";
+import { regionalManualApplications } from "@/lib/manual-therapy-regional";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { mskConditions } from "@/lib/msk-injury-hub";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
@@ -28,10 +28,11 @@ const routes = [
   "/msk-injuries",
   "/msk-special-tests",
   "/case-lab",
-  "/clinical-arena",
-  "/visual-lab",
   "/clinical-quiz",
   "/daily-challenge",
+  "/clinical-arena",
+  "/visual-lab",
+  "/visual-lab/manual-therapy",
   "/research",
   "/patient-services",
   "/symptom-checker",
@@ -104,19 +105,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const manualTherapyRoutes: MetadataRoute.Sitemap = manualTherapyTechniques.map((item) => ({
-    url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
-  const worldManualApproachRoutes: MetadataRoute.Sitemap = worldManualApproaches
-    .filter((item) => !manualTherapyTechniques.some((technique) => technique.slug === item.slug))
-    .map((item) => ({
-    url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
+  const manualTherapyRoutes: MetadataRoute.Sitemap = [
+    ...manualTherapyTechniques.map((item) => ({
+      url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
+    ...worldManualApproaches.map((item) => ({
+      url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
+  ];
 
   const treatmentPlanRoutes: MetadataRoute.Sitemap = treatmentPlans.map((item) => ({
     url: `${base}/treatment-plans/${encodeURIComponent(item.slug)}`,
@@ -130,9 +130,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.82,
   }));
 
-  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications
-    .filter((item) => isTechniqueSpecificRegionalApplication(item))
-    .map((item) => ({
+  const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
     url: `${base}/manual-therapy/regions/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
     priority: 0.82,
@@ -153,7 +151,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.84,
     }));
 
-  return [
+  const sitemapEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...workshopRoutes,
     ...trainingRoutes,
@@ -161,11 +159,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...specialtyRoutes,
     ...caseRoutes,
     ...manualTherapyRoutes,
-    ...worldManualApproachRoutes,
     ...regionalManualRoutes,
     ...treatmentPlanRoutes,
     ...mskRoutes,
     ...facultyRoutes,
     ...atlasRoutes,
   ];
+
+  // Keep each canonical URL only once if content collections overlap.
+  const uniqueEntries = new Map<string, MetadataRoute.Sitemap[number]>();
+  for (const entry of sitemapEntries) {
+    if (!uniqueEntries.has(entry.url)) uniqueEntries.set(entry.url, entry);
+  }
+
+  return [...uniqueEntries.values()];
 }

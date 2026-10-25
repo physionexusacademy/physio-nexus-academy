@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -7,8 +8,6 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { PhysioNexusAI } from "@/components/PhysioNexusAI";
-import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
-import { AnalyticsEvents } from "@/components/analytics/AnalyticsEvents";
 import { siteConfig } from "@/lib/site-config";
 
 const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
@@ -77,9 +76,9 @@ const siteJsonLd = {
       sameAs: [
         "https://pk.linkedin.com/in/dr-sajjad-raza-pt-8a7455372",
       ],
-      jobTitle: "Physiotherapist, Clinical Supervisor and Founder",
+      jobTitle: "Physiotherapist, Clinical Educator and Founder",
       description:
-        "Dr. Sajjad Raza PT is a physiotherapist, clinical educator, Clinical Supervisor and Founder of Physio Nexus Academy in Pakistan.",
+        "Dr. Sajjad Raza PT is a physiotherapist, clinical educator and Founder of Physio Nexus Academy in Pakistan.",
       worksFor: {
         "@id": "https://physionexusacademy.com/#organization",
       },
@@ -185,8 +184,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WhatsAppButton />
         <PhysioNexusAI />
         <MobilePortalNav />
-        <GoogleAnalytics />
-        <AnalyticsEvents />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-FY98RYN1GP');
+var gaScript = document.createElement('script');
+gaScript.async = true;
+gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-FY98RYN1GP';
+document.head.appendChild(gaScript);`}
+        </Script>
       </body>
     </html>
   );

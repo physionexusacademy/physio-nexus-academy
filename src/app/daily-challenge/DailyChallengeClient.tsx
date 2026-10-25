@@ -117,7 +117,9 @@ export function DailyChallengeClient(){
     attemptId:active.attemptId,token:active.token,answers:answersRef.current
    });
    setResult(saved);
-   recordLearningActivity("daily-challenge",10+saved.correctCount*5,"daily:"+active.date,"Daily Clinical Challenge completed");
+   if(!saved.expired){
+    recordLearningActivity("daily-challenge",10+saved.correctCount*5,"daily:"+active.date,"Daily Clinical Challenge completed");
+   }
    try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}
    window.dispatchEvent(new Event("pna-daily-score-saved"));
   }catch(e){

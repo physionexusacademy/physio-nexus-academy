@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import "./arena.css";
@@ -10,6 +11,8 @@ import { multidisciplinaryCases, multidisciplinaryFlows, multidisciplinaryExams 
 import { getClinicalExamination } from "@/lib/clinical-arena-examinations";
 import { clinicalRegions, regionOfClinicalCase, ALL_CLINICAL_REGIONS, type ClinicalRegionSelection } from "@/lib/clinical-arena-regions";
 import { ArrowRight, BrainCircuit, CheckCircle2, RotateCcw, ShieldAlert, Sparkles, Trophy } from "lucide-react";
+import { getPakistanDate, recordLearningActivity } from "@/lib/unified-progress";
+import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 
 type Case = { id:string; specialty:string; title:string; patient:string; history:string; findings:string[]; question:string; options:string[]; correct:number; explanation:string; clue:string; safety?:boolean };
 const cases: Case[] = [
@@ -212,6 +215,10 @@ export default function ClinicalArenaPage(){
  function submit(){if(selected===null||revealed||stage==="history")return;respond(selected===current.correct,current.why);}
  function advance(){
   setScrollRequest(n=>n+1);
+  if(stages.indexOf(stage)===stages.length-1 && item){
+   const xpPerCorrect=difficulty==="Expert"?30:difficulty==="Clinician"?20:10;
+   recordLearningActivity("clinical-arena",caseScore*xpPerCorrect,"arena:"+getPakistanDate()+":"+completed+":"+position+":"+item.id,"Clinical Arena case completed");
+  }
   const nextIndex=stages.indexOf(stage)+1;
   if(nextIndex<stages.length){setStage(stages[nextIndex]);setSelected(null);setRevealed(false);setFeedback("");return;}
   if(position+1>=filtered.length){setFinished(true);setCompleted(v=>v+1);setCaseHistory(v=>[...v,{id:item.id,score:caseScore,total:stages.length,at:new Date().toISOString()}].slice(-60));return;}
@@ -245,6 +252,7 @@ export default function ClinicalArenaPage(){
   <div><p className="text-xs font-bold uppercase tracking-wider text-teal-800">MSK Examination Reference</p><p className="mt-1 text-sm text-slate-600">Need to revise a special test before making your clinical decision?</p></div>
   <Link href="/msk-special-tests" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Study MSK Special Tests <ArrowRight className="h-4 w-4"/></Link>
  </div>
+ <UnifiedProgressCard />
  <main ref={casePanelRef} tabIndex={-1} id="clinical-arena-case" className="pna-shell mt-6 scroll-mt-28 rounded-3xl p-6 text-slate-900 sm:p-9">
  {!finished?<div>
  <div className="pna-round-overview flex flex-wrap items-center justify-between gap-4">

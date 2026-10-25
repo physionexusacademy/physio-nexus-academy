@@ -33,10 +33,10 @@ import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard"
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
 import "./daily-challenge/daily-challenge.css";
 import "./home-premium.css";
-import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { InstallApp } from "@/components/InstallApp";
-import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
+import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
+import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
 
@@ -71,9 +71,16 @@ export const revalidate = 300;
 
 export default async function HomePage() {
   const supabase = createPublicClient();
-  const todayInPakistan = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Karachi", year: "numeric", month: "2-digit", day: "2-digit",
-  }).format(new Date());
+
+  // Use Pakistan-local calendar dates so the homepage never promotes an expired workshop.
+  const dateParts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Karachi",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const datePart = (type: string) => dateParts.find((part) => part.type === type)?.value ?? "";
+  const todayInPakistan = `${datePart("year")}-${datePart("month")}-${datePart("day")}`;
 
   const [
     { data: workshopRows },
@@ -109,7 +116,6 @@ export default async function HomePage() {
       </div>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
-      <UnifiedProgressCard />
 
       {/* Flagship destination: open to every PNA visitor, not nested under the MSK Hub. */}
       <section data-pna-home-flagship="daily-clinical-challenge-v2" className="dc-flagship-shell" aria-labelledby="pna-daily-flagship-title">
@@ -161,6 +167,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <UnifiedProgressCard />
 
       <div className="pna-home-lower">
       <section className="border-y border-grey-200 bg-white py-6">
