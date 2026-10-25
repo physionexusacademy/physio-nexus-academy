@@ -41,7 +41,7 @@ export function UnifiedProgressCard() {
         <div>
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-teal-700"><Activity className="h-4 w-4"/> Your PNA learning journey</p>
           <h2 id="pna-progress-title" className="mt-2 text-2xl font-bold tracking-tight text-[#183c4d] sm:text-3xl">Small steps. Stronger clinical thinking.</h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Your streak grows when you complete the Daily Clinical Challenge. Your progress stays on this browser and device.</p>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Your streak grows when you complete a Daily Clinical Challenge or finish a Clinical Arena case. Your progress stays on this browser and device.</p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/daily-challenge#play-daily" className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800">Today's challenge <ArrowRight className="h-4 w-4"/></Link>
             <Link href="/clinical-arena" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Solve a case <ArrowRight className="h-4 w-4"/></Link>
