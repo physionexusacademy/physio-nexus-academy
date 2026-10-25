@@ -25,6 +25,12 @@ export function labCategory(specialty:string,safety=false):string{
  if(specialty==="Critical Care & ICU")return "Critical Care & ICU";
  return "MSK & Sports";
 }
+const patientNames=["Arif","Sana","Hamza","Farah","Imran","Ayesha","Bilal","Hira","Usman","Mariam","Danish","Zoya","Omar","Nadia","Rehan","Mehwish","Saad","Iqra","Tariq","Noor","Sameer","Alina","Faisal","Kiran","Adnan","Rabia","Yasir","Amna","Kashif","Laiba","Salman","Esha","Noman","Mahnoor","Asad","Anum","Junaid","Saira","Rizwan","Minal","Adeel","Sadia","Waleed","Hafsa","Shahzaib","Rida","Fahad","Komal","Zain","Misha","Ibrahim","Areeba","Muneeb","Sumbal","Shayan","Dua","Talha","Haroon","Aiman","Ahsan","Sehr","Murtaza","Aqsa","Naveed","Eman","Rameez","Zunaira","Rauf","Arooba","Arham","Maha","Shahmir","Maham","Nabeel","Anaya","Kamil","Areej","Rayan","Mehak","Taimur","Ayla","Zubair","Sehrish","Jibran","Mishal","Fawad","Rimsha","Khalid","Anabia","Azlan","Kinza","Saif","Haniya","Dawood","Rania","Ilyas","Sanaullah","Zeeshan","Aqeel"];
+function patientDisplayName(id:string,index:number):string{
+ const name=patientNames[index%patientNames.length];
+ const suffix=index>=patientNames.length?" "+(Math.floor(index/patientNames.length)+1):"";
+ return "Meet "+name+suffix;
+}
 const featuredHooks:Record<string,string>={
  "postpartum-running-stress-urinary-incontinence":"A new parent wants to run again. What should we ask first?",
  "older-adult-recurrent-falls-orthostatic-symptoms":"The falls keep happening. Is the balance test enough?",
@@ -48,20 +54,20 @@ const featuredFocus:Record<string,string>={
  "acl-reconstruction-return-to-sport-readiness":"Knee",
 };
 const rawLabCaseCards:LabCaseCard[]=[
- ...clinicalCaseIndex.map(c=>({
+ ...clinicalCaseIndex.map((c,index)=>({
    id:"deep-"+c.slug,href:"/case-lab/"+c.slug,
-   category:labCategory(c.specialty),patient:"Detailed teaching case",
+   category:labCategory(c.specialty),patient:"Clinical case",
    hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,keywords:c.title+" "+c.summary,focus:featuredFocus[c.slug]||"General / Other",
    kind:"Clinical deep dive" as const,minutes:c.estimatedTime,safety:c.specialty.includes("Red Flags")
  })),
- ...coreMskCases.map(c=>({
+ ...coreMskCases.map((c,index)=>({
    id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
    category:labCategory(c.specialty,c.safety),patient:c.patient,
    hook:coreMskFlows[c.id]?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,
    minutes:"7–10 min",safety:!!c.safety
  })),
- ...multidisciplinaryCases.map((c)=>{
+ ...multidisciplinaryCases.filter(c=>/-1$/.test(c.id)).map((c,index)=>{
    const flow=multidisciplinaryFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
@@ -70,7 +76,7 @@ const rawLabCaseCards:LabCaseCard[]=[
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
  }),
- ...expandedCases.map((c)=>{
+ ...expandedCases.filter(c=>/-1$/.test(c.id)).map((c,index)=>{
    const flow=expandedFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),

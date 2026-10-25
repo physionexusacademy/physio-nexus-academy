@@ -88,29 +88,29 @@ export function buildClinicalEpisodes(story:CaseStory,guide:CaseLearningGuide):C
  const monitoring=first(story.progression,0,"The same meaningful functional goal should be reviewed at follow-up.");
  return [
   {
-   act:"ACT I · THE ARRIVAL",sceneTitle:"A story arrives before a diagnosis",
-   narrative:[introduction,"Picture this teaching encounter "+context+". "+story.patient+" is the person described in the case notes.",...documentedHistory,
-    "What matters is not only the symptoms. The story is also about "+goal+"."],
+   act:"ACT I · THE ARRIVAL",sceneTitle:"Meet the person before the diagnosis",
+   narrative:[introduction,"Imagine you are meeting someone in a real consultation "+context+". Start with what the case actually tells you.",...documentedHistory,
+    "The important question is how this problem affects "+goal+"."],
    tension:thought(0),
-   question:"What might change your first impression of this patient's problem?",
+   question:"If this person were sitting in front of you, what would you want to understand first about their problem?",
    insight:"Separate the person's actual history from the hypothesis you have not tested. Start with the documented complaints and functional priorities.",
    moment:"The file is open. The meaning of the clues is still up for discussion."
   },
   {
    act:"ACT II · THE INTERVIEW",sceneTitle:"The detail hidden in an ordinary answer",
-   narrative:["The first question is not a formality. It is the point where the patient gets to tell the story in their own words.",
-    "From the interview notes: "+shorten(keyHistory?.[1]||story.opening,430),
-    "A careful clinician keeps asking what has changed, what the person can no longer do, and whether any symptom demands a different level of urgency."],
+   narrative:["Imagine the person has just finished telling you why they came in. Your job is to understand their experience, not rush to name a condition.",
+    "What the case records: "+shorten(keyHistory?.[1]||story.opening,430),
+    "Think about what has changed, which everyday activities are affected, and whether anything makes this consultation urgent."],
    tension:thought(1),
-   question:keyHistory?.[0]||"Which history question should you ask next?",
+   question:keyHistory?.[0]||"What would you ask this person next, and why would the answer matter?",
    insight:first(guide.chapters.subjective,0,"Clarify the relevant symptom behaviour, safety risks and functional goals."),
    moment:"You have more information now. Resist the urge to choose a treatment before you have tested it."
   },
   {
    act:"ACT III · THE EXAMINATION",sceneTitle:"The observations start to matter",
-   narrative:["The case record now offers findings that can test your working hypothesis. Nothing needs to be invented to make the situation interesting.",
-    "An available finding reads: "+examination,
-    "The next examination should target the uncertainty that could change clinical management. Explain the purpose, position and safety considerations before using it."],
+   narrative:["Now imagine explaining the next assessment step to the person in front of you. Choose a test because it can answer a useful question—not just because you know how to perform it.",
+    "The documented finding is: "+examination,
+    "Before testing, explain what you want to learn and check that the step is appropriate and safe for this person."],
    tension:thought(2),
    question:story.examPrompt,
    insight:story.examReason||strongest,
@@ -118,11 +118,11 @@ export function buildClinicalEpisodes(story:CaseStory,guide:CaseLearningGuide):C
   },
   {
    act:"ACT IV · THE CROSSROADS",sceneTitle:"One patient, several explanations",
-   narrative:["The evidence is on the page; now you have to weigh competing explanations.",
-    differentialNames.length>1?"Other possibilities deserve attention: "+differentialNames.slice(0,3).join("; ")+".":"A safe differential considers both the leading hypothesis and important alternatives.",
-    "The teaching interpretation is "+guide.condition+". This remains a working explanation that must fit the observed pattern."],
+   narrative:["You have a few clues, but a clue is not the same as an answer. Compare the possible explanations with what this person has actually reported and what you have observed.",
+    differentialNames.length>1?"Other possibilities to compare include: "+differentialNames.slice(0,3).join("; ")+".":"Keep the main possibility and important alternatives in mind.",
+    "The teaching interpretation is "+guide.condition+". Does it fit the documented pattern, or is there something that does not quite fit?"],
    tension:thought(3),
-   question:"Which finding supports this working explanation—and what would make you reconsider it?",
+   question:"Which clue best supports your current explanation? What would make you pause and think again?",
    insight:story.diagnosisReason,
    moment:"Clinical confidence should rise from evidence, not from recognizing a familiar label."
   },
@@ -132,17 +132,17 @@ export function buildClinicalEpisodes(story:CaseStory,guide:CaseLearningGuide):C
     "The case's proposed action: "+plan,
     story.urgent?"Communicate the warning signs, act within the urgent medical pathway and document the handover.":"The plan must connect the patient's goal with feasible, appropriately monitored intervention."],
    tension:thought(4),
-   question:story.urgent?"What must happen before routine physiotherapy could be considered?":"How will you explain the plan and its purpose to this person?",
+   question:story.urgent?"How would you explain why routine treatment must wait and what needs to happen next?":"How would you explain your plan to this person in simple words, and how does it help with their goal?",
    insight:first(guide.chapters.management,0,plan),
    moment:"The right clinical decision is sometimes to act—and sometimes to stop."
   },
   {
    act:"ACT VI · THE NEXT CHAPTER",sceneTitle:"A follow-up that has not happened yet",
-   narrative:["The story does not offer a made-up happy ending. A simulated case can teach decision-making without pretending treatment succeeded.",
+   narrative:["You cannot know the outcome before it happens. Instead, decide what you would check at the next visit and how that information would guide your next step.",
     "The follow-up plan considers: "+monitoring,
-    story.urgent?"The team should confirm appropriate medical escalation and only reconsider rehabilitation after clearance.":"Choose a baseline that can be repeated. The next decision depends on response, function, safety and the person's priorities."],
+    story.urgent?"The team should confirm appropriate medical escalation and only reconsider rehabilitation after clearance.":"Choose a measure you can repeat, then compare symptoms and everyday function before changing the plan."],
    tension:thought(5),
-   question:"What specific change would make you progress, modify or stop the plan?",
+   question:"At the next visit, what would you check before deciding to continue, change, or stop the plan?",
    insight:first(guide.chapters.followUp,0,monitoring),
    moment:"The next chapter belongs to reassessment—not a promised recovery."
   },
