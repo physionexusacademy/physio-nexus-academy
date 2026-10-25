@@ -69,7 +69,8 @@ export function createMultidisciplinaryCases(templates:Template[]){
  const regionById:Record<string,NewRegion>={};
  for(const t of templates){
   const config=settings[t.cohort];
-  // Five functional contexts remain available to Clinical Arena.\n  for(let i=0;i<5;i++){
+  // Five functional contexts remain available to Clinical Arena.
+  for(let i=0;i<5;i++){
    const v=i+1,id=`multi-${t.key}-${v}`;
    const patient=config.patients[i],context=config.contexts[i],goal=config.goals[i];
    // Clinical condition is kept out of initial patient speech and history.

@@ -46,7 +46,8 @@ function referralSafety(title:string,category:string,urgent:boolean):string[]{
   return ["REFERRAL: suspected fracture/dislocation, a hot swollen joint with fever, neurovascular compromise or inability to bear weight after significant trauma needs urgent medical assessment. Persistent unexplained pain, recurrent instability or failure to progress merits planned review by an appropriate medical/orthopaedic clinician; routine MSK rehabilitation is suitable only when serious pathology has been reasonably excluded."];
  return [urgent?"SAFETY FIRST: pause routine physiotherapy and arrange urgent medical assessment; use emergency services if the patient is acutely unwell or time-critical red flags are present.":"REFERRAL DECISION: if findings are outside physiotherapy scope, unexplained, worsening or inconsistent with the working diagnosis, discuss with the appropriate medical team. Match urgency to severity; emergency features must not be sent to a routine outpatient clinic."];
 }
-\nexport function getLabEpisode(id:string):CaseStory|null{
+
+export function getLabEpisode(id:string):CaseStory|null{
  const core=coreMskCases.find(c=>c.id===id);
  if(core){
   const flow=coreMskFlows[core.id],exam=getClinicalExamination(core);
