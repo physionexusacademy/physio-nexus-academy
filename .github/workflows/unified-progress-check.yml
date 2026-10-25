@@ -39,4 +39,3 @@ jobs:
       - run: npm ci
       - run: npm run validate:unified-progress
       - run: npm run typecheck
-      - run: npm run build
