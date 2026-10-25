@@ -5,6 +5,8 @@ import { chromium } from "playwright";
 const baseURL = "http://127.0.0.1:4173";
 const server = spawn("npm", ["run", "dev", "--", "--hostname", "127.0.0.1", "--port", "4173"], {
   stdio: ["ignore", "pipe", "pipe"],
+  // Put npm and its Next.js child in a dedicated process group so cleanup can terminate both.
+  detached: true,
   env: { ...process.env, PORT: "4173", NEXT_TELEMETRY_DISABLED: "1" },
 });
 let serverOutput = "";
@@ -26,6 +28,18 @@ async function waitForServer(page) {
 }
 
 let browser;
+function signalServerGroup(signal) {
+  if (!server.pid) return;
+  try {
+    // detached:true makes the child PID the process-group ID on GitHub's Linux runner.
+    process.kill(-server.pid, signal);
+  } catch (error) {
+    if (error?.code !== "ESRCH") {
+      try { server.kill(signal); } catch {}
+    }
+  }
+}
+
 try {
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
@@ -90,9 +104,15 @@ try {
   process.exitCode = 1;
 } finally {
   if (browser) await browser.close();
-  server.kill("SIGTERM");
-  // Do not let a lingering npm/Next child keep the CI runner alive after the assertions finish.
+  // Kill the whole process group: killing only npm leaves Next.js descendants alive,
+  // which keep inherited stdout/stderr pipes open and prevent Node from exiting.
+  signalServerGroup("SIGTERM");
   const shutdownDeadline = Date.now() + 3_000;
   while (server.exitCode === null && Date.now() < shutdownDeadline) await delay(100);
-  if (server.exitCode === null) server.kill("SIGKILL");
+  if (server.exitCode === null) signalServerGroup("SIGKILL");
+  // Also wait for stdio to close; this is the condition that was hanging CI after PASS logs.
+  await Promise.race([
+    new Promise((resolve) => server.once("close", resolve)),
+    delay(2_000),
+  ]);
 }
