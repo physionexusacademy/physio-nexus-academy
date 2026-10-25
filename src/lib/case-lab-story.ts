@@ -54,13 +54,13 @@ function referralSafety(title:string,category:string,urgent:boolean):string[]{
   return{
    id:core.id,category:labCategory(core.specialty,core.safety),patient:core.patient,opening:flow.chief,
    scene:[core.history,"At this point you know what brought the patient to clinic, but you have not yet tested a working diagnosis. Choose what to ask and examine next.",
-    "A useful question: which finding would make you change your mind or seek urgent medical evaluation?"],
+    "Before treatment, decide whether this patient is safe for routine physiotherapy today. Screen for relevant red flags, explain what would change your plan, and match any referral to the urgency of the findings."],
    history:flow.historyQuestions,bestHistory:flow.bestHistory,findings:core.findings,
-   examPrompt:exam.question,examChoices:[...exam.options],examCorrect:exam.correct,examReason:exam.why,
+   examPrompt:exam.question+" Before proceeding, what safety finding would require you to stop and escalate?",examChoices:[...exam.options],examCorrect:exam.correct,examReason:exam.why+" Do not infer that red flags are absent unless they were actually screened; escalate suspected emergencies immediately.",
    diagnosisPrompt:core.question,diagnosisChoices:core.options,diagnosisCorrect:core.correct,diagnosisReason:core.explanation,
    differentials:core.options.map((name,i)=>({diagnosis:name,reasoning:i===core.correct?core.explanation:"Compare this possibility with the patient history, objective findings and safety screening. Use targeted testing before drawing a conclusion."})),
    management:[flow.treatment[flow.treatmentCorrect],flow.treatmentWhy],
-   progression:[core.safety?"Ensure emergency evaluation before starting routine physiotherapy.":"Review functional goals and objective change before changing rehabilitation load.",
+   progression:[core.safety?"Ensure emergency evaluation before starting routine physiotherapy.":"Confirm the relevant red-flag screen and whether routine physiotherapy is appropriate before loading.",
      "Document symptom behavior, function and adverse responses; adjust the plan if the pattern changes.",...referralSafety(core.title,labCategory(core.specialty,core.safety),!!core.safety)],
    learning:[core.explanation,flow.differentialWhy,"The patient story, safety screening, examination and decision must all fit together.",...referralSafety(core.title,labCategory(core.specialty,core.safety),!!core.safety)],
    urgent:!!core.safety,fullyAuthored:false,references:[]

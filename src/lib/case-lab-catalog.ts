@@ -56,7 +56,7 @@ const featuredFocus:Record<string,string>={
 const rawLabCaseCards:LabCaseCard[]=[
  ...clinicalCaseIndex.map((c,index)=>({
    id:"deep-"+c.slug,href:"/case-lab/"+c.slug,
-   category:labCategory(c.specialty),patient:patientDisplayName("deep-"+c.slug,index),
+   category:labCategory(c.specialty),patient:"Clinical case",
    hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,keywords:c.title+" "+c.summary,focus:featuredFocus[c.slug]||"General / Other",
    kind:"Clinical deep dive" as const,minutes:c.estimatedTime,safety:c.specialty.includes("Red Flags")
  })),
