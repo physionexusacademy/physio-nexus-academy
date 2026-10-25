@@ -123,6 +123,7 @@ export default async function TreatmentPlanDetailPage({ params }: PageProps) {
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         <PlanSection title="Assessment" items={plan.assessment} icon={Stethoscope} tone="border-cyan-100 bg-cyan-50/70" />
         <PlanSection title="Red Flags & Safety" items={plan.redFlags} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
+        <p className="mt-4 rounded-xl border border-sky-100 bg-sky-50/70 p-3 text-sm leading-6 text-navy-700">Treatment plans are educational frameworks, not fixed prescriptions. Adapt exercise selection and dosage to the individual assessment, irritability, comorbidities, patient goals and response over time. Escalate or refer when red flags, unexpected deterioration or scope-of-practice concerns are present.</p>
         <PlanSection title="Outcome Measures" items={plan.outcomeMeasures} icon={ClipboardCheck} tone="border-blue-100 bg-blue-50/70" />
         <PlanSection title="Modalities" items={plan.modalities} icon={Activity} tone="border-amber-100 bg-amber-50/70" />
         <PlanSection title="Manual Therapy" items={plan.manualTherapy} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
