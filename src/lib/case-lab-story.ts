@@ -137,6 +137,6 @@ export function adaptDetailedCase(item:ClinicalCase,guide?:ClinicalCaseGuide):Ca
   diagnosisPrompt:"Which clinical explanation best fits the information available, and which alternative must not be missed?",
   diagnosisChoices:item.differentials.map(d=>d.diagnosis),diagnosisCorrect:-1,diagnosisReason:item.reasoning.join(" "),
   differentials:item.differentials,management:[...item.management,...referral],progression:[...(item.progression||[]),...referral],
-  learning:[...item.learningPoints,...referral],urgent,fullyAuthored:true,references:item.references,guide,teachingDiagnosis:item.finalDiagnosis
+  learning:[...item.learningPoints,...referral],urgent,fullyAuthored:false,references:item.references,guide,teachingDiagnosis:item.finalDiagnosis
  };
 }
