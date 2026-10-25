@@ -21,6 +21,16 @@ import { MSKStoryExperience } from "@/components/msk/MSKStoryExperience";
 import { getAtlasEntriesForCondition } from "@/lib/clinical-visual-atlas";
 import { getCloudinaryUrl } from "@/lib/cloudinary";
 
+const relatedTreatmentPlans: Record<string, { slug: string; label: string }> = {
+  "lateral-ankle-sprain": { slug: "lateral-ankle-sprain", label: "Lateral Ankle Sprain" },
+  "acl-injury": { slug: "acl-reconstruction-rehabilitation", label: "ACL Reconstruction Rehabilitation" },
+  "hamstring-strain": { slug: "hamstring-strain", label: "Hamstring Strain" },
+  "knee-osteoarthritis": { slug: "knee-osteoarthritis", label: "Knee Osteoarthritis" },
+  "hip-osteoarthritis": { slug: "hip-osteoarthritis", label: "Hip Osteoarthritis" },
+  "cervical-radiculopathy": { slug: "cervical-radiculopathy", label: "Cervical Radiculopathy" },
+  "carpal-tunnel-syndrome": { slug: "carpal-tunnel-syndrome", label: "Carpal Tunnel Syndrome" },
+};
+
 type PageProps = { params: Promise<{ slug: string }> };
 
 export const dynamic = "force-static";
@@ -278,12 +288,12 @@ export default async function MSKConditionPage({ params }: PageProps) {
             </div>
             <p className="mt-4 text-sm font-bold text-cyan-800">Explore examination tests →</p>
           </a>
-          <a href="/treatment-plans" className="group rounded-2xl border border-emerald-100 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm">
+          <a href={relatedTreatmentPlans[item.slug] ? "/treatment-plans/" + relatedTreatmentPlans[item.slug].slug : "/treatment-plans"} className="group rounded-2xl border border-emerald-100 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm">
             <div className="flex items-center gap-3">
               <div className="rounded-xl bg-emerald-50 p-3 text-emerald-800"><Dumbbell className="h-5 w-5" /></div>
               <div>
-                <h3 className="font-bold text-navy-800 group-hover:text-emerald-800">Treatment Plans</h3>
-                <p className="mt-1 text-sm text-navy-600">Connect assessment findings with staged rehabilitation and progression.</p>
+                <h3 className="font-bold text-navy-800 group-hover:text-emerald-800">{relatedTreatmentPlans[item.slug] ? "Treatment Plan: " + relatedTreatmentPlans[item.slug].label : "Treatment Plans"}</h3>
+                <p className="mt-1 text-sm text-navy-600">{relatedTreatmentPlans[item.slug] ? "Open the matching rehabilitation pathway for this condition." : "Connect assessment findings with staged rehabilitation and progression."}</p>
               </div>
             </div>
             <p className="mt-4 text-sm font-bold text-emerald-800">Browse rehabilitation plans →</p>
