@@ -1,0 +1,94 @@
+import { spawn } from "node:child_process";
+import { setTimeout as delay } from "node:timers/promises";
+import { chromium } from "playwright";
+
+const baseURL = "http://127.0.0.1:4173";
+const server = spawn("npm", ["run", "dev", "--", "--hostname", "127.0.0.1", "--port", "4173"], {
+  stdio: ["ignore", "pipe", "pipe"],
+  env: { ...process.env, PORT: "4173", NEXT_TELEMETRY_DISABLED: "1" },
+});
+let serverOutput = "";
+server.stdout.on("data", (chunk) => { serverOutput += chunk.toString(); });
+server.stderr.on("data", (chunk) => { serverOutput += chunk.toString(); });
+
+async function waitForServer(page) {
+  const deadline = Date.now() + 120_000;
+  let lastError;
+  while (Date.now() < deadline) {
+    if (server.exitCode !== null) throw new Error("Next.js dev server exited early:\n" + serverOutput);
+    try {
+      const response = await page.goto(baseURL, { waitUntil: "domcontentloaded", timeout: 8_000 });
+      if (response && response.status() < 500) return;
+    } catch (error) { lastError = error; }
+    await delay(1_000);
+  }
+  throw new Error("Next.js dev server did not become ready. " + String(lastError) + "\n" + serverOutput);
+}
+
+let browser;
+try {
+  browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const pageErrors = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await waitForServer(page);
+  await page.goto(baseURL, { waitUntil: "networkidle", timeout: 30_000 });
+  await page.locator('[data-pna-unified-progress="v1"]').first().waitFor({ state: "visible", timeout: 20_000 });
+  console.log("PASS homepage: unified learning progress card renders");
+
+  await page.goto(baseURL + "/daily-challenge", { waitUntil: "domcontentloaded", timeout: 30_000 });
+  await page.locator('[data-pna-unified-progress="v1"]').waitFor({ state: "visible", timeout: 20_000 });
+  await page.locator("#dc-name").waitFor({ state: "visible", timeout: 20_000 });
+  await page.locator("#dc-email").waitFor({ state: "visible", timeout: 20_000 });
+  if (!(await page.locator("#dc-name").getAttribute("required")) || !(await page.locator("#dc-email").getAttribute("required"))) {
+    throw new Error("Daily Challenge onboarding fields are missing required validation.");
+  }
+  console.log("PASS Daily Challenge: progress card and required onboarding fields render (no real submission made)");
+
+  await page.goto(baseURL + "/clinical-arena", { waitUntil: "domcontentloaded", timeout: 30_000 });
+  await page.locator('[data-pna-unified-progress="v1"]').waitFor({ state: "visible", timeout: 20_000 });
+  const casePanel = page.locator("#clinical-arena-case");
+  await casePanel.waitFor({ state: "visible", timeout: 20_000 });
+
+  // Complete one six-stage simulated case with generic choices. This only writes browser-local progress;
+  // it does not submit data to the public leaderboard or call a patient-facing service.
+  const askQuestion = casePanel.locator("button").filter({ hasText: /^Ask:/ }).first();
+  await askQuestion.click();
+  await casePanel.getByRole("button", { name: /Finish history stage/ }).click();
+  await casePanel.getByRole("button", { name: /Continue to/ }).click();
+
+  for (let stageIndex = 1; stageIndex < 6; stageIndex++) {
+    await casePanel.locator("button.pna-question").first().waitFor({ state: "visible", timeout: 10_000 });
+    await casePanel.locator("button.pna-question").first().click();
+    await casePanel.getByRole("button", { name: /Check my decision/ }).click();
+    if (stageIndex < 5) {
+      await casePanel.getByRole("button", { name: /Continue to/ }).click();
+    } else {
+      await casePanel.getByRole("button", { name: /Next patient|View results/ }).click();
+    }
+  }
+
+  await page.waitForFunction(() => {
+    const raw = localStorage.getItem("pna-unified-progress-v1");
+    if (!raw) return false;
+    try {
+      const value = JSON.parse(raw);
+      return Array.isArray(value.eventIds) && value.eventIds.some((id) => id.startsWith("clinical-arena:arena:"))
+        && Array.isArray(value.activeDates) && value.activeDates.length > 0
+        && value.currentStreak >= 1;
+    } catch { return false; }
+  }, { timeout: 15_000 });
+  console.log("PASS Clinical Arena: completing a case records a unique activity and starts the streak");
+
+  if (pageErrors.length) throw new Error("Browser console errors:\n" + pageErrors.join("\n"));
+  console.log("PASS browser smoke tests completed with no uncaught page errors");
+} catch (error) {
+  console.error(error);
+  console.error("Captured Next.js dev server output:\n" + serverOutput);
+  process.exitCode = 1;
+} finally {
+  if (browser) await browser.close();
+  server.kill("SIGTERM");
+}
