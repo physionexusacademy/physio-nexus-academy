@@ -266,6 +266,9 @@ export default async function MSKConditionPage({ params }: PageProps) {
           <BookOpen className="h-5 w-5 text-navy-700" />
           <h2 className="font-bold text-navy-800">Evidence sources</h2>
         </div>
+        <p className="mt-3 rounded-xl border border-sky-100 bg-sky-50/70 p-3 text-sm leading-6 text-navy-700">
+          Use these sources as a starting point for clinical learning. A reference being listed here does not, by itself, establish that every recommendation on this page is strongly supported. Check the original publication, study design, population and limitations before applying findings to an individual patient.
+        </p>
         <ul className="mt-4 space-y-3">
           {item.references.map((reference) => (
             <li key={reference.url}>
