@@ -21,6 +21,16 @@ import { MSKStoryExperience } from "@/components/msk/MSKStoryExperience";
 import { getAtlasEntriesForCondition } from "@/lib/clinical-visual-atlas";
 import { getCloudinaryUrl } from "@/lib/cloudinary";
 
+const relatedTreatmentPlans: Record<string, { slug: string; label: string }> = {
+  "lateral-ankle-sprain": { slug: "lateral-ankle-sprain", label: "Lateral Ankle Sprain" },
+  "acl-injury": { slug: "acl-reconstruction-rehabilitation", label: "ACL Reconstruction Rehabilitation" },
+  "hamstring-strain": { slug: "hamstring-strain", label: "Hamstring Strain" },
+  "knee-osteoarthritis": { slug: "knee-osteoarthritis", label: "Knee Osteoarthritis" },
+  "hip-osteoarthritis": { slug: "hip-osteoarthritis", label: "Hip Osteoarthritis" },
+  "cervical-radiculopathy": { slug: "cervical-radiculopathy", label: "Cervical Radiculopathy" },
+  "carpal-tunnel-syndrome": { slug: "carpal-tunnel-syndrome", label: "Carpal Tunnel Syndrome" },
+};
+
 type PageProps = { params: Promise<{ slug: string }> };
 
 export const dynamic = "force-static";
@@ -232,6 +242,15 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <ListSection title="Differential Diagnosis" items={item.differentials} icon={Search} tone="border-violet-100 bg-violet-50/70" />
         <ListSection title="Investigations / Imaging" items={item.investigations} icon={Stethoscope} tone="border-blue-100 bg-blue-50/70" />
       </div>
+
+      {relatedTreatmentPlans[item.slug] ? (
+        <section className="mt-8 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50 p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Continue your clinical learning</p>
+          <h2 className="mt-2 text-2xl font-bold text-navy-800">Treatment Plan: {relatedTreatmentPlans[item.slug].label}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-navy-600">Move from assessment to a staged rehabilitation pathway, with progression guided by the patient’s presentation, goals and response.</p>
+          <a href={"/treatment-plans/" + relatedTreatmentPlans[item.slug].slug} className="mt-5 inline-flex items-center rounded-full bg-emerald-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-800">Open matching treatment plan →</a>
+        </section>
+      ) : null}
 
       <section id="msk-rehab" className="mt-10 scroll-mt-24 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
         <div className="border-b border-emerald-100 p-6 sm:p-8">
