@@ -1,6 +1,7 @@
 import { spineSpecialTests } from "./msk-special-tests-spine";
 import { upperLimbSpecialTests } from "./msk-special-tests-upper";
 import { lowerLimbSpecialTests } from "./msk-special-tests-lower";
+import { additionalSpecialTests, additionalTechniqueGuides } from "./msk-special-tests-additions";
 import { spineTechniqueGuides } from "./msk-special-tests-technique-spine";
 import { upperTechniqueGuides } from "./msk-special-tests-technique-upper";
 import { lowerTechniqueGuides } from "./msk-special-tests-technique-lower";
@@ -12,8 +13,8 @@ export type { MskSpecialTest };
 
 export type GuidedMskSpecialTest = MskSpecialTest & { technique: MskTechniqueGuide };
 
-const originalTests: MskSpecialTest[] = [...spineSpecialTests, ...upperLimbSpecialTests, ...lowerLimbSpecialTests];
-const guides: MskTechniqueGuide[] = [...spineTechniqueGuides, ...upperTechniqueGuides, ...lowerTechniqueGuides];
+const originalTests: MskSpecialTest[] = [...spineSpecialTests, ...upperLimbSpecialTests, ...lowerLimbSpecialTests, ...additionalSpecialTests];
+const guides: MskTechniqueGuide[] = [...spineTechniqueGuides, ...upperTechniqueGuides, ...lowerTechniqueGuides, ...additionalTechniqueGuides];
 const guideByName = new Map(guides.map((guide) => [guide.name, guide]));
 
 // Fail the build rather than publish a card without therapist hands and force directions.
