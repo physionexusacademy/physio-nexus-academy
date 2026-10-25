@@ -115,21 +115,27 @@ function referralSafety(title:string,category:string,urgent:boolean):string[]{
  };
 }
 export function adaptDetailedCase(item:ClinicalCase,guide?:ClinicalCaseGuide):CaseStory{
- const urgent=item.specialty.includes("Red Flags") || item.slug==="low-back-pain-new-bladder-saddle-symptoms";
+ const urgent=item.specialty.includes("Red Flags") || item.slug==="low-back-pain-new-bladder-saddle-symptoms" ||
+  !!item.redFlags?.some(flag=>/bladder|bowel|saddle|stroke|chest pain|acute breathlessness|rapidly progressive|emergency/i.test(flag));
+ const referral=referralSafety(item.title,labCategory(item.specialty,urgent),urgent);
+ const ageOrContext=item.presentation[0]||item.summary;
  return{
-  id:"deep-"+item.slug,category:labCategory(item.specialty,urgent),patient:"Detailed teaching consultation",
+  id:"deep-"+item.slug,category:labCategory(item.specialty,urgent),patient:ageOrContext,
   opening:item.presentation[0]||item.summary,
-  scene:[...item.presentation,item.summary],
+  scene:[...item.presentation,
+   "Pause before choosing a treatment: identify the patient's main functional goal, the findings that support your working hypothesis, and what would make you stop and escalate.",
+   "This is a simulated educational case. Use the information provided; do not assume unreported examination findings, vital signs or treatment responses."],
   history:item.presentation.slice(0,5).map((answer,i)=>[
-   ["What brings you to rehabilitation today?","What changes have you noticed recently?","How has this affected your usual activities?","What is your biggest concern or goal right now?","Is there anything else you want us to understand?"][i],
+   ["What brings you to rehabilitation today?","What has changed and when did it start?","How is this affecting daily activities?","What is the patient's main goal or concern?","What other symptoms or medical history could change the plan?"][i],
    answer
   ] as [string,string]),
   bestHistory:0,findings:item.keyFindings,
-  examPrompt:"Which clinical examination step would you prioritize? Several steps may be useful; record your choice, then compare the full assessment sequence in the debrief.",
-  examChoices:(guide?.examinationSequence||item.keyFindings).slice(0,4),examCorrect:-1,examReason:item.reasoning[0]||"",
-  diagnosisPrompt:"Which clinical explanation best fits the full picture?",
+  examPrompt:"Which assessment step should come next, and what safety question must be answered before proceeding?",
+  examChoices:(guide?.examinationSequence||item.keyFindings).slice(0,4),examCorrect:-1,
+  examReason:[item.reasoning[0]||"",...(item.redFlags||[]).map(x=>"Safety screen: "+x)].filter(Boolean).join(" "),
+  diagnosisPrompt:"Which clinical explanation best fits the information available, and which alternative must not be missed?",
   diagnosisChoices:item.differentials.map(d=>d.diagnosis),diagnosisCorrect:-1,diagnosisReason:item.reasoning.join(" "),
-  differentials:item.differentials,management:item.management,progression:[...(item.progression||[]),...referralSafety(item.title,labCategory(item.specialty,urgent),urgent)],learning:[...item.learningPoints,...referralSafety(item.title,labCategory(item.specialty,urgent),urgent)],
-  urgent,fullyAuthored:true,references:item.references,guide,teachingDiagnosis:item.finalDiagnosis
+  differentials:item.differentials,management:[...item.management,...referral],progression:[...(item.progression||[]),...referral],
+  learning:[...item.learningPoints,...referral],urgent,fullyAuthored:true,references:item.references,guide,teachingDiagnosis:item.finalDiagnosis
  };
 }
