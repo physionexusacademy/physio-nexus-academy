@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import Link from "next/link";
 import {ArrowLeft,ArrowRight,BookOpen,CalendarClock,BarChart3,CheckCircle2,Flame,ShieldCheck,Sparkles,Trophy} from "lucide-react";
 import {DailyChallengeClient} from "./DailyChallengeClient";
+import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 import {DailyHallOfFame,DailyLeaderboard} from "@/components/daily-challenge/DailyLeaderboard";
 import "./daily-challenge.css";
 
@@ -34,6 +35,7 @@ export default function DailyChallengePage(){
      </div>
     </div>
    </header>
+   <UnifiedProgressCard />
    <section className="mt-6 grid items-start gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,.8fr)]">
     <div id="play-daily"><DailyChallengeClient/></div>
     <div id="full-leaderboard" className="scroll-mt-28"><DailyLeaderboard title="Public leaderboard"/></div>
