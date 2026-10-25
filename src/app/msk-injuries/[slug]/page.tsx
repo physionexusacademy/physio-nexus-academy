@@ -243,15 +243,6 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <ListSection title="Investigations / Imaging" items={item.investigations} icon={Stethoscope} tone="border-blue-100 bg-blue-50/70" />
       </div>
 
-      {relatedTreatmentPlans[item.slug] ? (
-        <section className="mt-8 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50 p-6 sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Continue your clinical learning</p>
-          <h2 className="mt-2 text-2xl font-bold text-navy-800">Treatment Plan: {relatedTreatmentPlans[item.slug].label}</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-navy-600">Move from assessment to a staged rehabilitation pathway, with progression guided by the patient’s presentation, goals and response.</p>
-          <a href={"/treatment-plans/" + relatedTreatmentPlans[item.slug].slug} className="mt-5 inline-flex items-center rounded-full bg-emerald-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-800">Open matching treatment plan →</a>
-        </section>
-      ) : null}
-
       <section id="msk-rehab" className="mt-10 scroll-mt-24 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
         <div className="border-b border-emerald-100 p-6 sm:p-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">Complete Rehabilitation Plan</p>
@@ -280,11 +271,44 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <ListSection title="Clinical Pearls" items={item.clinicalPearls} icon={HeartPulse} tone="border-teal-100 bg-teal-50/70" />
       </div>
 
+      <section className="mt-10 rounded-3xl border border-cyan-100 bg-gradient-to-br from-white via-cyan-50/50 to-white p-5 sm:p-7">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-700">Continue learning</p>
+        <h2 className="mt-2 text-2xl font-bold text-navy-800">Connect assessment with management</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-navy-600">
+          Use the related PNA learning pathways to explore examination techniques and structured rehabilitation. A test result should always be interpreted alongside the history, full examination and clinical presentation.
+        </p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <a href="/msk-special-tests" className="group rounded-2xl border border-cyan-100 bg-white p-5 transition hover:border-cyan-300 hover:shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-cyan-50 p-3 text-cyan-800"><ClipboardCheck className="h-5 w-5" /></div>
+              <div>
+                <h3 className="font-bold text-navy-800 group-hover:text-cyan-800">MSK Special Tests</h3>
+                <p className="mt-1 text-sm text-navy-600">Review test setup, technique and cautious interpretation.</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm font-bold text-cyan-800">Explore examination tests →</p>
+          </a>
+          <a href={relatedTreatmentPlans[item.slug] ? "/treatment-plans/" + relatedTreatmentPlans[item.slug].slug : "/treatment-plans"} className="group rounded-2xl border border-emerald-100 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-emerald-50 p-3 text-emerald-800"><Dumbbell className="h-5 w-5" /></div>
+              <div>
+                <h3 className="font-bold text-navy-800 group-hover:text-emerald-800">{relatedTreatmentPlans[item.slug] ? "Treatment Plan: " + relatedTreatmentPlans[item.slug].label : "Treatment Plans"}</h3>
+                <p className="mt-1 text-sm text-navy-600">{relatedTreatmentPlans[item.slug] ? "Open the matching rehabilitation pathway for this condition." : "Connect assessment findings with staged rehabilitation and progression."}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm font-bold text-emerald-800">Browse rehabilitation plans →</p>
+          </a>
+        </div>
+      </section>
+
       <section className="mt-8 rounded-2xl border border-grey-200 bg-white p-6">
         <div className="flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-navy-700" />
           <h2 className="font-bold text-navy-800">Evidence sources</h2>
         </div>
+        <p className="mt-3 rounded-xl border border-sky-100 bg-sky-50/70 p-3 text-sm leading-6 text-navy-700">
+          Use these sources as a starting point for clinical learning. A reference being listed here does not, by itself, establish that every recommendation on this page is strongly supported. Check the original publication, study design, population and limitations before applying findings to an individual patient.
+        </p>
         <ul className="mt-4 space-y-3">
           {item.references.map((reference) => (
             <li key={reference.url}>
