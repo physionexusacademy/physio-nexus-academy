@@ -67,7 +67,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,
    minutes:"7–10 min",safety:!!c.safety
  })),
- ...multidisciplinaryCases.map((c,index)=>{
+ ...multidisciplinaryCases.filter(c=>/-1$/.test(c.id)).map((c,index)=>{
    const flow=multidisciplinaryFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
