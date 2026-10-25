@@ -307,9 +307,9 @@ export function CaseLabLibrary({cases,categories}:Props){
               {patient.safety?<span className="cl-category">SAFETY FIRST</span>:<span className="cl-category">{patient.kind==="Clinical deep dive"?"MASTERCLASS":"CLINICAL LESSON"}</span>}
              </div>
              <div className="mt-6">
-              <p className="cl-story-label">{patient.focus} · {patient.difficulty} · 7 CHAPTERS</p>
-              <h4 className="cl-case-title mt-3 line-clamp-3">{patient.hook}</h4>
-              <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{patient.patient}</p>
+              <h4 className="cl-case-title line-clamp-2">{patient.patient}</h4>
+              <p className="mt-3 text-[15px] font-medium leading-7 text-slate-700">{patient.hook}</p>
+              <p className="cl-story-label mt-4">{patient.focus} · {patient.difficulty} · 7 CHAPTERS</p>
              </div>
              <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-5">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500"><Clock3 className="h-4 w-4"/>{patient.minutes}</span>
