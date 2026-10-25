@@ -14,6 +14,7 @@ on:
       - "src/components/learning/**"
       - "src/lib/unified-progress.ts"
       - "scripts/validate-unified-progress.ts"
+      - "scripts/test-unified-progress-browser.mjs"
       - "src/components/manual-therapy/**"
       - "src/lib/manual-therapy-mastery*.ts"
       - "src/lib/manual-therapy.ts"
@@ -74,6 +75,14 @@ jobs:
 
       - name: Validate unified learning streaks and XP
         run: node --experimental-strip-types scripts/validate-unified-progress.ts
+
+      - name: Install Chromium for browser smoke tests
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+
+      - name: Browser smoke test for learning progress flows
+        run: node scripts/test-unified-progress-browser.mjs
 
       - name: Type-check (report separately from build)
         continue-on-error: true
