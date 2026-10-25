@@ -261,6 +261,36 @@ export default async function MSKConditionPage({ params }: PageProps) {
         <ListSection title="Clinical Pearls" items={item.clinicalPearls} icon={HeartPulse} tone="border-teal-100 bg-teal-50/70" />
       </div>
 
+      <section className="mt-10 rounded-3xl border border-cyan-100 bg-gradient-to-br from-white via-cyan-50/50 to-white p-5 sm:p-7">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-700">Continue learning</p>
+        <h2 className="mt-2 text-2xl font-bold text-navy-800">Connect assessment with management</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-navy-600">
+          Use the related PNA learning pathways to explore examination techniques and structured rehabilitation. A test result should always be interpreted alongside the history, full examination and clinical presentation.
+        </p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <a href="/msk-special-tests" className="group rounded-2xl border border-cyan-100 bg-white p-5 transition hover:border-cyan-300 hover:shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-cyan-50 p-3 text-cyan-800"><ClipboardCheck className="h-5 w-5" /></div>
+              <div>
+                <h3 className="font-bold text-navy-800 group-hover:text-cyan-800">MSK Special Tests</h3>
+                <p className="mt-1 text-sm text-navy-600">Review test setup, technique and cautious interpretation.</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm font-bold text-cyan-800">Explore examination tests →</p>
+          </a>
+          <a href="/treatment-plans" className="group rounded-2xl border border-emerald-100 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-emerald-50 p-3 text-emerald-800"><Dumbbell className="h-5 w-5" /></div>
+              <div>
+                <h3 className="font-bold text-navy-800 group-hover:text-emerald-800">Treatment Plans</h3>
+                <p className="mt-1 text-sm text-navy-600">Connect assessment findings with staged rehabilitation and progression.</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm font-bold text-emerald-800">Browse rehabilitation plans →</p>
+          </a>
+        </div>
+      </section>
+
       <section className="mt-8 rounded-2xl border border-grey-200 bg-white p-6">
         <div className="flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-navy-700" />
