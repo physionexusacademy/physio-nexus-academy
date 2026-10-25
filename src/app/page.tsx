@@ -35,6 +35,7 @@ import "./daily-challenge/daily-challenge.css";
 import "./home-premium.css";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { InstallApp } from "@/components/InstallApp";
+import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
@@ -108,6 +109,7 @@ export default async function HomePage() {
       </div>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
+      <UnifiedProgressCard />
 
       {/* Flagship destination: open to every PNA visitor, not nested under the MSK Hub. */}
       <section data-pna-home-flagship="daily-clinical-challenge-v2" className="dc-flagship-shell" aria-labelledby="pna-daily-flagship-title">
