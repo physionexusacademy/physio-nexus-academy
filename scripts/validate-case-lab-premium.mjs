@@ -41,7 +41,7 @@ assert(experience.includes('data-pna-case-lab-lesson="continuous-clinical-file-v
 for(const section of ["The patient arrives","The consultation","Physical examination","Clinical reasoning","Management decision","Follow-up and reassessment","Evidence and references"]){
  assert(experience.includes(section),"Clinical narrative section missing: "+section);
 }
-assert(experience.includes("story.history.map"),"Patient/physiotherapist dialogue must use authored history pairs");
+assert(experience.includes("dialogueHistory.map"),"Patient/physiotherapist dialogue must use authored history pairs");
 assert(experience.includes("story.findings"),"Case reader must show case-provided findings");
 assert(experience.includes("story.references"),"Case reader must expose case-specific references when available");
 assert(experience.includes("no measured recovery outcome is assumed"),"Reader must not invent follow-up outcomes");
