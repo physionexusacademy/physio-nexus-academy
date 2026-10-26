@@ -1,0 +1,462 @@
+/* =========================================================
+   PNA Hero — World-class redesign (Oct 2026)
+   Clean, professional, medical-education aesthetic.
+   Scoped only to .pna-hero* classes. No legacy conflicts.
+   ========================================================= */
+
+.pna-hero {
+  position: relative;
+  padding: 28px 0 12px;
+  background:
+    radial-gradient(ellipse 80% 60% at 85% -10%, #c8f0f8 0%, transparent 55%),
+    linear-gradient(180deg, #f3fbfe 0%, #f8fdff 40%, #ffffff 100%);
+  color: #143b53;
+  overflow: visible;
+}
+
+.pna-hero-inner {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* ---------- Main stage card ---------- */
+.pna-hero-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: end;
+  gap: 0;
+  min-height: 440px;
+  border-radius: 32px;
+  border: 1px solid rgba(120, 190, 210, 0.45);
+  background:
+    radial-gradient(ellipse at 78% 22%, #7adceb 0%, #b4edec 28%, transparent 58%),
+    linear-gradient(125deg, #f7ffff 6%, #d4f6f7 48%, #9edceb 100%);
+  box-shadow:
+    0 24px 60px -40px rgba(14, 92, 123, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+}
+
+.pna-hero-content {
+  position: relative;
+  z-index: 3;
+  padding: 48px 32px 48px 48px;
+  max-width: 560px;
+}
+
+.pna-hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  color: #087982;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pna-hero-title {
+  margin: 0;
+  color: #123355;
+  font: 800 clamp(40px, 5.2vw, 68px) / 1.02 Georgia, Cambria, "Times New Roman", serif;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.pna-hero-title span {
+  display: block;
+  color: #0a4a5c;
+}
+
+.pna-hero-promises {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pna-hero-promises li {
+  margin: 0;
+  color: #1a516c;
+  font-size: clamp(16px, 1.55vw, 21px);
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.pna-hero-lead {
+  margin: 16px 0 0;
+  max-width: 420px;
+  color: #3d657a;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.pna-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.pna-hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 22px;
+  background: #083d6c;
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 12px 24px -14px rgba(8, 61, 108, 0.55);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.pna-hero-btn-primary:hover {
+  background: #065b78;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px -12px rgba(8, 61, 108, 0.5);
+}
+
+.pna-hero-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 4px;
+  color: #0d626f;
+  font-size: 14px;
+  font-weight: 750;
+  transition: color 0.2s;
+}
+
+.pna-hero-btn-secondary:hover {
+  color: #064459;
+}
+
+/* Founder portrait */
+.pna-hero-portrait {
+  position: relative;
+  z-index: 2;
+  display: block;
+  height: 100%;
+  min-height: 440px;
+  align-self: stretch;
+}
+
+.pna-hero-portrait img {
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 12px 20px rgba(9, 81, 104, 0.18));
+}
+
+/* ---------- Quick access rail ---------- */
+.pna-hero-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pna-hero-rail a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #d4edf1;
+  color: #1a4761;
+  font-size: 13px;
+  font-weight: 750;
+  box-shadow: 0 8px 18px -16px #175d78;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.pna-hero-rail a:hover {
+  transform: translateY(-2px);
+  border-color: #9ad6e0;
+  box-shadow: 0 12px 22px -14px #175d78;
+}
+
+/* ---------- Search + shortcuts ---------- */
+.pna-hero-search-block {
+  position: relative;
+  margin-top: 16px;
+}
+
+.pna-hero-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 58px;
+  padding: 5px 6px 5px 20px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #cbe6ed;
+  box-shadow: 0 15px 28px -24px #135877;
+  color: #33839a;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pna-hero-search:focus-within {
+  border-color: #099e9b;
+  box-shadow: 0 0 0 3px rgba(46, 214, 199, 0.18);
+}
+
+.pna-hero-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 15px;
+  color: #204860;
+}
+
+.pna-hero-search input::placeholder {
+  color: #6d8b9d;
+}
+
+.pna-hero-search button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #048e92;
+  color: white;
+  transition: background 0.2s;
+}
+
+.pna-hero-search button:hover {
+  background: #056c81;
+}
+
+.pna-hero-results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 40;
+  border: 1px solid #c6e5e7;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 20px 50px -25px #145677;
+  padding: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.pna-hero-results a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 11px;
+  color: #0d626b;
+  transition: background 0.15s;
+}
+
+.pna-hero-results a:hover {
+  background: #edf9f8;
+}
+
+.pna-hero-results a span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.pna-hero-results strong {
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.pna-hero-results small {
+  font-size: 12px;
+  color: #687e8d;
+}
+
+.pna-hero-results p {
+  padding: 14px;
+  font-size: 13px;
+  color: #6d7e86;
+  margin: 0;
+}
+
+.pna-hero-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.pna-hero-shortcuts a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  min-height: 68px;
+  background: linear-gradient(145deg, #ffffff, #edfafe);
+  border: 1px solid #d4edf1;
+  border-radius: 16px;
+  box-shadow: 0 14px 24px -24px #175d78;
+  color: #1a4761;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.pna-hero-shortcuts a:hover {
+  transform: translateY(-2px);
+  border-color: #9ad6e0;
+  box-shadow: 0 16px 28px -20px #175d78;
+}
+
+.pna-hero-shortcuts a > svg:first-child {
+  flex: none;
+  color: #058b93;
+}
+
+.pna-hero-shortcuts a > svg:last-child {
+  flex: none;
+  margin-left: auto;
+  color: #287e91;
+}
+
+.pna-hero-shortcuts span {
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .pna-hero-stage {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .pna-hero-content {
+    padding: 36px 28px 24px;
+    max-width: 100%;
+  }
+
+  .pna-hero-portrait {
+    min-height: 320px;
+    height: 320px;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  .pna-hero-title {
+    font-size: clamp(34px, 7vw, 48px);
+  }
+}
+
+@media (max-width: 640px) {
+  .pna-hero {
+    padding: 16px 0 8px;
+  }
+
+  .pna-hero-inner {
+    width: calc(100% - 20px);
+  }
+
+  .pna-hero-stage {
+    border-radius: 24px;
+  }
+
+  .pna-hero-content {
+    padding: 28px 20px 20px;
+  }
+
+  .pna-hero-kicker {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .pna-hero-title {
+    font-size: clamp(30px, 8vw, 38px);
+    line-height: 1.05;
+  }
+
+  .pna-hero-promises li {
+    font-size: 16px;
+  }
+
+  .pna-hero-lead {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .pna-hero-actions {
+    margin-top: 20px;
+    gap: 10px;
+  }
+
+  .pna-hero-btn-primary {
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+
+  .pna-hero-btn-secondary {
+    font-size: 13px;
+  }
+
+  .pna-hero-portrait {
+    min-height: 260px;
+    height: 260px;
+  }
+
+  .pna-hero-rail {
+    gap: 8px;
+  }
+
+  .pna-hero-rail a {
+    padding: 9px 13px;
+    font-size: 12px;
+  }
+
+  .pna-hero-search {
+    height: 52px;
+    padding-left: 14px;
+    border-radius: 15px;
+  }
+
+  .pna-hero-search input {
+    font-size: 14px;
+  }
+
+  .pna-hero-search button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .pna-hero-shortcuts {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .pna-hero-shortcuts a {
+    min-height: 58px;
+    padding: 14px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pna-hero * {
+    transition: none !important;
+  }
+}
