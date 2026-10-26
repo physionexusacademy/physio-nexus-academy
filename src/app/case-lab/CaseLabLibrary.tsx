@@ -79,7 +79,12 @@ function PatientCard({patient,index}:{patient:LabCaseCard;index:number}){
    )}
    <div className={hasIdentity?"mt-4":"mt-6"}>
     <p className="cl-story-label">{patient.focus} · {patient.difficulty} · 7 CHAPTERS</p>
+    {/* Easy English primary — international audience */}
     <h4 className="cl-case-title mt-3 line-clamp-3">{patient.hook}</h4>
+    {/* Roman Urdu meaning — local learners */}
+    {patient.voiceUrdu&&(
+     <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-500 italic">{patient.voiceUrdu}</p>
+    )}
     {!hasIdentity&&(
      <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{patient.patient}</p>
     )}
@@ -139,12 +144,11 @@ export function CaseLabLibrary({cases,categories}:Props){
    if(level!=="All levels"&&c.difficulty!==level)return false;
    if(mode==="Case lessons"&&c.kind!=="Interactive scenario")return false;
    if(mode==="Deep dives"&&c.kind!=="Clinical deep dive")return false;
-   return !needle||[c.patient,c.patientName,c.lifeLine,c.hook,c.category,c.kind,c.keywords,c.focus]
+   return !needle||[c.patient,c.patientName,c.lifeLine,c.hook,c.voiceUrdu,c.category,c.kind,c.keywords,c.focus]
     .filter(Boolean).join(" ").toLocaleLowerCase().includes(needle);
   });
  },[cases,category,query,focus,level,mode]);
 
- // Prefer real-identity cases first when filters are default (stronger first impression)
  const orderedMatches=useMemo(()=>{
   if(query||focus!=="All focuses"||level!=="All levels"||mode!=="All experiences")return matches;
   const withName=matches.filter(c=>c.patientName);
@@ -272,9 +276,7 @@ export function CaseLabLibrary({cases,categories}:Props){
      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
       <div>
        <p className="cl-eyebrow"><Compass className="h-4 w-4"/> CLINIC WAITING ROOM</p>
-       <h2 id="case-lab-specialties" className="mt-2 font-serif text-2xl font-bold text-slate-900 sm:text-3xl">
-        Who is next?
-       </h2>
+       <h2 id="case-lab-specialties" className="mt-2 font-serif text-2xl font-bold text-slate-900 sm:text-3xl">Who is next?</h2>
        <p className="mt-2 text-sm leading-7 text-slate-600">
         Choose a specialty, then open a named patient. Phase 1 identities lead the list so every session starts with a real person.
        </p>
@@ -293,8 +295,7 @@ export function CaseLabLibrary({cases,categories}:Props){
          const Icon=icons[name]||Stethoscope;
          const active=category===name;
          return (
-          <button type="button" key={name} onClick={()=>chooseSpecialty(name)}
-           aria-pressed={active} data-active={active}
+          <button type="button" key={name} onClick={()=>chooseSpecialty(name)} aria-pressed={active} data-active={active}
            className="cl-specialty-choice group flex min-w-0 flex-row items-center gap-2 rounded-xl border border-transparent px-3 py-3 text-left transition hover:border-teal-300 hover:bg-teal-50">
            <Icon className="h-5 w-5 shrink-0 text-teal-700 group-data-[active=true]:text-white" aria-hidden="true"/>
            <span className="min-w-0 flex-1 text-sm font-semibold leading-5">{name}</span>
@@ -381,7 +382,10 @@ export function CaseLabLibrary({cases,categories}:Props){
               <span className="cl-category text-[10px]">{p.safety?"SAFETY FIRST":p.kind==="Clinical deep dive"?"MASTERCLASS":"LESSON"}</span>
               <p className="mt-2 font-serif text-base font-bold text-slate-900">{p.patientName}</p>
               <p className="mt-0.5 text-[11px] font-medium text-teal-800">{p.lifeLine}</p>
-              <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-600">{p.hook}</p>
+              <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-700">{p.hook}</p>
+              {p.voiceUrdu&&(
+               <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-slate-500 italic">{p.voiceUrdu}</p>
+              )}
               <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-800">Meet patient <ArrowRight className="h-3.5 w-3.5"/></span>
              </Link>
             ))}
@@ -420,8 +424,9 @@ export function CaseLabLibrary({cases,categories}:Props){
 
     <footer className="mt-10 flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
      <ShieldAlert className="mt-1 h-5 w-5 shrink-0 text-teal-700"/>
-     These are educational simulations with realistic South Asian names and clinic contexts. Several encounters share a condition with different lives and goals.
-     The diagnosis is held until you reason through the story. Escalate urgent warning signs rather than continuing routine treatment.
+     These are educational simulations with realistic South Asian names and clinic contexts.
+     Complaints are written in clear English for international learners, with a short Roman Urdu meaning underneath for local students.
+     Escalate urgent warning signs rather than continuing routine treatment.
     </footer>
    </div>
   </div>
