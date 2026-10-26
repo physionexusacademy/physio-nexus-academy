@@ -81,8 +81,8 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
 
     <section className="mt-8" aria-label="Clinical history">
      <SectionTitle number="02" title="The consultation" caption="A focused history helps the clinician understand symptoms, function and safety."/>
-     {story.history.length>0?<div className="cl-case-dialogue">
-      {story.history.map(([question,answer],index)=><div className="cl-case-dialogue-turn" key={index}>
+     {dialogueHistory.length>0?<div className="cl-case-dialogue">
+      {dialogueHistory.map(([question,answer],index)=><div className="cl-case-dialogue-turn" key={index}>
        <div className="cl-case-doctor"><span>PHYSIOTHERAPIST</span><p>{question}</p></div>
        <div className="cl-case-patient"><span>PATIENT</span><p>{answer}</p></div>
       </div>)}
