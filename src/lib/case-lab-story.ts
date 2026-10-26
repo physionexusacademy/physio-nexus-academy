@@ -7,6 +7,7 @@ import {richerMskDiagnosisOptions} from "./case-lab-msk-differentials";
 import {multidisciplinaryCases,multidisciplinaryFlows,multidisciplinaryExams,multidisciplinaryTemplates} from "./clinical-arena-multispecialty";
 import {labCategory} from "./case-lab-catalog";
 import {getRealPatient,formatPatientLabel} from "./case-lab-real-patients";
+import {curatedEpisodes} from "./case-lab-curated-episodes";
 
 export type CaseStory={
  id:string;category:string;patient:string;opening:string;
@@ -36,6 +37,8 @@ function openingUrduLine(id:string){
 }
 
 export function getLabEpisode(id:string):CaseStory|null{
+ const authored=curatedEpisodes[id];
+ if(authored)return authored;
  const core=coreMskCases.find(c=>c.id===id);
  if(core){
   const flow=coreMskFlows[core.id],exam=getClinicalExamination(core);
