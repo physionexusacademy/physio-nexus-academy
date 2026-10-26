@@ -127,8 +127,9 @@ const groups: Group[] = [
 ];
 
 export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolean }) {
-  const [selected, setSelected] = useState<GroupId>("learn");
-  const active = groups.find(group => group.id === selected) ?? groups[0];
+  // Closed by default — open only when the visitor picks a pathway.
+  const [selected, setSelected] = useState<GroupId | null>(null);
+  const active = selected ? groups.find(group => group.id === selected) ?? null : null;
 
   useEffect(() => {
     const fragment = window.location.hash.replace("#pna-zone-", "");
@@ -136,6 +137,12 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
   }, []);
 
   const choose = (id: GroupId) => {
+    // Clicking the same card again collapses the panel.
+    if (selected === id) {
+      setSelected(null);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      return;
+    }
     setSelected(id);
     window.history.replaceState(null, "", "#pna-zone-" + id);
     // Let React render the selected panel before bringing it into view.
@@ -169,7 +176,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
               className={"pna-vision-pathway " + group.id + (selected === group.id ? " is-selected" : "")}
               onClick={() => choose(group.id)}
               aria-pressed={selected === group.id}
-              aria-controls="pna-pathway-details"
+              aria-controls={selected ? "pna-pathway-details" : undefined}
             >
               <span className="pna-vision-pathway-num">{group.number}</span>
               <strong>{group.title}</strong>
@@ -190,6 +197,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
           ))}
         </div>
 
+        {active ? (
         <section id="pna-pathway-details" className={"pna-sig-detail pna-sig-detail-" + active.id}
           aria-labelledby="pna-sig-active-heading" aria-live="polite">
           <div className="pna-sig-detail-meta" aria-hidden="true"><span><span className="pna-sig-detail-meta-dot"/> SELECTED PATHWAY</span><strong>{active.number} / 04</strong></div>
@@ -230,6 +238,11 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
           </div>
           <p className="pna-sig-access-note">Looking for something else? Select another pathway above or use the search bar.</p>
         </section>
+        ) : (
+          <p className="pna-sig-access-note" style={{marginTop: "1.25rem", textAlign: "center"}}>
+            Tap a pathway above to open its menu.
+          </p>
+        )}
       </div>
     </section>
   );
