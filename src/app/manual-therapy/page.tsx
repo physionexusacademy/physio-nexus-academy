@@ -87,22 +87,53 @@ const libraryItems = [
     evidence: approach.evidenceLabel,
   })),
 ];
-const libraryFamilies = libraryFamilyOrder.filter((name) => libraryItems.some((item) => item.family === name));
-
+const libraryFamilies = libraryFamilyOrder.filter((name) =>
+  libraryItems.some((item) => item.family === name),
+);
 
 export const metadata: Metadata = {
-  title: "Manual Therapy Techniques & Clinical Guide",
+  title: "World Manual Therapy Encyclopedia | Techniques & Clinical Guide",
   description:
-    "Explore manual therapy techniques with clinical reasoning, application principles, safety considerations and evidence-informed learning for physiotherapy students and professionals in Pakistan.",
-  keywords: ["manual therapy techniques", "manual therapy physiotherapy", "Maitland mobilization", "Mulligan concept", "myofascial release", "strain counterstrain", "physiotherapy clinical skills"],
+    "Explore 35+ manual therapy techniques with clinical reasoning, hand placement, dosage, safety and evidence-informed learning for physiotherapy students and professionals in Pakistan.",
+  keywords: [
+    "manual therapy techniques",
+    "manual therapy physiotherapy",
+    "Maitland mobilization",
+    "Mulligan concept",
+    "myofascial release",
+    "strain counterstrain",
+    "Kaltenborn mobilization",
+    "physiotherapy clinical skills",
+    "manual therapy training Pakistan",
+    "World Manual Therapy Encyclopedia",
+  ],
+  openGraph: {
+    title: "World Manual Therapy Encyclopedia | Physio Nexus Academy",
+    description:
+      "Trusted approaches, memorable clinical stories and deeper learning for manual therapy techniques used in physiotherapy practice.",
+    url: "https://physionexusacademy.com/manual-therapy",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "World Manual Therapy Encyclopedia | Physio Nexus Academy",
+    description:
+      "Clinical guide to major manual therapy systems for physiotherapy students and professionals.",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/manual-therapy",
   },
+  robots: { index: true, follow: true },
 };
 
 export default function ManualTherapyPage() {
   return (
-    <div className="container-content section-padding" data-pna-manual-theme="editorial-anatomy-luxe">
+    <div
+      className="container-content section-padding"
+      data-pna-manual-theme="editorial-anatomy-luxe"
+    >
       <EditorialManualEncyclopedia
         items={libraryItems}
         families={libraryFamilies}

@@ -4,20 +4,38 @@ import { Button } from "@/components/ui/Button";
 import { createPublicClient } from "@/lib/supabase/public";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Workshops in Pakistan",
+  title: "Physiotherapy Workshops in Pakistan | Karachi & Hyderabad",
   description:
-    "Explore hands-on physiotherapy workshops from Physio Nexus Academy, including clinical skills training in Karachi, Hyderabad and other cities in Pakistan.",
-  keywords: ["physiotherapy workshops Pakistan", "manual therapy workshops", "physiotherapy training Karachi", "physiotherapy workshops Hyderabad", "clinical skills workshops"],
+    "Explore hands-on physiotherapy workshops from Physio Nexus Academy including manual therapy, clinical skills and CPD training in Karachi, Hyderabad and other cities across Pakistan.",
+  keywords: [
+    "physiotherapy workshops Pakistan",
+    "physiotherapy workshops Karachi",
+    "physiotherapy workshops Hyderabad",
+    "manual therapy workshops",
+    "physiotherapy training Karachi",
+    "clinical skills workshops",
+    "CPD physiotherapy Pakistan",
+    "hands-on physiotherapy training",
+  ],
   openGraph: {
     title: "Physiotherapy Workshops in Pakistan | Physio Nexus Academy",
-    description: "Explore practical physiotherapy workshops and clinical skills training in Karachi, Hyderabad and other Pakistani cities.",
+    description:
+      "Practical physiotherapy workshops and clinical skills training in Karachi, Hyderabad and other Pakistani cities.",
     url: "https://physionexusacademy.com/workshops",
     siteName: "Physio Nexus Academy",
     type: "website",
+    locale: "en_PK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Physiotherapy Workshops in Pakistan | Physio Nexus Academy",
+    description:
+      "Hands-on clinical skills and CPD workshops for physiotherapy students and professionals.",
   },
   alternates: {
     canonical: "https://physionexusacademy.com/workshops",
   },
+  robots: { index: true, follow: true },
 };
 
 export const dynamic = "force-static";
@@ -30,7 +48,8 @@ export default async function WorkshopsPage() {
     month: "2-digit",
     day: "2-digit",
   }).formatToParts(new Date());
-  const datePart = (type: string) => dateParts.find((part) => part.type === type)?.value ?? "";
+  const datePart = (type: string) =>
+    dateParts.find((part) => part.type === type)?.value ?? "";
   const todayInPakistan = `${datePart("year")}-${datePart("month")}-${datePart("day")}`;
 
   const supabase = createPublicClient();
@@ -50,15 +69,22 @@ export default async function WorkshopsPage() {
       </h1>
       <p className="mt-4 max-w-2xl text-navy-600">
         Hands-on physiotherapy workshops connecting theory with real clinical
-        application in Karachi, Hyderabad and other cities where PNA schedules training.
+        application in Karachi, Hyderabad and other cities where PNA schedules
+        training.
       </p>
       <p className="mt-3 text-sm text-navy-500">
         Browse location information for{" "}
-        <a href="/locations/karachi" className="font-semibold text-teal-600 hover:underline">
+        <a
+          href="/locations/karachi"
+          className="font-semibold text-teal-600 hover:underline"
+        >
           Karachi
         </a>{" "}
         and{" "}
-        <a href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
+        <a
+          href="/locations/hyderabad"
+          className="font-semibold text-teal-600 hover:underline"
+        >
           Hyderabad
         </a>
         .
@@ -77,60 +103,62 @@ export default async function WorkshopsPage() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {workshops?.map((w) => {
           const isPast = Boolean(
-            w.is_past || (w.start_date && String(w.start_date).slice(0, 10) < todayInPakistan),
+            w.is_past ||
+              (w.start_date &&
+                String(w.start_date).slice(0, 10) < todayInPakistan),
           );
           return (
-          <div
-            key={w.id}
-            className="flex flex-col rounded-xl border border-grey-200 p-6"
-          >
-            <span className="inline-block w-fit rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-              {isPast ? "Past" : "Upcoming"}
-            </span>
-            <h2 className="mt-4 font-heading text-lg font-semibold text-navy-800">
-              {w.title}
-            </h2>
-            {w.summary && (
-              <p className="mt-2 text-sm text-navy-500">{w.summary}</p>
-            )}
-            <div className="mt-3 space-y-1.5 text-sm text-navy-500">
-              <p className="flex items-center gap-2">
-                <CalendarDays className="h-4 w-4 text-teal-500" />
-                {w.start_date
-                  ? new Date(w.start_date).toLocaleDateString()
-                  : "Date to be announced"}
-              </p>
-              <p className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-teal-500" />{" "}
-                {w.city || "City to be announced"}
-              </p>
-              <p className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-teal-500" />
-                {w.seat_limit
-                  ? `${w.seat_limit} seats`
-                  : "Seats to be announced"}
-              </p>
-            </div>
-            {!!w.topics?.length && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {w.topics.map((t: string) => (
-                  <span
-                    key={t}
-                    className="rounded-full bg-grey-100 px-2.5 py-1 text-xs text-navy-600"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            )}
-            <Button
-              href={`/workshops/${w.slug}`}
-              variant="outline"
-              className="mt-5"
+            <div
+              key={w.id}
+              className="flex flex-col rounded-xl border border-grey-200 p-6"
             >
-              {isPast ? "View workshop details" : "View details &amp; register"}
-            </Button>
-          </div>
+              <span className="inline-block w-fit rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
+                {isPast ? "Past" : "Upcoming"}
+              </span>
+              <h2 className="mt-4 font-heading text-lg font-semibold text-navy-800">
+                {w.title}
+              </h2>
+              {w.summary && (
+                <p className="mt-2 text-sm text-navy-500">{w.summary}</p>
+              )}
+              <div className="mt-3 space-y-1.5 text-sm text-navy-500">
+                <p className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-teal-500" />
+                  {w.start_date
+                    ? new Date(w.start_date).toLocaleDateString()
+                    : "Date to be announced"}
+                </p>
+                <p className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-teal-500" />{" "}
+                  {w.city || "City to be announced"}
+                </p>
+                <p className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-teal-500" />
+                  {w.seat_limit
+                    ? `${w.seat_limit} seats`
+                    : "Seats to be announced"}
+                </p>
+              </div>
+              {!!w.topics?.length && (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {w.topics.map((t: string) => (
+                    <span
+                      key={t}
+                      className="rounded-full bg-grey-100 px-2.5 py-1 text-xs text-navy-600"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <Button
+                href={`/workshops/${w.slug}`}
+                variant="outline"
+                className="mt-5"
+              >
+                {isPast ? "View workshop details" : "View details &amp; register"}
+              </Button>
+            </div>
           );
         })}
       </div>

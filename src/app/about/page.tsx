@@ -3,12 +3,35 @@ import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "About Physio Nexus Academy | Founder & Mission",
+  title: "About Physio Nexus Academy | Founder, Mission & Vision",
   description:
-    "Learn about Physio Nexus Academy, founded and led by Dr. Sajjad Raza PT, including its purpose, vision, mission and physiotherapy education model in Pakistan.",
+    "Learn about Physio Nexus Academy — founded and led by Dr. Sajjad Raza PT. Discover our purpose, vision, mission and practical physiotherapy education model serving students, professionals and patients across Pakistan.",
+  keywords: [
+    "about Physio Nexus Academy",
+    "Dr Sajjad Raza PT",
+    "physiotherapy academy Pakistan",
+    "physiotherapy education Karachi",
+    "PNA mission vision",
+  ],
+  openGraph: {
+    title: "About Physio Nexus Academy | Founder & Mission",
+    description:
+      "Physio Nexus Academy was established to bridge the gap between physiotherapy theory and real clinical practice under the leadership of Dr. Sajjad Raza PT.",
+    url: "https://physionexusacademy.com/about",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Physio Nexus Academy",
+    description:
+      "Purpose, vision and mission of Physio Nexus Academy — practical physiotherapy education in Pakistan.",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/about",
   },
+  robots: { index: true, follow: true },
 };
 
 export const revalidate = 60;

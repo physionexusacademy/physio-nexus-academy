@@ -14,20 +14,37 @@ import {
 } from "@/lib/treatment-plans";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Treatment Plans",
+  title: "Condition-Based Physiotherapy Treatment Plans",
   description:
-    "Condition-based physiotherapy treatment plans covering assessment, red flags, modalities, manual therapy, exercise, progression and referral criteria.",
-  keywords: ["physiotherapy treatment plans", "rehabilitation protocols", "MSK rehabilitation", "physiotherapy exercise prescription", "clinical pathways physiotherapy"],
+    "Evidence-informed physiotherapy treatment plans covering assessment, red flags, modalities, manual therapy, exercise prescription, progression and referral criteria for common MSK and clinical conditions.",
+  keywords: [
+    "physiotherapy treatment plans",
+    "rehabilitation protocols",
+    "MSK rehabilitation",
+    "physiotherapy exercise prescription",
+    "clinical pathways physiotherapy",
+    "condition based physiotherapy",
+    "physiotherapy management plans Pakistan",
+  ],
   openGraph: {
     title: "Physiotherapy Treatment Plans | Physio Nexus Academy",
-    description: "Condition-based physiotherapy pathways covering assessment, red flags, exercise progression, self-management and referral criteria.",
+    description:
+      "Condition-based physiotherapy pathways covering assessment, red flags, exercise progression, self-management and referral criteria.",
     url: "https://physionexusacademy.com/treatment-plans",
     siteName: "Physio Nexus Academy",
     type: "website",
+    locale: "en_PK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Physiotherapy Treatment Plans | Physio Nexus Academy",
+    description:
+      "Structured clinical pathways for assessment, treatment and progression in physiotherapy practice.",
   },
   alternates: {
     canonical: "https://physionexusacademy.com/treatment-plans",
   },
+  robots: { index: true, follow: true },
 };
 
 export default function TreatmentPlansPage() {
@@ -41,9 +58,9 @@ export default function TreatmentPlansPage() {
           Condition-Based Physiotherapy Treatment Plans
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-7 text-emerald-50 sm:text-lg">
-          Start with assessment and red flags, then build a complete management pathway:
-          outcome measures, modalities, manual therapy, exercise prescription, home program,
-          progression and escalation criteria.
+          Start with assessment and red flags, then build a complete management
+          pathway: outcome measures, modalities, manual therapy, exercise
+          prescription, home program, progression and escalation criteria.
         </p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
           <span className="rounded-full bg-white/10 px-4 py-2">
@@ -60,14 +77,33 @@ export default function TreatmentPlansPage() {
 
       <section className="mt-8 grid gap-4 md:grid-cols-4">
         {[
-          { icon: Stethoscope, title: "Assess", text: "History, objective testing, function and differential screening." },
-          { icon: ShieldCheck, title: "Screen", text: "Red flags, precautions and referral thresholds before treatment." },
-          { icon: Activity, title: "Treat", text: "Select useful modalities and manual therapy only when they support the goal." },
-          { icon: Dumbbell, title: "Progress", text: "Build exercise, load, function and self-management step by step." },
+          {
+            icon: Stethoscope,
+            title: "Assess",
+            text: "History, objective testing, function and differential screening.",
+          },
+          {
+            icon: ShieldCheck,
+            title: "Screen",
+            text: "Red flags, precautions and referral thresholds before treatment.",
+          },
+          {
+            icon: Activity,
+            title: "Treat",
+            text: "Select useful modalities and manual therapy only when they support the goal.",
+          },
+          {
+            icon: Dumbbell,
+            title: "Progress",
+            text: "Build exercise, load, function and self-management step by step.",
+          },
         ].map((item) => {
           const Icon = item.icon;
           return (
-            <div key={item.title} className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5">
+            <div
+              key={item.title}
+              className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5"
+            >
               <Icon className="h-6 w-6 text-emerald-700" />
               <h2 className="mt-3 font-bold text-navy-800">{item.title}</h2>
               <p className="mt-2 text-sm leading-6 text-navy-600">{item.text}</p>
@@ -96,7 +132,9 @@ export default function TreatmentPlansPage() {
 
         <div className="mt-8 space-y-8">
           {treatmentPlanCategories.map((category) => {
-            const plans = treatmentPlans.filter((plan) => plan.category === category);
+            const plans = treatmentPlans.filter(
+              (plan) => plan.category === category,
+            );
             return (
               <div key={category}>
                 <div className="flex items-center gap-2">
@@ -111,7 +149,9 @@ export default function TreatmentPlansPage() {
                       className="group rounded-2xl border border-grey-200 bg-white p-5 transition hover:-translate-y-1 hover:border-teal-200 hover:shadow-lg"
                     >
                       <HeartPulse className="h-5 w-5 text-teal-500" />
-                      <h4 className="mt-3 text-lg font-bold text-navy-800">{plan.name}</h4>
+                      <h4 className="mt-3 text-lg font-bold text-navy-800">
+                        {plan.name}
+                      </h4>
                       <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-600">
                         {plan.summary}
                       </p>
@@ -131,10 +171,11 @@ export default function TreatmentPlansPage() {
       <section className="mt-12 rounded-3xl border border-amber-200 bg-amber-50 p-6">
         <h2 className="font-bold text-navy-800">How to use these plans</h2>
         <p className="mt-2 text-sm leading-6 text-navy-600">
-          These are educational clinical pathways, not automatic prescriptions. A real patient
-          may need a different diagnosis, dosage, exercise choice, referral or medical treatment.
-          Red flags, comorbidities, post-operative restrictions, age, irritability and patient goals
-          always take priority over a template.
+          These are educational clinical pathways, not automatic prescriptions. A
+          real patient may need a different diagnosis, dosage, exercise choice,
+          referral or medical treatment. Red flags, comorbidities, post-operative
+          restrictions, age, irritability and patient goals always take priority
+          over a template.
         </p>
       </section>
     </div>
