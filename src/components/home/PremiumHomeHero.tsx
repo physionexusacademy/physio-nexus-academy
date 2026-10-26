@@ -86,20 +86,20 @@ export function PremiumHomeHero() {
             </div>
           </div>
 
+          {/* Real founder photo - forced to always show */}
           <a
             href="/founder"
             className="pna-hero-portrait"
             aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
-            style={{ position: "relative", display: "block", minHeight: 420, height: "100%" }}
           >
             <Image
-              src="/images/pna-founder-hero-sharp-v2.avif"
+              src="/images/founder-dr-sajjad.jpg"
               alt="Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
-              fill
+              width={480}
+              height={560}
               priority
-              unoptimized
+              className="pna-hero-photo"
               sizes="(max-width: 768px) 90vw, 480px"
-              style={{ objectFit: "cover", objectPosition: "center top" }}
             />
           </a>
         </div>
