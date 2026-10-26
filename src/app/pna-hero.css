@@ -1,5 +1,5 @@
 /* =========================================================
-   PNA Hero — Dark Premium Redesign (matching approved mockup)
+   PNA Hero — Dark Premium Redesign
    Large real founder photo + 4 working quick links
    ========================================================= */
 
@@ -132,20 +132,27 @@
   color: #fff !important;
 }
 
-/* Founder portrait — large */
+/* Founder portrait — large & always visible */
 .pna-hero-portrait {
   position: relative;
   z-index: 2;
-  display: block;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   height: 100%;
   min-height: 480px;
   align-self: stretch;
 }
 
-.pna-hero-portrait img {
+.pna-hero-photo {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  max-height: 520px;
   object-fit: cover;
   object-position: center top;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.35));
+  border-radius: 20px;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
 }
 
 /* ---------- Four quick-link buttons ---------- */
@@ -315,7 +322,7 @@
   }
 
   .pna-hero-content {
-    padding: 36px 28px 20px;
+    padding: 36px 28px 12px;
     max-width: 100%;
     text-align: center;
   }
@@ -334,10 +341,17 @@
   }
 
   .pna-hero-portrait {
-    min-height: 340px;
-    height: 340px;
-    max-width: 380px;
-    margin: 0 auto 12px;
+    min-height: auto;
+    height: auto;
+    max-width: 340px;
+    margin: 8px auto 16px;
+    order: -1; /* photo first on mobile if needed, or keep after text */
+  }
+
+  .pna-hero-photo {
+    max-width: 100%;
+    max-height: 380px;
+    border-radius: 18px;
   }
 
   .pna-hero-quicklinks {
@@ -351,7 +365,7 @@
   }
 
   .pna-hero-content {
-    padding: 28px 18px 16px;
+    padding: 28px 16px 12px;
   }
 
   .pna-hero-title {
@@ -363,8 +377,11 @@
   }
 
   .pna-hero-portrait {
-    min-height: 280px;
-    height: 280px;
+    max-width: 280px;
+  }
+
+  .pna-hero-photo {
+    max-height: 320px;
   }
 
   .pna-hero-quicklinks {
