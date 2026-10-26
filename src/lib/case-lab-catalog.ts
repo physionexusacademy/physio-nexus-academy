@@ -86,7 +86,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    const flow=multidisciplinaryFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-    category:labCategory(c.specialty,c.safety),title:c.title.replace(/: Scenario \\d+$/,""),patient:c.patient,
+    category:labCategory(c.specialty,c.safety),title:c.title.replace(/: Scenario \d+$/,""),patient:c.patient,
     hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
@@ -95,7 +95,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    const flow=expandedFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-    category:labCategory(c.specialty,c.safety),title:c.title.replace(/: Scenario \\d+$/,""),patient:c.patient,
+    category:labCategory(c.specialty,c.safety),title:c.title.replace(/: Scenario \d+$/,""),patient:c.patient,
     hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
