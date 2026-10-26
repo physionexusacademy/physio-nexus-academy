@@ -19,6 +19,7 @@ import {
   FlaskConical,
   FileBadge2,
   Sparkles,
+  MapPin,
 } from "lucide-react";
 
 const destinations = [
@@ -63,7 +64,7 @@ export function PremiumHomeHero() {
           <div className="pna-hero-content">
             <p className="pna-hero-kicker">
               <Sparkles size={14} aria-hidden="true" />
-              Learn · Practice · Grow
+              Evidence · Experience · Excellence
             </p>
 
             <h1 className="pna-hero-title">
@@ -71,15 +72,8 @@ export function PremiumHomeHero() {
               <span>Starts Here</span>
             </h1>
 
-            <ul className="pna-hero-promises" aria-label="What you get with PNA">
-              <li>Evidence-based learning.</li>
-              <li>Real clinical skills.</li>
-              <li>Built for Pakistan.</li>
-            </ul>
-
             <p className="pna-hero-lead">
-              The practice-focused physiotherapy platform for students, clinicians and patients —
-              knowledge, cases, workshops and care in one place.
+              Evidence-based learning. Real clinical skills. Built for Pakistan.
             </p>
 
             <div className="pna-hero-actions">
@@ -89,7 +83,6 @@ export function PremiumHomeHero() {
               </a>
               <a href="/founder" className="pna-hero-btn-secondary">
                 Meet the Founder
-                <ArrowRight size={16} aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -105,28 +98,36 @@ export function PremiumHomeHero() {
               fill
               priority
               unoptimized
-              sizes="(max-width: 768px) 85vw, 420px"
+              sizes="(max-width: 768px) 90vw, 480px"
             />
           </a>
         </div>
 
-        {/* Quick access rail */}
-        <div className="pna-hero-rail" aria-label="Quick access">
-          <a href="/knowledge-hub">
-            <BookOpen size={18} aria-hidden="true" />
-            Clinical Learning
+        {/* Four working quick links */}
+        <div className="pna-hero-quicklinks" aria-label="Quick actions">
+          <a href="/appointment" className="pna-hero-ql">
+            <CalendarDays size={20} aria-hidden="true" />
+            <span>Book Physiotherapy Appointment</span>
+            <ArrowRight size={16} aria-hidden="true" />
           </a>
-          <a href="/case-lab">
-            <BrainCircuit size={18} aria-hidden="true" />
-            Real Cases
+          <a href="/workshops" className="pna-hero-ql">
+            <Trophy size={20} aria-hidden="true" />
+            <span>Register for Workshop</span>
+            <ArrowRight size={16} aria-hidden="true" />
           </a>
-          <a href="/workshops">
-            <Trophy size={18} aria-hidden="true" />
-            Workshops & CPD
+          <a href="/knowledge-hub" className="pna-hero-ql">
+            <LibraryBig size={20} aria-hidden="true" />
+            <span>Knowledge Hub</span>
+            <ArrowRight size={16} aria-hidden="true" />
+          </a>
+          <a href="/symptom-checker" className="pna-hero-ql">
+            <Stethoscope size={20} aria-hidden="true" />
+            <span>Symptoms Checker</span>
+            <ArrowRight size={16} aria-hidden="true" />
           </a>
         </div>
 
-        {/* Search + shortcuts */}
+        {/* Search */}
         <div className="pna-hero-search-block" id="explore-pna">
           <form className="pna-hero-search" role="search" onSubmit={onSearch}>
             <Search size={20} aria-hidden="true" />
@@ -163,24 +164,6 @@ export function PremiumHomeHero() {
               )}
             </div>
           )}
-
-          <div className="pna-hero-shortcuts" aria-label="Popular starting points">
-            <a href="/appointment">
-              <CalendarDays size={18} aria-hidden="true" />
-              <span>Book Physiotherapy Appointment</span>
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-            <a href="/manual-therapy">
-              <Hand size={18} aria-hidden="true" />
-              <span>Learn Manual Therapy</span>
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-            <a href="/knowledge-hub">
-              <LibraryBig size={18} aria-hidden="true" />
-              <span>Knowledge Hub</span>
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-          </div>
         </div>
       </div>
     </section>
