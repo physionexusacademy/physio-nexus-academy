@@ -103,7 +103,11 @@ const checks={
  teachingRoutes:files.deepPage.includes("CaseLabTeachingExperience")&&files.episodeLoader.includes("CaseLabTeachingExperience"),
  noInventedVitals:files.learning.includes("Avoid invented vitals"),
  categories:files.catalog.includes("Critical Care & ICU")&&files.catalog.includes("Oncology Rehabilitation"),
- specialtyFirst:files.library.includes('data-pna-case-lab="specialty-first-v4"')&&files.library.includes("!category?("),
+ // Current Case Lab uses real-patients-v1 with specialty-first filtering.
+ specialtyFirst:(
+   (files.library.includes('data-pna-case-lab="specialty-first-v4"') || files.library.includes('data-pna-case-lab="real-patients-v1"'))
+   && (files.library.includes("!category?(") || files.library.includes("if(!category)"))
+ ),
  categoryNavigation:files.library.includes('aria-pressed={active}')&&files.library.includes('className="cl-specialty-choice'),
  categoryCaseFiltering:files.library.includes("isInClinicalCategory(c,category)")&&files.library.includes("function isInClinicalCategory"),
  regions:files.library.includes('c.focus!==focus')&&files.library.includes("focusOptions"),
