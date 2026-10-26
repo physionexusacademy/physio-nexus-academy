@@ -1,9 +1,10 @@
 "use client";
 import {useEffect,useRef,useState} from "react";
 import Link from "next/link";
-import {ArrowLeft,ArrowRight,BookOpen,BrainCircuit,Check,CheckCircle2,ChevronDown,ClipboardList,Clock3,LockKeyhole,RotateCcw,ShieldAlert,Sparkles,Stethoscope,Target} from "lucide-react";
+import {ArrowLeft,ArrowRight,BookOpen,BrainCircuit,Check,CheckCircle2,ChevronDown,Clock3,LockKeyhole,RotateCcw,ShieldAlert,Sparkles} from "lucide-react";
 import type {CaseStory} from "@/lib/case-lab-story";
 import {patientAnswer} from "@/lib/clinical-arena-patient-dialogue";
+import {RomanUrduHelp} from "./RomanUrduHelp";
 
 const chapters=["The encounter","Take the history","Examine the clues","Your working hypothesis","Clinical debrief"];
 const prompts=[
@@ -74,7 +75,7 @@ export function CaseLabExperience({story}: {story:CaseStory}){
       <h2 className="mt-3 font-heading text-3xl font-bold tracking-tight sm:text-[2.25rem]">{chapters[step]}</h2>
       <p className="cl-nudge mt-5">{story.urgent?<ShieldAlert className="mr-2 inline h-4 w-4 text-rose-700"/>:<Sparkles className="mr-2 inline h-4 w-4 text-teal-700"/>}{safeNudge}</p>
       {step===0?<div className="mt-7 space-y-5">
-       <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5"><p className="cl-story-label">MEET YOUR PATIENT</p><p className="mt-2 text-sm font-bold text-slate-700">{story.patient}</p><p className="cl-story-quote mt-5 text-[1.05rem]">“{patientLine(story.opening,"opening")}”</p></div>
+       <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5"><p className="cl-story-label">MEET YOUR PATIENT</p><p className="mt-2 text-sm font-bold text-slate-700">{story.patient}</p><p className="cl-story-quote mt-5 text-[1.05rem]">“{patientLine(story.opening,"opening")}”</p>{story.openingUrdu?<RomanUrduHelp text={story.openingUrdu}/>:null}</div>
        <div className="space-y-4">{story.scene.map((line,i)=><div key={i} className="flex items-start gap-4"><span className="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-xs font-extrabold text-teal-700">{i+1}</span><p className="text-[.96rem] leading-8 text-slate-700">{line}</p></div>)}</div>
        <div className="cl-reveal"><strong>The opening question:</strong> What details would make you change your first impression? Watch for onset, function, safety and symptom behavior.</div>
        <button className="cl-button w-full sm:w-auto" onClick={advance}>Start the patient interview <ArrowRight className="h-4 w-4"/></button>
