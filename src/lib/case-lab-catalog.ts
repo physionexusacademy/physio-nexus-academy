@@ -130,11 +130,10 @@ const curatedCaseIds = new Set<string>([
   "deep-copd-rehab-exertional-desaturation-clinical-reasoning",
   "deep-low-back-pain-new-bladder-saddle-symptoms",
   "deep-stroke-gait-balance-task-specific-rehab",
-  "deep-copd-post-exacerbation-pulmonary-rehab",
   "deep-acl-reconstruction-return-to-sport-readiness",
   // Eight distinct, authored MSK encounters
-  "shoulder-01", "knee-01", "hand-01", "back-01",
-  "ankle-01", "hip-01", "neck-01", "safety-01",
+  "shoulder-01", "hand-01", "back-01",
+  "ankle-01", "hip-01", "neck-01",
   // One scenario from each additional MSK / safety condition
   "expanded-02-1", "expanded-03-1", "expanded-04-1", "expanded-05-1",
   "expanded-06-1", "expanded-08-1", "expanded-10-1", "expanded-13-1",
@@ -151,6 +150,9 @@ const curatedCaseIds = new Set<string>([
   "multi-vest-posterior-1",
   "multi-onc-cipn-1",
   "multi-icu-weakness-1",
+  "multi-cardio-bronchiectasis-1",
+  "multi-peds-dcd-1",
+  "multi-ger-osteoporosis-1",
 ]);
 
 export const labCaseCards:LabCaseCard[]=rawLabCaseCards.filter(c=>curatedCaseIds.has(c.id));
