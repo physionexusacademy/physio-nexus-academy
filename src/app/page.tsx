@@ -466,7 +466,7 @@ export default async function HomePage() {
                     {article.title}
                   </h3>
                   <p className="mt-2 line-clamp-3 text-sm leading-6 text-navy-500">
-                    {article.summary}
+                    {article.excerpt}
                   </p>
                   <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-600">
                     Read article <ArrowRight className="h-4 w-4" />
