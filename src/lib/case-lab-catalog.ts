@@ -115,6 +115,44 @@ while([...grouped.values()].some(items=>items.length>0)){
   if(next)interleaved.push(next);
  }
 }
-export const labCaseCards:LabCaseCard[]=[...featured,...interleaved];
+
+/**
+ * The Case Lab intentionally presents a curated first collection of 50 cases.
+ * One scenario per condition is selected; repeated functional-context variants
+ * remain available in the source libraries but are not shown in this library.
+ */
+const curatedCaseIds = new Set<string>([
+  // Nine detailed, authored case guides
+  "deep-postpartum-running-stress-urinary-incontinence",
+  "deep-older-adult-recurrent-falls-orthostatic-symptoms",
+  "deep-overhead-athlete-shoulder-load-capacity",
+  "deep-runner-anterior-knee-pain-load-capacity",
+  "deep-copd-rehab-exertional-desaturation-clinical-reasoning",
+  "deep-low-back-pain-new-bladder-saddle-symptoms",
+  "deep-stroke-gait-balance-task-specific-rehab",
+  "deep-copd-post-exacerbation-pulmonary-rehab",
+  "deep-acl-reconstruction-return-to-sport-readiness",
+  // Eight distinct, authored MSK encounters
+  "shoulder-01", "knee-01", "hand-01", "back-01",
+  "ankle-01", "hip-01", "neck-01", "safety-01",
+  // One scenario from each additional MSK / safety condition
+  "expanded-02-1", "expanded-03-1", "expanded-04-1", "expanded-05-1",
+  "expanded-06-1", "expanded-08-1", "expanded-10-1", "expanded-13-1",
+  "expanded-14-1", "expanded-15-1", "expanded-16-1", "expanded-17-1",
+  "expanded-18-1", "expanded-20-1", "expanded-21-1", "expanded-22-1",
+  "expanded-24-1", "expanded-25-1", "expanded-27-1", "expanded-29-1",
+  "expanded-30-1", "expanded-32-1", "expanded-33-1", "expanded-34-1",
+  "expanded-35-1", "expanded-36-1",
+  // Seven additional, non-overlapping specialist presentations
+  "multi-neuro-parkinson-1",
+  "multi-peds-torticollis-1",
+  "multi-cardio-asthma-1",
+  "multi-cardio-hf-1",
+  "multi-vest-posterior-1",
+  "multi-onc-cipn-1",
+  "multi-icu-weakness-1",
+]);
+
+export const labCaseCards:LabCaseCard[]=rawLabCaseCards.filter(c=>curatedCaseIds.has(c.id));
 export const labCaseTotal=labCaseCards.length;
 export const realPatientCards=labCaseCards.filter(c=>!!c.patientName);
