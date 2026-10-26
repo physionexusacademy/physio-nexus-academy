@@ -23,11 +23,37 @@ import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 export const metadata: Metadata = {
   title: "Physiotherapy Knowledge Hub for Students & Clinicians",
   description:
-    "Study physiotherapy by specialty with evidence-informed MSK, neuro, cardiopulmonary and rehabilitation guides, clinical cases, quizzes and practical learning resources for students and clinicians in Pakistan.",
-  keywords: ["physiotherapy knowledge hub", "physiotherapy study resources", "MSK physiotherapy", "clinical reasoning physiotherapy", "physiotherapy students Pakistan", "evidence-informed physiotherapy"],
+    "Study physiotherapy by specialty with evidence-informed MSK, neurological, cardiopulmonary and rehabilitation guides, clinical cases, quizzes and practical learning resources for students and clinicians in Pakistan.",
+  keywords: [
+    "physiotherapy knowledge hub",
+    "physiotherapy study resources Pakistan",
+    "MSK physiotherapy learning",
+    "clinical reasoning physiotherapy",
+    "physiotherapy students Pakistan",
+    "evidence-informed physiotherapy",
+    "manual therapy study",
+    "physiotherapy treatment plans",
+    "clinical case studies physiotherapy",
+  ],
+  openGraph: {
+    title: "Physiotherapy Knowledge Hub | Physio Nexus Academy",
+    description:
+      "Structured physiotherapy learning portal — study by specialty, level and clinical application with MSK, neuro, cardio and rehabilitation resources.",
+    url: "https://physionexusacademy.com/knowledge-hub",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Physiotherapy Knowledge Hub | Physio Nexus Academy",
+    description:
+      "Evidence-informed physiotherapy learning resources for students and clinicians in Pakistan.",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/knowledge-hub",
   },
+  robots: { index: true, follow: true },
 };
 
 const specialtyIcons: Record<KnowledgeSpecialty, typeof Stethoscope> = {
@@ -59,7 +85,10 @@ const specialtyTones = [
 export default function KnowledgeHubPage() {
   const featured = allKnowledgeArticles
     .slice()
-    .sort((a, b) => (b.level === "Advanced" ? 1 : 0) - (a.level === "Advanced" ? 1 : 0))
+    .sort(
+      (a, b) =>
+        (b.level === "Advanced" ? 1 : 0) - (a.level === "Advanced" ? 1 : 0),
+    )
     .slice(0, 4);
 
   return (
@@ -72,8 +101,9 @@ export default function KnowledgeHubPage() {
           Study by specialty. Go deeper by level. Apply it in cases.
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-7 text-cyan-50 sm:text-lg">
-          A structured physiotherapy learning portal for students and professionals — from core
-          concepts to advanced clinical reasoning, evidence sources and case-based learning.
+          A structured physiotherapy learning portal for students and
+          professionals — from core concepts to advanced clinical reasoning,
+          evidence sources and case-based learning.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <a
@@ -119,8 +149,9 @@ export default function KnowledgeHubPage() {
               MSK Injury & Rehabilitation
             </h2>
             <p className="mt-3 text-sm leading-6 text-navy-600">
-              Study sprains, strains, tendinopathies, tendon ruptures, arthritis,
-              instability and nerve-compression conditions with tests and phased rehabilitation.
+              Study sprains, strains, tendinopathies, tendon ruptures,
+              arthritis, instability and nerve-compression conditions with tests
+              and phased rehabilitation.
             </p>
             <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-orange-700">
               Open clinical library
@@ -141,8 +172,8 @@ export default function KnowledgeHubPage() {
               Manual Therapy Mastery
             </h2>
             <p className="mt-3 text-sm leading-6 text-navy-600">
-              Study major manual-therapy systems with science, setup, hand placement,
-              dosage, safety, procedure and immediate reassessment.
+              Study major manual-therapy systems with science, setup, hand
+              placement, dosage, safety, procedure and immediate reassessment.
             </p>
             <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-violet-700">
               Open mastery library
@@ -165,7 +196,8 @@ export default function KnowledgeHubPage() {
             </h2>
             <p className="mt-3 text-sm leading-6 text-navy-600">
               Move from assessment and red flags to modalities, manual therapy,
-              exercise prescription, home program, progression and referral criteria.
+              exercise prescription, home program, progression and referral
+              criteria.
             </p>
             <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-teal-700">
               Browse treatment plans
@@ -175,15 +207,33 @@ export default function KnowledgeHubPage() {
         </div>
       </section>
 
-      <section className="mt-8 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/50 to-white p-6 shadow-sm sm:p-8" aria-labelledby="msk-special-tests-link">
+      <section
+        className="mt-8 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/50 to-white p-6 shadow-sm sm:p-8"
+        aria-labelledby="msk-special-tests-link"
+      >
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-700">New Clinical Skills Library</p>
-            <h2 id="msk-special-tests-link" className="mt-2 font-serif text-2xl font-bold text-navy-900 sm:text-3xl">MSK Special Tests — purpose, procedure & positive signs</h2>
-            <p className="mt-3 text-sm leading-7 text-navy-600">Browse 93 practical clinical tests across the spine, upper limb and lower limb. Learn patient positioning, therapist hand placement, step-by-step applying methods, clinical meaning and safety notes in simple English.</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-teal-700">
+              New Clinical Skills Library
+            </p>
+            <h2
+              id="msk-special-tests-link"
+              className="mt-2 font-serif text-2xl font-bold text-navy-900 sm:text-3xl"
+            >
+              MSK Special Tests — purpose, procedure & positive signs
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-navy-600">
+              Browse 93 practical clinical tests across the spine, upper limb
+              and lower limb. Learn patient positioning, therapist hand
+              placement, step-by-step applying methods, clinical meaning and
+              safety notes in simple English.
+            </p>
           </div>
-          <a href="/msk-special-tests" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800">
-            Open MSK Tests <ArrowRight className="h-4 w-4"/>
+          <a
+            href="/msk-special-tests"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800"
+          >
+            Open MSK Tests <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </section>
@@ -207,21 +257,26 @@ export default function KnowledgeHubPage() {
           {knowledgeSpecialties.map((specialty, index) => {
             const Icon = specialtyIcons[specialty.name];
             const count = allKnowledgeArticles.filter(
-              (article) => article.specialty === specialty.name
+              (article) => article.specialty === specialty.name,
             ).length;
 
             return (
               <a
                 key={specialty.slug}
                 href={"/knowledge-hub/specialty/" + specialty.slug}
-                className={"group relative overflow-hidden rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " + specialtyTones[index % specialtyTones.length]}
+                className={
+                  "group relative overflow-hidden rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " +
+                  specialtyTones[index % specialtyTones.length]
+                }
               >
                 <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/35 blur-2xl" />
                 <div className="relative">
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 shadow-sm">
                     <Icon className="h-6 w-6" />
                   </span>
-                  <h3 className="mt-4 text-xl font-bold text-navy-800">{specialty.name}</h3>
+                  <h3 className="mt-4 text-xl font-bold text-navy-800">
+                    {specialty.name}
+                  </h3>
                   <p className="mt-2 line-clamp-2 text-sm leading-6 text-navy-600">
                     {specialty.description}
                   </p>
@@ -268,7 +323,10 @@ export default function KnowledgeHubPage() {
               <a
                 key={article.slug}
                 href={"/knowledge-hub/" + article.slug}
-                className={"rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " + tones[index % tones.length]}
+                className={
+                  "rounded-3xl border bg-gradient-to-br p-6 transition hover:-translate-y-1 hover:shadow-lg " +
+                  tones[index % tones.length]
+                }
               >
                 <div className="flex flex-wrap gap-2">
                   <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-teal-700">
@@ -278,8 +336,12 @@ export default function KnowledgeHubPage() {
                     {level} Level
                   </span>
                 </div>
-                <h3 className="mt-4 text-xl font-bold text-navy-800">{article.title}</h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-navy-600">{article.excerpt}</p>
+                <h3 className="mt-4 text-xl font-bold text-navy-800">
+                  {article.title}
+                </h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-navy-600">
+                  {article.excerpt}
+                </p>
                 <div className="mt-5 flex items-center justify-between">
                   <span className="inline-flex items-center gap-1 text-xs font-semibold text-navy-400">
                     <Clock3 className="h-4 w-4" /> {article.readTime}
@@ -308,8 +370,9 @@ export default function KnowledgeHubPage() {
                 Symptoms → differential → diagnosis → treatment
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-indigo-50">
-                Work through evidence-based simulated cases and see exactly how clinical findings
-                change the diagnosis, urgency and rehabilitation plan.
+                Work through evidence-based simulated cases and see exactly how
+                clinical findings change the diagnosis, urgency and
+                rehabilitation plan.
               </p>
             </div>
           </div>
