@@ -256,6 +256,89 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Phase 3: clear next steps after the daily challenge */}
+      <section
+        className="border-b border-grey-200 bg-white py-10"
+        aria-labelledby="pna-next-steps-title"
+      >
+        <div className="container-content">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-teal-600">
+              Not sure what to do next?
+            </p>
+            <h2
+              id="pna-next-steps-title"
+              className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl"
+            >
+              Choose one clear next step
+            </h2>
+            <p className="mt-3 text-navy-500">
+              Pick the path that matches why you came here — no guessing, no
+              clutter.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <a
+              href="/case-lab"
+              className="group rounded-2xl border border-grey-200 bg-gradient-to-br from-white to-cyan-50/40 p-6 transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-lg"
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-teal-600">
+                Practice
+              </p>
+              <h3 className="mt-2 text-lg font-bold text-navy-800">
+                Open a real case
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-navy-500">
+                Work through patient-style clinical stories and build reasoning
+                step by step.
+              </p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-teal-700">
+                Go to Case Lab
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </a>
+            <a
+              href="/knowledge-hub"
+              className="group rounded-2xl border border-grey-200 bg-gradient-to-br from-white to-teal-50/40 p-6 transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-lg"
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-teal-600">
+                Study
+              </p>
+              <h3 className="mt-2 text-lg font-bold text-navy-800">
+                Read practical topics
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-navy-500">
+                Clear clinical explanations for students and clinicians —
+                evidence-based and easy to revise.
+              </p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-teal-700">
+                Open Knowledge Hub
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </a>
+            <a
+              href="/appointment"
+              className="group rounded-2xl border border-grey-200 bg-gradient-to-br from-white to-navy-50/50 p-6 transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-lg"
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-teal-600">
+                Care
+              </p>
+              <h3 className="mt-2 text-lg font-bold text-navy-800">
+                Book physiotherapy
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-navy-500">
+                Need personal support? Request a consultation or home visit in
+                supported areas.
+              </p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-teal-700">
+                Book appointment
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <UnifiedProgressCard />
 
       <div className="pna-home-lower">
@@ -274,7 +357,10 @@ export default async function HomePage() {
                   Approved CPD Provider
                 </p>
                 <p className="mt-1 font-semibold text-navy-800">
-                  The CPD Group · Provider #791052
+                  Officially approved · The CPD Group · #791052
+                </p>
+                <p className="mt-1 text-sm text-navy-500">
+                  Certificates you can verify. Learning you can trust.
                 </p>
               </div>
             </div>
@@ -302,15 +388,14 @@ export default async function HomePage() {
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-widest text-teal-600">
-                  Meet the Team
+                  Learn from clinicians
                 </p>
                 <h2 className="mt-1 text-2xl font-bold sm:text-3xl">
-                  Our Faculty
+                  Teachers who practice what they teach
                 </h2>
                 <p className="mt-3 max-w-2xl text-navy-500">
-                  Meet the professionals supporting practical learning,
-                  workshops, clinical education and rehabilitation training at
-                  PNA.
+                  Real clinicians guiding practical physiotherapy education,
+                  workshops and rehabilitation training at PNA.
                 </p>
               </div>
               <a
@@ -371,11 +456,15 @@ export default async function HomePage() {
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-widest text-teal-600">
-                  Hands-on Learning
+                  Hands-on skill days
                 </p>
                 <h2 className="mt-1 text-2xl font-bold sm:text-3xl">
-                  Upcoming Workshops
+                  Workshops you can join next
                 </h2>
+                <p className="mt-3 max-w-2xl text-navy-500">
+                  Practical sessions designed to turn theory into clinical
+                  confidence — with confirmed dates when available.
+                </p>
               </div>
               <a
                 href="/workshops"
@@ -481,14 +570,14 @@ export default async function HomePage() {
           <div className="container-content">
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-sm font-semibold uppercase tracking-widest text-teal-200">
-                Patient Care
+                Patient care
               </p>
               <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-                Need physiotherapy support?
+                Pain, injury or recovery support?
               </h2>
               <p className="mt-3 text-teal-100">
-                Check your symptoms first, then book a consultation or request a
-                home visit. Our team confirms availability before care is
+                Start with a quick symptom check, then book a consultation or
+                home visit. We confirm availability before anything is
                 scheduled.
               </p>
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
