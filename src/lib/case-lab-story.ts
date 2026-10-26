@@ -10,6 +10,8 @@ import {getRealPatient,formatPatientLabel} from "./case-lab-real-patients";
 
 export type CaseStory={
  id:string;category:string;patient:string;opening:string;
+ /** Optional Roman Urdu patient line for the opening (toggle in UI) */
+ openingUrdu?:string;
  scene:string[];history:[string,string][];bestHistory:number;
  findings:string[];examPrompt:string;examChoices:string[];examCorrect:number;examReason:string;
  diagnosisPrompt:string;diagnosisChoices:string[];diagnosisCorrect:number;
@@ -29,6 +31,9 @@ function openingLine(id:string,fallback:string){
  const rp=getRealPatient(id);
  return rp?.voice||fallback;
 }
+function openingUrduLine(id:string){
+ return getRealPatient(id)?.voiceUrdu;
+}
 
 export function getLabEpisode(id:string):CaseStory|null{
  const core=coreMskCases.find(c=>c.id===id);
@@ -40,6 +45,7 @@ export function getLabEpisode(id:string):CaseStory|null{
    id:core.id,category:labCategory(core.specialty,core.safety),
    patient:patientLabel(core.id,core.patient),
    opening:openingLine(core.id,flow.chief),
+   openingUrdu:openingUrduLine(core.id),
    scene:[
     rp?`${rp.name} is in your clinic. ${core.history}`:core.history,
     "At this point you know what brought the patient to clinic, but you have not yet tested a working diagnosis. Choose what to ask and examine next.",
@@ -66,6 +72,7 @@ export function getLabEpisode(id:string):CaseStory|null{
    id,category:labCategory(m.specialty,m.safety),
    patient:patientLabel(id,m.patient),
    opening:openingLine(id,flow.chief),
+   openingUrdu:openingUrduLine(id),
    scene:[m.history,
     "You are seeing this patient in a teaching consultation. You do not get the answer in the referral notes. Your job is to notice what changes the clinical priority.",
     "The patient's goal is not a footnote. Think about what safe recovery should help them do next."],
@@ -92,6 +99,7 @@ export function getLabEpisode(id:string):CaseStory|null{
   id,category:labCategory(e.specialty,e.safety),
   patient:patientLabel(id,e.patient),
   opening:openingLine(id,flow.chief),
+  openingUrdu:openingUrduLine(id),
   scene:[e.history,"The patient's initial words give you a starting point, not a diagnosis. Listen for timing, what provokes symptoms and what matters to them.",
    "Your next decision should test a clinical hypothesis while keeping safety in view."],
   history:flow.historyQuestions,bestHistory:flow.bestHistory,
@@ -117,6 +125,7 @@ export function adaptDetailedCase(item:ClinicalCase,guide?:ClinicalCaseGuide):Ca
   id:"deep-"+item.slug,category:labCategory(item.specialty,urgent),
   patient:rp?formatPatientLabel(rp):"Detailed teaching consultation",
   opening:rp?.voice||item.presentation[0]||item.summary,
+  openingUrdu:rp?.voiceUrdu,
   scene:sceneIntro
     ?[sceneIntro,...item.presentation,item.summary]
     :[...item.presentation,item.summary],
