@@ -19,8 +19,8 @@ import {
   FlaskConical,
   FileBadge2,
   Sparkles,
-  MapPin,
 } from "lucide-react";
+import "@/app/pna-hero.css";
 
 const destinations = [
   { title: "Knowledge Hub", description: "MSK, neurology, cardiopulmonary, sports and more", href: "/knowledge-hub", icon: LibraryBig },
@@ -59,7 +59,6 @@ export function PremiumHomeHero() {
   return (
     <section className="pna-hero" aria-label="Welcome to Physio Nexus Academy">
       <div className="pna-hero-inner">
-        {/* Main stage */}
         <div className="pna-hero-stage">
           <div className="pna-hero-content">
             <p className="pna-hero-kicker">
@@ -91,6 +90,7 @@ export function PremiumHomeHero() {
             href="/founder"
             className="pna-hero-portrait"
             aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
+            style={{ position: "relative", display: "block", minHeight: 420, height: "100%" }}
           >
             <Image
               src="/images/pna-founder-hero-sharp-v2.avif"
@@ -99,11 +99,11 @@ export function PremiumHomeHero() {
               priority
               unoptimized
               sizes="(max-width: 768px) 90vw, 480px"
+              style={{ objectFit: "cover", objectPosition: "center top" }}
             />
           </a>
         </div>
 
-        {/* Four working quick links */}
         <div className="pna-hero-quicklinks" aria-label="Quick actions">
           <a href="/appointment" className="pna-hero-ql">
             <CalendarDays size={20} aria-hidden="true" />
@@ -127,7 +127,6 @@ export function PremiumHomeHero() {
           </a>
         </div>
 
-        {/* Search */}
         <div className="pna-hero-search-block" id="explore-pna">
           <form className="pna-hero-search" role="search" onSubmit={onSearch}>
             <Search size={20} aria-hidden="true" />
