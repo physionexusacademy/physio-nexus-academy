@@ -8,8 +8,7 @@ import {getRealPatient,formatPatientLabel} from "./case-lab-real-patients";
 export type LabCaseCard={
  id:string; href:string; category:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
  kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;keywords:string;focus:string;
- /** Phase 1 real-patient fields (when identity is authored) */
- patientName?:string; lifeLine?:string; voice?:string;
+ patientName?:string; lifeLine?:string; voice?:string; voiceUrdu?:string;
 };
 
 export const labCategories=[
@@ -39,10 +38,10 @@ function enrichCard(card:LabCaseCard):LabCaseCard{
   patientName:rp.name,
   lifeLine:rp.lifeLine,
   voice:rp.voice,
+  voiceUrdu:rp.voiceUrdu,
   patient:formatPatientLabel(rp),
-  // Prefer the patient's own words when we have a voice line
   hook:rp.voice||card.hook,
-  keywords:[card.keywords,rp.name,rp.city,rp.role,rp.lifeLine].join(" "),
+  keywords:[card.keywords,rp.name,rp.city,rp.role,rp.lifeLine,rp.voice,rp.voiceUrdu].join(" "),
  };
 }
 
@@ -118,6 +117,4 @@ while([...grouped.values()].some(items=>items.length>0)){
 }
 export const labCaseCards:LabCaseCard[]=[...featured,...interleaved];
 export const labCaseTotal=labCaseCards.length;
-
-/** Phase 1 real-patient cards only — for starter strip priority */
 export const realPatientCards=labCaseCards.filter(c=>!!c.patientName);
