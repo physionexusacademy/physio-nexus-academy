@@ -108,15 +108,17 @@ export function getLabEpisode(id:string):CaseStory|null{
   urgent:!!e.safety,fullyAuthored:false,references:[]
  };
 }
+
 export function adaptDetailedCase(item:ClinicalCase,guide?:ClinicalCaseGuide):CaseStory{
  const urgent=item.specialty.includes("Red Flags") || item.slug==="low-back-pain-new-bladder-saddle-symptoms";
  const rp=getRealPatient(item.slug);
+ const sceneIntro=rp?`${rp.name} is in your clinic.`:null;
  return{
   id:"deep-"+item.slug,category:labCategory(item.specialty,urgent),
   patient:rp?formatPatientLabel(rp):"Detailed teaching consultation",
   opening:rp?.voice||item.presentation[0]||item.summary,
-  scene:rp
-    ?[`${rp.name} is in your clinic.",...item.presentation,item.summary]
+  scene:sceneIntro
+    ?[sceneIntro,...item.presentation,item.summary]
     :[...item.presentation,item.summary],
   history:item.presentation.slice(0,5).map((answer,i)=>[
    ["What brings you to rehabilitation today?","What changes have you noticed recently?","How has this affected your usual activities?","What is your biggest concern or goal right now?","Is there anything else you want us to understand?"][i],
