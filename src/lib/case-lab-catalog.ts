@@ -4,6 +4,7 @@ import {multidisciplinaryCases,multidisciplinaryFlows} from "./clinical-arena-mu
 import {coreMskCases,coreMskFlows} from "./case-lab-msk-core";
 import {regionOfClinicalCase} from "./clinical-arena-regions";
 import {getRealPatient,formatPatientLabel} from "./case-lab-real-patients";
+import {curatedEpisodes} from "./case-lab-curated-episodes";
 
 export type LabCaseCard={
  id:string; href:string; category:string; title:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
@@ -100,7 +101,11 @@ const rawLabCaseCards:LabCaseCard[]=[
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
  })
-].map(enrichCard);
+].map(enrichCard).map(card=>{
+ const episode=curatedEpisodes[card.id];
+ if(!episode)return card;
+ return {...card,category:episode.category,title:episode.teachingDiagnosis||card.title,patient:episode.patient,hook:episode.opening,keywords:[card.keywords,episode.category,episode.patient,episode.opening,episode.diagnosisReason,...episode.learning].join(" "),difficulty:"Advanced" as const,kind:"Clinical deep dive" as const,minutes:"10–12 min",safety:episode.urgent};
+});
 
 /**
  * The Case Lab intentionally presents a curated first collection of 50 cases.
