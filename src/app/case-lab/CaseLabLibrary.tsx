@@ -28,7 +28,7 @@ function inCategory(item:LabCaseCard,category:string){
 }
 
 function CaseRow({item,index}:{item:LabCaseCard;index:number}){
- const title=item.hook||item.patient;
+ const title=item.title||item.hook||item.patient;
  return <Link href={item.href} className="cl-case-row group" aria-label={"Open case: "+title}>
   <div className="cl-case-row-number">{String(index+1).padStart(2,"0")}</div>
   <div className="min-w-0 flex-1">
@@ -60,7 +60,7 @@ export function CaseLabLibrary({cases,categories}:Props){
   return cases.filter(item=>{
    if(!inCategory(item,category))return false;
    if(!needle)return true;
-   return [item.hook,item.patient,item.patientName,item.lifeLine,item.voice,item.voiceUrdu,
+   return [item.title,item.hook,item.patient,item.patientName,item.lifeLine,item.voice,item.voiceUrdu,
     item.category,item.focus,item.keywords,item.difficulty]
     .filter(Boolean).join(" ").toLocaleLowerCase().includes(needle);
   });
