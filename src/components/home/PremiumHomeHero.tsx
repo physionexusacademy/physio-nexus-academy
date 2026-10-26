@@ -59,7 +59,8 @@ export function PremiumHomeHero() {
   return (
     <section className="pna-hero" aria-label="Welcome to Physio Nexus Academy">
       <div className="pna-hero-inner">
-        <div className="pna-hero-stage">
+        {/* Main content + small corner photo */}
+        <div className="pna-hero-main">
           <div className="pna-hero-content">
             <p className="pna-hero-kicker">
               <Sparkles size={14} aria-hidden="true" />
@@ -86,24 +87,22 @@ export function PremiumHomeHero() {
             </div>
           </div>
 
-          {/* Real founder photo - forced to always show */}
-          <a
-            href="/founder"
-            className="pna-hero-portrait"
-            aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
-          >
-            <Image
-              src="/images/founder-dr-sajjad.jpg"
-              alt="Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
-              width={480}
-              height={560}
-              priority
-              className="pna-hero-photo"
-              sizes="(max-width: 768px) 90vw, 480px"
-            />
-          </a>
+          {/* Small corner photo - your real photo, not forced */}
+          <div className="pna-hero-corner-photo">
+            <a href="/founder" aria-label="Meet Dr. Sajjad Raza PT">
+              <Image
+                src="/images/founder-dr-sajjad.jpg"
+                alt="Dr. Sajjad Raza PT"
+                width={280}
+                height={340}
+                priority
+                className="pna-hero-photo"
+              />
+            </a>
+          </div>
         </div>
 
+        {/* 4 working buttons - keep as is */}
         <div className="pna-hero-quicklinks" aria-label="Quick actions">
           <a href="/appointment" className="pna-hero-ql">
             <CalendarDays size={20} aria-hidden="true" />
@@ -127,6 +126,7 @@ export function PremiumHomeHero() {
           </a>
         </div>
 
+        {/* Search - keep as is */}
         <div className="pna-hero-search-block" id="explore-pna">
           <form className="pna-hero-search" role="search" onSubmit={onSearch}>
             <Search size={20} aria-hidden="true" />
