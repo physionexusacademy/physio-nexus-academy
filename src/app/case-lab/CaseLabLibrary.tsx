@@ -46,9 +46,23 @@ function isInClinicalCategory(caseFile:LabCaseCard, selected:string){
  return caseFile.category===selected;
 }
 
+/** Prefer the largest specialty so first-time visitors see cases immediately. */
+function pickDefaultSpecialty(categories:string[], cases:LabCaseCard[]){
+ const counts=categories.map(name=>{
+  const count=cases.filter(c=>isInClinicalCategory(c,name)).length;
+  return {name,count};
+ }).filter(x=>x.count>0).sort((a,b)=>b.count-a.count);
+ return counts[0]?.name ?? (categories[0] || null);
+}
+
 export function CaseLabLibrary({cases,categories}:Props){
  const router=useRouter();
+ const defaultSpecialty=useMemo(
+  ()=>pickDefaultSpecialty(categories,cases),
+  [categories,cases]
+ );
  const [category,setCategory]=useState<string|null>(null);
+ const [hydrated,setHydrated]=useState(false);
  const [query,setQuery]=useState("");
  const [focus,setFocus]=useState("All focuses");
  const [level,setLevel]=useState<Level>("All levels");
@@ -57,13 +71,17 @@ export function CaseLabLibrary({cases,categories}:Props){
  const resultRef=useRef<HTMLElement|null>(null);
 
  useEffect(()=>{
-  // On return from a patient file, keep the user's last specialty.
-  // Read only on the client to avoid hydration mismatches.
+  // Restore last specialty if present; otherwise open the largest library
+  // so the page never shows a pure empty state on first visit.
+  let next:string|null=null;
   try{
    const saved=window.sessionStorage.getItem("pna-case-lab-specialty-v4");
-   if(saved&&(saved==="All cases"||categories.includes(saved)))setCategory(saved);
+   if(saved&&(saved==="All cases"||categories.includes(saved)))next=saved;
   }catch{}
- },[categories]);
+  if(!next)next=defaultSpecialty;
+  setCategory(next);
+  setHydrated(true);
+ },[categories,defaultSpecialty]);
 
  const totals=useMemo(()=>new Map<string,number>(categories.map(name=>[
   name,cases.filter(c=>isInClinicalCategory(c,name)).length
@@ -96,6 +114,22 @@ export function CaseLabLibrary({cases,categories}:Props){
  const deepDives=cases.filter(c=>c.kind==="Clinical deep dive").length;
  const selectedTotal=category==="All cases"?cases.length:totals.get(category||"")||0;
 
+ // Featured starter cases shown when filters are at defaults (helps first-time users).
+ const starterCases=useMemo(()=>{
+  const deep=cases.filter(c=>c.kind==="Clinical deep dive").slice(0,3);
+  const clinical=cases.filter(c=>c.kind==="Interactive scenario"&&!c.safety).slice(0,3);
+  const safety=cases.filter(c=>c.safety).slice(0,2);
+  const seen=new Set<string>();
+  const out:LabCaseCard[]=[];
+  for(const c of [...deep,...clinical,...safety]){
+   if(seen.has(c.id))continue;
+   seen.add(c.id);
+   out.push(c);
+   if(out.length>=6)break;
+  }
+  return out;
+ },[cases]);
+
  function chooseSpecialty(next:string){
   setCategory(next);
   try{window.sessionStorage.setItem("pna-case-lab-specialty-v4",next)}catch{}
@@ -105,7 +139,6 @@ export function CaseLabLibrary({cases,categories}:Props){
   setMode("All experiences");
   setLimit(12);
   // On a phone, move the selected category's patient files into view.
-  // Desktop retains the Test Explorer's sticky left-hand selector.
   window.requestAnimationFrame(()=>{
    if(!window.matchMedia("(max-width: 1023px)").matches)return;
    const node=resultRef.current;
@@ -126,8 +159,10 @@ export function CaseLabLibrary({cases,categories}:Props){
   if(pool.length)router.push(pool[Math.floor(Math.random()*pool.length)].href);
  }
 
+ const showResults=hydrated && category;
+
  return (
-  <div className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab="specialty-first-v4">
+  <div className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab="specialty-first-v5">
    <div className="container-content pt-7 sm:pt-10">
     <header className="cl-hero cl-novel-hero p-6 sm:p-9">
      <div className="relative">
@@ -145,7 +180,7 @@ export function CaseLabLibrary({cases,categories}:Props){
        <span className="cl-kicker"><BrainCircuit className="h-3.5 w-3.5"/> {deepDives} detailed masterclasses</span>
       </div>
       <div className="mt-7 flex flex-wrap gap-2">
-       <a href="#case-lab-explorer" className="cl-button">Choose a specialty <ArrowRight className="h-4 w-4"/></a>
+       <a href="#case-lab-explorer" className="cl-button">Browse patient files <ArrowRight className="h-4 w-4"/></a>
        <button type="button" className="cl-button cl-button-secondary" onClick={surprise}>
         Surprise patient <Sparkles className="h-4 w-4"/>
        </button>
@@ -170,6 +205,37 @@ export function CaseLabLibrary({cases,categories}:Props){
      ))}
     </div>
 
+    {/* Mobile-friendly specialty chips — visible before the sticky sidebar layout */}
+    <div className="mt-8 lg:hidden" aria-label="Quick specialty picker">
+     <p className="cl-eyebrow"><Compass className="h-4 w-4"/> JUMP TO A SPECIALTY</p>
+     <div className="mt-3 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <button
+       type="button"
+       onClick={()=>chooseSpecialty("All cases")}
+       aria-pressed={category==="All cases"}
+       data-active={category==="All cases"}
+       className="cl-specialty-choice shrink-0 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-xs font-bold text-teal-800 data-[active=true]:border-teal-700 data-[active=true]:bg-teal-700 data-[active=true]:text-white"
+      >
+       All ({cases.length})
+      </button>
+      {categories.filter(c=>(totals.get(c)||0)>0).map(name=>{
+       const active=category===name;
+       return (
+        <button
+         type="button"
+         key={`chip-${name}`}
+         onClick={()=>chooseSpecialty(name)}
+         aria-pressed={active}
+         data-active={active}
+         className="cl-specialty-choice shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 data-[active=true]:border-teal-700 data-[active=true]:bg-teal-700 data-[active=true]:text-white"
+        >
+         {name.split(" &")[0].split(" ")[0]} ({totals.get(name)})
+        </button>
+       );
+      })}
+     </div>
+    </div>
+
     <section id="case-lab-explorer" className="mt-10 scroll-mt-28" aria-labelledby="case-lab-specialties">
      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
       <div>
@@ -178,29 +244,29 @@ export function CaseLabLibrary({cases,categories}:Props){
         Select your specialty
        </h2>
        <p className="mt-2 text-sm leading-7 text-slate-600">
-        Just like MSK Special Tests: choose a category on the left, then explore its cases.
+        Choose a category on the left (or the chips above on mobile), then open a patient file.
        </p>
       </div>
       <span className="cl-kicker">{cases.length} case encounters ready</span>
      </div>
 
      <div className="grid items-start gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-      <aside className="cl-specialty-panel rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_45px_-36px_rgba(10,47,62,0.4)] lg:sticky lg:top-28" aria-label="Filter patient files by specialty">
+      <aside className="cl-specialty-panel hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_45px_-36px_rgba(10,47,62,0.4)] lg:sticky lg:top-28 lg:block" aria-label="Filter patient files by specialty">
        <div className="flex items-center justify-between px-2 pt-2">
         <p className="text-xs font-bold uppercase tracking-[.14em] text-teal-800">Clinical specialties</p>
         <span className="text-xs font-bold text-slate-400">{categories.length}</span>
        </div>
-       <div className="cl-specialty-options mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-col lg:gap-1">
+       <div className="cl-specialty-options mt-3 flex flex-col gap-1">
         {categories.filter(c=>(totals.get(c)||0)>0).map(name=>{
          const Icon=icons[name]||Stethoscope;
          const active=category===name;
          return (
           <button type="button" key={name} onClick={()=>chooseSpecialty(name)}
            aria-pressed={active} data-active={active}
-           className="cl-specialty-choice group flex min-w-0 flex-col items-start gap-2 rounded-xl border border-slate-200 p-3 text-left transition hover:border-teal-300 hover:bg-teal-50 lg:flex-row lg:items-center lg:border-transparent lg:px-3 lg:py-3"
+           className="cl-specialty-choice group flex min-w-0 flex-row items-center gap-2 rounded-xl border border-transparent px-3 py-3 text-left transition hover:border-teal-300 hover:bg-teal-50"
           >
            <Icon className="h-5 w-5 shrink-0 text-teal-700 group-data-[active=true]:text-white" aria-hidden="true"/>
-           <span className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">{name}</span>
+           <span className="min-w-0 flex-1 text-sm font-semibold leading-5">{name}</span>
            <span className="cl-specialty-count rounded-md bg-slate-100 px-1.5 py-1 text-xs font-bold tabular-nums">
             {totals.get(name)}
            </span>
@@ -214,26 +280,17 @@ export function CaseLabLibrary({cases,categories}:Props){
         <span>Browse all patient files</span><span className="rounded-md bg-white px-2 py-1 text-xs tabular-nums">{cases.length}</span>
        </button>
        <p className="mt-4 border-t border-slate-100 px-2 pt-4 text-xs leading-6 text-slate-500">
-        Pick one specialty to see its actual case count, body-region focus and available stories.
+        Pick one specialty to focus its case count, body-region filters and stories.
        </p>
       </aside>
 
       <section ref={resultRef} tabIndex={-1} id="case-lab-results"
        className="min-w-0 scroll-mt-28 outline-none" aria-label="Cases for selected specialty" aria-live="polite">
-       {!category?(
-        <div className="cl-paper flex min-h-[380px] flex-col items-center justify-center px-6 py-12 text-center">
-         <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-teal-100 bg-teal-50">
-          <Stethoscope className="h-8 w-8 text-teal-800"/>
-         </div>
-         <p className="cl-eyebrow mt-6">YOUR NEXT PATIENT IS WAITING</p>
-         <h3 className="mt-3 max-w-md font-serif text-2xl font-bold leading-snug text-slate-900 sm:text-3xl">
-          Start by choosing a specialty.
-         </h3>
-         <p className="mt-3 max-w-lg text-sm leading-7 text-slate-600">
-          No diagnosis spoilers, no endless mixed case grid. Select MSK, Neuro, Pediatrics,
-          Cardio or any other specialty to open its patient file library.
-         </p>
-         <span className="cl-kicker mt-6"><ChevronRight className="h-4 w-4"/> Select a category to begin</span>
+       {!showResults?(
+        /* Brief loading shell while session specialty restores — avoids flash of empty state */
+        <div className="cl-paper flex min-h-[280px] flex-col items-center justify-center px-6 py-10 text-center">
+         <Stethoscope className="h-8 w-8 animate-pulse text-teal-700"/>
+         <p className="mt-4 text-sm font-semibold text-slate-600">Loading patient files…</p>
         </div>
        ):(
         <>
@@ -245,7 +302,7 @@ export function CaseLabLibrary({cases,categories}:Props){
              {category==="All cases"?"All patient files":category}
             </h3>
             <p className="mt-2 text-sm leading-7 text-slate-600">
-             {descriptions[category]||"Browse patient stories from every clinical specialty."}
+             {descriptions[category||""]||"Browse patient stories from every clinical specialty."}
             </p>
            </div>
            <span className="cl-kicker shrink-0">{selectedTotal} cases</span>
@@ -297,6 +354,27 @@ export function CaseLabLibrary({cases,categories}:Props){
            </div>
           </div>
          </div>
+
+         {/* Starter strip when user is on defaults with a large list */}
+         {!query && focus==="All focuses" && level==="All levels" && mode==="All experiences" && category===defaultSpecialty && starterCases.length>0 && (
+          <div className="mt-4 rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/80 to-white p-4 sm:p-5">
+           <p className="text-xs font-bold uppercase tracking-[.12em] text-teal-800">Start here</p>
+           <p className="mt-1 text-sm text-slate-600">Recommended patient stories for a strong first session.</p>
+           <div className="mt-3 flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {starterCases.map(patient=>(
+             <Link
+              key={`starter-${patient.id}`}
+              href={patient.href}
+              className="cl-story cl-patient-file min-w-[240px] max-w-[280px] shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+             >
+              <span className="cl-category text-[10px]">{patient.safety?"SAFETY FIRST":patient.kind==="Clinical deep dive"?"MASTERCLASS":"LESSON"}</span>
+              <h4 className="mt-2 line-clamp-2 text-sm font-bold text-slate-900">{patient.hook}</h4>
+              <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-800">Open <ArrowRight className="h-3.5 w-3.5"/></span>
+             </Link>
+            ))}
+           </div>
+          </div>
+         )}
 
          {visible.length?(
           <div className="mt-4 grid gap-4 md:grid-cols-2">
