@@ -102,20 +102,6 @@ const rawLabCaseCards:LabCaseCard[]=[
  })
 ].map(enrichCard);
 
-const featured=rawLabCaseCards.filter(c=>c.kind==="Clinical deep dive");
-const grouped=new Map<string,LabCaseCard[]>();
-for(const c of rawLabCaseCards.filter(c=>c.kind==="Interactive scenario")){
- const batch=grouped.get(c.category)||[];
- batch.push(c);grouped.set(c.category,batch);
-}
-const interleaved:LabCaseCard[]=[];
-while([...grouped.values()].some(items=>items.length>0)){
- for(const label of labCategories){
-  const next=grouped.get(label)?.shift();
-  if(next)interleaved.push(next);
- }
-}
-
 /**
  * The Case Lab intentionally presents a curated first collection of 50 cases.
  * One scenario per condition is selected; repeated functional-context variants
