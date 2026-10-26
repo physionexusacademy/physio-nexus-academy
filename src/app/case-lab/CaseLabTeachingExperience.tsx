@@ -46,6 +46,7 @@ function GuideDetails({story}:{story:CaseStory}){
 export function CaseLabTeachingExperience({story}:{story:CaseStory}){
  const workingDiagnosis=story.teachingDiagnosis||story.diagnosisChoices[story.diagnosisCorrect]||"Working diagnosis under review";
  const title=story.teachingDiagnosis||story.diagnosisChoices[story.diagnosisCorrect]||story.category;
+ const dialogueHistory=story.history.filter(([,answer],index,all)=>answer.trim()!==story.opening.trim()&&all.findIndex(([,prior])=>prior.trim()===answer.trim())===index);
  return <main className="case-lab-v3 min-h-screen pb-16" data-pna-case-lab-lesson="continuous-clinical-file-v3">
   <div className="container-content pt-5 sm:pt-8">
    <Link href="/case-lab" className="cl-breadcrumb"><ArrowLeft className="h-4 w-4"/> All clinical cases</Link>
