@@ -3,17 +3,21 @@ import {expandedCases,expandedFlows} from "./clinical-arena-expanded";
 import {multidisciplinaryCases,multidisciplinaryFlows} from "./clinical-arena-multispecialty";
 import {coreMskCases,coreMskFlows} from "./case-lab-msk-core";
 import {regionOfClinicalCase} from "./clinical-arena-regions";
+import {getRealPatient,formatPatientLabel} from "./case-lab-real-patients";
+
 export type LabCaseCard={
  id:string; href:string; category:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
  kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;keywords:string;focus:string;
+ patientName?:string; lifeLine?:string; voice?:string; voiceUrdu?:string;
 };
+
 export const labCategories=[
  "MSK & Sports","Neurological Rehabilitation","Pediatric Rehabilitation",
  "Cardiopulmonary Rehabilitation","Geriatrics & Falls","Vestibular Rehabilitation",
  "Pelvic Health","Oncology Rehabilitation","Critical Care & ICU","Clinical Red Flags",
 ] as const;
+
 export function labCategory(specialty:string,safety=false):string{
- // Keep medical emergencies in their primary specialty as well as the Red Flags collection.
  if(specialty==="Clinical Red Flags"||specialty.includes("Red Flags"))return "Clinical Red Flags";
  if(specialty==="Neurological Rehabilitation"||specialty==="Neurological")return "Neurological Rehabilitation";
  if(specialty==="Pediatric Rehabilitation")return "Pediatric Rehabilitation";
@@ -25,6 +29,22 @@ export function labCategory(specialty:string,safety=false):string{
  if(specialty==="Critical Care & ICU")return "Critical Care & ICU";
  return "MSK & Sports";
 }
+
+function enrichCard(card:LabCaseCard):LabCaseCard{
+ const rp=getRealPatient(card.id.startsWith("deep-")?card.id.slice(5):card.id);
+ if(!rp)return card;
+ return{
+  ...card,
+  patientName:rp.name,
+  lifeLine:rp.lifeLine,
+  voice:rp.voice,
+  voiceUrdu:rp.voiceUrdu,
+  patient:formatPatientLabel(rp),
+  hook:rp.voice||card.hook,
+  keywords:[card.keywords,rp.name,rp.city,rp.role,rp.lifeLine,rp.voice,rp.voiceUrdu].join(" "),
+ };
+}
+
 const featuredHooks:Record<string,string>={
  "postpartum-running-stress-urinary-incontinence":"A new parent wants to run again. What should we ask first?",
  "older-adult-recurrent-falls-orthostatic-symptoms":"The falls keep happening. Is the balance test enough?",
@@ -47,6 +67,7 @@ const featuredFocus:Record<string,string>={
  "copd-post-exacerbation-pulmonary-rehab":"Heart & Lungs",
  "acl-reconstruction-return-to-sport-readiness":"Knee",
 };
+
 const rawLabCaseCards:LabCaseCard[]=[
  ...clinicalCaseIndex.map(c=>({
    id:"deep-"+c.slug,href:"/case-lab/"+c.slug,
@@ -79,9 +100,8 @@ const rawLabCaseCards:LabCaseCard[]=[
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
  })
-];
-// Each early page of cards represents the range of clinical categories,
-// rather than showing dozens of the same specialty before anything else.
+].map(enrichCard);
+
 const featured=rawLabCaseCards.filter(c=>c.kind==="Clinical deep dive");
 const grouped=new Map<string,LabCaseCard[]>();
 for(const c of rawLabCaseCards.filter(c=>c.kind==="Interactive scenario")){
@@ -97,3 +117,4 @@ while([...grouped.values()].some(items=>items.length>0)){
 }
 export const labCaseCards:LabCaseCard[]=[...featured,...interleaved];
 export const labCaseTotal=labCaseCards.length;
+export const realPatientCards=labCaseCards.filter(c=>!!c.patientName);
