@@ -28,58 +28,64 @@ const destinations = [
 ] as const;
 
 export function PremiumHomeHero() {
-  const [query,setQuery] = useState("");
-  const results = useMemo(() => {
+  const [query,setQuery]=useState("");
+  const results=useMemo(()=>{
     const needle=query.trim().toLowerCase();
-    if(!needle) return [];
+    if(!needle) return [] as typeof destinations[number][];
     return destinations.filter(item => (item.title+" "+item.description).toLowerCase().includes(needle)).slice(0,6);
   },[query]);
-  const onSearch=(event:FormEvent<HTMLFormElement>)=>{
+
+  function onSearch(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
     if(results.length) window.location.assign(results[0].href);
-    else if(!query.trim()) window.location.assign("/knowledge-hub");
-  };
+  }
 
   return (
     <section className="pna-vision-hero" aria-label="Welcome to Physio Nexus Academy">
-      <div className="container-content">
-        <div className="pna-vision-banner">
-          <div className="pna-vision-orbits" aria-hidden="true"/>
-          <div className="pna-vision-copy">
-            <p className="pna-vision-eyebrow"><Sparkles size={15} aria-hidden="true"/> LEARN · PRACTICE · GROW</p>
+      <div className="pna-vision-shell">
+        <div className="pna-vision-copy">
+          <p className="pna-vision-kicker"><Sparkles size={14} aria-hidden="true"/> Learn · Practice · Grow</p>
+          <div className="pna-vision-title-block">
             <h1>Clinical Confidence<br/><span>Starts Here</span></h1>
-            <p className="pna-vision-subtitle">Evidence-based learning.<br/>Real clinical skills.<br/>Built for Pakistan.</p>
-            <p className="pna-vision-description">
+            <div className="pna-vision-promise" aria-label="What you get with PNA">
+              <p>Evidence-based learning.</p>
+              <p>Real clinical skills.</p>
+              <p>Built for Pakistan.</p>
+            </div>
+            <p className="pna-vision-lead">
               The practice-focused physiotherapy platform for students, clinicians and patients —
               knowledge, cases, workshops and care in one place.
             </p>
-            <div className="pna-vision-banner-actions">
+            <div className="pna-vision-actions">
               <a href="#explore-pna" className="pna-vision-primary">Start Exploring <ArrowRight size={17} aria-hidden="true"/></a>
               <a href="/founder" className="pna-vision-founder-cta">Meet the Founder <ArrowRight size={15} aria-hidden="true"/></a>
             </div>
           </div>
           <a href="/founder" className="pna-vision-founder-photo" aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy">
-            <Image src="/images/pna-founder-hero-sharp-v2.avif" alt="Dr. Sajjad Raza PT in navy PNA physiotherapy scrubs, arms folded"
-              fill priority unoptimized sizes="(max-width: 600px) 240px, (max-width: 1024px) 360px, 510px" />
-            <span className="pna-vision-founder-label">Dr. Sajjad Raza PT <small>Founder, PNA</small></span>
+            <Image src="/images/pna-founder-hero-sharp-v2.avif" alt="Dr. Sajjad Raza PT, founder of Physio Nexus Academy" fill priority unoptimized sizes="(max-width: 900px) 88vw, 420px"/>
           </a>
-          <div className="pna-vision-promise" aria-label="Our platform focus">
+        </div>
+
+        <div className="pna-vision-rail" aria-label="Quick access">
+          <div className="pna-vision-rail-links">
             <a href="/knowledge-hub" aria-label="Explore Clinical Learning"><BookOpen size={20} aria-hidden="true"/> Clinical Learning</a>
             <a href="/case-lab" aria-label="Explore Real Clinical Cases"><BrainCircuit size={20} aria-hidden="true"/> Real Cases</a>
             <a href="/workshops" aria-label="Explore Workshops and CPD"><Trophy size={20} aria-hidden="true"/> Workshops & CPD</a>
           </div>
         </div>
 
-        <div className="pna-vision-search-block">
+        <div className="pna-vision-search-wrap" id="explore-pna">
           <form className="pna-vision-search" role="search" onSubmit={onSearch}>
-            <Search size={20} aria-hidden="true"/>
-            <input type="search" value={query} onChange={event=>setQuery(event.target.value)}
+            <Search aria-hidden="true"/>
+            <input
+              value={query}
+              onChange={(e)=>setQuery(e.target.value)}
               aria-label="Find a PNA feature" autoComplete="off"
               placeholder="Search topics, techniques, cases or services..." />
             <button type="submit" aria-label="Open first matching result"><ArrowRight size={18} aria-hidden="true"/></button>
           </form>
-          {query.trim() && <div className="pna-vision-search-results" role="status" aria-live="polite">
-            {results.length ? results.map(result=>{
+          {query.trim() && <div className="pna-vision-results" role="listbox" aria-label="Matching features">
+            {results.length ? results.map((result)=>{
               const Icon=result.icon;
               return <a key={result.href} href={result.href}><Icon size={17} aria-hidden="true"/>
                 <span><strong>{result.title}</strong><small>{result.description}</small></span>
@@ -87,9 +93,9 @@ export function PremiumHomeHero() {
             }) : <p>No direct feature match. Try “manual therapy,” “case” or “workshop.”</p>}
           </div>}
           <div className="pna-vision-shortcuts" aria-label="Popular starting points">
-            <a href="/symptom-checker"><Stethoscope aria-hidden="true"/><span>Explore a Condition</span><ArrowRight aria-hidden="true"/></a>
-            <a href="/manual-therapy"><Hand aria-hidden="true"/><span>Find a Technique</span><ArrowRight aria-hidden="true"/></a>
-            <a href="/case-lab"><ClipboardList aria-hidden="true"/><span>Clinical Cases</span><ArrowRight aria-hidden="true"/></a>
+            <a href="/appointment"><CalendarDays aria-hidden="true"/><span>Book Physiotherapy Appointment</span><ArrowRight aria-hidden="true"/></a>
+            <a href="/manual-therapy"><Hand aria-hidden="true"/><span>Learn Manual Therapy</span><ArrowRight aria-hidden="true"/></a>
+            <a href="/knowledge-hub"><LibraryBig aria-hidden="true"/><span>Knowledge Hub</span><ArrowRight aria-hidden="true"/></a>
           </div>
         </div>
 
