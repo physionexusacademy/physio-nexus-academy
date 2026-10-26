@@ -137,15 +137,13 @@ export function Header() {
           className="hidden items-center gap-1 xl:flex"
           aria-label="Main navigation"
         >
-          {mainNav
-            .filter(
+          {mainNav.filter(
               (item) =>
                 item.href !== "/" &&
                 item.href !== "/resources" &&
                 item.href !== "/verify" &&
                 PRIMARY_HREFS.has(item.href),
-            )
-            .map((item) => (
+            ).map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -278,9 +276,7 @@ export function Header() {
           <p className="px-3 pt-2 text-xs font-bold uppercase tracking-widest text-teal-600">
             Start here
           </p>
-          {mainNav
-            .filter((item) => PRIMARY_HREFS.has(item.href))
-            .map((item) => (
+          {mainNav.filter((item) => PRIMARY_HREFS.has(item.href)).map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -300,12 +296,9 @@ export function Header() {
           <p className="mt-3 px-3 pt-2 text-xs font-bold uppercase tracking-widest text-teal-600">
             More
           </p>
-          {mainNav
-            .filter(
-              (item) =>
-                item.href !== "/" && !PRIMARY_HREFS.has(item.href),
-            )
-            .map((item) => (
+          {mainNav.filter(
+              (item) => item.href !== "/" && !PRIMARY_HREFS.has(item.href),
+            ).map((item) => (
               <a
                 key={item.href}
                 href={item.href}
