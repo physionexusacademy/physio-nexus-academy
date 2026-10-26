@@ -10,6 +10,7 @@ import {
   type LucideIcon
 } from "lucide-react";
 import type {LabCaseCard} from "@/lib/case-lab-catalog";
+import {RomanUrduHelp} from "./RomanUrduHelp";
 
 type Props={cases:LabCaseCard[];categories:string[]};
 type Level="All levels"|"Clinical"|"Advanced";
@@ -79,11 +80,9 @@ function PatientCard({patient,index}:{patient:LabCaseCard;index:number}){
    )}
    <div className={hasIdentity?"mt-4":"mt-6"}>
     <p className="cl-story-label">{patient.focus} · {patient.difficulty} · 7 CHAPTERS</p>
-    {/* Easy English primary — international audience */}
     <h4 className="cl-case-title mt-3 line-clamp-3">{patient.hook}</h4>
-    {/* Roman Urdu meaning — local learners */}
     {patient.voiceUrdu&&(
-     <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-500 italic">{patient.voiceUrdu}</p>
+     <RomanUrduHelp text={patient.voiceUrdu} compact />
     )}
     {!hasIdentity&&(
      <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{patient.patient}</p>
@@ -383,9 +382,7 @@ export function CaseLabLibrary({cases,categories}:Props){
               <p className="mt-2 font-serif text-base font-bold text-slate-900">{p.patientName}</p>
               <p className="mt-0.5 text-[11px] font-medium text-teal-800">{p.lifeLine}</p>
               <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-700">{p.hook}</p>
-              {p.voiceUrdu&&(
-               <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-slate-500 italic">{p.voiceUrdu}</p>
-              )}
+              {p.voiceUrdu&& <RomanUrduHelp text={p.voiceUrdu} compact />}
               <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-800">Meet patient <ArrowRight className="h-3.5 w-3.5"/></span>
              </Link>
             ))}
@@ -424,9 +421,7 @@ export function CaseLabLibrary({cases,categories}:Props){
 
     <footer className="mt-10 flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
      <ShieldAlert className="mt-1 h-5 w-5 shrink-0 text-teal-700"/>
-     These are educational simulations with realistic South Asian names and clinic contexts.
-     Complaints are written in clear English for international learners, with a short Roman Urdu meaning underneath for local students.
-     Escalate urgent warning signs rather than continuing routine treatment.
+     Educational simulations with realistic South Asian names. Complaints are in clear English; tap <strong>Roman Urdu</strong> on a card when you want the patient-style meaning. Escalate urgent warning signs rather than continuing routine treatment.
     </footer>
    </div>
   </div>
