@@ -2,14 +2,15 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {
- ArrowLeft,ArrowRight,BookOpen,BrainCircuit,CheckCircle2,ChevronDown,
- ClipboardList,HeartPulse,Eye,EyeOff,BookmarkCheck,Lightbulb,RotateCcw,ShieldAlert,Sparkles,Stethoscope,
+ ArrowLeft,ArrowRight,BookOpen,BrainCircuit,ChevronDown,
+ Eye,EyeOff,BookmarkCheck,Lightbulb,RotateCcw,ShieldAlert,Sparkles,Stethoscope,
  Target
 } from "lucide-react";
 import type {CaseStory} from "@/lib/case-lab-story";
 import {buildCaseLearningGuide} from "@/lib/case-lab-learning";
 import {buildClinicalEpisodes} from "@/lib/case-lab-narrative";
 import {patientAnswer} from "@/lib/clinical-arena-patient-dialogue";
+import {RomanUrduHelp} from "./RomanUrduHelp";
 
 const chapters=[
  {name:"Meet the patient",label:"THE STORY"},
@@ -196,6 +197,7 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
         {story.fullyAuthored?
          <p className="cl-story-quote mt-4 text-base"><strong>From the documented vignette:</strong> {story.opening}</p>:
          <blockquote className="cl-story-quote mt-4 text-base">“{story.opening}”</blockquote>}
+        {story.openingUrdu?<RomanUrduHelp text={story.openingUrdu}/>:null}
        </div>
        <details className="cl-novel-facts rounded-xl border border-slate-200 p-4">
         <summary className="flex cursor-pointer items-center justify-between gap-2 text-sm font-bold text-teal-800">Read the documented case facts <ChevronDown className="h-4 w-4"/></summary>
