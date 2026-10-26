@@ -6,7 +6,7 @@ import {regionOfClinicalCase} from "./clinical-arena-regions";
 import {getRealPatient,formatPatientLabel} from "./case-lab-real-patients";
 
 export type LabCaseCard={
- id:string; href:string; category:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
+ id:string; href:string; category:string; title:string; patient:string; hook:string; difficulty:"Clinical"|"Advanced";
  kind:"Clinical deep dive"|"Interactive scenario";minutes:string;safety:boolean;keywords:string;focus:string;
  patientName?:string; lifeLine?:string; voice?:string; voiceUrdu?:string;
 };
@@ -71,13 +71,13 @@ const featuredFocus:Record<string,string>={
 const rawLabCaseCards:LabCaseCard[]=[
  ...clinicalCaseIndex.map(c=>({
    id:"deep-"+c.slug,href:"/case-lab/"+c.slug,
-   category:labCategory(c.specialty),patient:"Detailed teaching case",
+   category:labCategory(c.specialty),title:c.title,patient:"Detailed teaching case",
    hook:featuredHooks[c.slug]||c.summary,difficulty:c.difficulty,keywords:c.title+" "+c.summary,focus:featuredFocus[c.slug]||"General / Other",
    kind:"Clinical deep dive" as const,minutes:c.estimatedTime,safety:c.specialty.includes("Red Flags")
  })),
  ...coreMskCases.map(c=>({
    id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-   category:labCategory(c.specialty,c.safety),patient:c.patient,
+   category:labCategory(c.specialty,c.safety),title:c.title,patient:c.patient,
    hook:coreMskFlows[c.id]?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
    difficulty:"Clinical" as const,kind:"Interactive scenario" as const,
    minutes:"7–10 min",safety:!!c.safety
@@ -86,7 +86,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    const flow=multidisciplinaryFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-    category:labCategory(c.specialty,c.safety),patient:c.patient,
+    category:labCategory(c.specialty,c.safety),title:c.title.replace(/: Scenario \\d+$/,""),patient:c.patient,
     hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
@@ -95,7 +95,7 @@ const rawLabCaseCards:LabCaseCard[]=[
    const flow=expandedFlows[c.id];
    return {
     id:c.id,href:"/case-lab/episode?id="+encodeURIComponent(c.id),
-    category:labCategory(c.specialty,c.safety),patient:c.patient,
+    category:labCategory(c.specialty,c.safety),title:c.title.replace(/: Scenario \\d+$/,""),patient:c.patient,
     hook:flow?.chief||c.history.split(".")[0],keywords:c.title+" "+c.history,focus:regionOfClinicalCase(c.id),
     difficulty:"Clinical" as const,kind:"Interactive scenario" as const,minutes:"7–10 min",safety:!!c.safety
    };
