@@ -47,12 +47,15 @@ export function PremiumHomeHero() {
           <div className="pna-vision-orbits" aria-hidden="true"/>
           <div className="pna-vision-copy">
             <p className="pna-vision-eyebrow"><Sparkles size={15} aria-hidden="true"/> LEARN · PRACTICE · GROW</p>
-            <h1>Physio Nexus <span>Academy</span></h1>
-            <p className="pna-vision-subtitle">Evidence-Based Learning<br/>for Real-World Practice</p>
-            <p className="pna-vision-description">Pakistan’s Emerging All-in-One Physiotherapy Learning &amp; Clinical Practice Platform.</p>
+            <h1>Clinical Confidence<br/><span>Starts Here</span></h1>
+            <p className="pna-vision-subtitle">Evidence-based learning.<br/>Real clinical skills.<br/>Built for Pakistan.</p>
+            <p className="pna-vision-description">
+              The practice-focused physiotherapy platform for students, clinicians and patients —
+              knowledge, cases, workshops and care in one place.
+            </p>
             <div className="pna-vision-banner-actions">
-              <a href="#explore-pna" className="pna-vision-primary">Explore PNA <ArrowRight size={17} aria-hidden="true"/></a>
-              <a href="/founder" className="pna-vision-founder-cta">Meet the founder <ArrowRight size={15} aria-hidden="true"/></a>
+              <a href="#explore-pna" className="pna-vision-primary">Start Exploring <ArrowRight size={17} aria-hidden="true"/></a>
+              <a href="/founder" className="pna-vision-founder-cta">Meet the Founder <ArrowRight size={15} aria-hidden="true"/></a>
             </div>
           </div>
           <a href="/founder" className="pna-vision-founder-photo" aria-label="Meet Dr. Sajjad Raza PT, founder of Physio Nexus Academy">
@@ -72,7 +75,7 @@ export function PremiumHomeHero() {
             <Search size={20} aria-hidden="true"/>
             <input type="search" value={query} onChange={event=>setQuery(event.target.value)}
               aria-label="Find a PNA feature" autoComplete="off"
-              placeholder="Find a topic, clinical case, technique or service..." />
+              placeholder="Search topics, techniques, cases or services..." />
             <button type="submit" aria-label="Open first matching result"><ArrowRight size={18} aria-hidden="true"/></button>
           </form>
           {query.trim() && <div className="pna-vision-search-results" role="status" aria-live="polite">
