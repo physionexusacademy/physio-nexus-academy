@@ -69,7 +69,7 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
    </aside>}
 
    <article className="cl-case-narrative mt-6">
-    <section aria-labelledby="patient-arrival">
+    <section aria-label="Patient arrival">
      <SectionTitle number="01" title="The patient arrives" caption="Start with the person's own words, not a diagnosis label."/>
      <div className="cl-case-opening">
       <p className="cl-case-speaker">PATIENT · {story.patient}</p>
@@ -78,7 +78,7 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
      </div>
     </section>
 
-    <section className="mt-8" aria-labelledby="clinical-history">
+    <section className="mt-8" aria-label="Clinical history">
      <SectionTitle number="02" title="The consultation" caption="A focused history helps the clinician understand symptoms, function and safety."/>
      {story.history.length>0?<div className="cl-case-dialogue">
       {story.history.map(([question,answer],index)=><div className="cl-case-dialogue-turn" key={index}>
@@ -88,14 +88,14 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
      </div>:<p className="text-sm leading-7 text-slate-600">The detailed question-and-answer history is not provided in this case record. Do not infer missing answers.</p>}
     </section>
 
-    <section className="mt-8" aria-labelledby="physical-examination">
+    <section className="mt-8" aria-label="Physical examination">
      <SectionTitle number="03" title="Physical examination" caption="Only documented findings are shown; a test name alone is not a result."/>
      {story.examPrompt&&<p className="cl-case-clinician-note"><strong>Clinical question:</strong> {story.examPrompt}</p>}
      <BulletList items={story.findings}/>
      {story.examReason&&<p className="cl-case-interpretation"><strong>Why this examination matters:</strong> {story.examReason}</p>}
     </section>
 
-    <section className="mt-8" aria-labelledby="clinical-reasoning">
+    <section className="mt-8" aria-label="Clinical reasoning">
      <SectionTitle number="04" title="Clinical reasoning" caption="A working diagnosis must fit the history and findings—and remain open to revision."/>
      <div className="cl-case-working-diagnosis">
       <p className="cl-case-overline">WORKING IMPRESSION</p>
@@ -112,26 +112,26 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
      </div>}
     </section>
 
-    <section className="mt-8" aria-labelledby="management-decision">
+    <section className="mt-8" aria-label="Management decision">
      <SectionTitle number="05" title={story.urgent?"The referral decision":"Management decision"} caption="The plan must follow the evidence, safety screen and patient's functional goals."/>
      <BulletList items={story.management}/>
      {story.urgent&&<p className="cl-case-interpretation"><strong>Do not substitute routine treatment for escalation.</strong> Use the appropriate local urgent or emergency pathway and document the handover.</p>}
     </section>
 
-    <section className="mt-8" aria-labelledby="follow-up">
+    <section className="mt-8" aria-label="Follow-up and reassessment">
      <SectionTitle number="06" title="Follow-up and reassessment" caption="Record what will be checked; do not invent an outcome that was never documented."/>
      <BulletList items={story.progression}/>
      <p className="cl-case-interpretation"><strong>Outcome status:</strong> {story.progression.length?"A follow-up plan is described in the teaching record; no measured recovery outcome is assumed here.":"No follow-up information is supplied in this case record."}</p>
     </section>
 
-    {story.learning.length>0&&<section className="mt-8" aria-labelledby="clinical-takeaways">
+    {story.learning.length>0&&<section className="mt-8" aria-label="Clinical takeaways">
      <SectionTitle number="07" title="What this case teaches"/>
      <BulletList items={story.learning}/>
     </section>}
 
     <GuideDetails story={story}/>
 
-    <section className="mt-7 border-t border-slate-200 pt-5" aria-labelledby="case-references">
+    <section className="mt-7 border-t border-slate-200 pt-5" aria-label="Evidence and references">
      <h2 id="case-references" className="text-base font-bold text-slate-900">Evidence and references</h2>
      {story.references.length>0?<ol className="mt-3 space-y-2">
       {story.references.map((reference,index)=><li key={reference.url+"-"+index} className="text-sm leading-6 text-slate-600">
