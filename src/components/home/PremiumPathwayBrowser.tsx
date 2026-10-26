@@ -196,7 +196,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
           <div className="pna-sig-detail-head">
             <div className="pna-sig-detail-head-main">
               <span className="pna-sig-overline">{active.kicker}</span>
-              <h3 id="p-sig-active-heading">{active.title}</h3>
+              <h3 id="pna-sig-active-heading">{active.title}</h3>
               <p className="pna-sig-detail-lead">{active.headline}</p>
               <p className="pna-sig-detail-description">{active.description}</p>
             </div>
