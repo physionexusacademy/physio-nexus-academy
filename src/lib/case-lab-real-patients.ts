@@ -1,27 +1,26 @@
 /**
  * Phase 1 — Real patient identities for Case Lab.
- * Pakistani + Indian names and life context so each case feels like a real clinic encounter.
- * Maps to core MSK ids, deep-dive slugs, and selected expanded/multi ids.
+ * Easy English primary (international audience) + Roman Urdu meaning below for local learners.
+ * Static text only — no audio, no Supabase load.
  */
 
 export type RealPatient = {
-  /** Matches case id or deep-dive slug (without deep- prefix) */
   caseKey: string;
   name: string;
   age: number;
   gender: "male" | "female";
   city: string;
   role: string;
-  /** One-line life context shown on the card */
+  /** One-line life context on the card (English) */
   lifeLine: string;
-  /** Opening line in the patient's voice */
+  /** Primary opening — clear, easy English */
   voice: string;
-  /** What makes this case clinically different from similar ones */
+  /** Roman Urdu meaning of the English line (for local learners) */
+  voiceUrdu: string;
   clinicalAngle: string;
 };
 
 export const realPatients: RealPatient[] = [
-  // ── Core MSK (authored scenarios) ───────────────────────────────────────
   {
     caseKey: "shoulder-01",
     name: "Imran Siddiqui",
@@ -29,8 +28,9 @@ export const realPatients: RealPatient[] = [
     gender: "male",
     city: "Karachi",
     role: "Accounts officer",
-    lifeLine: "Karachi · accounts officer · cannot put on his kameez alone",
-    voice: "Doctor, four months se mera right shoulder itna stiff hai ke peeche haath nahi jaata — dressing bhi mushkil ho gayi hai.",
+    lifeLine: "Karachi · accounts officer · cannot put his shirt on alone",
+    voice: "For four months my right shoulder has been so stiff I cannot reach behind my back — even dressing is hard.",
+    voiceUrdu: "Char mahine se right shoulder itna stiff hai ke peeche haath nahi jaata — dressing bhi mushkil.",
     clinicalAngle: "Progressive active AND passive loss — adhesive capsulitis pattern, not just cuff pain",
   },
   {
@@ -41,7 +41,8 @@ export const realPatients: RealPatient[] = [
     city: "Lahore",
     role: "University footballer",
     lifeLine: "Lahore · university football · heard a pop while cutting",
-    voice: "Cutting ke waqt ek pop suna, do ghanton mein knee phool gayi — ab pivot pe giving way feel hota hai.",
+    voice: "I heard a pop while cutting, the knee swelled within hours — now it gives way when I pivot.",
+    voiceUrdu: "Cutting pe pop suna, do ghanton mein knee phool gayi — pivot pe giving way feel hota hai.",
     clinicalAngle: "Pivot-pop-rapid effusion + soft Lachman — ACL priority, not simple sprain",
   },
   {
@@ -52,7 +53,8 @@ export const realPatients: RealPatient[] = [
     city: "Islamabad",
     role: "Bank clerk",
     lifeLine: "Islamabad · bank clerk · night tingling, shakes her hand",
-    voice: "Raat ko angushthe, index aur middle finger so jate hain — haath hilane se thoda asaan hota hai.",
+    voice: "At night my thumb, index and middle fingers go numb — shaking the hand eases it a little.",
+    voiceUrdu: "Raat ko angushta, index aur middle so jate hain — haath hilane se thoda asaan hota hai.",
     clinicalAngle: "Median distribution nocturnal paresthesia — carpal tunnel territory, not ulnar",
   },
   {
@@ -62,8 +64,9 @@ export const realPatients: RealPatient[] = [
     gender: "male",
     city: "Faisalabad",
     role: "Warehouse supervisor",
-    lifeLine: "Faisalabad · warehouse · buttock pain after lifting, centralizes with extension",
-    voice: "Wazan uthate waqt lower back se buttock tak dard gaya — extension se dard wapas spine ki taraf aata hai.",
+    lifeLine: "Faisalabad · warehouse · buttock pain after lifting; eases toward the spine with extension",
+    voice: "After lifting, pain went from my low back into the buttock — with extension it moves back toward the spine.",
+    voiceUrdu: "Wazan uthane ke baad back se buttock tak dard — extension se dard spine ki taraf wapas aata hai.",
     clinicalAngle: "Centralization with repeated extension — directional preference, not red-flag neuro",
   },
   {
@@ -74,7 +77,8 @@ export const realPatients: RealPatient[] = [
     city: "Karachi",
     role: "College basketball player",
     lifeLine: "Karachi · basketball · inversion landing, lateral swelling",
-    voice: "Landing pe ankle andar roll ho gaya — lateral side pe swelling aur tenderness hai.",
+    voice: "I rolled my ankle inward on landing — the outer side is swollen and tender.",
+    voiceUrdu: "Landing pe ankle andar roll ho gaya — lateral side pe swelling aur tenderness hai.",
     clinicalAngle: "Plantarflexion-inversion — ATFL most likely; still apply fracture rules",
   },
   {
@@ -84,8 +88,9 @@ export const realPatients: RealPatient[] = [
     gender: "female",
     city: "Hyderabad",
     role: "School teacher",
-    lifeLine: "Hyderabad · teacher · cannot sleep on that side, stairs hurt",
-    voice: "Is taraf leti hoon to lateral hip mein dard — stairs pe bhi abductor load se dard aata hai.",
+    lifeLine: "Hyderabad · teacher · cannot sleep on that side; stairs hurt",
+    voice: "Lying on that side hurts the outer hip — stairs also hurt when I load the hip outward.",
+    voiceUrdu: "Us taraf letne se lateral hip dard — stairs pe abductor load se bhi dard aata hai.",
     clinicalAngle: "Trochanteric tenderness + resisted abduction pain — GTPS, not pure OA",
   },
   {
@@ -96,7 +101,8 @@ export const realPatients: RealPatient[] = [
     city: "Delhi",
     role: "Delivery supervisor",
     lifeLine: "Delhi · delivery work · neck pain into the arm with tingling",
-    voice: "Gardan se right arm mein tingling jaati hai — kuch positions pe aur badh jaati hai.",
+    voice: "Pain goes from my neck into the right arm with tingling — some positions make it worse.",
+    voiceUrdu: "Gardan se right arm mein tingling — kuch positions pe aur badh jati hai.",
     clinicalAngle: "Dermatomal sensory + myotomal weakness — radiculopathy pattern",
   },
   {
@@ -107,7 +113,8 @@ export const realPatients: RealPatient[] = [
     city: "Multan",
     role: "Retired clerk",
     lifeLine: "Multan · retired · new bladder trouble + bilateral leg symptoms",
-    voice: "Back dard ke saath ab urine control mushkil, aur dono legs mein numbness — aaj se shuru hua.",
+    voice: "With the back pain I now have trouble controlling urine and numbness in both legs — this started today.",
+    voiceUrdu: "Back dard ke sath urine control mushkil, dono legs mein numbness — aaj se shuru hua.",
     clinicalAngle: "Saddle change + new bladder dysfunction — escalate now, do not treat routinely",
   },
   {
@@ -117,8 +124,9 @@ export const realPatients: RealPatient[] = [
     gender: "female",
     city: "Peshawar",
     role: "Homemaker",
-    lifeLine: "Peshawar · homemaker · morning stiffness eases, stairs are hard",
-    voice: "Subah thodi stiffness hoti hai jo chalne se kam ho jati hai — stairs pe knee dard karti hai.",
+    lifeLine: "Peshawar · homemaker · morning stiffness eases; stairs are hard",
+    voice: "I have a little stiffness in the morning that eases once I walk — stairs still hurt the knee.",
+    voiceUrdu: "Subah thodi stiffness, chalne se kam — stairs pe knee dard karti hai.",
     clinicalAngle: "Activity-related pain, brief stiffness, bony change — OA pattern",
   },
   {
@@ -128,8 +136,9 @@ export const realPatients: RealPatient[] = [
     gender: "male",
     city: "Gujranwala",
     role: "Carpenter",
-    lifeLine: "Gujranwala · carpenter · grip and kettle lift hurt outside elbow",
-    voice: "Tools pakarte aur kettle uthate waqt elbow ke bahar dard — lateral side pe.",
+    lifeLine: "Gujranwala · carpenter · grip and kettle lift hurt the outer elbow",
+    voice: "Gripping tools and lifting a kettle hurt the outside of my elbow.",
+    voiceUrdu: "Tools pakarte aur kettle uthate waqt elbow ke bahar dard.",
     clinicalAngle: "Resisted wrist extension pain at lateral epicondyle — lateral elbow tendinopathy",
   },
   {
@@ -140,7 +149,8 @@ export const realPatients: RealPatient[] = [
     city: "Rawalpindi",
     role: "Recreational runner",
     lifeLine: "Rawalpindi · runner · sudden snap while sprinting",
-    voice: "Sprint push-off pe peeche se snap suna — ab toes pe khara nahi ho sakta.",
+    voice: "I felt a sudden snap behind the ankle while sprinting — I cannot rise onto my toes.",
+    voiceUrdu: "Sprint pe peeche se snap suna — ab toes pe khara nahi ho sakta.",
     clinicalAngle: "Sudden snap + positive Thompson — Achilles rupture urgency",
   },
   {
@@ -151,7 +161,8 @@ export const realPatients: RealPatient[] = [
     city: "Karachi",
     role: "House painter",
     lifeLine: "Karachi · painter · overhead work, painful arc",
-    voice: "Ceiling paint karte waqt arm sideways uthate hi dard — passive movement better hai.",
+    voice: "When I paint the ceiling, lifting the arm sideways hurts — passive movement feels better.",
+    voiceUrdu: "Ceiling paint karte arm sideways uthate dard — passive movement better hai.",
     clinicalAngle: "Painful arc + preserved passive ROM — rotator-cuff related pain",
   },
   {
@@ -161,8 +172,9 @@ export const realPatients: RealPatient[] = [
     gender: "female",
     city: "Mumbai",
     role: "Delivery driver",
-    lifeLine: "Mumbai · delivery driver · neck to thumb, cough aggravates arm",
-    voice: "Gardan se forearm aur thumb tak tingling — coughing se arm pain badhta hai.",
+    lifeLine: "Mumbai · delivery driver · neck to thumb; cough aggravates arm",
+    voice: "Tingling runs from my neck to the forearm and thumb — coughing makes the arm pain worse.",
+    voiceUrdu: "Gardan se forearm aur thumb tak tingling — coughing se arm pain badhta hai.",
     clinicalAngle: "Cough-aggravated arm pain + reflex change — nerve-root priority",
   },
   {
@@ -173,8 +185,9 @@ export const realPatients: RealPatient[] = [
     city: "Quetta",
     role: "Primary school teacher",
     lifeLine: "Quetta · teacher · side-sleeping and single-leg load hurt",
-    voice: "Us side pe soti hoon to hip dard, single-leg stand pe bhi load se dard.",
-    clinicalAngle: "Lateral hip + abductor loading — GTPS pattern again, different person",
+    voice: "Sleeping on that side hurts the hip — single-leg standing also loads the pain.",
+    voiceUrdu: "Us side pe sone se hip dard — single-leg stand pe bhi load se dard.",
+    clinicalAngle: "Lateral hip + abductor loading — GTPS pattern, different person",
   },
   {
     caseKey: "knee-03",
@@ -184,7 +197,8 @@ export const realPatients: RealPatient[] = [
     city: "Karachi",
     role: "Recreational runner",
     lifeLine: "Karachi · runner · stairs down and long sitting hurt the kneecap",
-    voice: "Stairs utarte aur der tak baithne ke baad kneecap ke around dard — locking nahi.",
+    voice: "Going down stairs and sitting a long time hurt around the kneecap — it does not lock.",
+    voiceUrdu: "Stairs utarte aur der baithne se kneecap ke around dard — locking nahi.",
     clinicalAngle: "Loaded flexion pain without true locking — patellofemoral pattern",
   },
   {
@@ -194,8 +208,9 @@ export const realPatients: RealPatient[] = [
     gender: "male",
     city: "Ahmedabad",
     role: "College basketball player",
-    lifeLine: "Ahmedabad · basketball · inversion after jump, can take four steps",
-    voice: "Jump se land karke ankle andar gaya — chal sakta hoon lekin lateral swelling hai.",
+    lifeLine: "Ahmedabad · basketball · inversion after jump; can take four steps",
+    voice: "I landed from a jump and the ankle rolled in — I can walk, but the outer side is swollen.",
+    voiceUrdu: "Jump se land karke ankle andar gaya — chal sakta hoon, lateral swelling hai.",
     clinicalAngle: "Inversion sprain likely — still screen bony tenderness (Ottawa logic)",
   },
   {
@@ -206,7 +221,8 @@ export const realPatients: RealPatient[] = [
     city: "Lahore",
     role: "Mother of a toddler",
     lifeLine: "Lahore · young mother · radial wrist pain lifting her child",
-    voice: "Bachay ko uthate aur grip pe radial wrist dard — angushthe ki taraf.",
+    voice: "Lifting my child and gripping things hurt the thumb side of the wrist.",
+    voiceUrdu: "Bachay ko uthate aur grip pe radial wrist dard — angushthe ki taraf.",
     clinicalAngle: "Radial styloid + thumb tendon load — de Quervain pattern",
   },
   {
@@ -216,8 +232,9 @@ export const realPatients: RealPatient[] = [
     gender: "male",
     city: "Sukkur",
     role: "Retired teacher",
-    lifeLine: "Sukkur · retired teacher · legs heavy after walking, eases when sitting",
-    voice: "Thodi der walk ke baad dono legs heavy — shopping cart pakad ke walk asaan, baithne se relief.",
+    lifeLine: "Sukkur · retired teacher · legs heavy after walking; eases when sitting",
+    voice: "After walking a few minutes both legs feel heavy — leaning on a cart helps; sitting brings relief.",
+    voiceUrdu: "Thodi der walk ke baad dono legs heavy — cart pakad ke asaan, baithne se relief.",
     clinicalAngle: "Flexion relief + walking tolerance — neurogenic claudication vs vascular",
   },
   {
@@ -228,7 +245,8 @@ export const realPatients: RealPatient[] = [
     city: "Bahawalpur",
     role: "Retired shopkeeper",
     lifeLine: "Bahawalpur · fell yesterday · cannot actively lift the arm",
-    voice: "Kal kandhe pe gira — ab khud arm nahi utha sakta, passive better hai.",
+    voice: "I fell on my shoulder yesterday — I cannot lift the arm myself; passive movement is better.",
+    voiceUrdu: "Kal kandhe pe gira — khud arm nahi utha sakta, passive better hai.",
     clinicalAngle: "Acute trauma + major active weakness — cuff tear/fracture urgency",
   },
   {
@@ -239,11 +257,10 @@ export const realPatients: RealPatient[] = [
     city: "Karachi",
     role: "Shop owner with diabetes",
     lifeLine: "Karachi · diabetes · hot swollen knee + fever since last night",
-    voice: "Kal raat se knee garam, phooli, bukhar 38.8 — trauma nahi, weight nahi le sakta.",
+    voice: "Since last night the knee is hot, swollen and painful, with fever 38.8°C — no injury; I cannot bear weight.",
+    voiceUrdu: "Kal raat se knee garam, phooli, bukhar 38.8 — trauma nahi, weight nahi le sakta.",
     clinicalAngle: "Hot joint + fever + diabetes — septic arthritis until proven otherwise",
   },
-
-  // ── Deep-dive masterclasses (slug keys) ─────────────────────────────────
   {
     caseKey: "postpartum-running-stress-urinary-incontinence",
     name: "Mariam Saleem",
@@ -251,9 +268,10 @@ export const realPatients: RealPatient[] = [
     gender: "female",
     city: "Karachi",
     role: "New mother, wants to run again",
-    lifeLine: "Karachi · 6 months postpartum · leaks on impact, wants to run",
-    voice: "Pehle ki tarah run karna chahti hoon lekin jump aur jog pe urine leak hota hai.",
-    clinicalAngle: "Impact leakage + return-to-run readiness — pelvic floor + load, not ‘just Kegels’",
+    lifeLine: "Karachi · 6 months postpartum · leaks on impact; wants to run",
+    voice: "I want to run like before, but I leak urine when I jump or jog.",
+    voiceUrdu: "Pehle ki tarah run karna chahti hoon — jump aur jog pe urine leak hota hai.",
+    clinicalAngle: "Impact leakage + return-to-run readiness — pelvic floor + load, not only Kegels",
   },
   {
     caseKey: "older-adult-recurrent-falls-orthostatic-symptoms",
@@ -263,7 +281,8 @@ export const realPatients: RealPatient[] = [
     city: "Hyderabad",
     role: "Grandmother living with family",
     lifeLine: "Hyderabad · recurrent falls · dizziness on standing",
-    voice: "Baar baar gir rahi hoon — khade hote hi sir ghoomta hai, sirf balance exercise kaafi nahi.",
+    voice: "I keep falling — when I stand up my head spins. Balance exercises alone may not be enough.",
+    voiceUrdu: "Baar baar gir rahi hoon — khade hote sir ghoomta hai; sirf balance exercise kaafi nahi.",
     clinicalAngle: "Falls + orthostatic symptoms — cardiovascular and multidomain, not balance alone",
   },
   {
@@ -274,7 +293,8 @@ export const realPatients: RealPatient[] = [
     city: "Karachi",
     role: "Club volleyball attacker",
     lifeLine: "Karachi · volleyball · can lift, but not another full training shift",
-    voice: "Lift to kar leta hoon — lekin doosri training shift shoulder nahi sehti.",
+    voice: "I can still lift — but my shoulder cannot handle a second full training session.",
+    voiceUrdu: "Lift kar leta hoon — lekin doosri full training shift shoulder nahi sehti.",
     clinicalAngle: "Load capacity and return-to-training, not only pain location",
   },
   {
@@ -284,8 +304,9 @@ export const realPatients: RealPatient[] = [
     gender: "female",
     city: "Islamabad",
     role: "Amateur half-marathon runner",
-    lifeLine: "Islamabad · runner · fine at rest, stairs tell a different story",
-    voice: "Rest pe theek, lekin stairs utarte aur long run ke baad anterior knee dard.",
+    lifeLine: "Islamabad · runner · fine at rest; stairs tell a different story",
+    voice: "At rest the knee feels fine — going down stairs and after a long run, the front of the knee hurts.",
+    voiceUrdu: "Rest pe theek — stairs utarte aur long run ke baad anterior knee dard.",
     clinicalAngle: "Load and capacity for anterior knee pain — strength and graded return",
   },
   {
@@ -296,7 +317,8 @@ export const realPatients: RealPatient[] = [
     city: "Lahore",
     role: "Retired bus driver",
     lifeLine: "Lahore · COPD rehab · walk starts fine, then one vital changes",
-    voice: "Walk shuru normal, phir saans aur readings change — expected dyspnea ya warning?",
+    voice: "The walk starts normally — then breathing and the readings change. Is this expected, or a warning?",
+    voiceUrdu: "Walk shuru normal, phir saans aur readings change — expected dyspnea ya warning?",
     clinicalAngle: "Exertional response change — rethink safety mid-session",
   },
   {
@@ -307,7 +329,8 @@ export const realPatients: RealPatient[] = [
     city: "Rawalpindi",
     role: "Shopkeeper",
     lifeLine: "Rawalpindi · routine back pain visit becomes urgent",
-    voice: "Aaj back ke saath naya bladder issue aur saddle numbness — treatment nahi, escalation.",
+    voice: "Today with the back pain I have new bladder trouble and saddle numbness — this is not for routine treatment.",
+    voiceUrdu: "Aaj back ke sath naya bladder issue aur saddle numbness — routine treatment nahi, escalation.",
     clinicalAngle: "New bladder + saddle symptoms — red-flag pathway, not routine physio",
   },
   {
@@ -318,7 +341,8 @@ export const realPatients: RealPatient[] = [
     city: "Karachi",
     role: "Homemaker, post-stroke",
     lifeLine: "Karachi · post-stroke · walking again — what does progress mean?",
-    voice: "Phir se chal rahi hoon — lekin asal progress kya hai, sirf steps count nahi.",
+    voice: "I am walking again — but what does real progress mean, not only counting steps?",
+    voiceUrdu: "Phir se chal rahi hoon — asal progress kya hai, sirf steps count nahi.",
     clinicalAngle: "Task-specific dosage and functional goals after stroke",
   },
   {
@@ -329,7 +353,8 @@ export const realPatients: RealPatient[] = [
     city: "Peshawar",
     role: "Retired tailor",
     lifeLine: "Peshawar · after hospital discharge · every short walk feels steep",
-    voice: "Discharge ke baad chhoti si walk bhi pahaad lagti hai — rehab plan kaise banaye.",
+    voice: "After discharge even a short walk feels like a steep hill — how should we plan rehab?",
+    voiceUrdu: "Discharge ke baad chhoti walk bhi pahaad lagti hai — rehab plan kaise banaye.",
     clinicalAngle: "Post-exacerbation pulmonary rehab planning and tolerance",
   },
   {
@@ -340,21 +365,17 @@ export const realPatients: RealPatient[] = [
     city: "Lahore",
     role: "Football midfielder",
     lifeLine: "Lahore · ACL reconstruction · hop test passed — ready for pivoting?",
-    voice: "Hop test pass ho gaya — kya ab pivoting sport safe hai? Strength aur confidence dono check.",
+    voice: "I passed the hop test — is pivoting sport safe yet? We still need strength and confidence.",
+    voiceUrdu: "Hop test pass ho gaya — pivoting sport safe hai? Strength aur confidence dono check.",
     clinicalAngle: "Criterion-based RTS — strength, hop, psychology, exposure",
   },
 ];
 
 const byKey = new Map(realPatients.map((p) => [p.caseKey, p]));
 
-/** Resolve identity from case id or deep-dive slug. */
 export function getRealPatient(caseIdOrSlug: string): RealPatient | undefined {
   if (byKey.has(caseIdOrSlug)) return byKey.get(caseIdOrSlug);
-  // deep-slug cards use id "deep-" + slug
-  if (caseIdOrSlug.startsWith("deep-")) {
-    return byKey.get(caseIdOrSlug.slice(5));
-  }
-  // episode query ids are raw
+  if (caseIdOrSlug.startsWith("deep-")) return byKey.get(caseIdOrSlug.slice(5));
   return byKey.get(caseIdOrSlug);
 }
 
