@@ -68,10 +68,10 @@ type Group = {
 
 const groups: Group[] = [
   {
-    id: "learn", number: "01", kicker: "Understand deeply",
+    id: "learn", number: "01", kicker: "Build strong foundations",
     title: "I’m a Student",
-    headline: "Learn, practice and build clinical confidence.",
-    description: "Explore learning resources, cases, quizzes and clinical skills.",
+    headline: "Turn theory into clinical confidence.",
+    description: "Structured learning, real cases, quizzes and practical skills — designed for physiotherapy students.",
     links: [
       { title: "Knowledge Hub", description: "Study MSK, neuro, cardio, pediatrics, sports and more.", href: "/knowledge-hub", icon: "library", featured: true },
       { title: "Clinical Visual Atlas", description: "See clinical anatomy, pathology and rehabilitation visuals.", href: "/clinical-visual-atlas", icon: "eye" },
@@ -84,10 +84,10 @@ const groups: Group[] = [
     ],
   },
   {
-    id: "practice", number: "02", kicker: "Put thinking to work",
+    id: "practice", number: "02", kicker: "Sharpen clinical thinking",
     title: "I’m a Physiotherapist",
-    headline: "Strengthen your clinical decisions and hands-on skills.",
-    description: "Advanced clinical learning, techniques and case-based reasoning.",
+    headline: "Strengthen the decisions you make every day.",
+    description: "Advanced techniques, case-based reasoning and continuous clinical growth for practicing physiotherapists.",
     links: [
       { title: "Manual Therapy Mastery", description: "Explore techniques, application, dosage and safety.", href: "/manual-therapy", icon: "hand", featured: true },
       { title: "Treatment Plans", description: "Assessment, management and rehabilitation progression.", href: "/treatment-plans", icon: "clipboard" },
@@ -101,8 +101,8 @@ const groups: Group[] = [
   {
     id: "professional", number: "03", kicker: "Grow with purpose",
     title: "Workshops & Professional Growth",
-    headline: "Learning that travels into practice.",
-    description: "Hands-on skills, continuing professional development and research.",
+    headline: "Hands-on skills that transfer to the clinic.",
+    description: "Practical workshops, CPD opportunities, research support and professional development.",
     links: [
       { title: "Workshops & CPD", description: "Explore upcoming practical training opportunities.", href: "/workshops", icon: "calendar", featured: true },
       { title: "Training Archive", description: "Revisit previous workshops and learning activities.", href: "/training", icon: "book" },
@@ -112,10 +112,10 @@ const groups: Group[] = [
     ],
   },
   {
-    id: "care", number: "04", kicker: "For patients & visitors",
+    id: "care", number: "04", kicker: "Clear next steps",
     title: "I Need Physiotherapy",
-    headline: "Clear next steps. Human-centered care.",
-    description: "Explore your condition, find care and request an appointment.",
+    headline: "Understand your condition. Get the right care.",
+    description: "Simple guidance, symptom checker and easy ways to book physiotherapy services.",
     links: [
       { title: "MSK Symptom Checker", description: "Screen possible patterns and identify safety warnings.", href: "/symptom-checker", icon: "symptoms", featured: true },
       { title: "Patient Care", description: "Explore physiotherapy services and appointment options.", href: "/patient-services", icon: "care" },
@@ -155,8 +155,8 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
         <div className="pna-sig-header">
           <div>
             <span className="pna-sig-overline">FOUR PATHWAYS · ONE ACADEMY</span>
-            <h2 id="pna-sig-heading">Explore PNA</h2>
-            <p>Choose where you want to begin. Everything you need is one tap away.</p>
+            <h2 id="pna-sig-heading">Where do you want to begin?</h2>
+            <p>Choose your path. We’ll show you exactly what matters most for you.</p>
           </div>
           <span className="pna-sig-header-aside"><ShieldCheck size={17} aria-hidden="true"/> Learn · Practice · Grow · Care</span>
         </div>
@@ -234,4 +234,3 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
     </section>
   );
 }
-
