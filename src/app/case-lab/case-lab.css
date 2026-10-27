@@ -1,307 +1,465 @@
-
-.case-lab-v3{--ink:#092440;--muted:#52677a;--sea:#087f83;--line:#dce9ee;--mist:#f5f9fa; color:var(--ink);background:linear-gradient(180deg,#f7fbfc,#fff 420px);font-family:var(--font-body),system-ui,sans-serif}
-.case-lab-v3 h1,.case-lab-v3 h2,.case-lab-v3 h3{color:var(--ink)}
-.case-lab-v3 .cl-hero{position:relative;isolation:isolate;overflow:hidden;background:#fff;border:1px solid #dce8ee;border-radius:30px;box-shadow:0 25px 70px -55px #0d4963}
-.case-lab-v3 .cl-hero:before{content:"";position:absolute;inset:0 0 auto auto;width:45%;height:100%;background:radial-gradient(circle at 70% 32%,rgba(5,146,148,.15),transparent 66%);z-index:-1;pointer-events:none}
-.case-lab-v3 .cl-eyebrow{display:inline-flex;gap:.6rem;align-items:center;color:#08797e;font-size:.69rem;font-weight:850;letter-spacing:.19em;text-transform:uppercase}
-.case-lab-v3 .cl-kicker{display:inline-flex;align-items:center;border-radius:999px;border:1px solid #c5e4e1;background:#eaf8f5;color:#146c6a;padding:.4rem .8rem;font-weight:750;font-size:.72rem}
-.case-lab-v3 .cl-display{font-family:Georgia,Cambria,serif;font-size:clamp(2.15rem,4.4vw,4rem);line-height:1.065;letter-spacing:-.045em;font-weight:750}
-.case-lab-v3 .cl-gradient-word{color:#07827d}
-.case-lab-v3 .cl-overview{background:linear-gradient(145deg,#07304b 5%,#0b5360);color:white;border-radius:23px;box-shadow:0 16px 36px -28px #054052}
-.case-lab-v3 .cl-overview strong{color:#e4f8f5}
-.case-lab-v3 .cl-overview p{color:#bbdbe0}
-.case-lab-v3 .cl-ministat{border:1px solid #deeaee;background:#fff;border-radius:17px;box-shadow:0 10px 26px -23px #164252}
-.case-lab-v3 .cl-search{min-height:52px;border:1px solid #cadde4;border-radius:15px;background:white;width:100%;padding:.8rem 1rem .8rem 3rem;outline:none;color:#143449}
-.case-lab-v3 .cl-search:focus{box-shadow:0 0 0 4px #cef0ea;border-color:#0a8b87}
-.case-lab-v3 .cl-filter{display:inline-flex;align-items:center;gap:.55rem;border:1px solid #d4e5e8;background:#fff;border-radius:999px;padding:.7rem .9rem;font-size:.76rem;font-weight:750;color:#4a6778;transition:background .2s,border .2s;color-scheme:light;white-space:nowrap}
-.case-lab-v3 .cl-filter:hover{background:#effaf8}
-.case-lab-v3 .cl-filter[data-active="true"]{color:#fff;border-color:#087b7c;background:#087b7c;box-shadow:0 9px 24px -14px #03595d}
-.case-lab-v3 .cl-story{position:relative;display:flex;flex-direction:column;min-height:295px;padding:1.5rem;border:1px solid #dbe9ed;border-radius:23px;background:#fff;transition:transform .18s,box-shadow .18s,border .18s;box-shadow:0 10px 28px -27px #0c4860}
-.case-lab-v3 .cl-story:hover{transform:translateY(-4px);box-shadow:0 20px 42px -28px #0d5260;border-color:#a0d6d5}
-.case-lab-v3 .cl-story:focus-visible{outline:3px solid #20a7a1;outline-offset:3px}
-.case-lab-v3 .cl-story:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;border-radius:30px;background:#0d8d87;opacity:0;transition:opacity .2s}
-.case-lab-v3 .cl-story:hover:before{opacity:1}
-.case-lab-v3 .cl-number{color:#96b0bd;font-size:.74rem;font-weight:800;letter-spacing:.13em}
-.case-lab-v3 .cl-category{background:#eaf8f5;color:#146763;font-size:.69rem;font-weight:780;border-radius:999px;padding:.36rem .68rem}
-.case-lab-v3 .cl-case-title{font-family:Georgia,Cambria,serif;font-size:1.32rem;line-height:1.25;letter-spacing:-.015em;font-weight:750;overflow-wrap:anywhere}
-.case-lab-v3 .cl-story-label{letter-spacing:.13em;font-size:.63rem;font-weight:800;text-transform:uppercase;color:#577788}
-.case-lab-v3 .cl-button{display:inline-flex;justify-content:center;align-items:center;gap:.65rem;padding:.86rem 1.15rem;border-radius:13px;font-size:.84rem;font-weight:750;background:#078581;color:white;border:1px solid #078581;transition:transform .15s,background .15s}
-.case-lab-v3 .cl-button:hover{background:#056b6b;transform:translateY(-1px)}
-.case-lab-v3 .cl-button-secondary{background:white;color:#12596a;border-color:#d1e4e7}
-.case-lab-v3 .cl-button-secondary:hover{background:#e9f6f5}
-.case-lab-v3 .cl-paper{border:1px solid #dae8ec;background:white;border-radius:24px;box-shadow:0 18px 44px -40px #193f58}
-.case-lab-v3 .cl-timeline{display:flex;flex-wrap:wrap;gap:.4rem}
-.case-lab-v3 .cl-step{border:1px solid #d4e5e7;border-radius:999px;padding:.58rem .76rem;font-size:.72rem;color:#68808b;font-weight:740;background:#fff}
-.case-lab-v3 .cl-step[data-active="true"]{background:#0a7b78;border-color:#0a7b78;color:white}
-.case-lab-v3 .cl-step[data-done="true"]{border-color:#8fcfc7;color:#0b716c;background:#ecf8f6}
-.case-lab-v3 .cl-option{display:block;width:100%;text-align:left;border:1px solid #d3e2e7;background:#fff;border-radius:15px;padding:1rem;line-height:1.65;color:#244456;transition:background .15s,border .15s}
-.case-lab-v3 .cl-option:hover:not(:disabled){background:#f1f9f9;border-color:#82c5c1}
-.case-lab-v3 .cl-option[data-selected="true"]{background:#eaf8f5;border:2px solid #0a8c85;padding:calc(1rem - 1px)}
-.case-lab-v3 .cl-option:disabled{cursor:default}
-.case-lab-v3 .cl-story-quote{border-left:3px solid #11a59c;padding:.8rem 1.1rem;background:#f0faf8;border-radius:0 15px 15px 0;color:#285a65;font-style:italic;line-height:1.8}
-.case-lab-v3 .cl-nudge{border:1px solid #dcebe7;background:#f5fbf9;border-radius:15px;padding:1rem;color:#2b6464;font-size:.88rem;line-height:1.7}
-.case-lab-v3 .cl-feedback{border:1px solid #b9e0d7;background:#eff9f5;border-radius:17px;padding:1.15rem;line-height:1.75;color:#144f50}
-.case-lab-v3 .cl-reveal{border-left:3px solid #0e8982;padding:1rem 1.1rem;background:#f1faf8;border-radius:0 15px 15px 0;line-height:1.75}
-.case-lab-v3 .cl-paper summary{cursor:pointer;list-style:none}
-.case-lab-v3 .cl-paper summary::-webkit-details-marker{display:none}
-.case-lab-v3 .cl-paper summary:focus-visible{outline:2px solid #0c8f8c;outline-offset:4px}
-.case-lab-v3 .cl-breadcrumb{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;color:#0d7678;font-size:.79rem;font-weight:750}
-@media(max-width:640px){.case-lab-v3 .cl-hero{border-radius:21px}.case-lab-v3 .cl-overview{border-radius:18px}.case-lab-v3 .cl-story{min-height:250px;padding:1.2rem}.case-lab-v3 .cl-step{font-size:.67rem;padding:.49rem .59rem}}
-@media(prefers-reduced-motion:reduce){.case-lab-v3 .cl-story,.case-lab-v3 .cl-button{transition:none!important;transform:none!important}}
-
-
-/* Case Lab v4: specialty-first navigation inspired by the MSK Special Tests explorer. */
-.case-lab-v3 .cl-specialty-panel{min-width:0}
-.case-lab-v3 .cl-specialty-choice{color:#476070;background:#fff;position:relative}
-.case-lab-v3 .cl-specialty-choice[data-active="true"]{background:#087c7c;color:white;border-color:#087c7c;box-shadow:0 10px 24px -17px rgba(5,86,90,.65)}
-.case-lab-v3 .cl-specialty-choice[data-active="true"] svg{color:white}
-.case-lab-v3 .cl-specialty-choice[data-active="true"] .cl-specialty-count{background:rgba(255,255,255,.2);color:white}
-.case-lab-v3 .cl-specialty-choice:hover:not([data-active="true"]){color:#086e72}
-.case-lab-v3 .cl-specialty-choice:focus-visible,.case-lab-v3 .cl-all-specialties:focus-visible{outline:3px solid #12a9a1;outline-offset:3px}
-.case-lab-v3 .cl-all-specialties{transition:background .16s,border-color .16s}
-.case-lab-v3 .cl-all-specialties:hover{background:#dcf2ed}
-.case-lab-v3 .cl-all-specialties[data-active="true"]{color:white;background:#087c7c;border-color:#087c7c}
-.case-lab-v3 .cl-all-specialties[data-active="true"] span:last-child{color:#075b5c}
-.case-lab-v3 .cl-select{width:100%;height:48px;border-radius:12px;border:1px solid #d5e4e8;background:#fff;color:#214457;padding:0 .75rem;outline:none;font-size:.83rem;font-weight:600;cursor:pointer}
-.case-lab-v3 .cl-select:focus{border-color:#08918c;box-shadow:0 0 0 3px #d5f3ee}
-.case-lab-v3 .cl-patient-file{min-height:270px}
-.case-lab-v3 .cl-patient-file:hover .cl-case-title{color:#087976}
-.case-lab-v3 .cl-patient-file .cl-story-label{line-height:1.65}
-.case-lab-v3 #case-lab-results:focus{outline:0}
-@media(min-width:1024px){
- .case-lab-v3 .cl-specialty-panel{max-height:calc(100vh - 7.8rem);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#b8d5d9 transparent}
-}
-@media(max-width:640px){
- .case-lab-v3 .cl-specialty-choice{min-height:106px}
- .case-lab-v3 .cl-specialty-choice .cl-specialty-count{align-self:flex-start}
- .case-lab-v3 .cl-patient-file{min-height:235px}
-}
-
-
-/* CASE LAB CLINICAL NOVEL V2 – editorial storytelling in the existing PNA white/teal system. */
-.case-lab-v3 .cl-novel-hero{background:radial-gradient(ellipse at 96% 12%,rgba(13,146,140,.11),transparent 49%),linear-gradient(128deg,#fff 30%,#f6fbfb 100%)}
-.case-lab-v3 .cl-novel-page{position:relative;isolation:isolate;overflow:hidden;background:#fff;box-shadow:0 24px 65px -49px rgba(8,53,65,.4)}
-.case-lab-v3 .cl-novel-page:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,#087e79,#a8e0d6 55%,transparent);opacity:.75;z-index:-1}
-.case-lab-v3 .cl-novel-readerbar{font-variant-numeric:tabular-nums}
-.case-lab-v3 .cl-novel-act{font-size:.69rem;letter-spacing:.22em;font-weight:850;color:#097a78;text-transform:uppercase}
-.case-lab-v3 .cl-novel-scene{border:1px solid #d5e6e6;border-radius:21px;background:radial-gradient(circle at 92% 8%,#eaf7f4 0,transparent 38%),linear-gradient(140deg,#fff 45%,#fafdfc);padding:clamp(1.15rem,3vw,2rem);box-shadow:0 10px 30px -29px #0d5260}
-.case-lab-v3 .cl-novel-scene-head{display:flex;gap:.85rem;align-items:center;font-size:.63rem;line-height:1.5;letter-spacing:.13em;text-transform:uppercase;font-weight:850;color:#42817b}
-.case-lab-v3 .cl-novel-mark{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:#e8f5f2;color:#097f7a;font-family:Georgia,serif;font-size:2.25rem;font-weight:700;line-height:1}
-.case-lab-v3 .cl-novel-prose{font-family:Georgia,Cambria,"Times New Roman",serif;color:#263e4b;font-size:clamp(1.05rem,1.35vw,1.2rem);line-height:1.95;letter-spacing:.002em;max-width:73ch}
-.case-lab-v3 .cl-novel-prose p{margin:0 0 1.15rem;orphans:3;widows:3}
-.case-lab-v3 .cl-novel-prose p:first-child:first-letter{float:left;font-size:3.1rem;line-height:.85;margin:.18rem .42rem 0 0;color:#087f7a;font-weight:700}
-.case-lab-v3 .cl-novel-beat{font-family:Georgia,Cambria,serif;border-top:1px solid #d6eae6;padding-top:1rem;margin-bottom:0;color:#186b65;font-size:1rem;font-style:italic;line-height:1.75}
-.case-lab-v3 .cl-novel-decision{border:1px solid #cfe6e4;border-radius:20px;background:#f1f9f7;padding:clamp(1.1rem,3vw,1.6rem)}
-.case-lab-v3 .cl-novel-insight{transition:background .2s}
-.case-lab-v3 .cl-novel-insight:hover{background:#fcfffe}
-.case-lab-v3 .cl-novel-insight summary{list-style:none}
-.case-lab-v3 .cl-novel-insight summary::-webkit-details-marker{display:none}
-.case-lab-v3 .cl-novel-insight[open] summary svg{transform:rotate(180deg)}
-.case-lab-v3 .cl-novel-facts summary{list-style:none}
-.case-lab-v3 .cl-novel-facts summary::-webkit-details-marker{display:none}
-.case-lab-v3 .cl-novel-facts[open] summary svg{transform:rotate(180deg)}
-.case-lab-v3 .cl-novel-facts summary:focus-visible,.case-lab-v3 .cl-novel-insight summary:focus-visible{outline:2px solid #0b948b;outline-offset:5px;border-radius:5px}
-.case-lab-v3 .cl-novel-next{background:linear-gradient(to right,transparent,#f7fbfa);border-radius:12px}
-.case-lab-v3 .cl-reading-focus>section{width:min(100%,940px);margin-inline:auto}
-.case-lab-v3 .cl-reading-focus .cl-novel-prose{max-width:68ch;margin-inline:auto}
-.case-lab-v3 .cl-reading-focus .cl-novel-scene{padding:clamp(1.5rem,4vw,3rem)}
-.case-lab-v3 .cl-reading-focus .cl-novel-page{padding:clamp(1.5rem,4vw,3rem)}
-@media(max-width:700px){
- .case-lab-v3 .cl-novel-prose{font-size:1.02rem;line-height:1.83}
- .case-lab-v3 .cl-novel-prose p:first-child:first-letter{font-size:2.55rem}
- .case-lab-v3 .cl-novel-scene{border-radius:16px}
- .case-lab-v3 .cl-novel-decision{border-radius:16px}
- .case-lab-v3 .cl-novel-readerbar{align-items:flex-start}
- .case-lab-v3 .cl-novel-readerbar .cl-eyebrow{font-size:.61rem;letter-spacing:.11em}
-}
-@media(prefers-reduced-motion:reduce){
- .case-lab-v3 .cl-novel-insight{transition:none}
-}
-
-
-/* Clinical novels appear as refined casebook covers without replacing specialty navigation. */
-.case-lab-v3 .cl-storybook-card{isolation:isolate;background:linear-gradient(155deg,#fff 55%,#f5faf9);box-shadow:0 12px 34px -30px #155867}
-.case-lab-v3 .cl-storybook-card:after{position:absolute;content:"";pointer-events:none;right:18px;top:64px;width:58px;height:58px;border:1px solid #d8ebe8;border-radius:50%;background:radial-gradient(circle at center,transparent 38%,#eef8f5 39%,#eef8f5 43%,transparent 45%);opacity:.58;z-index:-1}
-.case-lab-v3 .cl-storybook-card:hover{border-color:#7cc3bc;transform:translateY(-3px);box-shadow:0 20px 45px -35px #0b525c}
-.case-lab-v3 .cl-storybook-card:hover .cl-case-title{color:#0a7772}
-.case-lab-v3 .cl-storybook-card .cl-story-label{max-width:100%;overflow-wrap:anywhere}
-
-
-/* Mobile reading fix for Leaderboard → Real Cases → individual case pages.
-   Keep all clinical wording unchanged; prevent prose and nested cards from clipping. */
-.case-lab-v3,
-.case-lab-v3 .container-content,
-.case-lab-v3 .cl-novel-page,
-.case-lab-v3 .cl-novel-scene,
-.case-lab-v3 .cl-novel-decision,
-.case-lab-v3 .cl-novel-prose {
-  min-width: 0;
-  max-width: 100%;
-}
-.case-lab-v3 .cl-novel-page {
-  overflow: visible;
-}
-.case-lab-v3 .cl-novel-prose,
-.case-lab-v3 .cl-novel-prose p,
-.case-lab-v3 .cl-novel-scene,
-.case-lab-v3 .cl-novel-beat,
-.case-lab-v3 .cl-novel-decision,
-.case-lab-v3 .cl-story-quote,
-.case-lab-v3 .cl-reveal,
-.case-lab-v3 .cl-paper,
-.case-lab-v3 h1,
-.case-lab-v3 h2,
-.case-lab-v3 h3,
-.case-lab-v3 p,
-.case-lab-v3 li,
-.case-lab-v3 summary {
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
-@media (max-width: 640px) {
-  .case-lab-v3 .cl-novel-page {
-    padding: 1rem;
-  }
-  .case-lab-v3 .cl-novel-prose {
-    max-width: 100%;
-    font-size: 1rem;
-    line-height: 1.8;
-  }
-  .case-lab-v3 .cl-novel-prose p {
-    max-width: 100%;
-  }
-  .case-lab-v3 .cl-novel-scene-head {
-    align-items: flex-start;
-    letter-spacing: .06em;
-    overflow-wrap: anywhere;
-  }
-  .case-lab-v3 .cl-novel-mark {
-    flex: 0 0 38px;
-  }
-}
-
-
-/* Root-level mobile viewport containment for individual Real Cases story readers.
-   The earlier prose-only rules did not constrain the full reader layout width. */
-.case-lab-v3,
-.case-lab-v3 * {
-  box-sizing: border-box;
-}
+/* Case Lab – clean, readable, light UI */
 .case-lab-v3 {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
+  --ink: #0f2744;
+  --muted: #5a7184;
+  --sea: #0d7c78;
+  --line: #e2eef1;
+  --mist: #f7fbfb;
+  color: var(--ink);
+  background: #fafcfc;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
-.case-lab-v3 .container-content,
-.case-lab-v3 .cl-reading-focus,
-.case-lab-v3 .cl-reading-focus > section,
-.case-lab-v3 .cl-novel-hero,
-.case-lab-v3 .cl-novel-page,
-.case-lab-v3 .cl-novel-readerbar,
-.case-lab-v3 .cl-novel-scene,
-.case-lab-v3 .cl-novel-scene-head,
-.case-lab-v3 .cl-novel-prose,
-.case-lab-v3 .cl-novel-prose > *,
-.case-lab-v3 .cl-novel-decision {
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-}
-.case-lab-v3 .cl-novel-page,
-.case-lab-v3 .cl-novel-scene,
-.case-lab-v3 .cl-novel-decision {
-  overflow-wrap: anywhere;
-}
+
 .case-lab-v3 h1,
 .case-lab-v3 h2,
-.case-lab-v3 h3,
+.case-lab-v3 h3 {
+  color: var(--ink);
+}
+
+/* Hero */
+.case-lab-v3 .cl-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 8px 30px -20px rgba(15, 60, 80, 0.15);
+}
+
+.case-lab-v3 .cl-eyebrow {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--sea);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.case-lab-v3 .cl-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid #d4e9e6;
+  background: #f0f9f7;
+  color: #0f6b67;
+  padding: 0.35rem 0.75rem;
+  font-weight: 650;
+  font-size: 0.72rem;
+}
+
 .case-lab-v3 .cl-display {
-  max-width: 100%;
-  white-space: normal;
+  font-family: Georgia, Cambria, serif;
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+.case-lab-v3 .cl-gradient-word {
+  color: var(--sea);
+}
+
+/* Mini stats */
+.case-lab-v3 .cl-ministat {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px -12px rgba(15, 60, 80, 0.12);
+}
+
+/* Search & filters */
+.case-lab-v3 .cl-search {
+  min-height: 48px;
+  border: 1px solid #d4e4e8;
+  border-radius: 12px;
+  background: white;
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  outline: none;
+  color: #143449;
+  font-size: 0.9rem;
+}
+
+.case-lab-v3 .cl-search:focus {
+  box-shadow: 0 0 0 3px #d5f0ec;
+  border-color: var(--sea);
+}
+
+.case-lab-v3 .cl-select {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #d5e4e8;
+  background: #fff;
+  color: #214457;
+  padding: 0 0.75rem;
+  outline: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.case-lab-v3 .cl-select:focus {
+  border-color: var(--sea);
+  box-shadow: 0 0 0 3px #d5f0ec;
+}
+
+/* Specialty sidebar */
+.case-lab-v3 .cl-specialty-choice {
+  color: #476070;
+  background: #fff;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.case-lab-v3 .cl-specialty-choice[data-active="true"] {
+  background: var(--sea);
+  color: white;
+  border-color: var(--sea);
+}
+
+.case-lab-v3 .cl-specialty-choice[data-active="true"] svg {
+  color: white;
+}
+
+.case-lab-v3 .cl-specialty-choice[data-active="true"] .cl-specialty-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.case-lab-v3 .cl-specialty-choice:hover:not([data-active="true"]) {
+  background: #f0f9f7;
+  color: #0d6b67;
+}
+
+.case-lab-v3 .cl-all-specialties {
+  transition: background 0.15s;
+}
+
+.case-lab-v3 .cl-all-specialties:hover {
+  background: #e5f5f2;
+}
+
+.case-lab-v3 .cl-all-specialties[data-active="true"] {
+  color: white;
+  background: var(--sea);
+  border-color: var(--sea);
+}
+
+/* Patient cards */
+.case-lab-v3 .cl-story,
+.case-lab-v3 .cl-patient-file,
+.case-lab-v3 .cl-storybook-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  padding: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  box-shadow: 0 4px 18px -14px rgba(15, 60, 80, 0.18);
+  text-decoration: none;
+  color: inherit;
+}
+
+.case-lab-v3 .cl-story:hover,
+.case-lab-v3 .cl-patient-file:hover,
+.case-lab-v3 .cl-storybook-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -18px rgba(15, 60, 80, 0.22);
+  border-color: #a8d4d0;
+}
+
+.case-lab-v3 .cl-story:focus-visible {
+  outline: 2px solid var(--sea);
+  outline-offset: 3px;
+}
+
+.case-lab-v3 .cl-number {
+  color: #8aa0ad;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.case-lab-v3 .cl-category {
+  background: #eef8f6;
+  color: #0f6b67;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+}
+
+.case-lab-v3 .cl-case-title {
+  font-family: Georgia, Cambria, serif;
+  font-size: 1.2rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: 700;
   overflow-wrap: anywhere;
 }
+
+.case-lab-v3 .cl-patient-file:hover .cl-case-title {
+  color: var(--sea);
+}
+
+.case-lab-v3 .cl-story-label {
+  letter-spacing: 0.1em;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #5a7a86;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.case-lab-v3 .cl-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--sea);
+  color: white;
+  border: 1px solid var(--sea);
+  transition: background 0.15s, transform 0.15s;
+  text-decoration: none;
+}
+
+.case-lab-v3 .cl-button:hover {
+  background: #0a6663;
+  transform: translateY(-1px);
+}
+
+.case-lab-v3 .cl-button-secondary {
+  background: white;
+  color: #12596a;
+  border-color: #d1e4e7;
+}
+
+.case-lab-v3 .cl-button-secondary:hover {
+  background: #f0f9f7;
+}
+
+/* Paper / content cards */
+.case-lab-v3 .cl-paper {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px -18px rgba(15, 60, 80, 0.12);
+}
+
+/* Teaching experience – novel reader */
+.case-lab-v3 .cl-novel-hero {
+  background: linear-gradient(135deg, #fff 40%, #f5faf9 100%);
+}
+
+.case-lab-v3 .cl-novel-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #fff;
+}
+
+.case-lab-v3 .cl-novel-act {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  font-weight: 750;
+  color: var(--sea);
+  text-transform: uppercase;
+}
+
+.case-lab-v3 .cl-novel-scene {
+  border: 1px solid #dceae8;
+  border-radius: 16px;
+  background: #fafcfc;
+  padding: clamp(1.1rem, 2.5vw, 1.75rem);
+}
+
+.case-lab-v3 .cl-novel-scene-head {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #4a7a74;
+}
+
+.case-lab-v3 .cl-novel-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #e8f5f2;
+  color: var(--sea);
+  font-family: Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.case-lab-v3 .cl-novel-prose {
+  font-family: Georgia, Cambria, "Times New Roman", serif;
+  color: #2a4050;
+  font-size: clamp(1.02rem, 1.2vw, 1.12rem);
+  line-height: 1.85;
+  max-width: 68ch;
+}
+
+.case-lab-v3 .cl-novel-prose p {
+  margin: 0 0 1rem;
+}
+
+.case-lab-v3 .cl-novel-beat {
+  font-family: Georgia, Cambria, serif;
+  border-top: 1px solid #dceae8;
+  padding-top: 0.9rem;
+  color: #186b65;
+  font-size: 0.98rem;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.case-lab-v3 .cl-novel-decision {
+  border: 1px solid #d4e8e5;
+  border-radius: 16px;
+  background: #f3f9f7;
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+}
+
+.case-lab-v3 .cl-novel-insight summary,
+.case-lab-v3 .cl-novel-facts summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.case-lab-v3 .cl-novel-insight summary::-webkit-details-marker,
+.case-lab-v3 .cl-novel-facts summary::-webkit-details-marker {
+  display: none;
+}
+
+.case-lab-v3 .cl-story-quote {
+  border-left: 3px solid #11a59c;
+  padding: 0.7rem 1rem;
+  background: #f0f9f7;
+  border-radius: 0 12px 12px 0;
+  color: #285a65;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.case-lab-v3 .cl-nudge {
+  border: 1px solid #dcebe7;
+  background: #f5fbf9;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  color: #2b6464;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.case-lab-v3 .cl-feedback {
+  border: 1px solid #b9e0d7;
+  background: #eff9f5;
+  border-radius: 14px;
+  padding: 1rem;
+  line-height: 1.7;
+  color: #144f50;
+}
+
+.case-lab-v3 .cl-reveal {
+  border-left: 3px solid #0e8982;
+  padding: 0.9rem 1rem;
+  background: #f1faf8;
+  border-radius: 0 12px 12px 0;
+  line-height: 1.7;
+}
+
+.case-lab-v3 .cl-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  color: var(--sea);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.case-lab-v3 .cl-reading-focus > section {
+  width: min(100%, 900px);
+  margin-inline: auto;
+}
+
+/* Mobile */
 @media (max-width: 700px) {
-  .case-lab-v3 .cl-reading-focus {
-    width: 100%;
-    max-width: 100%;
-    padding-inline: 0;
+  .case-lab-v3 .cl-hero {
+    border-radius: 18px;
   }
-  .case-lab-v3 .cl-reading-focus > section {
-    margin-inline: 0;
-  }
-  .case-lab-v3 .cl-novel-page {
-    padding: 1rem;
-  }
-  .case-lab-v3 .cl-novel-scene {
-    padding: 1rem;
-  }
-  .case-lab-v3 .cl-novel-scene-head {
-    max-width: 100%;
-    overflow-wrap: anywhere;
+  .case-lab-v3 .cl-story,
+  .case-lab-v3 .cl-patient-file {
+    min-height: 230px;
+    padding: 1.15rem;
   }
   .case-lab-v3 .cl-novel-prose {
     font-size: 1rem;
     line-height: 1.8;
   }
-}
-
-
-/* Focused mobile layout fixes: preserve readable text and keep every chapter reachable. */
-.case-lab-v3,
-.case-lab-v3 * {
-  min-width: 0;
-}
-.case-lab-v3 h1,
-.case-lab-v3 h2,
-.case-lab-v3 h3,
-.case-lab-v3 p,
-.case-lab-v3 li,
-.case-lab-v3 summary,
-.case-lab-v3 .cl-case-title,
-.case-lab-v3 .cl-novel-prose,
-.case-lab-v3 .cl-novel-prose p {
-  overflow-wrap: break-word;
-  word-break: normal;
-}
-
-/* Do not truncate case titles or summaries in the library cards. */
-.case-lab-v3 .cl-storybook-card .cl-case-title.line-clamp-3,
-.case-lab-v3 .cl-storybook-card p.line-clamp-2 {
-  display: block;
-  overflow: visible;
-  -webkit-box-orient: initial;
-  -webkit-line-clamp: unset;
-}
-
-/* The chapter picker becomes a wrapping grid on phones instead of a clipped
-   horizontal strip, so all seven chapter controls remain discoverable. */
-@media (max-width: 700px) {
+  .case-lab-v3 .cl-novel-scene,
+  .case-lab-v3 .cl-novel-decision {
+    border-radius: 14px;
+    padding: 1rem;
+  }
   .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
     overflow: visible;
-    padding-bottom: 0;
   }
-
   .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 > button {
     width: 100%;
     min-width: 0;
-    flex: initial;
-    align-items: flex-start;
-    padding: 0.65rem;
     white-space: normal;
-  }
-
-  .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 > button > span:last-child {
-    min-width: 0;
-    overflow-wrap: break-word;
-    word-break: normal;
   }
 }
 
 @media (max-width: 380px) {
   .case-lab-v3 aside[aria-label="Case Lab learning chapters"] > div.mt-4 {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 1fr;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-lab-v3 .cl-story,
+  .case-lab-v3 .cl-button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Prevent overflow */
+.case-lab-v3,
+.case-lab-v3 * {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.case-lab-v3 h1,
+.case-lab-v3 h2,
+.case-lab-v3 h3,
+.case-lab-v3 p,
+.case-lab-v3 .cl-case-title {
+  overflow-wrap: break-word;
 }
