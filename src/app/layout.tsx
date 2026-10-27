@@ -29,6 +29,7 @@ const siteJsonLd = {
       },
       image: [
         "https://physionexusacademy.com/images/pna-logo.png",
+        "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
         "https://physionexusacademy.com/images/pna-founder-hero-sharp-v2.avif",
       ],
       description:
@@ -72,6 +73,13 @@ const siteJsonLd = {
         { "@type": "City", name: "Karachi" },
         { "@type": "City", name: "Hyderabad" },
       ],
+      medicalSpecialty: [
+        "Physiotherapy",
+        "Musculoskeletal",
+        "Manual Therapy",
+        "Rehabilitation",
+        "Sports Physiotherapy",
+      ],
       knowsAbout: [
         "Physiotherapy education",
         "Musculoskeletal physiotherapy",
@@ -81,8 +89,14 @@ const siteJsonLd = {
         "Rehabilitation protocols",
         "Evidence-based practice",
         "Physiotherapy research support",
+        "Dry needling",
+        "Myofascial release",
+        "Strain Counterstrain",
       ],
       ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
+      priceRange: "$$",
+      currenciesAccepted: "PKR",
+      paymentAccepted: "Cash, Bank Transfer",
     },
     {
       "@type": "Person",
@@ -169,6 +183,8 @@ export const metadata: Metadata = {
     "CPD physiotherapy Pakistan",
     "physiotherapy home visit Karachi",
     "Dr Sajjad Raza PT",
+    "dry needling Pakistan",
+    "myofascial release training",
   ],
   applicationName: "Physio Nexus Academy",
   creator: "Physio Nexus Academy",
@@ -196,6 +212,12 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy",
+      },
+      {
         url: "https://physionexusacademy.com/images/pna-logo.png",
         width: 512,
         height: 512,
@@ -208,7 +230,7 @@ export const metadata: Metadata = {
     title: "Physio Nexus Academy | Physiotherapy Education & Workshops",
     description:
       "Practical physiotherapy education, clinical resources, case labs and hands-on workshops from Physio Nexus Academy in Pakistan.",
-    images: ["https://physionexusacademy.com/images/pna-logo.png"],
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
     canonical: "https://physionexusacademy.com",
