@@ -52,6 +52,12 @@ const routes = [
 
 const base = "https://physionexusacademy.com";
 
+function getRoutePriority(route: string): number {
+  if (route === "") return 1;
+  if (route === "/home-visit" || route === "/appointment") return 0.9;
+  return 0.7;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
   const { data: workshops } = await supabase
@@ -62,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${base}${route}`,
     changeFrequency: "weekly",
-    priority: route === "" ? 1 : route === "/home-visit" ? 0.9 : 0.7,
+    priority: getRoutePriority(route),
   }));
 
   const cityRoutes: MetadataRoute.Sitemap = getAllCitySlugs().map((slug) => ({
