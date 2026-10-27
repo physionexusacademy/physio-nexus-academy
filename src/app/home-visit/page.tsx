@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Building2, Home, MessageCircle, ShieldCheck, MapPin, Clock3 } from "lucide-react";
+import { Building2, Home, MessageCircle, ShieldCheck, MapPin } from "lucide-react";
 import { HomeVisitForm } from "./HomeVisitForm";
 
 const siteUrl = "https://physionexusacademy.com";
@@ -12,16 +12,19 @@ const whatsappUrl =
 export const metadata: Metadata = {
   title: "Physiotherapy Home Visit Service in Pakistan | Book Home Physiotherapy",
   description:
-    "Request physiotherapy home visit service across Pakistan. Book home physiotherapy in Karachi, Hyderabad, Lahore, Islamabad, Rawalpindi, Multan, Faisalabad and other cities. Fill the form or contact us on WhatsApp for confirmation.",
+    "Request physiotherapy home visit service across Pakistan. Strong coverage in Sindh (Karachi, Hyderabad, Sukkur, Larkana, Nawabshah, Mirpurkhas and more) plus Lahore, Islamabad and other cities. Fill the form or contact us on WhatsApp.",
   keywords: [
     "physiotherapy home visit",
     "physiotherapy home service",
     "home physiotherapy Pakistan",
     "physiotherapy home visit Karachi",
+    "physiotherapy home visit Hyderabad",
+    "physiotherapy home visit Sukkur",
+    "physiotherapy home visit Larkana",
+    "physiotherapy home visit Nawabshah",
+    "physiotherapy home visit Mirpurkhas",
     "physiotherapy home visit Lahore",
     "physiotherapy home visit Islamabad",
-    "physiotherapy home visit Hyderabad",
-    "physiotherapy home visit Rawalpindi",
     "home physiotherapist near me",
     "home physiotherapy service Pakistan",
     "physiotherapy at home",
@@ -34,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Physiotherapy Home Visit Service in Pakistan | Physio Nexus Academy",
     description:
-      "Book a physiotherapy home visit. Available request pathway for patients across Pakistan. Confirm availability for your city and area via form or WhatsApp.",
+      "Book a physiotherapy home visit. Available request pathway for patients across Pakistan, with strong focus on Sindh cities. Confirm availability via form or WhatsApp.",
     url: `${siteUrl}/home-visit`,
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -68,8 +71,25 @@ export const metadata: Metadata = {
 };
 
 const majorCities = [
+  // Sindh focus
   "Karachi",
   "Hyderabad",
+  "Sukkur",
+  "Larkana",
+  "Nawabshah",
+  "Mirpurkhas",
+  "Jacobabad",
+  "Shikarpur",
+  "Khairpur",
+  "Dadu",
+  "Thatta",
+  "Badin",
+  "Tando Allahyar",
+  "Tando Adam",
+  "Sanghar",
+  "Ghotki",
+  "Jamshoro",
+  // Other major
   "Lahore",
   "Islamabad",
   "Rawalpindi",
@@ -77,12 +97,6 @@ const majorCities = [
   "Multan",
   "Peshawar",
   "Quetta",
-  "Sialkot",
-  "Gujranwala",
-  "Sukkur",
-  "Bahawalpur",
-  "Sargodha",
-  "Abbottabad",
 ];
 
 export default function HomeVisitPage() {
@@ -94,7 +108,7 @@ export default function HomeVisitPage() {
     serviceType: "Physiotherapy home visit",
     url: `${siteUrl}/home-visit`,
     description:
-      "Physiotherapy home visit request service for patients across Pakistan. Submit your city, area, preferred time and patient details. Availability is confirmed before any visit is scheduled.",
+      "Physiotherapy home visit request service for patients across Pakistan, with strong pathways in Sindh cities including Karachi, Hyderabad, Sukkur, Larkana, Nawabshah and more. Availability is confirmed before any visit is scheduled.",
     provider: {
       "@type": "EducationalOrganization",
       "@id": `${siteUrl}/#organization`,
@@ -112,6 +126,7 @@ export default function HomeVisitPage() {
     },
     areaServed: [
       { "@type": "Country", name: "Pakistan" },
+      { "@type": "AdministrativeArea", name: "Sindh" },
       ...majorCities.map((city) => ({ "@type": "City", name: city })),
     ],
     availableChannel: {
@@ -163,7 +178,7 @@ export default function HomeVisitPage() {
 
       <div className="text-center">
         <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-          Patient Services · Pakistan
+          Patient Services · Pakistan · Sindh Focus
         </p>
         <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
           Physiotherapy Home Visit Service in Pakistan
@@ -172,8 +187,8 @@ export default function HomeVisitPage() {
           Request a <strong>physiotherapy home visit</strong> or{" "}
           <strong>home physiotherapy service</strong> by sharing your city, area,
           preferred date & time, and essential patient details. We accept
-          requests from across Pakistan and confirm service availability before
-          any visit is finalized.
+          requests from across Pakistan — with especially strong pathways across
+          Sindh — and confirm service availability before any visit is finalized.
         </p>
       </div>
 
@@ -245,16 +260,22 @@ export default function HomeVisitPage() {
           <MapPin className="mt-0.5 h-5 w-5 flex-none text-teal-600" />
           <div>
             <h2 className="text-lg font-bold text-navy-800">
-              Physiotherapy home service — cities we commonly receive requests from
+              Strong focus on Sindh + requests from across Pakistan
             </h2>
             <p className="mt-2 text-sm leading-6 text-navy-600">
               You can submit a request from any city in Pakistan. We currently have the strongest
-              coverage and faster confirmation pathways in Karachi and Hyderabad, and we evaluate
-              requests from other cities based on therapist availability and schedule.
+              coverage and faster confirmation pathways in <strong>Karachi</strong> and{" "}
+              <strong>Hyderabad</strong>, and we actively receive and evaluate requests from many
+              other Sindh cities as well as major cities nationwide.
             </p>
             <p className="mt-3 text-sm leading-6 text-navy-600">
-              Common request cities include:{" "}
-              {majorCities.join(", ")}.
+              <strong>Sindh cities include:</strong> Karachi, Hyderabad, Sukkur, Larkana,
+              Nawabshah, Mirpurkhas, Jacobabad, Shikarpur, Khairpur, Dadu, Thatta, Badin, Tando
+              Allahyar, Tando Adam, Sanghar, Ghotki, Jamshoro and more.
+            </p>
+            <p className="mt-2 text-sm leading-6 text-navy-600">
+              Other common request cities: Lahore, Islamabad, Rawalpindi, Faisalabad, Multan,
+              Peshawar, Quetta.
             </p>
             <p className="mt-3 text-sm font-medium text-navy-700">
               Not sure about your area? Message us on WhatsApp — we will tell you honestly whether
