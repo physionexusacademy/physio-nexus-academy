@@ -11,6 +11,7 @@ import { treatmentPlans } from "@/lib/treatment-plans";
 import { mskConditions } from "@/lib/msk-injury-hub";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
+import { getAllCitySlugs } from "@/lib/locations";
 
 const routes = [
   "",
@@ -43,8 +44,6 @@ const routes = [
   "/contact",
   "/reviews",
   "/faq",
-  "/locations/karachi",
-  "/locations/hyderabad",
   "/legal/privacy",
   "/legal/terms",
   "/legal/disclaimer",
@@ -63,7 +62,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${base}${route}`,
     changeFrequency: "weekly",
-    priority: route === "" ? 1 : 0.7,
+    priority: route === "" ? 1 : route === "/home-visit" ? 0.9 : 0.7,
+  }));
+
+  const cityRoutes: MetadataRoute.Sitemap = getAllCitySlugs().map((slug) => ({
+    url: `${base}/locations/${slug}`,
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
   }));
 
   const workshopRoutes: MetadataRoute.Sitemap = (workshops ?? [])
@@ -136,7 +141,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.82,
   }));
 
-
   const facultyRoutes: MetadataRoute.Sitemap = facultyMembers.map((member) => ({
     url: `${base}/faculty/${encodeURIComponent(member.slug)}`,
     changeFrequency: "monthly" as const,
@@ -153,6 +157,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const sitemapEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
+    ...cityRoutes,
     ...workshopRoutes,
     ...trainingRoutes,
     ...knowledgeRoutes,
