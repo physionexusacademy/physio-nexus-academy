@@ -34,8 +34,6 @@ import {
 } from "@/lib/manual-therapy-3d-assets";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { regionalClinicalStories } from "@/lib/manual-therapy-regional-stories";
-import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
-import { regionalManualVignettes } from "@/lib/manual-therapy-regional-vignettes";
 import { RegionalAttentionReset } from "@/components/manual-therapy/AttentionReset";
 import { RegionalLearningLab } from "@/components/manual-therapy/RegionalLearningLab";
 
@@ -258,8 +256,6 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
 
   const isTechniqueSpecific = isTechniqueSpecificRegionalApplication(item);
   const clinicalStory = regionalClinicalStories[item.slug];
-  const lessonVoice = manualTherapyLessonWeaves[item.techniqueSlug];
-  const vignette = regionalManualVignettes[item.slug];
   const subTechniques = clinicalStory
     ? []
     : getRegionalSubTechniques(item.techniqueSlug, item.region);
