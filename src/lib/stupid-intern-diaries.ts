@@ -159,7 +159,7 @@ export const stupidInternEpisodes: StupidInternEpisode[] = [
     ],
     lesson: "Do not diagnose or plan treatment from MRI findings alone. Integrate history, symptom behaviour, physical and neurological examination, red flags, and the clinical relevance of imaging. Treat the patient, not the scan."
   }
-];
+].sort((a, b) => b.id - a.id);
 
 export function getLatestEpisode() {
   return stupidInternEpisodes[0];
