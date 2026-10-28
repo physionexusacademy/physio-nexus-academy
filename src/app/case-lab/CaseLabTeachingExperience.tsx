@@ -115,7 +115,7 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
    ?"Clinical safety and dignity take priority. Use the person's medical status and goals to guide every step."
    :prompts[chapter];
 
- return <article className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab-lesson="clinical-novel-v3-immersive">
+ return <article className="case-lab-v3 min-h-screen pb-20" data-pna-case-lab-lesson="clinical-novel-v2">
   <div className="container-content pt-5 sm:pt-8">
    <Link href="/case-lab" className="cl-breadcrumb"><ArrowLeft className="h-4 w-4"/> Back to specialties and patient files</Link>
 
