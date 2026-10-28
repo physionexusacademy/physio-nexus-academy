@@ -17,7 +17,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
   const mastery = getMasteryGuide(lesson.slug);
 
   return (
-    <main className="container-content section-padding">
+    <main data-pna-world-final="v1" className="container-content section-padding">
       <a href="/manual-therapy" className="inline-flex items-center gap-2 text-sm font-bold text-violet-700">
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> World Manual Therapy Encyclopedia
       </a>
