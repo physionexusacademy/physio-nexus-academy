@@ -177,7 +177,7 @@ jobs:
             return 1
           }
 
-          check_url "https://physionexusacademy.com/" "Check Symptoms"
+          check_url "https://physionexusacademy.com/" "Symptoms Checker"
           check_url "https://physionexusacademy.com/" "Open Physio Nexus AI"
           check_url "https://physionexusacademy.com/" 'data-pna-home-signature="v2"'
           check_url "https://physionexusacademy.com/" "Install PNA App"
