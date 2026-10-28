@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - cloudflare-deploy
-    paths-ignore:
-      - ".github/workflows/deploy-cloudflare-production.yml"
   workflow_dispatch:
 
 concurrency:
@@ -177,7 +175,7 @@ jobs:
             return 1
           }
 
-          check_url "https://physionexusacademy.com/" "Check Symptoms"
+          check_url "https://physionexusacademy.com/" "Symptoms Checker"
           check_url "https://physionexusacademy.com/" "Open Physio Nexus AI"
           check_url "https://physionexusacademy.com/" 'data-pna-home-signature="v2"'
           check_url "https://physionexusacademy.com/" "Install PNA App"
@@ -214,9 +212,7 @@ jobs:
           # Keep production verification intentionally small. The local validation
           # scripts above already validate the full content library; crawling every
           # large SSR page after deploy can overload Workers and create false failures.
-          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "PNA · RESEARCH CASE LIBRARY"
-          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "PNA · RESEARCH CASE LIBRARY"
-          check_url "https://physionexusacademy.com/case-lab/episode" "PNA · RESEARCH CASE LIBRARY"
+          check_url "https://physionexusacademy.com/case-lab/research/chronic-post-surgical-low-back-pain" "Limitations — what this case cannot tell us"
           check_url "https://physionexusacademy.com/clinical-arena" "Preparing your clinical challenge"
           check_url "https://physionexusacademy.com/msk-injuries" 'data-pna-msk-story-library="v1"'
           check_url "https://physionexusacademy.com/msk-injuries/rotator-cuff-tendinopathy" 'data-pna-msk-story="cinematic-v1"'
