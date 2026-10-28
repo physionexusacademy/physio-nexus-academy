@@ -20,7 +20,7 @@ export default async function PublishedReportPage({params}:{params:Promise<{slug
   <Link className="rr-back" href="/case-lab"><ArrowLeft size={16}/> All published case reports</Link>
   <header className="rr-hero"><span className="rr-kicker"><BookOpen size={14}/> PNA RESEARCH CASE LIBRARY</span><span className="rr-specialty">{r.specialty} · {r.year}</span><h1>{r.title}</h1><p className="rr-authors">{r.authors}</p><p className="rr-journal"><em>{r.journal}</em> · {r.year}{r.doi?" · DOI: "+r.doi:""}</p>
    <div className="rr-actions"><a className="rr-primary" href={r.sourceUrl} target="_blank" rel="noopener noreferrer">Read original paper <ExternalLink size={16}/></a>{r.doi&&<a className="rr-secondary" href={"https://doi.org/"+r.doi} target="_blank" rel="noopener noreferrer">Open DOI <ExternalLink size={15}/></a>}</div>
-   <p className="rr-license"><CheckCircle2 size={16}/>{r.openAccess?"Open-access source verified":"Publisher/PubMed source record verified"} · {r.licenseNote}</p>
+   <p className="rr-license"><CheckCircle2 size={16}/>{r.openAccess?"Free full text available":"Publisher/PubMed source record available"} · {r.licenseNote}</p>
   </header>
   <div className="rr-layout"><article className="rr-article">
    <section className="rr-section rr-overview"><span className="rr-label">THE CASE IN PLAIN ENGLISH</span><h2>What happened?</h2><p>{r.caseSummary}</p></section>
