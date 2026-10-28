@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Share2, Copy, MessageCircle, Check, LoaderCircle, Send } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -63,7 +63,7 @@ export function StupidInternClient({ episodeId, episodeTitle }: Props) {
   const [postingComment, setPostingComment] = useState(false);
   const [error, setError] = useState("");
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const loadCommunityData = useCallback(async (currentVisitorId: string) => {
     setLoading(true);
