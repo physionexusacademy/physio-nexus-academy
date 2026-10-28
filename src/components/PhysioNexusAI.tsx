@@ -25,8 +25,8 @@ const starterTopics = [
   "Practise clinical reasoning",
 ];
 
-export function PhysioNexusAI() {
-  const [open, setOpen] = useState(false);
+export function PhysioNexusAI({ initialOpen = false }: { initialOpen?: boolean } = {}) {
+  const [open, setOpen] = useState(initialOpen);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [nextId, setNextId] = useState(2);
