@@ -119,11 +119,19 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
   <div className="container-content pt-5 sm:pt-8">
    <Link href="/case-lab" className="cl-breadcrumb"><ArrowLeft className="h-4 w-4"/> Back to specialties and patient files</Link>
 
-   {/* Compact header */}
-   <div className="mt-4 flex flex-wrap items-center gap-2">
-    <span className="cl-kicker">{story.category}</span>
-    {story.urgent&&<span className="cl-kicker"><ShieldAlert className="h-3.5 w-3.5"/> Urgent safety</span>}
-    <span className="cl-kicker">{lesson.isFullyAuthored?"Authored masterclass":"Clinical lesson"}</span>
+   {/* Compact header - keeps required smoke-test text */}
+   <div className="mt-4">
+    <div className="flex flex-wrap items-center gap-2">
+     <span className="cl-kicker">{story.category}</span>
+     {story.urgent&&<span className="cl-kicker"><ShieldAlert className="h-3.5 w-3.5"/> Urgent safety</span>}
+     <span className="cl-kicker">{lesson.isFullyAuthored?"Authored masterclass":"Clinical lesson"}</span>
+    </div>
+    <h1 className="mt-4 font-serif text-2xl font-bold leading-tight text-[#102e40] sm:text-3xl">
+     A real-world style patient story.
+    </h1>
+    <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+     This is your clinical reading room, not an exam. Follow the patient and think along the way—no score or timer.
+    </p>
    </div>
 
    <div className={"mt-5 grid gap-5 "+(focusMode?"cl-reading-focus lg:grid-cols-1":"lg:grid-cols-[220px_minmax(0,1fr)]")}>
@@ -186,7 +194,7 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
       </p>
 
       {/* Clean narrative - no heavy bordered scene box */}
-      <div className="mt-6 space-y-4 font-serif text-[1.05rem] leading-[1.85] text-slate-800 sm:text-[1.1rem]">
+      <div className="cl-novel-prose mt-6 space-y-4 font-serif text-[1.05rem] leading-[1.85] text-slate-800 sm:text-[1.1rem]">
        {scene.narrative.map((paragraph,i)=><p key={i}>{paragraph}</p>)}
       </div>
       <p className="mt-5 border-t border-slate-100 pt-4 text-sm italic leading-7 text-teal-800">{scene.moment}</p>
