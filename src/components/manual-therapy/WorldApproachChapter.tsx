@@ -46,7 +46,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       </div>
 
       {/* Optional story - collapsed */}
-      <details className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/50">
+      <details data-pna-world-story="v1" className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/50">
         <summary className="cursor-pointer p-5 text-sm font-semibold text-slate-700 sm:p-6">
           Optional · Short patient story to help remember
           <span className="mt-1 block text-sm font-normal text-slate-500">{lesson.headline}</span>
@@ -91,7 +91,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       </details>
 
       {/* Quick clinical recap - optional */}
-      <details className="mt-8 rounded-2xl border border-slate-200 bg-white">
+      <details data-pna-quick-recap="v1" className="mt-8 rounded-2xl border border-slate-200 bg-white">
         <summary className="flex cursor-pointer items-center gap-3 p-5 text-sm font-semibold text-slate-700 sm:p-6">
           <Stethoscope className="h-5 w-5 flex-none text-teal-700" aria-hidden="true" />
           Already familiar? Open the four-step clinical recap
@@ -132,7 +132,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       </div>
 
       {/* Evidence - optional */}
-      <details id="mechanism" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-200 bg-white">
+      <details id="mechanism" data-pna-extra-sources="v1" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-200 bg-white">
         <summary className="cursor-pointer p-5 text-sm font-semibold text-slate-700 sm:p-6">
           Evidence context, myths and source links · Optional appendix
         </summary>
