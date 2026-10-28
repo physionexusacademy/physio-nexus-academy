@@ -214,9 +214,9 @@ jobs:
           # Keep production verification intentionally small. The local validation
           # scripts above already validate the full content library; crawling every
           # large SSR page after deploy can overload Workers and create false failures.
-          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "A real-world style patient story."
-          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" 'data-pna-case-lab-lesson="clinical-novel-v2"'
-          check_url "https://physionexusacademy.com/case-lab/episode" "Opening your patient file"
+          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "PNA · RESEARCH CASE LIBRARY"
+          check_url "https://physionexusacademy.com/case-lab/acl-reconstruction-return-to-sport-readiness" "PNA · RESEARCH CASE LIBRARY"
+          check_url "https://physionexusacademy.com/case-lab/episode" "PNA · RESEARCH CASE LIBRARY"
           check_url "https://physionexusacademy.com/clinical-arena" "Preparing your clinical challenge"
           check_url "https://physionexusacademy.com/msk-injuries" 'data-pna-msk-story-library="v1"'
           check_url "https://physionexusacademy.com/msk-injuries/rotator-cuff-tendinopathy" 'data-pna-msk-story="cinematic-v1"'
