@@ -21,6 +21,7 @@ import {
   Timer,
   Medal,
   Eye,
+  Laugh,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
@@ -139,6 +140,35 @@ export default async function HomePage() {
       </div>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
+
+      <section className="container-content py-8 sm:py-10" aria-labelledby="stupid-intern-feature-title">
+        <a
+          href="/stupid-intern-diaries"
+          className="group relative block overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-slate-50 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-8"
+        >
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
+              <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm">
+                <Laugh className="h-7 w-7" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
+                  New · Learn with a laugh
+                </p>
+                <h2 id="stupid-intern-feature-title" className="mt-1 text-2xl font-bold tracking-tight text-navy-800 sm:text-3xl">
+                  Stupid Intern Diaries
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+                  Funny clinic moments, questionable intern decisions, and the clinical lessons you should actually remember.
+                </p>
+              </div>
+            </div>
+            <span className="inline-flex items-center justify-center gap-2 self-start rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition group-hover:bg-teal-800 sm:self-center">
+              Explore the Diaries <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </span>
+          </div>
+        </a>
+      </section>
 
       <section
         data-pna-home-flagship="daily-clinical-challenge-v2"
