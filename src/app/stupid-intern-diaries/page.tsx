@@ -117,21 +117,50 @@ export default function StupidInternDiariesPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {older.map((ep) => (
-              <div
+              <details
                 key={ep.id}
                 id={`ep-${ep.id}`}
-                className="rounded-2xl border border-[#dbece7] bg-white p-5 transition hover:border-teal-300 hover:shadow-sm scroll-mt-24"
+                className="group scroll-mt-24 overflow-hidden rounded-2xl border border-[#dbece7] bg-white transition open:border-teal-300 open:shadow-sm"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600">
-                    EP {ep.id}
+                <summary className="cursor-pointer list-none p-5 [&::-webkit-details-marker]:hidden">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600">
+                      EP {ep.id}
+                    </span>
+                    <span className="text-xs text-slate-400">{ep.date}</span>
+                  </div>
+                  <h3 className="mt-2 font-bold text-[#193e50]">{ep.title}</h3>
+                  <p className="mt-1 text-xs font-medium text-teal-700">{ep.field}</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{ep.lesson}</p>
+                  <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-800 group-open:bg-teal-700 group-open:text-white">
+                    <span className="group-open:hidden">Open episode + clinical lesson</span>
+                    <span className="hidden group-open:inline">Close episode</span>
                   </span>
-                  <span className="text-xs text-slate-400">{ep.date}</span>
+                </summary>
+                <div className="space-y-4 border-t border-teal-100 bg-slate-50/60 p-5">
+                  {ep.dialogue.map((line, idx) => (
+                    <div key={idx} className="flex justify-start">
+                      <div className={`inline-block max-w-full rounded-2xl px-4 py-3 text-sm leading-6 ${
+                        line.speaker === "Dr. Sajjad"
+                          ? "bg-teal-700 text-white"
+                          : line.speaker === "Intern"
+                          ? "bg-white text-slate-800 border border-slate-200"
+                          : "bg-amber-50 text-amber-900 border border-amber-200"
+                      }`}>
+                        <span className="mb-1 block text-[11px] font-bold uppercase tracking-wide opacity-80">
+                          {line.speaker === "Other" ? "Senior Doctor" : line.speaker}
+                        </span>
+                        {line.text}
+                      </div>
+                    </div>
+                  ))}
+                  <div className="rounded-xl border border-red-100 bg-red-50 p-4">
+                    <p className="text-xs font-bold uppercase tracking-wide text-red-700">Clinical takeaway</p>
+                    <p className="mt-1 text-sm leading-6 text-red-900">{ep.lesson}</p>
+                  </div>
+                  <StupidInternClient episodeId={ep.id} episodeTitle={ep.title} />
                 </div>
-                <h3 className="mt-2 font-bold text-[#193e50]">{ep.title}</h3>
-                <p className="mt-1 text-xs font-medium text-teal-700">{ep.field}</p>
-                <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">{ep.lesson}</p>
-              </div>
+              </details>
             ))}
           </div>
         </section>
