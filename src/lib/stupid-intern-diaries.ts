@@ -80,6 +80,85 @@ export const stupidInternEpisodes: StupidInternEpisode[] = [
     ],
     lesson: "Never clear an athlete for return to sport based only on subjective feeling. Always use objective tests and functional criteria."
   }
+  ,
+  {
+    id: 10,
+    title: "The Copy-Paste Clinician",
+    field: "Professional Practice",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Who wrote these notes? This patient came for left shoulder pain, but the record says right knee injury." },
+      { speaker: "Intern", text: "Sir, that was just a template. I forgot to change the side." },
+      { speaker: "Dr. Sajjad", text: "And it says the patient completed stair training independently. Did they even do stair training?" },
+      { speaker: "Intern", text: "Sir, that line belonged to the previous patient. I copied it to save time." },
+      { speaker: "Dr. Sajjad", text: "You saved thirty seconds and sent the truth into intensive care! Templates are allowed. Copying unverified clinical facts is not. Your notes should describe this patient, not your clipboard's previous relationship." }
+    ],
+    lesson: "Clinical documentation must be accurate, timely, and patient-specific. Templates can help, but verify every detail. Never document an assessment or intervention that did not occur."
+  },
+  {
+    id: 9,
+    title: "The One-Hundred-Reps Champion",
+    field: "Sports Physiotherapy",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "What home programme did you prescribe for the patient's shoulder?" },
+      { speaker: "Intern", text: "Resistance-band external rotation. One hundred reps, three sets, three times daily!" },
+      { speaker: "Dr. Sajjad", text: "The patient struggled after twelve reps. Why nine hundred a day?" },
+      { speaker: "Intern", text: "Sir, progressive overload!" },
+      { speaker: "Dr. Sajjad", text: "Progressive overload does not mean turning the patient into a washing-machine spin cycle. Dose depends on capacity, symptoms, technique, goals, and recovery. This is rehabilitation, not a punishment challenge." },
+      { speaker: "Intern", text: "So I should adjust the reps to the patient?" },
+      { speaker: "Dr. Sajjad", text: "Congratulations. Your first repetition of clinical reasoning!" }
+    ],
+    lesson: "Individualise exercise dosage. Select resistance, sets, repetitions, and frequency according to the patient's goals, capacity, symptoms, movement quality, and recovery; monitor the response and progress gradually."
+  },
+  {
+    id: 8,
+    title: "The Bathroom Emergency",
+    field: "Neurological Red Flags",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Any red flags in the patient's low-back-pain history?" },
+      { speaker: "Intern", text: "Sir, they mentioned a new problem controlling their bladder. I suggested a hot pack first." },
+      { speaker: "Dr. Sajjad", text: "A new bladder-control problem with back pain, and you prescribed warmth?" },
+      { speaker: "Intern", text: "Sir, maybe they just drank too much water." },
+      { speaker: "Dr. Sajjad", text: "And maybe the fire alarm is just practising its singing! New bladder or bowel dysfunction can signal a spinal emergency. This needs immediate emergency assessment, not a routine exercise sheet." },
+      { speaker: "Intern", text: "So no home programme today?" },
+      { speaker: "Dr. Sajjad", text: "Today your home programme is revising red flags—after you arrange the urgent referral." }
+    ],
+    lesson: "New bladder or bowel dysfunction, saddle sensory changes, or progressive/severe neurological deficits with back pain may indicate serious spinal pathology, including cauda equina syndrome. Arrange immediate emergency assessment; do not delay it for routine physiotherapy."
+  },
+  {
+    id: 7,
+    title: "The Massage Murder Mystery",
+    field: "Musculoskeletal Safety",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why did you start deep calf massage before taking a proper history?" },
+      { speaker: "Intern", text: "Sir, the calf felt tight. I told the patient, 'Don't worry, even your muscles have stress!'" },
+      { speaker: "Dr. Sajjad", text: "Was one calf more swollen or warm? Any redness, recent surgery, immobilisation, or clot risk?" },
+      { speaker: "Intern", text: "Sir, I thought I was a physiotherapist, not CID." },
+      { speaker: "Dr. Sajjad", text: "Right now you're the detective cleaning the crime scene before looking for evidence. If DVT is suspected, stop the massage and arrange urgent medical assessment. Chest pain or sudden breathlessness means emergency help." },
+      { speaker: "Intern", text: "So not every tight calf needs my famous deep-tissue special?" },
+      { speaker: "Dr. Sajjad", text: "Correct. Your hands are not a substitute for clinical screening." }
+    ],
+    lesson: "Unexplained unilateral calf swelling, warmth, redness, and relevant risk factors can raise suspicion of deep-vein thrombosis. Do not massage a suspected DVT; arrange urgent medical assessment. Sudden breathlessness or chest pain may indicate an emergency."
+  },
+  {
+    id: 6,
+    title: "The Slip Disc Detective",
+    field: "Musculoskeletal",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Have you assessed the patient with low-back pain?" },
+      { speaker: "Intern", text: "Diagnosis confirmed, Sir: L4-L5 disc bulge. The MRI report told me everything." },
+      { speaker: "Dr. Sajjad", text: "What are the symptoms? Any leg pain or neurological signs? Did you screen for red flags?" },
+      { speaker: "Intern", text: "Not yet, Sir. But the MRI was very cooperative." },
+      { speaker: "Dr. Sajjad", text: "Then put the MRI on the treatment couch and ask it to do the exercises! Imaging is evidence, not the whole clinical story. A finding on a scan does not automatically explain a person's symptoms." },
+      { speaker: "Intern", text: "So I should assess the patient, not just read the report?" },
+      { speaker: "Dr. Sajjad", text: "Excellent. The scan has officially lost its job as your senior clinician." }
+    ],
+    lesson: "Do not diagnose or plan treatment from MRI findings alone. Integrate history, symptom behaviour, physical and neurological examination, red flags, and the clinical relevance of imaging. Treat the patient, not the scan."
+  }
 ];
 
 export function getLatestEpisode() {
