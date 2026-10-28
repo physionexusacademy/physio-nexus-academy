@@ -321,7 +321,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
 
       {/* Important notice for general overviews */}
       {!isTechniqueSpecific ? (
-        <section className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+        <section data-pna-content-depth="general-overview" className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-1 h-5 w-5 flex-none text-amber-800" />
             <div>
@@ -377,6 +377,14 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           </div>
         </section>
       ) : null}
+
+      {/* Regional engagement: prompts a meaningful re-test rather than technique theatre */}
+      <RegionalAttentionReset
+        techniqueSlug={item.techniqueSlug}
+        region={item.region}
+        comparableSign="the patient's meaningful movement or functional task"
+        simpleStory="After a safe trial, what real change would convince you this approach helped this patient?"
+      />
 
       {/* Clinical story / learning lab if present */}
       {clinicalStory ? (
