@@ -33,5 +33,13 @@
   },
   "observability": {
     "enabled": true
+  },
+  "previews": {
+    "ai": {
+      "binding": "AI"
+    },
+    "images": {
+      "binding": "IMAGES"
+    }
   }
 }
