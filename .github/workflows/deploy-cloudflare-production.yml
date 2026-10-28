@@ -185,7 +185,8 @@ jobs:
           check_url "https://physionexusacademy.com/sw.js" "PNA update-first service worker."
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           # Case Lab currently ships the real-patients-v1 library signature.
-          check_url "https://physionexusacademy.com/case-lab" 'data-pna-case-lab="real-patients-v1"'
+          check_url "https://physionexusacademy.com/case-lab" "PNA · RESEARCH CASE LIBRARY"
+          check_url "https://physionexusacademy.com/case-lab/research/plantar-fasciitis-rehabilitation" "THE CASE IN PLAIN ENGLISH"
           check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
           check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
