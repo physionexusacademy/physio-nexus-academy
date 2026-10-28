@@ -41,7 +41,7 @@ const tests={
   maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),
   existingProfessionalLearning:home.includes("const supabase = createPublicClient()")&&home.includes('.from("workshops")')&&home.includes("knowledgeArticles")&&home.includes("featuredWorkshops = workshopRows?.length ? workshopRows : null"),
   premiumChallengeKept:home.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&(home.includes("<DailyChallengeCountdown/>")||home.includes("<DailyChallengeCountdown />"))&&challengeCss.includes(".dc-flagship-stage"),
-  patientRoutesUnchanged:home.includes('href="/symptom-checker"')&&home.includes('href="/appointment"')&&home.includes('href="/home-visit"'),
+  patientRoutesUnchanged:browser.includes('href: "/symptom-checker"')&&browser.includes('href: "/appointment"')&&browser.includes('href: "/home-visit"'),
   existingCpdIdentityRetained:home.includes("Approved CPD Provider")&&home.includes("791052"),
   mobileNavPreserved:header.includes("mainNav.filter")&&mobile.includes('label: "Challenge"'),
   whatsappStillAccessible:whatsapp.includes("Chat with Physio Nexus Academy on WhatsApp")&&signatureCss.includes("bottom:calc(80px"),
