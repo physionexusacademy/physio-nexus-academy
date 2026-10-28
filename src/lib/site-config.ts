@@ -158,6 +158,7 @@ export const mainNav = [
   { label: "Workshops", href: "/workshops" },
   { label: "Resources", href: "/resources" },
   { label: "Patient Care", href: "/patient-services" },
+  { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
   { label: "Verify Certificate", href: "/verify" },
 ];
 
@@ -177,6 +178,7 @@ export const footerLinks = {
     { label: "Treatment Plans", href: "/treatment-plans" },
     { label: "Clinical Case Lab", href: "/case-lab" },
     { label: "Daily Clinical Challenge", href: "/daily-challenge" },
+    { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
     { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
     { label: "Workshops", href: "/workshops" },
     { label: "Training Archive", href: "/training" },
