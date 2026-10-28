@@ -19,7 +19,7 @@ function keyword(title: string) {
 
 export function EpisodeArchive({ episodes }: Props) {
   const [showList, setShowList] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(episodes[0]?.id ?? null);
   const selected = episodes.find((ep) => ep.id === selectedId);
 
   return (
@@ -33,7 +33,7 @@ export function EpisodeArchive({ episodes }: Props) {
           <h2 className="mt-2 text-xl font-bold text-[#193e50] sm:text-2xl">Choose an episode</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">Browse by episode number and its main topic. Pick any story to read the full conversation and clinical takeaway.</p>
         </div>
-        <button type="button" onClick={() => { setShowList((v) => !v); if (showList) setSelectedId(null); }} aria-expanded={showList}
+        <button type="button" onClick={() => setShowList((v) => !v)} aria-expanded={showList}
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800">
           {showList ? "Hide episode list" : `Browse all ${episodes.length} episodes`}
           {showList ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -43,7 +43,7 @@ export function EpisodeArchive({ episodes }: Props) {
       {showList && (
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {episodes.map((ep) => (
-            <button key={ep.id} type="button" onClick={() => setSelectedId(ep.id)} aria-pressed={selectedId === ep.id}
+            <button key={ep.id} type="button" onClick={() => { setSelectedId(ep.id); setShowList(false); }} aria-pressed={selectedId === ep.id}
               className={`rounded-2xl border p-4 text-left transition hover:border-teal-300 hover:shadow-sm ${selectedId === ep.id ? "border-teal-500 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white"}`}>
               <div className="flex items-center justify-between gap-3">
                 <span className="rounded-full bg-teal-700 px-3 py-1 text-xs font-bold text-white">EP {String(ep.id).padStart(2, "0")}</span>
@@ -58,7 +58,7 @@ export function EpisodeArchive({ episodes }: Props) {
         </div>
       )}
 
-      {showList && selected && (
+      {selected && (
         <article className="mt-6 overflow-hidden rounded-2xl border border-teal-100 bg-white">
           <div className="bg-gradient-to-r from-teal-50 to-white p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
@@ -86,7 +86,7 @@ export function EpisodeArchive({ episodes }: Props) {
         </article>
       )}
 
-      {showList && !selected && <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm font-medium text-slate-600">Select an episode above to open its full story.</p>}
+      
     </section>
   );
 }
