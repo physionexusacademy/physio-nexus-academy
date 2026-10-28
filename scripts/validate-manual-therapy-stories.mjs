@@ -49,6 +49,8 @@ assert(parentPage.includes("items={guide.applicationSteps}") && parentPage.inclu
   && parentPage.includes("items={technique.contraindications}"), "Parent technical/safety content missing");
 assert(storyComponent.includes("weave.dialogue") && storyComponent.includes("weave.watch"),
   "Scene and treatment-room visualization missing");
-assert(regionalPage.includes("vignette.scene") && regionalPage.includes("vignette.decision")
-  && regionalPage.includes('data-pna-content-depth="general-overview"'), "Regional narratives or overview safety status missing");
+assert(regionalPage.includes("clinicalStory.title")
+  && regionalPage.includes("<RegionalLearningLab slug={item.techniqueSlug} />")
+  && regionalPage.includes("Important: this is a clinical framework, not a complete technique protocol.")
+  && regionalPage.includes("item.safety?.length"), "Regional story flow or overview safety status missing");
 console.log("Narrative flow, clinical method, warnings and regional classification: checked");
