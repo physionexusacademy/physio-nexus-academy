@@ -19,13 +19,13 @@ export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
     <div className="cr-eyebrow"><BookOpen size={15}/> PNA · RESEARCH CASE LIBRARY</div>
     <h1>Real cases.<br/><span>Clinical lessons.</span></h1>
     <p className="cr-lead">Learn from published rehabilitation case reports. Each file links to the original paper and separates what the authors reported from what a clinician can cautiously learn.</p>
-    <div className="cr-stats"><div><strong>{reports.length}</strong><span>curated reports</span></div><div><strong>7</strong><span>clinical areas</span></div><div><strong>100%</strong><span>original source links</span></div></div>
+    <div className="cr-stats"><div><strong>{reports.length}</strong><span>curated reports</span></div><div><strong>6</strong><span>clinical areas</span></div><div><strong>100%</strong><span>original source links</span></div></div>
     <div className="cr-note"><ShieldCheck size={18}/><p><strong>Evidence honesty:</strong> a case report describes one clinical story. It can teach clinical reasoning, but it cannot prove that a treatment works for everyone.</p></div>
    </section>
    <section className="cr-controls" aria-label="Search and filter published case reports">
     <label className="cr-search"><Search size={19}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search condition, technique, journal or keyword…" aria-label="Search case reports"/></label>
     <div className="cr-filterrow">{specialties.map(s=><button key={s} className="cr-filter" data-active={specialty===s} onClick={()=>setSpecialty(s)}>{s}</button>)}</div>
-    <label className="cr-check"><input type="checkbox" checked={openAccess} onChange={e=>setOpenAccess(e.target.checked)}/> Open-access full text only</label>
+    <label className="cr-check"><input type="checkbox" checked={openAccess} onChange={e=>setOpenAccess(e.target.checked)}/> Free full text available</label>
     <p className="cr-results">Showing <strong>{filtered.length}</strong> of {reports.length} published reports</p>
    </section>
    <section className="cr-grid" aria-label="Published case reports">
@@ -36,7 +36,7 @@ export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
       <p className="cr-authors">{r.authors}</p>
       <p className="cr-summary">{r.caseSummary}</p>
       <div className="cr-tags">{r.tags.slice(0,3).map(t=><span key={t}>{t}</span>)}</div>
-      <div className="cr-card-foot"><span><FileText size={15}/>{r.openAccess?"Open-access source":"Publisher/PubMed record"}</span><Link href={"/case-lab/research/"+r.slug}>Read case <ArrowRight size={15}/></Link></div>
+      <div className="cr-card-foot"><span><FileText size={15}/>{r.openAccess?"Free full text":"Publisher/PubMed record"}</span><Link href={"/case-lab/research/"+r.slug}>Read case <ArrowRight size={15}/></Link></div>
       <a className="cr-source" href={r.sourceUrl} target="_blank" rel="noopener noreferrer">Original research <ExternalLink size={13}/></a>
     </article>)}
     {!filtered.length&&<div className="cr-empty"><h2>No reports match those filters.</h2><p>Try another specialty or search term.</p><button onClick={()=>{setQuery("");setSpecialty("All specialties");setOpenAccess(false)}}>Clear filters</button></div>}
