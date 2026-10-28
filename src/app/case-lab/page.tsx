@@ -1,16 +1,13 @@
 import type {Metadata} from "next";
-import {CaseLabLibrary} from "./CaseLabLibrary";
-import {labCaseCards,labCategories} from "@/lib/case-lab-catalog";
-import "./case-lab.css";
-
+import {ResearchCaseLibrary} from "./ResearchCaseLibrary";
+import {publishedCaseReports} from "@/lib/case-report-library";
+import "./research-library.css";
 export const dynamic="force-static";
 export const revalidate=false;
 export const metadata:Metadata={
- title:"PNA Clinical Case Lab | Patient Stories & Clinical Reasoning",
- description:"Explore clinical patient stories across musculoskeletal, neurological, pediatric, cardiopulmonary and advanced physiotherapy rehabilitation. Learn through clues, decisions and debriefs.",
- alternates:{canonical:"https://physionexusacademy.com/case-lab"}
+ title:"PNA Research Case Library | Published Physiotherapy Case Reports",
+ description:"Learn from published physiotherapy and rehabilitation case reports with original source links, plain-English summaries, reported interventions, outcomes and limitations.",
+ alternates:{canonical:"https://physionexusacademy.com/case-lab"},
+ openGraph:{title:"PNA Research Case Library",description:"Published clinical rehabilitation case reports explained in plain English, with links to the original research.",url:"https://physionexusacademy.com/case-lab",type:"website"}
 };
-
-export default function CaseLabPage(){
- return <CaseLabLibrary cases={labCaseCards} categories={[...labCategories]}/>;
-}
+export default function CaseLabPage(){return <ResearchCaseLibrary reports={publishedCaseReports}/>;}
