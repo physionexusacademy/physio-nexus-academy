@@ -5,11 +5,53 @@ import { stupidInternEpisodes, getLatestEpisode } from "@/lib/stupid-intern-diar
 import { EpisodeArchive } from "./EpisodeArchive";
 
 export const metadata: Metadata = {
-  title: "Stupid Intern Diaries | Daily Clinical Humor & Lessons",
+  title: "Stupid Intern Diaries | Funny Physiotherapy Lessons & Clinical Mistakes",
   description:
-    "Daily funny conversations between Dr. Sajjad and the Stupid Intern. Learn important physiotherapy lessons through sharp humor and real clinical mistakes.",
+    "Daily funny clinic conversations between Dr. Sajjad and the Stupid Intern. Learn real physiotherapy safety lessons, red flags, clinical reasoning and what never to do — through sharp humor and unforgettable clinical disasters.",
+  keywords: [
+    "stupid intern diaries",
+    "physiotherapy humor",
+    "clinical mistakes physiotherapy",
+    "physiotherapy intern lessons",
+    "physiotherapy red flags",
+    "clinical reasoning physiotherapy",
+    "funny physiotherapy cases",
+    "physiotherapy student learning",
+    "Dr Sajjad Raza",
+    "Physio Nexus Academy",
+    "physiotherapy safety",
+    "clinical education Pakistan",
+  ],
   alternates: {
     canonical: "https://physionexusacademy.com/stupid-intern-diaries",
+  },
+  openGraph: {
+    title: "Stupid Intern Diaries | Funny Physiotherapy Lessons & Clinical Mistakes",
+    description:
+      "Daily funny clinic conversations + sharp clinical lessons. Learn what never to do in physiotherapy through the disasters of one very confident intern.",
+    url: "https://physionexusacademy.com/stupid-intern-diaries",
+    siteName: "Physio Nexus Academy",
+    locale: "en_PK",
+    type: "website",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Stupid Intern Diaries — Physio Nexus Academy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Stupid Intern Diaries | Funny Physiotherapy Lessons",
+    description:
+      "Daily clinic disasters + sharp clinical lessons for physiotherapy students and interns. Learn safety, red flags and clinical reasoning the memorable way.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

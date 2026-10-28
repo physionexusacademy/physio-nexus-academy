@@ -12,6 +12,7 @@ import { mskConditions } from "@/lib/msk-injury-hub";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
+import { publishedCaseReports } from "@/lib/case-report-library";
 
 const routes = [
   "",
@@ -29,6 +30,7 @@ const routes = [
   "/msk-injuries",
   "/msk-special-tests",
   "/case-lab",
+  "/stupid-intern-diaries",
   "/clinical-quiz",
   "/daily-challenge",
   "/clinical-arena",
@@ -55,6 +57,7 @@ const base = "https://physionexusacademy.com";
 function getRoutePriority(route: string): number {
   if (route === "") return 1;
   if (route === "/home-visit" || route === "/appointment") return 0.9;
+  if (route === "/case-lab" || route === "/stupid-intern-diaries") return 0.88;
   return 0.7;
 }
 
@@ -116,6 +119,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // Published evidence-based research case reports (new Case Lab content)
+  const researchCaseRoutes: MetadataRoute.Sitemap = publishedCaseReports.map((report) => ({
+    url: `${base}/case-lab/research/${encodeURIComponent(report.slug)}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.86,
+  }));
+
   const manualTherapyRoutes: MetadataRoute.Sitemap = [
     ...manualTherapyTechniques.map((item) => ({
       url: `${base}/manual-therapy/${encodeURIComponent(item.slug)}`,
@@ -169,6 +179,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...knowledgeRoutes,
     ...specialtyRoutes,
     ...caseRoutes,
+    ...researchCaseRoutes,
     ...manualTherapyRoutes,
     ...regionalManualRoutes,
     ...treatmentPlanRoutes,
