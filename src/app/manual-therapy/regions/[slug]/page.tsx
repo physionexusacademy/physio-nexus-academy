@@ -33,7 +33,7 @@ import {
   cloudinary3DEnabled,
 } from "@/lib/manual-therapy-3d-assets";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
-import { regionalClinicalStories, regionalClinicalChallenges } from "@/lib/manual-therapy-regional-stories";
+import { regionalClinicalStories } from "@/lib/manual-therapy-regional-stories";
 import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { regionalManualVignettes } from "@/lib/manual-therapy-regional-vignettes";
 import { RegionalAttentionReset } from "@/components/manual-therapy/AttentionReset";
@@ -385,12 +385,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
       {/* Clinical story / learning lab if present */}
       {clinicalStory ? (
         <section className="mt-12">
-          <RegionalLearningLab
-            story={clinicalStory}
-            challenge={regionalClinicalChallenges[item.slug]}
-            lessonVoice={lessonVoice}
-            vignette={vignette}
-          />
+          <RegionalLearningLab slug={item.techniqueSlug} />
         </section>
       ) : null}
 
