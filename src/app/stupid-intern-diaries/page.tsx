@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Flame, AlertTriangle, ArrowRight } from "lucide-react";
+import { ArrowLeft, BookOpen, Flame, AlertTriangle } from "lucide-react";
 import { stupidInternEpisodes, getLatestEpisode } from "@/lib/stupid-intern-diaries";
 import { StupidInternClient } from "./StupidInternClient";
 
