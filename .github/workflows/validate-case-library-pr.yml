@@ -1,0 +1,29 @@
+name: Validate PNA Research Case Library
+on:
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/app/case-lab/**"
+      - "src/lib/case-report-library.ts"
+      - "scripts/validate-case-lab-premium.mjs"
+      - ".github/workflows/validate-case-library-pr.yml"
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: TypeScript checks
+        run: npm run typecheck
+      - name: Validate research case library
+        run: node scripts/validate-case-lab-premium.mjs
