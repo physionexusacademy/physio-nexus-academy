@@ -31,9 +31,9 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"chronic-low-back-motor-skill-training", title:"Motor skill training in musculoskeletal pain: a case report in chronic low back pain",
- authors:"Published authors as listed in the original article", journal:"Journal of Manual & Manipulative Therapy / PubMed Central full text", year:2020, specialty:"Musculoskeletal",
+ authors:"Vanessa M. Lanier", journal:"Disability and Rehabilitation", year:2019, specialty:"Musculoskeletal",
  tags:["Chronic low-back pain","Movement retraining","Motor learning"], openAccess:true, licenseNote:"Full text hosted by PubMed Central; review the article's licence before reusing its material.",
- sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7398488/",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7398488/", doi:"10.1080/09638288.2018.1460627",
  caseSummary:"This case report describes a 26-year-old man with a long history of low-back pain and activity-related limitations. The report focuses on motor-skill training as a way to change how meaningful movements are performed, rather than simply adding generic exercises.",
  clinicalFindings:["Low-back pain had persisted for about ten years.","Symptoms affected sitting, desk work, household activities and driving.","The report describes an active person who still experienced substantial interference from pain."],
  intervention:["A motor-skill training approach targeted movement performance in relevant activities.","Use the full article for the exact training progression and session details; this summary does not invent a dose."],
@@ -67,7 +67,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"copd-primary-care-pulmonary-rehab", title:"Pulmonary Rehabilitation in Primary Care: Functional and Emotional Impact in a Patient with COPD: A Case Report",
- authors:"Takatoshi Kasai et al.", journal:"Cureus / PubMed Central full-text record", year:2025, specialty:"Cardiorespiratory",
+ authors:"Takatoshi Kasai et al.", journal:"Cureus", year:2025, specialty:"Cardiorespiratory",
  tags:["COPD","Pulmonary rehabilitation","Exercise capacity","Psychological wellbeing"], openAccess:true, licenseNote:"Open access under CC BY; attribute the original authors.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC12736919/",
  caseSummary:"A 73-year-old man with moderate COPD experienced breathlessness and functional decline after stopping regular exercise. A structured programme was delivered through a primary-care setting, demonstrating one practical service model.",
@@ -79,7 +79,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"copd-physiotherapy-older-adult", title:"Novelty of Physiotherapy Management in a Classic Case of Chronic Obstructive Pulmonary Disease in an 84-Year-Old Male Patient with Hypertension and Well-Controlled Hypothyroidism: A Case Report",
- authors:"Original article authors as listed in PubMed Central", journal:"Cureus", year:2024, specialty:"Cardiorespiratory",
+ authors:"Radha Nangliya, Vaishnavi Yadav, Sojwal P. Nandanwar", journal:"Cureus", year:2024, specialty:"Cardiorespiratory",
  tags:["COPD","Older adult","Breathing exercises","Exercise tolerance"], openAccess:true, licenseNote:"Open access article; cite the original source and check the article's stated licence.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11060019/",
  caseSummary:"An 84-year-old man with COPD and comorbidities was referred with worsening cough and breathlessness. Physiotherapy was provided alongside medical management, with a focus on breathing, relaxation and activity tolerance.",
@@ -91,7 +91,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"multiple-joint-fracture-rehabilitation", title:"The Effectiveness of Physiotherapy Rehabilitation in an Adult With Multiple Joint Fractures - A Case Report",
- authors:"Authors as listed in the original article", journal:"Cureus / PubMed Central full-text record", year:2024, specialty:"Orthopaedic Rehabilitation",
+ authors:"Anjali V. Nawkhare, Mitushi Deshmukh, Sakshi Padmawar", journal:"Cureus", year:2024, specialty:"Orthopaedic Rehabilitation",
  tags:["Multiple fractures","Post-operative rehabilitation","Gait training","Range of motion"], openAccess:true, licenseNote:"Open access full text is hosted by PubMed Central; check its article-level licence before reusing material.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11293038/",
  caseSummary:"A 35-year-old man sustained fractures involving several joints after a road traffic accident and underwent surgical fixation. Rehabilitation had to address multiple regions and competing functional demands.",
@@ -103,7 +103,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"ataxic-cerebral-palsy-child", title:"Multiple Approaches of Neuro-Physiotherapy Used for Improving Balance, Normalizing Tone, and Gait Training in a Child With Ataxic Cerebral Palsy: A Case Report",
- authors:"Original article authors as listed in PubMed Central", journal:"Cureus", year:2023, specialty:"Paediatric Rehabilitation",
+ authors:"Dhanashree S. Upganlawar, Snehal Samal, Prishita Koul, Jaee P. Kapre", journal:"Cureus", year:2023, specialty:"Paediatric Rehabilitation",
  tags:["Cerebral palsy","Ataxia","Balance","Gait"], openAccess:true, licenseNote:"Open access article; attribute the original authors and confirm the licence on the source page.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC10774834/",
  caseSummary:"A seven-year-old girl with ataxic cerebral palsy had difficulty walking, standing for longer periods and performing gross and fine motor activities. The report describes a goal-oriented neuro-physiotherapy programme.",
@@ -115,7 +115,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"early-icu-rehabilitation-covid-copd", title:"Case Report: A Rehabilitation Practice Report During ICU Management for a Patient With Multiple Disabilities Due to COVID-19 Pneumonia and COPD",
- authors:"Original article authors as listed in PubMed Central", journal:"Journal of Primary Care & Community Health", year:2021, specialty:"Critical Care & ICU",
+ authors:"Tokio Kinoshita, Ken Kouda, Yasunori Umemoto, Yoshinori Yasuoka, Yuta Minoshima, Yukio Mikami, Yukihide Nishimura, Kyohei Miyamoto, Seiya Kato, Fumihiro Tajima", journal:"Frontiers in Medicine", year:2021, specialty:"Critical Care & ICU",
  tags:["ICU rehabilitation","COVID-19","COPD","Early mobilization"], openAccess:true, licenseNote:"Full text is available in PubMed Central; check the article-level licence before reuse.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC8274657/",
  caseSummary:"A 71-year-old man with COPD and COVID-19 pneumonia required mechanical ventilation and deep sedation. The case describes rehabilitation beginning during critical illness, with activities adjusted to respiratory and medical status.",
