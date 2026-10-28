@@ -39,7 +39,7 @@ const tests={
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
   originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),
   maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),
-  existingProfessionalLearning:home.includes("featuredWorkshops.map")&&home.includes("latestArticles.map")&&home.includes("featuredFaculty.map"),
+  existingProfessionalLearning:home.includes("const supabase = createPublicClient()")&&home.includes('.from("workshops")')&&home.includes("knowledgeArticles")&&home.includes("featuredWorkshops = workshopRows?.length ? workshopRows : null"),
   premiumChallengeKept:home.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&(home.includes("<DailyChallengeCountdown/>")||home.includes("<DailyChallengeCountdown />"))&&challengeCss.includes(".dc-flagship-stage"),
   patientRoutesUnchanged:home.includes('href="/symptom-checker"')&&home.includes('href="/appointment"')&&home.includes('href="/home-visit"'),
   existingCpdIdentityRetained:home.includes("Approved CPD Provider")&&home.includes("791052"),
