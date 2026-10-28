@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Flame, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Flame } from "lucide-react";
 import { stupidInternEpisodes, getLatestEpisode } from "@/lib/stupid-intern-diaries";
-import { StupidInternClient } from "./StupidInternClient";
 import { EpisodeArchive } from "./EpisodeArchive";
 
 export const metadata: Metadata = {
@@ -45,65 +44,6 @@ export default function StupidInternDiariesPage() {
             Learn what <span className="font-semibold text-teal-800">never</span> to do — through the daily disasters of one very confident intern.
           </p>
         </header>
-
-        {/* Today's Episode */}
-        <section id={`ep-${latest.id}`} className="mt-8 scroll-mt-24">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold text-[#193e50]">Today’s Episode</h2>
-            <span className="text-sm text-slate-500">{latest.date}</span>
-          </div>
-
-          <article className="overflow-hidden rounded-3xl border border-[#c5e8df] bg-white shadow-md">
-            <div className="border-b border-[#e0f2ee] bg-gradient-to-r from-teal-50 to-white px-6 py-5">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full bg-teal-700 px-3 py-1 text-xs font-bold text-white">
-                  EP {latest.id}
-                </span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                  {latest.field}
-                </span>
-              </div>
-              <h3 className="mt-3 text-xl font-bold text-[#193e50] sm:text-2xl">{latest.title}</h3>
-            </div>
-
-            <div className="space-y-5 px-6 py-6">
-              {latest.dialogue.map((line, idx) => (
-                <div key={idx} className="flex gap-3 justify-start">
-                  <div className="min-w-0 flex-1">
-                    <div
-                      className={`inline-block max-w-[95%] rounded-2xl px-4 py-3 text-sm leading-6 sm:text-[15px] ${
-                        line.speaker === "Dr. Sajjad"
-                          ? "bg-teal-700 text-white"
-                          : line.speaker === "Intern"
-                          ? "bg-slate-100 text-slate-800"
-                          : "bg-amber-50 text-amber-900 border border-amber-200"
-                      }`}
-                    >
-                      <span className="mb-1 block text-[11px] font-bold uppercase tracking-wide opacity-80">
-                        {line.speaker === "Other" ? "Senior Doctor" : line.speaker}
-                      </span>
-                      {line.text}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="border-t border-red-100 bg-red-50 px-6 py-5">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-red-700">Never do this</p>
-                  <p className="mt-1 text-sm font-medium leading-6 text-red-900">{latest.lesson}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-slate-100 px-6 py-5">
-              <StupidInternClient episodeId={latest.id} episodeTitle={latest.title} />
-            </div>
-          </article>
-        </section>
 
         <EpisodeArchive episodes={stupidInternEpisodes} />
 
