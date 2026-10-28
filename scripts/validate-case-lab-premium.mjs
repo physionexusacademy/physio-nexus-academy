@@ -14,7 +14,7 @@ assert(data.includes("clinicalLessons:")&&data.includes("limitations:"),"Each re
 assert(home.includes("force-static")&&home.includes("revalidate=false"),"Library must remain statically rendered");
 assert(home.includes("ResearchCaseLibrary")&&home.includes("publishedCaseReports"),"Research library must power the main Case Lab route");
 assert(!home.includes("CaseLabTeachingExperience")&&!home.includes("labCaseCards"),"Simulated case flow must not power the new library landing page");
-assert(library.includes("Search case reports")&&library.includes("Open-access full text only"),"Search and open-access filters are required");
+assert(library.includes("Search case reports")&&library.includes("Free full text available"),"Search and open-access filters are required");
 assert(library.includes("Original research")&&library.includes("Read case"),"Cards must link to original research and PNA summaries");
 assert(detail.includes("generateStaticParams")&&detail.includes("Limitations"),"Static article detail pages and limitations are required");
 assert(detail.includes("Read original paper")&&detail.includes("One case is a learning example"),"Original source and evidence caveat are required");
