@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - cloudflare-deploy
-    paths-ignore:
-      - ".github/workflows/deploy-cloudflare-production.yml"
   workflow_dispatch:
 
 concurrency:
