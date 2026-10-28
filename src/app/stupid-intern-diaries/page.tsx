@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Flame, Share2, AlertTriangle, CalendarDays } from "lucide-react";
+import { ArrowLeft, BookOpen, Flame, AlertTriangle } from "lucide-react";
 import { stupidInternEpisodes, getLatestEpisode } from "@/lib/stupid-intern-diaries";
 
 export const metadata: Metadata = {
@@ -72,16 +72,7 @@ export default function StupidInternDiariesPage() {
             {/* Dialogue */}
             <div className="space-y-5 px-6 py-6">
               {latest.dialogue.map((line, idx) => (
-                <div
-                  key={idx}
-                  className={`flex gap-3 ${
-                    line.speaker === "Dr. Sajjad"
-                      ? "justify-start"
-                      : line.speaker === "Intern"
-                      ? "justify-start"
-                      : "justify-start"
-                  }`}
-                >
+                <div key={idx} className="flex gap-3 justify-start">
                   <div className="min-w-0 flex-1">
                     <div
                       className={`inline-block max-w-[95%] rounded-2xl px-4 py-3 text-sm leading-6 sm:text-[15px] ${
