@@ -6,6 +6,7 @@ import Image from "next/image";
 import {
   Menu,
   X,
+  Laugh,
   Calendar,
   Home,
   Trophy,
@@ -186,6 +187,11 @@ export function Header() {
                   label: "Clinical Arena",
                   href: "/clinical-arena",
                   icon: FlaskConical,
+                },
+                {
+                  label: "Stupid Intern Diaries",
+                  href: "/stupid-intern-diaries",
+                  icon: Laugh,
                 },
                 {
                   label: "Books & Resources",
