@@ -2,9 +2,8 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import Link from "next/link";
 import {
- ArrowLeft,ArrowRight,BookOpen,BrainCircuit,ChevronDown,
- Eye,EyeOff,BookmarkCheck,Lightbulb,RotateCcw,ShieldAlert,Sparkles,Stethoscope,
- Target,User
+ ArrowLeft,ArrowRight,ChevronDown,
+ Eye,EyeOff,Lightbulb,RotateCcw,ShieldAlert,Sparkles,User
 } from "lucide-react";
 import type {CaseStory} from "@/lib/case-lab-story";
 import {buildCaseLearningGuide} from "@/lib/case-lab-learning";
