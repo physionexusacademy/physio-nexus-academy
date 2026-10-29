@@ -2,7 +2,23 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Courses & Learning",
-  description: "Short courses and structured learning modules from Physio Nexus Academy.",
+  description:
+    "Explore structured physiotherapy learning modules from Physio Nexus Academy. Course enrollment is not open yet; use the free Knowledge Hub, clinical case library and practical workshops while new courses are prepared.",
+  openGraph: {
+    title: "Physiotherapy Courses & Learning | Physio Nexus Academy",
+    description:
+      "Structured physiotherapy learning modules for students and clinicians. Enrollment is not open yet; explore PNA's free learning resources and workshops in the meantime.",
+    url: "https://physionexusacademy.com/courses",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Physiotherapy Courses & Learning | Physio Nexus Academy",
+    description:
+      "Explore structured physiotherapy learning modules and free learning resources from PNA. Enrollment is not open yet.",
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/courses",
   },

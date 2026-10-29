@@ -148,7 +148,7 @@ export async function POST(request: Request) {
         { id: "browse:knowledge", title: "Knowledge Hub", href: "/knowledge-hub", category: "Learning articles", summary: "Browse structured physiotherapy learning articles." },
         { id: "browse:manual", title: "Manual Therapy", href: "/manual-therapy", category: "Techniques", summary: "Explore manual therapy approaches and techniques." },
         { id: "browse:msk", title: "MSK Injuries", href: "/msk-injuries", category: "Conditions", summary: "Explore musculoskeletal conditions and clinical guidance." },
-        { id: "browse:cases", title: "Clinical Case Lab", href: "/case-lab", category: "Clinical reasoning", summary: "Practise with simulated clinical cases." },
+        { id: "browse:cases", title: "Clinical Case Lab", href: "/case-lab", category: "Published case reports", summary: "Read published clinical case reports with original-paper links, reported outcomes and clinical lessons." },
         { id: "browse:resources", title: "Books & Learning Resources", href: "/resources", category: "Books and PDFs", summary: "Browse the learning resources currently available from PNA." },
         { id: "browse:workshops", title: "Workshops & Practical Training", href: "/workshops", category: "Hands-on learning", summary: "Explore workshops and practical training opportunities." },
         { id: "browse:contact", title: "Contact PNA", href: "/contact", category: "Contact and support", summary: "Find contact options for questions and support." },
