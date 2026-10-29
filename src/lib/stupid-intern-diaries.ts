@@ -226,6 +226,25 @@ export const stupidInternEpisodes: StupidInternEpisode[] = ([
     lesson: "Do not assume that a single posture explains musculoskeletal pain or means tissue damage. Assess symptoms, function, relevant physical findings, activity, psychosocial context, and the patient's goals. Offer balanced, non-alarmist advice and support comfortable, varied movement."
   }
 
+
+  ,
+  {
+    id: 15,
+    title: "The Reflex Royalty",
+    field: "Neurological Assessment",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "What did you find during the neurological examination?" },
+      { speaker: "Intern", text: "Sir, the patient's knee reflex was absent. I think the nerve has officially resigned." },
+      { speaker: "Dr. Sajjad", text: "You tested it once and diagnosed a neurological problem? Did you check the patient's position, relaxation, technique, or compare the other side?" },
+      { speaker: "Intern", text: "No, Sir. I was waiting for the reflex to introduce itself." },
+      { speaker: "Dr. Sajjad", text: "This is a reflex test, not a job interview! Relax the patient, use the correct technique, repeat the test when appropriate, and interpret it alongside the rest of the neurological examination." },
+      { speaker: "Intern", text: "So, Sir… the nerve hasn't resigned yet?" },
+      { speaker: "Dr. Sajjad", text: "Not as quickly as your clinical reasoning did!" }
+    ],
+    lesson: "An absent or reduced deep tendon reflex should not be interpreted in isolation. Ensure appropriate positioning, relaxation and technique; compare sides and assess other relevant neurological findings. Interpret the result in the context of the patient's history and complete examination. If findings are unexpected or concerning, reassess and arrange appropriate medical evaluation."
+  }
+
 ] satisfies StupidInternEpisode[]).sort((a, b) => b.id - a.id);
 
 export function getLatestEpisode() {
