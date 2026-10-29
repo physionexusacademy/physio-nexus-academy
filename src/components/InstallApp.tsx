@@ -10,7 +10,13 @@ type InstallPrompt = Event & {
 type PromptSubscriber = (prompt: InstallPrompt | null) => void;
 
 let deferredPrompt: InstallPrompt | null = null;
+let promptInProgress = false;
 const promptSubscribers = new Set<PromptSubscriber>();
+
+function publishPrompt(nextPrompt: InstallPrompt | null) {
+  deferredPrompt = nextPrompt;
+  promptSubscribers.forEach((subscriber) => subscriber(nextPrompt));
+}
 
 // Capture the event as early as this client module loads so a quick browser
 // installability event is not missed while React effects are mounting.
@@ -22,13 +28,11 @@ if (typeof window !== "undefined") {
 
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
-      deferredPrompt = event as InstallPrompt;
-      promptSubscribers.forEach((subscriber) => subscriber(deferredPrompt));
+      publishPrompt(event as InstallPrompt);
     });
 
     window.addEventListener("appinstalled", () => {
-      deferredPrompt = null;
-      promptSubscribers.forEach((subscriber) => subscriber(null));
+      publishPrompt(null);
     });
   }
 }
@@ -86,20 +90,24 @@ export function InstallApp() {
   }, []);
 
   const handleInstall = async () => {
-    if (installed || installing) return;
+    if (installed || installing || promptInProgress) return;
 
     const availablePrompt = deferredPrompt ?? prompt;
     if (availablePrompt) {
+      promptInProgress = true;
       setInstalling(true);
       try {
         await availablePrompt.prompt();
         const choice = await availablePrompt.userChoice;
-        deferredPrompt = null;
-        setPrompt(null);
+        // The browser prompt is one-shot. Clear it for every responsive
+        // InstallApp instance so a stale component cannot reuse the event.
+        publishPrompt(null);
         if (choice.outcome === "accepted") setInstalled(true);
       } catch {
+        publishPrompt(null);
         setHelpOpen(true);
       } finally {
+        promptInProgress = false;
         setInstalling(false);
       }
       return;

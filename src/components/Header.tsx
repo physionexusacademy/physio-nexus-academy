@@ -62,6 +62,10 @@ export function Header() {
       };
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && open) setOpen(false);
+    };
+
     const handleTouchEnd = (event: TouchEvent) => {
       if (!touchStart.current || event.changedTouches.length !== 1) return;
 
@@ -95,10 +99,12 @@ export function Header() {
     window.addEventListener("touchend", handleTouchEnd, {
       passive: true,
     });
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [open]);
 
@@ -252,6 +258,7 @@ export function Header() {
       {/* Mobile drawer */}
       <div
         aria-hidden={!open}
+        inert={!open}
         className={cn(
           "absolute left-0 right-0 top-full z-[60] h-[calc(100dvh-5rem)] bg-white transition-transform duration-300 xl:hidden",
           open
