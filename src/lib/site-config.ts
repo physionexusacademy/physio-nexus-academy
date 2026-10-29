@@ -159,6 +159,7 @@ export const mainNav = [
   { label: "Resources", href: "/resources" },
   { label: "Patient Care", href: "/patient-services" },
   { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
+  { label: "Contact", href: "/contact" },
   { label: "Verify Certificate", href: "/verify" },
 ];
 
@@ -170,6 +171,7 @@ export const footerLinks = {
     { label: "Gallery", href: "/gallery" },
     { label: "Updates", href: "/updates" },
     { label: "Reviews & Feedback", href: "/reviews" },
+    { label: "Contact", href: "/contact" },
   ],
   students: [
     { label: "Knowledge Hub", href: "/knowledge-hub" },
