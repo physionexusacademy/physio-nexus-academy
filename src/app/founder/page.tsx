@@ -65,7 +65,7 @@ export default async function FounderPage() {
     ? qualifications
     : siteConfig.qualifications.map((q, i) => ({ id: `fallback-${i}`, title: q.title }));
 
-  const coreQualifications = quals.filter((q) => /doctor of physical therapy|\\bDPT\\b|MPhil Physical Therapy|AHPC Licensed/i.test(q.title));
+  const coreQualifications = quals.filter((q) => /doctor of physical therapy|\bDPT\b|MPhil Physical Therapy|AHPC Licensed/i.test(q.title));
   const manualTraining = quals.filter((q) =>
     !coreQualifications.includes(q) && /osteopathic|strain counterstrain|acupuncture|dry needling|manual therapy|kinesio taping|hijama/i.test(q.title),
   );
