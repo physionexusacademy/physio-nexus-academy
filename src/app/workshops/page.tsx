@@ -100,20 +100,39 @@ export default async function WorkshopsPage() {
         </p>
       )}
 
+      {!(workshops ?? []).some((w) => w.start_date && String(w.start_date).slice(0, 10) >= todayInPakistan) && (
+        <p className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-navy-700">
+          No upcoming workshop date is currently confirmed. Past workshop details remain available below; check the updates page for the next announced date.
+        </p>
+      )}
+
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {workshops?.map((w) => {
-          const isPast = Boolean(
-            w.is_past ||
-              (w.start_date &&
-                String(w.start_date).slice(0, 10) < todayInPakistan),
-          );
+        {[...(workshops ?? [])]
+          .sort((a, b) => {
+            const getPast = (item: (typeof workshops)[number]) =>
+              item.start_date
+                ? String(item.start_date).slice(0, 10) < todayInPakistan
+                : Boolean(item.is_past);
+            const pastDifference = Number(getPast(a)) - Number(getPast(b));
+            if (pastDifference !== 0) return pastDifference;
+            if (!a.start_date) return 1;
+            if (!b.start_date) return -1;
+            return String(a.start_date).localeCompare(String(b.start_date));
+          })
+          .map((w) => {
+          // The event date is authoritative when available; stale database flags
+          // must never keep an expired event labelled as upcoming (or vice versa).
+          const isPast = w.start_date
+            ? String(w.start_date).slice(0, 10) < todayInPakistan
+            : Boolean(w.is_past);
+          const hasConfirmedDate = Boolean(w.start_date);
           return (
             <div
               key={w.id}
               className="flex flex-col rounded-xl border border-grey-200 p-6"
             >
               <span className="inline-block w-fit rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-                {isPast ? "Past" : "Upcoming"}
+                {isPast ? "Past event" : hasConfirmedDate ? "Upcoming" : "Date to be announced"}
               </span>
               <h2 className="mt-4 font-heading text-lg font-semibold text-navy-800">
                 {w.title}
@@ -156,7 +175,7 @@ export default async function WorkshopsPage() {
                 variant="outline"
                 className="mt-5"
               >
-                {isPast ? "View workshop details" : "View details &amp; register"}
+                {isPast || !hasConfirmedDate ? "View workshop details" : "View details & register"}
               </Button>
             </div>
           );
