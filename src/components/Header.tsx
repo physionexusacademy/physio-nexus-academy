@@ -209,6 +209,7 @@ export function Header() {
                   icon: FileBadge2,
                 },
                 { label: "About PNA", href: "/about", icon: Info },
+                { label: "Contact", href: "/contact", icon: MessageCircle },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
