@@ -4,8 +4,9 @@ import Link from "next/link";
 import {ArrowRight,BookOpen,ExternalLink,FileText,Search,ShieldCheck} from "lucide-react";
 import type {PublishedCaseReport} from "@/lib/case-report-library";
 
-const specialties=["All specialties","Musculoskeletal","Neurological Rehabilitation","Orthopaedic Rehabilitation","Cardiorespiratory","Paediatric Rehabilitation","Critical Care & ICU"];
 export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
+ const specialties=useMemo(()=>["All specialties",...Array.from(new Set(reports.map(r=>r.specialty))).sort((a,b)=>a.localeCompare(b))],[reports]);
+ const clinicalAreaCount=useMemo(()=>new Set(reports.map(r=>r.specialty)).size,[reports]);
  const [query,setQuery]=useState("");
  const [specialty,setSpecialty]=useState("All specialties");
  const [openAccess,setOpenAccess]=useState(false);
@@ -19,7 +20,7 @@ export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
     <div className="cr-eyebrow"><BookOpen size={15}/> PNA · RESEARCH CASE LIBRARY</div>
     <h1>Real cases.<br/><span>Clinical lessons.</span></h1>
     <p className="cr-lead">Learn from published rehabilitation case reports. Each file links to the original paper and separates what the authors reported from what a clinician can cautiously learn.</p>
-    <div className="cr-stats"><div><strong>{reports.length}</strong><span>curated reports</span></div><div><strong>6</strong><span>clinical areas</span></div><div><strong>100%</strong><span>original source links</span></div></div>
+    <div className="cr-stats"><div><strong>{reports.length}</strong><span>curated reports</span></div><div><strong>{clinicalAreaCount}</strong><span>clinical areas</span></div><div><strong>100%</strong><span>original source links</span></div></div>
     <div className="cr-note"><ShieldCheck size={18}/><p><strong>Evidence honesty:</strong> a case report describes one clinical story. It can teach clinical reasoning, but it cannot prove that a treatment works for everyone.</p></div>
    </section>
    <section className="cr-controls" aria-label="Search and filter published case reports">
