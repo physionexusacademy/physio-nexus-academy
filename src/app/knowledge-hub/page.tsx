@@ -370,9 +370,9 @@ export default function KnowledgeHubPage() {
                 Symptoms → differential → diagnosis → treatment
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-indigo-50">
-                Work through evidence-based simulated cases and see exactly how
-                clinical findings change the diagnosis, urgency and
-                rehabilitation plan.
+                Explore published clinical case reports with links to their
+                original papers, plain-English summaries, reported outcomes,
+                clinical lessons and important limitations.
               </p>
             </div>
           </div>
