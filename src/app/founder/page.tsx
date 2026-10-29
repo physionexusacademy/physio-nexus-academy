@@ -65,6 +65,17 @@ export default async function FounderPage() {
     ? qualifications
     : siteConfig.qualifications.map((q, i) => ({ id: `fallback-${i}`, title: q.title }));
 
+  const coreQualifications = quals.filter((q) => /doctor of physical therapy|\\bDPT\\b|MPhil Physical Therapy|AHPC Licensed/i.test(q.title));
+  const manualTraining = quals.filter((q) =>
+    !coreQualifications.includes(q) && /osteopathic|strain counterstrain|acupuncture|dry needling|manual therapy|kinesio taping|hijama/i.test(q.title),
+  );
+  const additionalQualifications = quals.filter((q) => !coreQualifications.includes(q) && !manualTraining.includes(q));
+  const qualificationGroups = [
+    { title: "Core education & professional licence", items: coreQualifications },
+    { title: "Manual therapy & clinical training", items: manualTraining },
+    { title: "Additional qualifications", items: additionalQualifications },
+  ];
+
   const selectedTraining = trainingHistory
     .filter((item) =>
       [
@@ -110,9 +121,9 @@ export default async function FounderPage() {
       sameAs: [
         "https://pk.linkedin.com/in/dr-sajjad-raza-pt-8a7455372",
       ],
-      jobTitle: "Physiotherapist, Clinical Supervisor and Founder",
+      jobTitle: "Physiotherapist, Clinical Educator and Founder",
       description:
-        "Physiotherapist, clinical educator, workshop instructor, Clinical Supervisor and Founder of Physio Nexus Academy.",
+        "Physiotherapist, clinical educator, workshop instructor and Founder of Physio Nexus Academy.",
       worksFor: {
         "@type": "EducationalOrganization",
         "@id": "https://physionexusacademy.com/#organization",
@@ -234,25 +245,28 @@ export default async function FounderPage() {
 
           <section className="mt-10">
             <h2 className="text-xl font-bold text-navy-800">Qualifications &amp; Certifications</h2>
-            <p className="mt-2 text-sm text-navy-400">
-              Issuing organization, year and verification details will be added where
-              available — none are invented here.
+            <p className="mt-2 text-sm text-navy-500">
+              Credentials are grouped by type. Issuer, year or verification links appear only when confirmed details are available.
             </p>
-            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-              {quals.map((q) => (
-                <li
-                  key={q.id}
-                  className="flex items-start gap-2 rounded-lg border border-grey-200 p-4 text-sm text-navy-700"
-                >
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-500" />
-                  <span>
-                    {q.title}
-                    {"issuer" in q && q.issuer && <span className="text-navy-400"> — {q.issuer}</span>}
-                    {"year" in q && q.year && <span className="text-navy-400"> ({q.year})</span>}
-                  </span>
-                </li>
+            <div className="mt-5 space-y-6">
+              {qualificationGroups.filter((group) => group.items.length > 0).map((group) => (
+                <div key={group.title}>
+                  <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-teal-700">{group.title}</h3>
+                  <ul className="grid gap-3 sm:grid-cols-2">
+                    {group.items.map((q) => (
+                      <li key={q.id} className="flex items-start gap-3 rounded-xl border border-grey-200 bg-white p-4 text-sm text-navy-700 shadow-sm">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" aria-hidden="true" />
+                        <span>
+                          <span className="font-semibold">{q.title}</span>
+                          {"issuer" in q && q.issuer && <span className="mt-1 block text-navy-500">{q.issuer}</span>}
+                          {"year" in q && q.year && <span className="mt-1 block text-xs text-navy-400">{q.year}</span>}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </section>
 
           <section className="mt-10 rounded-xl bg-grey-50 p-6">
