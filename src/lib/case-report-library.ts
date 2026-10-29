@@ -127,7 +127,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 }
 ,{
  slug:"gbs-structured-functional-rehabilitation", title:"A structured rehabilitation program for functional recovery in Guillain–Barré syndrome: a case report",
- authors:"Authors listed in the original article", journal:"Journal of Medical Case Reports", year:2025, specialty:"Neurological Rehabilitation",
+ authors:"Neda M. Yousef, Daniel Kayode Adejumo, Animesh Hazari, Praveen Kumar Kandakurti", journal:"Journal of Medical Case Reports", year:2025, specialty:"Neurological Rehabilitation",
  tags:["Guillain–Barré syndrome","Progressive rehabilitation","Functional independence"], openAccess:true, licenseNote:"Open-access full text on PubMed Central; use the source article's licence for any reuse.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC12465850/", doi:"10.1186/s13256-025-05545-z",
  caseSummary:"A 40-year-old woman with Guillain–Barré syndrome developed profound weakness affecting all four limbs and required extensive assistance with daily activities. The report follows a structured, goal-based rehabilitation programme over four months after acute medical treatment.",
@@ -211,7 +211,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 },
 {
  slug:"volleyball-player-scapular-shoulder-pain", title:"Function-Based Diagnosis and Physiotherapeutic Intervention for Shoulder Pain and Scapulothoracic Movement Control Deficits in Volleyball Players: A Case Report",
- authors:"Khan and colleagues (see original article for full author list)", journal:"Cureus", year:2025, specialty:"Sports Rehabilitation",
+ authors:"Samiya Khan, Kalpana Zutshi, Aafreen Lnu, Ashfaque Khan, Abdur Raheem Khan", journal:"Cureus", year:2025, specialty:"Sports Rehabilitation",
  tags:["Shoulder pain","Scapular control","Overhead athlete"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
  sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11910189/", doi:"10.7759/cureus.78952",
  caseSummary:"A 26-year-old university-level volleyball player developed right shoulder pain that limited overhead activity. After an early return to play aggravated symptoms, the physiotherapy assessment emphasized scapulothoracic movement control and sport-specific function.",
