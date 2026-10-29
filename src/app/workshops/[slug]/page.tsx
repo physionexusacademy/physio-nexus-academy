@@ -222,7 +222,7 @@ export default async function WorkshopDetailPage({
             <span className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-teal-500" />
               {workshop.start_date
-                ? new Date(workshop.start_date).toLocaleDateString()
+                ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Karachi" }).format(new Date(workshop.start_date))
                 : "Date to be announced"}
             </span>
             <span className="flex items-center gap-2">
@@ -285,14 +285,14 @@ export default async function WorkshopDetailPage({
                 <p>
                   Early-bird fee:{" "}
                   <span className="font-semibold">
-                    {workshop.early_bird_fee}
+                    PKR {Number(workshop.early_bird_fee).toLocaleString("en-PK")}
                   </span>
                 </p>
               )}
               {workshop.regular_fee && (
                 <p>
                   Regular fee:{" "}
-                  <span className="font-semibold">{workshop.regular_fee}</span>
+                  <span className="font-semibold">PKR {Number(workshop.regular_fee).toLocaleString("en-PK")}</span>
                 </p>
               )}
             </div>

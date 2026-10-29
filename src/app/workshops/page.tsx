@@ -144,7 +144,7 @@ export default async function WorkshopsPage() {
                 <p className="flex items-center gap-2">
                   <CalendarDays className="h-4 w-4 text-teal-500" />
                   {w.start_date
-                    ? new Date(w.start_date).toLocaleDateString()
+                    ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Karachi" }).format(new Date(w.start_date))
                     : "Date to be announced"}
                 </p>
                 <p className="flex items-center gap-2">

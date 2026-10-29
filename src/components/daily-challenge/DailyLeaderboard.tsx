@@ -98,12 +98,14 @@ export function DailyLeaderboard({compact=false,initialPeriod="today",title,prev
       <td className="text-right font-bold tabular-nums text-teal-800">{row.points}</td>
       {!compact&&<td className="text-right tabular-nums text-slate-500">{row.challenges}</td>}
      </tr>)}
+     {loading&&rows.length===0&&<tr><td colSpan={compact?3:4} className="py-6 text-center text-sm text-slate-500">
+      <RefreshCw className="mx-auto mb-2 h-5 w-5 animate-spin text-teal-600" aria-hidden="true"/>Refreshing current standings…
+     </td></tr>}
      {!loading&&rows.length===0&&!error&&<tr><td colSpan={compact?3:4} className="py-8 text-center text-sm text-slate-500">
       <Users className="mx-auto mb-2 h-6 w-6 text-teal-600"/>No scores yet for this period. The first champion could be you!
      </td></tr>}
     </tbody>
    </table>
-   {loading&&rows.length===0&&<p className="py-6 text-center text-sm text-slate-500">Loading the leaderboard…</p>}
    {error&&<p role="status" className="px-4 py-4 text-sm text-red-700">{error}</p>}
   </div>
   {compact?<Link href="/daily-challenge#full-leaderboard" className="dc-board-action">

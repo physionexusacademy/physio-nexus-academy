@@ -290,7 +290,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 {
   "slug": "multiligament-knee-dislocation-rehabilitation",
   "title": "Rehabilitation Strategies Following Posterolateral Corner Repair for Left Knee Dislocation With Multiligament Injury: A Case Report",
-  "authors": "Authors as listed in the original article",
+  "authors": "Prajyot Ankar, Pratik Phansopkar",
   "journal": "Cureus",
   "year": 2024,
   "specialty": "Orthopaedic Rehabilitation",
@@ -331,7 +331,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 {
   "slug": "cricket-player-partial-rotator-cuff-tear-rehab",
   "title": "The Rehabilitation Journey of a Cricket Player With Partial Rotator Cuff Tear: A Case Report of Pre and Postoperative Physiotherapy",
-  "authors": "Authors as listed in the original article",
+  "authors": "Shraddha S. Kochar, Swapnil U. Ramteke, Subrat Samal",
   "journal": "Cureus",
   "year": 2024,
   "specialty": "Sports Rehabilitation",
@@ -373,7 +373,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 {
   "slug": "bilateral-knee-osteoarthritis-multimodal-physiotherapy",
   "title": "Effectiveness of Recent Physiotherapy Techniques Along With Conventional Physiotherapy Techniques in a Patient With Knee Osteoarthritis: A Case Report",
-  "authors": "Authors as listed in the original article",
+  "authors": "Kamya J. Somaiya, Subrat Samal, Manali A. Boob",
   "journal": "Cureus",
   "year": 2024,
   "specialty": "Musculoskeletal",
@@ -413,7 +413,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 {
   "slug": "proximal-tibia-fracture-ilizarov-foot-drop",
   "title": "A Comprehensive Physiotherapeutic Intervention for Complex Proximal Tibia Fracture With Ilizarov Fixator and Foot Drop in 18-Year-Old Adult: A Case Report",
-  "authors": "Authors as listed in the original article",
+  "authors": "Anam F. Pathan, Subrat Samal",
   "journal": "Cureus",
   "year": 2024,
   "specialty": "Orthopaedic Rehabilitation",
@@ -453,7 +453,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 {
   "slug": "ac-joint-sprain-wrist-instability-physiotherapy",
   "title": "Physiotherapeutic Management for Acromioclavicular Joint Sprain With Volar Intercalated Segment Instability at the Wrist: A Case Report",
-  "authors": "Authors as listed in the original article",
+  "authors": "Harsh R. Nathani, Swapnil U. Ramteke, Pratik R. Jaiswal",
   "journal": "Cureus",
   "year": 2024,
   "specialty": "Musculoskeletal",
