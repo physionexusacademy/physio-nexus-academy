@@ -59,7 +59,7 @@ export function EpisodeArchive({ episodes }: Props) {
       )}
 
       {selected && (
-        <article className="mt-6 overflow-hidden rounded-2xl border border-teal-100 bg-white">
+        <article id={`ep-${selected.id}`} className="mt-6 overflow-hidden rounded-2xl border border-teal-100 bg-white">
           <div className="bg-gradient-to-r from-teal-50 to-white p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-teal-700 px-3 py-1 text-xs font-bold text-white">EP {String(selected.id).padStart(2, "0")}</span>
@@ -81,12 +81,15 @@ export function EpisodeArchive({ episodes }: Props) {
               <p className="text-xs font-bold uppercase tracking-wide text-red-700">Clinical takeaway</p>
               <p className="mt-1 text-sm leading-6 text-red-900">{selected.lesson}</p>
             </div>
-            <StupidInternClient episodeId={selected.id} episodeTitle={selected.title} />
+            <StupidInternClient
+              episodeId={selected.id}
+              episodeTitle={selected.title}
+              dialogue={selected.dialogue}
+              lesson={selected.lesson}
+            />
           </div>
         </article>
       )}
-
-      
     </section>
   );
 }
