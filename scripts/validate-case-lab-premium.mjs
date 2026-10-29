@@ -7,8 +7,8 @@ const library=read("src/app/case-lab/ResearchCaseLibrary.tsx");
 const detail=read("src/app/case-lab/research/[slug]/page.tsx");
 const css=read("src/app/case-lab/research-library.css");
 const slugs=[...data.matchAll(/slug:"([^"]+)"/g)].map(m=>m[1]);
-assert.equal(slugs.length,10,"Expected 10 carefully curated pilot reports");
-assert.equal(new Set(slugs).size,10,"Published report slugs must be unique");
+assert.equal(slugs.length,20,"Expected 20 curated published case reports");
+assert.equal(new Set(slugs).size,20,"Published report slugs must be unique");
 assert(data.includes("sourceUrl:")&&data.includes("doi:"),"Reports need original source links and DOI metadata where available");
 assert(data.includes("clinicalLessons:")&&data.includes("limitations:"),"Each report must separate learning points and limitations");
 assert(home.includes("force-static")&&home.includes("revalidate=false"),"Library must remain statically rendered");
@@ -19,4 +19,4 @@ assert(library.includes("Original research")&&library.includes("Read case"),"Car
 assert(detail.includes("generateStaticParams")&&detail.includes("Limitations"),"Static article detail pages and limitations are required");
 assert(detail.includes("Read original paper")&&detail.includes("One case is a learning example"),"Original source and evidence caveat are required");
 assert(css.includes("@media(max-width:620px)")&&css.includes(".cr-grid"),"Responsive research card layout is required");
-console.log("PASS: 10 research reports, source-linked static details, search, filters, evidence limits and responsive library");
+console.log("PASS: 20 research reports, source-linked static details, search, filters, evidence limits and responsive library");
