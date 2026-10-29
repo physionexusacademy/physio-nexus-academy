@@ -159,6 +159,73 @@ export const stupidInternEpisodes: StupidInternEpisode[] = ([
     ],
     lesson: "Do not diagnose or plan treatment from MRI findings alone. Integrate history, symptom behaviour, physical and neurological examination, red flags, and the clinical relevance of imaging. Treat the patient, not the scan."
   }
+
+  ,
+  {
+    id: 14,
+    title: "The Human Crane",
+    field: "Neurological Rehabilitation",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why are you pulling the patient's arm while helping them walk?" },
+      { speaker: "Intern", text: "Sir, they were unsteady, so I grabbed their shoulder and dragged them forward. Efficient transport!" },
+      { speaker: "Dr. Sajjad", text: "This is gait training, not moving furniture. Where is your assessment of balance, assistance level, footwear, walking aid, and fall risk?" },
+      { speaker: "Intern", text: "I thought my grip was the walking aid, Sir." },
+      { speaker: "Dr. Sajjad", text: "Your grip is not a safety plan. Set up the environment, use an appropriate aid and guarding technique, and match assistance to the patient's assessed ability. If you cannot safely manage the transfer, get help." },
+      { speaker: "Intern", text: "So the goal is safe, purposeful walking—not me becoming a crane?" },
+      { speaker: "Dr. Sajjad", text: "Exactly. We train the patient, not your biceps." }
+    ],
+    lesson: "Assess mobility, balance, cognition, medical status, environment, and fall risk before gait training. Use an appropriate walking aid and safe guarding/assistance technique; avoid pulling the patient by the arm. Seek additional help when the required assistance exceeds your competence or safe capacity."
+  },
+  {
+    id: 13,
+    title: "The Repetition Robot",
+    field: "Exercise Safety",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why has the patient stopped exercising and grabbed the plinth?" },
+      { speaker: "Intern", text: "They said they felt dizzy, Sir, but we still had twenty repetitions left." },
+      { speaker: "Dr. Sajjad", text: "And your response was?" },
+      { speaker: "Intern", text: "I said, 'Only twenty more!' Motivation is my speciality." },
+      { speaker: "Dr. Sajjad", text: "A symptom is not a countdown timer. Stop the exercise, help them get into a safe position, assess their symptoms and vital signs as appropriate, and follow the clinic's escalation protocol. Do not restart just to finish the set." },
+      { speaker: "Intern", text: "So the exercise sheet doesn't outrank the patient?" },
+      { speaker: "Dr. Sajjad", text: "Correct. The sheet has never once complained of dizziness." }
+    ],
+    lesson: "Stop exercise when a patient develops dizziness or other unexpected concerning symptoms. Prevent a fall, assess the situation within your scope, check relevant observations when indicated, and escalate according to severity and local protocol. Do not push through unexplained symptoms or resume until it is safe."
+  },
+  {
+    id: 12,
+    title: "The Surprise Stretch",
+    field: "Professional Practice",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why did the patient pull away when you started the stretch?" },
+      { speaker: "Intern", text: "Sir, I wanted to save time. I moved their leg into position before explaining anything." },
+      { speaker: "Dr. Sajjad", text: "So the patient received a surprise performance instead of an explanation?" },
+      { speaker: "Intern", text: "I thought they would understand once I started, Sir." },
+      { speaker: "Dr. Sajjad", text: "Patients are not props in your practical exam. Explain what you propose to do, why, what they may feel, and the alternatives. Check consent, respect their choice, and stop if they withdraw it." },
+      { speaker: "Intern", text: "Even if it is a routine stretch?" },
+      { speaker: "Dr. Sajjad", text: "Especially then. Familiarity is not permission." }
+    ],
+    lesson: "Explain the proposed assessment or intervention in understandable language, including its purpose, expected sensations, relevant risks, and alternatives. Obtain informed consent, respect the patient's decision, protect privacy and dignity, and stop if consent is withdrawn."
+  },
+  {
+    id: 11,
+    title: "The Posture Police",
+    field: "Musculoskeletal Clinical Reasoning",
+    date: "2026-10-29",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "What did you find in the assessment of the student with back pain?" },
+      { speaker: "Intern", text: "Diagnosis: terrible posture, Sir. They were sitting with a rounded back. I told them their spine is getting damaged." },
+      { speaker: "Dr. Sajjad", text: "Did you ask about symptom behaviour, activity, sleep, stress, workload, or what movements change the pain?" },
+      { speaker: "Intern", text: "No, Sir. I was busy arresting their shoulders." },
+      { speaker: "Dr. Sajjad", text: "Posture is one observation, not a complete diagnosis or proof of damage. Explore the whole clinical picture and explain movement without frightening the patient." },
+      { speaker: "Intern", text: "So I should assess the person, not issue a posture fine?" },
+      { speaker: "Dr. Sajjad", text: "Correct. Your posture-police badge is hereby revoked." }
+    ],
+    lesson: "Do not assume that a single posture explains musculoskeletal pain or means tissue damage. Assess symptoms, function, relevant physical findings, activity, psychosocial context, and the patient's goals. Offer balanced, non-alarmist advice and support comfortable, varied movement."
+  }
+
 ] satisfies StupidInternEpisode[]).sort((a, b) => b.id - a.id);
 
 export function getLatestEpisode() {
