@@ -246,5 +246,5 @@ export const publishedCaseReports: PublishedCaseReport[] = [
  limitations:["This is an older single-case report and cannot establish the effectiveness of the programme for all patients.","Modern vestibular assessment and current guidance should inform clinical decisions; do not reproduce a protocol without checking the full paper."]
 }
 
-];
+].sort((a,b)=>b.year-a.year);
 export function getPublishedCaseReport(slug:string){return publishedCaseReports.find(item=>item.slug===slug);}
