@@ -109,7 +109,7 @@ export default async function WorkshopsPage() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {[...(workshops ?? [])]
           .sort((a, b) => {
-            const getPast = (item) =>
+            const getPast = (item: { start_date: string | null; is_past: boolean | null }) =>
               item.start_date
                 ? String(item.start_date).slice(0, 10) < todayInPakistan
                 : Boolean(item.is_past);
