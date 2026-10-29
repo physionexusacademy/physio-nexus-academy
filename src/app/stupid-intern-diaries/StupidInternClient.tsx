@@ -3,9 +3,16 @@
 import { useState, useEffect } from "react";
 import { Share2, Copy, MessageCircle, Check } from "lucide-react";
 
+type DialogueLine = {
+  speaker: "Dr. Sajjad" | "Intern" | "Other";
+  text: string;
+};
+
 type Props = {
   episodeId: number;
   episodeTitle: string;
+  dialogue: DialogueLine[];
+  lesson: string;
 };
 
 const REACTIONS = [
@@ -14,7 +21,7 @@ const REACTIONS = [
   { key: "fire", emoji: "🔥", label: "Savage" },
 ] as const;
 
-export function StupidInternClient({ episodeId, episodeTitle }: Props) {
+export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }: Props) {
   const [counts, setCounts] = useState<Record<string, number>>({
     laugh: 0,
     cry: 0,
@@ -59,21 +66,40 @@ export function StupidInternClient({ episodeId, episodeTitle }: Props) {
     });
   };
 
+  const episodeUrl = `https://physionexusacademy.com/stupid-intern-diaries#ep-${episodeId}`;
+
   const handleCopy = async () => {
-    const url = `https://physionexusacademy.com/stupid-intern-diaries#ep-${episodeId}`;
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(episodeUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {}
   };
 
   const handleWhatsApp = () => {
-    const url = `https://physionexusacademy.com/stupid-intern-diaries#ep-${episodeId}`;
-    const text = encodeURIComponent(
-      `😂 Stupid Intern Diaries – ${episodeTitle}\n\nCheck this clinical disaster + lesson:\n${url}`
-    );
-    window.open(`https://wa.me/?text=${text}`, "_blank");
+    const conversation = dialogue
+      .map((line) => {
+        const speaker = line.speaker === "Other" ? "Senior Doctor" : line.speaker;
+        return `${speaker}: ${line.text}`;
+      })
+      .join("\n\n");
+
+    const shareText = [
+      `😂 STUPID INTERN DIARIES | EP ${String(episodeId).padStart(2, "0")}`,
+      episodeTitle,
+      "",
+      conversation,
+      "",
+      "🩺 CLINICAL TAKEAWAY",
+      lesson,
+      "",
+      "Learn with a laugh. Practise with care.",
+      "",
+      "Physio Nexus Academy",
+      episodeUrl,
+    ].join("\n");
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
   };
 
   const handleAddComment = () => {
