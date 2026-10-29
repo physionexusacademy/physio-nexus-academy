@@ -18,7 +18,7 @@ function countdownToNextPakistanMidnight(now: Date): string {
 }
 
 export function DailyChallengeCountdown() {
-  const [remaining, setRemaining] = useState("--:--:--");
+  const [remaining, setRemaining] = useState("Updating…");
   useEffect(() => {
     const update = () => setRemaining(countdownToNextPakistanMidnight(new Date()));
     update();
