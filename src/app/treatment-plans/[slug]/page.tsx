@@ -12,13 +12,13 @@ import {
   Home,
   ShieldAlert,
   Stethoscope,
+  Target,
+  Workflow,
 } from "lucide-react";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { treatmentPlanGuides } from "@/lib/treatment-plan-guides";
 
-type PageProps = {
-  params: Promise<{ slug: string }>;
-};
+type PageProps = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
   return treatmentPlans.map((plan) => ({ slug: plan.slug }));
@@ -27,15 +27,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const plan = treatmentPlans.find((item) => item.slug === slug);
-
   if (!plan) return {};
-
   return {
-    title: plan.name + " | Physiotherapy Treatment Plan",
+    title: plan.name + " | Evidence-Informed Physiotherapy Treatment Plan",
     description: plan.summary,
-    alternates: {
-      canonical: "https://physionexusacademy.com/treatment-plans/" + plan.slug,
-    },
+    alternates: { canonical: "https://physionexusacademy.com/treatment-plans/" + plan.slug },
   };
 }
 
@@ -43,27 +39,37 @@ function PlanSection({
   title,
   items,
   icon: Icon,
-  tone,
+  tone = "border-grey-200 bg-white",
+  eyebrow,
 }: {
   title: string;
   items: string[];
   icon: typeof Stethoscope;
-  tone: string;
+  tone?: string;
+  eyebrow?: string;
 }) {
+  if (!items?.length) return null;
   return (
     <section className={"rounded-2xl border p-5 sm:p-6 " + tone}>
-      <div className="flex items-center gap-2">
-        <Icon className="h-5 w-5" />
-        <h2 className="text-lg font-bold text-navy-800">{title}</h2>
+      <div className="flex items-start gap-3">
+        <span className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white/80 text-teal-800 shadow-sm">
+          <Icon className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          {eyebrow && <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-700">{eyebrow}</p>}
+          <h2 className="text-lg font-bold text-navy-800">{title}</h2>
+        </div>
       </div>
-      <ul className="mt-4 space-y-3">
-        {items.map((item) => (
-          <li key={item} className="flex gap-3 text-sm leading-6 text-navy-600">
-            <CheckCircle2 className="mt-1 h-4 w-4 flex-none" />
+      <ol className="mt-4 space-y-3">
+        {items.map((item, index) => (
+          <li key={item} className="flex gap-3 text-sm leading-6 text-navy-700">
+            <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-white text-[11px] font-bold text-teal-800 ring-1 ring-teal-100">
+              {index + 1}
+            </span>
             <span>{item}</span>
           </li>
         ))}
-      </ul>
+      </ol>
     </section>
   );
 }
@@ -72,90 +78,92 @@ export default async function TreatmentPlanDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const plan = treatmentPlans.find((item) => item.slug === slug);
   const guide = treatmentPlanGuides[slug];
-
   if (!plan || !guide) notFound();
 
   return (
-    <div className="container-content section-padding">
-      <a
-        href="/treatment-plans"
-        className="inline-flex items-center gap-1 text-sm font-bold text-teal-700"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Treatment Plans
+    <main className="container-content section-padding">
+      <a href="/treatment-plans" className="inline-flex items-center gap-2 text-sm font-bold text-teal-700 transition hover:text-teal-900">
+        <ArrowLeft className="h-4 w-4" /> All treatment plans
       </a>
 
-      <section className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-teal-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
-        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold">
-          {plan.category}
-        </span>
-        <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">{plan.name}</h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-emerald-50">{plan.summary}</p>
+      <header className="relative mt-5 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-emerald-50 to-cyan-50 p-6 shadow-sm sm:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-16 h-64 w-64 rounded-full bg-teal-100/50 blur-3xl" />
+        <div className="relative">
+          <span className="inline-flex rounded-full border border-teal-200 bg-white/80 px-3 py-1 text-xs font-bold text-teal-800">{plan.category}</span>
+          <p className="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-teal-700">Physio Nexus Academy · Clinical Treatment Framework</p>
+          <h1 className="mt-2 max-w-4xl text-3xl font-extrabold leading-tight text-navy-900 sm:text-5xl">{plan.name}</h1>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-navy-700">{plan.summary}</p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold text-navy-700">
+            <span className="rounded-full bg-white px-3 py-2 ring-1 ring-grey-200">Assess → classify</span>
+            <span className="rounded-full bg-white px-3 py-2 ring-1 ring-grey-200">Treat → reassess</span>
+            <span className="rounded-full bg-white px-3 py-2 ring-1 ring-grey-200">Load → progress</span>
+          </div>
+        </div>
+      </header>
+
+      <section className="mt-7 rounded-3xl border border-emerald-200 bg-white p-5 shadow-sm sm:p-7">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-grey-100 pb-5">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Clinical decision pathway</p>
+            <h2 className="mt-1 text-2xl font-extrabold text-navy-900 sm:text-3xl">A structured plan, not a recipe</h2>
+          </div>
+          <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800">Clinician-led · Individualised</span>
+        </div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { n: "01", title: "Understand", detail: "Screen safety, identify the likely clinical pattern and agree meaningful goals." },
+            { n: "02", title: "Select", detail: "Choose only interventions that match the patient's impairments and preferences." },
+            { n: "03", title: "Reassess", detail: "Repeat the same comparable sign or functional task after key interventions." },
+            { n: "04", title: "Progress", detail: "Build capacity and participation using measurable response, not session count." },
+          ].map((step) => (
+            <div key={step.n} className="rounded-2xl bg-slate-50 p-4">
+              <span className="text-xs font-extrabold tracking-widest text-teal-700">{step.n}</span>
+              <h3 className="mt-2 font-bold text-navy-900">{step.title}</h3>
+              <p className="mt-1 text-sm leading-6 text-navy-600">{step.detail}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="mt-8 overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50">
-        <div className="border-b border-emerald-100 p-6 sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
-            Master-Level Clinical Plan
-          </p>
-          <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">
-            How to think, treat and progress this condition
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-navy-600">
-            This section converts the condition into a real clinical workflow: what to think first,
-            what to do in the first session, how to dose exercise and modalities, how to apply
-            manual therapy, when to progress and which mistakes to avoid.
-          </p>
-        </div>
-
-        <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2">
-          <PlanSection title="Clinical Reasoning — Think Before Treating" items={guide.clinicalLogic} icon={Stethoscope} tone="border-indigo-100 bg-indigo-50/70" />
-          <PlanSection title="First Session — Practical Sequence" items={guide.firstSession} icon={ClipboardCheck} tone="border-cyan-100 bg-cyan-50/70" />
-          <PlanSection title="Exercise Dosage — Sets, Reps & Frequency" items={guide.exerciseDose} icon={Dumbbell} tone="border-emerald-100 bg-emerald-50/70" />
-          <PlanSection title="Manual Therapy — How to Apply It Here" items={guide.manualApplication} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
-          <PlanSection title="Modalities — When & How Much" items={guide.modalityDose} icon={Activity} tone="border-amber-100 bg-amber-50/70" />
-          <PlanSection title="Progression Rules" items={guide.progressionRules} icon={Gauge} tone="border-blue-100 bg-blue-50/70" />
-          <PlanSection title="Common Clinical Mistakes" items={guide.commonMistakes} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
-          <PlanSection title="Patient Education — What to Explain" items={guide.patientEducation} icon={HeartPulse} tone="border-teal-100 bg-teal-50/70" />
-        </div>
-      </section>
-
-      <div className="mt-8 grid gap-5 lg:grid-cols-2">
-        <PlanSection title="Assessment" items={plan.assessment} icon={Stethoscope} tone="border-cyan-100 bg-cyan-50/70" />
-        <PlanSection title="Red Flags & Safety" items={plan.redFlags} icon={ShieldAlert} tone="border-rose-100 bg-rose-50/70" />
-        <p className="mt-4 rounded-xl border border-sky-100 bg-sky-50/70 p-3 text-sm leading-6 text-navy-700">Treatment plans are educational frameworks, not fixed prescriptions. Adapt exercise selection and dosage to the individual assessment, irritability, comorbidities, patient goals and response over time. Escalate or refer when red flags, unexpected deterioration or scope-of-practice concerns are present.</p>
-        <PlanSection title="Outcome Measures" items={plan.outcomeMeasures} icon={ClipboardCheck} tone="border-blue-100 bg-blue-50/70" />
-        <PlanSection title="Modalities" items={plan.modalities} icon={Activity} tone="border-amber-100 bg-amber-50/70" />
-        <PlanSection title="Manual Therapy" items={plan.manualTherapy} icon={Hand} tone="border-violet-100 bg-violet-50/70" />
-        <PlanSection title="Exercise Prescription" items={plan.exercises} icon={Dumbbell} tone="border-emerald-100 bg-emerald-50/70" />
-        <PlanSection title="Home Program" items={plan.homePlan} icon={Home} tone="border-teal-100 bg-teal-50/70" />
-        <PlanSection title="Progression Criteria" items={plan.progression} icon={Gauge} tone="border-indigo-100 bg-indigo-50/70" />
-        <PlanSection title="Referral / Escalation" items={plan.escalation} icon={HeartPulse} tone="border-orange-100 bg-orange-50/70" />
+      <div className="mt-7 grid gap-5 lg:grid-cols-2">
+        <PlanSection title="Clinical reasoning" eyebrow="Before choosing an intervention" items={guide.clinicalLogic} icon={Stethoscope} tone="border-indigo-100 bg-indigo-50/60" />
+        <PlanSection title="First-session workflow" eyebrow="A practical starting sequence" items={guide.firstSession} icon={ClipboardCheck} tone="border-cyan-100 bg-cyan-50/60" />
+        <PlanSection title="Assessment & examination" items={plan.assessment} icon={Activity} tone="border-sky-100 bg-sky-50/60" />
+        <PlanSection title="Red flags & safety screen" items={plan.redFlags} icon={ShieldAlert} tone="border-rose-200 bg-rose-50/70" />
+        <PlanSection title="Manual therapy application" eyebrow="Indication · dosage · response" items={guide.manualApplication} icon={Hand} tone="border-violet-100 bg-violet-50/60" />
+        <PlanSection title="Exercise prescription & dosage" eyebrow="Adapt to irritability and capacity" items={guide.exerciseDose} icon={Dumbbell} tone="border-emerald-100 bg-emerald-50/60" />
+        <PlanSection title="Modalities & adjuncts" items={guide.modalityDose} icon={HeartPulse} tone="border-amber-100 bg-amber-50/60" />
+        <PlanSection title="Progression & regression rules" items={guide.progressionRules} icon={Gauge} tone="border-blue-100 bg-blue-50/60" />
+        <PlanSection title="Home programme" items={plan.homePlan} icon={Home} tone="border-teal-100 bg-teal-50/60" />
+        <PlanSection title="Outcome measures" items={plan.outcomeMeasures} icon={Target} tone="border-slate-200 bg-slate-50" />
+        <PlanSection title="Common clinical mistakes" items={guide.commonMistakes} icon={ShieldAlert} tone="border-orange-100 bg-orange-50/60" />
+        <PlanSection title="Patient education & self-management" items={guide.patientEducation} icon={HeartPulse} tone="border-teal-100 bg-teal-50/60" />
+        <PlanSection title="Referral & escalation" items={plan.escalation} icon={Workflow} tone="border-rose-200 bg-rose-50/60" />
       </div>
 
-      <section className="mt-8 rounded-2xl border border-grey-200 bg-white p-6">
-        <h2 className="font-bold text-navy-800">Clinical reasoning rule</h2>
+      <section className="mt-7 rounded-2xl border border-sky-200 bg-sky-50/70 p-5 sm:p-6">
+        <div className="flex items-start gap-3">
+          <ShieldAlert className="mt-0.5 h-5 w-5 flex-none text-sky-800" />
+          <div>
+            <h2 className="font-bold text-navy-900">Clinical use & safety note</h2>
+            <p className="mt-2 text-sm leading-6 text-navy-700">
+              This is an educational clinical framework, not an individual prescription or a substitute for diagnosis, medical assessment, local protocols or professional judgement. Exercise dose, manual techniques and adjuncts must be adapted to examination findings, irritability, comorbidities, precautions, patient goals and response. Obtain informed consent, work within training and scope, and refer when indicated. Do not apply every intervention listed to every patient.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-7 rounded-2xl border border-grey-200 bg-white p-5 sm:p-6">
+        <h2 className="font-bold text-navy-900">The PNA treatment principle</h2>
         <p className="mt-2 text-sm leading-6 text-navy-600">
-          Do not use every intervention on this page. Select the smallest set that matches the
-          patient's diagnosis, irritability, impairments and goals. Reassess after each meaningful
-          intervention and progress toward active self-management.
+          The best plan is not the one with the most techniques. It is the one that identifies the patient's main problem, selects a defensible intervention, measures the response and steadily restores meaningful function.
         </p>
       </section>
 
-      <div className="mt-8 flex flex-wrap gap-3">
-        <a
-          href="/treatment-plans"
-          className="rounded-xl border border-grey-200 px-5 py-3 text-sm font-bold text-navy-700"
-        >
-          Browse more conditions
-        </a>
-        <a
-          href="/manual-therapy"
-          className="rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white"
-        >
-          Study manual techniques
-        </a>
-      </div>
-    </div>
+      <nav className="mt-7 flex flex-wrap gap-3">
+        <a href="/treatment-plans" className="rounded-xl border border-grey-200 bg-white px-5 py-3 text-sm font-bold text-navy-800 transition hover:bg-slate-50">Browse other conditions</a>
+        <a href="/manual-therapy" className="rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-violet-800">Explore manual therapy</a>
+      </nav>
+    </main>
   );
 }
