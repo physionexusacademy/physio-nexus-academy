@@ -161,6 +161,7 @@ export const mainNav = [
   { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
   { label: "Clinical Arena", href: "/clinical-arena" },
   { label: "Manual Therapy", href: "/manual-therapy" },
+  { label: "Health Calculators", href: "/health-calculators/bmi" },
   { label: "About PNA", href: "/about" },
   { label: "Contact", href: "/contact" },
   { label: "Verify Certificate", href: "/verify" },
@@ -190,6 +191,7 @@ export const footerLinks = {
     { label: "Courses / Learning", href: "/courses" },
     { label: "Books & Resources", href: "/resources" },
     { label: "Research Support", href: "/research" },
+    { label: "Health Calculators · BMI", href: "/health-calculators/bmi" },
   ],
   patients: [
     { label: "Patient Services", href: "/patient-services" },
