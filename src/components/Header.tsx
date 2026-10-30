@@ -29,6 +29,7 @@ const PRIMARY_HREFS = new Set([
   "/case-lab",
   "/workshops",
   "/knowledge-hub",
+  "/health-calculators/bmi",
 ]);
 
 export function Header() {

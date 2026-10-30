@@ -5,6 +5,7 @@ import {
   ArrowRight,
   BookOpen,
   CheckCircle2,
+  Eye,
   Layers,
   ShieldCheck,
 } from "lucide-react";
