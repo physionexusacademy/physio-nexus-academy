@@ -34,9 +34,9 @@ export default function BmiCalculatorPage() {
     const w = Number(weight);
     const totalInches = feet * 12 + inches;
     const metres = unit === "metric" ? h / 100 : totalInches * 0.0254;
-    const kg = unit === "metric" ? w : w * 0.45359237;
+    const kg = w;
     const waistValue = Number(waist);
-    const waistMetres = unit === "metric" ? waistValue / 100 : waistValue * 0.0254;
+    const waistMetres = waistValue / 100;
     const years = Number(age);
     const bmi = kg / (metres * metres);
     const waistToHeight = waistValue > 0 ? waistMetres / metres : null;
@@ -77,14 +77,14 @@ export default function BmiCalculatorPage() {
           <div className="bmi-card-heading"><span className="bmi-icon-tile"><Calculator/></span><div><h2>Calculate your BMI</h2><p>Enter your measurements below</p></div></div>
           <div className="bmi-unit-switch" role="group" aria-label="Measurement units">
             <button type="button" className={unit === "metric" ? "active" : ""} onClick={() => {setUnit("metric");setHeight("170");setWeight("70");setWaist("");setResult(false);}}>Metric · cm / kg</button>
-            <button type="button" className={unit === "imperial" ? "active" : ""} onClick={() => {setUnit("imperial");setHeightFeet("5");setHeightInches("6");setWeight("154");setWaist("");setResult(false);}}>Imperial · ft / in / lb</button>
+            <button type="button" className={unit === "imperial" ? "active" : ""} onClick={() => {setUnit("imperial");setHeightFeet("5");setHeightInches("6");setWeight("70");setWaist("");setResult(false);}}>Height · ft / in</button>
           </div>
           <div className="bmi-fields">
             <label className="bmi-field"><span>Age <small>(years)</small></span><div className="bmi-input-wrap"><UserRound/><input type="number" min="5" max="120" step="1" value={age} onChange={(e)=>{setAge(e.target.value);setResult(false);}} placeholder="Enter age" inputMode="numeric"/></div></label>
             <fieldset className="bmi-field bmi-sex-field"><legend>Sex <small>(needed for child growth references)</small></legend><div className="bmi-sex-options"><button type="button" className={sex==="female"?"selected":""} onClick={()=>{setSex("female");setResult(false);}}>♀ Female</button><button type="button" className={sex==="male"?"selected":""} onClick={()=>{setSex("male");setResult(false);}}>♂ Male</button></div></fieldset>
             {unit === "metric" ? <label className="bmi-field"><span>Height <small>(cm)</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="1" step="0.1" value={height} onChange={(e)=>{setHeight(e.target.value);setResult(false);}} placeholder="e.g. 170" inputMode="decimal"/></div></label> : <div className="bmi-field"><span>Height <small>(feet & inches)</small></span><div className="bmi-height-pair"><label className="bmi-input-wrap"><Ruler/><input aria-label="Height in feet" type="number" min="1" max="8" step="1" value={heightFeet} onChange={(e)=>{setHeightFeet(e.target.value);setResult(false);}} placeholder="5" inputMode="numeric"/><small>ft</small></label><label className="bmi-input-wrap"><input aria-label="Additional height in inches" type="number" min="0" max="11" step="1" value={heightInches} onChange={(e)=>{setHeightInches(e.target.value);setResult(false);}} placeholder="6" inputMode="numeric"/><small>in</small></label></div></div>}
-            <label className="bmi-field"><span>Weight <small>({unit === "metric" ? "kg" : "lb"})</small></span><div className="bmi-input-wrap"><Scale/><input type="number" min="1" step="0.1" value={weight} onChange={(e)=>{setWeight(e.target.value);setResult(false);}} placeholder={unit==="metric"?"e.g. 70":"e.g. 154"} inputMode="decimal"/></div></label>
-            <label className="bmi-field"><span>Waist circumference <small>({unit === "metric" ? "cm" : "in"}) · optional</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="1" step="0.1" value={waist} onChange={(e)=>{setWaist(e.target.value);setResult(false);}} placeholder={unit==="metric"?"e.g. 85":"e.g. 33.5"} inputMode="decimal"/></div></label>
+            <label className="bmi-field"><span>Weight <small>(kg)</small></span><div className="bmi-input-wrap"><Scale/><input type="number" min="1" step="0.1" value={weight} onChange={(e)=>{setWeight(e.target.value);setResult(false);}} placeholder="e.g. 70" inputMode="decimal"/></div></label>
+            <label className="bmi-field"><span>Waist circumference <small>(cm) · optional</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="1" step="0.1" value={waist} onChange={(e)=>{setWaist(e.target.value);setResult(false);}} placeholder="e.g. 85" inputMode="decimal"/></div></label>
           </div>
           <button type="button" className="bmi-calculate" onClick={calculate} disabled={!valid}><Calculator/> Calculate BMI <ArrowRight/></button>
           {!valid && <p className="bmi-validation" role="status">Please enter a valid age (5–120), height and weight.</p>}
