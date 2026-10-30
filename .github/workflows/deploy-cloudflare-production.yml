@@ -214,8 +214,10 @@ jobs:
           # large SSR page after deploy can overload Workers and create false failures.
           check_url "https://physionexusacademy.com/case-lab/research/chronic-post-surgical-low-back-pain" "Limitations — what this case cannot tell us"
           check_url "https://physionexusacademy.com/clinical-arena" "Preparing your clinical challenge"
-          check_url "https://physionexusacademy.com/msk-injuries" 'data-pna-msk-story-library="v1"'
-          check_url "https://physionexusacademy.com/msk-injuries/rotator-cuff-tendinopathy" 'data-pna-msk-story="cinematic-v1"'
+          check_url "https://physionexusacademy.com/msk-injuries" "PNA MSK Clinical Library"
+          # The hub is a condition index; story and anatomy visuals are verified on routes that actually render them.
+          check_url "https://physionexusacademy.com/msk-injuries/lateral-ankle-sprain" 'data-pna-msk-story="cinematic-v1"'
+          check_url "https://physionexusacademy.com/msk-injuries/mechanical-neck-pain" "PNA Condition Visual"
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-library="unified-35-v1"'
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-editorial-design="anatomy-luxe-v1"'
           check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="clinical-story-v3"'
