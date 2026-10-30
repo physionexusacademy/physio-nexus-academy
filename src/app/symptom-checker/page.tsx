@@ -15,6 +15,20 @@ export const metadata: Metadata = {
   title: "MSK Symptom Checker | Musculoskeletal Screening",
   description:
     "Use the Physio Nexus Academy musculoskeletal symptom checker to screen common neck, shoulder, back, hip, knee, ankle and other MSK symptom patterns and decide the next step.",
+  openGraph: {
+    title: "MSK Symptom Checker | Physio Nexus Academy",
+    description: "Safety-first screening of common musculoskeletal symptom patterns with guidance on appropriate next steps.",
+    url: "https://physionexusacademy.com/symptom-checker",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    images: [{ url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg", width: 1200, height: 630, alt: "PNA MSK Symptom Checker" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MSK Symptom Checker | Physio Nexus Academy",
+    description: "Safety-first screening of common musculoskeletal symptom patterns with guidance on appropriate next steps.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
   alternates: {
     canonical: "https://physionexusacademy.com/symptom-checker",
   },
