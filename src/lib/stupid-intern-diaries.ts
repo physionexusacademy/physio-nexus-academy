@@ -12,6 +12,98 @@ export type StupidInternEpisode = {
 
 export const stupidInternEpisodes: StupidInternEpisode[] = ([
   {
+    id: 20,
+    title: "The Discharge Magician",
+    field: "Patient Education and Rehabilitation",
+    date: "2026-10-30",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Did you teach the patient their home exercise programme before discharge?" },
+      { speaker: "Intern", text: "Yes, Sir. I gave them a five-page exercise sheet." },
+      { speaker: "Dr. Sajjad", text: "Did they understand how to perform the exercises?" },
+      { speaker: "Intern", text: "Sir, I explained everything very quickly. They nodded throughout." },
+      { speaker: "Dr. Sajjad", text: "Did you ask them to demonstrate any exercise?" },
+      { speaker: "Intern", text: "No, Sir. They looked confident." },
+      { speaker: "Dr. Sajjad", text: "Did you check whether they understood the dosage, precautions or when to stop?" },
+      { speaker: "Intern", text: "No, Sir. But they said thank you!" },
+      { speaker: "Dr. Sajjad", text: "Even the printer gets a thank you when it produces five pages! That doesn't mean it has educated the patient." },
+      { speaker: "Intern", text: "So what should I do?" },
+      { speaker: "Dr. Sajjad", text: "Demonstrate, explain in understandable language, ask the patient to demonstrate it back, correct mistakes and confirm they understand the home programme. A discharge sheet is not a substitute for learning." }
+    ],
+    lesson: "Patient education should be individualized and understandable. Use demonstration, teach-back and return demonstration to confirm understanding of exercise technique, dosage, precautions and progression. Adapt instructions to the patient's health literacy and functional abilities."
+  },
+  {
+    id: 19,
+    title: "The Electrode Exchange Program",
+    field: "Infection Prevention and Control",
+    date: "2026-10-30",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why are you using the same electrodes for two different patients?" },
+      { speaker: "Intern", text: "Sir, they were still sticky, so I thought they were reusable." },
+      { speaker: "Dr. Sajjad", text: "Did you clean or disinfect them according to the manufacturer's instructions?" },
+      { speaker: "Intern", text: "No, Sir. I just wiped them on the patient's towel." },
+      { speaker: "Dr. Sajjad", text: "Excellent! You've launched an international patient-to-patient sharing programme!" },
+      { speaker: "Intern", text: "But Sir, both patients came for back pain." },
+      { speaker: "Dr. Sajjad", text: "Does having the same diagnosis give them the same microorganisms too? Follow infection-control procedures, manufacturer instructions and your clinic's electrode replacement policy. Patient safety isn't a group project!" }
+    ],
+    lesson: "Electrodes and reusable electrotherapy accessories must be handled according to manufacturer instructions and infection-prevention protocols. Use appropriate patient-specific or disposable accessories where required, and never transfer contaminated equipment between patients."
+  },
+  {
+    id: 18,
+    title: "The Goniometer Magician",
+    field: "Musculoskeletal Assessment",
+    date: "2026-10-30",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "What was the patient's knee flexion today?" },
+      { speaker: "Intern", text: "130 degrees, Sir." },
+      { speaker: "Dr. Sajjad", text: "And last week?" },
+      { speaker: "Intern", text: "90 degrees." },
+      { speaker: "Dr. Sajjad", text: "That's a forty-degree improvement! Show me your measurement." },
+      { speaker: "Intern", text: "Sir, I didn't actually measure it. I just estimated." },
+      { speaker: "Dr. Sajjad", text: "You estimated forty degrees of improvement with your eyes?" },
+      { speaker: "Intern", text: "Yes, Sir. I'm developing clinical intuition." },
+      { speaker: "Dr. Sajjad", text: "That's not clinical intuition. That's a career in fortune-telling! Where was the patient positioned? What were your landmarks? Did you use the same measurement method?" },
+      { speaker: "Intern", text: "I thought numbers were just numbers, Sir." },
+      { speaker: "Dr. Sajjad", text: "And I thought you were a physiotherapy intern, not a mathematics magician!" }
+    ],
+    lesson: "Accurate ROM measurement requires standardized positioning, anatomical landmarks, correct goniometer alignment and consistent measurement procedures. Document the method and compare measurements cautiously. Never invent or estimate improvement without assessment."
+  },
+  {
+    id: 17,
+    title: "The Ice-Pack Time Traveller",
+    field: "Musculoskeletal Rehabilitation",
+    date: "2026-10-30",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "How long did you apply the ice pack?" },
+      { speaker: "Intern", text: "Sir, just 45 minutes." },
+      { speaker: "Dr. Sajjad", text: "FORTY-FIVE MINUTES?" },
+      { speaker: "Intern", text: "Yes, Sir. The patient said it was getting numb, so I thought the treatment was working." },
+      { speaker: "Dr. Sajjad", text: "And did you check the skin?" },
+      { speaker: "Intern", text: "No, Sir. I thought ice doesn't need monitoring because it's already cold." },
+      { speaker: "Dr. Sajjad", text: "Wonderful! You've discovered a new treatment technique: turning cryotherapy into cryogenic punishment." },
+      { speaker: "Intern", text: "So should I use more ice next time?" },
+      { speaker: "Dr. Sajjad", text: "Next time, use your brain first. Check skin condition, sensation, circulation and contraindications. Use an appropriate duration and protective barrier according to the modality protocol. Stop immediately if there are concerning skin changes or excessive discomfort." }
+    ],
+    lesson: "Cryotherapy requires appropriate screening, skin protection, monitoring and dosage. Excessive exposure can cause cold injury, particularly in patients with impaired sensation or circulation."
+  },
+  {
+    id: 16,
+    title: "The Blood Pressure Blind Spot",
+    field: "Cardiopulmonary Physiotherapy",
+    date: "2026-10-30",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why hasn't the patient started their exercise session?" },
+      { speaker: "Intern", text: "Sir, they said they were feeling a little uncomfortable, but I was ready with the treadmill." },
+      { speaker: "Dr. Sajjad", text: "Did you check their blood pressure?" },
+      { speaker: "Intern", text: "Yes, Sir. It was 190/110." },
+      { speaker: "Dr. Sajjad", text: "And what did you do?" },
+      { speaker: "Intern", text: "I thought a little walking would improve circulation, Sir." },
+      { speaker: "Dr. Sajjad", text: "YOU THOUGHT WALKING WOULD FIX 190/110? Did you mistake a physiotherapy clinic for a pressure cooker testing laboratory?" },
+      { speaker: "Intern", text: "So should I reduce the treadmill speed?" },
+      { speaker: "Dr. Sajjad", text: "Reduce your confidence first! Stop the session, reassess appropriately, check symptoms and arrange prompt medical evaluation. If there are symptoms suggesting acute target-organ injury, activate emergency care. We don't negotiate with potentially dangerous observations." }
+    ],
+    lesson: "A markedly elevated blood pressure reading requires appropriate reassessment and clinical decision-making before exercise. Consider symptoms, repeat measurements using correct technique, follow institutional escalation protocols, and never proceed with routine exercise when a potentially unsafe cardiovascular status has not been evaluated."
+  },
+  {
     id: 5,
     title: "The Pacemaker Special",
     field: "Cardiopulmonary",
