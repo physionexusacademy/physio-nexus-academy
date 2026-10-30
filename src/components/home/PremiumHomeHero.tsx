@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import Image from "next/image";
 import {
   ArrowRight,
+  Activity,
   BookOpen,
   BrainCircuit,
   CalendarDays,
@@ -35,6 +36,7 @@ const destinations = [
   { title: "Research Support", description: "Evidence and academic learning", href: "/research", icon: FlaskConical },
   { title: "Books & Resources", description: "Learning material and clinical books", href: "/resources", icon: BookOpen },
   { title: "MSK Symptom Checker", description: "Screen possible musculoskeletal symptom patterns", href: "/symptom-checker", icon: Stethoscope },
+  { title: "BMI Calculator", description: "Calculate BMI with age-aware interpretation guidance", href: "/health-calculators/bmi", icon: Activity },
   { title: "Patient Care", description: "Appointments and physiotherapy services", href: "/patient-services", icon: HeartPulse },
   { title: "Verify Certificate", description: "Check a PNA verification ID", href: "/verify", icon: FileBadge2 },
   { title: "Book an Appointment", description: "Request a physiotherapy consultation", href: "/appointment", icon: CalendarDays },
