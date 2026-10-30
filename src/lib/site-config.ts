@@ -160,6 +160,7 @@ export const mainNav = [
   { label: "Patient Care", href: "/patient-services" },
   { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
   { label: "Clinical Arena", href: "/clinical-arena" },
+  { label: "Clinical Registry", href: "/clinical-registry" },
   { label: "Manual Therapy", href: "/manual-therapy" },
   { label: "Health Calculators", href: "/health-calculators/bmi" },
   { label: "About PNA", href: "/about" },
