@@ -88,6 +88,8 @@ const aaosQuality = {
   url: "https://www.aaos.org/quality/quality-programs/clinical-practice-guidelines/",
 };
 
+import { expandedMSKConditions } from "@/lib/msk-expanded-conditions";
+
 export const mskConditions: MSKCondition[] = [
   {
     slug: "lateral-ankle-sprain",
@@ -1088,6 +1090,7 @@ export const mskConditions: MSKCondition[] = [
     clinicalPearls: ["Resisted wrist extension + lateral epicondyle pain = classic pattern.", "Treat capacity and load tolerance, not tenderness alone."],
     references: [aaosQuality],
   },
+  ...expandedMSKConditions,
 ];
 
 export const mskRegions = Array.from(new Set(mskConditions.map((item) => item.region)));
