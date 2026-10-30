@@ -12,7 +12,8 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # Pin the deployment runner image to avoid moving ubuntu-latest image transitions.
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
 
     steps:
