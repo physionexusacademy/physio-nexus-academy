@@ -36,6 +36,7 @@ import "./pna-hero.css";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
+import { getLatestEpisode, stupidInternEpisodes } from "@/lib/stupid-intern-diaries";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
 
@@ -136,34 +137,50 @@ export default async function HomePage() {
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
-      <section className="container-content py-8 sm:py-10" aria-labelledby="stupid-intern-feature-title">
-        <a
-          href="/stupid-intern-diaries"
-          className="group relative block overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-slate-50 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-8"
-        >
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-4">
-              <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm">
-                <Laugh className="h-7 w-7" aria-hidden="true" />
-              </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
-                  New · Learn with a laugh
-                </p>
-                <h2 id="stupid-intern-feature-title" className="mt-1 text-2xl font-bold tracking-tight text-navy-800 sm:text-3xl">
-                  Stupid Intern Diaries
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-                  Funny clinic moments, questionable intern decisions, and the clinical lessons you should actually remember.
-                </p>
+      {(() => {
+        const latestEpisode = getLatestEpisode();
+        return (
+          <section className="container-content py-8 sm:py-10" aria-labelledby="stupid-intern-feature-title">
+            <div className="relative overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-slate-50 p-6 shadow-sm sm:p-8">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-4">
+                  <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm">
+                    <Laugh className="h-7 w-7" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
+                        Latest daily episode
+                      </p>
+                      <span className="rounded-full bg-teal-700 px-3 py-1 text-[11px] font-bold text-white">
+                        EP {String(latestEpisode.id).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <h2 id="stupid-intern-feature-title" className="mt-2 text-2xl font-bold tracking-tight text-navy-800 sm:text-3xl">
+                      Stupid Intern Diaries
+                    </h2>
+                    <h3 className="mt-1 text-lg font-bold text-teal-800 sm:text-xl">
+                      {latestEpisode.title}
+                    </h3>
+                    <p className="mt-1 text-xs font-semibold text-slate-500">{latestEpisode.field}</p>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+                      Funny clinic moments, questionable intern decisions, and the clinical lessons you should actually remember.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3 sm:flex-col sm:items-stretch">
+                  <a href={`/stupid-intern-diaries#ep-${latestEpisode.id}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800">
+                    Read EP {String(latestEpisode.id).padStart(2, "0")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                  <a href="/stupid-intern-diaries" className="inline-flex items-center justify-center gap-2 rounded-full border border-teal-200 bg-white px-5 py-3 text-sm font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-50">
+                    All {stupidInternEpisodes.length} episodes <BookOpen className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </div>
               </div>
             </div>
-            <span className="inline-flex items-center justify-center gap-2 self-start rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition group-hover:bg-teal-800 sm:self-center">
-              Explore the Diaries <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </span>
-          </div>
-        </a>
-      </section>
+          </section>
+        );
+      })()}
 
       <section
         data-pna-home-flagship="daily-clinical-challenge-v2"
