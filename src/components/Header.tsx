@@ -9,6 +9,7 @@ import {
   Laugh,
   Calendar,
   Home,
+  ClipboardList,
   Trophy,
   ChevronDown,
   BookOpen,
@@ -194,6 +195,11 @@ export function Header() {
                   label: "Clinical Arena",
                   href: "/clinical-arena",
                   icon: FlaskConical,
+                },
+                {
+                  label: "Clinical Registry",
+                  href: "/clinical-registry",
+                  icon: ClipboardList,
                 },
                 {
                   label: "Stupid Intern Diaries",
