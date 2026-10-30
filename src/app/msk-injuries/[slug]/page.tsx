@@ -197,9 +197,10 @@ export default async function MSKConditionPage({ params }: PageProps) {
           <div className="grid gap-4 p-5 sm:grid-cols-2 sm:p-7 lg:grid-cols-3">
             {visualEntries.map((visual) => {
               const thumbnail =
-                visual.thumbnailPath
+                visual.externalImageUrl ||
+                (visual.thumbnailPath
                   ? getCloudinaryUrl(visual.thumbnailPath, { width: 560, quality: 78, format: "auto", crop: visual.crop })
-                  : "";
+                  : "");
               return (
                 <a
                   key={visual.slug}
