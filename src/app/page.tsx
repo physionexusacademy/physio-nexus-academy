@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import {
   ArrowRight,
+  Activity,
   BookOpen,
   BrainCircuit,
   CalendarDays,
@@ -134,6 +135,20 @@ export default async function HomePage() {
   return (
     <>
       <PremiumHomeHero />
+
+      <section className="container-content py-6 sm:py-8" aria-label="PNA health tools">
+        <a href="/health-calculators/bmi" className="group flex flex-col gap-4 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-r from-white via-teal-50/70 to-cyan-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:items-center sm:justify-between sm:p-7">
+          <div className="flex items-center gap-4">
+            <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm"><Activity className="h-7 w-7" aria-hidden="true" /></span>
+            <div>
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-700">PNA Health Tools · New</p>
+              <h2 className="mt-1 text-xl font-bold text-navy-800 sm:text-2xl">BMI Calculator</h2>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Calculate your BMI and understand why age-specific interpretation matters.</p>
+            </div>
+          </div>
+          <span className="inline-flex items-center justify-center gap-2 self-start rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition group-hover:bg-teal-800 sm:self-center">Calculate BMI <ArrowRight className="h-4 w-4" /></span>
+        </a>
+      </section>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
