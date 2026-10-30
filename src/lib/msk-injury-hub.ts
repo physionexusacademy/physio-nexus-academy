@@ -1,3 +1,5 @@
+import { expandedMSKConditions } from "@/lib/msk-expanded-conditions";
+
 export type MSKTest = {
   name: string;
   purpose: string;
@@ -1088,6 +1090,7 @@ export const mskConditions: MSKCondition[] = [
     clinicalPearls: ["Resisted wrist extension + lateral epicondyle pain = classic pattern.", "Treat capacity and load tolerance, not tenderness alone."],
     references: [aaosQuality],
   },
+  ...expandedMSKConditions,
 ];
 
 export const mskRegions = Array.from(new Set(mskConditions.map((item) => item.region)));
