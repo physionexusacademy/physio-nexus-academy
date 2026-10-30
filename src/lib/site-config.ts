@@ -159,6 +159,9 @@ export const mainNav = [
   { label: "Resources", href: "/resources" },
   { label: "Patient Care", href: "/patient-services" },
   { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
+  { label: "Clinical Arena", href: "/clinical-arena" },
+  { label: "Manual Therapy", href: "/manual-therapy" },
+  { label: "About PNA", href: "/about" },
   { label: "Contact", href: "/contact" },
   { label: "Verify Certificate", href: "/verify" },
 ];
