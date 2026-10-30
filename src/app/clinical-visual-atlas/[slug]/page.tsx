@@ -75,7 +75,14 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
       </section>
 
       <section className="mt-7">
-        {item.assetReady && item.comparison ? (
+        {item.assetReady && item.externalImageUrl ? (
+          <div className="overflow-hidden rounded-3xl border border-grey-200 bg-white p-4 sm:p-7">
+            <div className="flex min-h-64 items-center justify-center rounded-2xl bg-grey-50 p-3 sm:min-h-[420px]">
+              <img src={item.externalImageUrl} alt={item.title} loading="eager" decoding="async" referrerPolicy="no-referrer" className="max-h-[680px] w-full object-contain" />
+            </div>
+            {item.imageAttribution ? <p className="mt-3 text-xs leading-5 text-navy-500">Illustration: {item.imageAttribution.source} · <a className="font-semibold text-teal-700 underline" href={item.imageAttribution.sourceUrl} target="_blank" rel="noreferrer">Source</a> · <a className="font-semibold text-teal-700 underline" href={item.imageAttribution.licenseUrl} target="_blank" rel="noreferrer">{item.imageAttribution.license}</a>.</p> : null}
+          </div>
+        ) : item.assetReady && item.comparison ? (
           <ComparisonSlider
             beforePath={item.comparison.beforePath}
             afterPath={item.comparison.afterPath}
