@@ -40,6 +40,8 @@ export type ClinicalVisualEntry = {
   summary: string;
   learningPoints: string[];
   imagePath?: string;
+  externalImageUrl?: string;
+  imageAttribution?: { source: string; sourceUrl: string; license: string; licenseUrl: string };
   thumbnailPath?: string;
   crop?: { x: number; y: number; width: number; height: number };
   assetReady: boolean;
@@ -593,6 +595,96 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
       { label: "Clinical Case Lab", href: "/case-lab" },
     ],
   },
+  {
+    slug: "neck-anatomy-reference", title: "Neck Anatomy Reference", shortTitle: "Neck Anatomy",
+    region: "Head & Neck", category: "Anatomy", summary: "Neck anatomy illustration for regional orientation. Not a depiction of whiplash or a specific cervical lesion.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Neck_anatomy.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["mechanical-neck-pain","whiplash-associated-disorder"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "lumbar-spine-reference", title: "Healthy Spine Reference", shortTitle: "Spine Anatomy",
+    region: "Spine", category: "Anatomy", summary: "Healthy spine illustration for basic vertebral and disc orientation; it does not depict a patient's pain generator.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Healthy_spine.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["non-specific-low-back-pain","lumbar-radiculopathy","thoracic-spine-pain"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "shoulder-anatomy-reference", title: "Shoulder Anatomy Reference", shortTitle: "Shoulder Anatomy",
+    region: "Shoulder", category: "Anatomy", summary: "Shoulder illustration for orientation of the joint and surrounding structures.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Shoulder_anatomy.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["adhesive-capsulitis","acromioclavicular-joint-injury","long-head-biceps-tendinopathy"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "elbow-anatomy-reference", title: "Elbow Anatomy Reference", shortTitle: "Elbow Anatomy",
+    region: "Elbow & Forearm", category: "Anatomy", summary: "Regional elbow anatomy illustration; it is not a specific medial epicondylalgia lesion image.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Elbow_Anatomy.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["medial-epicondylalgia"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "wrist-hand-reference", title: "Wrist and Hand Reference", shortTitle: "Wrist / Hand",
+    region: "Wrist & Hand", category: "Anatomy", summary: "Regional wrist illustration for orientation; it does not depict trigger finger or a specific tendon lesion.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Wrist_pain.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["de-quervain-tenosynovitis","trigger-finger"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "hip-groin-reference", title: "Hip and Groin Reference", shortTitle: "Hip / Groin",
+    region: "Hip & Groin", category: "Anatomy", summary: "Hip and groin illustration for regional orientation and surface anatomy.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Hip_and_groin_pain.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["greater-trochanteric-pain-syndrome","gluteal-tendinopathy","adductor-related-groin-pain"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "knee-anatomy-reference", title: "Knee Anatomy Reference", shortTitle: "Knee Anatomy",
+    region: "Knee", category: "Anatomy", summary: "Knee anatomy and ligament overview for orientation; not a standalone diagnostic image.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Knee_injuries.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["patellofemoral-pain","patellar-tendinopathy","pcl-injury","mcl-injury"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "plantar-foot-reference", title: "Plantar Foot Reference", shortTitle: "Plantar Fascia",
+    region: "Ankle & Foot", category: "Anatomy", summary: "Plantar fascia illustration for heel-region anatomical orientation.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Plantar_fascia.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["plantar-heel-pain","posterior-tibial-tendon-dysfunction"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "achilles-reference", title: "Achilles Tendon Reference", shortTitle: "Achilles Tendon",
+    region: "Ankle & Foot", category: "Anatomy", summary: "Achilles tendon region illustration; not a definitive depiction of tendinopathy severity.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Achilles_tendonitis.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["achilles-tendinopathy"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  },
+  {
+    slug: "shin-reference", title: "Shin Region Reference", shortTitle: "Shin Region",
+    region: "Ankle & Foot", category: "Anatomy", summary: "Shin pain illustration used for regional orientation, not as proof of bone stress injury.",
+    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    externalImageUrl: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Shin_splints.svg",
+    imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
+    assetReady: true, conditionSlugs: ["tibial-stress-injury"],
+    relatedLinks: [{ label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" }],
+  }
 ];
 
 export const atlasCategories: AtlasCategory[] = [
