@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { mskCategories, mskConditionIndex, mskRegions } from "@/lib/msk-injury-index";
+import { mskSpecialTests } from "@/lib/msk-special-tests";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
 export const dynamic = "force-static";
@@ -87,7 +88,7 @@ export default function MSKInjuryHubPage() {
         <div className="max-w-2xl">
           <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Practical Examination Skills</p>
           <h2 className="mt-2 text-xl font-bold text-navy-900">MSK Special Tests Library</h2>
-          <p className="mt-2 text-sm leading-6 text-navy-600">84 tests with exact patient setup, step-by-step applying method, positive signs and clinical purpose.</p>
+          <p className="mt-2 text-sm leading-6 text-navy-600">{mskSpecialTests.length} tests with exact patient setup, step-by-step applying method, positive signs and clinical purpose.</p>
         </div>
         <a href="/msk-special-tests" className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800">Explore Special Tests <ArrowRight className="h-4 w-4"/></a>
       </section>
