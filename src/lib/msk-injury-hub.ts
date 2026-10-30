@@ -1,3 +1,5 @@
+import { expandedMSKConditions } from "@/lib/msk-expanded-conditions";
+
 export type MSKTest = {
   name: string;
   purpose: string;
@@ -87,8 +89,6 @@ const aaosQuality = {
   title: "AAOS Clinical Practice Guidelines",
   url: "https://www.aaos.org/quality/quality-programs/clinical-practice-guidelines/",
 };
-
-import { expandedMSKConditions } from "@/lib/msk-expanded-conditions";
 
 export const mskConditions: MSKCondition[] = [
   {
