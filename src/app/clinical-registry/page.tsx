@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ClinicalRegistryClient } from "./ClinicalRegistryClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "PNA Clinical Registry",
   description:
