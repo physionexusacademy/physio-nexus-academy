@@ -1,4 +1,4 @@
-import { expandedMSKConditions } from "@/lib/msk-expanded-conditions";
+import { expandedMSKConditions } from "./msk-expanded-conditions";
 
 export type MSKTest = {
   name: string;
