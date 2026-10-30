@@ -1,4 +1,4 @@
-import type { MSKCondition } from "@/lib/msk-injury-hub";
+import type { MSKCondition } from "./msk-injury-hub.ts";
 
 type GuideSeed = {
   slug: string; name: string; region: string; category: string;
