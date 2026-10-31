@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(10);
+select plan(14);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -75,6 +75,57 @@ select is((select count(*)::int from clinical_private.audit_events
   where actor_id = '10000000-0000-4000-8000-000000000001'
     and entity_table = 'patients'), 1,
   'authenticated patient change creates an audit event');
+
+update clinical_private.clinical_reports
+set status = 'final', finalised_at = now()
+where id = '30000000-0000-4000-8000-000000000001';
+
+insert into clinical_private.case_library_entries (
+  owner_id, report_id, patient_id, publication_consent_event_id,
+  case_title, condition_label, age_band, clinical_context,
+  intervention_summary, outcome_summary, evidence_reference,
+  deidentified_confirmed
+) values (
+  '10000000-0000-4000-8000-000000000001',
+  '30000000-0000-4000-8000-000000000001',
+  '20000000-0000-4000-8000-000000000001',
+  (select id from clinical_private.patient_consent_events
+   where patient_id = '20000000-0000-4000-8000-000000000001'
+     and purpose = 'public_case_publication'
+   order by captured_at desc limit 1),
+  'Synthetic shoulder rehabilitation case',
+  'Shoulder pain','30-44',
+  'Synthetic de-identified clinical context with no direct identifiers.',
+  'Synthetic intervention summary describing a staged rehabilitation plan.',
+  'Synthetic outcome summary describing measurable functional improvement.',
+  'https://example.invalid/evidence', true
+);
+
+select ok(clinical_api.submit_case_for_review(
+  (select id from clinical_private.case_library_entries
+   where case_title = 'Synthetic shoulder rehabilitation case')
+), 'owner can submit a de-identified case draft');
+
+select throws_ok(
+  $select clinical_api.review_case_submission(
+    (select id from clinical_private.case_library_entries
+     where case_title = 'Synthetic shoulder rehabilitation case'),
+    'approved', null)$,
+  '42501', null, 'ordinary therapist cannot approve a case');
+
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+select ok(clinical_api.review_case_submission(
+  (select id from clinical_private.case_library_entries
+   where case_title = 'Synthetic shoulder rehabilitation case'),
+  'approved', 'Synthetic reviewer check'
+), 'trusted reviewer can approve submitted case');
+select ok(clinical_api.publish_approved_case(
+  (select id from clinical_private.case_library_entries
+   where case_title = 'Synthetic shoulder rehabilitation case')
+), 'trusted reviewer can publish approved case');
+select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 1,
+  'published de-identified case appears in public read surface');
 
 select clinical_api.record_patient_consent(
   '20000000-0000-4000-8000-000000000001',
