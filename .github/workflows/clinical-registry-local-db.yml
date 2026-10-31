@@ -14,6 +14,8 @@ jobs:
   private-schema-rls:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      REGISTRY_TEST_DIR: /tmp/clinical-registry-supabase
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -23,29 +25,46 @@ jobs:
         with:
           version: 2.122.0
 
-      - name: Initialise temporary local Supabase workspace
-        run: supabase init
-
-      - name: Start disposable local Supabase stack
-        run: supabase start -x studio,imgproxy,logflare,vector
-
-      - name: Apply prototype schema and RPCs to local database
+      # Keep the local Supabase config outside the repository. Running
+      # "supabase start" from the repository root would replay every PNA
+      # migration, including unrelated/incomplete website migrations.
+      - name: Initialise isolated Registry test workspace
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p "$REGISTRY_TEST_DIR"
+          cd "$REGISTRY_TEST_DIR"
+          supabase init
+
+      - name: Start disposable local Supabase stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
+          supabase start -x studio,imgproxy,logflare,vector
+
+      - name: Apply Registry prototype schema and RPCs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 \
-            -f supabase/clinical-registry/private-schema.prototype.sql \
-            -f supabase/clinical-registry/api-functions.prototype.sql
+            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.prototype.sql" \
+            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/api-functions.prototype.sql"
 
       - name: Run synthetic RLS isolation tests
         shell: bash
         run: |
           set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 \
-            -f supabase/clinical-registry/private-schema.rls.test.sql
+            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.rls.test.sql"
 
       - name: Stop local Supabase stack
         if: always()
-        run: supabase stop --no-backup
+        shell: bash
+        run: |
+          cd "$REGISTRY_TEST_DIR"
+          supabase stop --no-backup
