@@ -221,7 +221,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = ''
-as $function$
+as $
 begin
   if (select auth.uid()) is null then
     raise exception 'Authentication required' using errcode = '42501';
