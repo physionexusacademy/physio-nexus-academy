@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(8);
+select plan(10);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -40,6 +40,14 @@ values
   ('20000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000002','TEST-B-001','Synthetic Patient B')
 on conflict (id) do nothing;
 
+insert into clinical_private.patient_consent_events
+  (patient_id, owner_id, purpose, consent_status, consent_version, capture_method)
+values
+  ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','clinical_care','granted','test-v1','written'),
+  ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','public_case_publication','granted','test-public-v1','written'),
+  ('20000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000002','clinical_care','granted','test-v1','written')
+on conflict (id) do nothing;
+
 insert into clinical_private.clinical_reports
   (id, patient_id, owner_id, category, condition)
 values
@@ -59,6 +67,25 @@ select is((select count(*)::int from clinical_private.patients), 1,
   'therapist A reads only their own patient');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
+
+update clinical_private.patients
+set display_name = 'Synthetic Patient A corrected'
+where id = '20000000-0000-4000-8000-000000000001';
+select is((select count(*)::int from clinical_private.audit_events
+  where actor_id = '10000000-0000-4000-8000-000000000001'
+    and entity_table = 'patients'), 1,
+  'authenticated patient change creates an audit event');
+
+select clinical_api.record_patient_consent(
+  '20000000-0000-4000-8000-000000000001',
+  'clinical_care','withdrawn','test-v1','written',null
+);
+select throws_ok(
+  $insert into clinical_private.clinical_reports
+    (patient_id, owner_id, category, condition)
+    values ('20000000-0000-4000-8000-000000000001',
+      '10000000-0000-4000-8000-000000000001','Musculoskeletal','Consent withdrawn')$,
+  '42501', null, 'withdrawn care consent blocks new report creation');
 select is((select count(*)::int from clinical_private.patients
   where id = '20000000-0000-4000-8000-000000000002'), 0,
   'therapist A cannot read therapist B patient');
