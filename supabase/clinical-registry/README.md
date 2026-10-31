@@ -16,16 +16,24 @@
 - Clinical record changes create append-only audit events containing changed column names only (not clinical values).
 - Correction requests are append-only and validate that the requested target belongs to the therapist's patient/report.
 - A de-identified Case Library supports draft, submission, reviewer approval/rejection, publication and owner withdrawal. Public reads use a fixed-field RPC and are suppressed after publication consent is withdrawn.
+- The Registry page has a separate browser client that reads only `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY`; it never falls back to the PNA website Supabase credentials.
+- The initial application UI supports therapist sign-in/sign-up, pending-verification state, owner-scoped patient/report lists, consent capture, assessment/follow-up/intervention/outcome entry, report finalisation, print and owner-scoped JSON export.
 - Retention rules are inactive by default; a service-role-only candidate query supports review without automatic deletion.
 
 ## Remaining release gates
-1. Generate and commit real migration file(s) with the installed Supabase CLI. Do not rename prototype files into the migrations folder by hand.
-2. Complete local CI, backup/restore verification and Supabase Advisors against the isolated Registry project.
-3. Configure only the clinical_api schema in the separate Registry project's Data API settings. Never expose clinical_private.
-4. Implement a trusted operator workflow for therapist verification and reviewer app_metadata assignment; do not let users self-verify.
-5. Have the institution/ethics committee and local counsel approve consent language, retention periods, correction handling, export, backup retention and breach response. No retention rule is active by default and no automatic deletion is implemented.
-6. Add operational backup/restore and export runbooks for the separately hosted project; CI can validate a disposable local backup but cannot establish provider backup coverage.
-7. Integrate the website only after the above gates, local security tests and Supabase Advisors pass.
+1. The CI workflow generates the migration with `supabase migration new`, applies it in a disposable local stack and commits it to the PR branch only after all checks pass. Do not manually rename prototype files into the migrations folder.
+2. Complete the local CI backup/restore test and run Supabase Security and Performance Advisors against the isolated Registry project.
+3. Configure only the `clinical_api` schema in the separate Registry project's Data API settings. Never expose `clinical_private`.
+4. Implement a trusted operator workflow for therapist verification and reviewer `app_metadata` assignment; do not let users self-verify.
+5. Complete the public Case Library frontend, correction-request UI, comprehensive report template/PDF renderer, form validation and accessibility QA.
+6. Have the institution/ethics committee and local counsel approve consent language, retention periods, correction handling, export, backup retention and breach response. No retention rule is active by default and no automatic deletion is implemented.
+7. Add operational backup/restore and export runbooks for the separately hosted project; CI can validate a disposable local backup but cannot establish provider backup coverage.
+8. Provision the separate hosted Registry project only after an exact cost review and explicit user approval. Set the three Registry environment variables below; never reuse the PNA website project credentials.
+
+## Registry-only environment variables
+- `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` — URL of the dedicated Registry Supabase project.
+- `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` — publishable/anon key from that dedicated project.
+- `NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION` — version identifier for the institution-approved consent form. Patient creation is disabled when this is empty.
 
 ## Files
 - private-schema.prototype.sql — private tables, indexes, grants and RLS.
