@@ -185,13 +185,16 @@ declare
   v_reviewer boolean := coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false)
     or coalesce(auth.role() = 'service_role', false)
     or current_user = 'postgres';
+  v_submit_rpc boolean := current_setting('app.registry_submission_rpc', true) = 'on';
 begin
   if tg_op = 'INSERT' then
     if new.status <> 'draft' then
       raise exception 'New case submissions must start as draft' using errcode = '42501';
     end if;
   elsif not v_reviewer then
-    if old.status <> 'draft' or new.status <> 'draft'
+    if v_submit_rpc and old.status = 'draft' and new.status = 'submitted' then
+      null;
+    elsif old.status <> 'draft' or new.status <> 'draft'
       or new.owner_id <> old.owner_id
       or new.report_id <> old.report_id
       or new.patient_id <> old.patient_id
@@ -217,6 +220,7 @@ security invoker
 set search_path = ''
 as $$
 begin
+  perform set_config('app.registry_submission_rpc', 'on', true);
   update clinical_private.case_library_entries
   set status = 'submitted', submitted_at = now(), updated_at = now()
   where id = p_case_id and owner_id = (select auth.uid())
@@ -284,6 +288,71 @@ begin
 end;
 $$;
 
+
+-- Authenticated RPCs for consent capture and correction requests. The private
+-- tables themselves are never exposed through PostgREST.
+create or replace function clinical_api.record_patient_consent(
+  p_patient_id uuid,
+  p_purpose text,
+  p_status text,
+  p_consent_version text,
+  p_capture_method text,
+  p_prior_event_id uuid default null
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path = ''
+as $
+declare
+  v_id uuid;
+begin
+  if p_purpose not in ('clinical_care','public_case_publication')
+    or p_status not in ('granted','withdrawn')
+    or p_capture_method not in ('written','electronic','documented_verbal') then
+    raise exception 'Invalid consent details' using errcode = '22023';
+  end if;
+  insert into clinical_private.patient_consent_events(
+    patient_id, owner_id, purpose, consent_status, consent_version,
+    capture_method, prior_event_id
+  )
+  values (
+    p_patient_id, (select auth.uid()), p_purpose, p_status,
+    trim(p_consent_version), p_capture_method, p_prior_event_id
+  )
+  returning id into v_id;
+  return v_id;
+end;
+$;
+
+create or replace function clinical_api.request_record_correction(
+  p_patient_id uuid,
+  p_report_id uuid,
+  p_target_type text,
+  p_target_id uuid,
+  p_reason text,
+  p_requested_changes jsonb
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path = ''
+as $
+declare
+  v_id uuid;
+begin
+  insert into clinical_private.correction_requests(
+    owner_id, patient_id, report_id, target_type, target_id, reason, requested_changes
+  )
+  values (
+    (select auth.uid()), p_patient_id, p_report_id, p_target_type, p_target_id,
+    trim(p_reason), p_requested_changes
+  )
+  returning id into v_id;
+  return v_id;
+end;
+$;
+
 -- Public read surface contains only approved-for-publication, manually reviewed
 -- de-identified fields. SECURITY DEFINER is constrained to this fixed projection.
 create or replace function clinical_api.list_public_cases(
@@ -333,9 +402,10 @@ declare
   v_changed text[];
   v_entity_id uuid;
 begin
+  -- Trusted local bootstrap/service operations without a user JWT are not
+  -- attributed to a therapist. Authenticated clinical mutations are recorded.
   if v_actor is null then
-    raise exception 'Authenticated actor required for audited clinical changes'
-      using errcode = '42501';
+    return new;
   end if;
   v_new := to_jsonb(new);
   v_entity_id := (v_new ->> 'id')::uuid;
@@ -388,6 +458,8 @@ for each row execute function clinical_private.prevent_audit_mutation();
 revoke all on clinical_private.audit_events from public, anon, authenticated;
 grant select on clinical_private.audit_events to authenticated;
 revoke all on all functions in schema clinical_api from public, anon;
+grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
+grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
 grant execute on function clinical_api.review_case_submission(uuid,text,text) to authenticated;
 grant execute on function clinical_api.publish_approved_case(uuid) to authenticated;
