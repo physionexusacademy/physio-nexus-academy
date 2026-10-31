@@ -13,7 +13,7 @@ const adultBands = [
   { label: "Overweight", range: "25.0–29.9", min: 25, max: 30, tone: "amber" },
   { label: "Obesity class 1", range: "30.0–34.9", min: 30, max: 35, tone: "red" },
   { label: "Obesity class 2", range: "35.0–39.9", min: 35, max: 40, tone: "red" },
-  { label: "Obesity class 3", range: "≥ 40.0", min: 40, max: 100, tone: "red" },
+  { label: "Obesity class 3", range: "≥ 40.0", min: 40, max: Number.POSITIVE_INFINITY, tone: "red" },
 ];
 
 export default function BmiCalculatorPage() {
@@ -39,14 +39,23 @@ export default function BmiCalculatorPage() {
     const waistMetres = waistValue / 100;
     const years = Number(age);
     const bmi = kg / (metres * metres);
-    const waistToHeight = waistValue > 0 ? waistMetres / metres : null;
-    return { metres, kg, years, bmi, waistToHeight };
+    const waistToHeight = waist.trim() !== "" && Number.isFinite(waistValue) && waistValue > 0 ? waistMetres / metres : null;
+    return { metres, kg, years, bmi, waistToHeight, waistValue };
   }, [age, height, heightFeet, heightInches, unit, waist, weight]);
 
-  const imperialHeightValid = Number(heightFeet) >= 1 && Number(heightFeet) <= 8 && Number(heightInches) >= 0 && Number(heightInches) < 12;
-  const valid = Number.isFinite(values.bmi) && values.metres >= 0.5 && values.metres <= 2.7 && (unit === "metric" || imperialHeightValid) && values.kg >= 2 && values.kg <= 500 && values.years >= 5 && values.years <= 120;
+  const feet = Number(heightFeet);
+  const inches = Number(heightInches);
+  const ageIsValid = age.trim() !== "" && Number.isFinite(values.years) && Number.isInteger(values.years) && values.years >= 5 && values.years <= 120;
+  const weightIsValid = weight.trim() !== "" && Number.isFinite(values.kg) && values.kg >= 2 && values.kg <= 500;
+  const metricHeightIsValid = height.trim() !== "" && Number.isFinite(Number(height)) && values.metres >= 0.5 && values.metres <= 2.7;
+  const imperialHeightValid = heightFeet.trim() !== "" && heightInches.trim() !== "" &&
+    Number.isInteger(feet) && Number.isInteger(inches) && feet >= 1 && feet <= 8 && inches >= 0 && inches < 12 &&
+    values.metres >= 0.5 && values.metres <= 2.7;
+  const waistIsValid = waist.trim() === "" || (Number.isFinite(values.waistValue) && values.waistValue >= 30 && values.waistValue <= 200);
+  const valid = ageIsValid && weightIsValid && (unit === "metric" ? metricHeightIsValid : imperialHeightValid) &&
+    waistIsValid && Number.isFinite(values.bmi) && values.bmi > 0;
   const adult = values.years >= 20;
-  const band = adult ? adultBands.find((item) => values.bmi >= item.min && values.bmi < item.max) ?? adultBands[3] : null;
+  const band = adult ? adultBands.find((item) => values.bmi >= item.min && values.bmi < item.max) ?? null : null;
 
   function calculate() { if (valid) setResult(true); }
 
@@ -82,12 +91,12 @@ export default function BmiCalculatorPage() {
           <div className="bmi-fields">
             <label className="bmi-field"><span>Age <small>(years)</small></span><div className="bmi-input-wrap"><UserRound/><input type="number" min="5" max="120" step="1" value={age} onChange={(e)=>{setAge(e.target.value);setResult(false);}} placeholder="Enter age" inputMode="numeric"/></div></label>
             <fieldset className="bmi-field bmi-sex-field"><legend>Sex <small>(needed for child growth references)</small></legend><div className="bmi-sex-options"><button type="button" className={sex==="female"?"selected":""} onClick={()=>{setSex("female");setResult(false);}}>♀ Female</button><button type="button" className={sex==="male"?"selected":""} onClick={()=>{setSex("male");setResult(false);}}>♂ Male</button></div></fieldset>
-            {unit === "metric" ? <label className="bmi-field"><span>Height <small>(cm)</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="1" step="0.1" value={height} onChange={(e)=>{setHeight(e.target.value);setResult(false);}} placeholder="e.g. 170" inputMode="decimal"/></div></label> : <div className="bmi-field"><span>Height <small>(feet & inches)</small></span><div className="bmi-height-pair"><label className="bmi-input-wrap"><Ruler/><input aria-label="Height in feet" type="number" min="1" max="8" step="1" value={heightFeet} onChange={(e)=>{setHeightFeet(e.target.value);setResult(false);}} placeholder="5" inputMode="numeric"/><small>ft</small></label><label className="bmi-input-wrap"><input aria-label="Additional height in inches" type="number" min="0" max="11" step="1" value={heightInches} onChange={(e)=>{setHeightInches(e.target.value);setResult(false);}} placeholder="6" inputMode="numeric"/><small>in</small></label></div></div>}
-            <label className="bmi-field"><span>Weight <small>(kg)</small></span><div className="bmi-input-wrap"><Scale/><input type="number" min="1" step="0.1" value={weight} onChange={(e)=>{setWeight(e.target.value);setResult(false);}} placeholder="e.g. 70" inputMode="decimal"/></div></label>
-            <label className="bmi-field"><span>Waist circumference <small>(cm) · optional</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="1" step="0.1" value={waist} onChange={(e)=>{setWaist(e.target.value);setResult(false);}} placeholder="e.g. 85" inputMode="decimal"/></div></label>
+            {unit === "metric" ? <label className="bmi-field"><span>Height <small>(cm)</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="50" max="270" step="0.1" value={height} onChange={(e)=>{setHeight(e.target.value);setResult(false);}} placeholder="e.g. 170" inputMode="decimal"/></div></label> : <div className="bmi-field"><span>Height <small>(feet & inches)</small></span><div className="bmi-height-pair"><label className="bmi-input-wrap"><Ruler/><input aria-label="Height in feet" type="number" min="1" max="8" step="1" value={heightFeet} onChange={(e)=>{setHeightFeet(e.target.value);setResult(false);}} placeholder="5" inputMode="numeric"/><small>ft</small></label><label className="bmi-input-wrap"><input aria-label="Additional height in inches" type="number" min="0" max="11" step="1" value={heightInches} onChange={(e)=>{setHeightInches(e.target.value);setResult(false);}} placeholder="6" inputMode="numeric"/><small>in</small></label></div></div>}
+            <label className="bmi-field"><span>Weight <small>(kg)</small></span><div className="bmi-input-wrap"><Scale/><input type="number" min="2" max="500" step="0.1" value={weight} onChange={(e)=>{setWeight(e.target.value);setResult(false);}} placeholder="e.g. 70" inputMode="decimal"/></div></label>
+            <label className="bmi-field"><span>Waist circumference <small>(cm) · optional</small></span><div className="bmi-input-wrap"><Ruler/><input type="number" min="30" max="200" step="0.1" value={waist} onChange={(e)=>{setWaist(e.target.value);setResult(false);}} placeholder="e.g. 85" inputMode="decimal"/></div></label>
           </div>
           <button type="button" className="bmi-calculate" onClick={calculate} disabled={!valid}><Calculator/> Calculate BMI <ArrowRight/></button>
-          {!valid && <p className="bmi-validation" role="status">Please enter a valid age (5–120), height and weight.</p>}
+          {!valid && <p className="bmi-validation" role="status">Check your entries: age must be a whole number (5–120), height 50–270 cm (or 1–8 ft with 0–11 in), weight 2–500 kg, and optional waist 30–200 cm.</p>}
           <p className="bmi-privacy"><ShieldCheck/> Your measurements are calculated in this browser and are not submitted to PNA.</p>
         </div>
 
@@ -95,7 +104,7 @@ export default function BmiCalculatorPage() {
           <div className="bmi-result-top"><span className="bmi-result-kicker">YOUR RESULT</span><span className="bmi-result-chip"><Activity/> BMI screening</span></div>
           {result ? <>
             <div className="bmi-score-row"><div className="bmi-score-ring"><span>BMI</span><strong>{values.bmi.toFixed(1)}</strong><small>kg/m²</small></div><div className="bmi-result-message"><CheckCircle2/><strong>{adult ? band?.label : "Calculation complete"}</strong><p>{adult ? "Your result is shown against standard adult BMI categories." : "Your BMI number is calculated. Age-specific interpretation is needed."}</p></div></div>
-            {adult ? <><div className="bmi-category-title">Adult BMI category</div><div className="bmi-band-list">{adultBands.map((item)=><div key={item.label} className={`bmi-band ${item.tone} ${band?.label===item.label?"current":""}`}><span/><div><strong>{item.label}</strong><small>{item.range}</small></div>{band?.label===item.label&&<CheckCircle2/>}</div>)}</div><p className="bmi-result-note">Adult BMI classification with obesity classes 1–3. BMI is a screening measure, not a diagnosis.</p></> : <div className="bmi-age-notice"><Info/><div><strong>Adult categories do not apply at this age.</strong><p>For ages 5–19, use WHO BMI-for-age references based on exact age and sex. This tool calculates the BMI number but does not calculate WHO z-scores or percentiles, so it does not assign a child weight category.</p></div></div>}{values.waistToHeight !== null && values.waistToHeight >= 0.2 && values.waistToHeight <= 1.5 && <div className="bmi-waist-result"><div><strong>Waist-to-height ratio</strong><b>{values.waistToHeight.toFixed(2)}</b></div><p>{values.waistToHeight < 0.5 ? "Below 0.5: generally the lower-risk central adiposity range." : values.waistToHeight < 0.6 ? "0.5–0.59: increased central adiposity; consider clinical risk assessment." : "0.6 or above: high central adiposity; consider a clinical assessment."}</p><small>For BMI below 35, NICE recommends using this alongside BMI. It complements, but does not replace, clinical assessment.</small></div>}
+            {adult ? <><div className="bmi-category-title">Adult BMI category</div><div className="bmi-band-list">{adultBands.map((item)=><div key={item.label} className={`bmi-band ${item.tone} ${band?.label===item.label?"current":""}`}><span/><div><strong>{item.label}</strong><small>{item.range}</small></div>{band?.label===item.label&&<CheckCircle2/>}</div>)}</div><p className="bmi-result-note">Adult BMI classification with obesity classes 1–3. BMI is a screening measure, not a diagnosis.</p></> : <div className="bmi-age-notice"><Info/><div><strong>Adult categories do not apply at this age.</strong><p>For ages 5–19, WHO BMI-for-age interpretation requires sex and exact age (usually in months). This tool calculates the BMI number but does not calculate WHO z-scores or percentiles, so it does not assign a child weight category.</p></div></div>}{adult && values.bmi < 35 && values.waistToHeight !== null && values.waistToHeight >= 0.4 && values.waistToHeight <= 1 && <div className="bmi-waist-result"><div><strong>Waist-to-height ratio</strong><b>{values.waistToHeight.toFixed(2)}</b></div><p>{values.waistToHeight < 0.5 ? "Below 0.5: generally the lower-risk central adiposity range." : values.waistToHeight < 0.6 ? "0.5–0.59: increased central adiposity; consider clinical risk assessment." : "0.6 or above: high central adiposity; consider a clinical assessment."}</p><small>For BMI below 35, NICE recommends using this alongside BMI. It complements, but does not replace, clinical assessment.</small></div>}
           </> : <div className="bmi-empty-result"><div className="bmi-empty-icon"><Activity/></div><h3>Your result will appear here</h3><p>Enter your age, height and weight, then calculate to see your BMI and the appropriate interpretation guidance.</p><div className="bmi-empty-steps"><span><i>1</i> Add measurements</span><span><i>2</i> Calculate</span><span><i>3</i> Read guidance</span></div></div>}
           <div className="bmi-result-foot"><Info/><span>BMI does not directly measure body fat or distinguish fat mass from muscle mass.</span></div>
         </div>
@@ -105,7 +114,7 @@ export default function BmiCalculatorPage() {
         <div className="bmi-learning-intro"><span className="bmi-eyebrow">KNOW WHAT THE NUMBER MEANS</span><h2>BMI is a starting point, <span>not the whole picture.</span></h2><p>Use BMI as one screening measure alongside health history, waist measurement, physical activity and an appropriate clinical assessment.</p></div>
         <div className="bmi-info-grid">
           <article className="bmi-info-card"><span className="bmi-info-icon"><Calculator/></span><h3>The BMI formula</h3><div className="bmi-formula">Weight (kg) <b>÷</b> Height (m)²</div><p>The same calculation gives a BMI number at any age; the way that number is interpreted depends on age.</p></article>
-          <article className="bmi-info-card"><span className="bmi-info-icon"><UserRound/></span><h3>Age matters</h3><p>For adults aged 20+, adult BMI categories are used. For ages 5–19, WHO BMI-for-age charts require exact age and sex; this tool does not yet calculate child z-scores or percentiles.</p></article>
+          <article className="bmi-info-card"><span className="bmi-info-icon"><UserRound/></span><h3>Age matters</h3><p>For adults aged 20+, adult BMI categories are used. For ages 5–19, WHO BMI-for-age charts require sex and exact age (usually in months); this tool does not yet calculate child z-scores or percentiles.</p></article>
           <article className="bmi-info-card"><span className="bmi-info-icon"><ShieldCheck/></span><h3>Important limitations</h3><p>BMI is not a direct measure of body fat. Muscular individuals, athletes, older adults and people with certain conditions may need a broader assessment.</p></article>
         </div>
         <div className="bmi-adult-table"><div><h3>Adult BMI categories</h3><p>For adults aged 20 years and over</p></div><div className="bmi-table-rows">{adultBands.map((item)=><div key={item.label}><span className={`bmi-table-dot ${item.tone}`}/><strong>{item.label}</strong><span>{item.range}</span></div>)}</div><small>Classification shown for general adult screening; individual clinical interpretation may vary.</small></div>
