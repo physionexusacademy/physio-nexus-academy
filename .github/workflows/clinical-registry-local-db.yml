@@ -63,6 +63,23 @@ jobs:
           psql "$DB_URL" -v ON_ERROR_STOP=1 \
             -f "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.rls.test.sql"
 
+      - name: Verify disposable Registry backup and restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
+          eval "$(supabase status -o env)"
+          pg_dump "$DB_URL" --format=custom --no-owner --no-privileges \\
+            --schema=clinical_private --schema=clinical_api \\
+            --file=/tmp/clinical-registry-backup.dump
+          pg_restore --list /tmp/clinical-registry-backup.dump >/dev/null
+          # Restore only into this disposable CI database, never a hosted project.
+          pg_restore --clean --if-exists --no-owner --no-privileges \\
+            --dbname "$DB_URL" /tmp/clinical-registry-backup.dump
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -Atc \\
+            "select case when to_regclass('clinical_private.patient_consent_events') is not null and to_regclass('clinical_private.audit_events') is not null and to_regclass('clinical_private.case_library_entries') is not null then 'restore-ok' else 1/0::text end" \\
+            | grep -qx 'restore-ok'
+
       - name: Stop local Supabase stack
         if: always()
         shell: bash
