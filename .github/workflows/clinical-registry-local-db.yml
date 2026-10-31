@@ -5,6 +5,8 @@ on:
     paths:
       - "supabase/clinical-registry/**"
       - ".github/workflows/clinical-registry-local-db.yml"
+      - "src/app/clinical-registry/**"
+      - "src/lib/clinical-registry/**"
   workflow_dispatch:
 
 permissions:
@@ -26,6 +28,18 @@ jobs:
         uses: supabase/setup-cli@v1
         with:
           version: 2.122.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install website dependencies
+        run: npm ci
+
+      - name: Type-check website and Registry integration
+        run: npm run typecheck
 
       # Keep the local Supabase config outside the repository to avoid replaying PNA migrations.
       - name: Initialise isolated Registry test workspace
