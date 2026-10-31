@@ -325,6 +325,149 @@ begin
 end;
 $$;
 
+
+-- Owner-scoped editing and export RPCs. Private tables remain outside the
+-- PostgREST exposed-schema list; these functions are the application boundary.
+create or replace function clinical_api.update_patient(
+  p_patient_id uuid, p_patient_reference text, p_display_name text
+)
+returns boolean
+language plpgsql
+security invoker
+set search_path = ''
+as $update_patient$
+begin
+  update clinical_private.patients
+  set patient_reference = trim(p_patient_reference),
+      display_name = trim(p_display_name),
+      updated_at = now()
+  where id = p_patient_id and owner_id = (select auth.uid())
+    and archived_at is null;
+  return found;
+end;
+$update_patient$;
+
+create or replace function clinical_api.update_report_details(
+  p_report_id uuid,
+  p_category text,
+  p_condition text,
+  p_clinical_summary text,
+  p_discharge_status text,
+  p_recommendations text[]
+)
+returns boolean
+language plpgsql
+security invoker
+set search_path = ''
+as $update_report$
+begin
+  update clinical_private.clinical_reports
+  set category = trim(p_category),
+      condition = trim(p_condition),
+      clinical_summary = nullif(trim(p_clinical_summary), ''),
+      discharge_status = nullif(trim(p_discharge_status), ''),
+      recommendations = coalesce(p_recommendations, '{}'::text[]),
+      updated_at = now()
+  where id = p_report_id and owner_id = (select auth.uid())
+    and status = 'draft' and archived_at is null;
+  return found;
+end;
+$update_report$;
+
+create or replace function clinical_api.update_intervention(
+  p_intervention_id uuid,
+  p_intervention text,
+  p_body_region text default null,
+  p_technique_or_parameters text default null,
+  p_dosage text default null,
+  p_response text default null,
+  p_home_advice text default null,
+  p_intervention_date date default current_date
+)
+returns boolean
+language plpgsql
+security invoker
+set search_path = ''
+as $update_intervention$
+begin
+  update clinical_private.clinical_interventions i
+  set intervention = trim(p_intervention),
+      body_region = p_body_region,
+      technique_or_parameters = p_technique_or_parameters,
+      dosage = p_dosage,
+      response = p_response,
+      home_advice = p_home_advice,
+      intervention_date = p_intervention_date,
+      updated_at = now()
+  where i.id = p_intervention_id
+    and exists (select 1 from clinical_private.clinical_reports r
+      where r.id = i.report_id and r.owner_id = (select auth.uid())
+        and r.status = 'draft' and r.archived_at is null);
+  return found;
+end;
+$update_intervention$;
+
+create or replace function clinical_api.update_outcome(
+  p_outcome_id uuid,
+  p_measure_code text,
+  p_measure_name text,
+  p_value numeric,
+  p_direction text,
+  p_unit text default null,
+  p_scale_minimum numeric default null,
+  p_scale_maximum numeric default null,
+  p_measured_at date default current_date
+)
+returns boolean
+language plpgsql
+security invoker
+set search_path = ''
+as $update_outcome$
+begin
+  update clinical_private.clinical_outcomes o
+  set measure_code = trim(p_measure_code),
+      measure_name = trim(p_measure_name),
+      value = p_value,
+      direction = p_direction,
+      unit = p_unit,
+      scale_minimum = p_scale_minimum,
+      scale_maximum = p_scale_maximum,
+      measured_at = p_measured_at
+  where o.id = p_outcome_id
+    and exists (select 1 from clinical_private.clinical_reports r
+      where r.id = o.report_id and r.owner_id = (select auth.uid())
+        and r.status = 'draft' and r.archived_at is null);
+  return found;
+end;
+$update_outcome$;
+
+create or replace function clinical_api.export_my_patient_record(p_patient_id uuid)
+returns jsonb
+language sql
+stable
+security invoker
+set search_path = ''
+as $export_patient$
+  select jsonb_build_object(
+    'patient', jsonb_build_object(
+      'id', p.id,
+      'patientReference', p.patient_reference,
+      'displayName', p.display_name,
+      'createdAt', p.created_at,
+      'updatedAt', p.updated_at
+    ),
+    'reports', coalesce((
+      select jsonb_agg(clinical_api.get_my_report(r.id) order by r.assessment_date desc, r.created_at desc)
+      from clinical_private.clinical_reports r
+      where r.patient_id = p.id and r.owner_id = (select auth.uid())
+        and r.archived_at is null
+    ), '[]'::jsonb)
+  )
+  from clinical_private.patients p
+  where p.id = p_patient_id and p.owner_id = (select auth.uid())
+    and p.archived_at is null;
+$export_patient$;
+
 revoke all on all functions in schema clinical_api from public, anon;
 grant execute on all functions in schema clinical_api to authenticated;
 commit;
