@@ -53,8 +53,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$GITHUB_WORKSPACE/supabase/migrations"
-          EXISTING="$(find "$GITHUB_WORKSPACE/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
+          mkdir -p "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations"
+          EXISTING="$(find "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
           if [ -n "$EXISTING" ]; then
             cp "$EXISTING" "$REGISTRY_TEST_DIR/supabase/migrations/"
           else
@@ -140,12 +140,16 @@ jobs:
           git checkout -B "$GITHUB_HEAD_REF" "$REMOTE_HEAD"
           GENERATED="$(find "$REGISTRY_TEST_DIR/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
           test -n "$GENERATED"
-          DEST="$GITHUB_WORKSPACE/supabase/migrations/$(basename "$GENERATED")"
+          DEST="$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations/$(basename "$GENERATED")"
           if [ ! -f "$DEST" ]; then
+            mkdir -p "$(dirname "$DEST")"
             cp "$GENERATED" "$DEST"
+            if [ ! -f "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/config.toml" ]; then
+              cp "$REGISTRY_TEST_DIR/supabase/config.toml" "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/config.toml"
+            fi
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add "supabase/migrations/$(basename "$GENERATED")"
+            git add "supabase/clinical-registry/supabase/migrations/$(basename "$GENERATED")" "supabase/clinical-registry/supabase/config.toml"
             git commit -m "Add CLI-generated Clinical Registry migration"
             git push origin "HEAD:$GITHUB_HEAD_REF"
           fi
