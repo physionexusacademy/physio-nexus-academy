@@ -1,7 +1,7 @@
 # PNA Clinical Registry — Phase 2 Secure Data Architecture
 
 **Status:** Design/staging specification only  
-**Target:** Supabase project `oabckudgmzbbbbhkeolk` (Postgres 17)  
+**Target website project:** `oabckudgmzbbbbhkeolk` (PostgreSQL 17; reference only — no registry workload will be deployed here)  
 **Related foundation:** PR #146 — `feature/clinical-registry-report-foundation`  
 **Phase 2 branch:** `feature/clinical-registry-phase-2-security`
 
@@ -15,15 +15,54 @@
 - Public anonymised case publication is a separate, later workflow requiring explicit consent, de-identification review, and approval.
 - The schema must not be deployed to production until the migration, RLS tests, and application access path have passed review.
 
-## 2. Current environment findings
+## 2. Low-load development and hosting strategy
 
-- The connected Supabase project is active and healthy, running PostgreSQL 17 in `ap-southeast-1`.
+**Core decision: keep the existing PNA website Supabase project out of the registry's runtime path.** The website project is a reference/integration boundary, not the registry database.
+
+### Stage A — zero-hosted-load development (now)
+
+1. Keep schema design, SQL migrations, seed fixtures, RLS tests, and documentation in the GitHub feature branch only.
+2. Run database development locally with Supabase CLI + local Postgres/Docker. Use synthetic fixtures only.
+3. Run automated RLS tests locally against disposable users/teams/patients. Never connect test scripts to the live website project.
+4. Keep the registry UI behind a disabled feature flag until its backend is independently provisioned.
+5. Do not create a hosted Supabase development branch merely for convenience. It adds a separate compute resource and may incur hourly charges.
+
+### Stage B — isolated hosted environment (only when local tests pass)
+
+1. Prefer a **separate Supabase project dedicated to the Clinical Registry**, rather than adding registry tables, queries, storage, or Edge Functions to the current PNA website project.
+2. Use synthetic data only in this isolated project during QA. Keep it in the same suitable region where feasible, but do not assume region selection changes pricing.
+3. Keep registry connection secrets server-side. The public PNA website may call a narrow authenticated backend/API, but it must not receive privileged database credentials.
+4. If a temporary hosted development branch is genuinely needed, first obtain the exact quoted cost and explicit approval. Delete it after testing if it is no longer needed.
+5. A separate registry project is the preferred eventual production boundary too; it prevents registry traffic, storage growth, backups, and database load from competing with the academy website.
+
+### Stage C — controlled integration
+
+- Integrate only through a small, authenticated server-side boundary with strict request validation, rate limits, pagination, and bounded query sizes.
+- Do not run patient-wide scans, unbounded exports, or heavy analytics on the website database.
+- Use indexes that match actual query patterns; review query plans before release.
+- Generate PDFs asynchronously in a dedicated worker/function or server-side job, not in a request that blocks the website.
+- Keep registry file storage in its own private bucket/project, with signed short-lived access and size/type limits.
+- Monitor registry resources independently. Set conservative alerts/quotas and review database, storage, egress, and function usage before expanding.
+- Public Case Lab receives only manually approved, de-identified publication records through a separate one-way publication process; never query private patient tables directly.
+
+### Progress tracking without production writes
+
+- GitHub is the source of truth for design, migrations, tests, code review, and release status.
+- Every phase change must update this document's status table and PR description.
+- Use small, reviewable commits; link each implementation/test result to its commit or PR.
+- Maintain a migration ledger in Git. Never apply an unreviewed migration to the live website database.
+- Mark a task complete only after its evidence exists (test output, reviewed PR, or verified isolated deployment). “Designed” is not “deployed.”
+- Keep a short progress note with: completed, in progress, blocked, next action, environment touched, and verification evidence.
+
+## 3. Current environment findings
+
+- The connected PNA website Supabase project is active and healthy, running PostgreSQL 17 in `ap-southeast-1`.
 - Existing PNA tables are in `public`; the existing `profiles.role` check permits only `owner`, `admin`, and `editor`. Do not overload this website-admin role to mean a verified clinician.
 - Existing public tables use a mixture of public-read/admin-write and server-only patterns. The clinical registry must have its own isolated authorization model.
-- There are currently no Supabase development branches. Creating a branch was attempted but blocked by the platform's cost-confirmation safety gate; no branch or database change was made.
+- There are currently no Supabase development branches. A previous branch creation attempt was stopped by the platform's cost-confirmation gate; no branch or database change was made.
 - Supabase's 30 October 2026 Data API change means newly created `public` tables are no longer automatically exposed. Any future API grants must be explicit and minimal; grants do not replace RLS.
 
-## 3. Proposed database boundary
+## 4. Proposed database boundary
 
 Use a dedicated, non-exposed PostgreSQL schema named `clinical_private` for identifiable clinical data and internal access-control tables. Do not add this schema to Supabase's exposed Data API schemas.
 
@@ -31,7 +70,7 @@ Expose only a narrowly scoped `clinical_api` schema if/when the application need
 
 Grant `USAGE` on `clinical_private` and only the minimum table privileges required to the `authenticated` role for invoker RPC execution. Do not grant anything to `anon`. Do not expose base tables through PostgREST. Recheck Data API schema configuration before enabling any RPC endpoint.
 
-## 4. Proposed entities
+## 5. Proposed entities
 
 | Entity | Purpose | Important constraints |
 |---|---|---|
@@ -45,7 +84,7 @@ Grant `USAGE` on `clinical_private` and only the minimum table privileges requir
 | `clinical_outcomes` | Repeated outcome measures | Report FK, measure code/name, numeric value, unit, scale bounds, direction, date |
 | `audit_events` | Append-only access/change trail | Actor, action, entity/table, entity UUID, timestamp, request correlation ID; no raw clinical values |
 
-### Data minimisation
+## 6. Data minimisation
 
 - Do not require date of birth, address, phone, or email for a clinical report unless a documented clinical/operational need exists.
 - Prefer a patient reference and minimum display identity. Store direct identifiers separately from clinical narrative if the product later requires them.
@@ -53,7 +92,7 @@ Grant `USAGE` on `clinical_private` and only the minimum table privileges requir
 - Never put patient names, diagnoses, free-text notes, or other PHI in audit metadata, analytics, logs, URLs, or error messages.
 - Use database/platform encryption at rest and TLS in transit. If field-level encryption is later required, define key custody and rotation before implementation; do not invent an application-managed encryption key.
 
-## 5. Access model
+## 7. Access model
 
 ### Clinician eligibility
 
@@ -79,7 +118,7 @@ Read-only team members may read but not create, update, or delete. Assistants mu
 - Team membership reads must be limited to the caller's own membership row unless a separately reviewed administrator workflow is implemented.
 - Do not rely on `user_metadata` or user-editable JWT claims for roles or verification.
 
-## 6. Audit and consent
+## 8. Audit and consent
 
 - Audit create/update/finalise/archive/export events. Record actor, time, action, entity ID, and changed field names only.
 - Audit records are append-only: authenticated clients receive no UPDATE or DELETE privilege.
@@ -88,7 +127,7 @@ Read-only team members may read but not create, update, or delete. Assistants mu
 - Final reports require verified therapist identity, as already enforced by the Phase 1 report contract.
 - Define retention, correction, export, and deletion procedures with applicable Pakistani privacy/professional requirements before real-world use.
 
-## 7. RLS verification matrix (must pass before production)
+## 9. RLS verification matrix (must pass before hosted QA)
 
 | Scenario | Expected result |
 |---|---|
@@ -107,17 +146,35 @@ Read-only team members may read but not create, update, or delete. Assistants mu
 
 Automate these cases using Supabase database tests/pgTAP or an equivalent isolated test harness. Test at least two distinct authenticated users and two teams; do not use production patient data.
 
-## 8. Deployment sequence
+## 10. Deployment sequence
 
 1. Finalise this design and review the exact SQL migration.
-2. Obtain an isolated Supabase development branch/project. If the platform quotes a non-zero cost, obtain explicit approval before creating it.
-3. Create migration using the Supabase CLI's migration generator; do not hand-invent migration filenames.
-4. Apply to the isolated database only.
-5. Run RLS tests, schema/grant inspection, and Supabase Security + Performance Advisors; fix all high/critical findings.
-6. Implement the `clinical_api` invoker RPC layer and server/client integration only after the database tests pass.
-7. Obtain a separate production rollout approval. No real patient records until authentication, consent, access logging, retention, backup/restore, and security review are complete.
+2. Develop and test locally first using Supabase CLI and synthetic fixtures.
+3. Provision a separate hosted registry project only when local tests pass and the user has reviewed the quoted cost and explicitly approved it.
+4. Create migrations using the Supabase CLI's migration generator; do not hand-invent migration filenames.
+5. Apply migrations to the isolated registry environment only.
+6. Run RLS tests, schema/grant inspection, and Supabase Security + Performance Advisors; fix all high/critical findings.
+7. Implement the authenticated API layer and application integration only after database tests pass.
+8. Obtain separate approval for production registry launch and a separate approval for any PNA website integration/deployment.
+9. Do not onboard real patients until authentication, consent, access logging, retention, backup/restore, and security review are complete.
 
-## 9. Out of scope for Phase 2
+## 11. Progress ledger
+
+| Workstream | Status | Evidence / next gate |
+|---|---|---|
+| Phase 1 report foundation | Staged in PR #146 | Review/merge state tracked in GitHub |
+| Phase 2 security architecture | Documented in PR #147 | This specification; no database writes |
+| Website Supabase impact isolation | Strategy defined | Local-first; separate registry project preferred |
+| SQL migrations and schema | Not started | Start only after architecture review |
+| RLS automated tests | Not started | Synthetic users/teams in local database |
+| Hosted registry environment | Blocked pending cost review | No hosted branch/project created |
+| App/API integration | Not started | After isolated DB and RLS tests pass |
+| PDF/report automation | Not started | After secure data path is proven |
+| Production patient onboarding | Explicitly blocked | Separate security and launch approval |
+
+**Last verified boundary:** no registry schema, migration, patient data, storage bucket, or Edge Function has been created in the current PNA website Supabase project.
+
+## 12. Out of scope for this stage
 
 - No production schema changes or data writes.
 - No patient onboarding or real patient record entry.
