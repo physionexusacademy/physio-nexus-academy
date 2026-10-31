@@ -783,6 +783,9 @@ for each row execute function clinical_private.audit_row_change();
 drop trigger if exists audit_outcomes on clinical_private.clinical_outcomes;
 create trigger audit_outcomes after insert or update on clinical_private.clinical_outcomes
 for each row execute function clinical_private.audit_row_change();
+drop trigger if exists audit_case_library on clinical_private.case_library_entries;
+create trigger audit_case_library after insert or update on clinical_private.case_library_entries
+for each row execute function clinical_private.audit_row_change();
 drop trigger if exists audit_events_immutable on clinical_private.audit_events;
 create trigger audit_events_immutable before update or delete on clinical_private.audit_events
 for each row execute function clinical_private.prevent_audit_mutation();
