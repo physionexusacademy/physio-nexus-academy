@@ -175,6 +175,53 @@ create policy owner_updates_own_case_drafts on clinical_private.case_library_ent
 revoke all on clinical_private.case_library_entries from public, anon;
 grant select, insert, update on clinical_private.case_library_entries to authenticated;
 
+-- RPC boundary for creating and listing owner-owned case submissions.
+create or replace function clinical_api.create_case_draft(
+  p_report_id uuid, p_publication_consent_event_id uuid,
+  p_case_title text, p_condition_label text, p_age_band text,
+  p_clinical_context text, p_intervention_summary text, p_outcome_summary text,
+  p_evidence_reference text default null, p_deidentified_confirmed boolean default false
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path = ''
+as $create_case_draft$
+declare
+  v_id uuid;
+begin
+  insert into clinical_private.case_library_entries(
+    owner_id, report_id, patient_id, publication_consent_event_id,
+    case_title, condition_label, age_band, clinical_context,
+    intervention_summary, outcome_summary, evidence_reference, deidentified_confirmed
+  )
+  select (select auth.uid()), r.id, r.patient_id, p_publication_consent_event_id,
+    trim(p_case_title), trim(p_condition_label), p_age_band,
+    trim(p_clinical_context), trim(p_intervention_summary), trim(p_outcome_summary),
+    nullif(trim(p_evidence_reference), ''), coalesce(p_deidentified_confirmed, false)
+  from clinical_private.clinical_reports r
+  where r.id = p_report_id and r.owner_id = (select auth.uid())
+    and r.status = 'final' and r.archived_at is null
+  returning id into v_id;
+  return v_id;
+end;
+$create_case_draft$;
+
+create or replace function clinical_api.list_my_case_submissions()
+returns table(case_id uuid, case_title text, status text, reviewer_note text,
+  submitted_at timestamptz, reviewed_at timestamptz, published_at timestamptz)
+language sql
+stable
+security invoker
+set search_path = ''
+as $list_my_cases$
+  select c.id, c.case_title, c.status, c.reviewer_note,
+    c.submitted_at, c.reviewed_at, c.published_at
+  from clinical_private.case_library_entries c
+  where c.owner_id = (select auth.uid())
+  order by c.updated_at desc
+  limit 100
+$list_my_cases$;
 -- Prevent a therapist from changing review/publication state directly.
 create or replace function clinical_private.guard_case_library_workflow()
 returns trigger
@@ -608,6 +655,8 @@ grant select on clinical_private.audit_events to authenticated;
 revoke all on all functions in schema clinical_api from public, anon;
 grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
 grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
+grant execute on function clinical_api.create_case_draft(uuid,uuid,text,text,text,text,text,text,text,boolean) to authenticated;
+grant execute on function clinical_api.list_my_case_submissions() to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
 grant execute on function clinical_api.withdraw_public_case(uuid) to authenticated;
 grant execute on function clinical_api.review_case_submission(uuid,text,text) to authenticated;
