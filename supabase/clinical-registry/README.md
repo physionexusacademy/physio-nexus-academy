@@ -17,6 +17,7 @@
 - Correction requests are append-only, validate target ownership, and can be applied only by the owning therapist; each applied report correction creates an immutable resolution event and a column-level audit entry.
 - A de-identified Case Library supports draft, submission, reviewer approval/rejection, publication and owner withdrawal. Public reads use a fixed-field RPC and are suppressed after publication consent is withdrawn.
 - The Registry page has a separate browser client that reads only `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY`; it never falls back to the PNA website Supabase credentials.
+- `/clinical-registry/library` is a public, indexable server-rendered page that reads only the fixed-field public Case Library RPC through the dedicated Registry anon key.
 - The initial application UI supports therapist sign-in/sign-up, pending-verification state, owner-scoped patient/report lists, clinical-care consent capture, assessment/follow-up/intervention/outcome entry, report finalisation, print-to-PDF, owner-scoped JSON export, owner-applied report corrections, public Case Library reading and separate-consent case submission/withdrawal.
 - Trusted service-role-only RPCs provision verified therapist memberships and activate/deactivate them; ordinary authenticated users cannot self-verify.
 - Retention rules are inactive by default; a service-role-only candidate query supports review without automatic deletion.
