@@ -468,6 +468,25 @@ as $export_patient$
     and p.archived_at is null;
 $export_patient$;
 
+create or replace function clinical_api.my_therapist_status()
+returns jsonb
+language sql
+stable
+security invoker
+set search_path = ''
+as $therapist_status$
+  select jsonb_build_object(
+    'fullName', tm.full_name,
+    'professionalTitle', tm.professional_title,
+    'credentials', to_jsonb(tm.credentials),
+    'registrationLabel', tm.registration_label,
+    'verificationStatus', tm.verification_status,
+    'isActive', tm.is_active,
+    'verifiedAt', tm.verified_at
+  )
+  from clinical_private.therapist_memberships tm
+  where tm.user_id = (select auth.uid())
+$therapist_status$;
 revoke all on all functions in schema clinical_api from public, anon;
 grant execute on all functions in schema clinical_api to authenticated;
 commit;
