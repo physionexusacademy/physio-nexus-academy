@@ -14,10 +14,10 @@
 - Synthetic pgTAP isolation checks cover two owners, a pending therapist, anonymous access, audit creation and consent withdrawal.
 - Append-only consent events distinguish clinical-care consent from public-case publication consent; report creation is blocked without current care consent.
 - Clinical record changes create append-only audit events containing changed column names only (not clinical values).
-- Correction requests are append-only and validate that the requested target belongs to the therapist's patient/report.
+- Correction requests are append-only, validate target ownership, and can be applied only by the owning therapist; each applied report correction creates an immutable resolution event and a column-level audit entry.
 - A de-identified Case Library supports draft, submission, reviewer approval/rejection, publication and owner withdrawal. Public reads use a fixed-field RPC and are suppressed after publication consent is withdrawn.
 - The Registry page has a separate browser client that reads only `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY`; it never falls back to the PNA website Supabase credentials.
-- The initial application UI supports therapist sign-in/sign-up, pending-verification state, owner-scoped patient/report lists, consent capture, assessment/follow-up/intervention/outcome entry, report finalisation, print and owner-scoped JSON export.
+- The initial application UI supports therapist sign-in/sign-up, pending-verification state, owner-scoped patient/report lists, clinical-care consent capture, assessment/follow-up/intervention/outcome entry, report finalisation, print, owner-scoped JSON export, owner-applied report corrections, public Case Library reading and consent-gated case submission/withdrawal.
 - Retention rules are inactive by default; a service-role-only candidate query supports review without automatic deletion.
 
 ## Remaining release gates
@@ -25,7 +25,7 @@
 2. Complete the local CI backup/restore test and run Supabase Security and Performance Advisors against the isolated Registry project.
 3. Configure only the `clinical_api` schema in the separate Registry project's Data API settings. Never expose `clinical_private`.
 4. Implement a trusted operator workflow for therapist verification and reviewer `app_metadata` assignment; do not let users self-verify.
-5. Complete the public Case Library frontend, correction-request UI, comprehensive report template/PDF renderer, form validation and accessibility QA.
+5. Complete the comprehensive clinical report template/PDF renderer, structured form validation, patient-record correction support, and accessibility QA.
 6. Have the institution/ethics committee and local counsel approve consent language, retention periods, correction handling, export, backup retention and breach response. No retention rule is active by default and no automatic deletion is implemented.
 7. Add operational backup/restore and export runbooks for the separately hosted project; CI can validate a disposable local backup but cannot establish provider backup coverage.
 8. Provision the separate hosted Registry project only after an exact cost review and explicit user approval. Set the three Registry environment variables below; never reuse the PNA website project credentials.
