@@ -227,14 +227,14 @@ end;
 $create_case_draft$;
 
 create or replace function clinical_api.list_my_case_submissions()
-returns table(case_id uuid, case_title text, status text, reviewer_note text,
+returns table(case_id uuid, patient_id uuid, case_title text, status text, reviewer_note text,
   submitted_at timestamptz, reviewed_at timestamptz, published_at timestamptz)
 language sql
 stable
 security invoker
 set search_path = ''
 as $list_my_cases$
-  select c.id, c.case_title, c.status, c.reviewer_note,
+  select c.id, c.patient_id, c.case_title, c.status, c.reviewer_note,
     c.submitted_at, c.reviewed_at, c.published_at
   from clinical_private.case_library_entries c
   where c.owner_id = (select auth.uid())
@@ -261,8 +261,8 @@ begin
   elsif not v_reviewer then
     if v_submit_rpc and old.status = 'draft' and new.status = 'submitted' then
       null;
-    elsif v_withdraw_rpc and old.status = 'published' and new.status = 'withdrawn'
-      and old.owner_id = (select auth.uid()) then
+    elsif v_withdraw_rpc and old.status in ('draft','submitted','approved','published')
+      and new.status = 'withdrawn' and old.owner_id = (select auth.uid()) then
       null;
     elsif old.status <> 'draft' or new.status <> 'draft'
       or new.owner_id <> old.owner_id
@@ -428,7 +428,8 @@ begin
   perform set_config('app.registry_withdraw_rpc', 'on', true);
   update clinical_private.case_library_entries
   set status = 'withdrawn', updated_at = now()
-  where id = p_case_id and owner_id = (select auth.uid()) and status = 'published';
+  where id = p_case_id and owner_id = (select auth.uid())
+    and status in ('draft','submitted','approved','published');
   return found;
 end;
 $function$;
