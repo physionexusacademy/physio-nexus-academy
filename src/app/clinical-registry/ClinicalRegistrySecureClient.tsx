@@ -147,7 +147,7 @@ export function ClinicalRegistrySecureClient() {
     await loadPatients();
   };
 
-  const createReport = async (event: React.FormEvent) => {
+  const createReport = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedPatient) return;
     setBusy(true); setError("");
     const { data, error: rpcError } = await client.rpc("create_report", { p_patient_id: selectedPatient.id, p_category: category, p_condition: condition });
@@ -156,7 +156,7 @@ export function ClinicalRegistrySecureClient() {
     setCondition(""); await loadReports(selectedPatient.id); await openReport(data as string);
   };
 
-  const saveAssessment = async (event: React.FormEvent) => {
+  const saveAssessment = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     let parsed: Record<string, unknown>;
     try { parsed = JSON.parse(assessmentJson); } catch { setError("Initial assessment must be valid JSON."); return; }
@@ -165,7 +165,7 @@ export function ClinicalRegistrySecureClient() {
     setBusy(false); if (rpcError) { setError(rpcError.message); return; } await openReport(selectedReport.id);
   };
 
-  const addFollowUp = async (event: React.FormEvent) => {
+  const addFollowUp = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     let parsed: Record<string, unknown>;
     try { parsed = JSON.parse(followUpJson); } catch { setError("Follow-up assessment must be valid JSON."); return; }
@@ -174,14 +174,14 @@ export function ClinicalRegistrySecureClient() {
     setBusy(false); if (rpcError) { setError(rpcError.message); return; } await openReport(selectedReport.id);
   };
 
-  const addIntervention = async (event: React.FormEvent) => {
+  const addIntervention = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     setBusy(true); setError("");
     const { error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionText });
     setBusy(false); if (rpcError) { setError(rpcError.message); return; } setInterventionText(""); await openReport(selectedReport.id);
   };
 
-  const addOutcome = async (event: React.FormEvent) => {
+  const addOutcome = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     const value = Number(outcomeValue); if (!Number.isFinite(value)) { setError("Enter a valid numeric outcome value."); return; }
     setBusy(true); setError("");
