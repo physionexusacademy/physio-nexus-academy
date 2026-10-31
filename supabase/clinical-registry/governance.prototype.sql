@@ -497,6 +497,60 @@ $correction_resolution_guard$;
 drop trigger if exists correction_resolution_immutable on clinical_private.correction_resolution_events;
 create trigger correction_resolution_immutable before update or delete on clinical_private.correction_resolution_events
 for each row execute function clinical_private.prevent_correction_resolution_mutation();
+-- Trusted operator-only therapist provisioning. The service-role key must stay server-side.
+create or replace function clinical_api.provision_verified_therapist(
+  p_user_id uuid, p_full_name text, p_professional_title text,
+  p_credentials text[] default '{}', p_registration_label text default null,
+  p_registration_number text default null
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $provision_therapist$
+begin
+  if coalesce(auth.role() = 'service_role', false) is not true then
+    raise exception 'Registry operator service role required' using errcode = '42501';
+  end if;
+  insert into clinical_private.therapist_memberships(
+    user_id, full_name, professional_title, credentials, registration_label,
+    registration_number, verification_status, is_active, verified_at, verified_by
+  ) values (
+    p_user_id, trim(p_full_name), trim(p_professional_title),
+    coalesce(p_credentials, '{}'::text[]), p_registration_label, p_registration_number,
+    'verified', true, now(), auth.uid()
+  )
+  on conflict (user_id) do update set
+    full_name = excluded.full_name,
+    professional_title = excluded.professional_title,
+    credentials = excluded.credentials,
+    registration_label = excluded.registration_label,
+    registration_number = excluded.registration_number,
+    verification_status = 'verified',
+    is_active = true,
+    verified_at = now(),
+    verified_by = auth.uid(),
+    updated_at = now();
+  return true;
+end;
+$provision_therapist$;
+
+create or replace function clinical_api.set_therapist_active(p_user_id uuid, p_is_active boolean)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $set_therapist_active$
+begin
+  if coalesce(auth.role() = 'service_role', false) is not true then
+    raise exception 'Registry operator service role required' using errcode = '42501';
+  end if;
+  update clinical_private.therapist_memberships
+  set is_active = p_is_active, updated_at = now()
+  where user_id = p_user_id and verification_status = 'verified';
+  return found;
+end;
+$set_therapist_active$;
 -- Authenticated RPCs for consent capture and correction requests. The private
 -- tables themselves are never exposed through PostgREST.
 create or replace function clinical_api.record_patient_consent(
@@ -739,6 +793,8 @@ revoke all on all functions in schema clinical_api from public, anon;
 grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
 grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
 grant execute on function clinical_api.apply_own_report_correction(uuid) to authenticated;
+grant execute on function clinical_api.provision_verified_therapist(uuid,text,text,text[],text,text) to service_role;
+grant execute on function clinical_api.set_therapist_active(uuid,boolean) to service_role;
 grant execute on function clinical_api.create_case_draft(uuid,uuid,text,text,text,text,text,text,text,boolean) to authenticated;
 grant execute on function clinical_api.list_my_case_submissions() to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
