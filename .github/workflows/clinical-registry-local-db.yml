@@ -81,7 +81,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "$REGISTRY_TEST_DIR"
-          supabase start -x studio,imgproxy,logflare,vector
+          supabase start -x studio,imgproxy,logflare,vector,storage-api,realtime,kong,mailpit,postgres-meta,auth,rest,pooler
 
       - name: Apply CLI-generated Registry migration
         shell: bash
