@@ -221,7 +221,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $submit$
 begin
   if (select auth.uid()) is null then
     raise exception 'Authentication required' using errcode = '42501';
@@ -233,7 +233,7 @@ begin
     and status = 'draft' and deidentified_confirmed;
   return found;
 end;
-$$;
+$submit$;
 
 -- Reviewer role must be assigned in trusted app_metadata by the Registry
 -- operator; ordinary user-editable metadata is not accepted.
