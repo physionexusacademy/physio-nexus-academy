@@ -112,6 +112,25 @@ create policy owner_submits_correction_requests on clinical_private.correction_r
 revoke all on clinical_private.correction_requests from public, anon;
 grant select, insert on clinical_private.correction_requests to authenticated;
 
+create table if not exists clinical_private.correction_resolution_events (
+  id uuid primary key default gen_random_uuid(),
+  correction_request_id uuid not null unique references clinical_private.correction_requests(id) on delete restrict,
+  owner_id uuid not null references auth.users(id) on delete restrict,
+  resolution text not null check (resolution in ('applied')) ,
+  resolution_summary text not null check (length(trim(resolution_summary)) between 5 and 1000),
+  occurred_at timestamptz not null default clock_timestamp()
+);
+alter table clinical_private.correction_resolution_events enable row level security;
+alter table clinical_private.correction_resolution_events force row level security;
+create policy owner_reads_correction_resolutions on clinical_private.correction_resolution_events
+  for select to authenticated using (owner_id = (select auth.uid()));
+create policy owner_records_correction_resolution on clinical_private.correction_resolution_events
+  for insert to authenticated with check (owner_id = (select auth.uid()) and exists (
+    select 1 from clinical_private.correction_requests cr
+    where cr.id = correction_request_id and cr.owner_id = (select auth.uid())
+  ));
+revoke all on clinical_private.correction_resolution_events from public, anon;
+grant select, insert on clinical_private.correction_resolution_events to authenticated;
 -- Public case library staging table. It stores only deliberately de-identified
 -- narrative fields. It never exposes patient IDs, report IDs, therapist IDs,
 -- patient references, contact details or raw assessments.
@@ -414,6 +433,70 @@ begin
 end;
 $function$;
 
+create or replace function clinical_api.apply_own_report_correction(p_request_id uuid)
+returns boolean
+language plpgsql
+security invoker
+set search_path = ''
+as $apply_report_correction$
+declare
+  v_request clinical_private.correction_requests%rowtype;
+  v_changes jsonb;
+  v_invalid_keys text[];
+  v_recommendations text[];
+begin
+  select * into v_request
+  from clinical_private.correction_requests
+  where id = p_request_id and owner_id = (select auth.uid())
+    and target_type = 'report' and report_id is not null;
+  if not found then
+    raise exception 'Owned report correction request not found' using errcode = '42501';
+  end if;
+  v_changes := v_request.requested_changes;
+  select array_agg(k) into v_invalid_keys
+  from jsonb_object_keys(v_changes) as keys(k)
+  where k not in ('category','condition','clinical_summary','discharge_status','recommendations');
+  if coalesce(cardinality(v_invalid_keys),0) > 0 or v_changes = '{}'::jsonb then
+    raise exception 'Correction contains no permitted fields or contains unsupported fields' using errcode = '22023';
+  end if;
+  if v_changes ? 'recommendations' then
+    if jsonb_typeof(v_changes -> 'recommendations') <> 'array' then
+      raise exception 'Recommendations correction must be a JSON array' using errcode = '22023';
+    end if;
+    select coalesce(array_agg(value), '{}'::text[]) into v_recommendations
+    from jsonb_array_elements_text(v_changes -> 'recommendations') as values(value);
+  end if;
+  update clinical_private.clinical_reports
+  set category = case when v_changes ? 'category' then trim(v_changes ->> 'category') else category end,
+      condition = case when v_changes ? 'condition' then trim(v_changes ->> 'condition') else condition end,
+      clinical_summary = case when v_changes ? 'clinical_summary' then nullif(trim(v_changes ->> 'clinical_summary'),'') else clinical_summary end,
+      discharge_status = case when v_changes ? 'discharge_status' then nullif(trim(v_changes ->> 'discharge_status'),'') else discharge_status end,
+      recommendations = case when v_changes ? 'recommendations' then v_recommendations else recommendations end,
+      updated_at = now()
+  where id = v_request.target_id and owner_id = (select auth.uid()) and archived_at is null;
+  if not found then
+    raise exception 'Report cannot be corrected because it is missing or archived' using errcode = '42501';
+  end if;
+  insert into clinical_private.correction_resolution_events(
+    correction_request_id, owner_id, resolution, resolution_summary
+  ) values (p_request_id, (select auth.uid()), 'applied', 'Applied by the owning therapist; changed fields are recorded in the audit trail.');
+  return true;
+end;
+$apply_report_correction$;
+
+create or replace function clinical_private.prevent_correction_resolution_mutation()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $correction_resolution_guard$
+begin
+  raise exception 'Correction resolution history is append-only' using errcode = '42501';
+end;
+$correction_resolution_guard$;
+drop trigger if exists correction_resolution_immutable on clinical_private.correction_resolution_events;
+create trigger correction_resolution_immutable before update or delete on clinical_private.correction_resolution_events
+for each row execute function clinical_private.prevent_correction_resolution_mutation();
 -- Authenticated RPCs for consent capture and correction requests. The private
 -- tables themselves are never exposed through PostgREST.
 create or replace function clinical_api.record_patient_consent(
@@ -655,6 +738,7 @@ grant select on clinical_private.audit_events to authenticated;
 revoke all on all functions in schema clinical_api from public, anon;
 grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
 grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
+grant execute on function clinical_api.apply_own_report_correction(uuid) to authenticated;
 grant execute on function clinical_api.create_case_draft(uuid,uuid,text,text,text,text,text,text,text,boolean) to authenticated;
 grant execute on function clinical_api.list_my_case_submissions() to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
