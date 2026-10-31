@@ -8,7 +8,7 @@
 - Patient and report ownership is tied to the authenticated creator.
 - Assessment, intervention and outcome rows inherit access through their parent report.
 - RLS is enabled and forced on every private table.
-- No anonymous grants and no ordinary DELETE privileges.
+- No anonymous grants on private tables and no ordinary DELETE privileges; anonymous access is limited to the fixed-field public Case Library RPC.
 - Indexes cover owner-scoped lists and report child-record lookups.
 - A narrow SECURITY INVOKER RPC prototype provides bounded list, create, read, assessment, intervention, outcome, finalise and archive operations.
 - Synthetic pgTAP isolation checks cover two owners, a pending therapist, anonymous access, audit creation and consent withdrawal.
