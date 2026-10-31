@@ -8,13 +8,14 @@ begin;
 -- consent are separate purposes; withdrawal is recorded as a new event.
 create table if not exists clinical_private.patient_consent_events (
   id uuid primary key default gen_random_uuid(),
+  event_sequence bigint generated always as identity unique,
   patient_id uuid not null references clinical_private.patients(id) on delete restrict,
   owner_id uuid not null default auth.uid() references auth.users(id) on delete restrict,
   purpose text not null check (purpose in ('clinical_care','public_case_publication')),
   consent_status text not null check (consent_status in ('granted','withdrawn')),
   consent_version text not null check (length(trim(consent_version)) between 1 and 40),
   capture_method text not null check (capture_method in ('written','electronic','documented_verbal')),
-  captured_at timestamptz not null default now(),
+  captured_at timestamptz not null default clock_timestamp(),
   prior_event_id uuid references clinical_private.patient_consent_events(id) on delete restrict,
   check (prior_event_id is null or prior_event_id <> id)
 );
@@ -62,7 +63,7 @@ begin
         where later.patient_id = ce.patient_id
           and later.owner_id = ce.owner_id
           and later.purpose = ce.purpose
-          and later.captured_at > ce.captured_at
+          and later.event_sequence > ce.event_sequence
       )
   ) then
     raise exception 'Current clinical-care consent is required before creating a report'
