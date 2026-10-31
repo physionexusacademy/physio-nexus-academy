@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { Activity, FileDown, FileText, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
@@ -85,7 +85,7 @@ export function ClinicalRegistrySecureClient() {
     setSelectedReport((data ?? null) as ClinicalReport | null);
   };
 
-  const signIn = async (event: React.FormEvent) => {
+  const signIn = async (event: FormEvent) => {
     event.preventDefault(); if (!client) return; setBusy(true); setError(""); setNotice("");
     const { error: authError } = await client.auth.signInWithPassword({ email, password });
     setBusy(false); if (authError) setError(authError.message);
