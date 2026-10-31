@@ -329,7 +329,7 @@ begin
   end if;
   return new;
 end;
-$;
+$function$;
 drop trigger if exists correction_target_guard on clinical_private.correction_requests;
 create trigger correction_target_guard before insert on clinical_private.correction_requests
 for each row execute function clinical_private.validate_correction_target();
@@ -343,7 +343,7 @@ as $function$
 begin
   raise exception 'This Registry history is append-only' using errcode = '42501';
 end;
-$;
+$function$;
 drop trigger if exists consent_events_immutable on clinical_private.patient_consent_events;
 create trigger consent_events_immutable before update or delete on clinical_private.patient_consent_events
 for each row execute function clinical_private.reject_immutable_change();
@@ -364,7 +364,7 @@ begin
   where id = p_case_id and owner_id = (select auth.uid()) and status = 'published';
   return found;
 end;
-$;
+$function$;
 
 -- Authenticated RPCs for consent capture and correction requests. The private
 -- tables themselves are never exposed through PostgREST.
@@ -400,7 +400,7 @@ begin
   returning id into v_id;
   return v_id;
 end;
-$;
+$function$;
 
 create or replace function clinical_api.request_record_correction(
   p_patient_id uuid,
@@ -428,7 +428,7 @@ begin
   returning id into v_id;
   return v_id;
 end;
-$;
+$function$;
 
 -- Public read surface contains only approved-for-publication, manually reviewed
 -- de-identified fields. SECURITY DEFINER is constrained to this fixed projection.
@@ -532,7 +532,7 @@ begin
     where r.archived_at is not null
       and r.archived_at <= (p_as_of::timestamptz - make_interval(days => rr.retention_days));
 end;
-$;
+$function$;
 
 -- Immutable audit events record only changed column names, never clinical values.
 create or replace function clinical_private.audit_row_change()
