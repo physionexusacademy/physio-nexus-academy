@@ -2,13 +2,15 @@
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { BookOpen, FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
 type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
 type TherapistStatus = { fullName?: string; professionalTitle?: string; credentials?: string[]; verificationStatus?: string; isActive?: boolean; verifiedAt?: string | null };
 type ClinicalReport = { id: string; patient?: { patientReference?: string; displayName?: string }; category: string; condition: string; status: string; assessmentDate: string; initialAssessment?: Record<string, unknown>; followUpAssessments?: Record<string, unknown>[]; clinicalSummary?: string; dischargeStatus?: string; recommendations?: string[]; interventions?: Record<string, unknown>[]; outcomes?: Record<string, unknown>[] };
+type CaseSubmission = { case_id: string; case_title: string; status: string; reviewer_note?: string | null; submitted_at?: string | null; published_at?: string | null };
+type PublicCase = { case_id: string; case_title: string; condition_label: string; age_band?: string | null; clinical_context: string; intervention_summary: string; outcome_summary: string; evidence_reference?: string | null };
 
 export function ClinicalRegistrySecureClient() {
   const client = useMemo(() => getClinicalRegistryClient(), []);
@@ -36,6 +38,17 @@ export function ClinicalRegistrySecureClient() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [caseSubmissions, setCaseSubmissions] = useState<CaseSubmission[]>([]);
+  const [publicCases, setPublicCases] = useState<PublicCase[]>([]);
+  const [caseTitle, setCaseTitle] = useState("");
+  const [caseCondition, setCaseCondition] = useState("");
+  const [caseAgeBand, setCaseAgeBand] = useState("30-44");
+  const [caseContext, setCaseContext] = useState("");
+  const [caseIntervention, setCaseIntervention] = useState("");
+  const [caseOutcome, setCaseOutcome] = useState("");
+  const [caseEvidence, setCaseEvidence] = useState("");
+  const [publicationConsentConfirmed, setPublicationConsentConfirmed] = useState(false);
+  const [deidentifiedConfirmed, setDeidentifiedConfirmed] = useState(false);
 
   const loadPatients = useCallback(async () => {
     if (!client) return;
@@ -51,6 +64,19 @@ export function ClinicalRegistrySecureClient() {
     setReports((data ?? []) as Report[]);
   }, [client]);
 
+  const loadCaseSubmissions = useCallback(async () => {
+    if (!client) return;
+    const { data, error: rpcError } = await client.rpc("list_my_case_submissions");
+    if (rpcError) throw rpcError;
+    setCaseSubmissions((data ?? []) as CaseSubmission[]);
+  }, [client]);
+
+  const loadPublicCases = useCallback(async () => {
+    if (!client) return;
+    const { data, error: rpcError } = await client.rpc("list_public_cases", { p_search: null, p_limit: 20 });
+    if (rpcError) throw rpcError;
+    setPublicCases((data ?? []) as PublicCase[]);
+  }, [client]);
   const loadMembership = useCallback(async () => {
     if (!client) return;
     const { data, error: rpcError } = await client.rpc("my_therapist_status");
@@ -58,8 +84,9 @@ export function ClinicalRegistrySecureClient() {
     setMembership((data ?? null) as TherapistStatus | null);
     if (data && (data as TherapistStatus).verificationStatus === "verified" && (data as TherapistStatus).isActive) {
       await loadPatients();
+      await loadCaseSubmissions();
     }
-  }, [client, loadPatients]);
+  }, [client, loadPatients, loadCaseSubmissions]);
 
   useEffect(() => {
     if (!client) return;
@@ -70,6 +97,11 @@ export function ClinicalRegistrySecureClient() {
     });
     return () => { mounted = false; authListener.subscription.unsubscribe(); };
   }, [client]);
+
+  useEffect(() => {
+    if (!client) return;
+    loadPublicCases().catch((e: Error) => setError(e.message));
+  }, [client, loadPublicCases]);
 
   useEffect(() => {
     if (!client || !session) return;
@@ -99,7 +131,7 @@ export function ClinicalRegistrySecureClient() {
     else setNotice(data.session ? "Account created. Therapist verification is still required before clinical records can be accessed." : "Account created. Check your email if confirmation is enabled. Therapist verification is still required before clinical records can be accessed.");
   };
 
-  const registerPatient = async (event: React.FormEvent) => {
+  const registerPatient = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !consentConfirmed || !CLINICAL_REGISTRY_CONSENT_VERSION) return;
     setBusy(true); setError(""); setNotice("");
     const { data: patientId, error: patientError } = await client.rpc("create_patient", { p_patient_reference: patientReference, p_display_name: patientName });
@@ -173,6 +205,38 @@ export function ClinicalRegistrySecureClient() {
     anchor.href = url; anchor.download = `clinical-record-${selectedPatient.patient_reference}.json`; anchor.click(); URL.revokeObjectURL(url);
   };
 
+  const submitCaseForReview = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!client || !selectedPatient || !selectedReport || !CLINICAL_REGISTRY_CONSENT_VERSION || !publicationConsentConfirmed || !deidentifiedConfirmed) return;
+    setBusy(true); setError(""); setNotice("");
+    const { data: consentId, error: consentError } = await client.rpc("record_patient_consent", {
+      p_patient_id: selectedPatient.id, p_purpose: "public_case_publication", p_status: "granted",
+      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_capture_method: consentMethod, p_prior_event_id: null
+    });
+    if (consentError) { setBusy(false); setError(consentError.message); return; }
+    const { data: caseId, error: createError } = await client.rpc("create_case_draft", {
+      p_report_id: selectedReport.id, p_publication_consent_event_id: consentId,
+      p_case_title: caseTitle, p_condition_label: caseCondition, p_age_band: caseAgeBand,
+      p_clinical_context: caseContext, p_intervention_summary: caseIntervention,
+      p_outcome_summary: caseOutcome, p_evidence_reference: caseEvidence, p_deidentified_confirmed: true
+    });
+    if (createError || !caseId) { setBusy(false); setError(createError?.message ?? "Could not create case submission."); return; }
+    const { data: submitted, error: submitError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
+    setBusy(false);
+    if (submitError || !submitted) { setError(submitError?.message ?? "Case draft saved, but it could not be submitted for review."); await loadCaseSubmissions(); return; }
+    setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
+    setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
+    setNotice("Case submitted for review. It will not appear publicly until an authorised reviewer approves and publishes it.");
+    await loadCaseSubmissions();
+  };
+
+  const withdrawPublishedCase = async (caseId: string) => {
+    if (!client) return; setBusy(true); setError("");
+    const { error: rpcError } = await client.rpc("withdraw_public_case", { p_case_id: caseId });
+    setBusy(false); if (rpcError) { setError(rpcError.message); return; }
+    await loadCaseSubmissions(); await loadPublicCases();
+    setNotice("Your public case has been withdrawn from the public library.");
+  };
   if (!client) return <main className="min-h-screen bg-slate-50 px-5 py-16 text-slate-800"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><ShieldCheck className="text-teal-700" size={30}/><h1 className="mt-4 text-2xl font-bold text-[#173653]">PNA Clinical Registry</h1><p className="mt-3 text-sm leading-6 text-slate-600">The isolated Registry service is not configured yet. This workspace will not connect to or reuse the PNA website database.</p><p className="mt-4 rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-900">Required environment settings: NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL, NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY and an institution-approved NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION. No patient data can be entered until these are configured.</p></section></main>;
 
   if (!session) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Clinical Registry</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-500">Sign in to your private clinical workspace. Each therapist can access only their own records.</p><form onSubmit={signIn} className="mt-6 space-y-3"><input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Professional email" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><input required type="password" minLength={8} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Sign in"}</button></form><button onClick={signUp} disabled={busy || !email || password.length<8} className="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 disabled:opacity-50">Create therapist account</button>{error&&<p className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}<p className="mt-5 flex items-center gap-2 text-[11px] text-slate-400"><LockKeyhole size={13}/> Private Registry database · separate from the PNA website database</p></section></main>;
@@ -197,6 +261,24 @@ export function ClinicalRegistrySecureClient() {
             <div className="mt-4 grid gap-4 md:grid-cols-2"><div><h3 className="text-xs font-bold text-[#173653]">Initial assessment</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.initialAssessment??{},null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Follow-ups</h3><pre className="mt-2 max-h-56 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.followUpAssessments??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Interventions</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.interventions??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Outcomes</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.outcomes??[],null,2)}</pre></div></div>
             {selectedReport.status==="draft"&&<div className="mt-5 grid gap-4 border-t border-slate-100 pt-5 xl:grid-cols-2"><form onSubmit={saveAssessment} className="space-y-2"><h3 className="text-xs font-bold">Save initial assessment (JSON)</h3><textarea value={assessmentJson} onChange={e=>setAssessmentJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save assessment</button></form><form onSubmit={addFollowUp} className="space-y-2"><h3 className="text-xs font-bold">Add follow-up (JSON)</h3><textarea value={followUpJson} onChange={e=>setFollowUpJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Add follow-up</button></form><form onSubmit={addIntervention} className="space-y-2"><h3 className="text-xs font-bold">Record intervention</h3><input required value={interventionText} onChange={e=>setInterventionText(e.target.value)} placeholder="Intervention / technique" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save intervention</button></form><form onSubmit={addOutcome} className="space-y-2"><h3 className="text-xs font-bold">Record outcome</h3><input required value={outcomeCode} onChange={e=>setOutcomeCode(e.target.value)} placeholder="Measure code (e.g. NPRS)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required value={outcomeName} onChange={e=>setOutcomeName(e.target.value)} placeholder="Measure name" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required type="number" step="any" value={outcomeValue} onChange={e=>setOutcomeValue(e.target.value)} placeholder="Measured value" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><select value={outcomeDirection} onChange={e=>setOutcomeDirection(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="lower_is_better">Lower is better</option><option value="higher_is_better">Higher is better</option><option value="descriptive">Descriptive</option></select><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save outcome</button></form></div>}
           </section>}
+          {selectedReport?.status === "final" && selectedPatient && CLINICAL_REGISTRY_CONSENT_VERSION && <section className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Submit de-identified case</h2></div>
+            <p className="mt-1 text-[11px] leading-5 text-slate-500">Only a final report can be submitted. Publication requires separate patient consent and an independent reviewer decision.</p>
+            <form onSubmit={submitCaseForReview} className="mt-4 grid gap-3 md:grid-cols-2">
+              <input required value={caseTitle} onChange={e=>setCaseTitle(e.target.value)} placeholder="Case title" className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+              <input required value={caseCondition} onChange={e=>setCaseCondition(e.target.value)} placeholder="Condition label" className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+              <select value={caseAgeBand} onChange={e=>setCaseAgeBand(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="child">Child</option><option value="adolescent">Adolescent</option><option value="18-29">18–29</option><option value="30-44">30–44</option><option value="45-59">45–59</option><option value="60-74">60–74</option><option value="75+">75+</option><option value="not_reported">Not reported</option></select>
+              <input value={caseEvidence} onChange={e=>setCaseEvidence(e.target.value)} placeholder="Evidence reference / DOI / URL (optional)" className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+              <textarea required minLength={20} value={caseContext} onChange={e=>setCaseContext(e.target.value)} placeholder="De-identified clinical context" rows={4} className="rounded-xl border border-slate-200 p-3 text-xs md:col-span-2"/>
+              <textarea required minLength={20} value={caseIntervention} onChange={e=>setCaseIntervention(e.target.value)} placeholder="Intervention summary" rows={4} className="rounded-xl border border-slate-200 p-3 text-xs"/>
+              <textarea required minLength={20} value={caseOutcome} onChange={e=>setCaseOutcome(e.target.value)} placeholder="Outcome summary" rows={4} className="rounded-xl border border-slate-200 p-3 text-xs"/>
+              <label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600 md:col-span-2"><input type="checkbox" checked={publicationConsentConfirmed} onChange={e=>setPublicationConsentConfirmed(e.target.checked)} className="mt-1"/> Separate patient consent for public educational case publication has been obtained and documented using the approved form.</label>
+              <label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600 md:col-span-2"><input type="checkbox" checked={deidentifiedConfirmed} onChange={e=>setDeidentifiedConfirmed(e.target.checked)} className="mt-1"/> I confirm this narrative is de-identified and contains no names, dates of birth, contact details, addresses, record numbers or other direct identifiers.</label>
+              <button disabled={busy||!publicationConsentConfirmed||!deidentifiedConfirmed} className="rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-40 md:col-span-2">Submit case for independent review</button>
+            </form>
+          </section>}
+          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My case submissions</h2></div><div className="mt-3 space-y-2">{caseSubmissions.map(c=><div key={c.case_id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-100 p-3"><div><p className="text-xs font-semibold">{c.case_title}</p><p className="mt-1 text-[10px] text-slate-500">{c.status}{c.reviewer_note?` · ${c.reviewer_note}`:""}</p></div>{c.status==="published"&&<button disabled={busy} onClick={()=>withdrawPublishedCase(c.case_id)} className="rounded-lg border border-red-200 px-3 py-2 text-[10px] font-semibold text-red-700">Withdraw publication</button>}</div>)}{caseSubmissions.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No case submissions yet.</p>}</div></section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Public Case Library</h2></div><p className="mt-1 text-[11px] text-slate-400">Only independently reviewed, published, de-identified cases appear here.</p><div className="mt-3 space-y-3">{publicCases.map(c=><article key={c.case_id} className="rounded-xl border border-slate-100 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-bold text-[#173653]">{c.case_title}</h3><span className="text-[10px] text-slate-500">{c.condition_label} · {c.age_band??"Age not reported"}</span></div><p className="mt-2 text-xs leading-5 text-slate-600">{c.clinical_context}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Intervention:</strong> {c.intervention_summary}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Outcome:</strong> {c.outcome_summary}</p>{c.evidence_reference&&<a href={c.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Evidence reference</a>}</article>)}{publicCases.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No published cases available yet.</p>}</div></section>
         </section>
       </div>}
       <footer className="mt-8 flex items-center gap-2 border-t border-slate-200 pt-4 text-[10px] text-slate-400"><LockKeyhole size={12}/> Separate Registry database · Owner-scoped access · Audit trail enabled</footer>
