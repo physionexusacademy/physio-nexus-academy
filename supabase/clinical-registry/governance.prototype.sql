@@ -464,7 +464,7 @@ begin
       raise exception 'Recommendations correction must be a JSON array' using errcode = '22023';
     end if;
     select coalesce(array_agg(value), '{}'::text[]) into v_recommendations
-    from jsonb_array_elements_text(v_changes -> 'recommendations') as values(value);
+    from jsonb_array_elements_text(v_changes -> 'recommendations') as elements(value);
   end if;
   update clinical_private.clinical_reports
   set category = case when v_changes ? 'category' then trim(v_changes ->> 'category') else category end,
