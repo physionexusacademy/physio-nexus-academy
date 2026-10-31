@@ -51,9 +51,93 @@ jobs:
             supabase migration new clinical_registry_secure_schema
             MIGRATION="$(find "$REGISTRY_TEST_DIR/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
             test -n "$MIGRATION"
-            cat "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.prototype.sql" >> "$MIGRATION"
-            cat "$GITHUB_WORKSPACE/supabase/clinical-registry/api-functions.prototype.sql" >> "$MIGRATION"
-            cat "$GITHUB_WORKSPACE/supabase/clinical-registry/governance.prototype.sql" >> "$MIGRATION"
+            echo "begin;" >> "$MIGRATION"
+            for SOURCE_SQL in \
+              "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.prototype.sql" \
+              "$GITHUB_WORKSPACE/supabase/clinical-registry/api-functions.prototype.sql" \
+              "$GITHUB_WORKSPACE/supabase/clinical-registry/governance.prototype.sql"; do
+              grep -viE '^[[:space:]]*(begin|commit);[[:space:]]*          fi
+
+      - name: Start disposable local Supabase stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
+          supabase start -x studio,imgproxy,logflare,vector
+
+      - name: Apply CLI-generated Registry migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
+          supabase db reset
+
+
+      - name: Run synthetic RLS isolation tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
+          eval "$(supabase status -o env)"
+          set +e
+          TEST_OUTPUT="$(psql "$DB_URL" -X -q -A -t -v ON_ERROR_STOP=1 \
+            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.rls.test.sql" 2>&1)"
+          TEST_EXIT=$?
+          set -e
+          printf '%s\n' "$TEST_OUTPUT"
+          test "$TEST_EXIT" -eq 0
+          if grep -qE '^not ok [0-9]+' <<< "$TEST_OUTPUT"; then
+            echo "pgTAP reported failed assertions."
+            exit 1
+          fi
+          grep -Fxq '1..15' <<< "$TEST_OUTPUT"
+          OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
+          test "$OK_COUNT" -eq 15
+
+      - name: Verify disposable Registry backup and restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$REGISTRY_TEST_DIR"
+          eval "$(supabase status -o env)"
+          pg_dump "$DB_URL" --format=custom --no-owner --no-privileges \
+            --schema=clinical_private --schema=clinical_api \
+            --file=/tmp/clinical-registry-backup.dump
+          pg_restore --list /tmp/clinical-registry-backup.dump >/dev/null
+          # Restore only into this disposable CI database, never a hosted project.
+          pg_restore --clean --if-exists --no-owner --no-privileges \
+            --dbname "$DB_URL" /tmp/clinical-registry-backup.dump
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select case when to_regclass('clinical_private.patient_consent_events') is not null and to_regclass('clinical_private.audit_events') is not null and to_regclass('clinical_private.case_library_entries') is not null then 'restore-ok' else 'restore-failed' end" \
+            | grep -qx 'restore-ok'
+
+      - name: Commit validated CLI-generated migration to the PR branch
+        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          GENERATED="$(find "$REGISTRY_TEST_DIR/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
+          test -n "$GENERATED"
+          DEST="$GITHUB_WORKSPACE/supabase/migrations/$(basename "$GENERATED")"
+          if [ ! -f "$DEST" ]; then
+            cp "$GENERATED" "$DEST"
+            cd "$GITHUB_WORKSPACE"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add "supabase/migrations/$(basename "$GENERATED")"
+            git commit -m "Add CLI-generated Clinical Registry migration"
+            git push origin "HEAD:$GITHUB_HEAD_REF"
+          fi
+
+      - name: Stop local Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          cd "$REGISTRY_TEST_DIR"
+          supabase stop --no-backup
+ "$SOURCE_SQL" >> "$MIGRATION"
+            done
+            echo "commit;" >> "$MIGRATION"
           fi
 
       - name: Start disposable local Supabase stack
