@@ -27,9 +27,7 @@ jobs:
         with:
           version: 2.122.0
 
-      # Keep the local Supabase config outside the repository. Running
-      # "supabase start" from the repository root would replay every PNA
-      # migration, including unrelated/incomplete website migrations.
+      # Keep the local Supabase config outside the repository to avoid replaying PNA migrations.
       - name: Initialise isolated Registry test workspace
         shell: bash
         run: |
@@ -60,55 +58,6 @@ jobs:
             done
             echo "commit;" >> "$MIGRATION"
           fi
-          grep -Fxq '1..15' <<< "$TEST_OUTPUT"
-          OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 15
-
-      - name: Verify disposable Registry backup and restore
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$REGISTRY_TEST_DIR"
-          eval "$(supabase status -o env)"
-          pg_dump "$DB_URL" --format=custom --no-owner --no-privileges \
-            --schema=clinical_private --schema=clinical_api \
-            --file=/tmp/clinical-registry-backup.dump
-          pg_restore --list /tmp/clinical-registry-backup.dump >/dev/null
-          # Restore only into this disposable CI database, never a hosted project.
-          pg_restore --clean --if-exists --no-owner --no-privileges \
-            --dbname "$DB_URL" /tmp/clinical-registry-backup.dump
-          psql "$DB_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select case when to_regclass('clinical_private.patient_consent_events') is not null and to_regclass('clinical_private.audit_events') is not null and to_regclass('clinical_private.case_library_entries') is not null then 'restore-ok' else 'restore-failed' end" \
-            | grep -qx 'restore-ok'
-
-      - name: Commit validated CLI-generated migration to the PR branch
-        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: bash
-        run: |
-          set -euo pipefail
-          GENERATED="$(find "$REGISTRY_TEST_DIR/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
-          test -n "$GENERATED"
-          DEST="$GITHUB_WORKSPACE/supabase/migrations/$(basename "$GENERATED")"
-          if [ ! -f "$DEST" ]; then
-            cp "$GENERATED" "$DEST"
-            cd "$GITHUB_WORKSPACE"
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add "supabase/migrations/$(basename "$GENERATED")"
-            git commit -m "Add CLI-generated Clinical Registry migration"
-            git push origin "HEAD:$GITHUB_HEAD_REF"
-          fi
-
-      - name: Stop local Supabase stack
-        if: always()
-        shell: bash
-        run: |
-          cd "$REGISTRY_TEST_DIR"
-          supabase stop --no-backup
- "$SOURCE_SQL" >> "$MIGRATION"
-            done
-            echo "commit;" >> "$MIGRATION"
-          fi
 
       - name: Start disposable local Supabase stack
         shell: bash
@@ -124,8 +73,7 @@ jobs:
           cd "$REGISTRY_TEST_DIR"
           supabase db reset
 
-
-      - name: Run synthetic RLS isolation tests
+      - name: Run synthetic RLS and workflow tests
         shell: bash
         run: |
           set -euo pipefail
