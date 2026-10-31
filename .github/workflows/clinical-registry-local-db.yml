@@ -68,7 +68,7 @@ jobs:
               "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.prototype.sql" \
               "$GITHUB_WORKSPACE/supabase/clinical-registry/api-functions.prototype.sql" \
               "$GITHUB_WORKSPACE/supabase/clinical-registry/governance.prototype.sql"; do
-              grep -viE '^[[:space:]]*(begin|commit);' "$SOURCE_SQL" >> "$MIGRATION"
+              sed -n '/^begin;$/,$p' "$SOURCE_SQL" | grep -viE '^[[:space:]]*(begin|commit);' >> "$MIGRATION"
             done
             echo "commit;" >> "$MIGRATION"
           fi
