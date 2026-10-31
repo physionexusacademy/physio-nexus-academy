@@ -127,6 +127,9 @@ select ok(clinical_api.publish_approved_case(
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 1,
   'published de-identified case appears in public read surface');
 
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+
 select clinical_api.request_record_correction(
   '20000000-0000-4000-8000-000000000001',
   '30000000-0000-4000-8000-000000000001',
