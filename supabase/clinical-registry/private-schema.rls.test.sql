@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(19);
+select plan(20);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -67,6 +67,12 @@ select is((select count(*)::int from clinical_private.patients), 1,
   'therapist A reads only their own patient');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
+
+select throws_ok(
+  $provision_sql$select clinical_api.provision_verified_therapist(
+    '10000000-0000-4000-8000-000000000001',
+    'Self verified','PT','{}'::text[],null,null)$provision_sql$,
+  '42501', null, 'ordinary therapist cannot self-verify through operator RPC');
 
 update clinical_private.patients
 set display_name = 'Synthetic Patient A corrected'
