@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(15);
+select plan(17);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -126,6 +126,24 @@ select ok(clinical_api.publish_approved_case(
 ), 'trusted reviewer can publish approved case');
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 1,
   'published de-identified case appears in public read surface');
+
+select clinical_api.request_record_correction(
+  '20000000-0000-4000-8000-000000000001',
+  '30000000-0000-4000-8000-000000000001',
+  'report',
+  '30000000-0000-4000-8000-000000000001',
+  'Synthetic correction test with clear rationale',
+  '{"clinical_summary":"Corrected synthetic clinical summary"}'::jsonb
+);
+select ok(clinical_api.apply_own_report_correction(
+  (select id from clinical_private.correction_requests
+   where target_id = '30000000-0000-4000-8000-000000000001'
+   order by requested_at desc limit 1)
+), 'owning therapist can apply a report correction');
+select is((select clinical_summary from clinical_private.clinical_reports
+  where id = '30000000-0000-4000-8000-000000000001'),
+  'Corrected synthetic clinical summary',
+  'report correction is applied and auditable');
 
 select clinical_api.record_patient_consent(
   '20000000-0000-4000-8000-000000000001',
