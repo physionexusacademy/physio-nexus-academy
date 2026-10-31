@@ -186,6 +186,7 @@ declare
   v_reviewer boolean := coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false)
     or coalesce(auth.role() = 'service_role', false);
   v_submit_rpc boolean := current_setting('app.registry_submission_rpc', true) = 'on';
+  v_withdraw_rpc boolean := current_setting('app.registry_withdraw_rpc', true) = 'on';
 begin
   if tg_op = 'INSERT' then
     if new.status <> 'draft' then
@@ -193,6 +194,9 @@ begin
     end if;
   elsif not v_reviewer then
     if v_submit_rpc and old.status = 'draft' and new.status = 'submitted' then
+      null;
+    elsif v_withdraw_rpc and old.status = 'published' and new.status = 'withdrawn'
+      and old.owner_id = (select auth.uid()) then
       null;
     elsif old.status <> 'draft' or new.status <> 'draft'
       or new.owner_id <> old.owner_id
@@ -289,6 +293,77 @@ end;
 $$;
 
 
+
+-- Validate correction target linkage and keep requests immutable.
+create or replace function clinical_private.validate_correction_target()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if new.target_type = 'patient' and new.target_id <> new.patient_id then
+    raise exception 'Patient correction target must match patient_id' using errcode = '22023';
+  elsif new.target_type = 'report' and not exists (
+    select 1 from clinical_private.clinical_reports r
+    where r.id = new.target_id and r.id = new.report_id and r.patient_id = new.patient_id
+      and r.owner_id = new.owner_id
+  ) then
+    raise exception 'Report correction target does not match the owned report' using errcode = '42501';
+  elsif new.target_type = 'intervention' and not exists (
+    select 1 from clinical_private.clinical_interventions i
+    join clinical_private.clinical_reports r on r.id = i.report_id
+    where i.id = new.target_id and i.report_id = new.report_id
+      and r.patient_id = new.patient_id and r.owner_id = new.owner_id
+  ) then
+    raise exception 'Intervention correction target does not match the owned report' using errcode = '42501';
+  elsif new.target_type = 'outcome' and not exists (
+    select 1 from clinical_private.clinical_outcomes o
+    join clinical_private.clinical_reports r on r.id = o.report_id
+    where o.id = new.target_id and o.report_id = new.report_id
+      and r.patient_id = new.patient_id and r.owner_id = new.owner_id
+  ) then
+    raise exception 'Outcome correction target does not match the owned report' using errcode = '42501';
+  end if;
+  return new;
+end;
+$;
+drop trigger if exists correction_target_guard on clinical_private.correction_requests;
+create trigger correction_target_guard before insert on clinical_private.correction_requests
+for each row execute function clinical_private.validate_correction_target();
+
+create or replace function clinical_private.reject_immutable_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  raise exception 'This Registry history is append-only' using errcode = '42501';
+end;
+$;
+drop trigger if exists consent_events_immutable on clinical_private.patient_consent_events;
+create trigger consent_events_immutable before update or delete on clinical_private.patient_consent_events
+for each row execute function clinical_private.reject_immutable_change();
+drop trigger if exists correction_requests_immutable on clinical_private.correction_requests;
+create trigger correction_requests_immutable before update or delete on clinical_private.correction_requests
+for each row execute function clinical_private.reject_immutable_change();
+
+create or replace function clinical_api.withdraw_public_case(p_case_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  perform set_config('app.registry_withdraw_rpc', 'on', true);
+  update clinical_private.case_library_entries
+  set status = 'withdrawn', updated_at = now()
+  where id = p_case_id and owner_id = (select auth.uid()) and status = 'published';
+  return found;
+end;
+$;
+
 -- Authenticated RPCs for consent capture and correction requests. The private
 -- tables themselves are never exposed through PostgREST.
 create or replace function clinical_api.record_patient_consent(
@@ -379,6 +454,17 @@ as $$
          c.evidence_reference, c.published_at
   from clinical_private.case_library_entries c
   where c.status = 'published'
+    and exists (
+      select 1 from clinical_private.patient_consent_events ce
+      where ce.id = c.publication_consent_event_id
+        and ce.consent_status = 'granted'
+        and ce.purpose = 'public_case_publication'
+        and not exists (
+          select 1 from clinical_private.patient_consent_events later
+          where later.patient_id = ce.patient_id and later.owner_id = ce.owner_id
+            and later.purpose = ce.purpose and later.captured_at > ce.captured_at
+        )
+    )
     and (
       nullif(trim(p_search), '') is null
       or c.case_title ilike '%' || trim(p_search) || '%'
@@ -519,6 +605,7 @@ revoke all on all functions in schema clinical_api from public, anon;
 grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
 grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
+grant execute on function clinical_api.withdraw_public_case(uuid) to authenticated;
 grant execute on function clinical_api.review_case_submission(uuid,text,text) to authenticated;
 grant execute on function clinical_api.publish_approved_case(uuid) to authenticated;
 grant execute on function clinical_api.list_public_cases(text,integer) to anon, authenticated;
