@@ -107,10 +107,10 @@ select ok(clinical_api.submit_case_for_review(
 ), 'owner can submit a de-identified case draft');
 
 select throws_ok(
-  $select clinical_api.review_case_submission(
+  $test_sql$select clinical_api.review_case_submission(
     (select id from clinical_private.case_library_entries
      where case_title = 'Synthetic shoulder rehabilitation case'),
-    'approved', null)$,
+    'approved', null)$test_sql$,
   '42501', null, 'ordinary therapist cannot approve a case');
 
 select set_config('request.jwt.claims',
