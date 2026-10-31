@@ -35,11 +35,6 @@ create policy verified_owner_records_consent on clinical_private.patient_consent
     and exists (select 1 from clinical_private.therapist_memberships tm
       where tm.user_id = (select auth.uid()) and tm.is_active
         and tm.verification_status = 'verified')
-    and (prior_event_id is null or exists (
-      select 1 from clinical_private.patient_consent_events prior
-      where prior.id = prior_event_id and prior.patient_id = patient_id
-        and prior.owner_id = (select auth.uid()) and prior.purpose = purpose
-    ))
   );
 revoke all on clinical_private.patient_consent_events from public, anon;
 grant select, insert on clinical_private.patient_consent_events to authenticated;
