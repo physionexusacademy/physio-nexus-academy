@@ -169,7 +169,8 @@ create policy owner_updates_own_case_drafts on clinical_private.case_library_ent
   for update to authenticated using (
     owner_id = (select auth.uid()) and status = 'draft'
   ) with check (
-    owner_id = (select auth.uid()) and status = 'draft'
+    owner_id = (select auth.uid()) and status in ('draft','submitted')
+      and deidentified_confirmed
   );
 revoke all on clinical_private.case_library_entries from public, anon;
 grant select, insert, update on clinical_private.case_library_entries to authenticated;
@@ -414,6 +415,7 @@ alter table clinical_private.retention_review_events enable row level security;
 alter table clinical_private.retention_review_events force row level security;
 revoke all on clinical_private.registry_retention_rules,
   clinical_private.retention_review_events from public, anon, authenticated;
+grant usage on schema clinical_private to service_role;
 grant all on clinical_private.registry_retention_rules,
   clinical_private.retention_review_events to service_role;
 
