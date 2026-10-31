@@ -60,9 +60,13 @@ jobs:
           set -euo pipefail
           cd "$REGISTRY_TEST_DIR"
           eval "$(supabase status -o env)"
+          set +e
           TEST_OUTPUT="$(psql "$DB_URL" -X -q -A -t -v ON_ERROR_STOP=1 \
             -f "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.rls.test.sql" 2>&1)"
+          TEST_EXIT=$?
+          set -e
           printf '%s\n' "$TEST_OUTPUT"
+          test "$TEST_EXIT" -eq 0
           if grep -qE '^not ok [0-9]+' <<< "$TEST_OUTPUT"; then
             echo "pgTAP reported failed assertions."
             exit 1
