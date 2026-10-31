@@ -337,6 +337,89 @@ export const stupidInternEpisodes: StupidInternEpisode[] = ([
     lesson: "An absent or reduced deep tendon reflex should not be interpreted in isolation. Ensure appropriate positioning, relaxation and technique; compare sides and assess other relevant neurological findings. Interpret the result in the context of the patient's history and complete examination. If findings are unexpected or concerning, reassess and arrange appropriate medical evaluation."
   }
 
+
+  ,
+  {
+    id: 21,
+    title: "The Weight-Bearing Guessing Game",
+    field: "Orthopaedic Rehabilitation",
+    date: "2026-10-31",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why did you ask the post-operative patient to put full weight through the operated leg?" },
+      { speaker: "Intern", text: "Sir, the patient looked strong, so I thought full weight-bearing would speed up recovery." },
+      { speaker: "Dr. Sajjad", text: "Did you check the surgeon's post-operative instructions or the documented weight-bearing status?" },
+      { speaker: "Intern", text: "No, Sir. I used my clinical eyes." },
+      { speaker: "Dr. Sajjad", text: "Your eyes are not an orthopaedic prescription! Weight-bearing depends on the procedure, fixation, healing and treating team's instructions. Confirm the restriction before mobilising the patient." },
+      { speaker: "Intern", text: "So I should not upgrade the patient's weight-bearing just because they look confident?" },
+      { speaker: "Dr. Sajjad", text: "Exactly. Confidence is not a loading protocol." }
+    ],
+    lesson: "Before mobilisation after surgery or fracture, verify the documented weight-bearing status and relevant precautions from the treating team. Do not independently advance loading based on appearance, pain tolerance or the patient's confidence. Use an appropriate aid and educate the patient about the prescribed restriction."
+  },
+  {
+    id: 22,
+    title: "The Oxygen Number Escape Artist",
+    field: "Cardiopulmonary Physiotherapy",
+    date: "2026-10-31",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why did you continue the walking session when the patient's oxygen saturation dropped and they became unusually breathless?" },
+      { speaker: "Intern", text: "Sir, I was focused on completing the walking distance. The pulse oximeter was disturbing my motivation." },
+      { speaker: "Dr. Sajjad", text: "Did you check the signal quality, symptoms, respiratory rate and the patient's prescribed oxygen target?" },
+      { speaker: "Intern", text: "No, Sir. I thought the number would recover after the next lap." },
+      { speaker: "Dr. Sajjad", text: "A concerning observation is not a spectator sport! Stop or modify activity, assess the patient, verify the reading and follow their individual care plan and escalation protocol." },
+      { speaker: "Intern", text: "So distance is not more important than the patient's response?" },
+      { speaker: "Dr. Sajjad", text: "Correct. The walking target can wait. The patient cannot." }
+    ],
+    lesson: "Monitor symptoms and relevant observations during exercise in patients at risk of desaturation. If oxygen saturation falls unexpectedly or the patient develops concerning breathlessness, pause activity, assess the patient and verify signal quality and measurement conditions. Follow the patient's prescribed target range, oxygen plan and local escalation protocol; do not apply one universal threshold to every patient."
+  },
+  {
+    id: 23,
+    title: "The Missing Half of the Room",
+    field: "Neurological Rehabilitation",
+    date: "2026-10-31",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why does the patient keep leaving objects on the left side of the table untouched?" },
+      { speaker: "Intern", text: "Sir, perhaps they are practising minimalism." },
+      { speaker: "Dr. Sajjad", text: "Did you screen for visual field loss, visual inattention or spatial neglect after the stroke?" },
+      { speaker: "Intern", text: "No, Sir. I only tested whether they could see my face." },
+      { speaker: "Dr. Sajjad", text: "The room has two sides, not just the side where you stand! Observe functional behaviour and use appropriate screening. Do not label every missed object as poor effort." },
+      { speaker: "Intern", text: "So I should assess perception and attention as well as strength?" },
+      { speaker: "Dr. Sajjad", text: "Now you're looking at the whole patient. What a revolutionary development!" }
+    ],
+    lesson: "After stroke, difficulty attending to one side may reflect spatial neglect, visual field impairment or another perceptual problem. Observe functional tasks, screen relevant visual and perceptual domains using appropriate methods, consider safety risks and refer for further assessment when indicated. Do not assume the patient is simply inattentive or unmotivated."
+  },
+  {
+    id: 24,
+    title: "The Walker That Needed Physiotherapy",
+    field: "Gait and Mobility Training",
+    date: "2026-10-31",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why is the patient leaning heavily forward over this walking frame?" },
+      { speaker: "Intern", text: "Sir, I found the walker in the store. One size fits all, right?" },
+      { speaker: "Dr. Sajjad", text: "Did you adjust its height, check the handgrip position, inspect the rubber tips and assess the patient's ability to use it safely?" },
+      { speaker: "Intern", text: "No, Sir. It had four legs, so I assumed it was ready for action." },
+      { speaker: "Dr. Sajjad", text: "A chair also has four legs. That doesn't make it a walking aid! Fit the device to the patient, teach the correct sequence and reassess safety." },
+      { speaker: "Intern", text: "So the patient should not have to adapt to a badly fitted walker?" },
+      { speaker: "Dr. Sajjad", text: "Exactly. Adjust the aid—not the patient's spine to your laziness." }
+    ],
+    lesson: "Select and fit a walking aid according to the patient's height, strength, balance, cognition and mobility needs. Check device condition, handgrip height and stability, teach safe sequencing and turning, and reassess the patient's response. A poorly fitted or unsuitable aid can increase effort and fall risk."
+  },
+  {
+    id: 25,
+    title: "The Shoulder Pain Tunnel Vision",
+    field: "Musculoskeletal Clinical Reasoning",
+    date: "2026-10-31",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "What did you conclude about the patient's shoulder pain?" },
+      { speaker: "Intern", text: "Rotator cuff problem, Sir. I have already prepared three strengthening exercises." },
+      { speaker: "Dr. Sajjad", text: "The patient also reports chest pressure, sweating and unusual shortness of breath. Did you explore those symptoms?" },
+      { speaker: "Intern", text: "No, Sir. The referral says shoulder pain, so I stayed loyal to the shoulder." },
+      { speaker: "Dr. Sajjad", text: "Clinical reasoning is not a loyalty programme! New or unexplained shoulder pain with possible cardiac symptoms needs urgent medical assessment. Stop the routine session and activate the appropriate emergency pathway." },
+      { speaker: "Intern", text: "So not every shoulder complaint belongs on the exercise sheet?" },
+      { speaker: "Dr. Sajjad", text: "Correct. Sometimes the safest shoulder treatment is knowing when not to treat the shoulder." }
+    ],
+    lesson: "Shoulder or arm discomfort accompanied by chest pressure, sweating, breathlessness, faintness or other possible cardiac symptoms may represent an acute medical emergency. Stop routine physiotherapy, do not attempt to exercise through the symptoms, and activate the local emergency response pathway for prompt medical assessment. Do not assume the referral diagnosis explains every symptom."
+  }
+
 ] satisfies StupidInternEpisode[]).sort((a, b) => b.id - a.id);
 
 export function getLatestEpisode() {
