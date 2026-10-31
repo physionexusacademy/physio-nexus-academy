@@ -162,5 +162,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          cd "$REGISTRY_TEST_DIR"
-          supabase stop --no-backup
+          if [ -d "$REGISTRY_TEST_DIR/supabase" ]; then
+            cd "$REGISTRY_TEST_DIR"
+            supabase stop --no-backup || true
+          fi
