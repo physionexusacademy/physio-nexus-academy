@@ -221,7 +221,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 begin
   if (select auth.uid()) is null then
     raise exception 'Authentication required' using errcode = '42501';
@@ -302,7 +302,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 begin
   if new.target_type = 'patient' and new.target_id <> new.patient_id then
     raise exception 'Patient correction target must match patient_id' using errcode = '22023';
@@ -339,7 +339,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 begin
   raise exception 'This Registry history is append-only' using errcode = '42501';
 end;
@@ -356,7 +356,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 begin
   perform set_config('app.registry_withdraw_rpc', 'on', true);
   update clinical_private.case_library_entries
@@ -380,7 +380,7 @@ returns uuid
 language plpgsql
 security invoker
 set search_path = ''
-as $
+as $function$
 declare
   v_id uuid;
 begin
@@ -414,7 +414,7 @@ returns uuid
 language plpgsql
 security invoker
 set search_path = ''
-as $
+as $function$
 declare
   v_id uuid;
 begin
@@ -512,7 +512,7 @@ returns table(record_type text, record_id uuid, owner_id uuid, archived_at times
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 begin
   if coalesce(auth.role() = 'service_role', false) is not true then
     raise exception 'Registry service role required' using errcode = '42501';
