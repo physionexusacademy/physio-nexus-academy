@@ -51,7 +51,7 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 \
             -f "$GITHUB_WORKSPACE/supabase/clinical-registry/private-schema.prototype.sql" \
-            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/api-functions.prototype.sql"
+            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/api-functions.prototype.sql" \\\n            -f "$GITHUB_WORKSPACE/supabase/clinical-registry/governance.prototype.sql"
 
       - name: Run synthetic RLS isolation tests
         shell: bash
