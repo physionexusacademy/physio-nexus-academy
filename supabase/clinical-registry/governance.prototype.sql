@@ -39,6 +39,28 @@ create policy verified_owner_records_consent on clinical_private.patient_consent
 revoke all on clinical_private.patient_consent_events from public, anon;
 grant select, insert on clinical_private.patient_consent_events to authenticated;
 
+create or replace function clinical_private.validate_consent_prior_event()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $consent_prior_guard$
+begin
+  if new.prior_event_id is not null and not exists (
+    select 1 from clinical_private.patient_consent_events prior
+    where prior.id = new.prior_event_id
+      and prior.patient_id = new.patient_id
+      and prior.owner_id = new.owner_id
+      and prior.purpose = new.purpose
+  ) then
+    raise exception 'Consent event reference must belong to the same patient and purpose' using errcode = '42501';
+  end if;
+  return new;
+end;
+$consent_prior_guard$;
+drop trigger if exists consent_prior_event_guard on clinical_private.patient_consent_events;
+create trigger consent_prior_event_guard before insert on clinical_private.patient_consent_events
+for each row execute function clinical_private.validate_consent_prior_event();
 -- Consent is required before a new clinical report can be created.
 create or replace function clinical_private.require_current_care_consent()
 returns trigger
