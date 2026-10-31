@@ -169,8 +169,7 @@ create policy owner_updates_own_case_drafts on clinical_private.case_library_ent
   for update to authenticated using (
     owner_id = (select auth.uid()) and status = 'draft'
   ) with check (
-    owner_id = (select auth.uid()) and status in ('draft','submitted')
-      and deidentified_confirmed
+    owner_id = (select auth.uid()) and status = 'draft'
   );
 revoke all on clinical_private.case_library_entries from public, anon;
 grant select, insert, update on clinical_private.case_library_entries to authenticated;
@@ -220,10 +219,13 @@ for each row execute function clinical_private.guard_case_library_workflow();
 create or replace function clinical_api.submit_case_for_review(p_case_id uuid)
 returns boolean
 language plpgsql
-security invoker
+security definer
 set search_path = ''
-as $$
+as $
 begin
+  if (select auth.uid()) is null then
+    raise exception 'Authentication required' using errcode = '42501';
+  end if;
   perform set_config('app.registry_submission_rpc', 'on', true);
   update clinical_private.case_library_entries
   set status = 'submitted', submitted_at = now(), updated_at = now()
