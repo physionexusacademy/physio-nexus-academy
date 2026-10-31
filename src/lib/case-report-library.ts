@@ -655,5 +655,412 @@ export const publishedCaseReports: PublishedCaseReport[] = [
     "The authors call for further research with larger samples; the programme's dose and applicability should not be generalized automatically."
   ]
 }
+,
+{
+  "slug": "chronic-ankle-instability-xsens-gait-rehabilitation",
+  "title": "Utilising Xsens Gait Analysis to Improve Functional Outcomes in Chronic Ankle Instability: A Multifaceted Physiotherapy Approach",
+  "authors": "Nikita Gangwani, Deepali S. Patil, Gurjeet Kaur",
+  "journal": "Cureus",
+  "year": 2024,
+  "specialty": "Musculoskeletal / Sports Rehabilitation",
+  "tags": [
+    "Chronic ankle instability",
+    "Gait analysis",
+    "Recurrent ankle sprain",
+    "Balance"
+  ],
+  "openAccess": true,
+  "licenseNote": "CC BY 4.0; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11457927/",
+  "doi": "10.7759/cureus.68880",
+  "caseSummary": "A 25-year-old woman presented with recurrent ankle sprains, persistent pain, swelling and a feeling of instability despite previous conservative care. The report describes a multifaceted physiotherapy approach that incorporated wearable Xsens gait analysis to inform assessment and rehabilitation.",
+  "clinicalFindings": [
+    "History of repeated ankle sprains over several years with recurrent giving-way symptoms.",
+    "Swelling and pain around the ankle, ligament laxity and high longitudinal arches were reported.",
+    "The case used gait analysis to examine functional movement in addition to the clinical examination."
+  ],
+  "intervention": [
+    "An individualized physiotherapy programme incorporating gait assessment with Xsens wearable technology.",
+    "The report describes a multifaceted rehabilitation approach; consult the original article for the full exercise selection and progression rather than assuming a universal protocol."
+  ],
+  "outcomes": [
+    "The authors reported improvement in pain and functional outcomes following the rehabilitation programme."
+  ],
+  "clinicalLessons": [
+    "Recurrent ankle sprains with giving-way symptoms warrant assessment for chronic ankle instability, not just treatment of the latest sprain.",
+    "Gait-analysis technology may add functional information, but it should complement—not replace—clinical examination and patient-reported outcomes."
+  ],
+  "limitations": [
+    "Single-patient case report; it cannot establish that Xsens analysis or any single intervention caused the improvement.",
+    "Technology access and the reported programme may not be transferable to every clinical setting."
+  ]
+},
+{
+  "slug": "post-covid-syndrome-physical-therapy-rehabilitation",
+  "title": "Physical Therapy Management of an Individual With Post-COVID Syndrome: A Case Report",
+  "authors": "Kirby P. Mayer, Angela K. Steele, Melissa K. Soper, Jill D. Branton, Megan L. Lusby, Anna G. Kalema, Esther E. Dupont-Versteegden, Ashley A. Montgomery-Yates",
+  "journal": "Physical Therapy",
+  "year": 2021,
+  "specialty": "Cardiorespiratory Rehabilitation",
+  "tags": [
+    "Post-COVID condition",
+    "Exercise intolerance",
+    "Fatigue",
+    "Pulmonary rehabilitation"
+  ],
+  "openAccess": true,
+  "licenseNote": "Full text is available in PubMed Central; check the publisher's licence before reusing figures or tables.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7989151/",
+  "doi": "10.1093/ptj/pzab098",
+  "caseSummary": "This case report describes physical therapy for an individual with persistent symptoms after COVID-19, including reduced exercise tolerance, fatigue, dyspnoea and cognitive and emotional concerns. It is useful for understanding why post-COVID rehabilitation needs to consider more than aerobic capacity alone.",
+  "clinicalFindings": [
+    "The patient had ongoing dyspnoea, fatigue and cognitive complaints after COVID-19.",
+    "Minor reductions in muscle strength and cognitive function were reported.",
+    "Baseline six-minute walk distance and quality-of-life and psychological measures were assessed."
+  ],
+  "intervention": [
+    "Biweekly physical therapist sessions over eight weeks.",
+    "The programme included aerobic training, strengthening, diaphragmatic breathing and mindfulness training, with monitoring of exercise response."
+  ],
+  "outcomes": [
+    "Six-minute walk distance increased by 199 metres, reaching 80% of the age-predicted distance.",
+    "Muscle strength, physical function and exercise capacity improved.",
+    "Quality-of-life and PTSD scores did not improve, and migraines, dyspnoea, fatigue and cognitive dysfunction persisted at the end of the programme."
+  ],
+  "clinicalLessons": [
+    "Screen and monitor post-exertional symptoms and the individual's response rather than assuming a standard graded-exercise approach is appropriate for everyone.",
+    "Include cognitive function, emotional health and participation goals in the assessment.",
+    "A gain in walking distance does not mean all symptoms have resolved."
+  ],
+  "limitations": [
+    "Single case report; the findings cannot define an optimal programme for all people with post-COVID condition.",
+    "The patient had persistent symptoms despite functional gains; outcomes should not be reduced to exercise capacity alone."
+  ]
+},
+{
+  "slug": "elderly-hand-burn-split-skin-graft-rehabilitation",
+  "title": "A Holistic Approach to Burn Rehabilitation Managed With Split Skin Grafting in an Elderly Woman: A Case Report",
+  "authors": "Mayuri R. Zoting, Mansi Subhedar, Subrat N. Samal",
+  "journal": "Cureus",
+  "year": 2024,
+  "specialty": "Burns / Hand Rehabilitation",
+  "tags": [
+    "Hand burn",
+    "Split skin graft",
+    "Scar management",
+    "Hand function"
+  ],
+  "openAccess": true,
+  "licenseNote": "CC BY 4.0; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11375958/",
+  "doi": "10.7759/cureus.66246",
+  "caseSummary": "A 71-year-old woman presented with a right-hand burn, swelling, wound contracture and restricted movement of the fourth and fifth fingers. She had undergone split skin grafting. The case discusses pain management and functional rehabilitation in an older adult after a significant hand burn.",
+  "clinicalFindings": [
+    "Restricted movement of the fourth and fifth fingers and swelling were reported two months after the burn.",
+    "The patient had wound contracture and had undergone split skin grafting.",
+    "Pain was initially rated 10/10 on the visual analogue scale."
+  ],
+  "intervention": [
+    "The report describes cryotherapy, splinting and active range-of-motion exercises as part of the physiotherapy approach.",
+    "Rehabilitation planning considered pain, hand movement, scar-related concerns and functional ability."
+  ],
+  "outcomes": [
+    "The reported pain score reduced from 10/10 to 8/10 after the described interventions.",
+    "The authors also describe improvement in scar formation and functional ability; interpret these findings in the context of the single case."
+  ],
+  "clinicalLessons": [
+    "After grafting, coordinate rehabilitation with wound and surgical guidance and protect the graft while restoring movement.",
+    "Monitor scar, edema, pain and hand function—not pain alone.",
+    "Splinting and movement programmes must be individualized to tissue healing and contracture risk."
+  ],
+  "limitations": [
+    "Single case report with limited generalizability.",
+    "The reported pain reduction is modest; the case does not establish the comparative effectiveness of cryotherapy, splinting or exercise."
+  ]
+},
+{
+  "slug": "rotator-cuff-syndrome-maitland-mobilization-case",
+  "title": "Optimizing Physiotherapeutic Effects With the Maitland Mobilization Technique to Boost the Functional Capacities of a Rotator Cuff Syndrome Patient: A Case Report",
+  "authors": "Samiksha V. Sonone, Deepali S. Patil",
+  "journal": "Cureus",
+  "year": 2024,
+  "specialty": "Musculoskeletal",
+  "tags": [
+    "Rotator cuff syndrome",
+    "Shoulder pain",
+    "Maitland mobilization",
+    "Therapeutic exercise"
+  ],
+  "openAccess": true,
+  "licenseNote": "CC BY 4.0; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11344476/",
+  "doi": "10.7759/cureus.65341",
+  "caseSummary": "A 62-year-old female field worker with longstanding left shoulder pain and a partial-thickness rotator cuff tear on MRI received a six-week multimodal physiotherapy programme. The case combines manual therapy with exercise, education and symptom-management modalities.",
+  "clinicalFindings": [
+    "Four-year history of left shoulder pain with difficulty during overhead activity and daily tasks.",
+    "MRI showed a partial-thickness rotator cuff tear; belly-press, lift-off and empty-can tests were reported positive.",
+    "Baseline pain was 8.9/10 with activity and 4.5/10 at rest."
+  ],
+  "intervention": [
+    "Six-week programme including glenohumeral mobilization (including posterior and caudal glides), strengthening, active mobility and patient education.",
+    "The paper also reports ultrasound and TENS; these were components of a multimodal programme, not isolated tests of Maitland mobilization."
+  ],
+  "outcomes": [
+    "Activity pain reduced from 8.9/10 to 4.3/10 and resting pain from 4.5/10 to 1.3/10.",
+    "DASH score improved from 50 to 17; shoulder flexion increased from 120° to 160° and abduction from 120° to 150°."
+  ],
+  "clinicalLessons": [
+    "Combine history, functional limitations, examination and imaging rather than treating an MRI finding in isolation.",
+    "Use manual therapy, when appropriate, to support a broader active rehabilitation plan.",
+    "Track pain, range of motion and disability together."
+  ],
+  "limitations": [
+    "Single case with multiple simultaneous interventions; the contribution of Maitland mobilization cannot be separated.",
+    "The case does not demonstrate that manual therapy is superior to exercise or other care."
+  ]
+},
+{
+  "slug": "total-knee-arthroplasty-symmetry-biofeedback-retraining",
+  "title": "Functional and Biomechanical Outcomes After Using Biofeedback for Retraining Symmetrical Movement Patterns After Total Knee Arthroplasty: A Case Report",
+  "authors": "Jodie McClelland, Joseph Zeni, Ross M. Haley, Lynn Snyder-Mackler",
+  "journal": "Journal of Orthopaedic & Sports Physical Therapy",
+  "year": 2012,
+  "specialty": "Orthopaedic Rehabilitation",
+  "tags": [
+    "Total knee arthroplasty",
+    "Weight-bearing symmetry",
+    "Biofeedback",
+    "Gait retraining"
+  ],
+  "openAccess": true,
+  "licenseNote": "Full text is available in PubMed Central; check the publisher's licence before reusing figures or tables.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3619425/",
+  "doi": "10.2519/jospt.2012.3773",
+  "caseSummary": "A 57-year-old woman with unilateral knee osteoarthritis was assessed before total knee arthroplasty and at three and ten weeks after surgery. The report focuses on persistent movement asymmetry after surgery and a rehabilitation strategy designed to improve symmetrical loading.",
+  "clinicalFindings": [
+    "The patient demonstrated abnormal and asymmetrical knee biomechanics before surgery.",
+    "The report highlights reduced knee excursion on the operated side and compensatory loading patterns as relevant rehabilitation targets."
+  ],
+  "intervention": [
+    "Progressive quadriceps strengthening combined with movement retraining.",
+    "Visual, verbal and tactile feedback was used to encourage symmetrical weight bearing during strengthening and functional activities."
+  ],
+  "outcomes": [
+    "After the rehabilitation programme, knee motion and moments were reported to return to normal levels.",
+    "Walking showed greater and more symmetrical knee excursion compared with a historical cohort of similar patients."
+  ],
+  "clinicalLessons": [
+    "Do not assume that pain reduction or basic walking ability means loading symmetry has normalized after TKA.",
+    "Use feedback during functional tasks when asymmetrical loading is identified.",
+    "Combine strength progression with movement-quality assessment."
+  ],
+  "limitations": [
+    "Single-patient case report with comparison to a historical cohort, not a randomized comparison.",
+    "The findings support further study and should not be treated as proof that biofeedback is required for every TKA patient."
+  ]
+},
+{
+  "slug": "vestibular-schwannoma-postoperative-vestibular-rehabilitation",
+  "title": "Impact of Vestibular and Balance Rehabilitation Therapy Along With Conventional Physiotherapy in a Case of Vestibular Schwannoma With CP Angle Tumor: A Case Report",
+  "authors": "Vaishnavi B. Warutkar, Snehal Samal, Prishita Koul",
+  "journal": "Cureus",
+  "year": 2023,
+  "specialty": "Neurological / Vestibular Rehabilitation",
+  "tags": [
+    "Vestibular schwannoma",
+    "Post-operative rehabilitation",
+    "Balance",
+    "Gaze stabilization"
+  ],
+  "openAccess": true,
+  "licenseNote": "Open access under CC BY; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10576441/",
+  "doi": "10.7759/cureus.45224",
+  "caseSummary": "A woman underwent surgery for a vestibular schwannoma at the cerebellopontine angle and experienced post-operative balance and coordination problems alongside other neurological symptoms. The report describes vestibular rehabilitation integrated with conventional neurophysiotherapy.",
+  "clinicalFindings": [
+    "Post-operative balance and mobility difficulties were assessed using the Berg Balance Scale and Motion Sensitivity Quotient.",
+    "Baseline Berg Balance Scale score was 18 and Motion Sensitivity Quotient score was 48.",
+    "The case also described facial muscle involvement requiring additional rehabilitation."
+  ],
+  "intervention": [
+    "Vestibular and balance rehabilitation included head movement, gaze-stabilization (VOR), habituation and progressively challenging standing balance exercises.",
+    "Conventional neurophysiotherapy included facial PNF, facial-expression exercises, sitting balance, sit-to-stand, coordination and gait training."
+  ],
+  "outcomes": [
+    "The authors reported improvement in balance and coordination and greater ability to perform daily activities with minimal assistance.",
+    "The report describes improvement after surgery and the rehabilitation programme; it does not isolate the effect of physiotherapy from surgical recovery."
+  ],
+  "clinicalLessons": [
+    "Select vestibular exercises according to the patient's symptoms and tolerance, with planned progression.",
+    "Include balance, transfers, gait and facial function where relevant rather than focusing on dizziness alone.",
+    "Use validated outcome measures to track change over time."
+  ],
+  "limitations": [
+    "Single case report; improvement may reflect both tumour excision and rehabilitation.",
+    "The reported protocol should not be copied without considering post-operative status and specialist precautions."
+  ]
+},
+{
+  "slug": "complex-hand-tendon-artery-nerve-repair-rehabilitation",
+  "title": "Orthopedic Rehabilitation Following Complex Repair of the Flexor and Extensor Tendons, Artery, and Nerve: A Case Report",
+  "authors": "Aydan Novruzova",
+  "journal": "Cureus",
+  "year": 2025,
+  "specialty": "Hand / Orthopaedic Rehabilitation",
+  "tags": [
+    "Flexor tendon repair",
+    "Extensor tendon repair",
+    "Median nerve",
+    "Radial artery"
+  ],
+  "openAccess": true,
+  "licenseNote": "CC BY 4.0; attribute the original author and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12812336/",
+  "doi": "10.7759/cureus.99643",
+  "caseSummary": "A 38-year-old right-hand-dominant woman sustained a glass laceration involving the flexor and extensor tendons of the index and middle fingers, radial artery and median nerve. Following surgical repair, the report describes a staged rehabilitation programme balancing tendon protection with recovery of movement and hand use.",
+  "clinicalFindings": [
+    "Loss of flexion and extension in the second and third fingers, absent radial artery pulse, median-nerve-distribution sensory loss and edema were reported.",
+    "Baseline finger range of motion was markedly restricted and grip strength was 15% of the unaffected hand."
+  ],
+  "intervention": [
+    "Weeks 0–3: splinting, passive flexion, active extension and edema control to protect repairs.",
+    "Weeks 3–6: controlled active movement, tendon-gliding and light resistance; weeks 6–12: functional grip, fine-motor and desensitization work.",
+    "Progression was linked to wound healing, pain and edema, repair stability and movement control."
+  ],
+  "outcomes": [
+    "At week 12, finger motion reached 85% of normal at the MCP joints, 80% at PIP and 75% at DIP joints.",
+    "Grip strength reached about 70% of the unaffected hand; thenar strength improved from 2/5 to 4/5, with independence in several fine-motor tasks."
+  ],
+  "clinicalLessons": [
+    "Combined tendon, nerve and vascular injuries require close coordination with the surgical team and a carefully staged protection-to-function plan.",
+    "Early controlled movement must respect repair stability and tissue-healing criteria.",
+    "Measure both impairment-level outcomes and meaningful hand activities."
+  ],
+  "limitations": [
+    "Short-term follow-up only; long-term nerve recovery and sustained function remain uncertain.",
+    "Validated DASH or Patient-Rated Wrist Evaluation scales were not used in the report."
+  ]
+},
+{
+  "slug": "severe-hand-crush-injury-postoperative-physiotherapy",
+  "title": "Physical Therapy Management in a Severe Case of Overlapping of Bone Post Crush Injury: A Case Report",
+  "authors": "Chaitanya A. Kulkarni, Om C. Wadhokar, Medhavi V. Joshi",
+  "journal": "Cureus",
+  "year": 2022,
+  "specialty": "Hand / Orthopaedic Rehabilitation",
+  "tags": [
+    "Crush injury",
+    "Hand trauma",
+    "Fracture-dislocation",
+    "Functional rehabilitation"
+  ],
+  "openAccess": true,
+  "licenseNote": "CC BY 4.0; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9616558/",
+  "doi": "10.7759/cureus.29708",
+  "caseSummary": "A 38-year-old left-hand-dominant man sustained a severe hand crush injury in a road traffic accident, with extensive soft-tissue injury and complex bony and joint involvement. The report emphasizes careful recognition of the injury pattern and post-surgical rehabilitation to restore useful hand function.",
+  "clinicalFindings": [
+    "Large palmar and dorsal wounds with exposed tendons and diffuse hand swelling were described.",
+    "The injury involved complex fracture-dislocation patterns affecting several hand joints.",
+    "The dominant hand was involved, making independence in daily activities a key rehabilitation concern."
+  ],
+  "intervention": [
+    "The report describes post-surgical physiotherapy directed toward restoring movement, strength and functional use of the injured hand.",
+    "The exact progression must be interpreted alongside the surgical procedures and tissue-healing restrictions described in the original report."
+  ],
+  "outcomes": [
+    "The case highlights functional rehabilitation and recovery of independence as central goals; do not infer a treatment effect or numerical outcome beyond what the original report documents."
+  ],
+  "clinicalLessons": [
+    "High-energy hand crush injuries need careful clinical and imaging assessment because complex fracture-dislocations may be missed.",
+    "After surgery, coordinate rehabilitation with fixation stability, wound status and surgeon-directed precautions.",
+    "Prioritize meaningful daily tasks and hand function, especially when the dominant hand is affected."
+  ],
+  "limitations": [
+    "Single case report; it cannot establish a standard protocol for all severe hand crush injuries.",
+    "The summary intentionally avoids adding unverified outcome values or treatment dosage."
+  ]
+},
+{
+  "slug": "rheumatoid-arthritis-total-knee-replacement-physiotherapy",
+  "title": "Physiotherapy Intervention for Grade 4 Rheumatoid Arthritis Managed With Total Knee Replacement: A Case Report",
+  "authors": "Shraddha S. Kochar, Mitushi Deshmukh, Pranali S. Fokmare",
+  "journal": "Cureus",
+  "year": 2023,
+  "specialty": "Rheumatology / Orthopaedic Rehabilitation",
+  "tags": [
+    "Rheumatoid arthritis",
+    "Total knee replacement",
+    "Range of motion",
+    "Post-operative rehabilitation"
+  ],
+  "openAccess": true,
+  "licenseNote": "CC BY 4.0; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10628338/",
+  "doi": "10.7759/cureus.46658",
+  "caseSummary": "A 30-year-old woman with severe rheumatoid arthritis and deformities affecting multiple joints underwent left total knee replacement for advanced knee involvement. The case describes a 15-day physiotherapy programme addressing post-operative pain, restricted knee motion, muscle weakness and function in the context of systemic inflammatory disease.",
+  "clinicalFindings": [
+    "Severe rheumatoid arthritis with bilateral knee involvement and deformities in the hands and legs.",
+    "After left total knee replacement, the patient had pain, restricted knee range of motion and reduced lower-limb strength.",
+    "The report also considered positioning and mobility needs in other joints affected by rheumatoid arthritis."
+  ],
+  "intervention": [
+    "A 15-day programme included continuous passive motion, passive and active-assisted movement, quadriceps/hamstring/gluteal isometrics, straight-leg raises and progressive strengthening.",
+    "Parallel-bar ambulation and stair practice were included, alongside positioning and gentle mobility care for other affected joints."
+  ],
+  "outcomes": [
+    "Knee flexion increased from 10–25° to 25–80° over 15 days as reported in the article's table.",
+    "The authors reported reduced pain, improved range of motion and increased muscle strength; several lower-limb MMT grades also improved."
+  ],
+  "clinicalLessons": [
+    "Post-operative knee rehabilitation should account for the wider effects of rheumatoid arthritis and the status of other involved joints.",
+    "Combine mobility, strengthening and functional gait goals while respecting surgical precautions and symptom response.",
+    "Document baseline and follow-up measures rather than relying on general impressions."
+  ],
+  "limitations": [
+    "Single case with a short 15-day follow-up; long-term outcomes are not established.",
+    "The report does not compare this programme with other post-TKR rehabilitation approaches."
+  ]
+},
+{
+  "slug": "subacute-spinal-cord-injury-aerobic-training-rehabilitation",
+  "title": "The Integration of Aerobic Exercise in Rehabilitation of a Subacute Inpatient With Spinal Cord Injury: A Case Report",
+  "authors": "Lorenzo D’Orio, Adriana Semprini, Elisa Barbiani, Francesco Giuseppe Materazzi",
+  "journal": "Spinal Cord Series and Cases",
+  "year": 2026,
+  "specialty": "Neurological Rehabilitation",
+  "tags": [
+    "Spinal cord injury",
+    "Tetraplegia",
+    "Aerobic training",
+    "Inpatient rehabilitation"
+  ],
+  "openAccess": true,
+  "licenseNote": "Open access; attribute the original authors and source.",
+  "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13197470/",
+  "doi": "10.1038/s41394-026-00736-2",
+  "caseSummary": "A 25-year-old person with C6 AIS B tetraplegia was admitted for rehabilitation in the subacute phase after a diving accident. The case examines how aerobic training was integrated with conventional inpatient rehabilitation rather than treating exercise capacity as separate from neurological rehabilitation.",
+  "clinicalFindings": [
+    "The patient had a C6 neurological level spinal cord injury classified AIS B.",
+    "The report describes a subacute inpatient rehabilitation phase following an earlier period of intensive rehabilitation.",
+    "Clinical stability and monitoring for complications were important considerations when planning exercise."
+  ],
+  "intervention": [
+    "Aerobic training was integrated into the conventional therapy programme during inpatient rehabilitation.",
+    "The original report should be consulted for the specific training mode, intensity, progression and monitoring details; these are not assumed in this summary."
+  ],
+  "outcomes": [
+    "The report presents a single-patient experience of integrating aerobic training into conventional rehabilitation; outcomes should be interpreted from the full article and not generalized as a universal protocol."
+  ],
+  "clinicalLessons": [
+    "Consider cardiorespiratory conditioning as part of comprehensive SCI rehabilitation when clinically appropriate.",
+    "Screen for autonomic, cardiovascular and other SCI-related risks and monitor the individual response to exercise.",
+    "Adapt training to neurological level, functional capacity and the person's medical stability."
+  ],
+  "limitations": [
+    "Single case report; it cannot establish efficacy or an optimal aerobic-training prescription for all people with SCI.",
+    "The patient's clinical context and safety screening are essential when interpreting the programme."
+  ]
+}
 ].sort((a,b)=>b.year-a.year);
 export function getPublishedCaseReport(slug:string){return publishedCaseReports.find(item=>item.slug===slug);}
