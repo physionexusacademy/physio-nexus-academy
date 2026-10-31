@@ -13,6 +13,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: clinical-registry-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   private-schema-rls:
     runs-on: ubuntu-latest
