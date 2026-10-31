@@ -87,5 +87,6 @@ select throws_ok(
   $$select count(*) from clinical_private.patients$$,
   '42501', null, 'anonymous role cannot access private schema');
 
+reset role;
 select * from finish();
 rollback;
