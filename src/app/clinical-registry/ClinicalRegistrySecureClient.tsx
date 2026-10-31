@@ -49,6 +49,8 @@ export function ClinicalRegistrySecureClient() {
   const [caseEvidence, setCaseEvidence] = useState("");
   const [publicationConsentConfirmed, setPublicationConsentConfirmed] = useState(false);
   const [deidentifiedConfirmed, setDeidentifiedConfirmed] = useState(false);
+  const [correctionReason, setCorrectionReason] = useState("");
+  const [correctionJson, setCorrectionJson] = useState('{\n  "clinical_summary": "",\n  "discharge_status": "",\n  "recommendations": []\n}');
 
   const loadPatients = useCallback(async () => {
     if (!client) return;
@@ -230,6 +232,22 @@ export function ClinicalRegistrySecureClient() {
     await loadCaseSubmissions();
   };
 
+  const applyReportCorrection = async (event: FormEvent) => {
+    event.preventDefault(); if (!client || !selectedPatient || !selectedReport) return;
+    let changes: Record<string, unknown>;
+    try { changes = JSON.parse(correctionJson); } catch { setError("Correction details must be valid JSON."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const { data: requestId, error: requestError } = await client.rpc("request_record_correction", {
+      p_patient_id: selectedPatient.id, p_report_id: selectedReport.id, p_target_type: "report",
+      p_target_id: selectedReport.id, p_reason: correctionReason, p_requested_changes: changes
+    });
+    if (requestError || !requestId) { setBusy(false); setError(requestError?.message ?? "Could not save correction request."); return; }
+    const { error: applyError } = await client.rpc("apply_own_report_correction", { p_request_id: requestId });
+    setBusy(false);
+    if (applyError) { setError(`Correction request saved but could not be applied: ${applyError.message}`); return; }
+    setCorrectionReason(""); setNotice("Correction applied by the owning therapist. The original change history remains in the audit trail.");
+    await openReport(selectedReport.id);
+  };
   const withdrawPublishedCase = async (caseId: string) => {
     if (!client) return; setBusy(true); setError("");
     const { error: rpcError } = await client.rpc("withdraw_public_case", { p_case_id: caseId });
@@ -260,6 +278,16 @@ export function ClinicalRegistrySecureClient() {
           {selectedReport&&<section className="rounded-2xl border border-slate-200 bg-white p-5" id="registry-report-print"><div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4"><div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Clinical report</p><h2 className="mt-1 text-xl font-bold text-[#173653]">{selectedReport.condition}</h2><p className="mt-1 text-xs text-slate-500">{selectedReport.patient?.patientReference} · {selectedReport.category} · {selectedReport.assessmentDate}</p></div><div className="flex gap-2"><button onClick={()=>window.print()} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><Printer size={14}/> Print</button>{selectedReport.status==="draft"&&<button onClick={finaliseReport} disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Finalise</button>}</div></div>
             <div className="mt-4 grid gap-4 md:grid-cols-2"><div><h3 className="text-xs font-bold text-[#173653]">Initial assessment</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.initialAssessment??{},null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Follow-ups</h3><pre className="mt-2 max-h-56 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.followUpAssessments??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Interventions</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.interventions??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Outcomes</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.outcomes??[],null,2)}</pre></div></div>
             {selectedReport.status==="draft"&&<div className="mt-5 grid gap-4 border-t border-slate-100 pt-5 xl:grid-cols-2"><form onSubmit={saveAssessment} className="space-y-2"><h3 className="text-xs font-bold">Save initial assessment (JSON)</h3><textarea value={assessmentJson} onChange={e=>setAssessmentJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save assessment</button></form><form onSubmit={addFollowUp} className="space-y-2"><h3 className="text-xs font-bold">Add follow-up (JSON)</h3><textarea value={followUpJson} onChange={e=>setFollowUpJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Add follow-up</button></form><form onSubmit={addIntervention} className="space-y-2"><h3 className="text-xs font-bold">Record intervention</h3><input required value={interventionText} onChange={e=>setInterventionText(e.target.value)} placeholder="Intervention / technique" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save intervention</button></form><form onSubmit={addOutcome} className="space-y-2"><h3 className="text-xs font-bold">Record outcome</h3><input required value={outcomeCode} onChange={e=>setOutcomeCode(e.target.value)} placeholder="Measure code (e.g. NPRS)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required value={outcomeName} onChange={e=>setOutcomeName(e.target.value)} placeholder="Measure name" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required type="number" step="any" value={outcomeValue} onChange={e=>setOutcomeValue(e.target.value)} placeholder="Measured value" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><select value={outcomeDirection} onChange={e=>setOutcomeDirection(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="lower_is_better">Lower is better</option><option value="higher_is_better">Higher is better</option><option value="descriptive">Descriptive</option></select><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save outcome</button></form></div>}
+          </section>}
+          {selectedReport && selectedPatient && <section className="rounded-2xl border border-slate-200 bg-white p-5">
+            <h2 className="font-bold text-[#173653]">Correct an existing report</h2>
+            <p className="mt-1 text-[11px] leading-5 text-slate-500">Only you, as the record owner, can apply a correction. Changed fields are recorded in the audit trail; the original record is not silently erased.</p>
+            <form onSubmit={applyReportCorrection} className="mt-3 space-y-3">
+              <textarea required minLength={5} value={correctionReason} onChange={e=>setCorrectionReason(e.target.value)} placeholder="Reason for correction" rows={2} className="w-full rounded-xl border border-slate-200 p-3 text-xs"/>
+              <textarea required value={correctionJson} onChange={e=>setCorrectionJson(e.target.value)} rows={6} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/>
+              <p className="text-[10px] text-slate-400">Permitted keys: category, condition, clinical_summary, discharge_status, recommendations.</p>
+              <button disabled={busy} className="rounded-xl border border-teal-700 px-4 py-2.5 text-xs font-bold text-teal-800 disabled:opacity-40">Submit and apply owner correction</button>
+            </form>
           </section>}
           {selectedReport?.status === "final" && selectedPatient && CLINICAL_REGISTRY_CONSENT_VERSION && <section className="rounded-2xl border border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Submit de-identified case</h2></div>
