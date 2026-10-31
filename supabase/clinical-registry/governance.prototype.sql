@@ -183,8 +183,7 @@ set search_path = ''
 as $$
 declare
   v_reviewer boolean := coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false)
-    or coalesce(auth.role() = 'service_role', false)
-    or current_user = 'postgres';
+    or coalesce(auth.role() = 'service_role', false);
   v_submit_rpc boolean := current_setting('app.registry_submission_rpc', true) = 'on';
 begin
   if tg_op = 'INSERT' then
@@ -388,6 +387,63 @@ as $$
   limit least(greatest(coalesce(p_limit, 20), 1), 50);
 $$;
 
+
+-- Retention is deliberately policy-driven and review-only. No automatic
+-- deletion is enabled until the Registry operator documents the applicable
+-- legal/ethics retention basis for the deployment jurisdiction.
+create table if not exists clinical_private.registry_retention_rules (
+  record_type text primary key check (record_type in ('patient','report')),
+  retention_days integer check (retention_days is null or retention_days between 1 and 36500),
+  legal_basis text,
+  active boolean not null default false,
+  configured_at timestamptz,
+  check (not active or (retention_days is not null and length(trim(coalesce(legal_basis,''))) >= 10))
+);
+create table if not exists clinical_private.retention_review_events (
+  id bigint generated always as identity primary key,
+  record_type text not null check (record_type in ('patient','report')),
+  record_id uuid not null,
+  reviewed_by uuid references auth.users(id) on delete restrict,
+  decision text not null check (decision in ('retain','export_then_restrict','erase_after_authorisation')),
+  rationale text not null check (length(trim(rationale)) between 10 and 2000),
+  occurred_at timestamptz not null default now()
+);
+alter table clinical_private.registry_retention_rules enable row level security;
+alter table clinical_private.registry_retention_rules force row level security;
+alter table clinical_private.retention_review_events enable row level security;
+alter table clinical_private.retention_review_events force row level security;
+revoke all on clinical_private.registry_retention_rules,
+  clinical_private.retention_review_events from public, anon, authenticated;
+grant all on clinical_private.registry_retention_rules,
+  clinical_private.retention_review_events to service_role;
+
+create or replace function clinical_api.list_retention_candidates(p_as_of date default current_date)
+returns table(record_type text, record_id uuid, owner_id uuid, archived_at timestamptz)
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if coalesce(auth.role() = 'service_role', false) is not true then
+    raise exception 'Registry service role required' using errcode = '42501';
+  end if;
+  return query
+    select 'patient'::text, p.id, p.owner_id, p.archived_at
+    from clinical_private.patients p
+    join clinical_private.registry_retention_rules rr
+      on rr.record_type = 'patient' and rr.active
+    where p.archived_at is not null
+      and p.archived_at <= (p_as_of::timestamptz - make_interval(days => rr.retention_days))
+    union all
+    select 'report'::text, r.id, r.owner_id, r.archived_at
+    from clinical_private.clinical_reports r
+    join clinical_private.registry_retention_rules rr
+      on rr.record_type = 'report' and rr.active
+    where r.archived_at is not null
+      and r.archived_at <= (p_as_of::timestamptz - make_interval(days => rr.retention_days));
+end;
+$;
+
 -- Immutable audit events record only changed column names, never clinical values.
 create or replace function clinical_private.audit_row_change()
 returns trigger
@@ -464,4 +520,5 @@ grant execute on function clinical_api.submit_case_for_review(uuid) to authentic
 grant execute on function clinical_api.review_case_submission(uuid,text,text) to authenticated;
 grant execute on function clinical_api.publish_approved_case(uuid) to authenticated;
 grant execute on function clinical_api.list_public_cases(text,integer) to anon, authenticated;
+grant execute on function clinical_api.list_retention_candidates(date) to service_role;
 commit;
