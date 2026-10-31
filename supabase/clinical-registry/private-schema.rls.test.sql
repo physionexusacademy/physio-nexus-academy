@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(17);
+select plan(20);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -144,6 +144,17 @@ select is((select clinical_summary from clinical_private.clinical_reports
   where id = '30000000-0000-4000-8000-000000000001'),
   'Corrected synthetic clinical summary',
   'report correction is applied and auditable');
+
+select clinical_api.record_patient_consent(
+  '20000000-0000-4000-8000-000000000001',
+  'public_case_publication','withdrawn','test-public-v1','written',null
+);
+select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
+  'publication consent withdrawal immediately hides public case');
+select ok(clinical_api.withdraw_public_case(
+  (select id from clinical_private.case_library_entries
+   where case_title = 'Synthetic shoulder rehabilitation case')
+), 'case owner can withdraw a published case');
 
 select clinical_api.record_patient_consent(
   '20000000-0000-4000-8000-000000000001',
