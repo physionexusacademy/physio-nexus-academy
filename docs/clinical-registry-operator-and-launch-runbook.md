@@ -3,8 +3,11 @@
 ## Current deployment boundary
 
 - The Registry is a separate application/database integration from the existing PNA production Supabase project.
-- The hosted Registry database has **not** been provisioned or connected.
-- The current automated database workflow uses a disposable local Supabase stack and synthetic fixtures only.
+- A dedicated Supabase Free project, **PNA Clinical Registry**, is provisioned in Singapore (project ref: `zfoohwqyoengbszuylxj`). It is separate from the existing PNA website Supabase project.
+- The seven versioned Registry migrations, including private-schema hardening and direct-client privilege revocation, have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
+- The `clinical_api` schema has been added to PostgREST's exposed schemas. All 18 `clinical_private` tables have RLS enabled; the schema is not exposed through PostgREST, and `anon`/`authenticated` have no direct table, sequence, or private-helper EXECUTE grants. Application access is via narrowly scoped `clinical_api` functions.
+- The automated database workflow uses a disposable local Supabase stack and synthetic fixtures. Latest local security workflow run #186 is in progress; hosted end-to-end authentication and tenant-isolation tests remain pending.
+- No Registry PDF files are stored in Supabase Storage. Clinical records remain structured database rows/JSON; PDF export is generated only on demand in the browser and downloaded locally.
 - Do not enter real patient information, upload identifiable records, or advertise the Registry as a production clinical record system until the launch gates below are closed.
 - Do not place a Supabase service-role key in browser code, `NEXT_PUBLIC_*` variables, GitHub source, preview build variables, or client-visible logs.
 
@@ -50,22 +53,22 @@ Until then, do not provision real therapist memberships in a hosted environment.
 
 The secure therapist workspace currently supports draft reports, initial and follow-up assessments, interventions, outcomes, finalisation, owner correction requests, immutable pre-update report snapshots, JSON export logging, and an audited browser print / Save PDF request. Earlier report snapshots are owner-readable and append-only. The access log records that a print/export was requested; it cannot prove that a physical print or PDF file was successfully created or retained. Browser print can be used to save a PDF locally, but this is not a validated, digitally signed clinical PDF service.
 
-Before clinical use, add institution-approved report templates, verified identity/author attribution, timestamps and time zone, explicit amendment labels/reason capture for every change, a tested PDF rendering path, and retention/export access procedures. The current automatic snapshots record the pre-update database state but do not yet capture a clinician-entered amendment reason. Confirm that the report contains no unsupported clinical decision or automatic diagnosis.
+Before clinical use, add institution-approved report templates, verified identity/author attribution, timestamps and time zone, explicit amendment labels/reason capture for every change, a tested PDF rendering path, and retention/export access procedures. The automatic snapshots preserve the pre-update database state, and the amendment workflow requires a clinician-entered correction reason that is retained with the immutable version entry. Confirm that the report contains no unsupported clinical decision or automatic diagnosis.
 
 ## Hosting, privacy, and operational launch gates
 
 Do not launch with real patient data until all items are signed off:
 
-1. Provision a dedicated hosted Supabase project for the Registry; verify project URL, keys, backups, region, access policy, and retention configuration. Existing PNA Supabase must remain untouched.
-2. Apply migrations to the dedicated project and run database advisors and a fresh independent RLS/security review.
+1. Hosted Free project provisioned. Before staging/production use, verify the project URL and publishable key in the website's Cloudflare build environment, configure Auth site/redirect URLs, confirm backup/recovery and retention policy, and keep the existing PNA Supabase untouched.
+2. Hosted migrations are applied. Security Advisor currently shows six INFO-only `rls_enabled_no_policy` notices on private tables with no client policies; verify this deny-by-default design in an independent review. Performance Advisor also reports 22 unindexed foreign keys and 10 currently unused indexes; review query plans before adding/removing indexes.
 3. Configure Auth redirect URLs, email verification, password recovery, session expiry, MFA policy for privileged staff, rate limits, and abuse monitoring.
-4. Configure private storage only if a consent-document workflow is approved; enforce owner-scoped access and signed URLs with short expiry.
+4. Do not store generated PDFs. Keep browser-generated PDF exports local to the therapist. Configure private Storage only if an institution-approved signed-consent evidence workflow is later approved; enforce owner-scoped access and short-lived signed URLs.
 5. Complete a privacy impact assessment and obtain institutional/legal/ethics approval for the intended jurisdiction and use. Define lawful basis, retention, deletion, breach response, patient access/correction, and data-subject request handling.
 6. Implement operator approval, signed-consent verification, and reviewer privacy attestations.
 7. Run tenant-isolation, privilege-escalation, anonymous-access, consent-withdrawal, backup-restore, and data-export tests against the hosted staging project using synthetic records.
 8. Verify pagination and bounded queries, database indexes, connection pooling, resource usage, and mobile accessibility.
 9. Perform an independent penetration test and remediate all critical/high findings.
-10. Obtain explicit product-owner approval before merging or deploying to production.
+10. Obtain explicit product-owner approval before merging or deploying to production. The current work remains a draft PR and is not deployed to production.
 
 ## CI verification
 
