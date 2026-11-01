@@ -44,6 +44,7 @@
   "overrides": {
     "glob": "^14.0.2",
     "minimatch": "^11.0.1",
+    "postcss": "^8.5.28",
     "postcss-selector-parser": "^6.1.5",
     "rimraf": "^6.0.1"
   }
