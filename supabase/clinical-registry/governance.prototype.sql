@@ -711,7 +711,7 @@ alter table clinical_private.registry_retention_rules force row level security;
 alter table clinical_private.retention_review_events enable row level security;
 alter table clinical_private.retention_review_events force row level security;
 revoke all on clinical_private.registry_retention_rules,
-  clinical_private.retention_review_events from public, anon, authenticated, service_role;
+  clinical_private.retention_review_events from public, anon, authenticated;
 grant usage on schema clinical_private to service_role;
 grant usage on schema clinical_api to anon, authenticated, service_role;
 grant all on clinical_private.registry_retention_rules,
@@ -753,7 +753,7 @@ create table if not exists clinical_private.report_correction_authorizations (
   actor_id uuid not null references auth.users(id) on delete restrict,
   primary key (transaction_id, report_id, actor_id)
 );
-revoke all on clinical_private.report_correction_authorizations from public, anon, authenticated;
+revoke all on clinical_private.report_correction_authorizations from public, anon, authenticated, service_role;
 
 -- Phase 3 integrity hardening: finalised clinical records are immutable except
 -- through the owning therapist's explicit, audited correction RPC.
