@@ -8,10 +8,12 @@ on:
       - ".github/workflows/clinical-registry-local-db.yml"
       - "src/app/clinical-registry/**"
       - "src/lib/clinical-registry/**"
+      - "supabase/clinical-registry/**"
+      - "package.json"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: clinical-registry-${{ github.event.pull_request.number || github.ref }}
@@ -69,9 +71,16 @@ jobs:
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations"
           mkdir -p "$REGISTRY_TEST_DIR/supabase/migrations"
-          EXISTING="$(find "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
-          if [ -n "$EXISTING" ]; then
-            cp "$EXISTING" "$REGISTRY_TEST_DIR/supabase/migrations/"
+          MIGRATION_SOURCE="$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations"
+          MIGRATION_COUNT="$(find "$MIGRATION_SOURCE" -maxdepth 1 -type f -name '*.sql' | wc -l | tr -d ' ')"
+          if [ "$MIGRATION_COUNT" -gt 0 ]; then
+            # Apply every versioned Registry migration in lexical timestamp order.
+            # Loading only the original schema migration silently omitted later
+            # security features such as therapist verification requests.
+            find "$MIGRATION_SOURCE" -maxdepth 1 -type f -name '*.sql' -print0 | sort -z |
+              while IFS= read -r -d '' SOURCE_MIGRATION; do
+                cp "$SOURCE_MIGRATION" "$REGISTRY_TEST_DIR/supabase/migrations/"
+              done
           else
             cd "$REGISTRY_TEST_DIR"
             supabase migration new clinical_registry_secure_schema
@@ -118,9 +127,9 @@ jobs:
             echo "pgTAP reported failed assertions."
             exit 1
           fi
-          grep -Fxq '1..24' <<< "$TEST_OUTPUT"
+          grep -Fxq '1..52' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 24
+          test "$OK_COUNT" -eq 52
 
       - name: Verify disposable Registry backup and restore
         shell: bash
@@ -145,36 +154,6 @@ jobs:
             -v ON_ERROR_STOP=1 -Atc \
             "select case when to_regclass('clinical_private.patient_consent_events') is not null and to_regclass('clinical_private.audit_events') is not null and to_regclass('clinical_private.case_library_entries') is not null then 'restore-ok' else 'restore-failed' end" \
             | grep -qx 'restore-ok'
-
-      - name: Commit validated CLI-generated migration to the PR branch
-        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: bash
-        env:
-          EXPECTED_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-          git fetch origin "$GITHUB_HEAD_REF"
-          REMOTE_HEAD="$(git rev-parse FETCH_HEAD)"
-          if [ "$REMOTE_HEAD" != "$EXPECTED_PR_HEAD_SHA" ]; then
-            echo "PR branch advanced during this run; the newer commit will generate and validate its own migration."
-            exit 0
-          fi
-          git checkout -B "$GITHUB_HEAD_REF" "$REMOTE_HEAD"
-          GENERATED="$(find "$REGISTRY_TEST_DIR/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
-          test -n "$GENERATED"
-          DEST="$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations/$(basename "$GENERATED")"
-          if [ ! -f "$DEST" ]; then
-            mkdir -p "$(dirname "$DEST")"
-            cp "$GENERATED" "$DEST"
-            if [ ! -f "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/config.toml" ]; then
-              cp "$REGISTRY_TEST_DIR/supabase/config.toml" "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/config.toml"
-            fi
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add "supabase/clinical-registry/supabase/migrations/$(basename "$GENERATED")" "supabase/clinical-registry/supabase/config.toml"
-            git commit -m "Add CLI-generated Clinical Registry migration"
-            git push origin "HEAD:$GITHUB_HEAD_REF"
-          fi
 
       - name: Stop local Supabase stack
         if: always()

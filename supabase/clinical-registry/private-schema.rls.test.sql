@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(24);
+select plan(52);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -19,7 +19,10 @@ insert into auth.users (
    'registry-b@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
   ('10000000-0000-4000-8000-000000000003',
    '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
-   'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now())
+   'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
+  ('10000000-0000-4000-8000-000000000004',
+   '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
+   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now())
 on conflict (id) do nothing;
 
 insert into clinical_private.therapist_memberships
@@ -63,10 +66,39 @@ set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 
-select is((select count(*)::int from clinical_private.patients), 1,
-  'therapist A reads only their own patient');
+select ok(clinical_api.create_patient_with_care_consent(
+  'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
+) is not null, 'patient and care consent are created through one atomic RPC');
+select is((select count(*)::int from clinical_private.patient_consent_events ce
+  join clinical_private.patients p on p.id = ce.patient_id
+  where p.patient_reference = 'TEST-A-ATOMIC'
+    and ce.purpose = 'clinical_care' and ce.consent_status = 'granted'),
+  1, 'atomic patient creation records exactly one care-consent event');
+
+select is((select count(*)::int from clinical_private.patients), 2,
+  'therapist A reads only their own patients (including atomic-consent registration)');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
+with changed as (
+  update clinical_private.patients
+  set display_name = 'Unauthorised cross-tenant edit'
+  where id = '20000000-0000-4000-8000-000000000002'
+  returning id
+)
+select is((select count(*)::int from changed), 0,
+  'therapist A cannot update therapist B patient records');
+select ok(clinical_api.get_my_report(
+  '30000000-0000-4000-8000-000000000002'
+) is null, 'therapist A cannot retrieve therapist B clinical report');
+select throws_ok(
+  $cross_owner_report$insert into clinical_private.clinical_reports
+    (patient_id, owner_id, category, condition)
+    values (
+      '20000000-0000-4000-8000-000000000002',
+      '10000000-0000-4000-8000-000000000001',
+      'Musculoskeletal','Cross-tenant attempt'
+    )$cross_owner_report$,
+  '42501', null, 'therapist A cannot create a report against therapist B patient');
 
 select throws_ok(
   $provision_sql$select clinical_api.provision_verified_therapist(
@@ -79,8 +111,10 @@ set display_name = 'Synthetic Patient A corrected'
 where id = '20000000-0000-4000-8000-000000000001';
 select is((select count(*)::int from clinical_private.audit_events
   where actor_id = '10000000-0000-4000-8000-000000000001'
-    and entity_table = 'patients'), 1,
-  'authenticated patient change creates an audit event');
+    and entity_table = 'patients'
+    and entity_id = '20000000-0000-4000-8000-000000000001'
+    and action = 'UPDATE'), 1,
+  'authenticated patient update creates its own audit event');
 
 insert into clinical_private.clinical_interventions
   (id, report_id, intervention)
@@ -137,6 +171,13 @@ insert into clinical_private.case_library_entries (
   'https://example.invalid/evidence', true
 );
 
+select set_config('app.registry_submission_rpc','on',true);
+select throws_ok(
+  $update_sql$update clinical_private.case_library_entries
+    set status = 'submitted', submitted_at = now()
+    where case_title = 'Synthetic shoulder rehabilitation case'$update_sql$,
+  '42501', null, 'client cannot forge case submission with a custom setting');
+select set_config('app.registry_submission_rpc','off',true);
 select ok(clinical_api.submit_case_for_review(
   (select id from clinical_private.case_library_entries
    where case_title = 'Synthetic shoulder rehabilitation case')
@@ -148,9 +189,14 @@ select throws_ok(
      where case_title = 'Synthetic shoulder rehabilitation case'),
     'approved', null)$test_sql$,
   '42501', null, 'ordinary therapist cannot approve a case');
+select throws_ok(
+  $review_queue_access$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$,
+  '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
+  'trusted reviewer sees the submitted de-identified case queue');
 select ok(clinical_api.review_case_submission(
   (select id from clinical_private.case_library_entries
    where case_title = 'Synthetic shoulder rehabilitation case'),
@@ -200,6 +246,17 @@ order by ce.event_sequence desc
 limit 1;
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
   'publication consent withdrawal immediately hides public case');
+select set_config('app.registry_withdraw_rpc','on',true);
+-- The owner UPDATE policy intentionally hides non-draft rows, so a forged
+-- update can affect zero rows without raising an exception. Assert the
+-- published workflow state remains unchanged rather than expecting an error.
+update clinical_private.case_library_entries
+set status = 'withdrawn'
+where case_title = 'Synthetic shoulder rehabilitation case';
+select is((select status from clinical_private.case_library_entries
+  where case_title = 'Synthetic shoulder rehabilitation case'),
+  'published', 'client cannot forge case withdrawal with a custom setting');
+select set_config('app.registry_withdraw_rpc','off',true);
 select ok(clinical_api.withdraw_public_case(
   (select id from clinical_private.case_library_entries
    where case_title = 'Synthetic shoulder rehabilitation case')
@@ -236,12 +293,104 @@ select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-00000000
 select is((select count(*)::int from clinical_private.patients), 0,
   'pending and inactive therapist cannot read patient records');
 
+-- Therapist onboarding requests: applicants can submit and read only their own
+-- status; they cannot inspect the private queue or activate their membership.
+select ok((clinical_api.submit_therapist_verification_request(
+  'Synthetic Pending Therapist','Physiotherapist',array['DPT'],
+  'Synthetic Registration Council','SYN-REG-003','Synthetic Teaching Clinic'
+) ->> 'submitted')::boolean, 'pending therapist can submit a verification application');
+select is(clinical_api.my_therapist_verification_request() ->> 'status',
+  'pending', 'applicant can read their own verification status');
+select throws_ok(
+  $onboarding_sql$select count(*) from clinical_private.therapist_verification_requests$onboarding_sql$,
+  '42501', null, 'applicant cannot read the private verification queue');
+select throws_ok(
+  $onboarding_sql$select clinical_api.set_therapist_active(
+    '10000000-0000-4000-8000-000000000003', true)$onboarding_sql$,
+  '42501', null, 'applicant cannot activate their own therapist membership');
+
+
+-- Trusted therapist operator workflow. Only an explicitly assigned
+-- app_metadata role can inspect applications, approve or deactivate members.
+select throws_ok(
+  $operator_queue_denied$select count(*) from clinical_api.list_therapist_verification_queue()$operator_queue_denied$,
+  '42501', null, 'ordinary therapist cannot inspect therapist verification queue');
+select throws_ok(
+  $operator_review_denied$select clinical_api.review_therapist_verification_request(
+    '90000000-0000-4000-8000-000000000099',
+    'approved','REG-REF-1','Attempted self approval',true,true)$operator_review_denied$,
+  '42501', null, 'ordinary therapist cannot approve a therapist verification request');
+select throws_ok(
+  $operator_activate_denied$select clinical_api.set_therapist_membership_active(
+    '10000000-0000-4000-8000-000000000003',true,'Attempted self activation')$operator_activate_denied$,
+  '42501', null, 'ordinary therapist cannot activate membership through operator RPC');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+select is((select count(*)::int from clinical_api.list_therapist_verification_queue()), 1,
+  'trusted operator can view pending verification applications');
+select throws_ok(
+  $operator_evidence_required$select clinical_api.review_therapist_verification_request(
+    (select item.request_id
+     from clinical_api.list_therapist_verification_queue() as item limit 1),
+    'approved',null,'Verified identity and registration',true,true)$operator_evidence_required$,
+  '22023', null, 'operator approval requires a regulator evidence reference');
+select ok(clinical_api.review_therapist_verification_request(
+  (select item.request_id
+   from clinical_api.list_therapist_verification_queue() as item limit 1),
+  'approved','https://regulator.example.invalid/verification/SYN-REG-003',
+  'Identity and current professional registration independently verified',true,true
+), 'trusted operator can approve an independently verified therapist');
+select is((select count(*)::int from clinical_api.list_verified_therapist_memberships()), 3,
+  'operator can view verified therapist membership directory');
+select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
+  where action = 'approved'), 1,
+  'operator approval creates an actor-attributed immutable audit event');
+select ok(clinical_api.set_therapist_membership_active(
+  '10000000-0000-4000-8000-000000000003',false,
+  'Temporary suspension pending credential recheck'
+), 'operator can deactivate a verified therapist with a reason');
+select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
+  where action = 'deactivated'), 1,
+  'operator deactivation is recorded in the audit trail');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000003',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
+select throws_ok(
+  $reactivation_denied$select clinical_api.set_therapist_membership_active(
+    '10000000-0000-4000-8000-000000000003',true,'Self reactivation attempt')$reactivation_denied$,
+  '42501', null, 'deactivated therapist cannot reactivate their own membership');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+select ok(clinical_api.set_therapist_membership_active(
+  '10000000-0000-4000-8000-000000000003',true,
+  'Registration rechecked and access restored'
+), 'operator can reactivate a verified therapist with a reason');
+select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
+  where action = 'reactivated'), 1,
+  'operator reactivation is recorded in the audit trail');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000003',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
+select is((select count(*)::int from clinical_private.patients), 0,
+  'pending therapist still cannot access patient data before operator approval');
+
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
 select set_config('request.jwt.claims','{"role":"anon"}',true);
 select throws_ok(
-  $$select count(*) from clinical_private.patients$$,
+  $onboarding_sql$select count(*) from clinical_private.patients$onboarding_sql$,
   '42501', null, 'anonymous role cannot access private schema');
+select throws_ok(
+  $onboarding_sql$select clinical_api.submit_therapist_verification_request(
+    'Anonymous Applicant','Physiotherapist',array[]::text[],
+    'Registration Body','ANON-001',null)$onboarding_sql$,
+  '42501', null, 'anonymous role cannot submit therapist verification request');
 
 reset role;
 select * from finish();
