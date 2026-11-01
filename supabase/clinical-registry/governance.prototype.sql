@@ -258,6 +258,17 @@ as $list_my_cases$
   order by c.updated_at desc
   limit 100
 $list_my_cases$;
+-- Internal transaction-scoped authorisations for case submission/withdrawal.
+-- Client-set custom GUCs are forgeable and must never authorise workflow transitions.
+create table if not exists clinical_private.case_workflow_authorizations (
+  transaction_id bigint not null,
+  case_id uuid not null references clinical_private.case_library_entries(id) on delete cascade,
+  actor_id uuid not null references auth.users(id) on delete restrict,
+  action text not null check (action in ('submit','withdraw')),
+  primary key (transaction_id, case_id, actor_id, action)
+);
+revoke all on clinical_private.case_workflow_authorizations from public, anon, authenticated, service_role;
+
 -- Prevent a therapist from changing review/publication state directly.
 create or replace function clinical_private.guard_case_library_workflow()
 returns trigger
@@ -268,8 +279,16 @@ as $$
 declare
   v_reviewer boolean := coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false)
     or coalesce(auth.role() = 'service_role', false);
-  v_submit_rpc boolean := current_setting('app.registry_submission_rpc', true) = 'on';
-  v_withdraw_rpc boolean := current_setting('app.registry_withdraw_rpc', true) = 'on';
+  v_submit_rpc boolean := exists (
+    select 1 from clinical_private.case_workflow_authorizations a
+    where a.transaction_id = txid_current() and a.case_id = old.id
+      and a.actor_id = (select auth.uid()) and a.action = 'submit'
+  );
+  v_withdraw_rpc boolean := exists (
+    select 1 from clinical_private.case_workflow_authorizations a
+    where a.transaction_id = txid_current() and a.case_id = old.id
+      and a.actor_id = (select auth.uid()) and a.action = 'withdraw'
+  );
 begin
   if tg_op = 'INSERT' then
     if new.status <> 'draft' then
@@ -310,11 +329,18 @@ begin
   if (select auth.uid()) is null then
     raise exception 'Authentication required' using errcode = '42501';
   end if;
-  perform set_config('app.registry_submission_rpc', 'on', true);
+  insert into clinical_private.case_workflow_authorizations(transaction_id, case_id, actor_id, action)
+  select txid_current(), c.id, (select auth.uid()), 'submit'
+  from clinical_private.case_library_entries c
+  where c.id = p_case_id and c.owner_id = (select auth.uid())
+    and c.status = 'draft' and c.deidentified_confirmed;
+  if not found then return false; end if;
   update clinical_private.case_library_entries
   set status = 'submitted', submitted_at = now(), updated_at = now()
-  where id = p_case_id and owner_id = (select auth.uid())
-    and status = 'draft' and deidentified_confirmed;
+  where id = p_case_id and owner_id = (select auth.uid()) and status = 'draft';
+  delete from clinical_private.case_workflow_authorizations
+  where transaction_id = txid_current() and case_id = p_case_id
+    and actor_id = (select auth.uid()) and action = 'submit';
   return found;
 end;
 $submit$;
@@ -442,11 +468,19 @@ security definer
 set search_path = ''
 as $function$
 begin
-  perform set_config('app.registry_withdraw_rpc', 'on', true);
+  insert into clinical_private.case_workflow_authorizations(transaction_id, case_id, actor_id, action)
+  select txid_current(), c.id, (select auth.uid()), 'withdraw'
+  from clinical_private.case_library_entries c
+  where c.id = p_case_id and c.owner_id = (select auth.uid())
+    and c.status in ('draft','submitted','approved','published');
+  if not found then return false; end if;
   update clinical_private.case_library_entries
   set status = 'withdrawn', updated_at = now()
   where id = p_case_id and owner_id = (select auth.uid())
     and status in ('draft','submitted','approved','published');
+  delete from clinical_private.case_workflow_authorizations
+  where transaction_id = txid_current() and case_id = p_case_id
+    and actor_id = (select auth.uid()) and action = 'withdraw';
   return found;
 end;
 $function$;
