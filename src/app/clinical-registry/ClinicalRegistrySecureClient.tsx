@@ -11,6 +11,7 @@ type TherapistStatus = { fullName?: string; professionalTitle?: string; credenti
 type ClinicalReport = { id: string; patient?: { patientReference?: string; displayName?: string }; category: string; condition: string; status: string; assessmentDate: string; initialAssessment?: Record<string, unknown>; followUpAssessments?: Record<string, unknown>[]; clinicalSummary?: string; dischargeStatus?: string; recommendations?: string[]; interventions?: Record<string, unknown>[]; outcomes?: Record<string, unknown>[] };
 type CaseSubmission = { case_id: string; patient_id: string; case_title: string; status: string; reviewer_note?: string | null; submitted_at?: string | null; published_at?: string | null };
 type PublicCase = { case_id: string; case_title: string; condition_label: string; age_band?: string | null; clinical_context: string; intervention_summary: string; outcome_summary: string; evidence_reference?: string | null };
+type ReviewerCase = { case_id: string; case_title: string; condition_label: string; age_band?: string | null; clinical_context: string; intervention_summary: string; outcome_summary: string; evidence_reference?: string | null; status: "submitted" | "approved"; reviewer_note?: string | null; submitted_at?: string | null; reviewed_at?: string | null };
 
 export function ClinicalRegistrySecureClient() {
   const client = useMemo(() => getClinicalRegistryClient(), []);
@@ -40,6 +41,8 @@ export function ClinicalRegistrySecureClient() {
   const [notice, setNotice] = useState("");
   const [caseSubmissions, setCaseSubmissions] = useState<CaseSubmission[]>([]);
   const [publicCases, setPublicCases] = useState<PublicCase[]>([]);
+  const [reviewerCases, setReviewerCases] = useState<ReviewerCase[]>([]);
+  const [reviewerNote, setReviewerNote] = useState("");
   const [caseTitle, setCaseTitle] = useState("");
   const [caseCondition, setCaseCondition] = useState("");
   const [caseAgeBand, setCaseAgeBand] = useState("30-44");
@@ -79,6 +82,13 @@ export function ClinicalRegistrySecureClient() {
     if (rpcError) throw rpcError;
     setPublicCases((data ?? []) as PublicCase[]);
   }, [client]);
+
+  const loadReviewerCases = useCallback(async () => {
+    if (!client) return;
+    const { data, error: rpcError } = await client.rpc("list_cases_for_review");
+    if (rpcError) throw rpcError;
+    setReviewerCases((data ?? []) as ReviewerCase[]);
+  }, [client]);
   const loadMembership = useCallback(async () => {
     if (!client) return;
     const { data, error: rpcError } = await client.rpc("my_therapist_status");
@@ -109,6 +119,14 @@ export function ClinicalRegistrySecureClient() {
     if (!client || !session) return;
     loadMembership().catch((e: Error) => setError(e.message));
   }, [client, session, loadMembership]);
+
+  useEffect(() => {
+    if (!client || !session || session.user.app_metadata?.registry_role !== "reviewer") {
+      setReviewerCases([]);
+      return;
+    }
+    loadReviewerCases().catch((e: Error) => setError(e.message));
+  }, [client, session, loadReviewerCases]);
 
   const openReport = async (reportId: string) => {
     if (!client) return;
@@ -258,6 +276,34 @@ export function ClinicalRegistrySecureClient() {
     await loadCaseSubmissions(); await loadPublicCases();
     setNotice("Publication consent withdrawal was recorded and the case was removed from the public library.");
   };
+
+  const reviewCaseSubmission = async (caseId: string, decision: "approved" | "rejected") => {
+    if (!client) return;
+    if (decision === "rejected" && !reviewerNote.trim()) {
+      setError("Add a concise reason before rejecting a case.");
+      return;
+    }
+    setBusy(true); setError(""); setNotice("");
+    const { error: rpcError } = await client.rpc("review_case_submission", {
+      p_case_id: caseId, p_decision: decision, p_reviewer_note: reviewerNote.trim() || null
+    });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    setReviewerNote("");
+    setNotice(decision === "approved" ? "Case approved. It still requires a separate publication action." : "Case rejected with reviewer feedback.");
+    await loadReviewerCases();
+  };
+
+  const publishReviewedCase = async (caseId: string) => {
+    if (!client) return;
+    setBusy(true); setError(""); setNotice("");
+    const { error: rpcError } = await client.rpc("publish_approved_case", { p_case_id: caseId });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    setNotice("Approved case published to the de-identified public Case Library.");
+    await loadReviewerCases();
+    await loadPublicCases();
+  };
   if (!client) return <main className="min-h-screen bg-slate-50 px-5 py-16 text-slate-800"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><ShieldCheck className="text-teal-700" size={30}/><h1 className="mt-4 text-2xl font-bold text-[#173653]">PNA Clinical Registry</h1><p className="mt-3 text-sm leading-6 text-slate-600">The isolated Registry service is not configured yet. This workspace will not connect to or reuse the PNA website database.</p><p className="mt-4 rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-900">Required environment settings: NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL, NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY and an institution-approved NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION. No patient data can be entered until these are configured.</p></section></main>;
 
   if (!session) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Clinical Registry</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-500">Sign in to your private clinical workspace. Each therapist can access only their own records.</p><form onSubmit={signIn} className="mt-6 space-y-3"><input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Professional email" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><input required type="password" minLength={8} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Sign in"}</button></form><button onClick={signUp} disabled={busy || !email || password.length<8} className="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 disabled:opacity-50">Create therapist account</button>{error&&<p className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}<p className="mt-5 flex items-center gap-2 text-[11px] text-slate-400"><LockKeyhole size={13}/> Private Registry database · separate from the PNA website database</p><a href="/clinical-registry/library" className="mt-4 block text-center text-xs font-semibold text-teal-700 underline">Browse public Case Library</a></section></main>;
@@ -314,6 +360,28 @@ export function ClinicalRegistrySecureClient() {
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Public Case Library</h2></div><p className="mt-1 text-[11px] text-slate-400">Only independently reviewed, published, de-identified cases appear here.</p><div className="mt-3 space-y-3">{publicCases.map(c=><article key={c.case_id} className="rounded-xl border border-slate-100 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-bold text-[#173653]">{c.case_title}</h3><span className="text-[10px] text-slate-500">{c.condition_label} · {c.age_band??"Age not reported"}</span></div><p className="mt-2 text-xs leading-5 text-slate-600">{c.clinical_context}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Intervention:</strong> {c.intervention_summary}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Outcome:</strong> {c.outcome_summary}</p>{c.evidence_reference&&/^https?:\/\//i.test(c.evidence_reference)&&<a href={c.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Evidence reference</a>}</article>)}{publicCases.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No published cases available yet.</p>}</div></section>
         </section>
       </div>}
+      {session.user.app_metadata?.registry_role === "reviewer" && <section className="mt-5 rounded-2xl border border-teal-200 bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Restricted access</p><h2 className="mt-1 text-lg font-bold text-[#173653]">Case reviewer console</h2><p className="mt-1 text-xs text-slate-500">Only de-identified submissions are shown. Patient identifiers and private clinical-record links are not returned by the reviewer queue.</p></div>
+          <button onClick={()=>loadReviewerCases().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh queue</button>
+        </div>
+        <div className="mt-4 space-y-3">
+          {reviewerCases.map(item=><article key={item.case_id} className="rounded-xl border border-slate-200 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="text-sm font-bold text-[#173653]">{item.case_title}</h3><p className="mt-1 text-[10px] text-slate-500">{item.condition_label} · {item.age_band ?? "Age not reported"} · Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleDateString() : "date unavailable"}</p></div><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold">{item.status}</span></div>
+            <p className="mt-3 whitespace-pre-wrap text-xs leading-5 text-slate-700">{item.clinical_context}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-700"><strong>Intervention:</strong> {item.intervention_summary}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-700"><strong>Outcome:</strong> {item.outcome_summary}</p>
+            {item.evidence_reference && /^https?:\/\//i.test(item.evidence_reference) && <a href={item.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Open evidence reference</a>}
+            {item.reviewer_note && <p className="mt-2 rounded-lg bg-slate-50 p-3 text-xs text-slate-600"><strong>Previous reviewer note:</strong> {item.reviewer_note}</p>}
+            {item.status === "submitted" && <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+              <textarea value={reviewerNote} onChange={e=>setReviewerNote(e.target.value)} rows={2} maxLength={2000} placeholder="Reviewer note (required when rejecting)" className="w-full rounded-xl border border-slate-200 p-3 text-xs"/>
+              <div className="flex flex-wrap gap-2"><button disabled={busy} onClick={()=>reviewCaseSubmission(item.case_id,"approved")} className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">Approve</button><button disabled={busy||!reviewerNote.trim()} onClick={()=>reviewCaseSubmission(item.case_id,"rejected")} className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-700 disabled:opacity-50">Reject with reason</button></div>
+            </div>}
+            {item.status === "approved" && <div className="mt-3 border-t border-slate-100 pt-3"><p className="mb-2 text-[11px] text-slate-500">Approved cases are not public until this separate action is completed.</p><button disabled={busy} onClick={()=>publishReviewedCase(item.case_id)} className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">Publish to public library</button></div>}
+          </article>)}
+          {reviewerCases.length===0 && <p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No submitted or approved cases are awaiting reviewer action.</p>}
+        </div>
+      </section>}
       <footer className="mt-8 flex items-center gap-2 border-t border-slate-200 pt-4 text-[10px] text-slate-400"><LockKeyhole size={12}/> Separate Registry database · Owner-scoped access · Audit trail enabled</footer>
     </div>
   </main>;
