@@ -20,7 +20,7 @@
 
 ### Trusted verification boundary
 
-The current release intentionally has no self-service approval control and no browser-accessible operator console. Verification must remain a trusted, out-of-band operation until a dedicated server-side operator workflow has been designed, threat-modelled, and tested.
+A restricted authenticated operator console is implemented in migration `20261101160000_clinical_registry_trusted_therapist_approval.sql`. It authorises only users with trusted Supabase Auth `app_metadata.registry_role = "operator"`; this role is not read from user-editable metadata and is separate from the PNA website administrator and case reviewer roles. The console exposes a bounded verification queue and verified-membership directory, not patient records.
 
 Before activating a therapist, an authorised human must independently verify the registration with the relevant regulator, confirm the identity and professional scope, and record the evidence/reference in the organisation's approved restricted administrative record. Do not rely solely on the applicant's form submission or uploaded screenshots.
 
