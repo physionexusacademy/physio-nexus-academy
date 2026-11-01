@@ -41,6 +41,16 @@ jobs:
       - name: Install website dependencies
         run: npm ci
 
+      - name: Capture dependency vulnerability details (non-blocking triage)
+        shell: bash
+        run: |
+          set +e
+          npm audit --json > /tmp/clinical-registry-npm-audit.json
+          AUDIT_EXIT=$?
+          set -e
+          node -e 'const fs=require("fs"); const a=JSON.parse(fs.readFileSync("/tmp/clinical-registry-npm-audit.json","utf8")); const v=a.vulnerabilities||{}; for (const [name,item] of Object.entries(v)) { console.log(JSON.stringify({name,severity:item.severity,isDirect:item.isDirect,range:item.range,fixAvailable:item.fixAvailable,via:item.via.map(x=>typeof x==="string"?x:{name:x.name,title:x.title,url:x.url,range:x.range})})); } console.log("AUDIT_COUNTS",JSON.stringify(a.metadata?.vulnerabilities||{})); process.exit(0);'
+          echo "npm audit exit code: $AUDIT_EXIT (report captured for deliberate triage; does not auto-upgrade dependencies)"
+
       - name: Type-check website and Registry integration
         run: npm run typecheck
 
