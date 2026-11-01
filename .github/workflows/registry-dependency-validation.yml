@@ -1,0 +1,52 @@
+name: Registry dependency and production build verification
+
+on:
+  pull_request:
+    branches:
+      - fix/registry-case-workflow-authorization
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/registry-dependency-validation.yml"
+      - ".github/workflows/registry-dependency-audit-remediation.yml"
+      - "src/**"
+  push:
+    branches:
+      - fix/clinical-registry-dependency-audit
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: registry-dependency-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install exact lockfile dependencies
+        run: npm ci
+
+      - name: Fail on any known dependency vulnerability
+        run: npm audit --audit-level=low
+
+      - name: Type-check application
+        run: npm run typecheck
+
+      - name: Build Next.js application
+        run: npm run build
+
+      - name: Build OpenNext Cloudflare output
+        run: npx opennextjs-cloudflare build
