@@ -93,7 +93,7 @@ set status = 'final', finalised_at = now()
 where id = '30000000-0000-4000-8000-000000000001';
 
 select throws_ok(
-  $$$update clinical_private.clinical_interventions
+  $$update clinical_private.clinical_interventions
     set intervention = 'Tampered after finalisation'
     where id = '40000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'finalised report interventions cannot be edited directly');
@@ -103,7 +103,7 @@ select throws_ok(
     values ('30000000-0000-4000-8000-000000000001','Late intervention')$$,
   '42501', null, 'new interventions cannot be added to a finalised report');
 select throws_ok(
-  $$$update clinical_private.clinical_reports
+  $$update clinical_private.clinical_reports
     set clinical_summary = 'Unauthorised direct edit'
     where id = '30000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'finalised report content requires correction workflow');
@@ -219,7 +219,7 @@ select is((select count(*)::int from clinical_private.patients
   where id = '20000000-0000-4000-8000-000000000002'), 0,
   'therapist A cannot read therapist B patient');
 select throws_ok(
-  $$$$update clinical_private.patients
+  $$$update clinical_private.patients
     set owner_id = '10000000-0000-4000-8000-000000000002'
     where id = '20000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'therapist A cannot transfer patient ownership');
