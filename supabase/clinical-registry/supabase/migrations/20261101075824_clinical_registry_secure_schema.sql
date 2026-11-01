@@ -1702,6 +1702,7 @@ revoke all on clinical_private.audit_events from public, anon, authenticated;
 grant select on clinical_private.audit_events to authenticated;
 revoke all on all functions in schema clinical_api from public, anon;
 grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
+grant execute on function clinical_api.create_patient_with_care_consent(text,text,text,text) to authenticated;
 grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
 grant execute on function clinical_api.apply_own_report_correction(uuid) to authenticated;
 grant execute on function clinical_api.provision_verified_therapist(uuid,text,text,text[],text,text) to service_role;
