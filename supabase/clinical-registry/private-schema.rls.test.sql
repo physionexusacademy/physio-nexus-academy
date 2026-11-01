@@ -314,7 +314,7 @@ select throws_ok(
   '42501', null, 'ordinary therapist cannot inspect therapist verification queue');
 select throws_ok(
   $operator_review_denied$select clinical_api.review_therapist_verification_request(
-    (select id from clinical_private.therapist_verification_requests limit 1),
+    '90000000-0000-4000-8000-000000000099',
     'approved','REG-REF-1','Attempted self approval',true,true)$operator_review_denied$,
   '42501', null, 'ordinary therapist cannot approve a therapist verification request');
 select throws_ok(
@@ -329,11 +329,13 @@ select is((select count(*)::int from clinical_api.list_therapist_verification_qu
   'trusted operator can view pending verification applications');
 select throws_ok(
   $operator_evidence_required$select clinical_api.review_therapist_verification_request(
-    (select id from clinical_private.therapist_verification_requests limit 1),
+    (select (item->>'request_id')::uuid
+     from clinical_api.list_therapist_verification_queue() as item limit 1),
     'approved',null,'Verified identity and registration',true,true)$operator_evidence_required$,
   '22023', null, 'operator approval requires a regulator evidence reference');
 select ok(clinical_api.review_therapist_verification_request(
-  (select id from clinical_private.therapist_verification_requests limit 1),
+  (select (item->>'request_id')::uuid
+   from clinical_api.list_therapist_verification_queue() as item limit 1),
   'approved','https://regulator.example.invalid/verification/SYN-REG-003',
   'Identity and current professional registration independently verified',true,true
 ), 'trusted operator can approve an independently verified therapist');
