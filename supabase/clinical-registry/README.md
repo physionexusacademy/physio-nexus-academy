@@ -1,6 +1,6 @@
 # Clinical Registry secure database prototype
 
-**Status: isolated implementation draft. The CLI-generated migration has passed the disposable local Supabase CI workflow (schema application, 20 synthetic pgTAP assertions, and backup/restore verification). It is not connected to a hosted project and is not deployed.**
+**Status: isolated implementation draft. The CLI-generated migration passed Clinical Registry local database CI Run #111 (schema application, 24/24 synthetic pgTAP assertions, and backup/restore verification). The branch remains an isolated draft; it is not connected to a hosted project and is not deployed.**
 
 ## Implemented in this slice
 - A private clinical schema separated from the public website schema.
@@ -23,7 +23,7 @@
 - Retention rules are inactive by default; a service-role-only candidate query supports review without automatic deletion.
 
 ## Remaining release gates
-1. The committed CLI-generated migration has been applied successfully in the disposable local Supabase stack; the workflow passed 20 synthetic pgTAP assertions and a backup/restore verification. This nested Supabase project is deliberately separate from the PNA website's root `supabase/migrations/` folder.
+1. The committed CLI-generated migration has been applied successfully in the disposable local Supabase stack; the workflow passed 24 synthetic pgTAP assertions and a backup/restore verification. This nested Supabase project is deliberately separate from the PNA website's root `supabase/migrations/` folder.
 2. Run Supabase Security and Performance Advisors against the isolated Registry project after a separate hosted project is provisioned.
 3. For any later hosted setup, run Supabase CLI commands from `supabase/clinical-registry` so the website migrations are never replayed. Configure only the `clinical_api` schema in the separate Registry project's Data API settings. Never expose `clinical_private`.
 4. Build a server-side operator console/service that invokes the service-role-only therapist provisioning RPCs and assigns reviewer `app_metadata` through the Supabase Auth Admin API. Keep the service-role key server-side; do not let users self-verify.
