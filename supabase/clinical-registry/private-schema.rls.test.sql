@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(52);
+select plan(59);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -231,8 +231,8 @@ select is((select clinical_summary from clinical_private.clinical_reports
   'report correction is applied and auditable');
 
 select is((select count(*)::int from clinical_api.list_my_report_versions(
-  '30000000-0000-4000-8000-000000000001')), 1,
-  'report update creates an owner-readable immutable pre-update snapshot');
+  '30000000-0000-4000-8000-000000000001')), 2,
+  'report finalisation and correction each create an owner-readable immutable pre-update snapshot');
 select throws_ok(
   $version_mutation$update clinical_private.clinical_report_versions
     set change_reason = 'tampered'
