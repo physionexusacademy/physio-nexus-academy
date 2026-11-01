@@ -645,6 +645,35 @@ begin
 end;
 $function$;
 
+-- Create the patient and record clinical-care consent atomically. This avoids
+-- leaving a patient row behind if consent capture fails in a separate request.
+create or replace function clinical_api.create_patient_with_care_consent(
+  p_patient_reference text,
+  p_display_name text,
+  p_consent_version text,
+  p_capture_method text
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path = ''
+as $create_patient_with_consent$
+declare
+  v_patient_id uuid;
+begin
+  if nullif(trim(p_consent_version), '') is null
+    or p_capture_method not in ('written','electronic','documented_verbal') then
+    raise exception 'Valid consent version and capture method are required' using errcode = '22023';
+  end if;
+  v_patient_id := clinical_api.create_patient(p_patient_reference, p_display_name);
+  perform clinical_api.record_patient_consent(
+    v_patient_id, 'clinical_care', 'granted', p_consent_version,
+    p_capture_method, null
+  );
+  return v_patient_id;
+end;
+$create_patient_with_consent$;
+
 create or replace function clinical_api.request_record_correction(
   p_patient_id uuid,
   p_report_id uuid,
