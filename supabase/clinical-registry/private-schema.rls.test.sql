@@ -76,12 +76,13 @@ select is((select count(*)::int from clinical_private.patients), 2,
   'therapist A reads only their own patients (including atomic-consent registration)');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
-select is((with changed as (
+with changed as (
   update clinical_private.patients
   set display_name = 'Unauthorised cross-tenant edit'
   where id = '20000000-0000-4000-8000-000000000002'
   returning id
-) select count(*)::int from changed), 0,
+)
+select is((select count(*)::int from changed), 0,
   'therapist A cannot update therapist B patient records');
 select ok(clinical_api.get_my_report(
   '30000000-0000-4000-8000-000000000002'
