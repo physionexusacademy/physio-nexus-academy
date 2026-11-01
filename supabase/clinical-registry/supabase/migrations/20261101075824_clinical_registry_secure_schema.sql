@@ -1464,7 +1464,7 @@ security definer
 set search_path = ''
 as $report_integrity$
 declare
-  v_correction boolean := current_setting('app.registry_report_correction', true) = 'on';
+  v_correction boolean := coalesce(current_setting('app.registry_report_correction', true) = 'on', false);
 begin
   if new.owner_id is distinct from old.owner_id
     or new.patient_id is distinct from old.patient_id then
