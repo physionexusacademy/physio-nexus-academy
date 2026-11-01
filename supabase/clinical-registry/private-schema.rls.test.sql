@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(23);
+select plan(24);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -93,20 +93,28 @@ set status = 'final', finalised_at = now()
 where id = '30000000-0000-4000-8000-000000000001';
 
 select throws_ok(
-  $update clinical_private.clinical_interventions
+  $$update clinical_private.clinical_interventions
     set intervention = 'Tampered after finalisation'
-    where id = '40000000-0000-4000-8000-000000000001'$,
+    where id = '40000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'finalised report interventions cannot be edited directly');
 select throws_ok(
-  $insert into clinical_private.clinical_interventions
+  $$insert into clinical_private.clinical_interventions
     (report_id, intervention)
     values ('30000000-0000-4000-8000-000000000001','Late intervention')$,
   '42501', null, 'new interventions cannot be added to a finalised report');
 select throws_ok(
-  $update clinical_private.clinical_reports
+  $$update clinical_private.clinical_reports
     set clinical_summary = 'Unauthorised direct edit'
-    where id = '30000000-0000-4000-8000-000000000001'$,
+    where id = '30000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'finalised report content requires correction workflow');
+
+select set_config('app.registry_report_correction','on',true);
+select throws_ok(
+  $update clinical_private.clinical_reports
+    set clinical_summary = 'Forged correction flag'
+    where id = '30000000-0000-4000-8000-000000000001'$,
+  '42501', null, 'client cannot forge correction authorisation with a custom setting');
+select set_config('app.registry_report_correction','off',true);
 
 insert into clinical_private.case_library_entries (
   owner_id, report_id, patient_id, publication_consent_event_id,
@@ -120,7 +128,7 @@ insert into clinical_private.case_library_entries (
   (select id from clinical_private.patient_consent_events
    where patient_id = '20000000-0000-4000-8000-000000000001'
      and purpose = 'public_case_publication'
-   order by captured_at desc limit 1),
+   order by event_sequence desc limit 1),
   'Synthetic shoulder rehabilitation case',
   'Shoulder pain','30-44',
   'Synthetic de-identified clinical context with no direct identifiers.',
@@ -202,7 +210,7 @@ select clinical_api.record_patient_consent(
   'clinical_care','withdrawn','test-v1','written',null
 );
 select throws_ok(
-  $consent_sql$insert into clinical_private.clinical_reports
+  $consent_sql$$insert into clinical_private.clinical_reports
     (patient_id, owner_id, category, condition)
     values ('20000000-0000-4000-8000-000000000001',
       '10000000-0000-4000-8000-000000000001','Musculoskeletal','Consent withdrawn')$consent_sql$,
@@ -211,7 +219,7 @@ select is((select count(*)::int from clinical_private.patients
   where id = '20000000-0000-4000-8000-000000000002'), 0,
   'therapist A cannot read therapist B patient');
 select throws_ok(
-  $$update clinical_private.patients
+  $$$update clinical_private.patients
     set owner_id = '10000000-0000-4000-8000-000000000002'
     where id = '20000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'therapist A cannot transfer patient ownership');
