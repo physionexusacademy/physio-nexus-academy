@@ -3,8 +3,11 @@
 ## Current deployment boundary
 
 - The Registry is a separate application/database integration from the existing PNA production Supabase project.
-- The hosted Registry database has **not** been provisioned or connected.
-- The current automated database workflow uses a disposable local Supabase stack and synthetic fixtures only.
+- A dedicated Supabase Free project, **PNA Clinical Registry**, is provisioned in Singapore (project ref: `zfoohwqyoengbszuylxj`). It is separate from the existing PNA website Supabase project.
+- The five versioned Registry migrations from the current implementation stack have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
+- The `clinical_api` schema has been added to PostgREST's exposed schemas. Internal tables remain in the unexposed `clinical_private` schema.
+- The current automated database workflow still uses a disposable local Supabase stack and synthetic fixtures only; hosted end-to-end authentication and tenant-isolation tests remain pending.
+- No Registry PDF files are stored in Supabase Storage. Clinical records remain structured database rows/JSON; PDF export is generated only on demand in the browser and downloaded locally.
 - Do not enter real patient information, upload identifiable records, or advertise the Registry as a production clinical record system until the launch gates below are closed.
 - Do not place a Supabase service-role key in browser code, `NEXT_PUBLIC_*` variables, GitHub source, preview build variables, or client-visible logs.
 
@@ -56,10 +59,10 @@ Before clinical use, add institution-approved report templates, verified identit
 
 Do not launch with real patient data until all items are signed off:
 
-1. Provision a dedicated hosted Supabase project for the Registry; verify project URL, keys, backups, region, access policy, and retention configuration. Existing PNA Supabase must remain untouched.
+1. Hosted Free project provisioned. Before staging/production use, verify the project URL and publishable key in the website's Cloudflare build environment, configure Auth site/redirect URLs, confirm backup/recovery and retention policy, and keep the existing PNA Supabase untouched.
 2. Apply migrations to the dedicated project and run database advisors and a fresh independent RLS/security review.
 3. Configure Auth redirect URLs, email verification, password recovery, session expiry, MFA policy for privileged staff, rate limits, and abuse monitoring.
-4. Configure private storage only if a consent-document workflow is approved; enforce owner-scoped access and signed URLs with short expiry.
+4. Do not store generated PDFs. Keep browser-generated PDF exports local to the therapist. Configure private Storage only if an institution-approved signed-consent evidence workflow is later approved; enforce owner-scoped access and short-lived signed URLs.
 5. Complete a privacy impact assessment and obtain institutional/legal/ethics approval for the intended jurisdiction and use. Define lawful basis, retention, deletion, breach response, patient access/correction, and data-subject request handling.
 6. Implement operator approval, signed-consent verification, and reviewer privacy attestations.
 7. Run tenant-isolation, privilege-escalation, anonymous-access, consent-withdrawal, backup-restore, and data-export tests against the hosted staging project using synthetic records.
