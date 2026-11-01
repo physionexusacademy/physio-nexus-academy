@@ -166,9 +166,14 @@ select throws_ok(
      where case_title = 'Synthetic shoulder rehabilitation case'),
     'approved', null)$test_sql$,
   '42501', null, 'ordinary therapist cannot approve a case');
+select throws_ok(
+  $select count(*) from clinical_api.list_cases_for_review()$,
+  '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
+  'trusted reviewer sees the submitted de-identified case queue');
 select ok(clinical_api.review_case_submission(
   (select id from clinical_private.case_library_entries
    where case_title = 'Synthetic shoulder rehabilitation case'),
