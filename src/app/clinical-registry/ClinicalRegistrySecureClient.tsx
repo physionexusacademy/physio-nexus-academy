@@ -136,14 +136,12 @@ export function ClinicalRegistrySecureClient() {
   const registerPatient = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !consentConfirmed || !CLINICAL_REGISTRY_CONSENT_VERSION) return;
     setBusy(true); setError(""); setNotice("");
-    const { data: patientId, error: patientError } = await client.rpc("create_patient", { p_patient_reference: patientReference, p_display_name: patientName });
-    if (patientError) { setBusy(false); setError(patientError.message); return; }
-    const { error: consentError } = await client.rpc("record_patient_consent", {
-      p_patient_id: patientId, p_purpose: "clinical_care", p_status: "granted",
-      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_capture_method: consentMethod, p_prior_event_id: null
+    const { error: patientError } = await client.rpc("create_patient_with_care_consent", {
+      p_patient_reference: patientReference, p_display_name: patientName,
+      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_capture_method: consentMethod
     });
     setBusy(false);
-    if (consentError) { setError(`Patient record was created, but consent could not be saved. Do not create a clinical report until consent is recorded. ${consentError.message}`); return; }
+    if (patientError) { setError(patientError.message); return; }
     setPatientReference(""); setPatientName(""); setConsentConfirmed(false);
     setNotice("Patient record and clinical-care consent event saved.");
     await loadPatients();
