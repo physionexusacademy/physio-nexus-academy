@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: clinical-registry-${{ github.event.pull_request.number || github.ref }}
@@ -38,9 +38,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-
-      - name: Refresh lockfile for the reviewed Wrangler patch
-        run: npm install --package-lock-only --ignore-scripts --no-audit
 
       - name: Install website dependencies
         run: npm ci
@@ -149,42 +146,6 @@ jobs:
             -v ON_ERROR_STOP=1 -Atc \
             "select case when to_regclass('clinical_private.patient_consent_events') is not null and to_regclass('clinical_private.audit_events') is not null and to_regclass('clinical_private.case_library_entries') is not null then 'restore-ok' else 'restore-failed' end" \
             | grep -qx 'restore-ok'
-
-      - name: Commit validated CLI-generated migration to the PR branch
-        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: bash
-        env:
-          EXPECTED_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-          git fetch origin "$GITHUB_HEAD_REF"
-          REMOTE_HEAD="$(git rev-parse FETCH_HEAD)"
-          if [ "$REMOTE_HEAD" != "$EXPECTED_PR_HEAD_SHA" ]; then
-            echo "PR branch advanced during this run; the newer commit will generate and validate its own migration."
-            exit 0
-          fi
-          LOCKFILE_BACKUP=/tmp/clinical-registry-package-lock.json
-          cp "$GITHUB_WORKSPACE/package-lock.json" "$LOCKFILE_BACKUP"
-          git checkout -B "$GITHUB_HEAD_REF" "$REMOTE_HEAD"
-          cp "$LOCKFILE_BACKUP" "$GITHUB_WORKSPACE/package-lock.json"
-          GENERATED="$(find "$REGISTRY_TEST_DIR/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
-          test -n "$GENERATED"
-          DEST="$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations/$(basename "$GENERATED")"
-          if [ ! -f "$DEST" ]; then
-            mkdir -p "$(dirname "$DEST")"
-            cp "$GENERATED" "$DEST"
-            if [ ! -f "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/config.toml" ]; then
-              cp "$REGISTRY_TEST_DIR/supabase/config.toml" "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/config.toml"
-            fi
-            git add "supabase/clinical-registry/supabase/migrations/$(basename "$GENERATED")" "supabase/clinical-registry/supabase/config.toml"
-          fi
-          git add package-lock.json
-          if ! git diff --cached --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Update validated Registry migration and dependency lockfile"
-            git push origin "HEAD:$GITHUB_HEAD_REF"
-          fi
 
       - name: Stop local Supabase stack
         if: always()
