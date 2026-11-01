@@ -108,9 +108,9 @@ jobs:
             echo "pgTAP reported failed assertions."
             exit 1
           fi
-          grep -Fxq '1..20' <<< "$TEST_OUTPUT"
+          grep -Fxq '1..23' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 20
+          test "$OK_COUNT" -eq 23
 
       - name: Verify disposable Registry backup and restore
         shell: bash
