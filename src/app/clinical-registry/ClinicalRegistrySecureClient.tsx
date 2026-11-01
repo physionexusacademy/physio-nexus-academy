@@ -17,6 +17,13 @@ export function ClinicalRegistrySecureClient() {
   const client = useMemo(() => getClinicalRegistryClient(), []);
   const [session, setSession] = useState<Session | null>(null);
   const [membership, setMembership] = useState<TherapistStatus | null>(null);
+  const [verificationRequest, setVerificationRequest] = useState<{status:string;submittedAt?:string;reviewedAt?:string;reviewerNote?:string|null}|null>(null);
+  const [applicantName, setApplicantName] = useState("");
+  const [applicantTitle, setApplicantTitle] = useState("Physiotherapist");
+  const [applicantCredentials, setApplicantCredentials] = useState("DPT");
+  const [registrationLabel, setRegistrationLabel] = useState("AHPC");
+  const [registrationNumber, setRegistrationNumber] = useState("");
+  const [institution, setInstitution] = useState("");
   const [patients, setPatients] = useState<Patient[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -89,6 +96,29 @@ export function ClinicalRegistrySecureClient() {
     if (rpcError) throw rpcError;
     setReviewerCases((data ?? []) as ReviewerCase[]);
   }, [client]);
+  const loadVerificationRequest = useCallback(async () => {
+    if (!client) return;
+    const { data, error: rpcError } = await client.rpc("my_therapist_verification_request");
+    if (rpcError) throw rpcError;
+    setVerificationRequest((data ?? null) as {status:string;submittedAt?:string;reviewedAt?:string;reviewerNote?:string|null}|null);
+  }, [client]);
+
+  const submitVerificationRequest = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!client) return;
+    setBusy(true); setError(""); setNotice("");
+    const credentials = applicantCredentials.split(",").map(value => value.trim()).filter(Boolean);
+    const { data, error: rpcError } = await client.rpc("submit_therapist_verification_request", {
+      p_full_name: applicantName.trim(), p_professional_title: applicantTitle.trim(),
+      p_credentials: credentials, p_registration_label: registrationLabel.trim(),
+      p_registration_number: registrationNumber.trim(), p_institution_or_clinic: institution.trim() || null
+    });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    setVerificationRequest({ status: data?.status ?? "pending", submittedAt: new Date().toISOString() });
+    setNotice("Your professional verification request has been submitted securely. Clinical records remain locked until an authorized operator verifies your credentials.");
+  };
+
   const loadMembership = useCallback(async () => {
     if (!client) return;
     const { data, error: rpcError } = await client.rpc("my_therapist_status");
@@ -119,6 +149,11 @@ export function ClinicalRegistrySecureClient() {
     if (!client || !session) return;
     loadMembership().catch((e: Error) => setError(e.message));
   }, [client, session, loadMembership]);
+
+  useEffect(() => {
+    if (!client || !session) { setVerificationRequest(null); return; }
+    loadVerificationRequest().catch((e: Error) => setError(e.message));
+  }, [client, session, loadVerificationRequest]);
 
   useEffect(() => {
     if (!client || !session || session.user.app_metadata?.registry_role !== "reviewer") {
@@ -315,7 +350,33 @@ export function ClinicalRegistrySecureClient() {
     <div className="mx-auto max-w-7xl">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-5"><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-teal-700">Physio Nexus Academy</p><h1 className="mt-1 text-2xl font-bold text-[#173653]">Clinical Registry</h1><p className="mt-1 text-xs text-slate-500">Private therapist-owned clinical documentation</p></div><div className="flex items-center gap-3"><a href="/clinical-registry/library" className="text-xs font-semibold text-teal-700 underline">Public Case Library</a><button onClick={()=>client.auth.signOut()} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><LogOut size={14}/> Sign out</button></div></header>
       {error&&<p className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}{notice&&<p className="mb-4 rounded-xl bg-teal-50 p-3 text-sm text-teal-800">{notice}</p>}
-      {!verified ? <section className="rounded-2xl border border-amber-200 bg-white p-6"><ShieldCheck size={28} className="text-amber-600"/><h2 className="mt-3 text-lg font-bold text-[#173653]">Therapist verification pending</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Your account is authenticated, but a Registry operator must verify your professional credentials and activate your membership before patient records become available. You cannot verify or activate your own account.</p><p className="mt-4 text-xs text-slate-500">{membership?.fullName ? `${membership.fullName} · ${membership.professionalTitle ?? ""}` : "No therapist membership has been provisioned for this account yet."}</p></section> : <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
+      {!verified ? <section className="grid gap-5 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+          <ShieldCheck size={28} className="text-teal-700"/>
+          <h2 className="mt-3 text-lg font-bold text-[#173653]">Professional verification</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Submit your professional details for manual verification. Patient records remain inaccessible until an authorized Registry operator verifies your credentials and activates your membership.</p>
+          {verificationRequest && <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-amber-900">Application status: {verificationRequest.status.replace("_"," ")}</p>
+            {verificationRequest.submittedAt && <p className="mt-1 text-[11px] text-amber-800">Submitted {new Date(verificationRequest.submittedAt).toLocaleDateString()}</p>}
+            {verificationRequest.reviewedAt && <p className="mt-1 text-[11px] text-amber-800">Reviewed {new Date(verificationRequest.reviewedAt).toLocaleDateString()}</p>}
+            {verificationRequest.reviewerNote && <p className="mt-2 text-xs leading-5 text-amber-950">Reviewer feedback: {verificationRequest.reviewerNote}</p>}
+          </div>}
+          {membership && <p className="mt-4 text-xs text-slate-500">Membership record: {membership.fullName ?? "Name not available"} · {membership.verificationStatus ?? "not verified"}</p>}
+          <p className="mt-4 text-[11px] leading-5 text-slate-500">Submitting this form does not grant access, approve credentials, or assign privileged roles. Do not enter patient information here.</p>
+        </div>
+        <form onSubmit={submitVerificationRequest} className="rounded-2xl border border-slate-200 bg-white p-6 space-y-3">
+          <h3 className="font-bold text-[#173653]">Therapist application</h3>
+          <input required minLength={2} maxLength={160} value={applicantName} onChange={e=>setApplicantName(e.target.value)} placeholder="Full professional name" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+          <input required minLength={2} maxLength={120} value={applicantTitle} onChange={e=>setApplicantTitle(e.target.value)} placeholder="Professional title" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+          <input value={applicantCredentials} onChange={e=>setApplicantCredentials(e.target.value)} placeholder="Credentials (comma separated)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+          <div className="grid grid-cols-2 gap-2">
+            <input required minLength={2} maxLength={80} value={registrationLabel} onChange={e=>setRegistrationLabel(e.target.value)} placeholder="Registration body" className="min-w-0 rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+            <input required minLength={2} maxLength={100} value={registrationNumber} onChange={e=>setRegistrationNumber(e.target.value)} placeholder="Registration number" className="min-w-0 rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+          </div>
+          <input maxLength={200} value={institution} onChange={e=>setInstitution(e.target.value)} placeholder="Institution / clinic (optional)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
+          <button disabled={busy || !applicantName.trim() || !applicantTitle.trim() || !registrationLabel.trim() || !registrationNumber.trim()} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-40">{busy ? "Submitting…" : "Submit / update application"}</button>
+        </form>
+      </section> : <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
         <aside className="space-y-5">
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><Users size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My patients</h2></div><p className="mt-1 text-[11px] text-slate-400">Only records owned by your therapist account are listed.</p><div className="mt-4 max-h-72 space-y-2 overflow-y-auto">{patients.map(p=><button key={p.id} onClick={()=>{setSelectedPatient(p);setSelectedReport(null);loadReports(p.id).catch((e:Error)=>setError(e.message));}} className={`w-full rounded-xl border p-3 text-left ${selectedPatient?.id===p.id?"border-teal-500 bg-teal-50":"border-slate-100 hover:bg-slate-50"}`}><p className="text-sm font-semibold">{p.display_name}</p><p className="mt-1 text-[10px] text-slate-500">{p.patient_reference}</p></button>)}{patients.length===0&&<p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No patient records yet.</p>}</div></section>
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><UserPlus size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Register patient</h2></div>{!CLINICAL_REGISTRY_CONSENT_VERSION?<p className="mt-3 rounded-lg bg-amber-50 p-3 text-xs text-amber-900">Patient registration is disabled until the institution-approved consent version is configured.</p>:<form onSubmit={registerPatient} className="mt-4 space-y-3"><input required value={patientReference} onChange={e=>setPatientReference(e.target.value)} placeholder="Patient reference / code" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="Patient display name (private)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><select value={consentMethod} onChange={e=>setConsentMethod(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="written">Written consent</option><option value="electronic">Electronic consent</option><option value="documented_verbal">Documented verbal consent</option></select><label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600"><input type="checkbox" checked={consentConfirmed} onChange={e=>setConsentConfirmed(e.target.checked)} className="mt-1"/> I have obtained and documented clinical-care consent using the institution-approved form.</label><button disabled={busy||!consentConfirmed} className="w-full rounded-xl bg-teal-700 px-3 py-2.5 text-xs font-bold text-white disabled:opacity-40">Save patient and consent</button></form>}</section>
