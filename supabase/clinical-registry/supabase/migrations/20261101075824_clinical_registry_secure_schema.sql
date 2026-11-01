@@ -973,6 +973,38 @@ as $list_my_cases$
   order by c.updated_at desc
   limit 100
 $list_my_cases$;
+
+-- Reviewer queue exposes only de-identified publication fields. Patient IDs,
+-- owner IDs, consent-event IDs and internal clinical-record links are excluded.
+create or replace function clinical_api.list_cases_for_review()
+returns table(
+  case_id uuid, case_title text, condition_label text, age_band text,
+  clinical_context text, intervention_summary text, outcome_summary text,
+  evidence_reference text, status text, reviewer_note text,
+  submitted_at timestamptz, reviewed_at timestamptz
+)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $review_queue$
+begin
+  if coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false) is not true then
+    raise exception 'Registry reviewer permission required' using errcode = '42501';
+  end if;
+
+  return query
+  select c.id, c.case_title, c.condition_label, c.age_band,
+    c.clinical_context, c.intervention_summary, c.outcome_summary,
+    c.evidence_reference, c.status, c.reviewer_note,
+    c.submitted_at, c.reviewed_at
+  from clinical_private.case_library_entries c
+  where c.status in ('submitted','approved')
+  order by c.submitted_at asc nulls last, c.updated_at asc
+  limit 100;
+end;
+$review_queue$;
+
 -- Internal transaction-scoped authorisations for case submission/withdrawal.
 -- Client-set custom GUCs are forgeable and must never authorise workflow transitions.
 create table if not exists clinical_private.case_workflow_authorizations (
@@ -1709,6 +1741,7 @@ grant execute on function clinical_api.provision_verified_therapist(uuid,text,te
 grant execute on function clinical_api.set_therapist_active(uuid,boolean) to service_role;
 grant execute on function clinical_api.create_case_draft(uuid,uuid,text,text,text,text,text,text,text,boolean) to authenticated;
 grant execute on function clinical_api.list_my_case_submissions() to authenticated;
+grant execute on function clinical_api.list_cases_for_review() to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
 grant execute on function clinical_api.withdraw_public_case(uuid) to authenticated;
 grant execute on function clinical_api.review_case_submission(uuid,text,text) to authenticated;
