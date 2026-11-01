@@ -219,7 +219,7 @@ select is((select count(*)::int from clinical_private.patients
   where id = '20000000-0000-4000-8000-000000000002'), 0,
   'therapist A cannot read therapist B patient');
 select throws_ok(
-  $updat$$update clinical_private.patients
+  $$update$$update clinical_private.patients
     set owner_id = '10000000-0000-4000-8000-000000000002'
     where id = '20000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'therapist A cannot transfer patient ownership');
