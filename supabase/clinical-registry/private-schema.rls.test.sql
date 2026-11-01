@@ -100,7 +100,7 @@ select throws_ok(
 select throws_ok(
   $provision_sql$select clinical_api.provision_verified_therapist(
     '10000000-0000-4000-8000-000000000001',
-    'Self verified','PT','{}'::text[],null,null)$provision_sql$onboarding_sql$,
+    'Self verified','PT','{}'::text[],null,null)$provision_sql$,
   '42501', null, 'ordinary therapist cannot self-verify through operator RPC');
 
 update clinical_private.patients
@@ -126,24 +126,24 @@ where id = '30000000-0000-4000-8000-000000000001';
 select throws_ok(
   $$update clinical_private.clinical_interventions
     set intervention = 'Tampered after finalisation'
-    where id = '40000000-0000-4000-8000-000000000001'$$onboarding_sql$,
+    where id = '40000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'finalised report interventions cannot be edited directly');
 select throws_ok(
   $$insert into clinical_private.clinical_interventions
     (report_id, intervention)
-    values ('30000000-0000-4000-8000-000000000001','Late intervention')$$onboarding_sql$,
+    values ('30000000-0000-4000-8000-000000000001','Late intervention')$$,
   '42501', null, 'new interventions cannot be added to a finalised report');
 select throws_ok(
   $$update clinical_private.clinical_reports
     set clinical_summary = 'Unauthorised direct edit'
-    where id = '30000000-0000-4000-8000-000000000001'$$onboarding_sql$,
+    where id = '30000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'finalised report content requires correction workflow');
 
 select set_config('app.registry_report_correction','on',true);
 select throws_ok(
   $$update clinical_private.clinical_reports
     set clinical_summary = 'Forged correction flag'
-    where id = '30000000-0000-4000-8000-000000000001'$$onboarding_sql$,
+    where id = '30000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'client cannot forge correction authorisation with a custom setting');
 select set_config('app.registry_report_correction','off',true);
 
@@ -172,7 +172,7 @@ select set_config('app.registry_submission_rpc','on',true);
 select throws_ok(
   $update_sql$update clinical_private.case_library_entries
     set status = 'submitted', submitted_at = now()
-    where case_title = 'Synthetic shoulder rehabilitation case'$update_sql$onboarding_sql$,
+    where case_title = 'Synthetic shoulder rehabilitation case'$update_sql$,
   '42501', null, 'client cannot forge case submission with a custom setting');
 select set_config('app.registry_submission_rpc','off',true);
 select ok(clinical_api.submit_case_for_review(
@@ -181,13 +181,13 @@ select ok(clinical_api.submit_case_for_review(
 ), 'owner can submit a de-identified case draft');
 
 select throws_ok(
-  $test_sql$onboarding_sql$select clinical_api.review_case_submission(
+  $test_sql$select clinical_api.review_case_submission(
     (select id from clinical_private.case_library_entries
      where case_title = 'Synthetic shoulder rehabilitation case'),
-    'approved', null)$test_sql$onboarding_sql$,
+    'approved', null)$test_sql$,
   '42501', null, 'ordinary therapist cannot approve a case');
 select throws_ok(
-  $review_queue_access$onboarding_sql$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$onboarding_sql$,
+  $review_queue_access$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$,
   '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
 select set_config('request.jwt.claims',
@@ -267,7 +267,7 @@ select throws_ok(
   $consent_sql$insert into clinical_private.clinical_reports
     (patient_id, owner_id, category, condition)
     values ('20000000-0000-4000-8000-000000000001',
-      '10000000-0000-4000-8000-000000000001','Musculoskeletal','Consent withdrawn')$consent_sql$onboarding_sql$,
+      '10000000-0000-4000-8000-000000000001','Musculoskeletal','Consent withdrawn')$consent_sql$,
   '42501', null, 'withdrawn care consent blocks new report creation');
 select is((select count(*)::int from clinical_private.patients
   where id = '20000000-0000-4000-8000-000000000002'), 0,
@@ -275,7 +275,7 @@ select is((select count(*)::int from clinical_private.patients
 select throws_ok(
   $$update clinical_private.patients
     set owner_id = '10000000-0000-4000-8000-000000000002'
-    where id = '20000000-0000-4000-8000-000000000001'$$onboarding_sql$,
+    where id = '20000000-0000-4000-8000-000000000001'$$,
   '42501', null, 'therapist A cannot transfer patient ownership');
 
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000002',true);
