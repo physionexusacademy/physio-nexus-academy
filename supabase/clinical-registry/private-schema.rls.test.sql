@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(30);
+select plan(33);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -76,6 +76,25 @@ select is((select count(*)::int from clinical_private.patients), 2,
   'therapist A reads only their own patients (including atomic-consent registration)');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
+select is((with changed as (
+  update clinical_private.patients
+  set display_name = 'Unauthorised cross-tenant edit'
+  where id = '20000000-0000-4000-8000-000000000002'
+  returning id
+) select count(*)::int from changed), 0,
+  'therapist A cannot update therapist B patient records');
+select ok(clinical_api.get_my_report(
+  '30000000-0000-4000-8000-000000000002'
+) is null, 'therapist A cannot retrieve therapist B clinical report');
+select throws_ok(
+  $cross_owner_report$insert into clinical_private.clinical_reports
+    (patient_id, owner_id, category, condition)
+    values (
+      '20000000-0000-4000-8000-000000000002',
+      '10000000-0000-4000-8000-000000000001',
+      'Musculoskeletal','Cross-tenant attempt'
+    )$cross_owner_report$,
+  '42501', null, 'therapist A cannot create a report against therapist B patient');
 
 select throws_ok(
   $provision_sql$select clinical_api.provision_verified_therapist(
