@@ -124,10 +124,10 @@ jobs:
             --format=custom --no-owner --no-privileges \
             --schema=clinical_private --schema=clinical_api \
             --file=/tmp/clinical-registry-backup.dump
-          docker exec "$DB_CONTAINER" pg_restore --list \
+          docker exec "$DB_CONTAINER" pg_restore -U postgres --list \
             /tmp/clinical-registry-backup.dump >/dev/null
           # Restore only into this disposable CI database, never a hosted project.
-          docker exec "$DB_CONTAINER" pg_restore --clean --if-exists \
+          docker exec "$DB_CONTAINER" pg_restore -U postgres --clean --if-exists \
             --no-owner --no-privileges --dbname=postgres \
             /tmp/clinical-registry-backup.dump
           docker exec "$DB_CONTAINER" psql -U postgres -d postgres \
