@@ -210,7 +210,7 @@ select clinical_api.record_patient_consent(
   'clinical_care','withdrawn','test-v1','written',null
 );
 select throws_ok(
-  $consent_sql$$insert into clinical_private.clinical_reports
+  $consent_sql$insert into clinical_private.clinical_reports
     (patient_id, owner_id, category, condition)
     values ('20000000-0000-4000-8000-000000000001',
       '10000000-0000-4000-8000-000000000001','Musculoskeletal','Consent withdrawn')$consent_sql$,
