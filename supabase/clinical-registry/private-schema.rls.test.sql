@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(33);
+select plan(38);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -290,12 +290,33 @@ select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-00000000
 select is((select count(*)::int from clinical_private.patients), 0,
   'pending and inactive therapist cannot read patient records');
 
+-- Therapist onboarding requests: applicants can submit and read only their own
+-- status; they cannot inspect the private queue or activate their membership.
+select ok((clinical_api.submit_therapist_verification_request(
+  'Synthetic Pending Therapist','Physiotherapist',array['DPT'],
+  'Synthetic Registration Council','SYN-REG-003','Synthetic Teaching Clinic'
+) ->> 'submitted')::boolean, 'pending therapist can submit a verification application');
+select is(clinical_api.my_therapist_verification_request() ->> 'status',
+  'pending', 'applicant can read their own verification status');
+select throws_ok(
+  $select count(*) from clinical_private.therapist_verification_requests$,
+  '42501', null, 'applicant cannot read the private verification queue');
+select throws_ok(
+  $select clinical_api.set_therapist_active(
+    '10000000-0000-4000-8000-000000000003', true)$,
+  '42501', null, 'applicant cannot activate their own therapist membership');
+
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
 select set_config('request.jwt.claims','{"role":"anon"}',true);
 select throws_ok(
-  $$select count(*) from clinical_private.patients$$,
+  $select count(*) from clinical_private.patients$,
   '42501', null, 'anonymous role cannot access private schema');
+select throws_ok(
+  $select clinical_api.submit_therapist_verification_request(
+    'Anonymous Applicant','Physiotherapist',array[]::text[],
+    'Registration Body','ANON-001',null)$,
+  '42501', null, 'anonymous role cannot submit therapist verification request');
 
 reset role;
 select * from finish();
