@@ -120,7 +120,7 @@ jobs:
           fi
           grep -Fxq '1..28' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 26
+          test "$OK_COUNT" -eq 28
 
       - name: Verify disposable Registry backup and restore
         shell: bash
