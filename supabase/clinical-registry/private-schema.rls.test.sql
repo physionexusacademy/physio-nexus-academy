@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(24);
+select plan(26);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -137,6 +137,13 @@ insert into clinical_private.case_library_entries (
   'https://example.invalid/evidence', true
 );
 
+select set_config('app.registry_submission_rpc','on',true);
+select throws_ok(
+  $update clinical_private.case_library_entries
+    set status = 'submitted', submitted_at = now()
+    where case_title = 'Synthetic shoulder rehabilitation case'$,
+  '42501', null, 'client cannot forge case submission with a custom setting');
+select set_config('app.registry_submission_rpc','off',true);
 select ok(clinical_api.submit_case_for_review(
   (select id from clinical_private.case_library_entries
    where case_title = 'Synthetic shoulder rehabilitation case')
@@ -200,6 +207,13 @@ order by ce.event_sequence desc
 limit 1;
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
   'publication consent withdrawal immediately hides public case');
+select set_config('app.registry_withdraw_rpc','on',true);
+select throws_ok(
+  $update clinical_private.case_library_entries
+    set status = 'withdrawn'
+    where case_title = 'Synthetic shoulder rehabilitation case'$,
+  '42501', null, 'client cannot forge case withdrawal with a custom setting');
+select set_config('app.registry_withdraw_rpc','off',true);
 select ok(clinical_api.withdraw_public_case(
   (select id from clinical_private.case_library_entries
    where case_title = 'Synthetic shoulder rehabilitation case')
