@@ -176,10 +176,20 @@ select is((select clinical_summary from clinical_private.clinical_reports
   'Corrected synthetic clinical summary',
   'report correction is applied and auditable');
 
-select clinical_api.record_patient_consent(
-  '20000000-0000-4000-8000-000000000001',
-  'public_case_publication','withdrawn','test-public-v1','written',null
-);
+-- Deliberately give the withdrawal the same wall-clock timestamp as the
+-- grant. event_sequence, not timestamp precision, must make withdrawal win.
+insert into clinical_private.patient_consent_events (
+  patient_id, owner_id, purpose, consent_status, consent_version,
+  capture_method, captured_at, prior_event_id
+)
+select ce.patient_id, ce.owner_id, ce.purpose, 'withdrawn',
+       ce.consent_version, ce.capture_method, ce.captured_at, ce.id
+from clinical_private.patient_consent_events ce
+where ce.patient_id = '20000000-0000-4000-8000-000000000001'
+  and ce.purpose = 'public_case_publication'
+  and ce.consent_status = 'granted'
+order by ce.event_sequence desc
+limit 1;
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
   'publication consent withdrawal immediately hides public case');
 select ok(clinical_api.withdraw_public_case(
