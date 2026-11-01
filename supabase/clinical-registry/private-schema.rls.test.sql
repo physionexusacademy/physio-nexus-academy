@@ -208,11 +208,15 @@ limit 1;
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
   'publication consent withdrawal immediately hides public case');
 select set_config('app.registry_withdraw_rpc','on',true);
-select throws_ok(
-  $update_sql$update clinical_private.case_library_entries
-    set status = 'withdrawn'
-    where case_title = 'Synthetic shoulder rehabilitation case'$update_sql$,
-  '42501', null, 'client cannot forge case withdrawal with a custom setting');
+-- The owner UPDATE policy intentionally hides non-draft rows, so a forged
+-- update can affect zero rows without raising an exception. Assert the
+-- published workflow state remains unchanged rather than expecting an error.
+update clinical_private.case_library_entries
+set status = 'withdrawn'
+where case_title = 'Synthetic shoulder rehabilitation case';
+select is((select status from clinical_private.case_library_entries
+  where case_title = 'Synthetic shoulder rehabilitation case'),
+  'published', 'client cannot forge case withdrawal with a custom setting');
 select set_config('app.registry_withdraw_rpc','off',true);
 select ok(clinical_api.withdraw_public_case(
   (select id from clinical_private.case_library_entries
