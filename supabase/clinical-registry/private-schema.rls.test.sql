@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(26);
+select plan(28);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -62,6 +62,15 @@ on conflict (id) do nothing;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+
+select ok(clinical_api.create_patient_with_care_consent(
+  'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
+) is not null, 'patient and care consent are created through one atomic RPC');
+select is((select count(*)::int from clinical_private.patient_consent_events ce
+  join clinical_private.patients p on p.id = ce.patient_id
+  where p.patient_reference = 'TEST-A-ATOMIC'
+    and ce.purpose = 'clinical_care' and ce.consent_status = 'granted'),
+  1, 'atomic patient creation records exactly one care-consent event');
 
 select is((select count(*)::int from clinical_private.patients), 1,
   'therapist A reads only their own patient');
