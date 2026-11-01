@@ -371,7 +371,7 @@ begin
         and not exists (
           select 1 from clinical_private.patient_consent_events later
           where later.patient_id = ce.patient_id and later.owner_id = ce.owner_id
-            and later.purpose = ce.purpose and later.captured_at > ce.captured_at
+            and later.purpose = ce.purpose and later.event_sequence > ce.event_sequence
         )
     );
   return found;
@@ -471,6 +471,7 @@ begin
     raise exception 'Owned report correction request not found' using errcode = '42501';
   end if;
   v_changes := v_request.requested_changes;
+  perform set_config('app.registry_report_correction', 'on', true);
   select array_agg(k) into v_invalid_keys
   from jsonb_object_keys(v_changes) as keys(k)
   where k not in ('category','condition','clinical_summary','discharge_status','recommendations');
@@ -737,6 +738,97 @@ begin
       and r.archived_at <= (p_as_of::timestamptz - make_interval(days => rr.retention_days));
 end;
 $function$;
+
+
+-- Phase 3 integrity hardening: finalised clinical records are immutable except
+-- through the owning therapist's explicit, audited correction RPC.
+create or replace function clinical_private.guard_report_integrity()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $report_integrity$
+declare
+  v_correction boolean := current_setting('app.registry_report_correction', true) = 'on';
+begin
+  if new.owner_id is distinct from old.owner_id
+    or new.patient_id is distinct from old.patient_id then
+    raise exception 'Report ownership and patient linkage are immutable' using errcode = '42501';
+  end if;
+  if old.status = 'archived' and (
+    to_jsonb(new) - array['updated_at'] is distinct from to_jsonb(old) - array['updated_at']
+  ) then
+    raise exception 'Archived reports are immutable' using errcode = '42501';
+  end if;
+  if old.status = 'final' and new.status = 'draft' then
+    raise exception 'A final report cannot be reopened as a draft' using errcode = '42501';
+  end if;
+  if old.finalised_at is not null and new.finalised_at is distinct from old.finalised_at then
+    raise exception 'Finalisation timestamp is immutable' using errcode = '42501';
+  end if;
+  if old.archived_at is not null and new.archived_at is distinct from old.archived_at then
+    raise exception 'Archive timestamp is immutable' using errcode = '42501';
+  end if;
+  if old.status = 'final' and not v_correction and (
+    (to_jsonb(new) - array['status','archived_at','updated_at'])
+      is distinct from
+    (to_jsonb(old) - array['status','archived_at','updated_at'])
+  ) then
+    raise exception 'Finalised clinical content can only be changed through the correction workflow'
+      using errcode = '42501';
+  end if;
+  return new;
+end;
+$report_integrity$;
+drop trigger if exists clinical_report_integrity_guard on clinical_private.clinical_reports;
+create trigger clinical_report_integrity_guard
+before update on clinical_private.clinical_reports
+for each row execute function clinical_private.guard_report_integrity();
+
+-- Direct table writes must obey the same draft-only boundary as the RPCs.
+create or replace function clinical_private.guard_report_child_mutation()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $report_child_guard$
+declare
+  v_owner_id uuid;
+  v_status text;
+  v_archived_at timestamptz;
+begin
+  if coalesce(auth.role() = 'service_role', false) then
+    return new;
+  end if;
+  if tg_op = 'UPDATE' and new.report_id is distinct from old.report_id then
+    raise exception 'Clinical child records cannot be moved between reports' using errcode = '42501';
+  end if;
+  select r.owner_id, r.status, r.archived_at
+    into v_owner_id, v_status, v_archived_at
+  from clinical_private.clinical_reports r
+  where r.id = new.report_id;
+  if not found or v_owner_id is distinct from (select auth.uid())
+    or v_status <> 'draft' or v_archived_at is not null
+    or not exists (
+      select 1 from clinical_private.therapist_memberships tm
+      where tm.user_id = (select auth.uid())
+        and tm.is_active and tm.verification_status = 'verified'
+    ) then
+    raise exception 'Interventions and outcomes can only be changed on your active draft reports'
+      using errcode = '42501';
+  end if;
+  return new;
+end;
+$report_child_guard$;
+drop trigger if exists interventions_draft_only_guard on clinical_private.clinical_interventions;
+create trigger interventions_draft_only_guard
+before insert or update on clinical_private.clinical_interventions
+for each row execute function clinical_private.guard_report_child_mutation();
+drop trigger if exists outcomes_draft_only_guard on clinical_private.clinical_outcomes;
+create trigger outcomes_draft_only_guard
+before insert or update on clinical_private.clinical_outcomes
+for each row execute function clinical_private.guard_report_child_mutation();
+
 
 -- Immutable audit events record only changed column names, never clinical values.
 create or replace function clinical_private.audit_row_change()
