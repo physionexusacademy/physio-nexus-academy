@@ -15,6 +15,7 @@ concurrency:
 jobs:
   refresh-lockfile:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,6 +34,10 @@ jobs:
           echo "npm audit fix exit code: $FIX_EXIT"
       - name: Regenerate lockfile from reviewed manifest
         run: npm install --package-lock-only --ignore-scripts --no-audit
+      - name: Install exact refreshed dependencies
+        run: npm ci
+      - name: Verify zero known dependency vulnerabilities
+        run: npm audit --audit-level=low
       - name: Commit refreshed lockfile
         run: |
           if git diff --quiet -- package-lock.json; then
