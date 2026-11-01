@@ -12,6 +12,8 @@ type ClinicalReport = { id: string; patient?: { patientReference?: string; displ
 type CaseSubmission = { case_id: string; patient_id: string; case_title: string; status: string; reviewer_note?: string | null; submitted_at?: string | null; published_at?: string | null };
 type PublicCase = { case_id: string; case_title: string; condition_label: string; age_band?: string | null; clinical_context: string; intervention_summary: string; outcome_summary: string; evidence_reference?: string | null };
 type ReviewerCase = { case_id: string; case_title: string; condition_label: string; age_band?: string | null; clinical_context: string; intervention_summary: string; outcome_summary: string; evidence_reference?: string | null; status: "submitted" | "approved"; reviewer_note?: string | null; submitted_at?: string | null; reviewed_at?: string | null };
+type TherapistVerificationApplication = { request_id: string; user_id: string; full_name: string; professional_title: string; credentials: string[]; registration_label?: string | null; registration_number?: string | null; institution_or_clinic?: string | null; status: string; submitted_at: string; };
+type VerifiedTherapist = { user_id: string; full_name: string; professional_title: string; registration_label?: string | null; registration_number?: string | null; is_active: boolean; verified_at?: string | null };
 
 export function ClinicalRegistrySecureClient() {
   const client = useMemo(() => getClinicalRegistryClient(), []);
@@ -49,6 +51,12 @@ export function ClinicalRegistrySecureClient() {
   const [caseSubmissions, setCaseSubmissions] = useState<CaseSubmission[]>([]);
   const [publicCases, setPublicCases] = useState<PublicCase[]>([]);
   const [reviewerCases, setReviewerCases] = useState<ReviewerCase[]>([]);
+  const [operatorQueue, setOperatorQueue] = useState<TherapistVerificationApplication[]>([]);
+  const [operatorMemberships, setOperatorMemberships] = useState<VerifiedTherapist[]>([]);
+  const [operatorReason, setOperatorReason] = useState("");
+  const [operatorEvidence, setOperatorEvidence] = useState("");
+  const [operatorIdentityVerified, setOperatorIdentityVerified] = useState(false);
+  const [operatorRegistrationVerified, setOperatorRegistrationVerified] = useState(false);
   const [reviewerNote, setReviewerNote] = useState("");
   const [caseTitle, setCaseTitle] = useState("");
   const [caseCondition, setCaseCondition] = useState("");
@@ -96,6 +104,51 @@ export function ClinicalRegistrySecureClient() {
     if (rpcError) throw rpcError;
     setReviewerCases((data ?? []) as ReviewerCase[]);
   }, [client]);
+  const loadOperatorData = useCallback(async () => {
+    if (!client) return;
+    const [queue, members] = await Promise.all([
+      client.rpc("list_therapist_verification_queue"),
+      client.rpc("list_verified_therapist_memberships")
+    ]);
+    if (queue.error) throw queue.error;
+    if (members.error) throw members.error;
+    setOperatorQueue((queue.data ?? []) as TherapistVerificationApplication[]);
+    setOperatorMemberships((members.data ?? []) as VerifiedTherapist[]);
+  }, [client]);
+
+  const reviewTherapistApplication = async (requestId: string, decision: "approved" | "rejected") => {
+    if (!client) return;
+    if (operatorReason.trim().length < 5) { setError("Enter a clear decision reason (at least five characters)."); return; }
+    if (decision === "approved" && (!operatorIdentityVerified || !operatorRegistrationVerified || operatorEvidence.trim().length < 3)) {
+      setError("Approval requires identity verification, regulator verification and an evidence reference."); return;
+    }
+    setBusy(true); setError(""); setNotice("");
+    const { data, error: rpcError } = await client.rpc("review_therapist_verification_request", {
+      p_request_id: requestId, p_decision: decision, p_evidence_reference: operatorEvidence.trim() || null,
+      p_reason: operatorReason.trim(), p_identity_verified: operatorIdentityVerified,
+      p_registration_verified: operatorRegistrationVerified
+    });
+    if (rpcError) { setBusy(false); setError(rpcError.message); return; }
+    if (!data) { setBusy(false); setError("This application is no longer pending. Refresh the queue."); return; }
+    await loadOperatorData();
+    setOperatorReason(""); setOperatorEvidence(""); setOperatorIdentityVerified(false); setOperatorRegistrationVerified(false);
+    setBusy(false); setNotice(decision === "approved" ? "Therapist approved and membership activated. The decision was audit-logged." : "Application rejected with an audit-logged reason.");
+  };
+
+  const setTherapistActive = async (userId: string, active: boolean) => {
+    if (!client) return;
+    if (operatorReason.trim().length < 5) { setError("Enter a reason of at least five characters."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const { data, error: rpcError } = await client.rpc("set_therapist_membership_active", {
+      p_user_id: userId, p_is_active: active, p_reason: operatorReason.trim()
+    });
+    if (rpcError) { setBusy(false); setError(rpcError.message); return; }
+    if (!data) { setBusy(false); setError("Verified membership not found. Refresh the directory."); return; }
+    await loadOperatorData();
+    setOperatorReason(""); setBusy(false);
+    setNotice(active ? "Verified therapist reactivated. The decision was audit-logged." : "Therapist access deactivated. The decision was audit-logged.");
+  };
+
   const loadVerificationRequest = useCallback(async () => {
     if (!client) return;
     const { data, error: rpcError } = await client.rpc("my_therapist_verification_request");
@@ -154,6 +207,14 @@ export function ClinicalRegistrySecureClient() {
     if (!client || !session) { setVerificationRequest(null); return; }
     loadVerificationRequest().catch((e: Error) => setError(e.message));
   }, [client, session, loadVerificationRequest]);
+
+  useEffect(() => {
+    if (!client || !session || session.user.app_metadata?.registry_role !== "operator") {
+      setOperatorQueue([]); setOperatorMemberships([]);
+      return;
+    }
+    loadOperatorData().catch((e: Error) => setError(e.message));
+  }, [client, session, loadOperatorData]);
 
   useEffect(() => {
     if (!client || !session || session.user.app_metadata?.registry_role !== "reviewer") {
@@ -421,6 +482,31 @@ export function ClinicalRegistrySecureClient() {
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Public Case Library</h2></div><p className="mt-1 text-[11px] text-slate-400">Only independently reviewed, published, de-identified cases appear here.</p><div className="mt-3 space-y-3">{publicCases.map(c=><article key={c.case_id} className="rounded-xl border border-slate-100 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-bold text-[#173653]">{c.case_title}</h3><span className="text-[10px] text-slate-500">{c.condition_label} · {c.age_band??"Age not reported"}</span></div><p className="mt-2 text-xs leading-5 text-slate-600">{c.clinical_context}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Intervention:</strong> {c.intervention_summary}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Outcome:</strong> {c.outcome_summary}</p>{c.evidence_reference&&/^https?:\/\//i.test(c.evidence_reference)&&<a href={c.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Evidence reference</a>}</article>)}{publicCases.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No published cases available yet.</p>}</div></section>
         </section>
       </div>}
+
+      {session.user.app_metadata?.registry_role === "operator" && <section className="mt-5 rounded-2xl border border-amber-200 bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">Restricted operator access</p><h2 className="mt-1 text-lg font-bold text-[#173653]">Therapist verification console</h2><p className="mt-1 text-xs text-slate-500">Verify identity and current registration independently. No patient records are exposed in this console.</p></div>
+          <button onClick={()=>loadOperatorData().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh</button>
+        </div>
+        <div className="mt-4 rounded-xl bg-slate-50 p-3">
+          <label className="block text-xs font-semibold text-slate-700">Decision / access-change reason</label>
+          <textarea value={operatorReason} onChange={e=>setOperatorReason(e.target.value)} rows={2} maxLength={2000} placeholder="Record the reason for approval, rejection, deactivation or reactivation" className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-3 text-xs"/>
+        </div>
+        <div className="mt-4 space-y-3">
+          {operatorQueue.map(item=><article key={item.request_id} className="rounded-xl border border-slate-200 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="text-sm font-bold text-[#173653]">{item.full_name}</h3><p className="mt-1 text-xs text-slate-600">{item.professional_title} · {item.credentials?.join(", ") || "Credentials not specified"}</p><p className="mt-1 text-xs text-slate-600">{item.registration_label}: {item.registration_number}</p><p className="mt-1 text-[11px] text-slate-500">{item.institution_or_clinic || "Institution not provided"} · Submitted {new Date(item.submitted_at).toLocaleDateString()}</p><p className="mt-1 break-all text-[10px] text-slate-400">Account: {item.user_id}</p></div><span className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-800">{item.status}</span></div>
+            <input value={operatorEvidence} onChange={e=>setOperatorEvidence(e.target.value)} placeholder="Regulator verification evidence / reference (required for approval)" className="mt-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/>
+            <label className="mt-3 flex items-start gap-2 text-xs text-slate-600"><input type="checkbox" checked={operatorIdentityVerified} onChange={e=>setOperatorIdentityVerified(e.target.checked)} className="mt-0.5"/> Identity independently checked against reliable identification.</label>
+            <label className="mt-2 flex items-start gap-2 text-xs text-slate-600"><input type="checkbox" checked={operatorRegistrationVerified} onChange={e=>setOperatorRegistrationVerified(e.target.checked)} className="mt-0.5"/> Current registration independently verified with the named regulator.</label>
+            <div className="mt-3 flex flex-wrap gap-2"><button disabled={busy||!operatorIdentityVerified||!operatorRegistrationVerified||!operatorEvidence.trim()||operatorReason.trim().length<5} onClick={()=>reviewTherapistApplication(item.request_id,"approved")} className="rounded-lg bg-teal-700 px-4 py-2 text-xs font-bold text-white disabled:opacity-40">Approve & activate</button><button disabled={busy||operatorReason.trim().length<5} onClick={()=>reviewTherapistApplication(item.request_id,"rejected")} className="rounded-lg border border-red-200 px-4 py-2 text-xs font-semibold text-red-700 disabled:opacity-40">Reject with reason</button></div>
+          </article>)}
+          {operatorQueue.length===0 && <p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No pending therapist applications.</p>}
+        </div>
+        <div className="mt-5 border-t border-slate-100 pt-4"><h3 className="text-sm font-bold text-[#173653]">Verified therapist access</h3><p className="mt-1 text-[11px] text-slate-500">Deactivation immediately blocks access to private clinical records. Reactivation is limited to previously verified accounts.</p><div className="mt-3 space-y-2">
+          {operatorMemberships.map(item=><div key={item.user_id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 p-3"><div><p className="text-xs font-semibold text-slate-800">{item.full_name}</p><p className="mt-1 text-[10px] text-slate-500">{item.registration_label}: {item.registration_number} · {item.is_active?"Active":"Deactivated"}</p></div><button disabled={busy||operatorReason.trim().length<5} onClick={()=>setTherapistActive(item.user_id,!item.is_active)} className="rounded-lg border border-slate-300 px-3 py-2 text-[10px] font-semibold">{item.is_active?"Deactivate access":"Reactivate access"}</button></div>)}
+          {operatorMemberships.length===0 && <p className="text-xs text-slate-500">No verified memberships found.</p>}
+        </div></div>
+      </section>}
       {session.user.app_metadata?.registry_role === "reviewer" && <section className="mt-5 rounded-2xl border border-teal-200 bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Restricted access</p><h2 className="mt-1 text-lg font-bold text-[#173653]">Case reviewer console</h2><p className="mt-1 text-xs text-slate-500">Only de-identified submissions are shown. Patient identifiers and private clinical-record links are not returned by the reviewer queue.</p></div>
