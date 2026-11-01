@@ -30,7 +30,7 @@ const schema = z.object({
   preferredTime: z.string().min(1, "Please select a preferred time slot"),
   appointmentType: z.enum(["in-person", "online"]),
   consent: z.literal(true, {
-    errorMap: () => ({ message: "Consent is required to submit this request" }),
+    error: "Consent is required to submit this request",
   }),
 });
 

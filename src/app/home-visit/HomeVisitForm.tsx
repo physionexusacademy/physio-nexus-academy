@@ -29,7 +29,7 @@ const schema = z.object({
   accessibilityNotes: z.string().optional(),
   specialInstructions: z.string().optional(),
   consent: z.literal(true, {
-    errorMap: () => ({ message: "Consent is required to submit this request" }),
+    error: "Consent is required to submit this request",
   }),
 });
 
