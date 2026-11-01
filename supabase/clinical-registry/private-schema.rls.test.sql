@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(20);
+select plan(23);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -82,9 +82,31 @@ select is((select count(*)::int from clinical_private.audit_events
     and entity_table = 'patients'), 1,
   'authenticated patient change creates an audit event');
 
+insert into clinical_private.clinical_interventions
+  (id, report_id, intervention)
+values
+  ('40000000-0000-4000-8000-000000000001',
+   '30000000-0000-4000-8000-000000000001','Synthetic mobilisation intervention');
+
 update clinical_private.clinical_reports
 set status = 'final', finalised_at = now()
 where id = '30000000-0000-4000-8000-000000000001';
+
+select throws_ok(
+  $update clinical_private.clinical_interventions
+    set intervention = 'Tampered after finalisation'
+    where id = '40000000-0000-4000-8000-000000000001'$,
+  '42501', null, 'finalised report interventions cannot be edited directly');
+select throws_ok(
+  $insert into clinical_private.clinical_interventions
+    (report_id, intervention)
+    values ('30000000-0000-4000-8000-000000000001','Late intervention')$,
+  '42501', null, 'new interventions cannot be added to a finalised report');
+select throws_ok(
+  $update clinical_private.clinical_reports
+    set clinical_summary = 'Unauthorised direct edit'
+    where id = '30000000-0000-4000-8000-000000000001'$,
+  '42501', null, 'finalised report content requires correction workflow');
 
 insert into clinical_private.case_library_entries (
   owner_id, report_id, patient_id, publication_consent_event_id,
