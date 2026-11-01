@@ -74,7 +74,7 @@ select throws_ok(
     'Self verified','PT','{}'::text[],null,null)$provision_sql$,
   '42501', null, 'ordinary therapist cannot self-verify through operator RPC');
 
-  $$update clinical_private.patients
+update clinical_private.patients
 set display_name = 'Synthetic Patient A corrected'
 where id = '20000000-0000-4000-8000-000000000001';
 select is((select count(*)::int from clinical_private.audit_events
