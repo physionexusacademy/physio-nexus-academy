@@ -4,7 +4,7 @@
 
 - The Registry is a separate application/database integration from the existing PNA production Supabase project.
 - A dedicated Supabase Free project, **PNA Clinical Registry**, is provisioned in Singapore (project ref: `zfoohwqyoengbszuylxj`). It is separate from the existing PNA website Supabase project.
-- The six versioned Registry migrations, including private-schema hardening and direct-client privilege revocation, have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
+- The seven versioned Registry migrations, including private-schema hardening and direct-client privilege revocation, have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
 - The `clinical_api` schema has been added to PostgREST's exposed schemas. All 18 `clinical_private` tables have RLS enabled; the schema is not exposed through PostgREST, and `anon`/`authenticated` have no direct table, sequence, or private-helper EXECUTE grants. Application access is via narrowly scoped `clinical_api` functions.
 - The automated database workflow uses a disposable local Supabase stack and synthetic fixtures. Latest local security workflow run #186 is in progress; hosted end-to-end authentication and tenant-isolation tests remain pending.
 - No Registry PDF files are stored in Supabase Storage. Clinical records remain structured database rows/JSON; PDF export is generated only on demand in the browser and downloaded locally.
