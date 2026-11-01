@@ -70,9 +70,16 @@ jobs:
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations"
           mkdir -p "$REGISTRY_TEST_DIR/supabase/migrations"
-          EXISTING="$(find "$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations" -maxdepth 1 -type f -name '*_clinical_registry_secure_schema.sql' -print -quit)"
-          if [ -n "$EXISTING" ]; then
-            cp "$EXISTING" "$REGISTRY_TEST_DIR/supabase/migrations/"
+          MIGRATION_SOURCE="$GITHUB_WORKSPACE/supabase/clinical-registry/supabase/migrations"
+          MIGRATION_COUNT="$(find "$MIGRATION_SOURCE" -maxdepth 1 -type f -name '*.sql' | wc -l | tr -d ' ')"
+          if [ "$MIGRATION_COUNT" -gt 0 ]; then
+            # Apply every versioned Registry migration in lexical timestamp order.
+            # Loading only the original schema migration silently omitted later
+            # security features such as therapist verification requests.
+            find "$MIGRATION_SOURCE" -maxdepth 1 -type f -name '*.sql' -print0 | sort -z |
+              while IFS= read -r -d '' SOURCE_MIGRATION; do
+                cp "$SOURCE_MIGRATION" "$REGISTRY_TEST_DIR/supabase/migrations/"
+              done
           else
             cd "$REGISTRY_TEST_DIR"
             supabase migration new clinical_registry_secure_schema
