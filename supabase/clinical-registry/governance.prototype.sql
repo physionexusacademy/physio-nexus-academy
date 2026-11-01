@@ -711,7 +711,7 @@ alter table clinical_private.registry_retention_rules force row level security;
 alter table clinical_private.retention_review_events enable row level security;
 alter table clinical_private.retention_review_events force row level security;
 revoke all on clinical_private.registry_retention_rules,
-  clinical_private.retention_review_events from public, anon, authenticated;
+  clinical_private.retention_review_events from public, anon, authenticated, service_role;
 grant usage on schema clinical_private to service_role;
 grant usage on schema clinical_api to anon, authenticated, service_role;
 grant all on clinical_private.registry_retention_rules,
