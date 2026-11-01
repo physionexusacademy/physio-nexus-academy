@@ -1169,7 +1169,7 @@ $function$;
 create or replace function clinical_api.apply_own_report_correction(p_request_id uuid)
 returns boolean
 language plpgsql
-security invoker
+security definer
 set search_path = ''
 as $apply_report_correction$
 declare
@@ -1186,7 +1186,6 @@ begin
     raise exception 'Owned report correction request not found' using errcode = '42501';
   end if;
   v_changes := v_request.requested_changes;
-  perform set_config('app.registry_report_correction', 'on', true);
   select array_agg(k) into v_invalid_keys
   from jsonb_object_keys(v_changes) as keys(k)
   where k not in ('category','condition','clinical_summary','discharge_status','recommendations');
@@ -1200,6 +1199,8 @@ begin
     select coalesce(array_agg(value), '{}'::text[]) into v_recommendations
     from jsonb_array_elements_text(v_changes -> 'recommendations') as elements(value);
   end if;
+  insert into clinical_private.report_correction_authorizations(transaction_id, report_id, actor_id)
+  values (txid_current(), v_request.target_id, (select auth.uid()));
   update clinical_private.clinical_reports
   set category = case when v_changes ? 'category' then trim(v_changes ->> 'category') else category end,
       condition = case when v_changes ? 'condition' then trim(v_changes ->> 'condition') else condition end,
@@ -1211,6 +1212,10 @@ begin
   if not found then
     raise exception 'Report cannot be corrected because it is missing or archived' using errcode = '42501';
   end if;
+  delete from clinical_private.report_correction_authorizations
+  where transaction_id = txid_current()
+    and report_id = v_request.target_id
+    and actor_id = (select auth.uid());
   insert into clinical_private.correction_resolution_events(
     correction_request_id, owner_id, resolution, resolution_summary
   ) values (p_request_id, (select auth.uid()), 'applied', 'Applied by the owning therapist; changed fields are recorded in the audit trail.');
@@ -1383,7 +1388,7 @@ as $$
         and not exists (
           select 1 from clinical_private.patient_consent_events later
           where later.patient_id = ce.patient_id and later.owner_id = ce.owner_id
-            and later.purpose = ce.purpose and later.captured_at > ce.captured_at
+            and later.purpose = ce.purpose and later.event_sequence > ce.event_sequence
         )
     )
     and (
@@ -1455,6 +1460,16 @@ end;
 $function$;
 
 
+-- Internal, transaction-scoped authorisations for the correction RPC.
+-- No API role receives privileges on this table; custom GUCs are forgeable.
+create table if not exists clinical_private.report_correction_authorizations (
+  transaction_id bigint not null,
+  report_id uuid not null references clinical_private.clinical_reports(id) on delete cascade,
+  actor_id uuid not null references auth.users(id) on delete restrict,
+  primary key (transaction_id, report_id, actor_id)
+);
+revoke all on clinical_private.report_correction_authorizations from public, anon, authenticated;
+
 -- Phase 3 integrity hardening: finalised clinical records are immutable except
 -- through the owning therapist's explicit, audited correction RPC.
 create or replace function clinical_private.guard_report_integrity()
@@ -1464,7 +1479,12 @@ security definer
 set search_path = ''
 as $report_integrity$
 declare
-  v_correction boolean := coalesce(current_setting('app.registry_report_correction', true) = 'on', false);
+  v_correction boolean := exists (
+    select 1 from clinical_private.report_correction_authorizations a
+    where a.transaction_id = txid_current()
+      and a.report_id = old.id
+      and a.actor_id = (select auth.uid())
+  );
 begin
   if new.owner_id is distinct from old.owner_id
     or new.patient_id is distinct from old.patient_id then
