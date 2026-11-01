@@ -341,7 +341,8 @@ export function ClinicalRegistrySecureClient() {
     setBusy(false); if (rpcError) { setError(rpcError.message); return; }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob); const anchor = document.createElement("a");
-    anchor.href = url; anchor.download = `clinical-record-${selectedPatient.patient_reference}.json`; anchor.click(); URL.revokeObjectURL(url);\n    await loadRecordAccessEvents(selectedPatient.id);
+    anchor.href = url; anchor.download = `clinical-record-${selectedPatient.patient_reference}.json`; anchor.click(); URL.revokeObjectURL(url);
+    await loadRecordAccessEvents(selectedPatient.id);
   };
 
   const submitCaseForReview = async (event: FormEvent) => {
