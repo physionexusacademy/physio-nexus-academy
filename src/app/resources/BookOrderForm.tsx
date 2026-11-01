@@ -19,7 +19,7 @@ const schema = z.object({
   deliveryAddress: z.string().min(10, "Please enter your complete delivery address"),
   quantity: z.number().int().min(1).max(5),
   customerNotes: z.string().max(500, "Please keep notes under 500 characters").optional(),
-  consent: z.literal(true, { errorMap: () => ({ message: "Please confirm your order details" }) }),
+  consent: z.literal(true, { error: "Please confirm your order details" }),
 });
 
 type FormValues = z.infer<typeof schema>;
