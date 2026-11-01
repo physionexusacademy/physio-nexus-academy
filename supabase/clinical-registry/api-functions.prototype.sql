@@ -487,6 +487,26 @@ as $therapist_status$
   from clinical_private.therapist_memberships tm
   where tm.user_id = (select auth.uid())
 $therapist_status$;
-revoke all on all functions in schema clinical_api from public, anon;
-grant execute on all functions in schema clinical_api to authenticated;
+revoke all on all functions in schema clinical_api from public, anon, authenticated;
+
+-- Explicit therapist-facing RPC allow-list. New functions are denied by default
+-- until their signature and authorization behavior have been reviewed.
+grant execute on function clinical_api.list_my_patients(text) to authenticated;
+grant execute on function clinical_api.create_patient(text,text) to authenticated;
+grant execute on function clinical_api.list_my_reports(uuid) to authenticated;
+grant execute on function clinical_api.create_report(uuid,text,text) to authenticated;
+grant execute on function clinical_api.get_my_report(uuid) to authenticated;
+grant execute on function clinical_api.save_initial_assessment(uuid,jsonb) to authenticated;
+grant execute on function clinical_api.add_followup_assessment(uuid,jsonb) to authenticated;
+grant execute on function clinical_api.add_intervention(uuid,text,text,text,text,text,text,date) to authenticated;
+grant execute on function clinical_api.add_outcome(uuid,text,text,numeric,text,text,numeric,numeric,date) to authenticated;
+grant execute on function clinical_api.finalise_report(uuid) to authenticated;
+grant execute on function clinical_api.archive_my_report(uuid) to authenticated;
+grant execute on function clinical_api.archive_my_patient(uuid) to authenticated;
+grant execute on function clinical_api.update_patient(uuid,text,text) to authenticated;
+grant execute on function clinical_api.update_report_details(uuid,text,text,text,text,text[]) to authenticated;
+grant execute on function clinical_api.update_intervention(uuid,text,text,text,text,text,text,date) to authenticated;
+grant execute on function clinical_api.update_outcome(uuid,text,text,numeric,text,text,numeric,numeric,date) to authenticated;
+grant execute on function clinical_api.export_my_patient_record(uuid) to authenticated;
+grant execute on function clinical_api.my_therapist_status() to authenticated;
 commit;
