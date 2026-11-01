@@ -19,7 +19,10 @@ insert into auth.users (
    'registry-b@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
   ('10000000-0000-4000-8000-000000000003',
    '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
-   'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now())
+   'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
+  ('10000000-0000-4000-8000-000000000004',
+   '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
+   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now())
 on conflict (id) do nothing;
 
 insert into clinical_private.therapist_memberships
