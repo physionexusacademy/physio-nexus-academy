@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(38);
+select plan(52);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -305,6 +305,75 @@ select throws_ok(
   $onboarding_sql$select clinical_api.set_therapist_active(
     '10000000-0000-4000-8000-000000000003', true)$onboarding_sql$,
   '42501', null, 'applicant cannot activate their own therapist membership');
+
+
+-- Trusted therapist operator workflow. Only an explicitly assigned
+-- app_metadata role can inspect applications, approve or deactivate members.
+select throws_ok(
+  $operator_queue_denied$select count(*) from clinical_api.list_therapist_verification_queue()$operator_queue_denied$,
+  '42501', null, 'ordinary therapist cannot inspect therapist verification queue');
+select throws_ok(
+  $operator_review_denied$select clinical_api.review_therapist_verification_request(
+    (select id from clinical_private.therapist_verification_requests limit 1),
+    'approved','REG-REF-1','Attempted self approval',true,true)$operator_review_denied$,
+  '42501', null, 'ordinary therapist cannot approve a therapist verification request');
+select throws_ok(
+  $operator_activate_denied$select clinical_api.set_therapist_membership_active(
+    '10000000-0000-4000-8000-000000000003',true,'Attempted self activation')$operator_activate_denied$,
+  '42501', null, 'ordinary therapist cannot activate membership through operator RPC');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+select is((select count(*)::int from clinical_api.list_therapist_verification_queue()), 1,
+  'trusted operator can view pending verification applications');
+select throws_ok(
+  $operator_evidence_required$select clinical_api.review_therapist_verification_request(
+    (select id from clinical_private.therapist_verification_requests limit 1),
+    'approved',null,'Verified identity and registration',true,true)$operator_evidence_required$,
+  '22023', null, 'operator approval requires a regulator evidence reference');
+select ok(clinical_api.review_therapist_verification_request(
+  (select id from clinical_private.therapist_verification_requests limit 1),
+  'approved','https://regulator.example.invalid/verification/SYN-REG-003',
+  'Identity and current professional registration independently verified',true,true
+), 'trusted operator can approve an independently verified therapist');
+select is((select count(*)::int from clinical_api.list_verified_therapist_memberships()), 3,
+  'operator can view verified therapist membership directory');
+select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
+  where action = 'approved'), 1,
+  'operator approval creates an actor-attributed immutable audit event');
+select ok(clinical_api.set_therapist_membership_active(
+  '10000000-0000-4000-8000-000000000003',false,
+  'Temporary suspension pending credential recheck'
+), 'operator can deactivate a verified therapist with a reason');
+select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
+  where action = 'deactivated'), 1,
+  'operator deactivation is recorded in the audit trail');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000003',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
+select throws_ok(
+  $reactivation_denied$select clinical_api.set_therapist_membership_active(
+    '10000000-0000-4000-8000-000000000003',true,'Self reactivation attempt')$reactivation_denied$,
+  '42501', null, 'deactivated therapist cannot reactivate their own membership');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+select ok(clinical_api.set_therapist_membership_active(
+  '10000000-0000-4000-8000-000000000003',true,
+  'Registration rechecked and access restored'
+), 'operator can reactivate a verified therapist with a reason');
+select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
+  where action = 'reactivated'), 1,
+  'operator reactivation is recorded in the audit trail');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000003',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
+select is((select count(*)::int from clinical_private.patients), 0,
+  'pending therapist still cannot access patient data before operator approval');
 
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
