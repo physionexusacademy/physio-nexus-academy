@@ -139,9 +139,9 @@ insert into clinical_private.case_library_entries (
 
 select set_config('app.registry_submission_rpc','on',true);
 select throws_ok(
-  $update clinical_private.case_library_entries
+  $update_sql$update clinical_private.case_library_entries
     set status = 'submitted', submitted_at = now()
-    where case_title = 'Synthetic shoulder rehabilitation case'$,
+    where case_title = 'Synthetic shoulder rehabilitation case'$update_sql$,
   '42501', null, 'client cannot forge case submission with a custom setting');
 select set_config('app.registry_submission_rpc','off',true);
 select ok(clinical_api.submit_case_for_review(
@@ -209,9 +209,9 @@ select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 
   'publication consent withdrawal immediately hides public case');
 select set_config('app.registry_withdraw_rpc','on',true);
 select throws_ok(
-  $update clinical_private.case_library_entries
+  $update_sql$update clinical_private.case_library_entries
     set status = 'withdrawn'
-    where case_title = 'Synthetic shoulder rehabilitation case'$,
+    where case_title = 'Synthetic shoulder rehabilitation case'$update_sql$,
   '42501', null, 'client cannot forge case withdrawal with a custom setting');
 select set_config('app.registry_withdraw_rpc','off',true);
 select ok(clinical_api.withdraw_public_case(
