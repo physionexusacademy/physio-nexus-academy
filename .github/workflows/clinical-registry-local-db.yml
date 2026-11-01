@@ -118,7 +118,7 @@ jobs:
             echo "pgTAP reported failed assertions."
             exit 1
           fi
-          grep -Fxq '1..26' <<< "$TEST_OUTPUT"
+          grep -Fxq '1..28' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
           test "$OK_COUNT" -eq 26
 
