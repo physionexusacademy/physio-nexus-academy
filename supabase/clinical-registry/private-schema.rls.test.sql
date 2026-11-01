@@ -98,7 +98,7 @@ select throws_ok(
   '42501', null, 'therapist A cannot create a report against therapist B patient');
 
 select throws_ok(
-  $provision_sql$onboarding_sql$clinical_api.provision_verified_therapist(
+  $provision_sql$onboarding_sql$select clinical_api.provision_verified_therapist(
     '10000000-0000-4000-8000-000000000001',
     'Self verified','PT','{}'::text[],null,null)$provision_sql$onboarding_sql$,
   '42501', null, 'ordinary therapist cannot self-verify through operator RPC');
@@ -181,13 +181,13 @@ select ok(clinical_api.submit_case_for_review(
 ), 'owner can submit a de-identified case draft');
 
 select throws_ok(
-  $test_sql$onboarding_sql$clinical_api.review_case_submission(
+  $test_sql$onboarding_sql$select clinical_api.review_case_submission(
     (select id from clinical_private.case_library_entries
      where case_title = 'Synthetic shoulder rehabilitation case'),
     'approved', null)$test_sql$onboarding_sql$,
   '42501', null, 'ordinary therapist cannot approve a case');
 select throws_ok(
-  $review_queue_access$onboarding_sql$count(*) from clinical_api.list_cases_for_review()$review_queue_access$onboarding_sql$,
+  $review_queue_access$onboarding_sql$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$onboarding_sql$,
   '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
 select set_config('request.jwt.claims',
@@ -299,10 +299,10 @@ select ok((clinical_api.submit_therapist_verification_request(
 select is(clinical_api.my_therapist_verification_request() ->> 'status',
   'pending', 'applicant can read their own verification status');
 select throws_ok(
-  $onboarding_sql$count(*) from clinical_private.therapist_verification_requests$onboarding_sql$,
+  $onboarding_sql$select count(*) from clinical_private.therapist_verification_requests$onboarding_sql$,
   '42501', null, 'applicant cannot read the private verification queue');
 select throws_ok(
-  $onboarding_sql$clinical_api.set_therapist_active(
+  $onboarding_sql$select clinical_api.set_therapist_active(
     '10000000-0000-4000-8000-000000000003', true)$onboarding_sql$,
   '42501', null, 'applicant cannot activate their own therapist membership');
 
@@ -310,10 +310,10 @@ set local role anon;
 select set_config('request.jwt.claim.sub','',true);
 select set_config('request.jwt.claims','{"role":"anon"}',true);
 select throws_ok(
-  $onboarding_sql$count(*) from clinical_private.patients$onboarding_sql$,
+  $onboarding_sql$select count(*) from clinical_private.patients$onboarding_sql$,
   '42501', null, 'anonymous role cannot access private schema');
 select throws_ok(
-  $onboarding_sql$clinical_api.submit_therapist_verification_request(
+  $onboarding_sql$select clinical_api.submit_therapist_verification_request(
     'Anonymous Applicant','Physiotherapist',array[]::text[],
     'Registration Body','ANON-001',null)$onboarding_sql$,
   '42501', null, 'anonymous role cannot submit therapist verification request');
