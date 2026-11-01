@@ -174,4 +174,54 @@ grant execute on function clinical_api.list_therapist_verification_queue() to au
 grant execute on function clinical_api.review_therapist_verification_request(uuid,text,text,text,boolean,boolean) to authenticated;
 grant execute on function clinical_api.set_therapist_membership_active(uuid,boolean,text) to authenticated;
 
+create or replace function clinical_api.list_verified_therapist_memberships()
+returns table (
+  user_id uuid, full_name text, professional_title text,
+  registration_label text, registration_number text,
+  verification_status text, is_active boolean, verified_at timestamptz
+)
+language plpgsql stable security definer set search_path = ''
+as $operator_memberships$
+begin
+  if auth.uid() is null
+    or coalesce(auth.jwt() -> 'app_metadata' ->> 'registry_role' = 'operator', false) is not true then
+    raise exception 'Registry operator permission required' using errcode = '42501';
+  end if;
+  return query
+  select tm.user_id, tm.full_name, tm.professional_title,
+    tm.registration_label, tm.registration_number,
+    tm.verification_status, tm.is_active, tm.verified_at
+  from clinical_private.therapist_memberships tm
+  where tm.verification_status = 'verified'
+  order by tm.full_name
+  limit 200;
+end;
+$operator_memberships$;
+
+create or replace function clinical_api.list_my_therapist_operator_audit()
+returns table (
+  target_user_id uuid, action text, evidence_reference text,
+  reason text, occurred_at timestamptz
+)
+language plpgsql stable security definer set search_path = ''
+as $operator_audit$
+begin
+  if auth.uid() is null
+    or coalesce(auth.jwt() -> 'app_metadata' ->> 'registry_role' = 'operator', false) is not true then
+    raise exception 'Registry operator permission required' using errcode = '42501';
+  end if;
+  return query
+  select a.target_user_id, a.action, a.evidence_reference, a.reason, a.occurred_at
+  from clinical_private.therapist_operator_audit_events a
+  where a.actor_id = auth.uid()
+  order by a.occurred_at desc
+  limit 100;
+end;
+$operator_audit$;
+
+revoke all on function clinical_api.list_verified_therapist_memberships() from public, anon, authenticated;
+revoke all on function clinical_api.list_my_therapist_operator_audit() from public, anon, authenticated;
+grant execute on function clinical_api.list_verified_therapist_memberships() to authenticated;
+grant execute on function clinical_api.list_my_therapist_operator_audit() to authenticated;
+
 commit;
