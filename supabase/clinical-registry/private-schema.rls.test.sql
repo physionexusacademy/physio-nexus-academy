@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(28);
+select plan(30);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -167,7 +167,7 @@ select throws_ok(
     'approved', null)$test_sql$,
   '42501', null, 'ordinary therapist cannot approve a case');
 select throws_ok(
-  $select count(*) from clinical_api.list_cases_for_review()$,
+  $review_queue_access$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$,
   '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
 select set_config('request.jwt.claims',
