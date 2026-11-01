@@ -116,15 +116,22 @@ jobs:
         run: |
           set -euo pipefail
           cd "$REGISTRY_TEST_DIR"
-          eval "$(supabase status -o env)"
-          pg_dump "$DB_URL" --format=custom --no-owner --no-privileges \
+          # Use pg_dump/pg_restore from the same PostgreSQL 17 container as the
+          # database. The runner's Ubuntu image may ship an older client.
+          DB_CONTAINER="$(docker ps --format '{{.Names}}' | grep '^supabase_db_' | head -n 1)"
+          test -n "$DB_CONTAINER"
+          docker exec "$DB_CONTAINER" pg_dump -U postgres -d postgres \
+            --format=custom --no-owner --no-privileges \
             --schema=clinical_private --schema=clinical_api \
             --file=/tmp/clinical-registry-backup.dump
-          pg_restore --list /tmp/clinical-registry-backup.dump >/dev/null
+          docker exec "$DB_CONTAINER" pg_restore --list \
+            /tmp/clinical-registry-backup.dump >/dev/null
           # Restore only into this disposable CI database, never a hosted project.
-          pg_restore --clean --if-exists --no-owner --no-privileges \
-            --dbname "$DB_URL" /tmp/clinical-registry-backup.dump
-          psql "$DB_URL" -v ON_ERROR_STOP=1 -Atc \
+          docker exec "$DB_CONTAINER" pg_restore --clean --if-exists \
+            --no-owner --no-privileges --dbname=postgres \
+            /tmp/clinical-registry-backup.dump
+          docker exec "$DB_CONTAINER" psql -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -Atc \
             "select case when to_regclass('clinical_private.patient_consent_events') is not null and to_regclass('clinical_private.audit_events') is not null and to_regclass('clinical_private.case_library_entries') is not null then 'restore-ok' else 'restore-failed' end" \
             | grep -qx 'restore-ok'
 
