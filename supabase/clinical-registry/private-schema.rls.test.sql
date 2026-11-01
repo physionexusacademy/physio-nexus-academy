@@ -72,8 +72,8 @@ select is((select count(*)::int from clinical_private.patient_consent_events ce
     and ce.purpose = 'clinical_care' and ce.consent_status = 'granted'),
   1, 'atomic patient creation records exactly one care-consent event');
 
-select is((select count(*)::int from clinical_private.patients), 1,
-  'therapist A reads only their own patient');
+select is((select count(*)::int from clinical_private.patients), 2,
+  'therapist A reads only their own patients (including atomic-consent registration)');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
 
@@ -88,8 +88,10 @@ set display_name = 'Synthetic Patient A corrected'
 where id = '20000000-0000-4000-8000-000000000001';
 select is((select count(*)::int from clinical_private.audit_events
   where actor_id = '10000000-0000-4000-8000-000000000001'
-    and entity_table = 'patients'), 1,
-  'authenticated patient change creates an audit event');
+    and entity_table = 'patients'
+    and entity_id = '20000000-0000-4000-8000-000000000001'
+    and action = 'UPDATE'), 1,
+  'authenticated patient update creates its own audit event');
 
 insert into clinical_private.clinical_interventions
   (id, report_id, intervention)
