@@ -329,12 +329,12 @@ select is((select count(*)::int from clinical_api.list_therapist_verification_qu
   'trusted operator can view pending verification applications');
 select throws_ok(
   $operator_evidence_required$select clinical_api.review_therapist_verification_request(
-    (select (item->>'request_id')::uuid
+    (select item.request_id
      from clinical_api.list_therapist_verification_queue() as item limit 1),
     'approved',null,'Verified identity and registration',true,true)$operator_evidence_required$,
   '22023', null, 'operator approval requires a regulator evidence reference');
 select ok(clinical_api.review_therapist_verification_request(
-  (select (item->>'request_id')::uuid
+  (select item.request_id
    from clinical_api.list_therapist_verification_queue() as item limit 1),
   'approved','https://regulator.example.invalid/verification/SYN-REG-003',
   'Identity and current professional registration independently verified',true,true
