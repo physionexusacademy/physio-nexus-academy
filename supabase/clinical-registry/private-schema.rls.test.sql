@@ -94,11 +94,11 @@ select throws_ok(
       '20000000-0000-4000-8000-000000000002',
       '10000000-0000-4000-8000-000000000001',
       'Musculoskeletal','Cross-tenant attempt'
-    )$cross_owner_report$onboarding_sql$,
+    )$cross_owner_report$,
   '42501', null, 'therapist A cannot create a report against therapist B patient');
 
 select throws_ok(
-  $provision_sql$onboarding_sql$select clinical_api.provision_verified_therapist(
+  $provision_sql$select clinical_api.provision_verified_therapist(
     '10000000-0000-4000-8000-000000000001',
     'Self verified','PT','{}'::text[],null,null)$provision_sql$onboarding_sql$,
   '42501', null, 'ordinary therapist cannot self-verify through operator RPC');
