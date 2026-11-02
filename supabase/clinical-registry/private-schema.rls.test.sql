@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(96);
+select plan(97);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
