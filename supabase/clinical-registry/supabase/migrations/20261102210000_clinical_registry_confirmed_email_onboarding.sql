@@ -76,7 +76,6 @@ begin
 
   return jsonb_build_object('status', v_status, 'submitted', true);
 end;
-$function$
-
+$function$;
 
 commit;
