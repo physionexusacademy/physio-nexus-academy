@@ -2,9 +2,14 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const BUCKET = "clinical-consent-evidence";
 const MAX_BYTES = 10 * 1024 * 1024;
+const configuredOrigins = (Deno.env.get("REGISTRY_ALLOWED_ORIGINS") ?? "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
 const ALLOWED_ORIGINS = new Set([
   "https://physionexusacademy.com",
   "https://www.physionexusacademy.com",
+  ...configuredOrigins,
 ]);
 
 function response(body: unknown, status = 200, origin?: string | null) {
