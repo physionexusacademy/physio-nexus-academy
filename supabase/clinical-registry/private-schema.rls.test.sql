@@ -270,7 +270,7 @@ select throws_ok(
     (select evidence_id from registry_test_consent_evidence limit 1),
     'verified','Synthetic reviewer check')$unverified_consent_review$,
   '22023', null, 'reviewer cannot approve evidence without server-side integrity verification');
-create temporary table registry_test_consent_evidence on commit drop as
+create temporary table registry_test_consent_evidence as
 select evidence_id from clinical_api.list_my_consent_evidence()
 where patient_reference='TEST-CONSENT-001';
 grant select on registry_test_consent_evidence to service_role;
