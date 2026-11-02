@@ -69,8 +69,8 @@ The available Supabase connection can inspect the database, migrations, project 
 ### Already passed
 - Hosted rollback-only SQL tests for cross-therapist isolation, wrong-owner consent denial, purpose separation, case submission/review/publication and withdrawal.
 - Hosted role-separation tests proving ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
-- Local disposable CI run #265: TypeScript, Deno Edge Function type-check, secure-only route and PostgREST schema-isolation guards, migrations, 81 pgTAP assertions, backup/restore and cleanup.
-- Cloudflare production build workflow #32: dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build.
+- Historical baseline CI run #265 passed TypeScript, Deno Edge Function type-check, secure-route and PostgREST schema-isolation guards, migrations, 81 pgTAP assertions, backup/restore and cleanup. The current branch has since expanded the suite to 89 assertions and added further authorization/CORS guards; treat the current head as unverified until its own latest CI runs pass.
+- Historical Cloudflare build workflow #32 passed dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build. The current head must pass its own latest build workflow before release.
 - Hosted read-only checks: `clinical_api` is exposed to PostgREST; expected schema usage and public RPC execute grants are present; all Registry Auth users, therapist memberships, patients, reports, consent events/evidence, public cases and consent Storage objects remain at zero.
 
 ### Still required
