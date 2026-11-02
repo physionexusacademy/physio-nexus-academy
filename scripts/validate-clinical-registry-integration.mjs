@@ -252,6 +252,15 @@ assert(
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
 );
 assert(
+  "Consent verifier fails closed on malformed configured origins",
+  edgeFunction.includes(".filter(Boolean)") &&
+    edgeFunction.includes("const validatedOrigins = configuredOrigins.map") &&
+    edgeFunction.includes("REGISTRY_ALLOWED_ORIGINS must contain exact HTTPS origins only") &&
+    !edgeFunction.includes(".filter((origin) => {"),
+  "Malformed, wildcard, or non-HTTPS configured origins must stop deployment instead of being silently discarded."
+);
+
+assert(
   "Consent verifier accepts only configured exact HTTPS origins",
   read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('Deno.env.get("REGISTRY_ALLOWED_ORIGINS")') &&
     read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('parsed.protocol !== "https:"') &&
