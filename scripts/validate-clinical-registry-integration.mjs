@@ -103,6 +103,13 @@ assert(
   "Recovery must enforce the same 12-character minimum used at registration."
 );
 assert(
+  "Expired or invalid recovery links show a safe recovery-specific error",
+  secure.includes('searchParams.get("error_code")') &&
+    secure.includes('recoveryErrorCode === "otp_expired"') &&
+    secure.includes("This password-reset link is invalid or has already been used."),
+  "The user must receive a clear recovery error without exposing account-existence information."
+);
+assert(
   "Recovery email response does not disclose whether an account exists",
   secure.includes("If an account exists for this email, a password-reset link has been sent."),
   "The UI must not reveal whether an email address is registered."
