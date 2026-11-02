@@ -51,7 +51,6 @@ begin
   ) returning id into v_id;
   return v_id;
 end;
-$function$
-
+$function$;
 
 commit;
