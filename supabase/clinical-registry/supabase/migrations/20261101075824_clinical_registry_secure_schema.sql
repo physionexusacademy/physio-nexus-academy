@@ -973,6 +973,49 @@ as $list_my_cases$
   order by c.updated_at desc
   limit 100
 $list_my_cases$;
+
+-- Reviewer queue exposes only de-identified publication fields. Patient IDs,
+-- owner IDs, consent-event IDs and internal clinical-record links are excluded.
+create or replace function clinical_api.list_cases_for_review()
+returns table(
+  case_id uuid, case_title text, condition_label text, age_band text,
+  clinical_context text, intervention_summary text, outcome_summary text,
+  evidence_reference text, status text, reviewer_note text,
+  submitted_at timestamptz, reviewed_at timestamptz
+)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $review_queue$
+begin
+  if coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false) is not true then
+    raise exception 'Registry reviewer permission required' using errcode = '42501';
+  end if;
+
+  return query
+  select c.id, c.case_title, c.condition_label, c.age_band,
+    c.clinical_context, c.intervention_summary, c.outcome_summary,
+    c.evidence_reference, c.status, c.reviewer_note,
+    c.submitted_at, c.reviewed_at
+  from clinical_private.case_library_entries c
+  where c.status in ('submitted','approved')
+  order by c.submitted_at asc nulls last, c.updated_at asc
+  limit 100;
+end;
+$review_queue$;
+
+-- Internal transaction-scoped authorisations for case submission/withdrawal.
+-- Client-set custom GUCs are forgeable and must never authorise workflow transitions.
+create table if not exists clinical_private.case_workflow_authorizations (
+  transaction_id bigint not null,
+  case_id uuid not null references clinical_private.case_library_entries(id) on delete cascade,
+  actor_id uuid not null references auth.users(id) on delete restrict,
+  action text not null check (action in ('submit','withdraw')),
+  primary key (transaction_id, case_id, actor_id, action)
+);
+revoke all on clinical_private.case_workflow_authorizations from public, anon, authenticated, service_role;
+
 -- Prevent a therapist from changing review/publication state directly.
 create or replace function clinical_private.guard_case_library_workflow()
 returns trigger
@@ -983,8 +1026,16 @@ as $$
 declare
   v_reviewer boolean := coalesce((auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false)
     or coalesce(auth.role() = 'service_role', false);
-  v_submit_rpc boolean := current_setting('app.registry_submission_rpc', true) = 'on';
-  v_withdraw_rpc boolean := current_setting('app.registry_withdraw_rpc', true) = 'on';
+  v_submit_rpc boolean := exists (
+    select 1 from clinical_private.case_workflow_authorizations a
+    where a.transaction_id = txid_current() and a.case_id = old.id
+      and a.actor_id = (select auth.uid()) and a.action = 'submit'
+  );
+  v_withdraw_rpc boolean := exists (
+    select 1 from clinical_private.case_workflow_authorizations a
+    where a.transaction_id = txid_current() and a.case_id = old.id
+      and a.actor_id = (select auth.uid()) and a.action = 'withdraw'
+  );
 begin
   if tg_op = 'INSERT' then
     if new.status <> 'draft' then
@@ -1025,11 +1076,18 @@ begin
   if (select auth.uid()) is null then
     raise exception 'Authentication required' using errcode = '42501';
   end if;
-  perform set_config('app.registry_submission_rpc', 'on', true);
+  insert into clinical_private.case_workflow_authorizations(transaction_id, case_id, actor_id, action)
+  select txid_current(), c.id, (select auth.uid()), 'submit'
+  from clinical_private.case_library_entries c
+  where c.id = p_case_id and c.owner_id = (select auth.uid())
+    and c.status = 'draft' and c.deidentified_confirmed;
+  if not found then return false; end if;
   update clinical_private.case_library_entries
   set status = 'submitted', submitted_at = now(), updated_at = now()
-  where id = p_case_id and owner_id = (select auth.uid())
-    and status = 'draft' and deidentified_confirmed;
+  where id = p_case_id and owner_id = (select auth.uid()) and status = 'draft';
+  delete from clinical_private.case_workflow_authorizations
+  where transaction_id = txid_current() and case_id = p_case_id
+    and actor_id = (select auth.uid()) and action = 'submit';
   return found;
 end;
 $submit$;
@@ -1157,11 +1215,19 @@ security definer
 set search_path = ''
 as $function$
 begin
-  perform set_config('app.registry_withdraw_rpc', 'on', true);
+  insert into clinical_private.case_workflow_authorizations(transaction_id, case_id, actor_id, action)
+  select txid_current(), c.id, (select auth.uid()), 'withdraw'
+  from clinical_private.case_library_entries c
+  where c.id = p_case_id and c.owner_id = (select auth.uid())
+    and c.status in ('draft','submitted','approved','published');
+  if not found then return false; end if;
   update clinical_private.case_library_entries
   set status = 'withdrawn', updated_at = now()
   where id = p_case_id and owner_id = (select auth.uid())
     and status in ('draft','submitted','approved','published');
+  delete from clinical_private.case_workflow_authorizations
+  where transaction_id = txid_current() and case_id = p_case_id
+    and actor_id = (select auth.uid()) and action = 'withdraw';
   return found;
 end;
 $function$;
@@ -1325,6 +1391,35 @@ begin
   return v_id;
 end;
 $function$;
+
+-- Create the patient and record clinical-care consent atomically. This avoids
+-- leaving a patient row behind if consent capture fails in a separate request.
+create or replace function clinical_api.create_patient_with_care_consent(
+  p_patient_reference text,
+  p_display_name text,
+  p_consent_version text,
+  p_capture_method text
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path = ''
+as $create_patient_with_consent$
+declare
+  v_patient_id uuid;
+begin
+  if nullif(trim(p_consent_version), '') is null
+    or p_capture_method not in ('written','electronic','documented_verbal') then
+    raise exception 'Valid consent version and capture method are required' using errcode = '22023';
+  end if;
+  v_patient_id := clinical_api.create_patient(p_patient_reference, p_display_name);
+  perform clinical_api.record_patient_consent(
+    v_patient_id, 'clinical_care', 'granted', p_consent_version,
+    p_capture_method, null
+  );
+  return v_patient_id;
+end;
+$create_patient_with_consent$;
 
 create or replace function clinical_api.request_record_correction(
   p_patient_id uuid,
@@ -1639,12 +1734,14 @@ revoke all on clinical_private.audit_events from public, anon, authenticated;
 grant select on clinical_private.audit_events to authenticated;
 revoke all on all functions in schema clinical_api from public, anon;
 grant execute on function clinical_api.record_patient_consent(uuid,text,text,text,text,uuid) to authenticated;
+grant execute on function clinical_api.create_patient_with_care_consent(text,text,text,text) to authenticated;
 grant execute on function clinical_api.request_record_correction(uuid,uuid,text,uuid,text,jsonb) to authenticated;
 grant execute on function clinical_api.apply_own_report_correction(uuid) to authenticated;
 grant execute on function clinical_api.provision_verified_therapist(uuid,text,text,text[],text,text) to service_role;
 grant execute on function clinical_api.set_therapist_active(uuid,boolean) to service_role;
 grant execute on function clinical_api.create_case_draft(uuid,uuid,text,text,text,text,text,text,text,boolean) to authenticated;
 grant execute on function clinical_api.list_my_case_submissions() to authenticated;
+grant execute on function clinical_api.list_cases_for_review() to authenticated;
 grant execute on function clinical_api.submit_case_for_review(uuid) to authenticated;
 grant execute on function clinical_api.withdraw_public_case(uuid) to authenticated;
 grant execute on function clinical_api.review_case_submission(uuid,text,text) to authenticated;

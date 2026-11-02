@@ -13,7 +13,11 @@ export function getClinicalRegistryClient(): SupabaseClient | null {
   if (!url || !anonKey) return null;
 
   if (!registryClient) {
-    registryClient = createBrowserClient(url, anonKey);
+    registryClient = createBrowserClient(url, anonKey, {
+      // The Registry Data API exposes clinical_api only; defaulting to public
+      // would make every Registry RPC fail with a missing-function error.
+      db: { schema: "clinical_api" },
+    });
   }
   return registryClient;
 }
