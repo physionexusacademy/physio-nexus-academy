@@ -114,6 +114,20 @@ assert(
   "The user must receive a clear recovery error without exposing account-existence information."
 );
 assert(
+  "Privileged users can enrol and verify authenticator MFA",
+  secure.includes('client.auth.mfa.enroll({') &&
+    secure.includes('client.auth.mfa.challenge({ factorId: mfaFactorId })') &&
+    secure.includes('client.auth.mfa.verify({') &&
+    secure.includes('assurance.currentLevel === "aal2"'),
+  "Reviewer/operator UI must provide a TOTP setup and challenge flow before privileged actions."
+);
+assert(
+  "Privileged queues remain hidden until AAL2 is reached",
+  secure.includes('aalLevel !== "aal2" || mfaRequired') &&
+    secure.includes("Reviewer and operator actions require a verified authenticator"),
+  "The client must not request privileged queues while the session is below AAL2."
+);
+assert(
   "Reviewer and operator database actions require AAL2",
   mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
     (mfaMigration.match(/perform clinical_private\\.require_registry_aal2\\(\\);/g) ?? []).length === 10,
