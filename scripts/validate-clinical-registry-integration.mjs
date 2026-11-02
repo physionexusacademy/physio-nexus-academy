@@ -19,6 +19,7 @@ const fkIndexMigrationPath = "supabase/clinical-registry/supabase/migrations/202
 const emailConfirmationMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102210000_clinical_registry_confirmed_email_onboarding.sql";
 const liveRoleMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102220000_clinical_registry_live_privileged_role_checks.sql";
 const patientConsentMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102230000_clinical_registry_require_verified_consent_for_patient_creation.sql";
+const consentGrantMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102240000_clinical_registry_evidence_only_consent_grants.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -33,6 +34,7 @@ const fkIndexMigration = read(fkIndexMigrationPath);
 const emailConfirmationMigration = read(emailConfirmationMigrationPath);
 const liveRoleMigration = read(liveRoleMigrationPath);
 const patientConsentMigration = read(patientConsentMigrationPath);
+const consentGrantMigration = read(consentGrantMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -181,6 +183,14 @@ assert(
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
 );
 assert(
+  "Consent grants can only be created through verified evidence and reviewer approval",
+  consentGrantMigration.includes("revoke all on function clinical_api.record_patient_consent") &&
+    consentGrantMigration.includes("revoke insert on clinical_private.patient_consent_events from authenticated") &&
+    consentGrantMigration.includes("SECURITY DEFINER") &&
+    consentGrantMigration.includes("Active verified therapist membership required"),
+  "Therapists cannot manufacture consent grants through the legacy RPC or direct table insert; withdrawal remains a narrow authenticated action."
+);
+assert(
   "Patient creation cannot bypass signed-consent evidence",
   patientConsentMigration.includes("revoke all on function clinical_api.create_patient(text, text)") &&
     patientConsentMigration.includes("revoke insert on clinical_private.patients from authenticated") &&
@@ -207,7 +217,9 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(91);") &&
+    rlsTests.includes("select plan(93);") &&
+    rlsTests.includes("legacy consent-grant RPC is not executable") &&
+    rlsTests.includes("authenticated therapists cannot directly create consent grants") &&
     rlsTests.includes("legacy patient creation RPC is not executable") &&
     rlsTests.includes("authenticated therapists cannot directly insert patient rows"),
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
