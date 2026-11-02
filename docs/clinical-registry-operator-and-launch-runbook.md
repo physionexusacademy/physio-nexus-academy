@@ -6,7 +6,8 @@
 - A dedicated Supabase Free project, **PNA Clinical Registry**, is provisioned in Singapore (project ref: `zfoohwqyoengbszuylxj`). It is separate from the existing PNA website Supabase project.
 - The seven versioned Registry migrations, including private-schema hardening and direct-client privilege revocation, have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
 - The `clinical_api` schema has been added to PostgREST's exposed schemas. All 18 `clinical_private` tables have RLS enabled; the schema is not exposed through PostgREST, and `anon`/`authenticated` have no direct table, sequence, or private-helper EXECUTE grants. Application access is via narrowly scoped `clinical_api` functions.
-- The automated database workflow uses a disposable local Supabase stack and synthetic fixtures. Latest local security workflow run #186 is in progress; hosted end-to-end authentication and tenant-isolation tests remain pending.
+- The automated database workflow uses a disposable local Supabase stack and synthetic fixtures. Latest local security workflow run #188 (run ID `41349112835`) completed successfully on 2026-11-01: website/Registry TypeScript type-check, isolated migration application, synthetic RLS/workflow tests, disposable backup/restore, and cleanup all passed. This is local test evidence only; hosted authenticated end-to-end and cross-therapist tenant-isolation tests remain pending.
+- A live read-only hosted audit on 2026-11-02 confirmed the project is `ACTIVE_HEALTHY`, all seven expected migrations are recorded, and `clinical_private` has no direct `SELECT` or `INSERT` grants for either `anon` or `authenticated` on its tables/sequences. Current hosted counts remain zero Auth users, zero patients, zero clinical reports, and zero Storage buckets.
 - No Registry PDF files are stored in Supabase Storage. Clinical records remain structured database rows/JSON; PDF export is generated only on demand in the browser and downloaded locally.
 - Do not enter real patient information, upload identifiable records, or advertise the Registry as a production clinical record system until the launch gates below are closed.
 - Do not place a Supabase service-role key in browser code, `NEXT_PUBLIC_*` variables, GitHub source, preview build variables, or client-visible logs.
@@ -71,6 +72,8 @@ Do not launch with real patient data until all items are signed off:
 10. Obtain explicit product-owner approval before merging or deploying to production. The current work remains a draft PR and is not deployed to production.
 
 ## CI verification
+
+Latest verified run: GitHub Actions workflow #188 (`41349112835`) — **success**. The job completed all 14 steps, including TypeScript/integration type-check, disposable local Supabase startup, migration application, synthetic RLS/workflow tests, backup/restore verification, and cleanup.
 
 The local database workflow is expected to:
 - install pinned dependencies;
