@@ -33,6 +33,8 @@ jobs:
       - name: Type-check and validate secure Registry integration
         env:
           NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
           NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL: https://zfoohwqyoengbszuylxj.supabase.co
           NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY: sb_publishable_NIkVA30c34MyWRCCseRMcA_e2ifI3OX
           NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION: ""
@@ -43,6 +45,8 @@ jobs:
       - name: Build Cloudflare Worker
         env:
           NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
           NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL: https://zfoohwqyoengbszuylxj.supabase.co
           NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY: sb_publishable_NIkVA30c34MyWRCCseRMcA_e2ifI3OX
           NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION: ""
