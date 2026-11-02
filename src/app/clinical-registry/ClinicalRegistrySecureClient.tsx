@@ -405,7 +405,8 @@ export function ClinicalRegistrySecureClient() {
     if (!client) return;
     if (password.length < 12) { setError("Use a password with at least 12 characters."); return; }
     setBusy(true); setError(""); setNotice("");
-    const { data, error: authError } = await client.auth.signUp({ email, password });
+    const redirectTo = `${window.location.origin}/clinical-registry`;
+    const { data, error: authError } = await client.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } });
     setBusy(false);
     if (authError) setError(authError.message);
     else setNotice(data.session ? "Account created. Therapist verification is still required before clinical records can be accessed." : "Account created. Check your email if confirmation is enabled. Therapist verification is still required before clinical records can be accessed.");
@@ -424,7 +425,8 @@ export function ClinicalRegistrySecureClient() {
   const resendConfirmationEmail = async () => {
     if (!client || !email.trim()) { setError("Enter your professional email address first."); return; }
     setBusy(true); setError(""); setNotice("");
-    const { error: resendError } = await client.auth.resend({ type: "signup", email: email.trim() });
+    const redirectTo = `${window.location.origin}/clinical-registry`;
+    const { error: resendError } = await client.auth.resend({ type: "signup", email: email.trim(), options: { emailRedirectTo: redirectTo } });
     setBusy(false);
     if (resendError) setError(resendError.message);
     else setNotice("If this account is awaiting confirmation, a new confirmation email has been sent. Check your inbox and spam folder.");
