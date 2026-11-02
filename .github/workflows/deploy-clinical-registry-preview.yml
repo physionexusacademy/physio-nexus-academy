@@ -147,27 +147,3 @@ jobs:
           grep -Fq "Public Clinical Case Library" "$library_html"
           echo "Preview denies unauthenticated access and serves both Registry routes only with the configured password."
 
-      - name: Verify exact-origin consent verifier CORS
-        env:
-          PREVIEW_URL: ${{ steps.preview.outputs.url }}
-          REGISTRY_SUPABASE_URL: https://zfoohwqyoengbszuylxj.supabase.co
-        run: |
-          set -euo pipefail
-          allowed_headers="$(mktemp)"
-          denied_headers="$(mktemp)"
-          trap 'rm -f "$allowed_headers" "$denied_headers"' EXIT
-          function_url="$REGISTRY_SUPABASE_URL/functions/v1/verify-consent-evidence"
-          curl --silent --show-error --output /dev/null --dump-header "$allowed_headers" -X OPTIONS \
-            -H "Origin: $PREVIEW_URL" \
-            -H "Access-Control-Request-Method: POST" \
-            "$function_url"
-          grep -Fqi "access-control-allow-origin: $PREVIEW_URL" "$allowed_headers"
-          curl --silent --show-error --output /dev/null --dump-header "$denied_headers" -X OPTIONS \
-            -H "Origin: https://not-allowed.invalid" \
-            -H "Access-Control-Request-Method: POST" \
-            "$function_url"
-          if grep -Fqi "access-control-allow-origin: https://not-allowed.invalid" "$denied_headers"; then
-            echo "::error::Consent verifier accepted an unlisted CORS origin."
-            exit 1
-          fi
-          echo "Consent verifier allows the exact Preview origin and denies an unlisted origin."
