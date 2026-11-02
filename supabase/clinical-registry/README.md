@@ -1,6 +1,6 @@
 # PNA Clinical Registry — secure staging implementation
 
-**Status: hosted staging foundation is implemented; production use remains blocked.** The dedicated Supabase project `PNA Clinical Registry` (`zfoohwqyoengbszuylxj`, Singapore) is separate from the PNA public website database. It is ACTIVE_HEALTHY. Thirteen versioned migrations are recorded on the hosted project. No real patient data, Auth users, therapist memberships, consent events, evidence files, or public case entries are present.
+**Status: hosted staging foundation is implemented; production use remains blocked.** The dedicated Supabase project `PNA Clinical Registry` (`zfoohwqyoengbszuylxj`, Singapore) is separate from the PNA public website database. It is ACTIVE_HEALTHY. Fifteen versioned migrations are recorded on the hosted project. No real patient data is present. Hosted counts remain zero for Auth users, therapist memberships, patients, reports, consent events, consent evidence rows, consent files and public case entries.
 
 ## Implemented
 
@@ -19,9 +19,7 @@
 
 ## Latest automated verification
 
-GitHub Actions workflow #219 (run ID `41406134080`) passed on 2026-11-02 for the preceding signed-consent implementation: TypeScript check, migrations, 70/70 pgTAP assertions, disposable backup/restore, and cleanup.
-
-The server-side integrity migration, Edge Function, UI invocation and expanded 74-assertion suite have since been added. **A new CI run for these latest changes must pass before this revision is considered automatically verified.** A passing local CI run does not certify the hosted Auth/Storage flow or production readiness.
+GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for commit `cb257c697f52358730c01d8a018093cda40e2c6c`: website/Registry TypeScript, Deno Edge Function type-check, isolated migrations, **81/81 pgTAP assertions**, disposable backup/restore and cleanup. This verifies the automated code/database test suite only; it does not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
 
 ## Current server-side integrity boundary
 
@@ -33,14 +31,13 @@ The server-side integrity migration, Edge Function, UI invocation and expanded 7
 
 ## Remaining technical acceptance work
 
-1. Run the expanded 74-assertion CI suite and fix any failures.
-2. Complete hosted end-to-end testing with disposable authenticated therapist/reviewer identities and synthetic PDF/JPEG/PNG objects: upload, server verification, mismatch rejection, private download, reviewer approval/rejection, patient creation, publication consent, withdrawal and public-case suppression.
+1. Complete hosted end-to-end testing with disposable authenticated therapist/reviewer identities and synthetic PDF/JPEG/PNG objects: upload, server verification, mismatch rejection, private download, reviewer approval/rejection, patient creation, publication consent, withdrawal and public-case suppression.
 3. Test the deployed Edge Function from the actual Registry browser origin, including unauthenticated rejection, owner mismatch, invalid file signatures, hash mismatch and size mismatch.
 4. Configure and verify Supabase Auth site/redirect URLs, email confirmation/recovery, session policy, rate limits and privileged-user MFA through the project Dashboard/Admin API.
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
-6. Review query plans with representative synthetic data before changing the current 27 unindexed-FK and 3 unused-index INFO notices. Do not add speculative indexes to an empty database.
+6. Review query plans with representative synthetic data before changing the current 27 unindexed-FK and 1 unused-index INFO notices. Do not add speculative indexes to an empty database.
 7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
-8. Reconcile the feature branch with `cloudflare-deploy` deliberately; do not blindly merge the current long-diverged PR.
+8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is still 275 commits ahead and 4 behind `cloudflare-deploy`; review and validate the entire stack before any merge.
 9. Obtain an independent security/penetration review and remediate critical/high findings.
 
 ## Institutional / operational release gates (not code tasks)
