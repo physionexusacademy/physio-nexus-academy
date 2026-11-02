@@ -8,10 +8,13 @@ on:
       - "supabase/migrations/*_registry_*.sql"
       - "supabase/migrations/*_clinical_registry_*.sql"
       - ".github/workflows/clinical-registry-local-db.yml"
+      - ".github/workflows/deploy-cloudflare-production.yml"
+      - ".env.example"
       - "src/app/clinical-registry/**"
       - "src/lib/clinical-registry/**"
       - "supabase/clinical-registry/**"
       - "package.json"
+      - "scripts/validate-clinical-registry-integration.mjs"
   workflow_dispatch:
 
 permissions:
@@ -57,6 +60,18 @@ jobs:
 
       - name: Type-check website and Registry integration
         run: npm run typecheck
+
+      - name: Validate secure Registry frontend integration
+        run: npm run validate:clinical-registry
+
+
+      - name: Set up Deno for Registry Edge Functions
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type-check Registry Edge Functions
+        run: deno check supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts
 
       # Keep the local Supabase config outside the repository to avoid replaying PNA migrations.
       - name: Initialise isolated Registry test workspace
@@ -142,9 +157,9 @@ jobs:
             echo "pgTAP reported failed assertions."
             exit 1
           fi
-          grep -Fxq '1..63' <<< "$TEST_OUTPUT"
+          grep -Fxq '1..100' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 63
+          test "$OK_COUNT" -eq 100
 
       - name: Verify disposable Registry backup and restore
         shell: bash
@@ -161,6 +176,12 @@ jobs:
             --file=/tmp/clinical-registry-backup.dump
           docker exec "$DB_CONTAINER" pg_restore -U postgres --list \
             /tmp/clinical-registry-backup.dump >/dev/null
+          # The consent evidence table is referenced by two Storage RLS policies.
+          # They live on storage.objects (outside the dumped schemas), so remove
+          # only these disposable-DB policies before --clean drops clinical_private.
+          docker exec "$DB_CONTAINER" psql -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -c \
+            'DROP POLICY IF EXISTS consent_evidence_owner_upload ON storage.objects; DROP POLICY IF EXISTS consent_evidence_owner_or_reviewer_download ON storage.objects;'
           # Restore only into this disposable CI database, never a hosted project.
           docker exec "$DB_CONTAINER" pg_restore -U postgres --clean --if-exists \
             --no-owner --no-privileges --dbname=postgres \

@@ -1,10 +1,55 @@
+-- Clinical Registry private-schema RLS and workflow security tests (100 assertions)
 -- pgTAP security tests for the private Clinical Registry prototype.
 -- Run only against a disposable local Supabase database with synthetic UUIDs.
 
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(63);
+select plan(100);
+select ok((select relrowsecurity and relforcerowsecurity
+  from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
+  'case workflow authorization table has forced deny-by-default RLS');
+select ok(not has_function_privilege('authenticated','clinical_api.create_patient(text,text)','EXECUTE'),
+  'legacy patient creation RPC is not executable by authenticated therapists');
+select ok(not has_table_privilege('authenticated','clinical_private.patients','INSERT'),
+  'authenticated therapists cannot directly insert patient rows');
+select ok(not has_function_privilege('authenticated','clinical_api.record_patient_consent(uuid,text,text,text,text,uuid)','EXECUTE'),
+  'legacy consent-grant RPC is not executable by authenticated therapists');
+select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_events','INSERT'),
+  'authenticated therapists cannot directly create consent grants');
+select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_evidence','INSERT'),
+  'authenticated therapists can create evidence rows only through the validated RPC');
+select ok((select relrowsecurity and relforcerowsecurity
+  from pg_class where oid='clinical_private.report_correction_authorizations'::regclass),
+  'report correction authorization table has forced deny-by-default RLS');
+select ok(
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+     and qual ilike '%owner_id%'
+     and with_check ilike '%is_current_registry_reviewer_aal2%'
+     and with_check ilike '%owner_id%'
+   from pg_policies
+   where schemaname='clinical_private'
+     and tablename='case_library_entries'
+     and policyname='case_owner_or_reviewer_updates_workflow'),
+  'case workflow UPDATE policy requires a current reviewer with AAL2'
+);
+select ok(
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+       and qual ilike '%owner_id%'
+     from pg_policies
+     where schemaname='clinical_private'
+       and tablename='case_library_entries'
+       and policyname='case_owner_or_reviewer_reads_submissions'),
+  'case workflow SELECT policy makes submitted rows visible only to current AAL2 reviewers'
+);
+select is(
+  (select count(*)::int from pg_policies
+   where schemaname='clinical_private'
+     and tablename='case_library_entries'
+     and cmd in ('SELECT','UPDATE')),
+  2,
+  'case library owner and reviewer access is consolidated to one SELECT and one UPDATE policy'
+);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -22,7 +67,13 @@ insert into auth.users (
    'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
   ('10000000-0000-4000-8000-000000000004',
    '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
-   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now())
+   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"],"registry_role":"operator"}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now()),
+  ('10000000-0000-4000-8000-000000000005',
+   '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
+   'registry-unconfirmed@example.invalid','',null,'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
+  ('10000000-0000-4000-8000-000000000006',
+   '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
+   'registry-reviewer@example.invalid','',now(),'{"provider":"email","providers":["email"],"registry_role":"reviewer"}'::jsonb,'{}'::jsonb,now(),now())
 on conflict (id) do nothing;
 
 insert into clinical_private.therapist_memberships
@@ -62,9 +113,57 @@ values
    '10000000-0000-4000-8000-000000000002','Musculoskeletal','Synthetic condition B')
 on conflict (id) do nothing;
 
+select ok((select public = false from storage.buckets where id = 'clinical-consent-evidence'),
+  'signed consent evidence bucket is private');
+select ok((select qual ilike '%is_current_registry_reviewer_aal2%'
+  from pg_policies
+  where schemaname = 'storage' and tablename = 'objects'
+    and policyname = 'consent_evidence_owner_or_reviewer_download'),
+  'reviewer download policy delegates to a live-role AAL2 check');
+select ok(
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+     from pg_policies where schemaname='clinical_private'
+       and tablename='patient_consent_evidence'
+       and policyname='consent_evidence_owner_or_reviewer_read')
+  and
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+       and with_check ilike '%is_current_registry_reviewer_aal2%'
+     from pg_policies where schemaname='clinical_private'
+       and tablename='patient_consent_evidence'
+       and policyname='consent_evidence_reviewer_update'),
+  'consent evidence table RLS requires current reviewer role and AAL2');
+
+
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+
+select ok(not has_table_privilege('anon','clinical_private.patient_consent_evidence','SELECT'),
+  'anonymous role cannot read consent evidence metadata');
+select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_evidence','UPDATE'),
+  'therapists cannot directly change consent evidence status');
+select ok(not has_function_privilege('authenticated',
+  'clinical_api.record_consent_evidence_integrity(uuid,uuid,text,bigint)','EXECUTE'),
+  'therapists cannot forge server-side file integrity verification');
+select ok(not has_function_privilege('anon',
+  'clinical_api.get_consent_evidence_integrity_request(uuid)','EXECUTE'),
+  'anonymous users cannot invoke the server-only integrity verifier');
+select ok((select evidence_id is not null from clinical_api.create_consent_evidence_request(
+  'clinical_care', null, 'TEST-CONSENT-001', 'test-v1', repeat('a',64),
+  'application/pdf', 1024
+)), 'verified therapist can create an owner-scoped consent evidence request');
+select is((select count(*)::int from clinical_api.list_my_consent_evidence()
+  where patient_reference='TEST-CONSENT-001' and status='pending_review'
+    and integrity_verified_at is null),
+  1, 'owner can see pending consent metadata and its unverified integrity state');
+select throws_ok(
+  $review_queue$select * from clinical_api.list_consent_evidence_for_review()$review_queue$,
+  '42501', null, 'ordinary therapist cannot access the consent reviewer queue');
+select throws_ok(
+  $review_decision$select clinical_api.review_consent_evidence(
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','verified','Synthetic test decision'
+  )$review_decision$,
+  '42501', null, 'ordinary therapist cannot verify consent evidence');
 
 select throws_ok(
   $consent_owner$select clinical_api.record_patient_consent(
@@ -73,17 +172,17 @@ select throws_ok(
   '42501', null, 'therapist cannot record consent for another therapist patient');
 
 
-select ok(clinical_api.create_patient_with_care_consent(
-  'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
-) is not null, 'patient and care consent are created through one atomic RPC');
-select is((select count(*)::int from clinical_private.patient_consent_events ce
-  join clinical_private.patients p on p.id = ce.patient_id
-  where p.patient_reference = 'TEST-A-ATOMIC'
-    and ce.purpose = 'clinical_care' and ce.consent_status = 'granted'),
-  1, 'atomic patient creation records exactly one care-consent event');
+select throws_ok(
+  $legacy_care_consent$select clinical_api.create_patient_with_care_consent(
+    'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
+  )$legacy_care_consent$,
+  '42501', null, 'checkbox-only patient registration RPC is no longer executable');
+select is((select count(*)::int from clinical_private.patients
+  where patient_reference = 'TEST-A-ATOMIC'),
+  0, 'legacy consent RPC cannot create a patient without verified signed evidence');
 
-select is((select count(*)::int from clinical_private.patients), 2,
-  'therapist A reads only their own patients (including atomic-consent registration)');
+select is((select count(*)::int from clinical_private.patients), 1,
+  'therapist A reads only their own patient; legacy checkbox registration creates none');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
 with changed as (
@@ -215,6 +314,19 @@ select ok(clinical_api.submit_case_for_review(
    where case_title = 'Synthetic shoulder rehabilitation case')
 ), 'owner can submit a de-identified case draft');
 
+select clinical_api.create_case_draft(
+  '30000000-0000-4000-8000-000000000001',
+  (select id from clinical_private.patient_consent_events
+   where patient_id = '20000000-0000-4000-8000-000000000001'
+     and purpose = 'public_case_publication'
+   order by event_sequence desc limit 1),
+  'Stale reviewer trigger draft','Shoulder pain','30-44',
+  'Synthetic draft used to test current-role enforcement in the workflow trigger.',
+  'Synthetic intervention summary for trigger regression testing.',
+  'Synthetic outcome summary for trigger regression testing.',
+  'https://example.invalid/trigger-test',true
+);
+
 select throws_ok(
   $test_sql$select clinical_api.review_case_submission(
     (select id from clinical_private.case_library_entries
@@ -225,8 +337,136 @@ select throws_ok(
   $review_queue_access$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$,
   '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
+create temporary table registry_test_consent_evidence as
+select evidence_id from clinical_api.list_my_consent_evidence()
+where patient_reference='TEST-CONSENT-001';
+grant select on registry_test_consent_evidence to service_role;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+select throws_ok(
+  $reviewer_aal1$select count(*) from clinical_api.list_cases_for_review()$reviewer_aal1$,
+  '42501', null, 'reviewer cannot read protected queues without an AAL2 session');
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+reset role;
+update auth.users
+set raw_app_meta_data = raw_app_meta_data - 'registry_role'
+where id = '10000000-0000-4000-8000-000000000006';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+select throws_ok(
+  $revoked_role_stale_jwt$select count(*) from clinical_api.list_cases_for_review()$revoked_role_stale_jwt$,
+  '42501', null, 'stale reviewer JWT cannot retain access after the live Auth role is revoked');
+select is((select count(*)::int from clinical_private.patient_consent_evidence), 0,
+  'stale reviewer JWT cannot read consent evidence after the live Auth role is revoked');
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
+select throws_ok(
+  $revoked_role_trigger$update clinical_private.case_library_entries
+    set status = 'approved'
+    where case_title = 'Stale reviewer trigger draft'$revoked_role_trigger$,
+  '42501', null, 'stale reviewer JWT cannot bypass the case workflow trigger after role revocation');
+reset role;
+update auth.users
+set raw_app_meta_data = raw_app_meta_data || '{"registry_role":"reviewer"}'::jsonb
+where id = '10000000-0000-4000-8000-000000000006';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+reset role;
+update auth.users
+set raw_app_meta_data = raw_app_meta_data || '{"registry_role":"reviewer"}'::jsonb
+where id = '10000000-0000-4000-8000-000000000006';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 0,
+  'reviewer queue excludes evidence until server-side integrity is verified');
+select throws_ok(
+  $unverified_consent_review$select clinical_api.review_consent_evidence(
+    (select evidence_id from registry_test_consent_evidence limit 1),
+    'verified','Synthetic reviewer check')$unverified_consent_review$,
+  '22023', null, 'reviewer cannot approve evidence without server-side integrity verification');
+
+reset role;
+set local role service_role;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"service_role"}',true);
+select is((select owner_id::text from clinical_api.get_consent_evidence_integrity_request(
+  (select evidence_id from registry_test_consent_evidence limit 1)
+)), '10000000-0000-4000-8000-000000000001',
+  'service-only integrity lookup returns the matching evidence owner');
+select throws_ok(
+  $integrity_mismatch$select clinical_api.record_consent_evidence_integrity(
+    (select evidence_id from registry_test_consent_evidence limit 1),
+    '10000000-0000-4000-8000-000000000001',repeat('b',64),1024
+  )$integrity_mismatch$,
+  '22023', null, 'server integrity RPC rejects a mismatched SHA-256');
+select ok(clinical_api.record_consent_evidence_integrity(
+  (select evidence_id from registry_test_consent_evidence limit 1),
+  '10000000-0000-4000-8000-000000000001',repeat('a',64),1024
+), 'service role records a matching server-computed integrity result');
+
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
+select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 1,
+  'reviewer queue exposes evidence only after server integrity is recorded');
+select throws_ok(
+  $missing_object_review$select clinical_api.review_consent_evidence(
+    (select evidence_id from registry_test_consent_evidence limit 1),
+    'verified','Synthetic reviewer inspected metadata')$missing_object_review$,
+  '22023', null, 'reviewer cannot approve evidence without the actual private Storage object');
+
+reset role;
+-- path_tokens is generated by Supabase Storage from the object name;
+-- tests must not supply a value for this generated column.
+insert into storage.objects(bucket_id,name,owner,owner_id,metadata)
+select 'clinical-consent-evidence', e.object_path, e.owner_id, e.owner_id::text,
+  jsonb_build_object('mimetype',e.content_type,'size',e.declared_size_bytes)
+from clinical_private.patient_consent_evidence e
+where e.id = (select evidence_id from registry_test_consent_evidence limit 1);
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
+select ok(clinical_api.review_consent_evidence(
+  (select evidence_id from registry_test_consent_evidence limit 1),
+  'verified','Synthetic reviewer verified consent evidence and matching file integrity'),
+  'reviewer can verify consent only after integrity and private object checks pass');
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+create temporary table registry_test_created_patient as
+select clinical_api.create_patient_after_verified_consent(
+  (select evidence_id from registry_test_consent_evidence limit 1),
+  'Synthetic Consent Patient'
+) as patient_id;
+select is((select count(*)::int
+  from clinical_private.patients p
+  join registry_test_created_patient created on created.patient_id=p.id), 1,
+  'patient creation succeeds only after verified signed consent evidence');
+select is((select count(*)::int
+  from clinical_private.patient_consent_events ce
+  join registry_test_created_patient created on created.patient_id=ce.patient_id
+  where ce.purpose='clinical_care' and ce.consent_status='granted'
+    and ce.evidence_id=(select evidence_id from registry_test_consent_evidence limit 1)), 1,
+  'patient creation atomically records the linked clinical-care consent event');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
 select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
   'trusted reviewer sees the submitted de-identified case queue');
 select ok(clinical_api.review_case_submission(
@@ -241,6 +481,7 @@ select ok(clinical_api.publish_approved_case(
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 1,
   'published de-identified case appears in public read surface');
 
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
 
@@ -297,9 +538,9 @@ select throws_ok(
 
 -- The RPC resolves and links the latest grant server-side when prior_event_id
 -- is omitted by the browser client. event_sequence makes withdrawal win.
-select clinical_api.record_patient_consent(
+select clinical_api.withdraw_verified_patient_consent(
   '20000000-0000-4000-8000-000000000001',
-  'public_case_publication','withdrawn','test-public-v1','written',null
+  'public_case_publication','test-public-v1'
 );
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
   'publication consent withdrawal immediately hides public case');
@@ -319,9 +560,9 @@ select ok(clinical_api.withdraw_public_case(
    where case_title = 'Synthetic shoulder rehabilitation case')
 ), 'case owner can withdraw a published case');
 
-select clinical_api.record_patient_consent(
+select clinical_api.withdraw_verified_patient_consent(
   '20000000-0000-4000-8000-000000000001',
-  'clinical_care','withdrawn','test-v1','written',null
+  'clinical_care','test-v1'
 );
 select throws_ok(
   $consent_sql$insert into clinical_private.clinical_reports
@@ -385,6 +626,11 @@ select throws_ok(
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+select throws_ok(
+  $operator_aal1$select count(*) from clinical_api.list_therapist_verification_queue()$operator_aal1$,
+  '42501', null, 'operator cannot inspect identity-verification queue without an AAL2 session');
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"operator"}}',true);
 select is((select count(*)::int from clinical_api.list_therapist_verification_queue()), 1,
   'trusted operator can view pending verification applications');
 select throws_ok(
@@ -422,7 +668,7 @@ select throws_ok(
 
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"operator"}}',true);
 select ok(clinical_api.set_therapist_membership_active(
   '10000000-0000-4000-8000-000000000003',true,
   'Registration rechecked and access restored'
@@ -436,6 +682,14 @@ select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
 select is((select count(*)::int from clinical_private.patients), 0,
   'pending therapist still cannot access patient data before operator approval');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000005',true);
+select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000005","role":"authenticated"}',true);
+select throws_ok(
+  $unconfirmed_email$select clinical_api.submit_therapist_verification_request(
+    'Unconfirmed Applicant','Physiotherapist',array['DPT'],
+    'Registration Body','UNCONFIRMED-005',null)$unconfirmed_email$,
+  '42501', null, 'unconfirmed email cannot submit a professional verification request');
 
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);

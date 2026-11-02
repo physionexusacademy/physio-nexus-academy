@@ -112,6 +112,12 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
+          # Dedicated Clinical Registry project only. These are optional at build
+          # time so the main PNA site can still deploy while Registry setup is gated.
+          NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL }}
+          NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION: ${{ vars.CLINICAL_REGISTRY_CONSENT_VERSION }}
+
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
           NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
@@ -215,7 +221,8 @@ jobs:
           # large SSR page after deploy can overload Workers and create false failures.
           check_url "https://physionexusacademy.com/case-lab/research/chronic-post-surgical-low-back-pain" "Limitations — what this case cannot tell us"
           check_url "https://physionexusacademy.com/clinical-arena" "Preparing your clinical challenge"
-          check_url "https://physionexusacademy.com/clinical-registry" "PNA Clinical Registry"
+          check_url "https://physionexusacademy.com/clinical-registry" "Clinical Registry"
+          check_url "https://physionexusacademy.com/clinical-registry/library" "Public Clinical Case Library"
           check_url "https://physionexusacademy.com/msk-injuries" "PNA MSK Clinical Library"
           # The hub is a condition index; story and anatomy visuals are verified on routes that actually render them.
           check_url "https://physionexusacademy.com/msk-injuries/lateral-ankle-sprain" 'data-pna-msk-story="cinematic-v1"'
