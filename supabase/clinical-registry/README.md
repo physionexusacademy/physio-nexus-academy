@@ -19,7 +19,7 @@
 
 ## Latest automated verification
 
-GitHub Actions Registry security workflow #258 (run ID `41427219214`) and Cloudflare production build workflow #17 (run ID `41427219283`) passed on 2026-11-02 for commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, **81/81 pgTAP assertions**, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. A further static integration guard has been added; its latest CI is pending. Automated tests do not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
+GitHub Actions Registry security workflow #258 (run ID `41427219214`) and Cloudflare production build workflow #17 (run ID `41427219283`) passed on 2026-11-02 for commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, **81/81 pgTAP assertions**, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. The latest static integration guard and PostgREST schema-isolation check passed in Registry workflow #265 (run `41429152642`); the latest Next.js/OpenNext build passed in workflow #32 (run `41429152617`). Automated tests do not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
 
 ## Current server-side integrity boundary
 
