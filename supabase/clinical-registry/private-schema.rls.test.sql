@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(98);
+select plan(99);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -29,6 +29,14 @@ select ok(
      and tablename='case_library_entries'
      and policyname='reviewer_updates_case_workflow'),
   'case workflow UPDATE policy requires a current reviewer with AAL2'
+);
+select ok(
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+     from pg_policies
+     where schemaname='clinical_private'
+       and tablename='case_library_entries'
+       and policyname='reviewer_reads_case_workflow'),
+  'case workflow SELECT policy makes submitted rows visible only to current AAL2 reviewers'
 );
 
 insert into auth.users (
