@@ -3,7 +3,11 @@ name: Registry dependency and production build verification
 on:
   pull_request:
     branches:
+      - cloudflare-deploy
+      - feature/clinical-registry-secure-implementation
       - fix/registry-case-workflow-authorization
+      - feat/registry-report-history-and-export-audit
+      - feat/registry-hosted-free-project-connection
     paths:
       - "package.json"
       - "package-lock.json"
@@ -13,6 +17,9 @@ on:
   push:
     branches:
       - fix/clinical-registry-dependency-audit
+      - feat/registry-report-history-and-export-audit
+      - feat/registry-hosted-free-project-connection
+      - feat/registry-signed-consent-evidence
   workflow_dispatch:
 
 permissions:
