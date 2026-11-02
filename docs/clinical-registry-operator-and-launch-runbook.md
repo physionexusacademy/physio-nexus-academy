@@ -4,10 +4,10 @@
 
 - Dedicated hosted project: **PNA Clinical Registry**, Singapore, ref `zfoohwqyoengbszuylxj`; current status `ACTIVE_HEALTHY`.
 - This project is separate from the PNA website Supabase project. Never substitute the website's credentials or replay website migrations into this project.
-- Thirteen migrations are recorded in hosted staging.
+- Fifteen migrations are recorded in hosted staging.
 - Hosted staging currently has zero Auth users, therapist memberships, patients, clinical reports, consent events, consent evidence records, and public case entries. The private consent bucket has zero objects.
 - Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE with JWT verification enabled.
-- Latest fully verified workflow before the latest integrity-verifier changes: GitHub Actions #219 / run `41406134080`, success, 70/70 pgTAP assertions plus TypeScript, migrations, disposable backup/restore and cleanup. The current branch has an expanded 74-assertion suite; wait for its new run before calling this revision CI-verified.
+- Latest verified workflow: GitHub Actions #245 / run `41422997869` on commit `cb257c697f52358730c01d8a018093cda40e2c6c`, success: website/Registry TypeScript, Deno Edge Function type-check, isolated migrations, 81/81 pgTAP assertions, disposable backup/restore and cleanup. This is automated test evidence, not hosted browser E2E or production acceptance.
 - PR #156 remains a draft and unmerged. It is not deployed to the production website.
 
 ## Architecture and access boundaries
@@ -64,10 +64,10 @@ The Supabase MCP integration does not expose Auth user administration or project
 ### Already passed
 - Hosted rollback-only SQL tests for cross-therapist isolation, wrong-owner consent denial, purpose separation, case submission/review/publication and withdrawal.
 - Hosted role-separation tests proving ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
-- Local disposable CI run #219: TypeScript, migrations, 70 pgTAP assertions, backup/restore and cleanup.
+- Local disposable CI run #245: TypeScript, Deno Edge Function type-check, migrations, 81 pgTAP assertions, backup/restore and cleanup.
 
-### Required after the server-integrity update
-- Current 74-assertion CI run must pass.
+### Still required
+- Hosted authenticated end-to-end testing with disposable therapist/reviewer identities and synthetic consent files.
 - Hosted synthetic Auth identities and synthetic consent files must exercise upload, server verification, private download, mismatch rejection, reviewer approval/rejection, care-consent patient creation, publication-consent activation, withdrawal and public-case suppression.
 - Test the Edge Function from the production Registry browser origin and reject invalid/expired JWTs, wrong owners, inactive memberships, invalid file signatures, size mismatches and hash mismatches.
 - Complete a protected Preview/browser run on desktop and mobile, including keyboard/accessibility and recovery flows. Preview URLs were previously disabled for this Cloudflare Worker.
@@ -80,7 +80,7 @@ The current hosted project has no Auth identities or consent objects, and the av
 
 Latest Advisor read:
 - Seven INFO-level `rls_enabled_no_policy` notices relate to intentionally private internal/governance tables. Do not add broad policies just to silence them.
-- Twenty-seven unindexed foreign-key notices and three unused-index notices remain. Review after representative synthetic workload and query plans exist; do not add/drop indexes speculatively on an empty database.
+- Twenty-seven unindexed foreign-key notices and one unused-index notice remain. Review after representative synthetic workload and query plans exist; do not add/drop indexes speculatively on an empty database.
 - No new consent-evidence security warning was introduced by the integrity migration.
 
 ## Product and legal release gates
@@ -92,6 +92,6 @@ Keep `SIGNED_CONSENT_FORM_APPROVED = false` and `SIGNED_CONSENT_EVIDENCE_WORKFLO
 - Trusted operator/reviewer identities, Auth settings and MFA configured.
 - Hosted end-to-end tests and independent security review passed.
 - Protected browser Preview and production acceptance passed.
-- Feature branch reconciled with `cloudflare-deploy`, reviewed, and explicitly approved for merge/deploy.
+- PR #151 is now based on `cloudflare-deploy` and GitHub reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is 275 commits ahead and 4 behind `cloudflare-deploy`; the complete stack still needs final diff/build review and explicit merge/deploy approval.
 
 Do not enter real patient data, upload real signed forms, publish cases, merge PR #156 or deploy to production before those gates are closed.
