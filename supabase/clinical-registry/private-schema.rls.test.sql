@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(70);
+select plan(74);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -73,6 +73,12 @@ select ok(not has_table_privilege('anon','clinical_private.patient_consent_evide
   'anonymous role cannot read consent evidence metadata');
 select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_evidence','UPDATE'),
   'therapists cannot directly change consent evidence status');
+select ok(not has_function_privilege('authenticated',
+  'clinical_api.record_consent_evidence_integrity(uuid,uuid,text,bigint)','EXECUTE'),
+  'therapists cannot forge server-side file integrity verification');
+select ok(not has_function_privilege('anon',
+  'clinical_api.get_consent_evidence_integrity_request(uuid)','EXECUTE'),
+  'anonymous users cannot invoke the server-only integrity verifier');
 select ok((select evidence_id is not null from clinical_api.create_consent_evidence_request(
   'clinical_care', null, 'TEST-CONSENT-001', 'test-v1', repeat('a',64),
   'application/pdf', 1024
@@ -250,6 +256,14 @@ select throws_ok(
 
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 0,
+  'reviewer queue excludes evidence until server-side integrity is verified');
+select throws_ok(
+  $unverified_consent_review$select clinical_api.review_consent_evidence(
+    (select id from clinical_private.patient_consent_evidence
+     where patient_reference='TEST-CONSENT-001' limit 1),
+    'verified','Synthetic reviewer check')$unverified_consent_review$,
+  '22023', null, 'reviewer cannot approve evidence without server-side integrity verification');
 select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
   'trusted reviewer sees the submitted de-identified case queue');
 select ok(clinical_api.review_case_submission(
