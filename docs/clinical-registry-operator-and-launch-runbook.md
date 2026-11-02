@@ -10,7 +10,7 @@
 - Latest feature-branch head `02899b4c31d38bda2db4fd8497871c91c4524c98` passed Registry security workflow run `41461518799` (100/100 pgTAP assertions, isolated migrations, disposable backup/restore and cleanup), dependency/build run `41461518640` (dependency audit, TypeScript, Next.js and OpenNext Cloudflare build), and the Cloudflare Workers build check. These are automated checks, not hosted browser E2E or production acceptance.
 - PRs #151–#156 have been merged in dependency order into the isolated `registry-preview` branch. The production branch `cloudflare-deploy` is unchanged.
 - Isolated Preview Worker: `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev`. It is a separate Worker with no production custom-domain route. The URL is publicly reachable on `workers.dev`; Cloudflare Access protection is not yet configured, so use synthetic data only.
-- Preview pipeline run `41469075866` passed the full Next.js/OpenNext Cloudflare build, dependency audit, TypeScript, 30/30 Registry integration checks, Worker deployment and live smoke tests for `/clinical-registry` and `/clinical-registry/library`.
+- Latest Preview pipeline run `41469967111` on stack head `f68f7aaa7b0e620b96178d9fcff0f0cad5ba964e` passed the full Next.js/OpenNext Cloudflare build, dependency audit, TypeScript, 31/31 Registry integration checks, isolated Worker deployment, both live Registry route smoke tests, the Preview-only `X-Robots-Tag: noindex, nofollow` header check, and positive/negative exact-origin CORS preflight tests.
 - Hosted `verify-consent-evidence` Edge Function is ACTIVE at version 3 with JWT verification enabled. The exact Preview origin is allowlisted; no wildcard CORS is used.
 
 ## Architecture and access boundaries
