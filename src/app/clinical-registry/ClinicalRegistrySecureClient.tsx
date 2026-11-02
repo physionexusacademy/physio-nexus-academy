@@ -277,7 +277,10 @@ export function ClinicalRegistrySecureClient() {
       // Reuse an existing TOTP factor. An earlier enrollment may have created an
       // unverified factor before the user scanned its QR code; enrolling again with
       // the same friendly name then fails with a duplicate-factor error.
-      const totpFactors = factors.data?.totp ?? [];
+      // Keep the SDK response as a neutral status shape here: its generated
+      // type narrows the TOTP list to verified factors in this package version,
+      // while the Auth API can also return an unverified enrollment.
+      const totpFactors = (factors.data?.totp ?? []) as unknown as Array<{ id: string; status: string }>;
       const hasVerifiedTotp = totpFactors.some((factor) => factor.status === "verified");
       const existingTotp = totpFactors.find((factor) => factor.status === "verified")
         ?? totpFactors.find((factor) => factor.status === "unverified");
