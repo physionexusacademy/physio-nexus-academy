@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(86);
+select plan(87);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -76,11 +76,11 @@ on conflict (id) do nothing;
 
 select ok((select public = false from storage.buckets where id = 'clinical-consent-evidence'),
   'signed consent evidence bucket is private');
-select ok((select qual ilike '%aal%' and qual ilike '%registry_role%'
+select ok((select qual ilike '%is_current_registry_reviewer_aal2%'
   from pg_policies
   where schemaname = 'storage' and tablename = 'objects'
     and policyname = 'consent_evidence_owner_or_reviewer_download'),
-  'reviewer download policy requires an AAL2 reviewer session');
+  'reviewer download policy delegates to a live-role AAL2 check');
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
@@ -295,6 +295,11 @@ select set_config('request.jwt.claims',
 select throws_ok(
   $revoked_role_stale_jwt$select count(*) from clinical_api.list_cases_for_review()$revoked_role_stale_jwt$,
   '42501', null, 'stale reviewer JWT cannot retain access after the live Auth role is revoked');
+select throws_ok(
+  $revoked_role_trigger$update clinical_private.case_library_entries
+    set status = 'approved'
+    where case_title = 'Synthetic shoulder rehabilitation case'$revoked_role_trigger$,
+  '42501', null, 'stale reviewer JWT cannot bypass the case workflow trigger after role revocation');
 reset role;
 update auth.users
 set raw_app_meta_data = raw_app_meta_data || '{"registry_role":"reviewer"}'::jsonb
