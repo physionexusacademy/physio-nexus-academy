@@ -86,3 +86,29 @@ The local database workflow is expected to:
 - stop the local stack even if a prior step fails.
 
 A passing CI run verifies the tested branch and fixtures only. It does not certify a hosted environment, legal compliance, clinical safety, or production readiness.
+
+
+## Signed-consent evidence workflow — staging foundation (2026-11-02)
+
+A new additive migration has been applied to the dedicated hosted Registry staging project and added to the feature branch:
+
+- `20261102150000_clinical_registry_signed_consent_evidence.sql`
+- `20261102152000_clinical_registry_consent_policy_initplan_fix.sql`
+- `20261102154000_clinical_registry_consent_review_queues.sql`
+
+Hosted staging now has a private `clinical-consent-evidence` Storage bucket (10 MiB maximum; PDF/JPEG/PNG only), owner-scoped evidence metadata, reviewer-only verification RPC, append-only review decision records, owner/reviewer download policies, and consent-event linkage to evidence. The legacy checkbox-only consent RPCs have had authenticated execution revoked. New RPCs support evidence-request metadata, reviewer decisions, patient creation after verified clinical-care consent, consent withdrawal, owner/reviewer queues, and retrieval of the current publication-consent grant.
+
+Read-only verification on 2026-11-02 confirmed:
+- Bucket is private; object count is zero.
+- Anonymous users have no SELECT access to evidence metadata.
+- Authenticated therapist has only SELECT/INSERT on evidence metadata; no direct UPDATE.
+- Legacy checkbox-only grant RPCs are not executable by authenticated clients.
+- New RPCs are not executable by anon; reviewer RPC enforces `app_metadata.registry_role = reviewer`.
+- Auth users, patients, reports, consent events and evidence records remain zero.
+
+Important limitations / hard gates:
+- This is the database and private-storage foundation, not yet a complete user-facing upload/review interface.
+- The client-declared SHA-256 is metadata only; it is not a server-verified checksum. Reviewers must inspect the original uploaded document. A server-side file-integrity verification step remains to be implemented before relying on hashes.
+- The actual consent form text/version must be supplied and approved by the relevant institution/ethics or legal authority. No generic AI-generated form is to be treated as approved.
+- End-to-end upload/download, reviewer decision, care-consent patient creation, publication-consent activation, withdrawal and public-case hiding tests must be added and passed with disposable synthetic Auth identities.
+- Do not enable the UI readiness flag, collect real patient information, or publish cases until the approved form, UI, full hosted tests, and institutional privacy/ethics gates are complete.
