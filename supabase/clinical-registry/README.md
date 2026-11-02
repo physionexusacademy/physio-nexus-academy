@@ -9,17 +9,18 @@
 - Therapist onboarding, independent credential-verification workflow, and distinct trusted operator/reviewer authorization boundaries.
 - Append-only clinical-care and public-case publication consent events, consent withdrawal, case review/publication/withdrawal workflow, and a fixed-field public Case Library read surface.
 - Private `clinical-consent-evidence` Storage bucket; owner-scoped metadata and private object access; separate clinical-care and public-case publication evidence purposes.
-- Server-side consent evidence integrity verification deployed as Supabase Edge Function `verify-consent-evidence` with JWT verification enabled. Its CORS allowlist accepts the two production origins plus exact additional origins from the server-side `REGISTRY_ALLOWED_ORIGINS` Edge Function secret (comma-separated; never use wildcards). The function authenticates the caller, checks active verified therapist membership through a server-only RPC, downloads the private object using server-side credentials, validates file signature (PDF/JPEG/PNG), checks byte length, computes SHA-256 from downloaded bytes, and records the result through a service-role-only RPC.
+- Server-side consent evidence integrity verification deployed as Supabase Edge Function `verify-consent-evidence` (version 2) with JWT verification enabled. Its CORS allowlist accepts the two production origins plus exact additional origins from the server-side `REGISTRY_ALLOWED_ORIGINS` Edge Function secret (comma-separated; never use wildcards). The function authenticates the caller, checks active verified therapist membership through a server-only RPC, downloads the private object using server-side credentials, validates file signature (PDF/JPEG/PNG), checks byte length, computes SHA-256 from downloaded bytes, and records the result through a service-role-only RPC.
 - Reviewer queue only returns pending evidence after server-side integrity verification. The database reviewer decision RPC independently rejects unverified evidence and requires the private object to exist. Review decisions are append-only.
 - Therapist upload UI invokes the server-side verifier after upload. Reviewer UI shows the verified timestamp and hash prefix before human inspection.
 - Patient creation and case submission remain fail-closed until the institution-approved consent form/version and the full acceptance gates are completed.
 - Browser-generated PDF/print and owner-scoped JSON export; no clinical PDFs are stored in Supabase Storage.
 - Dedicated Registry browser client uses only Registry-specific public URL/key variables and never falls back to the PNA website Supabase project.
 - Retention rules remain inactive by default; there is no automatic deletion.
+- Hosted staging has the 27 foreign-key support indexes and consolidated case-library owner/reviewer SELECT and UPDATE policies; no duplicate permissive policy warning remains.
 
-## Historical automated verification baseline (2026-11-02)
+## Latest automated verification (2026-11-02)
 
-Latest feature-branch head `02899b4c31d38bda2db4fd8497871c91c4524c98` passed GitHub Actions Registry workflow run `41461518799`, including **100/100 pgTAP assertions**, isolated migration apply, disposable backup/restore and cleanup. Dependency/build workflow run `41461518640` and the Cloudflare Workers build check also passed. These are automated checks; they do not certify hosted Auth, real file-upload/reviewer browser workflows or production readiness.
+Latest application-code commit `02899b4c31d38bda2db4fd8497871c91c4524c98` passed GitHub Actions Registry workflow run `41461518799`, including **100/100 pgTAP assertions**, isolated migration apply, disposable backup/restore and cleanup. Dependency/build workflow run `41461518640` and the Cloudflare Workers build check also passed. Documentation updates followed in commit `2678de65654a2a28f8d906e7998b01bd3565860a`. These are automated checks; they do not certify hosted Auth, real file-upload/reviewer browser workflows or production readiness.
 
 ## Current server-side integrity boundary
 
