@@ -15,6 +15,7 @@ const configPath = "supabase/clinical-registry/supabase/config.toml";
 const mfaMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102190000_clinical_registry_privileged_mfa_enforcement.sql";
 const rlsTestPath = "supabase/clinical-registry/private-schema.rls.test.sql";
 const fkIndexMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102200000_clinical_registry_foreign_key_indexes.sql";
+const emailConfirmationMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102210000_clinical_registry_confirmed_email_onboarding.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -25,6 +26,7 @@ const config = read(configPath);
 const mfaMigration = read(mfaMigrationPath);
 const rlsTests = read(rlsTestPath);
 const fkIndexMigration = read(fkIndexMigrationPath);
+const emailConfirmationMigration = read(emailConfirmationMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -134,6 +136,7 @@ assert(
   config.includes("[auth.mfa.totp]\nenroll_enabled = true\nverify_enabled = true") &&
     config.includes("minimum_password_length = 12") &&
     config.includes("secure_password_change = true") &&
+    config.includes("enable_confirmations = true") &&
     config.includes('additional_redirect_urls = ["http://127.0.0.1:3000", "http://localhost:3000"]'),
   "Local Auth must allow TOTP, enforce the Registry password floor and allow the correct local recovery redirect."
 );
@@ -144,6 +147,12 @@ assert(
     mfaMigration.includes("reviewers must also hold an AAL2 session") &&
     (mfaMigration.match(/perform clinical_private\.require_registry_aal2\(\);/g) ?? []).length === 10,
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
+);
+assert(
+  "Therapist onboarding requires a confirmed email address",
+  emailConfirmationMigration.includes("email_confirmed_at is not null") &&
+    rlsTests.includes("unconfirmed email cannot submit a professional verification request"),
+  "An unconfirmed account must not be able to submit a professional verification request."
 );
 assert(
   "All advisor-identified foreign keys receive a narrow index",
