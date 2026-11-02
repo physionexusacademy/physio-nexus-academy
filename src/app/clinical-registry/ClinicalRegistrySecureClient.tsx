@@ -230,7 +230,13 @@ export function ClinicalRegistrySecureClient() {
       );
     }
     let mounted = true;
-    client.auth.getSession().then(({ data }) => { if (mounted) setSession(data.session); });
+    client.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      setSession(data.session);
+      if (data.session && new URL(window.location.href).searchParams.get("recovery") === "1") {
+        setRecoveryMode(true);
+      }
+    });
     const { data: authListener } = client.auth.onAuthStateChange((event, nextSession) => {
       if (!mounted) return;
       if (event === "PASSWORD_RECOVERY") {
