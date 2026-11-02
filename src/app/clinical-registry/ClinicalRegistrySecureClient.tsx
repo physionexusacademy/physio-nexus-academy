@@ -278,11 +278,12 @@ export function ClinicalRegistrySecureClient() {
       // unverified factor before the user scanned its QR code; enrolling again with
       // the same friendly name then fails with a duplicate-factor error.
       const totpFactors = factors.data?.totp ?? [];
+      const hasVerifiedTotp = totpFactors.some((factor) => factor.status === "verified");
       const existingTotp = totpFactors.find((factor) => factor.status === "verified")
         ?? totpFactors.find((factor) => factor.status === "unverified");
       setMfaFactorId(existingTotp?.id ?? "");
       setAalLevel(assurance.data?.currentLevel ?? null);
-      setMfaRequired(!existingTotp || existingTotp.status !== "verified" || assurance.data?.currentLevel !== "aal2");
+      setMfaRequired(!hasVerifiedTotp || assurance.data?.currentLevel !== "aal2");
     })().catch((e: Error) => {
       if (active) {
         setMfaRequired(true);
