@@ -4,10 +4,10 @@
 
 - The Registry is a separate application/database integration from the existing PNA production Supabase project.
 - A dedicated Supabase Free project, **PNA Clinical Registry**, is provisioned in Singapore (project ref: `zfoohwqyoengbszuylxj`). It is separate from the existing PNA website Supabase project.
-- The seven versioned Registry migrations, including private-schema hardening and direct-client privilege revocation, have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
-- The `clinical_api` schema has been added to PostgREST's exposed schemas. All 18 `clinical_private` tables have RLS enabled; the schema is not exposed through PostgREST, and `anon`/`authenticated` have no direct table, sequence, or private-helper EXECUTE grants. Application access is via narrowly scoped `clinical_api` functions.
-- The automated database workflow uses a disposable local Supabase stack and synthetic fixtures. Latest local security workflow run #188 (run ID `41349112835`) completed successfully on 2026-11-01: website/Registry TypeScript type-check, isolated migration application, synthetic RLS/workflow tests, disposable backup/restore, and cleanup all passed. This is local test evidence only; hosted authenticated end-to-end and cross-therapist tenant-isolation tests remain pending.
-- A live read-only hosted audit on 2026-11-02 confirmed the project is `ACTIVE_HEALTHY`, all seven expected migrations are recorded, and `clinical_private` has no direct `SELECT` or `INSERT` grants for either `anon` or `authenticated` on its tables/sequences. Current hosted counts remain zero Auth users, zero patients, zero clinical reports, and zero Storage buckets.
+- The eight versioned Registry migrations, including private-schema hardening, RLS-backed RPC privileges, consent ownership binding, and corrected tenant predicates, have been applied to this hosted project; the hosted database contains the Registry schemas and functions, with no patient records.
+- The `clinical_api` schema is the browser-facing RPC surface; `clinical_private` is not exposed through PostgREST. All 18 private tables have RLS enabled. `anon` has no private table or sequence grants. `authenticated` has only minimum underlying `SELECT`/`INSERT`/`UPDATE` privileges on 12 owner-scoped tables needed by `SECURITY INVOKER` RPCs; the RLS policies remain the tenant boundary. The six internal authorization/governance tables have no client table grants or policies. Neither `anon` nor `authenticated` can execute private helper functions.
+- The automated database workflow uses a disposable local Supabase stack and synthetic fixtures. Latest local security workflow run #196 (run ID `41396229583`) completed successfully on 2026-11-02: TypeScript type-check, all eight isolated Registry migrations, 63 pgTAP RLS/workflow assertions, disposable backup/restore, and cleanup all passed. This is local test evidence only; hosted authenticated end-to-end and cross-therapist tenant-isolation tests remain pending.
+- A live read-only hosted audit on 2026-11-02 confirmed the project is `ACTIVE_HEALTHY`, all eight migrations are recorded, all 18 private tables have RLS, `anon` has zero private table/sequence grants, `authenticated` has 24 narrowly scoped table privileges across 12 owner-scoped tables, both client roles have zero private-helper EXECUTE grants, and both client roles have zero sequence grants. Current hosted counts remain zero Auth users, zero patients, zero clinical reports, and zero Storage buckets.
 - No Registry PDF files are stored in Supabase Storage. Clinical records remain structured database rows/JSON; PDF export is generated only on demand in the browser and downloaded locally.
 - Do not enter real patient information, upload identifiable records, or advertise the Registry as a production clinical record system until the launch gates below are closed.
 - Do not place a Supabase service-role key in browser code, `NEXT_PUBLIC_*` variables, GitHub source, preview build variables, or client-visible logs.
@@ -24,7 +24,7 @@
 
 ### Trusted verification boundary
 
-A restricted authenticated operator console is implemented in migration `20261101160000_clinical_registry_trusted_therapist_approval.sql`. It authorises only users with trusted Supabase Auth `app_metadata.registry_role = "operator"`; this role is not read from user-editable metadata and is separate from the PNA website administrator and case reviewer roles. The console exposes a bounded verification queue and verified-membership directory, not patient records.
+A restricted authenticated operator console is implemented in migration `20261101160000_clinical_registry_trusted_therapist_approval.sql`. Its database-side `SECURITY DEFINER` RPCs authorise only users with trusted Supabase Auth `app_metadata.registry_role = "operator"`; this role is not read from user-editable metadata and is separate from the PNA website administrator and case reviewer roles. The browser UI is not the security boundary. The console exposes a bounded verification queue and verified-membership directory, not patient records.
 
 Before activating a therapist, an authorised human must independently verify the registration with the relevant regulator, confirm the identity and professional scope, and record the evidence/reference in the organisation's approved restricted administrative record. Do not rely solely on the applicant's form submission or uploaded screenshots.
 
@@ -73,7 +73,7 @@ Do not launch with real patient data until all items are signed off:
 
 ## CI verification
 
-Latest verified run: GitHub Actions workflow #188 (`41349112835`) — **success**. The job completed all 14 steps, including TypeScript/integration type-check, disposable local Supabase startup, migration application, synthetic RLS/workflow tests, backup/restore verification, and cleanup.
+Latest verified run: GitHub Actions workflow #196 (`41396229583`) — **success**. The job completed all 14 steps, including TypeScript/integration type-check, disposable local Supabase startup, all eight migration applications, 63 synthetic RLS/workflow assertions, backup/restore verification, and cleanup.
 
 The local database workflow is expected to:
 - install pinned dependencies;
