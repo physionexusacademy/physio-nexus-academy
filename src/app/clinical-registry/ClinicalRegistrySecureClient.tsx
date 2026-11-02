@@ -44,6 +44,13 @@ export function ClinicalRegistrySecureClient() {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [recoveryMode, setRecoveryMode] = useState(false);
+  const [aalLevel, setAalLevel] = useState<string | null>(null);
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState("");
+  const [mfaChallengeId, setMfaChallengeId] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaQrCode, setMfaQrCode] = useState("");
+  const [mfaSecret, setMfaSecret] = useState("");
   const [patientReference, setPatientReference] = useState("");
   const [patientName, setPatientName] = useState("");
   const [consentEvidenceList, setConsentEvidenceList] = useState<ConsentEvidence[]>([]);
@@ -238,6 +245,42 @@ export function ClinicalRegistrySecureClient() {
   }, [client]);
 
   useEffect(() => {
+    if (!client || !session) {
+      setAalLevel(null);
+      setMfaRequired(false);
+      setMfaFactorId("");
+      return;
+    }
+    const role = session.user.app_metadata?.registry_role;
+    if (role !== "operator" && role !== "reviewer") {
+      setAalLevel(null);
+      setMfaRequired(false);
+      setMfaFactorId("");
+      return;
+    }
+    let active = true;
+    (async () => {
+      const [assurance, factors] = await Promise.all([
+        client.auth.mfa.getAuthenticatorAssuranceLevel(),
+        client.auth.mfa.listFactors()
+      ]);
+      if (!active) return;
+      if (assurance.error) throw assurance.error;
+      if (factors.error) throw factors.error;
+      const verifiedTotp = (factors.data?.totp ?? []).find((factor) => factor.status === "verified");
+      setMfaFactorId(verifiedTotp?.id ?? "");
+      setAalLevel(assurance.data?.currentLevel ?? null);
+      setMfaRequired(!verifiedTotp || assurance.data?.currentLevel !== "aal2");
+    })().catch((e: Error) => {
+      if (active) {
+        setMfaRequired(true);
+        setError(`Privileged access requires authenticator MFA: ${e.message}`);
+      }
+    });
+    return () => { active = false; };
+  }, [client, session]);
+
+  useEffect(() => {
     if (!client) return;
     loadPublicCases().catch((e: Error) => setError(e.message));
   }, [client, loadPublicCases]);
@@ -253,21 +296,21 @@ export function ClinicalRegistrySecureClient() {
   }, [client, session, loadVerificationRequest]);
 
   useEffect(() => {
-    if (!client || !session || session.user.app_metadata?.registry_role !== "operator") {
+    if (!client || !session || aalLevel !== "aal2" || mfaRequired || session.user.app_metadata?.registry_role !== "operator") {
       setOperatorQueue([]); setOperatorMemberships([]);
       return;
     }
     loadOperatorData().catch((e: Error) => setError(e.message));
-  }, [client, session, loadOperatorData]);
+  }, [client, session, aalLevel, mfaRequired, loadOperatorData]);
 
   useEffect(() => {
-    if (!client || !session || session.user.app_metadata?.registry_role !== "reviewer") {
+    if (!client || !session || aalLevel !== "aal2" || mfaRequired || session.user.app_metadata?.registry_role !== "reviewer") {
       setReviewerCases([]); setConsentReviewQueue([]);
       return;
     }
     loadReviewerCases().catch((e: Error) => setError(e.message));
     loadConsentReviewQueue().catch((e: Error) => setError(e.message));
-  }, [client, session, loadReviewerCases, loadConsentReviewQueue]);
+  }, [client, session, aalLevel, mfaRequired, loadReviewerCases, loadConsentReviewQueue]);
 
   useEffect(() => {
     if (!client || !session || membership?.verificationStatus !== "verified" || !membership.isActive) {
@@ -288,6 +331,62 @@ export function ClinicalRegistrySecureClient() {
     if (versionsResult.error) { setError(versionsResult.error.message); return; }
     setSelectedReport((reportResult.data ?? null) as ClinicalReport | null);
     setReportVersions((versionsResult.data ?? []) as ReportVersion[]);
+  };
+
+  const enrollRegistryMfa = async () => {
+    if (!client) return;
+    setBusy(true); setError(""); setNotice("");
+    const { data, error: enrollError } = await client.auth.mfa.enroll({
+      factorType: "totp",
+      friendlyName: "PNA Clinical Registry"
+    });
+    setBusy(false);
+    if (enrollError) { setError(enrollError.message); return; }
+    setMfaFactorId(data.id);
+    setMfaQrCode(data.totp.qr_code);
+    setMfaSecret(data.totp.secret);
+    setNotice("Scan the QR code with an authenticator app, then request a verification challenge.");
+  };
+
+  const startRegistryMfaChallenge = async () => {
+    if (!client || !mfaFactorId) { setError("Enroll an authenticator before continuing."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const { data, error: challengeError } = await client.auth.mfa.challenge({ factorId: mfaFactorId });
+    setBusy(false);
+    if (challengeError) { setError(challengeError.message); return; }
+    setMfaChallengeId(data.id);
+    setNotice("Enter the current six-digit code from your authenticator app.");
+  };
+
+  const verifyRegistryMfa = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!client || !mfaFactorId || !mfaChallengeId || !/^\\d{6}$/.test(mfaCode.trim())) {
+      setError("Enter the six-digit authenticator code.");
+      return;
+    }
+    setBusy(true); setError(""); setNotice("");
+    const { error: verifyError } = await client.auth.mfa.verify({
+      factorId: mfaFactorId,
+      challengeId: mfaChallengeId,
+      code: mfaCode.trim()
+    });
+    if (verifyError) { setBusy(false); setError(verifyError.message); return; }
+    const [{ data: assurance, error: assuranceError }, { data: sessionData }] = await Promise.all([
+      client.auth.mfa.getAuthenticatorAssuranceLevel(),
+      client.auth.getSession()
+    ]);
+    setBusy(false);
+    if (assuranceError) { setError(assuranceError.message); return; }
+    setAalLevel(assurance.currentLevel ?? null);
+    setSession(sessionData.session);
+    setMfaCode(""); setMfaChallengeId("");
+    setMfaRequired(assurance.currentLevel !== "aal2");
+    if (assurance.currentLevel === "aal2") {
+      setMfaQrCode(""); setMfaSecret("");
+      setNotice("Multi-factor authentication verified. Privileged Registry access is now unlocked for this session.");
+    } else {
+      setError("The authenticator was verified, but the session has not reached AAL2. Sign in again and complete the MFA challenge.");
+    }
   };
 
   const signIn = async (event: FormEvent) => {
@@ -589,6 +688,8 @@ export function ClinicalRegistrySecureClient() {
     await loadPublicCases();
   };
   if (!client) return <main className="min-h-screen bg-slate-50 px-5 py-16 text-slate-800"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><ShieldCheck className="text-teal-700" size={30}/><h1 className="mt-4 text-2xl font-bold text-[#173653]">PNA Clinical Registry</h1><p className="mt-3 text-sm leading-6 text-slate-600">The isolated Registry service is not configured yet. This workspace will not connect to or reuse the PNA website database.</p><p className="mt-4 rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-900">Required environment settings: NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL, NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY (or the legacy NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY) and an institution-approved NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION. No patient data can be entered until these are configured.</p></section></main>;
+
+  if (session && mfaRequired && (session.user.app_metadata?.registry_role === "operator" || session.user.app_metadata?.registry_role === "reviewer")) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Extra security required</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-600">Reviewer and operator actions require a verified authenticator and an AAL2 session. Your privileged queues remain locked until this step is complete.</p>{!mfaFactorId ? <button type="button" onClick={enrollRegistryMfa} disabled={busy} className="mt-6 w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Set up authenticator MFA"}</button> : <><p className="mt-4 text-xs font-semibold text-slate-700">Authenticator factor detected: {mfaQrCode ? "Setup pending verification" : "Ready to verify"}</p>{mfaQrCode&&<div className="mt-4 rounded-xl border border-slate-200 p-3 text-center"><img src={mfaQrCode} alt="Authenticator setup QR code" className="mx-auto h-48 w-48"/><p className="mt-3 break-all text-xs text-slate-500">Manual setup key: <span className="font-mono font-semibold text-slate-800">{mfaSecret}</span></p></div>}<button type="button" onClick={startRegistryMfaChallenge} disabled={busy} className="mt-4 w-full rounded-xl border border-teal-700 px-4 py-3 text-sm font-bold text-teal-800 disabled:opacity-50">{busy?"Please wait…":mfaQrCode?"I've scanned the QR — send verification challenge":"Send authenticator challenge"}</button>{mfaChallengeId&&<form onSubmit={verifyRegistryMfa} className="mt-4 space-y-3"><input required inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\\D/g,"").slice(0,6))} placeholder="6-digit authenticator code" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy||mfaCode.length!==6} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Verifying…":"Verify and unlock privileged access"}</button></form>}</>}{error&&<p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p role="status" className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}<button type="button" onClick={()=>client?.auth.signOut()} className="mt-4 w-full px-2 py-2 text-xs font-semibold text-slate-500 underline">Sign out</button></section></main>;
 
   if (recoveryMode) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Set a new password</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-500">Choose a new password for your Clinical Registry account. Your clinical records remain protected by therapist verification and ownership controls.</p><form onSubmit={updateRecoveredPassword} className="mt-6 space-y-3"><input required type="password" minLength={12} autoComplete="new-password" value={newPassword} onChange={e=>setNewPassword(e.target.value)} placeholder="New password (12+ characters)" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy || newPassword.length<12} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Update password"}</button></form>{error&&<p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p role="status" className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}</section></main>;
 
