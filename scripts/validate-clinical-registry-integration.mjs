@@ -234,7 +234,7 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(97);") &&
+    rlsTests.includes("select plan(98);") &&
     rlsTests.includes("authenticated therapists can create evidence rows only through the validated RPC") &&
     rlsTests.includes("legacy consent-grant RPC is not executable") &&
     rlsTests.includes("authenticated therapists cannot directly create consent grants") &&
