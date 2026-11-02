@@ -45,7 +45,7 @@ export default async function PublicClinicalCaseLibraryPage() {
       </header>
       {error ? <section className="rounded-2xl border border-red-200 bg-white p-5 text-sm text-red-700">The public case library is temporarily unavailable. Please try again later.</section> : <div className="space-y-4">
         {cases.map((item) => {
-          const safeEvidence = item.evidence_reference && (item.evidence_reference.startsWith("https://") || item.evidence_reference.startsWith("http://")) ? item.evidence_reference : null;
+          const safeEvidence = item.evidence_reference && (item.evidence_reference.startsWith("https://")) ? item.evidence_reference : null;
           return <article key={item.case_id} className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-2"><div><h2 className="text-lg font-bold text-[#173653]">{item.case_title}</h2><p className="mt-1 text-xs text-teal-700">{item.condition_label} · {item.age_band ?? "Age not reported"}</p></div><time className="text-[10px] text-slate-400" dateTime={item.published_at}>Published {new Date(item.published_at).toLocaleDateString()}</time></div>
             <section className="mt-4"><h3 className="text-xs font-bold text-[#173653]">Clinical context</h3><p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">{item.clinical_context}</p></section>
