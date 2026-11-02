@@ -1,0 +1,97 @@
+name: PNA Clinical Registry Preview
+
+on:
+  push:
+    branches:
+      - registry-preview
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pna-clinical-registry-preview
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check and validate secure Registry integration
+        env:
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL: https://zfoohwqyoengbszuylxj.supabase.co
+          NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY: sb_publishable_NIkVA30c34MyWRCCseRMcA_e2ifI3OX
+          NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION: ""
+        run: |
+          npm run typecheck
+          npm run validate:clinical-registry
+
+      - name: Build Cloudflare Worker
+        env:
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL: https://zfoohwqyoengbszuylxj.supabase.co
+          NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY: sb_publishable_NIkVA30c34MyWRCCseRMcA_e2ifI3OX
+          NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION: ""
+        run: npx opennextjs-cloudflare build
+
+      - name: Check Cloudflare credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is missing from repository Actions secrets."
+            exit 1
+          fi
+          npx wrangler whoami
+
+      - name: Deploy isolated Registry Preview Worker
+        id: preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          log_file="$(mktemp)"
+          trap 'rm -f "$log_file"' EXIT
+          npx wrangler deploy --config wrangler.registry-preview.jsonc 2>&1 | tee "$log_file"
+          preview_url="$(grep -Eo 'https://[a-zA-Z0-9.-]+\.workers\.dev' "$log_file" | tail -n 1 || true)"
+          if [ -z "$preview_url" ]; then
+            echo "::error::Cloudflare deploy completed without returning a workers.dev URL."
+            exit 1
+          fi
+          echo "url=$preview_url" >> "$GITHUB_OUTPUT"
+          {
+            echo "## PNA Clinical Registry Preview"
+            echo ""
+            echo "Preview URL: $preview_url"
+            echo ""
+            echo "This is an isolated Worker. It does not attach to the production custom domain."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Smoke-test Registry routes
+        env:
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
+        run: |
+          set -euo pipefail
+          registry_html="$(mktemp)"
+          library_html="$(mktemp)"
+          trap 'rm -f "$registry_html" "$library_html"' EXIT
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 "$PREVIEW_URL/clinical-registry" -o "$registry_html"
+          grep -Fq "Clinical Registry" "$registry_html"
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 "$PREVIEW_URL/clinical-registry/library" -o "$library_html"
+          grep -Fq "Public Clinical Case Library" "$library_html"
+          echo "Both Registry routes returned the expected content."
