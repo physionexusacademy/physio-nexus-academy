@@ -62,6 +62,9 @@ values
    '10000000-0000-4000-8000-000000000002','Musculoskeletal','Synthetic condition B')
 on conflict (id) do nothing;
 
+select ok((select public = false from storage.buckets where id = 'clinical-consent-evidence'),
+  'signed consent evidence bucket is private');
+
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
@@ -70,8 +73,6 @@ select ok(not has_table_privilege('anon','clinical_private.patient_consent_evide
   'anonymous role cannot read consent evidence metadata');
 select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_evidence','UPDATE'),
   'therapists cannot directly change consent evidence status');
-select ok((select public = false from storage.buckets where id = 'clinical-consent-evidence'),
-  'signed consent evidence bucket is private');
 select ok((select evidence_id is not null from clinical_api.create_consent_evidence_request(
   'clinical_care', null, 'TEST-CONSENT-001', 'test-v1', repeat('a',64),
   'application/pdf', 1024
@@ -104,8 +105,8 @@ select is((select count(*)::int from clinical_private.patients
   where patient_reference = 'TEST-A-ATOMIC'),
   0, 'legacy consent RPC cannot create a patient without verified signed evidence');
 
-select is((select count(*)::int from clinical_private.patients), 2,
-  'therapist A reads only their own patients (including atomic-consent registration)');
+select is((select count(*)::int from clinical_private.patients), 1,
+  'therapist A reads only their own patient; legacy checkbox registration creates none');
 select is((select count(*)::int from clinical_private.clinical_reports), 1,
   'therapist A reads only their own report');
 with changed as (
