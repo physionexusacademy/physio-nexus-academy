@@ -275,6 +275,19 @@ select ok(clinical_api.submit_case_for_review(
    where case_title = 'Synthetic shoulder rehabilitation case')
 ), 'owner can submit a de-identified case draft');
 
+select clinical_api.create_case_draft(
+  '30000000-0000-4000-8000-000000000001',
+  (select id from clinical_private.patient_consent_events
+   where patient_id = '20000000-0000-4000-8000-000000000001'
+     and purpose = 'public_case_publication'
+   order by event_sequence desc limit 1),
+  'Stale reviewer trigger draft','Shoulder pain','30-44',
+  'Synthetic draft used to test current-role enforcement in the workflow trigger.',
+  'Synthetic intervention summary for trigger regression testing.',
+  'Synthetic outcome summary for trigger regression testing.',
+  'https://example.invalid/trigger-test',true
+);
+
 select throws_ok(
   $test_sql$select clinical_api.review_case_submission(
     (select id from clinical_private.case_library_entries
@@ -310,11 +323,24 @@ select throws_ok(
   '42501', null, 'stale reviewer JWT cannot retain access after the live Auth role is revoked');
 select is((select count(*)::int from clinical_private.patient_consent_evidence), 0,
   'stale reviewer JWT cannot read consent evidence after the live Auth role is revoked');
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
 select throws_ok(
   $revoked_role_trigger$update clinical_private.case_library_entries
     set status = 'approved'
-    where case_title = 'Synthetic shoulder rehabilitation case'$revoked_role_trigger$,
+    where case_title = 'Stale reviewer trigger draft'$revoked_role_trigger$,
   '42501', null, 'stale reviewer JWT cannot bypass the case workflow trigger after role revocation');
+reset role;
+update auth.users
+set raw_app_meta_data = raw_app_meta_data || '{"registry_role":"reviewer"}'::jsonb
+where id = '10000000-0000-4000-8000-000000000006';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
 reset role;
 update auth.users
 set raw_app_meta_data = raw_app_meta_data || '{"registry_role":"reviewer"}'::jsonb
