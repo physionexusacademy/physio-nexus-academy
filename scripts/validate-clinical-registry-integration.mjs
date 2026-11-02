@@ -194,6 +194,14 @@ assert(
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
 );
 assert(
+  "Consent verifier accepts only configured exact HTTPS origins",
+  read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('Deno.env.get("REGISTRY_ALLOWED_ORIGINS")') &&
+    read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('parsed.protocol !== "https:"') &&
+    read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes("parsed.origin !== origin"),
+  "Preview CORS must use explicit HTTPS origins; wildcard, path and malformed origins must be rejected."
+);
+
+assert(
   "Recovery email response does not disclose whether an account exists",
   secure.includes("If an account exists for this email, a password-reset link has been sent."),
   "The UI must not reveal whether an email address is registered."
