@@ -36,6 +36,8 @@ export function ClinicalRegistrySecureClient() {
   const [selectedReport, setSelectedReport] = useState<ClinicalReport | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [recoveryMode, setRecoveryMode] = useState(false);
   const [patientReference, setPatientReference] = useState("");
   const [patientName, setPatientName] = useState("");
   const [consentMethod, setConsentMethod] = useState("written");
@@ -191,8 +193,11 @@ export function ClinicalRegistrySecureClient() {
     if (!client) return;
     let mounted = true;
     client.auth.getSession().then(({ data }) => { if (mounted) setSession(data.session); });
-    const { data: authListener } = client.auth.onAuthStateChange((_event, nextSession) => {
-      if (mounted) { setSession(nextSession); setMembership(null); setPatients([]); setReports([]); setSelectedPatient(null); setSelectedReport(null); }
+    const { data: authListener } = client.auth.onAuthStateChange((event, nextSession) => {
+      if (!mounted) return;
+      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+      if (event === "SIGNED_OUT") setRecoveryMode(false);
+      setSession(nextSession); setMembership(null); setPatients([]); setReports([]); setSelectedPatient(null); setSelectedReport(null);
     });
     return () => { mounted = false; authListener.subscription.unsubscribe(); };
   }, [client]);
@@ -254,6 +259,28 @@ export function ClinicalRegistrySecureClient() {
     setBusy(false);
     if (authError) setError(authError.message);
     else setNotice(data.session ? "Account created. Therapist verification is still required before clinical records can be accessed." : "Account created. Check your email if confirmation is enabled. Therapist verification is still required before clinical records can be accessed.");
+  };
+
+  const sendPasswordRecovery = async () => {
+    if (!client || !email.trim()) { setError("Enter your professional email address first."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const redirectTo = `${window.location.origin}/clinical-registry?recovery=1`;
+    const { error: recoveryError } = await client.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+    setBusy(false);
+    if (recoveryError) setError(recoveryError.message);
+    else setNotice("If an account exists for this email, a password-reset link has been sent. Check your inbox and spam folder.");
+  };
+
+  const updateRecoveredPassword = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!client || newPassword.length < 12) { setError("Choose a password with at least 12 characters."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const { error: updateError } = await client.auth.updateUser({ password: newPassword });
+    setBusy(false);
+    if (updateError) { setError(updateError.message); return; }
+    await client.auth.signOut();
+    setNewPassword(""); setRecoveryMode(false);
+    setNotice("Password updated. Sign in again with your new password.");
   };
 
   const registerPatient = async (event: FormEvent) => {
@@ -428,7 +455,9 @@ export function ClinicalRegistrySecureClient() {
   };
   if (!client) return <main className="min-h-screen bg-slate-50 px-5 py-16 text-slate-800"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><ShieldCheck className="text-teal-700" size={30}/><h1 className="mt-4 text-2xl font-bold text-[#173653]">PNA Clinical Registry</h1><p className="mt-3 text-sm leading-6 text-slate-600">The isolated Registry service is not configured yet. This workspace will not connect to or reuse the PNA website database.</p><p className="mt-4 rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-900">Required environment settings: NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL, NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY (or the legacy NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY) and an institution-approved NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION. No patient data can be entered until these are configured.</p></section></main>;
 
-  if (!session) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Clinical Registry</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-500">Sign in to your private clinical workspace. Each therapist can access only their own records.</p><form onSubmit={signIn} className="mt-6 space-y-3"><input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Professional email" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><input required type="password" minLength={8} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Sign in"}</button></form><button onClick={signUp} disabled={busy || !email || password.length<8} className="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 disabled:opacity-50">Create therapist account</button>{error&&<p className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}<p className="mt-5 flex items-center gap-2 text-[11px] text-slate-400"><LockKeyhole size={13}/> Private Registry database · separate from the PNA website database</p><a href="/clinical-registry/library" className="mt-4 block text-center text-xs font-semibold text-teal-700 underline">Browse public Case Library</a></section></main>;
+  if (recoveryMode) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Set a new password</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-500">Choose a new password for your Clinical Registry account. Your clinical records remain protected by therapist verification and ownership controls.</p><form onSubmit={updateRecoveredPassword} className="mt-6 space-y-3"><input required type="password" minLength={12} autoComplete="new-password" value={newPassword} onChange={e=>setNewPassword(e.target.value)} placeholder="New password (12+ characters)" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy || newPassword.length<12} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Update password"}</button></form>{error&&<p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p role="status" className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}</section></main>;
+
+  if (!session) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Clinical Registry</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-500">Sign in to your private clinical workspace. Each therapist can access only their own records.</p><form onSubmit={signIn} className="mt-6 space-y-3"><input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Professional email" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><input required type="password" minLength={8} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Sign in"}</button></form><button onClick={signUp} disabled={busy || !email || password.length<8} className="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 disabled:opacity-50">Create therapist account</button><button type="button" onClick={sendPasswordRecovery} disabled={busy || !email.trim()} className="mt-2 w-full px-2 py-2 text-xs font-semibold text-teal-700 underline disabled:opacity-50">Forgot password? Send reset link</button>{error&&<p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}<p className="mt-5 flex items-center gap-2 text-[11px] text-slate-400"><LockKeyhole size={13}/> Private Registry database · separate from the PNA website database</p><a href="/clinical-registry/library" className="mt-4 block text-center text-xs font-semibold text-teal-700 underline">Browse public Case Library</a></section></main>;
 
   const verified = membership?.verificationStatus === "verified" && membership?.isActive === true;
 
