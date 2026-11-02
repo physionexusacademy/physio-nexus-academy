@@ -30,15 +30,14 @@ Before activating a therapist, an authorised human must independently verify the
 
 The database provisioning RPCs `clinical_api.provision_verified_therapist(...)` and `clinical_api.set_therapist_active(...)` are restricted to the Supabase `service_role`. They must only be invoked by a trusted server-side process using a server-only secret. Never call them from the browser. Never expose the service-role key to the therapist or ordinary reviewer.
 
-**Operator workflow is not considered production-ready** until the Registry has a dedicated, authenticated server-side operator mechanism with:
-- least-privilege operator identity and documented role assignment;
-- a review queue that reveals only the minimum professional-verification data;
-- explicit approve/reject/deactivate actions with reason and actor attribution;
-- immutable audit events for every decision;
-- negative tests proving ordinary therapists and case reviewers cannot approve or activate accounts;
-- documented recovery for accidental approval and compromised operator credentials.
+**Operator workflow implementation is present, but initial trusted setup remains a launch gate.** Before production:
+- create the first operator account only after Auth is configured, then assign `app_metadata.registry_role = "operator"` through a trusted Supabase dashboard/Admin API action (never user-editable metadata);
+- enable MFA for that operator and document recovery/credential revocation;
+- assign reviewer roles separately and only to named, authorised reviewers;
+- retain the independent regulator/identity verification evidence and a decision reason for each approval;
+- preserve the existing negative tests proving ordinary therapists cannot inspect or approve the queue.
 
-Until then, do not provision real therapist memberships in a hosted environment.
+The approval/rejection/deactivation RPCs enforce the trusted `app_metadata` role in PostgreSQL and write actor-attributed immutable audit events. The older `provision_verified_therapist(...)` and `set_therapist_active(...)` RPCs remain restricted to `service_role`; never call them from the browser. Until the initial operator and Auth controls are configured, do not provision real therapist memberships in the hosted environment.
 
 ## Clinical data and consent safeguards
 
