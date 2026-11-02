@@ -155,7 +155,7 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(83);"),
+    rlsTests.includes("select plan(84);"),
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
 );
 assert(
