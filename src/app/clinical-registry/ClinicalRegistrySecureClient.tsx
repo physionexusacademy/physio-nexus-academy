@@ -549,9 +549,10 @@ export function ClinicalRegistrySecureClient() {
   };
   const withdrawPublishedCase = async (submission: CaseSubmission) => {
     if (!client || !CLINICAL_REGISTRY_CONSENT_VERSION) return; setBusy(true); setError("");
-    const { error: consentError } = await client.rpc("record_patient_consent", {
-      p_patient_id: submission.patient_id, p_purpose: "public_case_publication", p_status: "withdrawn",
-      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_capture_method: consentMethod, p_prior_event_id: null
+    const { error: consentError } = await client.rpc("withdraw_verified_patient_consent", {
+      p_patient_id: submission.patient_id,
+      p_purpose: "public_case_publication",
+      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION
     });
     if (consentError) { setBusy(false); setError(consentError.message); return; }
     const { error: rpcError } = await client.rpc("withdraw_public_case", { p_case_id: submission.case_id });
