@@ -130,6 +130,14 @@ assert(
   "The client must not request privileged queues while the session is below AAL2."
 );
 assert(
+  "Local Supabase enables the TOTP MFA flow used by privileged accounts",
+  /\\[auth\\.mfa\\.totp\\][\\s\\S]*?enroll_enabled = true[\\s\\S]*?verify_enabled = true/.test(config) &&
+    config.includes("minimum_password_length = 12") &&
+    config.includes("secure_password_change = true") &&
+    config.includes('additional_redirect_urls = ["http://127.0.0.1:3000", "http://localhost:3000"]'),
+  "Local Auth must allow TOTP, enforce the Registry password floor and allow the correct local recovery redirect."
+);
+assert(
   "Reviewer and operator database actions require AAL2",
   mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
     (mfaMigration.match(/perform clinical_private\.require_registry_aal2\(\);/g) ?? []).length === 10,
