@@ -148,6 +148,8 @@ assert(
   liveRoleMigration.includes("raw_app_meta_data ->> 'registry_role'") &&
     liveRoleMigration.includes("require_registry_role") &&
     liveRoleMigration.includes("is_current_registry_reviewer_aal2") &&
+    liveRoleMigration.includes("consent_evidence_reviewer_update") &&
+    liveRoleMigration.includes("consent_evidence_owner_or_reviewer_read") &&
     liveRoleMigration.includes("v_reviewer boolean := clinical_private.is_current_registry_reviewer_aal2()"),
   "Reviewer/operator privileges must be checked against current Auth app_metadata, including storage and trigger paths."
 );
@@ -177,7 +179,7 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(87);"),
+    rlsTests.includes("select plan(89);"),
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
 );
 assert(
