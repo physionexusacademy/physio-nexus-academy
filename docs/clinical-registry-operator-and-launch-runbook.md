@@ -8,7 +8,10 @@
 - Hosted staging currently has zero Auth users, therapist memberships, patients, clinical reports, consent events, consent evidence records, and public case entries. The private consent bucket has zero objects.
 - Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE at version 2 with JWT verification enabled. The deployed code supports exact HTTPS origins from the server-side `REGISTRY_ALLOWED_ORIGINS` secret; production origins remain built in.
 - Latest feature-branch head `02899b4c31d38bda2db4fd8497871c91c4524c98` passed Registry security workflow run `41461518799` (100/100 pgTAP assertions, isolated migrations, disposable backup/restore and cleanup), dependency/build run `41461518640` (dependency audit, TypeScript, Next.js and OpenNext Cloudflare build), and the Cloudflare Workers build check. These are automated checks, not hosted browser E2E or production acceptance.
-- PR #156 remains a draft and unmerged. It is not deployed to the production website.
+- PRs #151–#156 have been merged in dependency order into the isolated `registry-preview` branch. The production branch `cloudflare-deploy` is unchanged.
+- Isolated Preview Worker: `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev`. It is a separate Worker with no production custom-domain route. The URL is publicly reachable on `workers.dev`; Cloudflare Access protection is not yet configured, so use synthetic data only.
+- Preview pipeline run `41469075866` passed the full Next.js/OpenNext Cloudflare build, dependency audit, TypeScript, 30/30 Registry integration checks, Worker deployment and live smoke tests for `/clinical-registry` and `/clinical-registry/library`.
+- Hosted `verify-consent-evidence` Edge Function is ACTIVE at version 3 with JWT verification enabled. The exact Preview origin is allowlisted; no wildcard CORS is used.
 
 ## Architecture and access boundaries
 
@@ -41,7 +44,7 @@
 - Entry point: `supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts`
 - JWT verification: enabled.
 - Browser origin allowlist: `https://physionexusacademy.com` and `https://www.physionexusacademy.com`.
-- For a protected Cloudflare Preview, set the Edge Function secret `REGISTRY_ALLOWED_ORIGINS` to the exact preview origin (or comma-separated exact origins). Never use wildcard origins. Remove preview origins after acceptance testing.
+- The exact Preview origin `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev` is currently explicitly allowlisted in Edge Function version 3. This is a temporary exact-origin allowance; remove it after acceptance testing. Never use wildcard origins.
 - Uses Supabase-provided server environment variables. It must never receive service-role credentials from the browser.
 - The service-only database RPCs are:
   - `clinical_api.get_consent_evidence_integrity_request(uuid)`
@@ -52,10 +55,10 @@
 
 Hosted Auth has no users yet. Before any real therapist is onboarded:
 
-1. The project owner has already entered the Auth Site URL and redirect URL in the Dashboard. Verify they still exactly match `https://physionexusacademy.com` and `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery), then test confirmation and recovery redirects. Add the exact Preview callback `https://<protected-preview-host>/clinical-registry` only when a protected Preview URL exists; never add a wildcard redirect.
+1. The project owner has already entered the production Auth Site URL and redirect URL. Keep Site URL as `https://physionexusacademy.com`; verify the production callback `https://physionexusacademy.com/clinical-registry` remains allowlisted. For Preview testing, add these exact additional Redirect URLs (no wildcard): `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev/clinical-registry` and `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev/clinical-registry?recovery=1`. The Registry sign-up and confirmation-resend code now explicitly returns to the current origin; password recovery also uses the current origin with `?recovery=1`.
 2. Enable the Email provider and email confirmations, keep anonymous sign-ins disabled, configure production SMTP and the default Reset Password template, set the minimum password length to 12, and keep Secure Password Change enabled.
 3. Under Authentication → Multi-Factor, ensure App Authenticator/TOTP enrollment and verification are enabled. The Registry UI guides trusted reviewer/operator accounts through TOTP enrollment and challenge; database RPCs, private consent RLS, Storage downloads and case-workflow triggers require AAL2.
-4. Add the exact protected Preview origin to the Edge Function secret `REGISTRY_ALLOWED_ORIGINS` as a comma-separated exact origin list, and add the matching exact callback URL to Auth Redirect URLs. Remove Preview origins after acceptance testing.
+4. The Preview origin is already present as an exact CORS allowlist entry in deployed Edge Function version 3. Add the two exact Preview callback URLs in step 1 to Supabase Auth Redirect URLs. Remove the Preview CORS origin and callback URLs after acceptance testing.
 5. Review session lifetime, rate limits and abuse monitoring.
 6. Create the first trusted operator only through the approved administrator process, after the live-role/AAL2 migrations have passed CI and have been applied to the dedicated hosted Registry project.
 7. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action. Assign reviewer role only to named, authorised reviewers; never give every therapist a reviewer/operator role.
@@ -77,7 +80,7 @@ The available Supabase connection can inspect the database, migrations, project 
 - Hosted authenticated end-to-end testing with disposable therapist/reviewer identities and synthetic consent files.
 - Hosted synthetic Auth identities and synthetic consent files must exercise upload, server verification, private download, mismatch rejection, reviewer approval/rejection, care-consent patient creation, publication-consent activation, withdrawal and public-case suppression.
 - Test the Edge Function from the production Registry browser origin and reject invalid/expired JWTs, wrong owners, inactive memberships, invalid file signatures, size mismatches and hash mismatches.
-- Complete a protected Preview/browser run on desktop and mobile, including keyboard/accessibility and recovery flows. Preview URLs were previously disabled for this Cloudflare Worker.
+- Complete the Preview/browser run on desktop and mobile, including keyboard/accessibility, email confirmation and recovery. The isolated workers.dev Worker is live and its two Registry routes passed smoke tests. It is currently public (not Cloudflare Access-protected) and has noindex headers enabled only in Preview builds; do not use it with real patient data.
 - Perform backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
 - Obtain independent penetration testing and remediate all critical/high findings.
 
@@ -99,6 +102,6 @@ Keep `SIGNED_CONSENT_FORM_APPROVED = false` and `SIGNED_CONSENT_EVIDENCE_WORKFLO
 - Trusted operator/reviewer identities, Auth settings and MFA configured.
 - Hosted end-to-end tests and independent security review passed.
 - Protected browser Preview and production acceptance passed.
-- PR #151 targets `cloudflare-deploy`; PRs #152–#156 remain stacked on their preceding feature branches. Preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative stack remains a draft and unmerged; review the complete diff and obtain explicit approval before merging or deploying.
+- PRs #151–#156 are merged into `registry-preview` in the correct dependency order. Do not merge `registry-preview` into `cloudflare-deploy` until hosted Auth/E2E, consent/legal approvals, backup/recovery, independent security review and production sign-off are complete.
 
-Do not enter real patient data, upload real signed forms, publish cases, merge PR #156 or deploy to production before those gates are closed.
+Do not enter real patient data, upload real signed forms, publish cases, merge `registry-preview` into `cloudflare-deploy` or deploy production before those gates are closed.
