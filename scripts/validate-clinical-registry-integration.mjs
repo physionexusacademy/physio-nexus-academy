@@ -138,6 +138,12 @@ assert(
   "The client must not request privileged queues while the session is below AAL2."
 );
 assert(
+  "Public case evidence references require HTTPS",
+  library.includes('item.evidence_reference.startsWith("https://")') &&
+    !library.includes('item.evidence_reference.startsWith("http://")'),
+  "Public evidence links must use encrypted HTTPS transport."
+);
+assert(
   "Consent verifier supports exact protected Preview origins without wildcard CORS",
   edgeFunction.includes('Deno.env.get("REGISTRY_ALLOWED_ORIGINS")') &&
     edgeFunction.includes("https://physionexusacademy.com") &&
