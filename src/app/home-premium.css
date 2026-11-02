@@ -1,0 +1,118 @@
+/* PNA homepage 2026 — premium editorial composition, not another gaming dashboard.
+ * Applied only to homepage elements through explicit pna-home-* classes.
+ * All legacy portal destinations remain accessible within four discovery zones.
+ */
+.pna-home-intro,.pna-home-explore{color:#183c4d}
+.pna-home-intro{position:relative;isolation:isolate;background:linear-gradient(180deg,#fff 0%,#fcfefd 100%);border-bottom:1px solid #deebe9}
+.pna-home-intro-inner{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr);align-items:center;gap:clamp(22px,4vw,65px);padding-top:clamp(33px,4vw,58px);padding-bottom:clamp(33px,4vw,58px)}
+.pna-home-kicker{display:inline-flex;align-items:center;gap:9px;color:#08786f;font-size:10px;line-height:1.7;letter-spacing:.13em;font-weight:850;text-transform:uppercase}
+.pna-home-signal{display:inline-block;width:8px;height:8px;flex:none;border-radius:50%;background:#20b29b;box-shadow:0 0 0 4px #d9f2ec}
+.pna-home-intro-copy h2{max-width:700px;margin-top:12px;font:800 clamp(27px,3.2vw,44px)/1.13 Georgia,Cambria,serif;letter-spacing:-.034em;color:#153549}
+.pna-home-intro-copy h2 span{color:#08776f}
+.pna-home-intro-copy>p:not(.pna-home-kicker){max-width:680px;margin-top:15px;font-size:14px;line-height:1.9;color:#536e78}
+.pna-home-intro-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:21px}
+.pna-home-intro-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:45px;padding:11px 17px;background:#087973;color:white;border-radius:13px;font-size:12px;font-weight:850;box-shadow:0 12px 24px -19px #105d56;transition:background .2s,transform .2s}
+.pna-home-intro-primary:hover{background:#05675e;color:white;transform:translateY(-1px)}
+.pna-home-intro-secondary{display:inline-flex;align-items:center;gap:7px;color:#276a68;font-size:12px;font-weight:850}
+.pna-home-intro-secondary:hover{color:#045957}
+.pna-home-audiences{display:flex;align-items:center;flex-wrap:wrap;gap:11px;margin-top:20px;font-size:11px;font-weight:750;color:#5f7b82}
+.pna-home-audiences a{transition:color .2s}
+.pna-home-audiences a:hover{color:#087973}
+.pna-home-founder-card{display:flex;align-items:center;gap:15px;overflow:hidden;padding:13px;border:1px solid #d9e9e6;border-radius:21px;background:linear-gradient(135deg,#f4fbf8,#fff 85%);box-shadow:0 20px 45px -41px #0c5359;transition:transform .2s,box-shadow .2s}
+.pna-home-founder-card:hover{transform:translateY(-2px);box-shadow:0 22px 45px -37px #0c5359}
+.pna-home-founder-photo{display:block;object-fit:cover;object-position:top center;width:112px;height:136px;border-radius:14px;flex-shrink:0;background:#e8f3f0}
+.pna-home-founder-copy{display:flex;flex-direction:column;gap:7px;min-width:0}
+.pna-home-founder-overline{font-size:9px;letter-spacing:.115em;font-weight:850;color:#078073}
+.pna-home-founder-copy strong{font-family:Georgia,Cambria,serif;font-size:19px;line-height:1.3;color:#1b4050}
+.pna-home-founder-copy>span:nth-child(3){font-size:11px;line-height:1.55;color:#5a707a}
+.pna-home-founder-link{display:flex;align-items:center;gap:7px;margin-top:4px;font-size:11px;font-weight:850;color:#08766d}
+.pna-home-explore{padding-block:clamp(42px,6vw,82px) clamp(43px,6vw,78px);scroll-margin-top:98px;background:radial-gradient(circle at 2% 7%,#e9f7f2 0,transparent 31%),linear-gradient(180deg,#f9fcfb 0%,#fff 100%)}
+.pna-home-section-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:29px}
+.pna-home-section-heading h2{font-family:Georgia,Cambria,serif;font-size:clamp(29px,3.4vw,44px);line-height:1.12;letter-spacing:-.03em;font-weight:800;color:#16394b;margin-top:10px}
+.pna-home-section-heading p:not(.pna-home-kicker){margin-top:11px;max-width:650px;font-size:14px;line-height:1.8;color:#57747d}
+.pna-home-heading-action{display:inline-flex;gap:8px;align-items:center;white-space:nowrap;color:#087873;font-size:12px;font-weight:850;padding-bottom:4px}
+.pna-home-heading-action:hover{color:#07545a}
+.pna-home-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.pna-home-zone{min-width:0;scroll-margin-top:110px;overflow:hidden;border:1px solid #dceae8;border-radius:24px;background:#fff;box-shadow:0 22px 48px -47px #245a61;transition:box-shadow .25s,transform .25s}
+.pna-home-zone:hover{box-shadow:0 24px 45px -39px #245a61;transform:translateY(-1px)}
+.pna-home-zone-top{position:relative;display:flex;align-items:center;gap:13px;padding:24px 25px 15px}
+.pna-home-zone-number{display:inline-flex;flex-shrink:0;justify-content:center;align-items:center;width:40px;height:40px;border-radius:13px;background:#e6f5f0;color:#097b72;font-size:15px;font-weight:900;font-variant-numeric:tabular-nums}
+.pna-home-zone-kicker{display:block;margin-bottom:3px;color:#087b72;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.pna-home-zone-top-copy{min-width:0;flex:1}
+.pna-home-zone-top-copy h3{font:800 clamp(17px,2vw,24px)/1.2 Georgia,Cambria,serif;letter-spacing:-.022em;color:#153648}
+.pna-home-zone-icon{display:flex;align-items:center;justify-content:center;flex:none;width:45px;height:45px;border-radius:14px;background:#edf8f5;color:#078078}
+.pna-home-zone-lead{padding:0 25px;font-size:15px;font-weight:850;color:#204a56}
+.pna-home-zone-description{padding:7px 25px 20px;font-size:12px;line-height:1.65;color:#667f85}
+.pna-home-zone-links{padding:6px 13px 13px;border-top:1px solid #edf2f0}
+.pna-home-zone-link{display:flex;align-items:center;gap:12px;min-width:0;border-radius:13px;padding:12px 10px;transition:background .2s,transform .2s}
+.pna-home-zone-link+.pna-home-zone-link{border-top:1px solid #f0f5f4;border-top-left-radius:3px;border-top-right-radius:3px}
+.pna-home-zone-link:hover{background:#f1faf7;transform:translateX(2px)}
+.pna-home-zone-link-icon{display:flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;border:1px solid #e0efeb;border-radius:12px;background:#f0f9f6;color:#0d837b}
+.pna-home-zone-link-content{display:flex;flex-direction:column;flex:1;gap:3px;min-width:0}
+.pna-home-zone-link-content strong{font-size:13px;line-height:1.5;font-weight:850;color:#234656}
+.pna-home-zone-link-content>span{font-size:11px;line-height:1.6;color:#667e84;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pna-home-zone-arrow{flex-shrink:0;color:#4c9990;transition:transform .2s}
+.pna-home-zone-link:hover .pna-home-zone-arrow{transform:translateX(3px)}
+.pna-home-zone-extra .pna-home-zone-link-icon{border-color:#e7ecea;background:#f7faf9}
+.pna-home-zone-practice .pna-home-zone-number,.pna-home-zone-practice .pna-home-zone-icon{background:#e8f5fa;color:#256f89}
+.pna-home-zone-professional .pna-home-zone-number,.pna-home-zone-professional .pna-home-zone-icon{background:#eff6f3;color:#2e8474}
+.pna-home-zone-care .pna-home-zone-number,.pna-home-zone-care .pna-home-zone-icon{background:#ecf6f7;color:#237f81}
+.pna-home-journey{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:15px 30px;margin-top:19px;padding:19px 25px;border-radius:19px;border:1px solid #cfe8e3;background:linear-gradient(110deg,#edf8f5,#fff);box-shadow:0 18px 35px -35px #114d58}
+.pna-home-journey-steps{display:flex;flex-wrap:wrap;align-items:center;gap:12px;color:#4d7779}
+.pna-home-journey-steps a{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#265f64}
+.pna-home-journey-steps a:hover{color:#087973}
+.pna-home-journey-steps>a svg{color:#07897f}
+.pna-home-intro a:focus-visible,.pna-home-explore a:focus-visible{outline:3px solid #0a9e93;outline-offset:3px}
+
+/* Harmonize the lower original homepage sections without flattening their content. */
+.pna-home-lower{background:#fff}
+.pna-home-lower .section-padding{padding-block:clamp(44px,5.7vw,72px)}
+.pna-home-lower .pna-home-feature-section{background:#f8fcfb}
+.pna-home-lower .pna-home-feature-section .group,.pna-home-lower .pna-home-section-card{border:1px solid #ddebe8;border-radius:20px;background:white;box-shadow:0 14px 32px -32px #225c65;transition:box-shadow .2s,transform .2s}
+.pna-home-lower .pna-home-feature-section .group:hover,.pna-home-lower .pna-home-section-card:hover{transform:translateY(-2px);box-shadow:0 20px 38px -30px #225c65}
+.pna-home-lower .pna-home-light-patient{background:radial-gradient(circle at 94% 16%,#daf5eb 0,transparent 38%),linear-gradient(115deg,#f0faf7,#fff 74%);border-block:1px solid #dcece8;color:#173a4a}
+.pna-home-lower .pna-home-light-patient h2,.pna-home-lower .pna-home-light-patient p{color:#173a4a}
+.pna-home-lower .pna-home-light-patient .pna-home-patient-note{color:#59737d}
+.pna-home-lower .pna-home-light-patient a{background:#fff;border:1px solid #d7e9e4;border-radius:17px;color:#173b4a;box-shadow:0 14px 30px -28px #134a55}
+.pna-home-lower .pna-home-light-patient a:hover{background:#f0faf6;border-color:#94cfc1}
+.pna-home-lower .pna-home-light-patient a p{color:#193e4f}
+.pna-home-lower .pna-home-light-patient a p:last-child{color:#5d777c}
+.pna-home-lower .pna-home-light-patient a svg{color:#0b8077}
+@media(max-width:900px){
+ .pna-home-intro-inner{grid-template-columns:1fr;gap:21px}
+ .pna-home-founder-card{max-width:465px}
+ .pna-home-zones{grid-template-columns:1fr}
+ .pna-home-journey{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:540px){
+ .pna-home-intro-inner{padding-top:29px;padding-bottom:30px}
+ .pna-home-intro-copy h2{font-size:29px}
+ .pna-home-intro-copy>p:not(.pna-home-kicker){font-size:13px;line-height:1.75}
+ .pna-home-founder-card{padding:9px;gap:12px}
+ .pna-home-founder-photo{width:94px;height:113px;border-radius:11px}
+ .pna-home-founder-copy strong{font-size:17px}
+ .pna-home-founder-overline{font-size:8px}
+ .pna-home-audiences{gap:7px 10px;font-size:10px}
+ .pna-home-explore{padding-block:38px 46px}
+ .pna-home-section-heading{gap:12px;margin-bottom:18px}
+ .pna-home-section-heading h2{font-size:29px}
+ .pna-home-section-heading p:not(.pna-home-kicker){font-size:13px}
+ .pna-home-zone{border-radius:19px}
+ .pna-home-zone-top{padding:18px 16px 12px;gap:10px}
+ .pna-home-zone-number{width:34px;height:34px;font-size:12px}
+ .pna-home-zone-icon{width:37px;height:37px}
+ .pna-home-zone-top-copy h3{font-size:19px}
+ .pna-home-zone-lead{padding-inline:17px;font-size:14px}
+ .pna-home-zone-description{padding:5px 17px 14px}
+ .pna-home-zone-links{padding:5px 8px 9px}
+ .pna-home-zone-link{padding:11px 7px;gap:10px}
+ .pna-home-zone-link-icon{width:34px;height:34px}
+ .pna-home-zone-link-content strong{font-size:12px}
+ .pna-home-zone-link-content>span{font-size:10px}
+ .pna-home-journey{padding:15px;gap:13px}
+ .pna-home-journey-steps{gap:8px}
+ .pna-home-journey-steps a{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .pna-home-intro *, .pna-home-explore *{animation:none!important;transition:none!important}
+}

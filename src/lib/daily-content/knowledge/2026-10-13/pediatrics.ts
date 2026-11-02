@@ -1,0 +1,20 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+  slug: "infant-developmental-hip-dysplasia-recognition-referral-20261013",
+  title: "Developmental Dysplasia of the Hip in Infants: Recognition, Surveillance and Referral",
+  excerpt: "A safety-focused guide to DDH risk factors, age-appropriate findings, imaging pathways and timely referral.",
+  specialty: "Pediatrics", category: "Pediatric Orthopedics", audience: "Professionals", level: "Advanced",
+  readTime: "8–12 min read", publishedAt: "2026-10-13",
+  learningObjectives: ["Identify risk factors and age-dependent findings that warrant DDH assessment.", "Explain the role and limits of clinical screening and imaging.", "Use timely referral and avoid forceful hip manipulation.", "Support families while coordinating pediatric care."],
+  references: [
+    { title: "Evaluation and Referral for Developmental Dysplasia of the Hip in Infants", organization: "American Academy of Pediatrics", year: "2016", url: "https://publications.aap.org/pediatrics/article/138/6/e20163107/52639/Evaluation-and-Referral-for-Developmental-Dysplasia" },
+    { title: "Detection and nonoperative management of pediatric DDH in infants up to six months of age", organization: "American Academy of Orthopaedic Surgeons", year: "2022", url: "https://www.aaos.org/quality/quality-programs/pediatric-developmental-dysplasia-of-the-hip/" }
+  ],
+  sections: [
+    { heading: "Condition framework and risk factors", bullets: ["DDH spans abnormal hip development from acetabular shallowness and instability to subluxation or dislocation. Risk factors include breech presentation and family history, but DDH can occur without recognized risks.", "Screening is age-dependent and belongs within the pediatric care pathway. A physiotherapist may identify concerns but should not claim to exclude DDH with a normal movement screen."] },
+    { heading: "Assessment and imaging", bullets: ["In young infants, trained clinicians may assess hip stability with age-appropriate maneuvers. As the infant grows, limited hip abduction or apparent leg-length asymmetry may become more informative.", "Ask about breech position, family history, prior screening and asymmetric leg movement. Observe spontaneous movement gently; do not force end-range positions to provoke a sign.", "Ultrasound is commonly used in younger infants when indicated; pelvic radiography becomes more useful with age. Imaging choice and timing should follow the pediatric/orthopedic pathway."] },
+    { heading: "Differentials and referral", bullets: ["Positional variation, neuromuscular conditions and congenital limb differences may affect symmetry, but should not delay referral when DDH findings are concerning.", "Arrange prompt pediatric/orthopedic assessment for limited abduction, leg-length asymmetry, abnormal stability reported by a trained examiner or significant risk factors not appropriately evaluated. Acute pain, systemic illness or inability to bear weight in an older child needs urgent assessment."] },
+    { heading: "Physiotherapy role and precautions", bullets: ["The priority is timely diagnostic assessment and specialist-led management when indicated. Physiotherapy can support developmental function and family education in coordination with the treating team.", "When a harness or brace is used, follow specialist instructions for handling, skin checks and permitted movement. Do not alter settings or duration without the specialist team.", "Avoid forceful stretching, repeated provocative testing or attempting to reduce a suspected dislocation. Document findings, referral destination and whether follow-up was confirmed."] },
+    { heading: "Clinical pearl and summary", bullets: ["A physiotherapist's most valuable contribution may be recognition and referral, not treatment. Age, risk factors and the pattern of findings determine next steps; diagnosis and imaging should be coordinated by the pediatric team."] }
+  ]
+};

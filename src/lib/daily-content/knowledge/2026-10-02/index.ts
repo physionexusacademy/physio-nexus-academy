@@ -1,0 +1,12 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+import { article20261002Msk } from "./msk";
+import { article20261002Neuro } from "./neuro";
+import { article20261002Cardio } from "./cardio";
+import { article20261002Peds } from "./pediatrics";
+import { article20261002Sports } from "./sports";
+import { article20261002Geriatrics } from "./geriatrics";
+import { article20261002Womens } from "./womens-health";
+import { article20261002Pain } from "./pain-science";
+import { article20261002Exercise } from "./exercise-rehab";
+import { article20261002Research } from "./research";
+export const knowledge20261002: KnowledgeArticle[]=[article20261002Msk,article20261002Neuro,article20261002Cardio,article20261002Peds,article20261002Sports,article20261002Geriatrics,article20261002Womens,article20261002Pain,article20261002Exercise,article20261002Research];

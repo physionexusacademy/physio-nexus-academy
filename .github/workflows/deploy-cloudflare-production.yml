@@ -1,0 +1,260 @@
+name: Deploy PNA to Cloudflare
+
+on:
+  push:
+    branches:
+      - cloudflare-deploy
+  workflow_dispatch:
+
+concurrency:
+  group: pna-cloudflare-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Pin the deployment runner image to avoid moving ubuntu-latest image transitions.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+
+    steps:
+      - name: Check Cloudflare credentials
+        id: auth
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          if [ -n "$CF_TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare API token is configured."
+          else
+            echo "::error::Cloudflare deployment cannot run: CLOUDFLARE_API_TOKEN is missing from repository Actions secrets."
+            exit 1
+          fi
+
+      - name: Checkout
+        if: steps.auth.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        if: steps.auth.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.auth.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Run TypeScript checks
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run typecheck
+
+      - name: Validate MSK screening engine
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:msk
+
+      - name: Validate blind Clinical Arena diagnosis reveal
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-clinical-arena-blind.mjs
+
+      - name: Validate Neuro, Pediatric, Cardio and advanced multidisciplinary clinical scenarios
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-clinical-arena-multispecialty.mjs
+
+      - name: Validate 500 Clinical Arena regions and case categorization
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-clinical-arena-regions.mjs
+
+      - name: Validate 1000+ varied patient replies and safe clinical dialogue
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-clinical-arena-patient-dialogue.mjs
+
+      - name: Validate every MSK clinical story
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-msk-stories.mjs
+
+      - name: Validate worldwide manual therapy chapters
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-manual-therapy-world.mjs
+
+      - name: Validate PNA story depth and clinical content
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-manual-therapy-stories.mjs
+
+      - name: Validate accessible-English technique attention and deep guides
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-manual-therapy-attention.mjs
+
+      - name: Validate Manual Therapy visual manifest (inactive until 35 approved)
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-manual-visuals.mjs
+
+      - name: Validate premium PNA Case Lab and all patient-story links
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-case-lab-premium.mjs
+
+      - name: Validate PNA Daily Challenge question bank, scoring, privacy and midnight rankings
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-daily-challenge.mjs
+
+      - name: Validate PNA premium homepage structure, feature coverage and mobile UI
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/validate-premium-homepage.mjs
+
+      - name: Build and deploy to Cloudflare
+        if: steps.auth.outputs.ready == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+          NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+          NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
+          PAYMENTS_ENABLED: "false"
+        run: |
+          # Publish is controlled by the reviewed 35-cover manifest (not a
+          # GitHub-only env variable unavailable inside Cloudflare Workers).
+          if node -e "process.exit(require('./src/data/manual-therapy-visual-manifest.json').publish ? 0 : 1)"; then
+            node scripts/validate-manual-visuals.mjs --publish
+          fi
+          npx wrangler whoami
+          npm run deploy
+
+      - name: Smoke test production
+        if: steps.auth.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # A lesson page may have 3-6 assertions. Fetch its HTML only once:
+          # repeated full-size SSR responses can overload the origin and produce
+          # false-negative 503 / 30-second timeout errors.
+          smoke_tmp="$(mktemp -d)"
+          trap 'rm -rf "$smoke_tmp"' EXIT
+          declare -A smoke_cache=()
+
+          check_url() {
+            local url="$1"
+            local marker="$2"
+            local cached="${smoke_cache[$url]:-}"
+            if [ -n "$cached" ]; then
+              if grep -Fq "$marker" "$cached"; then
+                echo "Smoke test passed (cached): $url"
+                return 0
+              fi
+              echo "::error::Marker missing in cached successful response: $url :: $marker"
+              return 1
+            fi
+
+            local html
+            html="$(mktemp "$smoke_tmp/page.XXXXXXXX")"
+            for attempt in 1 2 3 4 5; do
+              if curl -fsSL --connect-timeout 10 --max-time 25 \
+                -o "$html" "$url?deploy=${GITHUB_SHA}"; then
+                if grep -Fq "$marker" "$html"; then
+                  smoke_cache["$url"]="$html"
+                  echo "Smoke test passed: $url"
+                  # Protect Cloudflare Workers from a burst of large SSR responses.
+                  sleep 0.8
+                  return 0
+                fi
+              fi
+
+              echo "Smoke test attempt $attempt failed for $url"
+              # Gradually back off after transient Worker 503s without masking persistent failure.
+              sleep "$((attempt * 3 + 2))"
+            done
+
+            echo "::error::Smoke test failed: $url did not return the expected marker after retries: $marker"
+            return 1
+          }
+
+          check_url "https://physionexusacademy.com/" "Symptoms Checker"
+          check_url "https://physionexusacademy.com/" "Open Physio Nexus AI"
+          check_url "https://physionexusacademy.com/" 'data-pna-home-signature="v2"'
+          check_url "https://physionexusacademy.com/" "Install PNA App"
+          check_url "https://physionexusacademy.com/manifest.webmanifest" '"name": "Physio Nexus Academy"'
+          check_url "https://physionexusacademy.com/sw.js" "PNA update-first service worker."
+          check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
+          # Case Lab currently ships the real-patients-v1 library signature.
+          check_url "https://physionexusacademy.com/case-lab" "PNA · RESEARCH CASE LIBRARY"
+          check_url "https://physionexusacademy.com/case-lab/research/plantar-fasciitis-rehabilitation" "THE CASE IN PLAIN ENGLISH"
+          check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
+          check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
+          check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
+
+          # Exercise real POST route handling without creating fake attempts or scores.
+          start_http="$(curl -sS --connect-timeout 10 --max-time 25 -o "$smoke_tmp/daily-start.json" \
+            -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
+            --data '{"fullName":"","email":"","consent":false}' \
+            'https://physionexusacademy.com/api/daily-challenge/start')"
+          if [ "$start_http" != "400" ] || ! grep -Fq 'Enter a name' "$smoke_tmp/daily-start.json"; then
+            echo "::error::Daily start API failed to return expected 400 validation response (HTTP $start_http)"
+            exit 1
+          fi
+          echo "Smoke test passed: Daily Challenge start POST validation"
+
+          submit_http="$(curl -sS --connect-timeout 10 --max-time 25 -o "$smoke_tmp/daily-submit.json" \
+            -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
+            --data '{"attemptId":"invalid","token":"invalid","answers":{}}' \
+            'https://physionexusacademy.com/api/daily-challenge/submit')"
+          if [ "$submit_http" != "400" ] || ! grep -Fq 'not found' "$smoke_tmp/daily-submit.json"; then
+            echo "::error::Daily submit API failed to return expected 400 validation response (HTTP $submit_http)"
+            exit 1
+          fi
+          echo "Smoke test passed: Daily Challenge submit POST validation"
+          # Keep production verification intentionally small. The local validation
+          # scripts above already validate the full content library; crawling every
+          # large SSR page after deploy can overload Workers and create false failures.
+          check_url "https://physionexusacademy.com/case-lab/research/chronic-post-surgical-low-back-pain" "Limitations — what this case cannot tell us"
+          check_url "https://physionexusacademy.com/clinical-arena" "Preparing your clinical challenge"
+          check_url "https://physionexusacademy.com/clinical-registry" "PNA Clinical Registry"
+          check_url "https://physionexusacademy.com/msk-injuries" "PNA MSK Clinical Library"
+          # The hub is a condition index; story and anatomy visuals are verified on routes that actually render them.
+          check_url "https://physionexusacademy.com/msk-injuries/lateral-ankle-sprain" 'data-pna-msk-story="cinematic-v1"'
+          check_url "https://physionexusacademy.com/msk-injuries/mechanical-neck-pain" "Mechanical Neck Pain"
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-library="unified-35-v1"'
+          check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-editorial-design="anatomy-luxe-v1"'
+          check_url "https://physionexusacademy.com/manual-therapy/myofascial-release" 'data-pna-reading="clinical-story-v3"'
+          check_url "https://physionexusacademy.com/manual-therapy/strain-counterstrain" 'data-pna-reading="clinical-story-v3"'
+          check_url "https://physionexusacademy.com/manual-therapy/mulligan-snags-nags" 'data-pna-reading="clinical-story-v3"'
+          check_url "https://physionexusacademy.com/manual-therapy/regions/by-region/cervical" 'data-pna-region-overviews="v1"'
+
+          # Exercise the read-only PNA AI resource navigator. These requests do not submit forms or create records.
+          node scripts/validate-pna-ai-production.mjs
+
+  pathway-images:
+    name: Verify live pathway photos and responsive interactions
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    env:
+      PNA_BROWSER_QA_DIR: /tmp/pna-browser-qa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated browser QA tooling
+        run: |
+          npm install --prefix "$PNA_BROWSER_QA_DIR" --no-package-lock playwright@1.56.1
+          "$PNA_BROWSER_QA_DIR/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Verify supplied images and production at five viewport widths
+        run: node scripts/verify-pathway-production.mjs
+      - name: Save live screenshots and verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pna-pathway-production-${{ github.sha }}
+          path: artifacts/pathway-production
+          if-no-files-found: error
+          retention-days: 14

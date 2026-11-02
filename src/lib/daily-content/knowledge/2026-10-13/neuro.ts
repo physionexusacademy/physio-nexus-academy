@@ -1,0 +1,17 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+  slug: "peripheral-vestibular-hypofunction-gaze-stability-rehab-20261013",
+  title: "Peripheral Vestibular Hypofunction: Gaze Stability, Balance and Safe Progression",
+  excerpt: "A guideline-informed approach to confirmed peripheral vestibular hypofunction, targeting gaze stability, balance, gait and safety.",
+  specialty: "Neurological", category: "Vestibular Rehabilitation", audience: "Professionals", level: "Advanced",
+  readTime: "8–12 min read", publishedAt: "2026-10-13",
+  learningObjectives: ["Choose targeted gaze-stability, balance and gait interventions.", "Use suitable outcomes and symptom monitoring.", "Recognize when dizziness needs medical assessment."],
+  references: [{ title: "Vestibular Rehabilitation for Peripheral Vestibular Hypofunction: Updated Clinical Practice Guideline", organization: "Academy of Neurologic Physical Therapy / APTA", year: "2022", url: "https://pubmed.ncbi.nlm.nih.gov/34864777/" }],
+  sections: [
+    { heading: "Condition framework", bullets: ["Peripheral vestibular hypofunction can impair gaze stability during head movement and contribute to imbalance. Symptoms alone do not confirm the diagnosis; use appropriate assessment and vestibular testing where indicated.", "Rehabilitation should target measured impairments and activity restrictions. Evidence for peripheral hypofunction should not automatically be applied to central vestibular disorders or unexplained dizziness."] },
+    { heading: "Assessment and outcomes", bullets: ["Ask about onset, oscillopsia, head-motion intolerance, hearing symptoms, migraine history, falls, medications and functional triggers. Examine gait, balance, gaze stability and cervical factors as appropriate.", "Consider the Dizziness Handicap Inventory, Activities-specific Balance Confidence scale, Functional Gait Assessment and dynamic visual acuity. Choose measures suited to the patient and setting."] },
+    { heading: "Safety and differential diagnosis", bullets: ["BPPV, vestibular migraine, medication effects, orthostatic hypotension and central neurological conditions can produce overlapping symptoms. Sudden severe dizziness with new neurological changes requires urgent medical assessment.", "Do not substitute routine vestibular exercises for assessment of an acute or atypical presentation."] },
+    { heading: "Intervention and dose", bullets: ["Gaze-stability exercises involve head movement while maintaining a visual target. Isolated saccades or smooth-pursuit eye movements without head movement should not be used alone to improve gaze stability.", "Add balance, gait with head turns and functional mobility tasks when examination identifies those limitations. Guard people with elevated fall risk.", "Use the 2022 APTA/Academy guideline to individualize total daily dose by acuity and unilateral versus bilateral hypofunction. Start at a tolerable speed in short bouts and document adherence."] },
+    { heading: "Progression and clinical pearl", bullets: ["Progress one variable at a time, such as duration, speed, stance or walking complexity. Prolonged symptoms, unsafe balance or poor recovery indicate a need to reduce dose and reassess.", "Link exercises to goals such as turning the head while walking or reading while moving. Reassess function and fall risk, not symptom intensity alone."] }
+  ]
+};

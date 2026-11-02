@@ -1,0 +1,170 @@
+/* PNA Daily Clinical Challenge — light, premium, motivating without heavy media. */
+.dc-page{background:radial-gradient(circle at 95% 5%,#e9f8f5 0,transparent 36%),linear-gradient(180deg,#fbfdfc,#fff 570px);color:#193a4d;min-height:100vh}
+.dc-hero{position:relative;overflow:hidden;border:1px solid #d7e9e5;border-radius:28px;background:linear-gradient(126deg,#fff 35%,#effaf7 100%);box-shadow:0 24px 60px -51px #0c5663}
+.dc-hero:before{content:"";position:absolute;right:-78px;top:-110px;width:315px;height:315px;border:1px solid #d3eae5;border-radius:50%;box-shadow:0 0 0 35px #edf8f54a,0 0 0 75px #edf8f534;pointer-events:none}
+.dc-overline,.dc-eyebrow{display:inline-flex;align-items:center;gap:5px;color:#087973;font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}
+.dc-hero-logo{display:inline-flex;align-items:center;gap:9px;border-radius:999px;border:1px solid #bee1d9;background:white;padding:7px 13px;font-size:11px;color:#0b726c;font-weight:800;letter-spacing:.09em}
+.dc-hero-heading{font-family:Georgia,Cambria,serif;font-size:clamp(2.05rem,4.15vw,3.6rem);font-weight:750;line-height:1.14;letter-spacing:-.026em;color:#153446}
+.dc-hero-heading span{color:#07837b}
+.dc-hero-banner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:530px}
+.dc-hero-chip{display:flex;gap:9px;align-items:center;border:1px solid #d7ece5;border-radius:14px;background:#fffdfdc9;padding:10px;font-size:11px;line-height:1.5;font-weight:800;color:#2b5860}
+.dc-hero-chip svg{flex-shrink:0;color:#0a8279}
+.dc-play{border:1px solid #dceae8;border-radius:24px;background:white;box-shadow:0 20px 50px -45px #215f64;overflow:hidden}
+.dc-onboarding{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr)}
+.dc-mission-mast{padding:clamp(20px,3.7vw,38px);background:radial-gradient(circle at 8% 90%,#dff3ec 0,transparent 58%),linear-gradient(145deg,#f7fcfa,#fff);border-right:1px solid #e2f0ec}
+.dc-mission-stamp{display:inline-flex;align-items:center;gap:7px;border:1px solid #bfe1d9;color:#078079;border-radius:999px;background:#fff;padding:8px 13px;font-size:10px;letter-spacing:.11em;font-weight:850}
+.dc-mission-stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:1px solid #d8e9e6;border-radius:15px;padding:12px;background:#ffffffcf}
+.dc-mission-stat strong{font-size:24px;line-height:1.1;font-weight:850;letter-spacing:-.04em;color:#143b4b}
+.dc-mission-stat span{font-size:10px;font-weight:750;color:#637985;line-height:1.45}
+.dc-signup{padding:clamp(20px,3.7vw,38px)}
+.dc-label{display:block;margin-top:17px;margin-bottom:6px;color:#314d5f;font-size:12px;font-weight:800}
+.dc-input{width:100%;border:1px solid #cbdedc;border-radius:13px;padding:13px 14px;font-size:14px;color:#163447;background:#fff;outline:0;transition:border .2s,box-shadow .2s}
+.dc-input:focus{border-color:#087f79;box-shadow:0 0 0 3px #0d8c8522}
+.dc-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;border-radius:13px;background:#087d76;color:white;padding:11px 20px;font-size:12px;font-weight:850;letter-spacing:.035em;transition:background .2s,transform .2s,box-shadow .2s;box-shadow:0 12px 23px -17px #00695e}
+.dc-primary:not(:disabled):hover{background:#086b66;transform:translateY(-1px);box-shadow:0 16px 24px -19px #00695e}
+.dc-primary:disabled{cursor:not-allowed;opacity:.55}
+.dc-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:1px solid #beddd7;border-radius:13px;padding:10px 16px;background:white;color:#08746d;font-size:12px;font-weight:800;transition:background .2s}
+.dc-secondary:hover{background:#eff9f6}
+.dc-question-panel{padding:clamp(20px,4vw,38px);min-height:450px}
+.dc-timer{display:inline-flex;align-items:center;gap:7px;border:1px solid #b6ddd7;background:#eef9f5;border-radius:999px;padding:9px 14px;color:#086d66;font-size:15px;font-weight:850;font-variant-numeric:tabular-nums}
+.dc-timer-urgent{background:#fff4ed;border-color:#f5c1a6;color:#ac4b2c;animation:dc-pulse 1s ease-in-out infinite}
+.dc-progress-segment{height:7px;flex:1;border-radius:10px;background:#eaf1ef}
+.dc-progress-on{background:#0d847c}
+.dc-option{display:flex;align-items:center;gap:13px;text-align:left;width:100%;border:1px solid #d9e7e6;background:white;border-radius:14px;padding:13px 16px;color:#263f4e;transition:background .15s,border .15s,transform .15s}
+.dc-option:hover{border-color:#7fbbb2;background:#f4fbf8;transform:translateX(2px)}
+.dc-option-selected{border-color:#0a8279;background:#eef9f5}
+.dc-option-letter{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;border-radius:9px;background:#eff5f4;color:#2d6660;font-size:13px;font-weight:900}
+.dc-option-selected .dc-option-letter{background:#087f79;color:white}
+.dc-result{text-align:center;padding:clamp(25px,4vw,45px)}
+.dc-result-orbit{display:flex;align-items:center;justify-content:center;width:86px;height:86px;border-radius:50%;border:1px solid #c8e5dd;background:radial-gradient(circle,#fff,#dcf2eb);box-shadow:0 0 0 9px #edf8f4;margin-inline:auto}
+.dc-score-number{font-size:clamp(4rem,8vw,6rem);font-weight:900;letter-spacing:-.08em;line-height:1.15;color:#087b74;margin-top:10px;font-variant-numeric:tabular-nums}
+.dc-score-number span{font-size:20px;letter-spacing:0;color:#8da8a4}
+.dc-review-item{text-align:left;border:1px solid #ddebe7;background:#fafdfb;border-radius:15px;padding:16px}
+.dc-board{border:1px solid #dceae8;border-radius:24px;background:white;overflow:hidden;box-shadow:0 20px 50px -44px #164b5a}
+.dc-board-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px;border-bottom:1px solid #e2efea}
+.dc-hero-icon{display:flex;align-items:center;justify-content:center;width:43px;height:43px;flex-shrink:0;border-radius:13px;background:#ecf8f4;color:#087f78}
+.dc-live{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border:1px solid #cfebe0;border-radius:999px;background:#f1fbf6;padding:5px 8px;color:#24775f;font-size:10px;font-weight:800}
+.dc-live-dot{display:inline-block;width:6px;height:6px;background:#20a77d;border-radius:50%;box-shadow:0 0 0 3px #a3ebd55c;animation:dc-pulse 2s ease-in-out infinite}
+.dc-tabs{display:flex;gap:5px;margin:16px;padding:4px;border:1px solid #e1ecea;border-radius:13px;background:#f4f8f7}
+.dc-tab{flex:1;padding:9px 7px;text-align:center;color:#56747d;font-size:12px;font-weight:750;border-radius:9px;transition:background .2s}
+.dc-tab-active{background:white;color:#08776f;box-shadow:0 1px 6px #0d514b12}
+.dc-board-period{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 18px}
+.dc-nav-btn{display:inline-flex;align-items:center;justify-content:center;width:31px;height:31px;border:1px solid #d7e8e3;border-radius:9px;background:white;color:#087c75}
+.dc-nav-btn:disabled{cursor:not-allowed;opacity:.3}
+.dc-table-wrap{overflow-x:auto}
+.dc-table{width:100%;border-collapse:collapse;text-align:left;font-size:12px}
+.dc-table thead{background:#f7faf9;color:#71858c;font-size:10px;letter-spacing:.065em;text-transform:uppercase}
+.dc-table th{font-weight:850;padding:10px 12px}
+.dc-table td{padding:12px;border-top:1px solid #edf3f1;vertical-align:middle}
+.dc-table tr.dc-champion{background:#f2fbf7}
+.dc-rank{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-size:11px;font-weight:850;color:#607782;background:#f0f5f4}
+.dc-rank-medal{background:#e2f4ed;color:#12806f}
+.dc-board-action{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e0eee8;padding:15px 19px;color:#087c74;font-size:12px;font-weight:850;transition:background .2s}
+.dc-board-action:hover{background:#f4faf7}
+.dc-page-btn{border:1px solid #d2e7e1;border-radius:9px;background:white;padding:7px 11px;font-size:11px;font-weight:800;color:#087970}
+.dc-page-btn:disabled{opacity:.35;cursor:not-allowed}
+.dc-champion-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.dc-footnote{font-size:12px;line-height:1.8;color:#6b8489}
+.dc-page button:focus-visible,.dc-page a:focus-visible{outline:3px solid #0aa296;outline-offset:3px}
+@keyframes dc-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@media(max-width:860px){.dc-onboarding{grid-template-columns:1fr}.dc-mission-mast{border-right:0;border-bottom:1px solid #e2f0ec}}
+@media(max-width:480px){
+ .dc-hero,.dc-board,.dc-play{border-radius:18px}
+ .dc-board-title{padding:14px}
+ .dc-live{font-size:9px}
+ .dc-hero-banner{grid-template-columns:1fr 1fr}
+ .dc-hero-chip:last-child{grid-column:span 2}
+ .dc-mission-stat{padding:8px}
+ .dc-option{gap:9px;padding:11px}
+ .dc-table th,.dc-table td{padding:10px 7px}
+ .dc-table{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .dc-page *, .dc-page *:before,.dc-page *:after{animation:none!important;transition:none!important}
+}
+
+
+/* Homepage flagship: PNA Daily Clinical Challenge is the top-level attraction. */
+.dc-flagship-shell{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 7% 8%,#ccf3e8 0,transparent 38%),radial-gradient(circle at 98% 86%,#e6f2ff 0,transparent 39%),linear-gradient(135deg,#f5fcf9 0%,#fff 57%,#f5fcfe 100%);border-bottom:1px solid #dcebe8}
+.dc-flagship-shell::before{content:"";position:absolute;pointer-events:none;top:-210px;right:-170px;width:550px;height:550px;border:1px solid #0b827519;border-radius:50%;box-shadow:0 0 0 45px #0b82750b,0 0 0 105px #0b827508}
+.dc-flagship-shell::after{content:"";position:absolute;inset:0;opacity:.4;pointer-events:none;background-image:radial-gradient(#0d827e24 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(90deg,transparent,#000 65%)}
+.dc-flagship-container{position:relative;z-index:1;padding-top:clamp(26px,4.8vw,64px);padding-bottom:25px}
+.dc-flagship-stage{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.92fr);gap:clamp(25px,4.6vw,74px);align-items:center}
+.dc-flagship-copy{min-width:0;padding:6px 0 12px}
+.dc-flagship-eyebrow{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;letter-spacing:.11em;font-weight:850;font-size:10px;border:1px solid #b8dbd5;border-radius:999px;color:#0d746d;background:#fff;padding:9px 14px;box-shadow:0 7px 20px -18px #174f55}
+.dc-flagship-eyebrow-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#16a278;box-shadow:0 0 0 4px #16a27820}
+.dc-flagship-category{display:flex;align-items:center;gap:7px;margin-top:25px;color:#087970;font-size:11px;font-weight:850;letter-spacing:.16em}
+.dc-flagship-heading{max-width:700px;margin-top:13px;color:#112f45;font-family:Georgia,Cambria,"Times New Roman",serif;font-size:clamp(2.65rem,5.3vw,4.85rem);font-weight:800;line-height:1.085;letter-spacing:-.055em}
+.dc-flagship-heading span{color:#087a73;position:relative;white-space:nowrap}
+.dc-flagship-heading span::after{position:absolute;content:"";height:5px;left:4px;right:3px;bottom:-7px;border-radius:999px;background:linear-gradient(90deg,#11aa9b 15%,#46d3c0);transform:rotate(-1.3deg)}
+.dc-flagship-description{max-width:580px;color:#4a6270;font-size:clamp(14px,1.15vw,16px);line-height:1.9;margin-top:27px}
+.dc-flagship-description strong{color:#1a414e}
+.dc-flagship-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:25px}
+.dc-flagship-stat{display:flex;align-items:center;gap:10px;padding:14px 11px;border:1px solid #d5e8e3;border-radius:16px;background:#ffffffd9;box-shadow:0 12px 25px -24px #215c56;min-width:0}
+.dc-flagship-stat-icon{display:flex;flex-shrink:0;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;background:#e4f5ee;color:#08796f}
+.dc-flagship-stat>div{display:flex;flex-direction:column;min-width:0;gap:3px}
+.dc-flagship-stat strong{font-size:22px;line-height:1;font-weight:900;letter-spacing:-.035em;color:#17384b;font-variant-numeric:tabular-nums}
+.dc-flagship-stat>div>span{color:#59737d;font-size:10px;line-height:1.45;font-weight:650}
+.dc-flagship-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center;margin-top:25px}
+.dc-flagship-play{display:inline-flex;gap:10px;align-items:center;justify-content:center;min-height:58px;padding:11px 19px 11px 12px;border-radius:16px;background:linear-gradient(110deg,#07988d,#08716e 52%,#06374f);color:white;font-size:12px;letter-spacing:.04em;font-weight:850;box-shadow:0 18px 27px -19px #035b65;transition:transform .18s ease,box-shadow .18s ease}
+.dc-flagship-play:hover{color:white;transform:translateY(-2px);box-shadow:0 18px 34px -16px #035b65}
+.dc-flagship-play-icon{display:flex;width:35px;height:35px;flex-shrink:0;align-items:center;justify-content:center;border-radius:12px;background:#ffffff33}
+.dc-flagship-end-arrow{margin-left:5px}
+.dc-flagship-hall{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:850;color:#0a6b67;padding:12px 4px;transition:color .2s}
+.dc-flagship-hall:hover{color:#034b51}
+.dc-flagship-countdown{display:inline-flex;align-items:center;gap:12px;margin-top:20px;border:1px solid #d4e9e4;border-radius:15px;padding:11px 14px;background:#ffffffc9}
+.dc-flagship-countdown-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:11px;color:#0a887f;background:#e9f7f2}
+.dc-flagship-countdown-label{font-size:9px;font-weight:850;color:#64807f;letter-spacing:.13em}
+.dc-flagship-countdown-time{margin-top:2px;color:#153b4b;font-size:20px;line-height:1;font-weight:900;letter-spacing:.045em}
+.dc-flagship-countdown-tz{align-self:end;padding-bottom:3px;font-size:9px;color:#65827c;font-weight:850}
+.dc-flagship-ranking{min-width:0;position:relative;border-radius:28px;border:1px solid #cfe5df;background:linear-gradient(145deg,#effaf6,#ffffff 65%);padding:15px;box-shadow:0 24px 55px -43px #0e6873}
+.dc-flagship-ranking::before{content:"";position:absolute;z-index:-1;width:90%;height:42%;left:5%;bottom:-16px;border-radius:50%;filter:blur(24px);background:#1fb69e25}
+.dc-flagship-ranking-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;padding:8px 9px 15px}
+.dc-flagship-ranking-live{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.11em;color:#0b776f;font-weight:850}
+.dc-flagship-ranking-live>span{width:8px;height:8px;border-radius:50%;background:#19b88b;box-shadow:0 0 0 4px #19b88b1d;animation:dc-pulse 2s ease-in-out infinite}
+.dc-flagship-ranking-subtitle{font-size:10px;font-weight:650;color:#68807c}
+.dc-flagship-ranking .dc-board{box-shadow:0 14px 34px -29px #1e4853;border-radius:19px}
+.dc-flagship-ranking-more{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;line-height:1.5;font-weight:850;color:#0a7671;padding:14px 12px 5px}
+.dc-flagship-ranking-more:hover{color:#064e53}
+.dc-flagship-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:25px;border-top:1px solid #d1e7e0;padding-top:16px;color:#4b6f70;font-size:11px;font-weight:700}
+.dc-flagship-bottom>span:first-child{display:flex;align-items:center;gap:9px;color:#08766c}
+.dc-flagship-shell a:focus-visible{outline:3px solid #0a9e93;outline-offset:4px}
+@media(max-width:1100px){.dc-flagship-stage{grid-template-columns:1fr;gap:22px}.dc-flagship-copy{padding:0}.dc-flagship-ranking{width:100%}.dc-flagship-stats{max-width:650px}.dc-flagship-heading{font-size:clamp(2.65rem,6vw,4.7rem)}}
+@media(max-width:560px){.dc-flagship-container{padding-top:24px;padding-bottom:21px}.dc-flagship-category{margin-top:21px}.dc-flagship-heading{font-size:clamp(2.5rem,11vw,3.5rem)}.dc-flagship-description{line-height:1.75;margin-top:22px}.dc-flagship-stats{gap:6px;margin-top:18px}.dc-flagship-stat{padding:10px 7px;gap:5px;flex-direction:column;align-items:start}.dc-flagship-stat-icon{width:27px;height:27px;border-radius:8px}.dc-flagship-stat strong{font-size:20px}.dc-flagship-play{width:100%;font-size:12px;justify-content:flex-start}.dc-flagship-end-arrow{margin-left:auto}.dc-flagship-hall{padding-left:4px}.dc-flagship-countdown{margin-top:10px}.dc-flagship-ranking{padding:10px;border-radius:20px}.dc-flagship-bottom{margin-top:18px}}
+@media(prefers-reduced-motion:reduce){.dc-flagship-shell *, .dc-flagship-shell *::before, .dc-flagship-shell *::after{animation:none!important;transition:none!important}}
+
+/* High-clarity timed quiz experience: visible on entry and comfortable on phones. */
+.dc-play{scroll-margin-top:88px}
+.dc-question-panel{background:linear-gradient(160deg,#f5fcfa 0%,#fff 31%);min-height:500px}
+.dc-live-banner{
+  display:flex;align-items:center;gap:10px;margin-bottom:19px;padding:12px 14px;
+  border:1px solid #acdcd5;border-radius:13px;background:#eaf9f4;color:#07675e;
+  font-size:12px;font-weight:800;line-height:1.45;
+}
+.dc-live-dot{display:inline-block;flex:0 0 9px;height:9px;border-radius:50%;background:#00a78e;box-shadow:0 0 0 4px #c7ede4}
+.dc-live-head{border-bottom:1px solid #e5efed;padding-bottom:15px}
+.dc-question-panel .dc-timer{font-size:17px;padding:10px 15px;background:#fff;border-width:1.5px;box-shadow:0 5px 14px -11px #066960}
+.dc-question-panel .dc-timer-urgent{background:#fff3ed;border-color:#e9b39c}
+.dc-question-title:focus{outline:none}
+.dc-question-panel .dc-eyebrow{font-size:11px;line-height:1.5;letter-spacing:.1em}
+.dc-question-panel .dc-option{
+  min-height:62px;border:1.5px solid #dae8e9;border-radius:16px;padding:15px;
+  box-shadow:0 5px 16px -17px rgba(21,72,94,.45);background:#fff;
+}
+.dc-question-panel .dc-option:focus-visible{outline:3px solid #0b9f94;outline-offset:2px}
+.dc-question-panel .dc-option-selected{background:linear-gradient(110deg,#e7f8f3,#f9fffc);border-color:#0a9085;box-shadow:0 0 0 2px #c8ece6}
+.dc-question-panel .dc-option-letter{width:37px;height:37px;border-radius:11px;font-size:14px}
+.dc-question-panel .dc-option-selected .dc-option-letter{background:#078a7e;color:#fff}
+.dc-action-row .dc-primary{min-height:49px;font-size:13px;box-shadow:0 11px 18px -14px #096859}
+@media(max-width:560px){
+  .dc-question-panel{padding:17px;min-height:550px}
+  .dc-live-banner{margin-bottom:14px;padding:11px 12px;font-size:11px}
+  .dc-question-panel .dc-mission-stamp{font-size:9px;padding:7px 10px}
+  .dc-question-panel .dc-timer{font-size:16px;padding:7px 11px}
+  .dc-question-panel .dc-question-title{font-size:22px;line-height:1.38}
+  .dc-question-panel .dc-option{min-height:60px;padding:12px 11px;gap:11px}
+  .dc-question-panel .dc-option-letter{width:34px;height:34px}
+  .dc-action-row{flex-direction:column;align-items:stretch}
+  .dc-action-row .dc-primary{order:0;width:100%}
+  .dc-action-row p{order:1;text-align:center}
+}

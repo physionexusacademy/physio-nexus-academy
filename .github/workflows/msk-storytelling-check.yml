@@ -1,0 +1,76 @@
+name: Validate PNA MSK Storytelling
+
+on:
+  push:
+    branches:
+      - "feature/msk-*"
+    paths:
+      - "src/lib/msk-clinical-stories.ts"
+      - "src/components/msk/**"
+      - "src/app/msk-injuries/**"
+      - "scripts/validate-msk-stories.mjs"
+      - ".github/workflows/msk-storytelling-check.yml"
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/lib/msk-clinical-stories.ts"
+      - "src/components/msk/**"
+      - "src/app/msk-injuries/**"
+      - "scripts/validate-msk-stories.mjs"
+      - ".github/workflows/msk-storytelling-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate clinical stories cover all conditions
+        run: node --experimental-strip-types scripts/validate-msk-stories.mjs
+
+      - name: Validate MSK symptom screening regression
+        run: npm run validate:msk
+
+      - name: Check changed MSK TypeScript against known repository baseline
+        shell: bash
+        run: |
+          set +e
+          npx tsc --noEmit --pretty false > /tmp/pna-type-errors.txt 2>&1
+          type_status=$?
+          set -e
+          if grep -E '^src/(app/msk-injuries/|components/msk/|lib/msk-clinical-stories)' /tmp/pna-type-errors.txt; then
+            echo "::error::TypeScript reported errors in the new MSK storytelling files."
+            exit 1
+          fi
+          if [ "$type_status" -ne 0 ]; then
+            echo "::warning::Full-repository TypeScript check has pre-existing errors outside MSK. New MSK files have no reported errors."
+            echo "See existing TypeScript debt for admin, case-lab, manual-therapy, and older utilities."
+          else
+            echo "Full TypeScript check passed."
+          fi
+
+      - name: Build full Next.js site
+        env:
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+          NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+          NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+          PAYMENTS_ENABLED: "false"
+        run: npm run build

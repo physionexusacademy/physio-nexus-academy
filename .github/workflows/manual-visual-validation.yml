@@ -1,0 +1,101 @@
+name: Validate Manual Therapy Visual Upload Pipeline
+
+on:
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "src/data/manual-therapy-visual-manifest.json"
+      - "src/lib/manual-therapy-cover-publishing.ts"
+      - "src/app/manual-therapy/**"
+      - "src/components/manual-therapy/EditorialManualEncyclopedia.tsx"
+      - "scripts/validate-manual-visuals.mjs"
+      - "scripts/optimize-manual-visuals.py"
+      - "scripts/requirements-manual-visuals.txt"
+      - ".github/workflows/manual-visual-*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate 35 visual manifest entries and fail-closed default
+        run: |
+          node scripts/validate-manual-visuals.mjs
+          node --experimental-strip-types scripts/validate-manual-therapy-world.mjs
+          node scripts/validate-manual-therapy-stories.mjs
+
+      - name: Guard newly modified TypeScript modules
+        shell: bash
+        run: |
+          set +e
+          npx tsc --noEmit --pretty false > /tmp/pna-types.txt 2>&1
+          code=$?
+          set -e
+          if grep -E '^src/(app/manual-therapy/page\.tsx|components/manual-therapy/EditorialManualEncyclopedia\.tsx|lib/manual-therapy-cover-publishing\.ts)' /tmp/pna-types.txt; then
+            echo "::error::New Manual Therapy image pipeline TypeScript errors"
+            exit 1
+          fi
+          if [ "$code" -ne 0 ]; then
+            echo "::warning::Unrelated pre-existing TypeScript debt detected"
+          fi
+
+      - name: Prove optimizer works on synthetic ZIP without publication
+        shell: bash
+        run: |
+          python -m pip install -r scripts/requirements-manual-visuals.txt
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          from io import BytesIO
+          cfg=json.loads(Path("src/data/manual-therapy-visual-manifest.json").read_text())
+          Path("/tmp/pna-demo").mkdir(exist_ok=True)
+          with zipfile.ZipFile("/tmp/pna-demo/techniques.zip","w") as z:
+              for i,e in enumerate(cfg["entries"][:2]):
+                  canvas=Image.new("RGB",(700,850),("#e7f6fa" if i else "#f2edff"))
+                  d=ImageDraw.Draw(canvas)
+                  d.ellipse((100+80*i,150,590,690),outline="#385688",width=35)
+                  buffer=BytesIO()
+                  canvas.save(buffer,"PNG")
+                  z.writestr(e["slug"]+".png",buffer.getvalue())
+          PY
+          python scripts/optimize-manual-visuals.py --zip /tmp/pna-demo/techniques.zip \
+            --output public/images/manual-therapy/cards --report-dir .manual-visual-preview
+          node scripts/validate-manual-visuals.mjs
+          test -s .manual-visual-preview/manual-therapy-contact-sheet.jpg
+          test -s .manual-visual-preview/manual-therapy-report.json
+          python - <<'PY'
+          import json
+          with open(".manual-visual-preview/manual-therapy-report.json") as f: result=json.load(f)
+          assert result["count"]==2,result
+          assert len(result["files"])==2
+          print("Optimizer smoke test verified 2 synthetic AVIF/WebP pairs")
+          PY
+
+      - name: Build full website with publishing DISABLED
+        env:
+          NEXT_PUBLIC_SITE_URL: https://physionexusacademy.com
+          NEXT_PUBLIC_SUPABASE_URL: https://oabckudgmzbbbbhkeolk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_p8fvjS5A7XFD3__dGt3KLw_x4jIOOy6
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: qoc7ukqs
+          NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
+          NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
+          PAYMENTS_ENABLED: "false"
+        run: npm run build

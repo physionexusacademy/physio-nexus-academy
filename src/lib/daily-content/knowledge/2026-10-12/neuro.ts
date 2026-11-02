@@ -1,0 +1,15 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article: KnowledgeArticle = {
+ slug:"poststroke-spatial-neglect-assessment-rehab-20261012",
+ title:"Post-Stroke Spatial Neglect: Assessment, Safety and Rehabilitation",
+ excerpt:"Recognize unilateral spatial neglect, distinguish overlapping visual problems and integrate safe task-specific rehabilitation.",
+ specialty:"Neurological", category:"Stroke Rehabilitation", audience:"Professionals", level:"Advanced", readTime:"8–10 min read", publishedAt:"2026-10-12",
+ learningObjectives:["Differentiate neglect from isolated visual-field loss.","Select screening and functional observations.","Plan safe individualized task practice."],
+ references:[{title:"Stroke rehabilitation in adults (NG236)",organization:"NICE",year:"2023",url:"https://www.nice.org.uk/guidance/ng236/chapter/Recommendations"},{title:"Rehabilitation, Recovery and Community Participation Following Stroke",organization:"Canadian Stroke Best Practices",url:"https://www.strokebestpractices.ca/recommendations/rehabilitation-recovery-following-stroke"}],
+ sections:[
+ {heading:"Clinical framework",paragraphs:["Unilateral spatial neglect is reduced attention or response to one side of space, often after right-hemisphere stroke with left-sided neglect. It can affect dressing, eating, transfers and walking, and may fluctuate with fatigue or distraction. It is not simply weakness or a primary sensory loss."]},
+ {heading:"Assessment and differential diagnosis",bullets:["Review onset, stroke history, vision, cognition, communication, sensation and medication effects. Observe everyday tasks as well as structured cancellation, line-bisection or other validated screens.","Consider coexisting homonymous field loss, ocular-motor impairment, delirium, aphasia, sensory loss and generalized inattention; neglect and field loss can coexist.","New focal neurological signs, reduced consciousness, sudden severe headache or abrupt decline require urgent medical escalation."]},
+ {heading:"Safety and intervention",bullets:["Document which space and tasks are affected, cueing required, collisions and supervision needs. Coordinate a consistent plan with the multidisciplinary team and carers.","Use repeated meaningful tasks: visual search, reaching, grooming, meal tasks and mobility with graded cues toward the affected side. Reduce distractions initially, then build environmental complexity.","Intervention evidence varies; choose strategies from assessment and local stroke guidance rather than promising one technique will resolve neglect."]},
+ {heading:"Dose and reassessment",paragraphs:["There is no single universal dose. Use repeated, tolerable task practice distributed around fatigue. Track omissions, accuracy, cueing, collisions and a functional measure such as the Catherine Bergego Scale where available. Better tabletop scores alone do not prove safe community mobility."]},
+ {heading:"Clinical summary",bullets:["Do not equate neglect with hemianopia.","Pair screening with real-world observation and safety planning.","Reassess function as task complexity increases."]}
+ ]};

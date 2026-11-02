@@ -1,0 +1,14 @@
+import type { KnowledgeArticle } from "@/lib/knowledge-content";
+export const article20261002Neuro: KnowledgeArticle = {
+slug:"stroke-motor-practice-eso-2025",title:"Stroke Motor Rehabilitation: Dose and Task-Specific Practice",specialty:"Neurological",category:"Stroke Rehabilitation",audience:"Professionals",level:"Advanced",readTime:"12 min read",publishedAt:"2026-10-02",
+excerpt:"A practical guide to meaningful repetitive motor practice after stroke using current European Stroke Organisation guidance.",
+learningObjectives:["Distinguish therapy time from active practice dose.","Select task-specific practice from functional goals.","Progress practice while monitoring fatigue and safety."],
+references:[{title:"European Stroke Organisation guideline on motor rehabilitation",organization:"European Stroke Organisation",year:"2025",url:"https://journals.sagepub.com/doi/10.1177/23969873251338142"},{title:"Stroke rehabilitation in adults (NG236)",organization:"NICE",year:"2023",url:"https://www.nice.org.uk/guidance/ng236/chapter/Recommendations"}],
+sections:[
+{heading:"Clinical framework",paragraphs:["Motor rehabilitation should create repeated opportunities to practise meaningful activities. Minutes in therapy are not the same as active motor dose: repetitions, challenge, feedback and transfer into daily life matter."]},
+{heading:"Assessment",bullets:["Define meaningful goals such as reach-and-grasp, sit-to-stand or household walking.","Record assistance, speed, repetitions and fatigue at baseline.","Screen cognition, communication, vision, neglect, pain and exercise tolerance because these alter practice design."]},
+{heading:"Evidence-informed dose",paragraphs:["The 2025 ESO guideline gives a weak recommendation, based on very-low-certainty evidence, for an additional minimum 20 hours of repetitive upper-limb practice to improve arm capacity. Expert consensus suggests an additional minimum 20 hours of walking practice could benefit walking capacity. These are programme-level guides rather than rigid prescriptions."]},
+{heading:"Progression",bullets:["Accumulate meaningful repetitions across sessions and daily routines.","Use rest when fatigue reduces safety or quality.","Progress repetitions, speed, task complexity or environmental challenge as performance improves."]},
+{heading:"Common mistakes and clinical pearls",bullets:["Mistake: counting attendance instead of active practice. Pearl: track meaningful repetitions or task exposure.","Mistake: identical dose for everyone. Pearl: goals, capacity and fatigue determine progression.","Mistake: impairment drills without transfer. Pearl: connect impairment work to real tasks."]},
+{heading:"Summary",paragraphs:["Effective stroke motor rehabilitation combines sufficient task-specific practice with progressive challenge, safety and transfer to daily goals."]}
+]};

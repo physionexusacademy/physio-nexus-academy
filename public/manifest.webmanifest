@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Physio Nexus Academy",
+  "short_name": "PNA",
+  "description": "Physiotherapy workshops, resources and patient services",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#102A43",
+  "theme_color": "#102A43",
+  "icons": [
+    {
+      "src": "/icons/pna-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/pna-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

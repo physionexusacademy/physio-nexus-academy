@@ -1,0 +1,41 @@
+name: Unified Learning Progress Check
+
+on:
+  pull_request:
+    branches:
+      - cloudflare-deploy
+    paths:
+      - "package.json"
+      - "src/app/page.tsx"
+      - "src/app/daily-challenge/**"
+      - "src/components/learning/UnifiedProgressCard.tsx"
+      - "src/lib/unified-progress.ts"
+      - "scripts/validate-unified-progress.ts"
+      - ".github/workflows/unified-progress-check.yml"
+  push:
+    branches:
+      - pna-content-upgrade-clean-v1
+    paths:
+      - "package.json"
+      - "src/app/page.tsx"
+      - "src/app/daily-challenge/**"
+      - "src/components/learning/UnifiedProgressCard.tsx"
+      - "src/lib/unified-progress.ts"
+      - "scripts/validate-unified-progress.ts"
+      - ".github/workflows/unified-progress-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run validate:unified-progress
+      - run: npm run typecheck
