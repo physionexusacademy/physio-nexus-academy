@@ -79,10 +79,14 @@ assert(
   "The public library must query only the dedicated clinical_api schema."
 );
 assert(
-  "Consent gates remain fail-closed",
-  secure.includes("const SIGNED_CONSENT_FORM_APPROVED = false") &&
-    secure.includes("const SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY = false"),
-  "Do not enable patient creation or public case submission before approvals and hosted acceptance."
+  "Consent workflow stores attestations only and has no upload UI",
+  secure.includes("create_patient_with_consent_attestation") &&
+    secure.includes("record_publication_consent_attestation") &&
+    secure.includes("PNA does not upload or store the document") &&
+    !secure.includes("type=\"file\"") &&
+    !secure.includes("client.storage.from(\"clinical-consent-evidence\")") &&
+    !secure.includes("verify-consent-evidence"),
+  "Patient consent originals remain with the therapist; the Registry records only small consent metadata."
 );
 assert(
   "Privileged roles use trusted app metadata",
@@ -159,14 +163,6 @@ assert(
   "Public evidence links must use encrypted HTTPS transport."
 );
 assert(
-  "Consent verifier supports exact protected Preview origins without wildcard CORS",
-  edgeFunction.includes('Deno.env.get("REGISTRY_ALLOWED_ORIGINS")') &&
-    edgeFunction.includes("https://physionexusacademy.com") &&
-    edgeFunction.includes("https://www.physionexusacademy.com") &&
-    !edgeFunction.includes('Access-Control-Allow-Origin", "*'),
-  "The Edge Function must support explicitly configured Preview origins while retaining an exact-origin allowlist."
-);
-assert(
   "Local Supabase enables the TOTP MFA flow used by privileged accounts",
   config.includes("[auth.mfa.totp]\nenroll_enabled = true\nverify_enabled = true") &&
     config.includes("minimum_password_length = 12") &&
@@ -180,50 +176,29 @@ assert(
   liveRoleMigration.includes("raw_app_meta_data ->> 'registry_role'") &&
     liveRoleMigration.includes("require_registry_role") &&
     liveRoleMigration.includes("is_current_registry_reviewer_aal2") &&
-    liveRoleMigration.includes("consent_evidence_reviewer_update") &&
-    liveRoleMigration.includes("consent_evidence_owner_or_reviewer_read") &&
     liveRoleMigration.includes("v_reviewer boolean := clinical_private.is_current_registry_reviewer_aal2()"),
   "Reviewer/operator privileges must be checked against current Auth app_metadata, including storage and trigger paths."
 );
 assert(
   "Reviewer and operator database actions require AAL2",
   mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
-    mfaMigration.includes("consent_evidence_owner_or_reviewer_download") &&
     mfaMigration.includes("reviewers must also hold an AAL2 session") &&
     (mfaMigration.match(/perform clinical_private\.require_registry_aal2\(\);/g) ?? []).length === 10,
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
 );
 assert(
-  "Consent evidence rows can only be reserved through the validated RPC",
-  evidenceRequestMigration.includes("SECURITY DEFINER") &&
-    evidenceRequestMigration.includes("Authenticated therapist session required") &&
-    evidenceRequestMigration.includes("revoke insert on clinical_private.patient_consent_evidence from authenticated"),
-  "Direct table inserts must not bypass the generated owner-scoped object path and evidence metadata checks."
+  "Consent grants use authenticated therapist attestations",
+  read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("create_patient_with_consent_attestation") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("record_publication_consent_attestation") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("Active verified therapist membership required"),
+  "Only active verified therapists can create the minimal consent audit events."
 );
 assert(
-  "Consent grants can only be created through verified evidence and reviewer approval",
-  consentGrantMigration.includes("revoke all on function clinical_api.record_patient_consent") &&
-    consentGrantMigration.includes("revoke insert on clinical_private.patient_consent_events from authenticated") &&
-    consentGrantMigration.includes("SECURITY DEFINER") &&
-    consentGrantMigration.includes("Active verified therapist membership required") &&
-    consentGrantMigration.includes("for update") &&
-    consentGrantMigration.includes("not between 1 and 40"),
-  "Therapists cannot manufacture consent grants through the legacy RPC or direct table insert; withdrawal remains a narrow authenticated action."
-);
-assert(
-  "Verified consent evidence can complete the patient-creation workflow",
-  rlsTests.includes("patient creation succeeds only after verified signed consent evidence") &&
-    rlsTests.includes("patient creation atomically records the linked clinical-care consent event"),
-  "Local database tests must exercise evidence integrity, reviewer approval, patient creation and consent-event linkage."
-);
-assert(
-  "Patient creation cannot bypass signed-consent evidence",
-  patientConsentMigration.includes("revoke all on function clinical_api.create_patient(text, text)") &&
-    patientConsentMigration.includes("revoke insert on clinical_private.patients from authenticated") &&
-    patientConsentMigration.includes("e.integrity_verified_at is not null") &&
-    patientConsentMigration.includes("e.actual_size_bytes = e.declared_size_bytes") &&
-    patientConsentMigration.includes("Active verified therapist membership required"),
-  "Only the security-definer consent-verified creation path may insert a patient."
+  "Patient creation requires explicit written-consent attestation",
+  read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("p_written_consent_confirmed") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("Confirm that written clinical-care consent has been obtained") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("revoke all on function clinical_api.create_patient_with_consent_attestation"),
+  "Patient creation is atomic and requires a therapist attestation; direct patient inserts remain revoked."
 );
 assert(
   "Therapist onboarding requires a confirmed email address",
@@ -244,28 +219,12 @@ assert(
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
     rlsTests.includes("select plan(103);") &&
-    rlsTests.includes("authenticated therapists can create evidence rows only through the validated RPC") &&
-    rlsTests.includes("legacy consent-grant RPC is not executable") &&
-    rlsTests.includes("authenticated therapists cannot directly create consent grants") &&
+    rlsTests.includes("lightweight consent attestation creates a private patient and clinical-care event") &&
+    rlsTests.includes("publication consent attestation is owner-scoped and idempotent") &&
+    rlsTests.includes("signed consent upload tables and policies are removed") &&
     rlsTests.includes("legacy patient creation RPC is not executable") &&
     rlsTests.includes("authenticated therapists cannot directly insert patient rows"),
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
-);
-assert(
-  "Consent verifier fails closed on malformed configured origins",
-  edgeFunction.includes(".filter(Boolean)") &&
-    edgeFunction.includes("const validatedOrigins = configuredOrigins.map") &&
-    edgeFunction.includes("REGISTRY_ALLOWED_ORIGINS must contain exact HTTPS origins only") &&
-    !edgeFunction.includes(".filter((origin) => {"),
-  "Malformed, wildcard, or non-HTTPS configured origins must stop deployment instead of being silently discarded."
-);
-
-assert(
-  "Consent verifier accepts only configured exact HTTPS origins",
-  read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('Deno.env.get("REGISTRY_ALLOWED_ORIGINS")') &&
-    read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('parsed.protocol !== "https:"') &&
-    read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes("parsed.origin !== origin"),
-  "Preview CORS must use explicit HTTPS origins; wildcard, path and malformed origins must be rejected."
 );
 
 assert(
