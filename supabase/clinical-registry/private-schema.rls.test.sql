@@ -24,7 +24,9 @@ select ok((select relrowsecurity and relforcerowsecurity
   'report correction authorization table has forced deny-by-default RLS');
 select ok(
   (select qual ilike '%is_current_registry_reviewer_aal2%'
+     and qual ilike '%owner_id%'
      and with_check ilike '%is_current_registry_reviewer_aal2%'
+     and with_check ilike '%owner_id%'
    from pg_policies
    where schemaname='clinical_private'
      and tablename='case_library_entries'
@@ -33,6 +35,7 @@ select ok(
 );
 select ok(
   (select qual ilike '%is_current_registry_reviewer_aal2%'
+       and qual ilike '%owner_id%'
      from pg_policies
      where schemaname='clinical_private'
        and tablename='case_library_entries'
