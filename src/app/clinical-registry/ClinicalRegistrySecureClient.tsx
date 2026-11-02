@@ -204,6 +204,7 @@ export function ClinicalRegistrySecureClient() {
     });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
+    if (!data) { setError("Your verification request was not saved. Please refresh and try again."); return; }
     setVerificationRequest({ status: data?.status ?? "pending", submittedAt: new Date().toISOString() });
     setNotice("Your professional verification request has been submitted securely. Clinical records remain locked until an authorized operator verifies your credentials.");
   };
@@ -505,9 +506,10 @@ export function ClinicalRegistrySecureClient() {
   const createPatientAfterConsent = async (evidenceId: string) => {
     if (!client || patientName.trim().length < 1) { setError("Enter the patient display name after consent verification."); return; }
     setBusy(true); setError(""); setNotice("");
-    const { error: rpcError } = await client.rpc("create_patient_after_verified_consent", { p_evidence_id: evidenceId, p_display_name: patientName.trim() });
+    const { data: patientId, error: rpcError } = await client.rpc("create_patient_after_verified_consent", { p_evidence_id: evidenceId, p_display_name: patientName.trim() });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
+    if (!patientId) { setError("Patient record was not created. Confirm that the care-consent evidence is verified, then refresh the queue."); return; }
     setPatientName(""); setPatientReference(""); setNotice("Patient record created against the verified clinical-care consent evidence.");
     await loadPatients(); await loadMyConsentEvidence();
   };
@@ -540,6 +542,7 @@ export function ClinicalRegistrySecureClient() {
     const { data, error: rpcError } = await client.rpc("create_report", { p_patient_id: selectedPatient.id, p_category: category, p_condition: condition });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
+    if (!data) { setError("The report was not created. Confirm that the selected patient is still active and belongs to your account."); return; }
     setCondition(""); await loadReports(selectedPatient.id); await openReport(data as string);
   };
 
@@ -548,8 +551,11 @@ export function ClinicalRegistrySecureClient() {
     let parsed: Record<string, unknown>;
     try { parsed = JSON.parse(assessmentJson); } catch { setError("Initial assessment must be valid JSON."); return; }
     setBusy(true); setError("");
-    const { error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; } await openReport(selectedReport.id);
+    const { data: saved, error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (saved !== true) { setError("The initial assessment was not saved. Confirm that this report is still an editable draft."); return; }
+    await openReport(selectedReport.id);
   };
 
   const addFollowUp = async (event: FormEvent) => {
@@ -557,29 +563,40 @@ export function ClinicalRegistrySecureClient() {
     let parsed: Record<string, unknown>;
     try { parsed = JSON.parse(followUpJson); } catch { setError("Follow-up assessment must be valid JSON."); return; }
     setBusy(true); setError("");
-    const { error: rpcError } = await client.rpc("add_followup_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; } await openReport(selectedReport.id);
+    const { data: saved, error: rpcError } = await client.rpc("add_followup_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (saved !== true) { setError("The follow-up was not saved. Confirm that this report is still an editable draft."); return; }
+    await openReport(selectedReport.id);
   };
 
   const addIntervention = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     setBusy(true); setError("");
-    const { error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionText });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; } setInterventionText(""); await openReport(selectedReport.id);
+    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionText });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (!interventionId) { setError("The intervention was not saved. Confirm that this report is still an editable draft."); return; }
+    setInterventionText(""); await openReport(selectedReport.id);
   };
 
   const addOutcome = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     const value = Number(outcomeValue); if (!Number.isFinite(value)) { setError("Enter a valid numeric outcome value."); return; }
     setBusy(true); setError("");
-    const { error: rpcError } = await client.rpc("add_outcome", { p_report_id: selectedReport.id, p_measure_code: outcomeCode, p_measure_name: outcomeName, p_value: value, p_direction: outcomeDirection });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; } setOutcomeName(""); setOutcomeCode(""); setOutcomeValue(""); await openReport(selectedReport.id);
+    const { data: outcomeId, error: rpcError } = await client.rpc("add_outcome", { p_report_id: selectedReport.id, p_measure_code: outcomeCode, p_measure_name: outcomeName, p_value: value, p_direction: outcomeDirection });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (!outcomeId) { setError("The outcome was not saved. Confirm that this report is still an editable draft."); return; }
+    setOutcomeName(""); setOutcomeCode(""); setOutcomeValue(""); await openReport(selectedReport.id);
   };
 
   const finaliseReport = async () => {
     if (!client || !selectedReport) return; setBusy(true); setError("");
-    const { error: rpcError } = await client.rpc("finalise_report", { p_report_id: selectedReport.id });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; }
+    const { data: finalised, error: rpcError } = await client.rpc("finalise_report", { p_report_id: selectedReport.id });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (finalised !== true) { setError("The report was not finalised. Confirm that it is complete and still in draft status."); return; }
     await openReport(selectedReport.id); if (selectedPatient) await loadReports(selectedPatient.id);
   };
 
@@ -593,16 +610,19 @@ export function ClinicalRegistrySecureClient() {
   const printReport = async () => {
     if (!client || !selectedReport) return;
     setBusy(true); setError("");
-    const { error: auditError } = await client.rpc("log_report_print_request", { p_report_id: selectedReport.id });
+    const { data: accessLogged, error: auditError } = await client.rpc("log_report_print_request", { p_report_id: selectedReport.id });
     setBusy(false);
     if (auditError) { setError(`Print was not started because its access event could not be recorded: ${auditError.message}`); return; }
+    if (accessLogged !== true) { setError("Print was not started because the report access event could not be confirmed. Refresh the report and try again."); return; }
     window.print();
   };
 
   const exportPatient = async () => {
     if (!client || !selectedPatient) return; setBusy(true); setError("");
     const { data, error: rpcError } = await client.rpc("export_my_patient_record", { p_patient_id: selectedPatient.id });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; }
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (!data || typeof data !== "object") { setError("The patient record export returned no data. Confirm ownership and refresh the record."); return; }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob); const anchor = document.createElement("a");
     anchor.href = url; anchor.download = `clinical-record-${selectedPatient.patient_reference}.json`; anchor.click(); URL.revokeObjectURL(url);
@@ -642,9 +662,10 @@ export function ClinicalRegistrySecureClient() {
       p_target_id: selectedReport.id, p_reason: correctionReason, p_requested_changes: changes
     });
     if (requestError || !requestId) { setBusy(false); setError(requestError?.message ?? "Could not save correction request."); return; }
-    const { error: applyError } = await client.rpc("apply_own_report_correction", { p_request_id: requestId });
+    const { data: correctionApplied, error: applyError } = await client.rpc("apply_own_report_correction", { p_request_id: requestId });
     setBusy(false);
     if (applyError) { setError(`Correction request saved but could not be applied: ${applyError.message}`); return; }
+    if (correctionApplied !== true) { setError("The correction request was saved but not applied. Refresh the report and review its status."); return; }
     setCorrectionReason(""); setNotice("Correction applied by the owning therapist. The original change history remains in the audit trail.");
     await openReport(selectedReport.id);
   };
@@ -655,15 +676,18 @@ export function ClinicalRegistrySecureClient() {
     });
     if (consentLookupError) { setBusy(false); setError(consentLookupError.message); return; }
     if (currentConsentId) {
-      const { error: consentError } = await client.rpc("withdraw_verified_patient_consent", {
+      const { data: withdrawalEventId, error: consentError } = await client.rpc("withdraw_verified_patient_consent", {
         p_patient_id: submission.patient_id,
         p_purpose: "public_case_publication",
         p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION
       });
       if (consentError) { setBusy(false); setError(consentError.message); return; }
+      if (!withdrawalEventId) { setBusy(false); setError("Consent withdrawal could not be confirmed. Refresh the case before retrying."); return; }
     }
-    const { error: rpcError } = await client.rpc("withdraw_public_case", { p_case_id: submission.case_id });
-    setBusy(false); if (rpcError) { setError(rpcError.message); return; }
+    const { data: withdrawn, error: rpcError } = await client.rpc("withdraw_public_case", { p_case_id: submission.case_id });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (withdrawn !== true) { setError("The case was not withdrawn. Refresh your submissions and try again."); return; }
     await loadCaseSubmissions(); await loadPublicCases();
     setNotice("Publication consent withdrawal was recorded and the case was removed from the public library.");
   };
@@ -675,11 +699,12 @@ export function ClinicalRegistrySecureClient() {
       return;
     }
     setBusy(true); setError(""); setNotice("");
-    const { error: rpcError } = await client.rpc("review_case_submission", {
+    const { data: reviewed, error: rpcError } = await client.rpc("review_case_submission", {
       p_case_id: caseId, p_decision: decision, p_reviewer_note: reviewerNote.trim() || null
     });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
+    if (reviewed !== true) { setError("This case was not reviewed. It may no longer be awaiting review; refresh the queue."); return; }
     setReviewerNote("");
     setNotice(decision === "approved" ? "Case approved. It still requires a separate publication action." : "Case rejected with reviewer feedback.");
     await loadReviewerCases();
@@ -688,9 +713,10 @@ export function ClinicalRegistrySecureClient() {
   const publishReviewedCase = async (caseId: string) => {
     if (!client) return;
     setBusy(true); setError(""); setNotice("");
-    const { error: rpcError } = await client.rpc("publish_approved_case", { p_case_id: caseId });
+    const { data: published, error: rpcError } = await client.rpc("publish_approved_case", { p_case_id: caseId });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
+    if (published !== true) { setError("The case was not published. Confirm it is approved and still has valid publication consent."); return; }
     setNotice("Approved case published to the de-identified public Case Library.");
     await loadReviewerCases();
     await loadPublicCases();
