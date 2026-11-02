@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // A harmless build-time flag; the Preview password itself is a Worker secret.
+  env: {
+    PNA_PREVIEW_BUILD: process.env.PNA_PREVIEW_BUILD === 'true' ? 'true' : 'false',
+  },
   async redirects() {
     return [
       {
