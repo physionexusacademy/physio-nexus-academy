@@ -20,6 +20,7 @@ const emailConfirmationMigrationPath = "supabase/clinical-registry/supabase/migr
 const liveRoleMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102220000_clinical_registry_live_privileged_role_checks.sql";
 const patientConsentMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102230000_clinical_registry_require_verified_consent_for_patient_creation.sql";
 const consentGrantMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102240000_clinical_registry_evidence_only_consent_grants.sql";
+const evidenceRequestMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102250000_clinical_registry_evidence_request_rpc_only.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -35,6 +36,7 @@ const emailConfirmationMigration = read(emailConfirmationMigrationPath);
 const liveRoleMigration = read(liveRoleMigrationPath);
 const patientConsentMigration = read(patientConsentMigrationPath);
 const consentGrantMigration = read(consentGrantMigrationPath);
+const evidenceRequestMigration = read(evidenceRequestMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -183,6 +185,13 @@ assert(
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
 );
 assert(
+  "Consent evidence rows can only be reserved through the validated RPC",
+  evidenceRequestMigration.includes("SECURITY DEFINER") &&
+    evidenceRequestMigration.includes("Authenticated therapist session required") &&
+    evidenceRequestMigration.includes("revoke insert on clinical_private.patient_consent_evidence from authenticated"),
+  "Direct table inserts must not bypass the generated owner-scoped object path and evidence metadata checks."
+);
+assert(
   "Consent grants can only be created through verified evidence and reviewer approval",
   consentGrantMigration.includes("revoke all on function clinical_api.record_patient_consent") &&
     consentGrantMigration.includes("revoke insert on clinical_private.patient_consent_events from authenticated") &&
@@ -217,7 +226,8 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(93);") &&
+    rlsTests.includes("select plan(94);") &&
+    rlsTests.includes("authenticated therapists can create evidence rows only through the validated RPC") &&
     rlsTests.includes("legacy consent-grant RPC is not executable") &&
     rlsTests.includes("authenticated therapists cannot directly create consent grants") &&
     rlsTests.includes("legacy patient creation RPC is not executable") &&
