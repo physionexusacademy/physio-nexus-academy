@@ -1,6 +1,6 @@
 # PNA Clinical Registry — secure staging implementation
 
-**Status: hosted staging foundation is implemented; production use remains blocked.** The dedicated Supabase project `PNA Clinical Registry` (`zfoohwqyoengbszuylxj`, Singapore) is separate from the PNA public website database. It is ACTIVE_HEALTHY. Fifteen versioned migrations are recorded on the hosted project. No real patient data is present. Hosted counts remain zero for Auth users, therapist memberships, patients, reports, consent events, consent evidence rows, consent files and public case entries.
+**Status: hosted staging foundation is implemented; production use remains blocked.** The dedicated Supabase project `PNA Clinical Registry` (`zfoohwqyoengbszuylxj`, Singapore) is separate from the PNA public website database. It is ACTIVE_HEALTHY. Twenty-four versioned migrations are recorded on the hosted project. No real patient data is present. Hosted counts remain zero for Auth users, therapist memberships, patients, reports, consent events, consent evidence rows, consent files and public case entries.
 
 ## Implemented
 
@@ -19,7 +19,7 @@
 
 ## Historical automated verification baseline (2026-11-02)
 
-Historical baseline: GitHub Actions Registry workflow #258 and Cloudflare build workflow #17 passed on commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`, including **81/81 pgTAP assertions**, disposable backup/restore and cleanup. Workflow #265 also passed the static integration and PostgREST schema-isolation guards, and build workflow #32 passed Next.js/OpenNext. These are historical results, not verification of the current feature-branch head. The current branch has since expanded the security suite to 89 assertions and added live-role, consent-review RLS and exact Preview-origin guards. Verify the latest GitHub Actions runs for the current head before merge. Automated tests do not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
+Latest feature-branch head `02899b4c31d38bda2db4fd8497871c91c4524c98` passed GitHub Actions Registry workflow run `41461518799`, including **100/100 pgTAP assertions**, isolated migration apply, disposable backup/restore and cleanup. Dependency/build workflow run `41461518640` and the Cloudflare Workers build check also passed. These are automated checks; they do not certify hosted Auth, real file-upload/reviewer browser workflows or production readiness.
 
 ## Current server-side integrity boundary
 
@@ -35,7 +35,7 @@ Historical baseline: GitHub Actions Registry workflow #258 and Cloudflare build 
 3. Test the deployed Edge Function from the actual Registry browser origin, including unauthenticated rejection, owner mismatch, invalid file signatures, hash mismatch and size mismatch.
 4. Configure and verify Supabase Auth site/redirect URLs, email confirmation/recovery, session policy, rate limits and privileged-user MFA through the project Dashboard/Admin API.
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
-6. The feature branch includes an idempotent migration for the 27 advisor-identified missing foreign-key indexes. The hosted staging project has not applied that migration and still reports those INFO notices. Review query plans with representative synthetic data before applying it to the empty hosted project; retain the one currently unused index until real workload data supports a removal decision.
+6. The 27 advisor-identified foreign-key indexes have now been applied to hosted staging. The duplicate permissive case-library SELECT/UPDATE policies have also been consolidated. Supabase no longer reports missing foreign-key indexes or duplicate permissive policies; it reports 28 unused indexes because the Registry has no workload yet (27 new FK indexes plus one pre-existing index). Retain them until representative workload and query plans justify removal.
 7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
 8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The complete feature stack remains draft and unmerged; obtain explicit approval before merge/deploy.
 9. Obtain an independent security/penetration review and remediate critical/high findings.
