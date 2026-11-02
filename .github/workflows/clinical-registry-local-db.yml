@@ -8,6 +8,8 @@ on:
       - "supabase/migrations/*_registry_*.sql"
       - "supabase/migrations/*_clinical_registry_*.sql"
       - ".github/workflows/clinical-registry-local-db.yml"
+      - ".github/workflows/deploy-cloudflare-production.yml"
+      - ".env.example"
       - "src/app/clinical-registry/**"
       - "src/lib/clinical-registry/**"
       - "supabase/clinical-registry/**"
