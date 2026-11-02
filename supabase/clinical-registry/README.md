@@ -49,12 +49,11 @@ The hosted project now uses lightweight consent attestations rather than documen
 ## Registry environment variables
 
 - In GitHub Actions repository secrets, configure `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` using values from the **dedicated PNA Clinical Registry** project only. The deployment workflow passes these at build time; if they are absent, the main PNA website can still deploy, but Registry sign-in and the public library remain unconfigured.
-- `NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION` — exact institution-approved form version; keep empty until approved.
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` — dedicated Registry project URL.
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` — preferred Registry publishable key; `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` is accepted as a legacy fallback. Both must belong to the dedicated Registry project.
-- `NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION` — exact institution-approved form version; keep empty until approved.
+- `NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION` — optional consent-version label; defaults to `PNA-OFFLINE-CONSENT-ATTESTATION-V1`.
 
-The Edge Function uses Supabase-provided server-side environment variables. Never add a service-role/secret key to source control, browser code, `NEXT_PUBLIC_*`, Cloudflare client variables, or logs.
+The retired consent verifier performs no backend work. Never add a service-role/secret key to source control, browser code, `NEXT_PUBLIC_*`, Cloudflare client variables, or logs.
 
 ## Mandatory safety boundary
 
