@@ -37,7 +37,7 @@ GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for com
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
 6. Review query plans with representative synthetic data before changing the current 27 unindexed-FK and 1 unused-index INFO notices. Do not add speculative indexes to an empty database.
 7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
-8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is still 275 commits ahead and 4 behind `cloudflare-deploy`; review and validate the entire stack before any merge.
+8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is still 277 commits ahead and 4 behind `cloudflare-deploy`; review and validate the entire stack before any merge.
 9. Obtain an independent security/penetration review and remediate critical/high findings.
 
 ## Institutional / operational release gates (not code tasks)

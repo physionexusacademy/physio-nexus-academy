@@ -92,6 +92,6 @@ Keep `SIGNED_CONSENT_FORM_APPROVED = false` and `SIGNED_CONSENT_EVIDENCE_WORKFLO
 - Trusted operator/reviewer identities, Auth settings and MFA configured.
 - Hosted end-to-end tests and independent security review passed.
 - Protected browser Preview and production acceptance passed.
-- PR #151 is now based on `cloudflare-deploy` and GitHub reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is 275 commits ahead and 4 behind `cloudflare-deploy`; the complete stack still needs final diff/build review and explicit merge/deploy approval.
+- PR #151 is now based on `cloudflare-deploy` and GitHub reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is 277 commits ahead and 4 behind `cloudflare-deploy`; the complete stack still needs final diff/build review and explicit merge/deploy approval.
 
 Do not enter real patient data, upload real signed forms, publish cases, merge PR #156 or deploy to production before those gates are closed.
