@@ -51,8 +51,7 @@
 
 Hosted Auth has no users yet. Before any real therapist is onboarded:
 
-1. Configure the Auth Site URL and exact redirect allowlist for the Registry and its password recovery flow.
-2. Set the Auth Site URL to `https://physionexusacademy.com` and allow the exact redirect `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery). Add the exact Preview origin only when a protected Preview URL exists. Enable the Email provider, require email confirmation, keep anonymous sign-ins disabled, configure production SMTP and recovery templates, and review session lifetime, rate limits and abuse monitoring.
+1. Set the Auth Site URL to `https://physionexusacademy.com` and allow the exact redirect `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery). Add the exact Preview origin only when a protected Preview URL exists. Enable the Email provider, require email confirmation, keep anonymous sign-ins disabled, configure production SMTP and recovery templates, and review session lifetime, rate limits and abuse monitoring.
 3. Create the first trusted operator only through the approved administrator process.
 4. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action.
 5. Assign reviewer role only to named, authorised reviewers. Do not give every therapist a reviewer/operator role.
