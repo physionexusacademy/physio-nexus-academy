@@ -73,14 +73,14 @@ select throws_ok(
   '42501', null, 'therapist cannot record consent for another therapist patient');
 
 
-select ok(clinical_api.create_patient_with_care_consent(
-  'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
-) is not null, 'patient and care consent are created through one atomic RPC');
-select is((select count(*)::int from clinical_private.patient_consent_events ce
-  join clinical_private.patients p on p.id = ce.patient_id
-  where p.patient_reference = 'TEST-A-ATOMIC'
-    and ce.purpose = 'clinical_care' and ce.consent_status = 'granted'),
-  1, 'atomic patient creation records exactly one care-consent event');
+select throws_ok(
+  $legacy_care_consent$select clinical_api.create_patient_with_care_consent(
+    'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
+  )$legacy_care_consent$,
+  '42501', null, 'checkbox-only patient registration RPC is no longer executable');
+select is((select count(*)::int from clinical_private.patients
+  where patient_reference = 'TEST-A-ATOMIC'),
+  0, 'legacy consent RPC cannot create a patient without verified signed evidence');
 
 select is((select count(*)::int from clinical_private.patients), 2,
   'therapist A reads only their own patients (including atomic-consent registration)');
@@ -297,9 +297,9 @@ select throws_ok(
 
 -- The RPC resolves and links the latest grant server-side when prior_event_id
 -- is omitted by the browser client. event_sequence makes withdrawal win.
-select clinical_api.record_patient_consent(
+select clinical_api.withdraw_verified_patient_consent(
   '20000000-0000-4000-8000-000000000001',
-  'public_case_publication','withdrawn','test-public-v1','written',null
+  'public_case_publication','test-public-v1'
 );
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 0,
   'publication consent withdrawal immediately hides public case');
@@ -319,9 +319,9 @@ select ok(clinical_api.withdraw_public_case(
    where case_title = 'Synthetic shoulder rehabilitation case')
 ), 'case owner can withdraw a published case');
 
-select clinical_api.record_patient_consent(
+select clinical_api.withdraw_verified_patient_consent(
   '20000000-0000-4000-8000-000000000001',
-  'clinical_care','withdrawn','test-v1','written',null
+  'clinical_care','test-v1'
 );
 select throws_ok(
   $consent_sql$insert into clinical_private.clinical_reports
