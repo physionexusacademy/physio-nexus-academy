@@ -3,9 +3,6 @@
   "main": ".open-next/worker.js",
   "name": "pna-clinical-registry-preview",
   "keep_vars": true,
-  "vars": {
-    "PNA_PREVIEW_BUILD": "true"
-  },
   "workers_dev": true,
   "preview_urls": true,
   "compatibility_date": "2026-09-19",
