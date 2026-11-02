@@ -5,15 +5,10 @@ const MAX_BYTES = 10 * 1024 * 1024;
 const configuredOrigins = (Deno.env.get("REGISTRY_ALLOWED_ORIGINS") ?? "")
   .split(",")
   .map((value) => value.trim())
-  .filter((origin) => {
-    try {
-      const parsed = new URL(origin);
-      if (parsed.protocol !== "https:" || parsed.origin !== origin) return false;
-      return true;
-    } catch {
-      return false;
-    }
-  });
+  .filter(Boolean);
+
+// Validate every configured entry. Silently filtering malformed values can hide
+// an operator typo and make the deployed origin allowlist differ from intent.
 const validatedOrigins = configuredOrigins.map((origin) => {
   let parsed: URL;
   try {
