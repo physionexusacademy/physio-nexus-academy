@@ -112,3 +112,16 @@ Important limitations / hard gates:
 - The actual consent form text/version must be supplied and approved by the relevant institution/ethics or legal authority. No generic AI-generated form is to be treated as approved.
 - End-to-end upload/download, reviewer decision, care-consent patient creation, publication-consent activation, withdrawal and public-case hiding tests must be added and passed with disposable synthetic Auth identities.
 - Do not enable the UI readiness flag, collect real patient information, or publish cases until the approved form, UI, full hosted tests, and institutional privacy/ethics gates are complete.
+
+
+### User interface update
+
+The feature branch now includes:
+- Therapist upload form for clinical-care consent (before patient creation) and separate public-case publication consent (for a selected existing patient).
+- SHA-256 calculation in the browser as a declared metadata value only.
+- Owner evidence status list; patient creation is offered only after reviewer verification of clinical-care evidence.
+- Reviewer-only pending evidence queue, private document download, required decision note, and verify/reject actions.
+- Case submission now looks up the current publication-consent event instead of creating a grant from a checkbox.
+- Explicit `SIGNED_CONSENT_FORM_APPROVED = false` and `SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY = false` guards. Upload, patient registration and case submission remain locked pending the actual approved form/version and full acceptance tests.
+
+Do not change either guard to true merely because the UI and database exist. The exact approved consent form and version must first be provided by the institution/ethics authority, then reviewed and wired into the Registry. The reviewer console must also be configured with a trusted reviewer `app_metadata` role before its functions can be used.
