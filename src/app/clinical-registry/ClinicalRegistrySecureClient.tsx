@@ -385,16 +385,20 @@ export function ClinicalRegistrySecureClient() {
   const retryConsentIntegrity = async (evidenceId: string) => {
     if (!client) return;
     setBusy(true); setError(""); setNotice("");
-    const { data, error: integrityError } = await client.functions.invoke("verify-consent-evidence", { body: { evidence_id: evidenceId } });
-    setBusy(false);
-    if (integrityError) { setError(integrityError.message); await loadMyConsentEvidence().catch(() => undefined); return; }
-    if (!data?.ok || data?.sha256_verified !== true || data?.size_verified !== true) {
-      setError("The server could not verify this upload. Check that the original file exists and matches the allowed format.");
+    try {
+      const { data, error: integrityError } = await client.functions.invoke("verify-consent-evidence", { body: { evidence_id: evidenceId } });
+      if (integrityError) throw integrityError;
+      if (!data?.ok || data?.sha256_verified !== true || data?.size_verified !== true) {
+        throw new Error("The server could not verify this upload. Check that the original file exists and matches the allowed format.");
+      }
+      setNotice("Server-side file integrity verification completed. An authorised reviewer must still inspect the original document.");
+      await loadMyConsentEvidence();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Server-side integrity verification failed.");
       await loadMyConsentEvidence().catch(() => undefined);
-      return;
+    } finally {
+      setBusy(false);
     }
-    setNotice("Server-side file integrity verification completed. An authorised reviewer must still inspect the original document.");
-    await loadMyConsentEvidence();
   };
 
   const createPatientAfterConsent = async (evidenceId: string) => {
