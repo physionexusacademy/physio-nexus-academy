@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(87);
+select plan(89);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -81,6 +81,19 @@ select ok((select qual ilike '%is_current_registry_reviewer_aal2%'
   where schemaname = 'storage' and tablename = 'objects'
     and policyname = 'consent_evidence_owner_or_reviewer_download'),
   'reviewer download policy delegates to a live-role AAL2 check');
+select ok(
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+     from pg_policies where schemaname='clinical_private'
+       and tablename='patient_consent_evidence'
+       and policyname='consent_evidence_owner_or_reviewer_read')
+  and
+  (select qual ilike '%is_current_registry_reviewer_aal2%'
+       and with_check ilike '%is_current_registry_reviewer_aal2%'
+     from pg_policies where schemaname='clinical_private'
+       and tablename='patient_consent_evidence'
+       and policyname='consent_evidence_reviewer_update'),
+  'consent evidence table RLS requires current reviewer role and AAL2');
+
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
@@ -295,6 +308,8 @@ select set_config('request.jwt.claims',
 select throws_ok(
   $revoked_role_stale_jwt$select count(*) from clinical_api.list_cases_for_review()$revoked_role_stale_jwt$,
   '42501', null, 'stale reviewer JWT cannot retain access after the live Auth role is revoked');
+select is((select count(*)::int from clinical_private.patient_consent_evidence), 0,
+  'stale reviewer JWT cannot read consent evidence after the live Auth role is revoked');
 select throws_ok(
   $revoked_role_trigger$update clinical_private.case_library_entries
     set status = 'approved'
