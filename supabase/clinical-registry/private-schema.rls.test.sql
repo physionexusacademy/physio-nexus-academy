@@ -267,10 +267,13 @@ select is((select count(*)::int from clinical_api.list_consent_evidence_for_revi
   'reviewer queue excludes evidence until server-side integrity is verified');
 select throws_ok(
   $unverified_consent_review$select clinical_api.review_consent_evidence(
-    (select id from clinical_private.patient_consent_evidence
-     where patient_reference='TEST-CONSENT-001' limit 1),
+    (select evidence_id from registry_test_consent_evidence limit 1),
     'verified','Synthetic reviewer check')$unverified_consent_review$,
   '22023', null, 'reviewer cannot approve evidence without server-side integrity verification');
+create temporary table registry_test_consent_evidence on commit drop as
+select evidence_id from clinical_api.list_my_consent_evidence()
+where patient_reference='TEST-CONSENT-001';
+grant select on registry_test_consent_evidence to service_role;
 
 reset role;
 set local role service_role;
@@ -278,20 +281,17 @@ select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001'
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000001","role":"service_role"}',true);
 select is((select owner_id::text from clinical_api.get_consent_evidence_integrity_request(
-  (select id from clinical_private.patient_consent_evidence
-   where patient_reference='TEST-CONSENT-001' limit 1)
+  (select evidence_id from registry_test_consent_evidence limit 1)
 )), '10000000-0000-4000-8000-000000000001',
   'service-only integrity lookup returns the matching evidence owner');
 select throws_ok(
   $integrity_mismatch$select clinical_api.record_consent_evidence_integrity(
-    (select id from clinical_private.patient_consent_evidence
-     where patient_reference='TEST-CONSENT-001' limit 1),
+    (select evidence_id from registry_test_consent_evidence limit 1),
     '10000000-0000-4000-8000-000000000001',repeat('b',64),1024
   )$integrity_mismatch$,
   '22023', null, 'server integrity RPC rejects a mismatched SHA-256');
 select ok(clinical_api.record_consent_evidence_integrity(
-  (select id from clinical_private.patient_consent_evidence
-   where patient_reference='TEST-CONSENT-001' limit 1),
+  (select evidence_id from registry_test_consent_evidence limit 1),
   '10000000-0000-4000-8000-000000000001',repeat('a',64),1024
 ), 'service role records a matching server-computed integrity result');
 
@@ -304,8 +304,7 @@ select is((select count(*)::int from clinical_api.list_consent_evidence_for_revi
   'reviewer queue exposes evidence only after server integrity is recorded');
 select throws_ok(
   $missing_object_review$select clinical_api.review_consent_evidence(
-    (select id from clinical_private.patient_consent_evidence
-     where patient_reference='TEST-CONSENT-001' limit 1),
+    (select evidence_id from registry_test_consent_evidence limit 1),
     'verified','Synthetic reviewer inspected metadata')$missing_object_review$,
   '22023', null, 'reviewer cannot approve evidence without the actual private Storage object');
 
