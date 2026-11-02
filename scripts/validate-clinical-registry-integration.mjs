@@ -128,6 +128,7 @@ assert(
 assert(
   "Privileged queues remain hidden until AAL2 is reached",
   secure.includes('aalLevel !== "aal2" || mfaRequired') &&
+    secure.includes("if (!recoveryMode && session && mfaRequired") &&
     secure.includes("Reviewer and operator actions require a verified authenticator"),
   "The client must not request privileged queues while the session is below AAL2."
 );
