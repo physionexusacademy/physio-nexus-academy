@@ -434,6 +434,9 @@ select is((select count(*)::int
     and ce.evidence_id=(select evidence_id from registry_test_consent_evidence limit 1)), 1,
   'patient creation atomically records the linked clinical-care consent event');
 
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
 select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
   'trusted reviewer sees the submitted de-identified case queue');
 select ok(clinical_api.review_case_submission(
