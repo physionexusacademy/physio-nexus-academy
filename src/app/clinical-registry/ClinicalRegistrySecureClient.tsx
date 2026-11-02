@@ -274,13 +274,16 @@ export function ClinicalRegistrySecureClient() {
       if (!active) return;
       if (assurance.error) throw assurance.error;
       if (factors.error) throw factors.error;
-      // Reuse an existing TOTP factor. An earlier enrollment may have created an
-      // unverified factor before the user scanned its QR code; enrolling again with
-      // the same friendly name then fails with a duplicate-factor error.
-      // Keep the SDK response as a neutral status shape here: its generated
-      // type narrows the TOTP list to verified factors in this package version,
-      // while the Auth API can also return an unverified enrollment.
-      const totpFactors = (factors.data?.totp ?? []) as unknown as Array<{ id: string; status: string }>;
+      // Supabase exposes verified factors in the typed `totp` collection, while
+      // pending enrollments are available in `all`. Inspect the authoritative
+      // all-factors collection so an unverified TOTP enrollment is reused rather
+      // than sending the user back into enrollment (which causes duplicate names).
+      const allFactors = (factors.data?.all ?? []) as unknown as Array<{
+        id: string;
+        factor_type: string;
+        status: string;
+      }>;
+      const totpFactors = allFactors.filter((factor) => factor.factor_type === "totp");
       const hasVerifiedTotp = totpFactors.some((factor) => factor.status === "verified");
       const existingTotp = totpFactors.find((factor) => factor.status === "verified")
         ?? totpFactors.find((factor) => factor.status === "unverified");
