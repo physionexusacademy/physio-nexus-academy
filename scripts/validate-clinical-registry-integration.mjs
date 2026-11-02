@@ -98,6 +98,7 @@ assert(
 assert(
   "Password recovery event opens the new-password screen",
   secure.includes('event === "PASSWORD_RECOVERY"') &&
+    secure.includes('searchParams.get("recovery") === "1"') &&
     secure.includes("if (recoveryMode) return"),
   "A valid Supabase recovery event must display the password update form."
 );
