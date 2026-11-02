@@ -19,7 +19,7 @@
 
 ## Latest automated verification
 
-GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for commit `cb257c697f52358730c01d8a018093cda40e2c6c`: website/Registry TypeScript, Deno Edge Function type-check, isolated migrations, **81/81 pgTAP assertions**, disposable backup/restore and cleanup. This verifies the automated code/database test suite only; it does not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
+GitHub Actions Registry security workflow #258 (run ID `41427219214`) and Cloudflare production build workflow #17 (run ID `41427219283`) passed on 2026-11-02 for commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, **81/81 pgTAP assertions**, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. A further static integration guard has been added; its latest CI is pending. Automated tests do not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
 
 ## Current server-side integrity boundary
 
@@ -37,7 +37,7 @@ GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for com
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
 6. Review query plans with representative synthetic data before changing the current 27 unindexed-FK and 1 unused-index INFO notices. Do not add speculative indexes to an empty database.
 7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
-8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative feature stack is 4 commits behind `cloudflare-deploy`; review and validate the entire stack before any merge.
+8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The complete feature stack remains draft and unmerged; obtain explicit approval before merge/deploy.
 9. Obtain an independent security/penetration review and remediate critical/high findings.
 
 ## Institutional / operational release gates (not code tasks)
