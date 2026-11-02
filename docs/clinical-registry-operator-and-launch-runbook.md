@@ -52,7 +52,7 @@
 
 Hosted Auth has no users yet. Before any real therapist is onboarded:
 
-1. Set the Auth Site URL to `https://physionexusacademy.com` and allow the exact redirect `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery). Add the exact Preview callback `https://<protected-preview-host>/clinical-registry` only when a protected Preview URL exists; never add a wildcard redirect.
+1. The project owner has already entered the Auth Site URL and redirect URL in the Dashboard. Verify they still exactly match `https://physionexusacademy.com` and `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery), then test confirmation and recovery redirects. Add the exact Preview callback `https://<protected-preview-host>/clinical-registry` only when a protected Preview URL exists; never add a wildcard redirect.
 2. Enable the Email provider and email confirmations, keep anonymous sign-ins disabled, configure production SMTP and the default Reset Password template, set the minimum password length to 12, and keep Secure Password Change enabled.
 3. Under Authentication → Multi-Factor, ensure App Authenticator/TOTP enrollment and verification are enabled. The Registry UI guides trusted reviewer/operator accounts through TOTP enrollment and challenge; database RPCs, private consent RLS, Storage downloads and case-workflow triggers require AAL2.
 4. Add the exact protected Preview origin to the Edge Function secret `REGISTRY_ALLOWED_ORIGINS` as a comma-separated exact origin list, and add the matching exact callback URL to Auth Redirect URLs. Remove Preview origins after acceptance testing.
