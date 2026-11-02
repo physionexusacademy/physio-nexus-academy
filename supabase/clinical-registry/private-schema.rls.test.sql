@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(91);
+select plan(93);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -12,6 +12,10 @@ select ok(not has_function_privilege('authenticated','clinical_api.create_patien
   'legacy patient creation RPC is not executable by authenticated therapists');
 select ok(not has_table_privilege('authenticated','clinical_private.patients','INSERT'),
   'authenticated therapists cannot directly insert patient rows');
+select ok(not has_function_privilege('authenticated','clinical_api.record_patient_consent(uuid,text,text,text,text,uuid)','EXECUTE'),
+  'legacy consent-grant RPC is not executable by authenticated therapists');
+select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_events','INSERT'),
+  'authenticated therapists cannot directly create consent grants');
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.report_correction_authorizations'::regclass),
   'report correction authorization table has forced deny-by-default RLS');
