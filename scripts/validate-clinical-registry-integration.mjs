@@ -16,6 +16,7 @@ const mfaMigrationPath = "supabase/clinical-registry/supabase/migrations/2026110
 const rlsTestPath = "supabase/clinical-registry/private-schema.rls.test.sql";
 const fkIndexMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102200000_clinical_registry_foreign_key_indexes.sql";
 const emailConfirmationMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102210000_clinical_registry_confirmed_email_onboarding.sql";
+const liveRoleMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102220000_clinical_registry_live_privileged_role_checks.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -27,6 +28,7 @@ const mfaMigration = read(mfaMigrationPath);
 const rlsTests = read(rlsTestPath);
 const fkIndexMigration = read(fkIndexMigrationPath);
 const emailConfirmationMigration = read(emailConfirmationMigrationPath);
+const liveRoleMigration = read(liveRoleMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -142,6 +144,14 @@ assert(
   "Local Auth must allow TOTP, enforce the Registry password floor and allow the correct local recovery redirect."
 );
 assert(
+  "Privileged role revocation takes effect before JWT expiry",
+  liveRoleMigration.includes("raw_app_meta_data ->> 'registry_role'") &&
+    liveRoleMigration.includes("require_registry_role") &&
+    liveRoleMigration.includes("is_current_registry_reviewer_aal2") &&
+    liveRoleMigration.includes("v_reviewer boolean := clinical_private.is_current_registry_reviewer_aal2()"),
+  "Reviewer/operator privileges must be checked against current Auth app_metadata, including storage and trigger paths."
+);
+assert(
   "Reviewer and operator database actions require AAL2",
   mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
     mfaMigration.includes("consent_evidence_owner_or_reviewer_download") &&
@@ -152,7 +162,9 @@ assert(
 assert(
   "Therapist onboarding requires a confirmed email address",
   emailConfirmationMigration.includes("email_confirmed_at is not null") &&
-    rlsTests.includes("unconfirmed email cannot submit a professional verification request"),
+    rlsTests.includes("unconfirmed email cannot submit a professional verification request") &&
+    rlsTests.includes("stale reviewer JWT cannot retain access after the live Auth role is revoked") &&
+    rlsTests.includes("stale reviewer JWT cannot bypass the case workflow trigger after role revocation"),
   "An unconfirmed account must not be able to submit a professional verification request."
 );
 assert(
