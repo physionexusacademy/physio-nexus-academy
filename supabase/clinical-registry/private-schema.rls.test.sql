@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(83);
+select plan(84);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -70,6 +70,11 @@ on conflict (id) do nothing;
 
 select ok((select public = false from storage.buckets where id = 'clinical-consent-evidence'),
   'signed consent evidence bucket is private');
+select ok((select qual ilike '%aal%' and qual ilike '%registry_role%'
+  from pg_policies
+  where schemaname = 'storage' and tablename = 'objects'
+    and policyname = 'consent_evidence_owner_or_reviewer_download'),
+  'reviewer download policy requires an AAL2 reviewer session');
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
