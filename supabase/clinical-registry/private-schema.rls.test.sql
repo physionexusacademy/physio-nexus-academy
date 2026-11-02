@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(85);
+select plan(86);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -28,10 +28,13 @@ insert into auth.users (
    'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
   ('10000000-0000-4000-8000-000000000004',
    '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
-   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now()),
+   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"],"registry_role":"operator"}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now()),
   ('10000000-0000-4000-8000-000000000005',
    '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
-   'registry-unconfirmed@example.invalid','',null,'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now())
+   'registry-unconfirmed@example.invalid','',null,'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
+  ('10000000-0000-4000-8000-000000000006',
+   '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
+   'registry-reviewer@example.invalid','',now(),'{"provider":"email","providers":["email"],"registry_role":"reviewer"}'::jsonb,'{}'::jsonb,now(),now())
 on conflict (id) do nothing;
 
 insert into clinical_private.therapist_memberships
@@ -269,19 +272,39 @@ select throws_ok(
   $review_queue_access$select count(*) from clinical_api.list_cases_for_review()$review_queue_access$,
   '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
-select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
-select throws_ok(
-  $reviewer_aal1$select count(*) from clinical_api.list_cases_for_review()$reviewer_aal1$,
-  '42501', null, 'reviewer cannot read protected queues without an AAL2 session');
-select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
-select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 0,
-  'reviewer queue excludes evidence until server-side integrity is verified');
 create temporary table registry_test_consent_evidence as
 select evidence_id from clinical_api.list_my_consent_evidence()
 where patient_reference='TEST-CONSENT-001';
 grant select on registry_test_consent_evidence to service_role;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+select throws_ok(
+  $reviewer_aal1$select count(*) from clinical_api.list_cases_for_review()$reviewer_aal1$,
+  '42501', null, 'reviewer cannot read protected queues without an AAL2 session');
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+reset role;
+update auth.users
+set raw_app_meta_data = raw_app_meta_data - 'registry_role'
+where id = '10000000-0000-4000-8000-000000000006';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+select throws_ok(
+  $revoked_role_stale_jwt$select count(*) from clinical_api.list_cases_for_review()$revoked_role_stale_jwt$,
+  '42501', null, 'stale reviewer JWT cannot retain access after the live Auth role is revoked');
+reset role;
+update auth.users
+set raw_app_meta_data = raw_app_meta_data || '{"registry_role":"reviewer"}'::jsonb
+where id = '10000000-0000-4000-8000-000000000006';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 0,
+  'reviewer queue excludes evidence until server-side integrity is verified');
 select throws_ok(
   $unverified_consent_review$select clinical_api.review_consent_evidence(
     (select evidence_id from registry_test_consent_evidence limit 1),
@@ -312,7 +335,7 @@ reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
 select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 1,
   'reviewer queue exposes evidence only after server integrity is recorded');
 select throws_ok(
@@ -335,6 +358,7 @@ select ok(clinical_api.publish_approved_case(
 select is((select count(*)::int from clinical_api.list_public_cases(null, 20)), 1,
   'published de-identified case appears in public read surface');
 
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
 
