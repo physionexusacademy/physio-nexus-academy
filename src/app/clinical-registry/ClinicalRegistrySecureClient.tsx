@@ -46,8 +46,6 @@ export function ClinicalRegistrySecureClient() {
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [patientReference, setPatientReference] = useState("");
   const [patientName, setPatientName] = useState("");
-  const [consentMethod, setConsentMethod] = useState("written");
-  const [consentConfirmed, setConsentConfirmed] = useState(false);
   const [consentEvidenceList, setConsentEvidenceList] = useState<ConsentEvidence[]>([]);
   const [consentReviewQueue, setConsentReviewQueue] = useState<ConsentReviewItem[]>([]);
   const [consentEvidencePurpose, setConsentEvidencePurpose] = useState<"clinical_care" | "public_case_publication">("clinical_care");
@@ -325,22 +323,6 @@ export function ClinicalRegistrySecureClient() {
     await client.auth.signOut();
     setNewPassword(""); setRecoveryMode(false);
     setNotice("Password updated. Sign in again with your new password.");
-  };
-
-  const registerPatient = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY) { setError("Patient registration is disabled until the institution-approved signed-consent evidence workflow is implemented and verified."); return; }
-    if (!client || !consentConfirmed || !CLINICAL_REGISTRY_CONSENT_VERSION) return;
-    setBusy(true); setError(""); setNotice("");
-    const { error: patientError } = await client.rpc("create_patient_with_care_consent", {
-      p_patient_reference: patientReference, p_display_name: patientName,
-      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_capture_method: consentMethod
-    });
-    setBusy(false);
-    if (patientError) { setError(patientError.message); return; }
-    setPatientReference(""); setPatientName(""); setConsentConfirmed(false);
-    setNotice("Patient record and clinical-care consent event saved.");
-    await loadPatients();
   };
 
   const uploadConsentEvidence = async (event: FormEvent) => {
