@@ -5,6 +5,8 @@ on:
     paths:
       - "supabase/clinical-registry/**"
       - "supabase/migrations/*_clinical_registry_secure_schema.sql"
+      - "supabase/migrations/*_registry_*.sql"
+      - "supabase/migrations/*_clinical_registry_*.sql"
       - ".github/workflows/clinical-registry-local-db.yml"
       - "src/app/clinical-registry/**"
       - "src/lib/clinical-registry/**"
@@ -75,12 +77,25 @@ jobs:
           MIGRATION_COUNT="$(find "$MIGRATION_SOURCE" -maxdepth 1 -type f -name '*.sql' | wc -l | tr -d ' ')"
           if [ "$MIGRATION_COUNT" -gt 0 ]; then
             # Apply every versioned Registry migration in lexical timestamp order.
-            # Loading only the original schema migration silently omitted later
-            # security features such as therapist verification requests.
+            # The original Registry migrations live in the isolated nested folder;
+            # subsequent hosted-hardening migrations live in the repo-level folder.
             find "$MIGRATION_SOURCE" -maxdepth 1 -type f -name '*.sql' -print0 | sort -z |
               while IFS= read -r -d '' SOURCE_MIGRATION; do
                 cp "$SOURCE_MIGRATION" "$REGISTRY_TEST_DIR/supabase/migrations/"
               done
+            ROOT_MIGRATION_SOURCE="$GITHUB_WORKSPACE/supabase/migrations"
+            if [ -d "$ROOT_MIGRATION_SOURCE" ]; then
+              find "$ROOT_MIGRATION_SOURCE" -maxdepth 1 -type f \
+                \( -name '*_registry_*.sql' -o -name '*_clinical_registry_*.sql' \) -print0 | sort -z |
+                while IFS= read -r -d '' SOURCE_MIGRATION; do
+                  TARGET_MIGRATION="$REGISTRY_TEST_DIR/supabase/migrations/$(basename "$SOURCE_MIGRATION")"
+                  if [ -e "$TARGET_MIGRATION" ]; then
+                    echo "Duplicate Registry migration filename: $(basename "$SOURCE_MIGRATION")"
+                    exit 1
+                  fi
+                  cp "$SOURCE_MIGRATION" "$TARGET_MIGRATION"
+                done
+            fi
           else
             cd "$REGISTRY_TEST_DIR"
             supabase migration new clinical_registry_secure_schema
@@ -127,9 +142,9 @@ jobs:
             echo "pgTAP reported failed assertions."
             exit 1
           fi
-          grep -Fxq '1..60' <<< "$TEST_OUTPUT"
+          grep -Fxq '1..63' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 60
+          test "$OK_COUNT" -eq 63
 
       - name: Verify disposable Registry backup and restore
         shell: bash

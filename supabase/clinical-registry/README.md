@@ -1,6 +1,6 @@
 # Clinical Registry secure database prototype
 
-**Status: isolated implementation draft. The CLI-generated migration passed Clinical Registry local database CI Run #111 (schema application, 24/24 synthetic pgTAP assertions, and backup/restore verification). The branch remains an isolated draft; it is not connected to a hosted project and is not deployed.**
+**Status: hosted staging foundation implemented; production use is blocked.** A separate Supabase Free project (`PNA Clinical Registry`) is connected and its eight migrations are applied. Local security workflow #208 passed TypeScript, eight migrations, 63 pgTAP assertions and disposable backup/restore. The app remains an open draft PR and is not deployed to production. Latest verified commit: `aecaf0877ac2e03c2c94168cca16d6a7d65e41a5`. Hosted Auth currently has zero users; signed-consent evidence verification, institutional approval, independent security testing and end-to-end Preview acceptance remain incomplete.
 
 ## Implemented in this slice
 - A private clinical schema separated from the public website schema.
@@ -18,19 +18,19 @@
 - A de-identified Case Library supports draft, submission, reviewer approval/rejection, publication and owner withdrawal. Public reads use a fixed-field RPC and are suppressed after publication consent is withdrawn.
 - The Registry page has a separate browser client that reads only `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY`; it never falls back to the PNA website Supabase credentials.
 - `/clinical-registry/library` is a public, indexable server-rendered page that reads only the fixed-field public Case Library RPC through the dedicated Registry anon key.
-- The initial application UI supports therapist sign-in/sign-up, pending-verification state, owner-scoped patient/report lists, clinical-care consent capture, assessment/follow-up/intervention/outcome entry, report finalisation, print-to-PDF, owner-scoped JSON export, owner-applied report corrections, public Case Library reading and separate-consent case submission/withdrawal.
+- The initial application UI supports therapist sign-in/sign-up, pending-verification state, owner-scoped patient/report lists, clinical-care consent attestation, assessment/follow-up/intervention/outcome entry, report finalisation, print-to-PDF, owner-scoped JSON export, owner-applied report corrections, and public Case Library reading. **Patient intake and new case submissions are now fail-closed/disabled** until an institution-approved signed-consent evidence verification workflow is implemented and tested.
 - Trusted service-role-only RPCs provision verified therapist memberships and activate/deactivate them; ordinary authenticated users cannot self-verify.
 - Retention rules are inactive by default; a service-role-only candidate query supports review without automatic deletion.
 
 ## Remaining release gates
-1. The committed CLI-generated migration has been applied successfully in the disposable local Supabase stack; the workflow passed 24 synthetic pgTAP assertions and a backup/restore verification. This nested Supabase project is deliberately separate from the PNA website's root `supabase/migrations/` folder.
-2. Run Supabase Security and Performance Advisors against the isolated Registry project after a separate hosted project is provisioned.
+1. Latest local workflow #204 passed all eight Registry migrations, 63 synthetic pgTAP assertions and disposable backup/restore. The hosted Registry project is separate from the PNA website's root Supabase project.
+2. Hosted Supabase Security and Performance Advisors have been run. Six INFO-only deny-by-default RLS notices and 22 unindexed foreign keys plus one currently unused index remain for independent review; do not suppress or modify these without a justified policy/query-plan review.
 3. For any later hosted setup, run Supabase CLI commands from `supabase/clinical-registry` so the website migrations are never replayed. Configure only the `clinical_api` schema in the separate Registry project's Data API settings. Never expose `clinical_private`.
-4. Build a server-side operator console/service that invokes the service-role-only therapist provisioning RPCs and assigns reviewer `app_metadata` through the Supabase Auth Admin API. Keep the service-role key server-side; do not let users self-verify.
+4. The operator console and database-side role checks are implemented, but no hosted Auth users exist yet. Configure Auth, create the first trusted operator, assign reviewer/operator `app_metadata` through trusted Admin API actions, and enforce MFA. The service-role key must remain server-side.
 5. Complete the comprehensive clinical report template/PDF renderer, structured form validation, patient-record correction support, and accessibility QA.
 6. Have the institution/ethics committee and local counsel approve consent language, retention periods, correction handling, export, backup retention and breach response. No retention rule is active by default and no automatic deletion is implemented.
 7. Add operational backup/restore and export runbooks for the separately hosted project; CI can validate a disposable local backup but cannot establish provider backup coverage.
-8. Provision the separate hosted Registry project only after an exact cost review and explicit user approval. Set the three Registry environment variables below; never reuse the PNA website project credentials.
+8. The separate hosted Registry project is already provisioned. Verify its URL and publishable key in Cloudflare build settings and verify protected Preview access before any deployment; never reuse the PNA website project credentials.
 
 ## Registry-only environment variables
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` — URL of the dedicated Registry Supabase project.
@@ -45,4 +45,4 @@
 - `supabase/config.toml` and `supabase/migrations/` — generated by the Supabase CLI inside this nested Registry project; separate from the website project's root Supabase config.
 
 ## Mandatory safety boundary
-Do not connect this to the existing PNA website Supabase project. Do not insert real patient data. A separate hosted Registry project requires an exact cost review and explicit approval. The public Case Library must contain only deliberately de-identified narratives and must be manually reviewed before publication. Consent and retention requirements require institutional/legal approval before real use. No live database or patient information was changed by this prototype.
+Do not connect this to the existing PNA website Supabase project. Do not insert real patient data. The dedicated hosted Registry project is provisioned, but it is not production-approved. The public Case Library must contain only deliberately de-identified narratives and must be manually reviewed before publication. Consent and retention requirements require institutional/legal approval before real use. The dedicated hosted database contains schema and functions only; no patient information, memberships, Auth users, or consent records are present.
