@@ -12,6 +12,8 @@ const securePath = "src/app/clinical-registry/ClinicalRegistrySecureClient.tsx";
 const libraryPath = "src/app/clinical-registry/library/page.tsx";
 const deployPath = ".github/workflows/deploy-cloudflare-production.yml";
 const configPath = "supabase/clinical-registry/supabase/config.toml";
+const mfaMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102190000_clinical_registry_privileged_mfa_enforcement.sql";
+const rlsTestPath = "supabase/clinical-registry/private-schema.rls.test.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -19,6 +21,8 @@ const secure = read(securePath);
 const library = read(libraryPath);
 const deploy = read(deployPath);
 const config = read(configPath);
+const mfaMigration = read(mfaMigrationPath);
+const rlsTests = read(rlsTestPath);
 
 assert(
   "Registry route uses the secure client",
@@ -108,6 +112,20 @@ assert(
     secure.includes('recoveryErrorCode === "otp_expired"') &&
     secure.includes("This password-reset link is invalid or has already been used."),
   "The user must receive a clear recovery error without exposing account-existence information."
+);
+assert(
+  "Reviewer and operator database actions require AAL2",
+  mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
+    (mfaMigration.match(/perform clinical_private\\.require_registry_aal2\\(\\);/g) ?? []).length === 10,
+  "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
+);
+assert(
+  "Database security tests cover both AAL1 denial and AAL2 success",
+  rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
+    rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
+    rlsTests.includes('"aal":"aal2"') &&
+    rlsTests.includes("select plan(83);"),
+  "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
 );
 assert(
   "Recovery email response does not disclose whether an account exists",
