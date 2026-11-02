@@ -16,9 +16,13 @@
 - Retention rules remain inactive by default; there is no automatic deletion.
 - Hosted staging has the 27 foreign-key support indexes and consolidated case-library owner/reviewer SELECT and UPDATE policies; no duplicate permissive policy warning remains.
 
+## Latest automated verification (2026-11-03)
+
+Consent redesign code commit `cd2e4a11a40ae709c6122774f526f1563a8fe60a` passed the local Registry database-security workflow [run 41529678175](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41529678175): TypeScript, **29/29 integration checks**, Deno type-check, ordered migration reset, **91/91 pgTAP assertions**, disposable backup/restore and cleanup. The isolated Preview deployment [run 41529678128](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41529678128) also passed the Cloudflare build, Worker deployment and protected-route smoke tests. These automated checks do not replace hosted authenticated browser acceptance or institutional/privacy approval.
+
 ## Consent architecture change (2026-11-03)
 
-The hosted project now uses lightweight consent attestations rather than document uploads. The migration removes the evidence metadata/review tables, related RPCs, evidence column and Storage policies. The empty private Storage bucket remains because Supabase protects bucket deletion through the Storage API; with no objects and no client policies it is dormant. The retired Edge Function returns HTTP 410. Automated CI is being rerun against the reordered migration set and 91 pgTAP assertions; do not treat the change as fully accepted until both Preview and database-security workflows pass.
+The hosted project now uses lightweight consent attestations rather than document uploads. The migration removes the evidence metadata/review tables, related RPCs, evidence column and Storage policies. The empty private Storage bucket remains because Supabase protects bucket deletion through the Storage API; with no objects and no client policies it is dormant. The retired Edge Function returns HTTP 410.
 
 ## Lightweight consent boundary
 
