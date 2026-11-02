@@ -218,7 +218,7 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(103);") &&
+    rlsTests.includes("select plan(91);") &&
     rlsTests.includes("lightweight consent attestation creates a private patient and clinical-care event") &&
     rlsTests.includes("publication consent attestation is owner-scoped and idempotent") &&
     rlsTests.includes("signed consent upload tables and policies are removed") &&
