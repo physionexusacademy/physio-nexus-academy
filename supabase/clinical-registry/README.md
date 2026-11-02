@@ -37,7 +37,7 @@ GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for com
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
 6. Review query plans with representative synthetic data before changing the current 27 unindexed-FK and 1 unused-index INFO notices. Do not add speculative indexes to an empty database.
 7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
-8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is still The cumulative feature stack is 4 commits behind `cloudflare-deploy`; review and validate the entire stack before any merge.
+8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative feature stack is 4 commits behind `cloudflare-deploy`; review and validate the entire stack before any merge.
 9. Obtain an independent security/penetration review and remediate critical/high findings.
 
 ## Institutional / operational release gates (not code tasks)
@@ -51,7 +51,7 @@ GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for com
 ## Registry environment variables
 
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` — dedicated Registry project URL.
-- `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` — Registry publishable/legacy anon key only.
+- `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` — preferred Registry publishable key; `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` is accepted as a legacy fallback. Both must belong to the dedicated Registry project.
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION` — exact institution-approved form version; keep empty until approved.
 
 The Edge Function uses Supabase-provided server-side environment variables. Never add a service-role/secret key to source control, browser code, `NEXT_PUBLIC_*`, Cloudflare client variables, or logs.
