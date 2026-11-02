@@ -461,4 +461,14 @@ on clinical_private.patient_consent_evidence for update to authenticated
 using (clinical_private.is_current_registry_reviewer_aal2())
 with check (clinical_private.is_current_registry_reviewer_aal2());
 
+-- FORCE RLS means privileged reviewer RPCs must also have an explicit
+-- reviewer-only UPDATE policy; the trigger remains the state-transition guard.
+drop policy if exists reviewer_updates_case_workflow
+  on clinical_private.case_library_entries;
+create policy reviewer_updates_case_workflow
+on clinical_private.case_library_entries
+for update to authenticated
+using (clinical_private.is_current_registry_reviewer_aal2())
+with check (clinical_private.is_current_registry_reviewer_aal2());
+
 commit;
