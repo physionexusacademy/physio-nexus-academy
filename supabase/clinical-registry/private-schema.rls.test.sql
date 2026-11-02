@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(63);
+select plan(70);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -65,6 +65,28 @@ on conflict (id) do nothing;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+
+select ok(not has_table_privilege('anon','clinical_private.patient_consent_evidence','SELECT'),
+  'anonymous role cannot read consent evidence metadata');
+select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_evidence','UPDATE'),
+  'therapists cannot directly change consent evidence status');
+select ok((select public = false from storage.buckets where id = 'clinical-consent-evidence'),
+  'signed consent evidence bucket is private');
+select ok((select evidence_id is not null from clinical_api.create_consent_evidence_request(
+  'clinical_care', null, 'TEST-CONSENT-001', 'test-v1', repeat('a',64),
+  'application/pdf', 1024
+)), 'verified therapist can create an owner-scoped consent evidence request');
+select is((select count(*)::int from clinical_api.list_my_consent_evidence()
+  where patient_reference='TEST-CONSENT-001' and status='pending_review'),
+  1, 'owner can see their pending consent evidence metadata');
+select throws_ok(
+  $review_queue$select * from clinical_api.list_consent_evidence_for_review()$review_queue$,
+  '42501', null, 'ordinary therapist cannot access the consent reviewer queue');
+select throws_ok(
+  $review_decision$select clinical_api.review_consent_evidence(
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','verified','Synthetic test decision'
+  )$review_decision$,
+  '42501', null, 'ordinary therapist cannot verify consent evidence');
 
 select throws_ok(
   $consent_owner$select clinical_api.record_patient_consent(
