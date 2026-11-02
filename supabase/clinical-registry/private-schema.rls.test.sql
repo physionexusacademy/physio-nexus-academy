@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(60);
+select plan(63);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -66,6 +66,13 @@ set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 
+select throws_ok(
+  $select clinical_api.record_patient_consent(
+    '20000000-0000-4000-8000-000000000002',
+    'public_case_publication','granted','test-v1','written',null)$,
+  '42501', null, 'therapist cannot record consent for another therapist patient');
+
+
 select ok(clinical_api.create_patient_with_care_consent(
   'TEST-A-ATOMIC','Synthetic Atomic Patient','test-v1','written'
 ) is not null, 'patient and care consent are created through one atomic RPC');
@@ -125,6 +132,31 @@ values
 update clinical_private.clinical_reports
 set status = 'final', finalised_at = now()
 where id = '30000000-0000-4000-8000-000000000001';
+
+select is(clinical_api.create_case_draft(
+  '30000000-0000-4000-8000-000000000001',
+  (select id from clinical_private.patient_consent_events
+   where patient_id = '20000000-0000-4000-8000-000000000001'
+     and purpose = 'clinical_care' order by event_sequence desc limit 1),
+  'Invalid case using care consent','Shoulder pain','30-44',
+  'Synthetic de-identified clinical context with no direct identifiers.',
+  'Synthetic intervention summary describing a staged rehabilitation plan.',
+  'Synthetic outcome summary describing measurable functional improvement.',
+  null,true
+), null::uuid, 'case draft cannot use clinical-care consent as publication consent');
+
+select is(clinical_api.create_case_draft(
+  '30000000-0000-4000-8000-000000000001',
+  (select id from clinical_private.patient_consent_events
+   where patient_id = '20000000-0000-4000-8000-000000000002'
+     and purpose = 'clinical_care' order by event_sequence desc limit 1),
+  'Invalid cross-owner case','Shoulder pain','30-44',
+  'Synthetic de-identified clinical context with no direct identifiers.',
+  'Synthetic intervention summary describing a staged rehabilitation plan.',
+  'Synthetic outcome summary describing measurable functional improvement.',
+  null,true
+), null::uuid, 'case draft cannot use another therapist consent event');
+
 
 select throws_ok(
   $$update clinical_private.clinical_interventions
