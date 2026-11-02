@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(94);
+select plan(96);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -399,6 +399,40 @@ select throws_ok(
     (select evidence_id from registry_test_consent_evidence limit 1),
     'verified','Synthetic reviewer inspected metadata')$missing_object_review$,
   '22023', null, 'reviewer cannot approve evidence without the actual private Storage object');
+
+reset role;
+insert into storage.objects(bucket_id,name,owner,owner_id,metadata,path_tokens)
+select 'clinical-consent-evidence', e.object_path, e.owner_id, e.owner_id::text,
+  jsonb_build_object('mimetype',e.content_type,'size',e.declared_size_bytes),
+  string_to_array(e.object_path,'/')
+from clinical_private.patient_consent_evidence e
+where e.id = (select evidence_id from registry_test_consent_evidence limit 1);
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
+select ok(clinical_api.review_consent_evidence(
+  (select evidence_id from registry_test_consent_evidence limit 1),
+  'verified','Synthetic reviewer verified consent evidence and matching file integrity'),
+  'reviewer can verify consent only after integrity and private object checks pass');
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+create temporary table registry_test_created_patient as
+select clinical_api.create_patient_after_verified_consent(
+  (select evidence_id from registry_test_consent_evidence limit 1),
+  'Synthetic Consent Patient'
+) as patient_id;
+select is((select count(*)::int
+  from clinical_private.patients p
+  join registry_test_created_patient created on created.patient_id=p.id), 1,
+  'patient creation succeeds only after verified signed consent evidence');
+select is((select count(*)::int
+  from clinical_private.patient_consent_events ce
+  join registry_test_created_patient created on created.patient_id=ce.patient_id
+  where ce.purpose='clinical_care' and ce.consent_status='granted'
+    and ce.evidence_id=(select evidence_id from registry_test_consent_evidence limit 1)), 1,
+  'patient creation atomically records the linked clinical-care consent event');
 
 select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
   'trusted reviewer sees the submitted de-identified case queue');
