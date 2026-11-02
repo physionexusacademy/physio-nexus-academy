@@ -396,6 +396,26 @@ export function ClinicalRegistrySecureClient() {
     }
   };
 
+  const bootstrapFirstRegistryOperator = async () => {
+    if (!client || session?.user.id !== "fc9992a5-557f-4b9e-83a4-6f560c9e4134" || session.user.email?.toLowerCase() !== "sajjadraza.dpt@gmail.com") {
+      setError("This account is not eligible for first-operator provisioning.");
+      return;
+    }
+    if (!window.confirm("Assign the first trusted Operator role to this verified Registry account? This will not approve your therapist application.")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const { data, error: invokeError } = await client.functions.invoke("bootstrap-first-registry-operator", { body: {} });
+      if (invokeError) throw invokeError;
+      if (!data?.ok) throw new Error(data?.error ?? "The Operator role assignment was not confirmed.");
+      setNotice(data.message ?? "Operator role assigned. Sign in again and complete authenticator MFA.");
+      await client.auth.signOut();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Secure Operator provisioning failed.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const signIn = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
@@ -781,6 +801,12 @@ export function ClinicalRegistrySecureClient() {
     <div className="mx-auto max-w-7xl">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-5"><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-teal-700">Physio Nexus Academy</p><h1 className="mt-1 text-2xl font-bold text-[#173653]">Clinical Registry</h1><p className="mt-1 text-xs text-slate-500">Private therapist-owned clinical documentation</p></div><div className="flex items-center gap-3"><a href="/clinical-registry/library" className="text-xs font-semibold text-teal-700 underline">Public Case Library</a><button onClick={()=>client.auth.signOut()} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><LogOut size={14}/> Sign out</button></div></header>
       {error&&<p className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}{notice&&<p className="mb-4 rounded-xl bg-teal-50 p-3 text-sm text-teal-800">{notice}</p>}
+      {session.user.id === "fc9992a5-557f-4b9e-83a4-6f560c9e4134" && session.user.email?.toLowerCase() === "sajjadraza.dpt@gmail.com" && !session.user.app_metadata?.registry_role && <section className="mb-5 rounded-2xl border border-teal-200 bg-white p-5">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">One-time secure setup</p>
+        <h2 className="mt-1 text-lg font-bold text-[#173653]">Initialize the first Registry Operator</h2>
+        <p className="mt-2 text-xs leading-5 text-slate-600">This restricted action verifies your signed-in account on the Registry server and assigns the first Operator role only if no other Operator exists. It does not approve your pending therapist application. Afterward, sign in again and complete authenticator MFA before privileged access is enabled.</p>
+        <button type="button" onClick={bootstrapFirstRegistryOperator} disabled={busy} className="mt-4 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">{busy ? "Verifying securely…" : "Set up first Registry Operator"}</button>
+      </section>}
       {!verified ? <section className="grid gap-5 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <ShieldCheck size={28} className="text-teal-700"/>
