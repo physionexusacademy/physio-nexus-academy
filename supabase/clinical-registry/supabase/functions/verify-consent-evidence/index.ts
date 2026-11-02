@@ -1,8 +1,9 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+// Retired endpoint: consent files are no longer uploaded to the Registry.
+// Signed originals remain with the treating therapist/institution.
+declare const Deno: {
+  serve(handler: (request: Request) => Response | Promise<Response>): void;
+};
 
-// Consent documents are no longer uploaded to the Registry. Signed originals
-// remain with the treating therapist/institution; only minimal attestations
-// are stored in the Registry database.
 Deno.serve(async (_request: Request) => {
   return new Response(
     JSON.stringify({
