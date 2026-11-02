@@ -4,14 +4,14 @@
 
 - Dedicated hosted project: **PNA Clinical Registry**, Singapore, ref `zfoohwqyoengbszuylxj`; current status `ACTIVE_HEALTHY`.
 - This project is separate from the PNA website Supabase project. Never substitute the website's credentials or replay website migrations into this project.
-- Twenty-five migrations are recorded in hosted staging, including AAL2/live-role enforcement, consent enforcement, 27 foreign-key indexes, reviewer-read and consolidated case-library policies, plus the report initial-state guard. The repository currently has 22 Registry migration files; the hosted ledger contains three earlier management-applied entries and several version IDs that do not match the original local filenames. Do not run `supabase db push` or migration repair until this history is reconciled; use the explicit hosted migration workflow for further schema changes.
-- Hosted staging now has **three confirmed Auth users** created for synthetic acceptance testing. Their trusted Registry roles have not yet been assigned; therapist memberships and verification requests remain at zero. Patients, clinical reports, consent events, consent evidence records, public case entries and private consent-bucket objects remain at zero. A fresh hosted audit reconfirmed all 20/20 private tables have RLS enabled and FORCE RLS, with zero anon SELECT or INSERT grants. The latest Registry CI dependency audit reported zero vulnerabilities (0 low/moderate/high/critical); non-blocking dependency/action deprecation warnings remain maintenance items.
-- Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE at version 4 with JWT verification enabled. It supports exact HTTPS origins from the server-side `REGISTRY_ALLOWED_ORIGINS` secret and fails closed if any configured origin is malformed, non-HTTPS, includes credentials/path/query/fragment, or is a wildcard; production origins remain built in.
-- Latest Registry Preview source commit is `2c3e59d88ef1be6e21d2de34936ae8c7fc2e8765`; it clarifies in middleware that the Preview Basic-auth perimeter is not application authorization. PR #158 (`2e1ec1e49c54104f1ccffef14bb8ef22768314cd`) is merged into `registry-preview`. Local DB security workflow #368 (`41493271082`) passed TypeScript, all 34/34 Registry integration checks (including fail-closed CORS validation), Deno type-check, isolated migration reset, all 103/103 pgTAP assertions, disposable backup/restore, and cleanup. The updated consent verifier is hosted at version 4 with JWT verification enabled. A fresh post-merge Preview deployment and smoke-test run is still awaiting independent confirmation; the Preview workflow is configured to deploy on Registry source changes and to test unauthenticated 401, authenticated 200, noindex headers and exact-origin CORS; Preview run #13 (`41488148839`) passed TypeScript, 33/33 Registry integration checks, Cloudflare build, secret installation, Worker deployment, both protected-route smoke tests and exact-origin CORS checks. CI workflow update `4a2e443bf9c76e8b20d2195f0f7a623befeffc00` enabled database tests on Preview pushes; local DB security workflow #365 (`41488446554`) passed all 103/103 pgTAP assertions, isolated migration reset and disposable backup/restore. These automated checks are not hosted browser E2E or production acceptance.
-- PRs #151–#156 have been merged in dependency order into the isolated `registry-preview` branch. The production branch `cloudflare-deploy` is unchanged.
+- Twenty-seven migrations are recorded in hosted staging, including AAL2/live-role enforcement, 27 foreign-key indexes, reviewer-read and consolidated case-library policies, report initial-state guard and the lightweight-consent replacement. The two consent migrations are recorded in the hosted ledger as versions `20261102211710` and `20261102212219`; their repository files are ordered after the legacy consent migrations for clean local replay. Do not run `supabase db push` or migration repair until the hosted/local history is reconciled; continue using explicit hosted migration operations.
+- Hosted staging currently has **4 confirmed Auth users, 1 therapist membership and 1 therapist verification request**. Patients, reports, consent events and public case entries remain at zero. The legacy consent-evidence table and review table have been removed; the private bucket has zero objects and zero client upload/download policies. A fresh audit previously confirmed all remaining private tables have RLS enabled and FORCE RLS, with no anon private-table access.
+- Supabase Edge Function `verify-consent-evidence` remains deployed only as a retired endpoint (version 5, JWT verification enabled) and returns HTTP 410 without accessing Storage or the database. No Registry client invokes it.
+- The latest consent redesign commits are being validated by the Registry Preview and local database-security workflows. The integration validator checks for no upload UI, lightweight therapist attestations and removal of evidence tables/RPCs. The local pgTAP plan is now 91 assertions and replays legacy migrations first, then the consent cleanup migrations. Do not treat the redesign as accepted until the latest Preview build and local database-security workflow both pass. Automated CI is not hosted browser E2E or production acceptance.
+- The `registry-preview` branch contains the isolated Registry work. The production branch `cloudflare-deploy` remains unchanged; do not merge or deploy it without explicit approval.
 - Isolated Preview Worker: `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev`. It is a separate Worker with no production custom-domain route. Cloudflare Access is not enabled because the owner does not wish to provide payment-card details. The Preview-only HTTP Basic gate from PR #157 is now deployed: GitHub Actions Preview run #9 (`41485143120`) passed the secret-length/Cloudflare credential checks, installed `PNA_PREVIEW_ACCESS_PASSWORD` as a Worker secret, deployed the isolated Worker, and passed unauthenticated HTTP 401 plus authenticated HTTP 200 smoke tests for both `/clinical-registry` and `/clinical-registry/library`. The gate fails closed with HTTP 503 if the Worker secret is missing or shorter than 32 characters. This shared-password perimeter is for Preview access only; it is not an identity provider and does not replace Supabase Auth, MFA, RLS or server-side ownership checks. Use synthetic data only.
 - Preview run #9 (`41485143120`) passed the password-gate deployment and unauthenticated/authenticated route smoke tests. Preview run #10 (`41487493241`) passed the clinical RPC response-hardening build and smoke tests. Preview run #13 (`41488148839`) passed again after the report initial-state guard. A follow-up cleanup commit `b9c5097b0c8d714bc8fc1072a7a58b180bb6d6e8` removed the obsolete root middleware copy; the active `src/middleware.ts` remains the deployed implementation.
-- Hosted `verify-consent-evidence` Edge Function is ACTIVE at version 4 with JWT verification enabled. The exact Preview origin is allowlisted; no wildcard CORS is used.
+- The consent file verifier has been retired (version 5 returns HTTP 410). No CORS allowlist or storage upload/download workflow is needed for consent.
 
 ## Architecture and access boundaries
 
@@ -20,36 +20,26 @@
 - The deployment workflow reads `CLINICAL_REGISTRY_CONSENT_VERSION` from a GitHub Actions repository variable. Keep it empty until the exact institution/ethics-approved form version is approved. No service-role or secret key is used by the browser Registry client.
 - `clinical_api` is exposed to PostgREST (`pgrst.db_schemas=public, clinical_api` verified on the hosted `authenticator` role); `anon` and `authenticated` have schema usage, and `anon` can execute only the intended public-list RPC. `clinical_private` is not exposed to browser clients.
 - Private clinical tables have RLS enabled and forced. Anonymous clients have no direct private-table access. Therapists are restricted to their own patient/report records.
-- Therapist verification, case review, signed-consent review and operator actions use distinct trusted roles. Role claims must be placed in Supabase Auth `app_metadata` by a trusted administrator; never use user-editable `user_metadata`.
+- Therapist verification, case review and operator actions use distinct trusted roles. There is no separate signed-consent reviewer queue. Role claims must be placed in Supabase Auth `app_metadata` by a trusted administrator; never use user-editable `user_metadata`.
 - The service-role key is backend-only. Never put it in source control, browser code, `NEXT_PUBLIC_*`, Cloudflare client variables or logs.
 - The Registry has no live patient data. Keep staging synthetic-only.
 
-## Signed consent evidence flow
+## Lightweight consent attestation flow
 
-1. Therapist creates a consent-evidence request for either clinical-care consent or separate public-case publication consent.
-2. The request reserves a random owner-scoped object path in the private `clinical-consent-evidence` bucket (10 MiB maximum; PDF/JPEG/PNG only).
-3. Therapist uploads the original document to that path. There is no public object URL or public bucket access.
-4. The browser invokes the authenticated Edge Function `verify-consent-evidence`.
-5. The Edge Function validates the user's session, checks ownership and active verified therapist membership through server-only RPCs, downloads the private object with server-side credentials, checks its actual byte length and PDF/JPEG/PNG signature, computes SHA-256 over the downloaded bytes, and records the result through a service-role-only database RPC.
-6. Authenticated therapists cannot directly update the evidence integrity fields. The database constraint requires the server-computed hash and size to match the original declaration.
-7. The reviewer queue returns only evidence whose server-side integrity check has passed. The reviewer opens and inspects the private original, checks the correct patient/reference, purpose, exact approved version and signatures, and enters a decision note.
-8. The reviewer decision RPC rechecks integrity and confirms that the private object exists. Decisions are stored append-only. Only verified clinical-care evidence permits patient creation. Only verified publication evidence creates a publication-consent grant for its linked patient.
-9. Withdrawal is recorded as a new consent event; a later withdrawal supersedes an earlier grant and suppresses public case visibility.
+1. Before creating a patient record, the therapist obtains written clinical-care/documentation consent and keeps the signed original in the clinic/institution's secure records.
+2. The therapist adds the patient in the Registry and confirms that the written original has been obtained and retained. The Registry writes one small clinical-care consent event atomically with patient creation.
+3. Before submitting a de-identified case for public educational publication, the therapist obtains separate written publication consent and retains that signed original outside PNA.
+4. The therapist confirms the separate publication consent in the case-submission form. The Registry writes one small append-only publication-consent event; no file, image, PDF, hash or object metadata is uploaded.
+5. The de-identified case still goes through independent reviewer approval and a separate publish action. Withdrawal is recorded as a later consent event and suppresses the public case.
 
-**Important:** A server-computed SHA-256 proves byte integrity between upload and verification; file-signature checks help reject MIME spoofing. Neither proves that the document is authentic, that signatures are genuine, that the patient understood the content, or that the form is institutionally/legal approved. Human reviewer inspection and institutional approval remain mandatory.
+**Important:** A checkbox is a therapist attestation, not proof that a signature is authentic or that the patient understood the form. Institutional/legal approval of the actual offline form, privacy wording, retention and publication process remains mandatory. Never upload signed patient documents to PNA.
 
-## Supabase Edge Function
+## Retired consent upload endpoint
 
-- Function slug: `verify-consent-evidence`
-- Entry point: `supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts`
-- JWT verification: enabled.
-- Browser origin allowlist: `https://physionexusacademy.com` and `https://www.physionexusacademy.com`.
-- The exact Preview origin `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev` is currently explicitly allowlisted in Edge Function version 4. This is a temporary exact-origin allowance; remove it after acceptance testing. Never use wildcard origins.
-- Uses Supabase-provided server environment variables. It must never receive service-role credentials from the browser.
-- The service-only database RPCs are:
-  - `clinical_api.get_consent_evidence_integrity_request(uuid)`
-  - `clinical_api.record_consent_evidence_integrity(uuid,uuid,text,bigint)`
-- These functions revoke execution from `public`, `anon`, and `authenticated`, and grant only to `service_role`.
+- Function slug: `verify-consent-evidence`.
+- JWT verification remains enabled; version 5 returns HTTP 410 with a retirement message.
+- It performs no Storage access, file hashing or database RPC calls. No browser workflow invokes it.
+- The old evidence tables, evidence RPCs, Storage upload/download policies and event evidence foreign key have been removed. The empty `clinical-consent-evidence` bucket is retained because Supabase Storage protects direct SQL bucket deletion; with no objects and no client policies it is dormant.
 
 ## Auth and privileged accounts
 
@@ -57,7 +47,7 @@ Hosted Auth currently has four email-confirmed synthetic test users intended for
 
 1. The project owner has already entered the production Auth Site URL and redirect URL. Keep Site URL as `https://physionexusacademy.com`; verify the production callback `https://physionexusacademy.com/clinical-registry` remains allowlisted. For Preview testing, add these exact additional Redirect URLs (no wildcard): `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev/clinical-registry` and `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev/clinical-registry?recovery=1`. The Registry sign-up and confirmation-resend code now explicitly returns to the current origin; password recovery also uses the current origin with `?recovery=1`.
 2. Enable the Email provider and email confirmations, keep anonymous sign-ins disabled, configure production SMTP and the default Reset Password template, set the minimum password length to 12, and keep Secure Password Change enabled.
-3. Under Authentication → Multi-Factor, ensure App Authenticator/TOTP enrollment and verification are enabled. The Registry UI guides trusted reviewer/operator accounts through TOTP enrollment and challenge; database RPCs, private consent RLS, Storage downloads and case-workflow triggers require AAL2.
+3. Under Authentication → Multi-Factor, ensure App Authenticator/TOTP enrollment and verification are enabled. The Registry UI guides trusted reviewer/operator accounts through TOTP enrollment and challenge; privileged database RPCs and case-workflow triggers require AAL2.
 4. The Preview origin is already present as an exact CORS allowlist entry in deployed Edge Function version 4. Add the two exact Preview callback URLs in step 1 to Supabase Auth Redirect URLs. Remove the Preview CORS origin and callback URLs after acceptance testing.
 5. Review session lifetime, rate limits and abuse monitoring.
 6. Create the first trusted operator only after the live-role/AAL2 migrations have passed CI and have been applied to the dedicated hosted Registry project. This prerequisite is satisfied by the hosted migration history and security checks recorded above.
@@ -70,34 +60,30 @@ The available Supabase connection still does not expose general Auth user admini
 ## Testing and acceptance
 
 ### Already passed
-- Hosted rollback-only SQL tests for cross-therapist isolation, wrong-owner consent denial, purpose separation, case submission/review/publication and withdrawal.
-- Hosted role-separation tests proving ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
-- Historical baseline CI run #265 passed TypeScript, Deno Edge Function type-check, secure-route and PostgREST schema-isolation guards, migrations, 81 pgTAP assertions, backup/restore and cleanup. The latest local DB workflow #365 passed 103/103 pgTAP assertions, including final/archived report insertion denial and successful normal draft creation; isolated migration reset, backup/restore and cleanup also passed.
-- Historical Cloudflare build workflow #32 passed dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build. Preview run #13 passed the latest report-guard build, isolated Worker deployment, protected route smoke tests and exact-origin CORS checks.
-- Hosted read-only checks: `clinical_api` is exposed to PostgREST; expected schema usage and public RPC execute grants are present; all Registry Auth users, therapist memberships, patients, reports, consent events/evidence, public cases and consent Storage objects remain at zero.
+- Local pgTAP tests cover cross-therapist isolation, wrong-owner consent denial, clinical-care and publication-consent purpose separation, case submission/review/publication, withdrawal and explicit lightweight attestation. The plan is now 91 assertions; upload/integrity tests have been removed.
+- Role-separation tests prove ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
+- The latest redesign CI must pass TypeScript, Registry integration validation, isolated migration reset, 91/91 pgTAP assertions, disposable backup/restore and cleanup before the new workflow is treated as accepted.
+- Hosted read-only checks: `clinical_api` is exposed to PostgREST; Auth users/memberships/requests are present as recorded above; patients, reports, consent events and public case entries remain at zero.
 
 ### Still required
-- Hosted authenticated end-to-end testing with disposable therapist/reviewer identities and synthetic consent files.
-- Hosted synthetic Auth identities and synthetic consent files must exercise upload, server verification, private download, mismatch rejection, reviewer approval/rejection, care-consent patient creation, publication-consent activation, withdrawal and public-case suppression.
-- Test the Edge Function from the production Registry browser origin and reject invalid/expired JWTs, wrong owners, inactive memberships, invalid file signatures, size mismatches and hash mismatches.
+- Hosted authenticated end-to-end testing with a disposable therapist/reviewer pair: create a patient using written-consent attestation, create/finalise a report, record separate publication consent, submit a de-identified case, review, publish, withdraw consent and confirm public suppression.
+- Confirm the retired upload endpoint returns HTTP 410 and no browser path invokes Storage upload/download.
 - Complete the manual Preview/browser acceptance on desktop and mobile, including keyboard/accessibility, email confirmation and recovery. Automated Preview access-gate tests already passed: unauthenticated requests receive 401 and authenticated requests receive 200 for both Registry routes. The shared password gate protects the Preview perimeter but does not replace the database security boundary; do not use it with real patient data.
 - Perform backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
 - Obtain independent penetration testing and remediate all critical/high findings.
 
-The current hosted project has four confirmed synthetic Auth identities but no trusted Registry roles or therapist memberships. Consent evidence records and private consent objects remain at zero. The available management connector does not expose Auth user administration or a Storage object upload operation. Therefore hosted authenticated browser end-to-end tests cannot be truthfully marked complete yet. The owner must assign trusted roles through Supabase Auth app_metadata using the Dashboard/Admin API and provide synthetic consent files through an authenticated browser session.
+The current hosted project has four confirmed Auth identities, one active therapist membership and one therapist application. It has no patient, report, consent-event or public-case data. Hosted authenticated browser acceptance is still required; use synthetic patient data and keep all signed consent originals outside PNA.
 
 ## Database advisor notes
 
 Latest Advisor read:
 - Seven INFO-level `rls_enabled_no_policy` notices relate to intentionally private internal/governance tables. Do not add broad policies just to silence them.
 - The 27 advisor-identified foreign-key indexes have been applied, and the duplicate permissive case-library SELECT/UPDATE policies have been consolidated. The latest advisor reports 21 unused indexes because staging has no representative workload; do not remove them until query plans and real workload justify it.
-- No new consent-evidence security warning was introduced by the integrity migration.
+- No client consent-file upload/download policy remains. The empty legacy Storage bucket is dormant.
 
 ## Product and legal release gates
 
-Keep `SIGNED_CONSENT_FORM_APPROVED = false` and `SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY = false` until all conditions are met:
-
-- Institution/ethics-approved consent form and exact immutable version supplied.
+Before production use, obtain institutional/legal approval of the offline clinical-care and separate public-case publication consent forms, their version labels and the Registry's therapist-attestation process.
 - Institutional/legal privacy review, lawful basis, retention/deletion, patient access/correction, breach response and backup retention approved.
 - Trusted operator/reviewer identities, Auth settings and MFA configured.
 - Hosted end-to-end tests and independent security review passed.
