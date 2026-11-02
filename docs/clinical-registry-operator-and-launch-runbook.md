@@ -52,7 +52,11 @@
 
 Hosted Auth has no users yet. Before any real therapist is onboarded:
 
-1. Set the Auth Site URL to `https://physionexusacademy.com` and allow the exact redirect `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery). Add the exact Preview origin only when a protected Preview URL exists. Enable the Email provider, require email confirmation, keep anonymous sign-ins disabled, configure production SMTP and recovery templates, and review session lifetime, rate limits and abuse monitoring.
+1. Set the Auth Site URL to `https://physionexusacademy.com` and allow the exact redirect `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery). Add the exact Preview callback `https://<protected-preview-host>/clinical-registry` only when a protected Preview URL exists; never add a wildcard redirect.
+2. Enable the Email provider and email confirmations, keep anonymous sign-ins disabled, configure production SMTP and the default Reset Password template, set the minimum password length to 12, and keep Secure Password Change enabled.
+3. Under Authentication → Multi-Factor, ensure App Authenticator/TOTP enrollment and verification are enabled. The Registry UI guides trusted reviewer/operator accounts through TOTP enrollment and challenge; database RPCs, private consent RLS, Storage downloads and case-workflow triggers require AAL2.
+4. Add the exact protected Preview origin to the Edge Function secret `REGISTRY_ALLOWED_ORIGINS` as a comma-separated exact origin list, and add the matching exact callback URL to Auth Redirect URLs. Remove Preview origins after acceptance testing.
+5. Review session lifetime, rate limits and abuse monitoring.
 3. Create the first trusted operator only through the approved administrator process.
 4. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action.
 5. Assign reviewer role only to named, authorised reviewers. Do not give every therapist a reviewer/operator role.
