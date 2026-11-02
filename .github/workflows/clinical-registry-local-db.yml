@@ -1,6 +1,20 @@
 name: Clinical Registry local database security tests
 
 on:
+  push:
+    branches:
+      - registry-preview
+    paths:
+      - "supabase/clinical-registry/**"
+      - "supabase/migrations/*_clinical_registry_secure_schema.sql"
+      - "supabase/migrations/*_registry_*.sql"
+      - "supabase/migrations/*_clinical_registry_*.sql"
+      - ".github/workflows/clinical-registry-local-db.yml"
+      - ".env.example"
+      - "src/app/clinical-registry/**"
+      - "src/lib/clinical-registry/**"
+      - "package.json"
+      - "scripts/validate-clinical-registry-integration.mjs"
   pull_request:
     paths:
       - "supabase/clinical-registry/**"
@@ -157,9 +171,9 @@ jobs:
             echo "pgTAP reported failed assertions."
             exit 1
           fi
-          grep -Fxq '1..100' <<< "$TEST_OUTPUT"
+          grep -Fxq '1..103' <<< "$TEST_OUTPUT"
           OK_COUNT="$(grep -Ec '^ok [0-9]+ -' <<< "$TEST_OUTPUT" || true)"
-          test "$OK_COUNT" -eq 100
+          test "$OK_COUNT" -eq 103
 
       - name: Verify disposable Registry backup and restore
         shell: bash
