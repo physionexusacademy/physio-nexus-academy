@@ -196,8 +196,16 @@ assert(
   consentGrantMigration.includes("revoke all on function clinical_api.record_patient_consent") &&
     consentGrantMigration.includes("revoke insert on clinical_private.patient_consent_events from authenticated") &&
     consentGrantMigration.includes("SECURITY DEFINER") &&
-    consentGrantMigration.includes("Active verified therapist membership required"),
+    consentGrantMigration.includes("Active verified therapist membership required") &&
+    consentGrantMigration.includes("for update") &&
+    consentGrantMigration.includes("not between 1 and 40"),
   "Therapists cannot manufacture consent grants through the legacy RPC or direct table insert; withdrawal remains a narrow authenticated action."
+);
+assert(
+  "Verified consent evidence can complete the patient-creation workflow",
+  rlsTests.includes("patient creation succeeds only after verified signed consent evidence") &&
+    rlsTests.includes("patient creation atomically records the linked clinical-care consent event"),
+  "Local database tests must exercise evidence integrity, reviewer approval, patient creation and consent-event linkage."
 );
 assert(
   "Patient creation cannot bypass signed-consent evidence",
@@ -226,7 +234,7 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(94);") &&
+    rlsTests.includes("select plan(97);") &&
     rlsTests.includes("authenticated therapists can create evidence rows only through the validated RPC") &&
     rlsTests.includes("legacy consent-grant RPC is not executable") &&
     rlsTests.includes("authenticated therapists cannot directly create consent grants") &&
