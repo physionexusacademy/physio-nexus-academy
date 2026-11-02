@@ -18,6 +18,7 @@ const rlsTestPath = "supabase/clinical-registry/private-schema.rls.test.sql";
 const fkIndexMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102200000_clinical_registry_foreign_key_indexes.sql";
 const emailConfirmationMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102210000_clinical_registry_confirmed_email_onboarding.sql";
 const liveRoleMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102220000_clinical_registry_live_privileged_role_checks.sql";
+const patientConsentMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102230000_clinical_registry_require_verified_consent_for_patient_creation.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -31,6 +32,7 @@ const rlsTests = read(rlsTestPath);
 const fkIndexMigration = read(fkIndexMigrationPath);
 const emailConfirmationMigration = read(emailConfirmationMigrationPath);
 const liveRoleMigration = read(liveRoleMigrationPath);
+const patientConsentMigration = read(patientConsentMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -179,6 +181,15 @@ assert(
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
 );
 assert(
+  "Patient creation cannot bypass signed-consent evidence",
+  patientConsentMigration.includes("revoke all on function clinical_api.create_patient(text, text)") &&
+    patientConsentMigration.includes("revoke insert on clinical_private.patients from authenticated") &&
+    patientConsentMigration.includes("e.integrity_verified_at is not null") &&
+    patientConsentMigration.includes("e.actual_size_bytes = e.declared_size_bytes") &&
+    patientConsentMigration.includes("Active verified therapist membership required"),
+  "Only the security-definer consent-verified creation path may insert a patient."
+);
+assert(
   "Therapist onboarding requires a confirmed email address",
   emailConfirmationMigration.includes("email_confirmed_at is not null") &&
     rlsTests.includes("unconfirmed email cannot submit a professional verification request") &&
@@ -196,7 +207,9 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(89);"),
+    rlsTests.includes("select plan(91);") &&
+    rlsTests.includes("legacy patient creation RPC is not executable") &&
+    rlsTests.includes("authenticated therapists cannot directly insert patient rows"),
   "pgTAP must prove privileged actions are denied at AAL1 and accepted at AAL2."
 );
 assert(
