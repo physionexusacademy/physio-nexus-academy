@@ -37,7 +37,6 @@ begin
     and ce.owner_id = auth.uid()
     and ce.purpose = p_purpose
   order by ce.event_sequence desc
-  order by ce.event_sequence desc
   limit 1
   for update;
   if v_latest.id is null or v_latest.consent_status <> 'granted' then
