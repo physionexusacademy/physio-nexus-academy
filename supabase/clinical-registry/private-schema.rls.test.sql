@@ -67,9 +67,9 @@ select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001'
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 
 select throws_ok(
-  $select clinical_api.record_patient_consent(
+  $consent_owner$select clinical_api.record_patient_consent(
     '20000000-0000-4000-8000-000000000002',
-    'public_case_publication','granted','test-v1','written',null)$,
+    'public_case_publication','granted','test-v1','written',null)$consent_owner$,
   '42501', null, 'therapist cannot record consent for another therapist patient');
 
 
