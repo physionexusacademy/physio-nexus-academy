@@ -17,9 +17,9 @@
 - Dedicated Registry browser client uses only Registry-specific public URL/key variables and never falls back to the PNA website Supabase project.
 - Retention rules remain inactive by default; there is no automatic deletion.
 
-## Latest automated verification
+## Historical automated verification baseline (2026-11-02)
 
-GitHub Actions Registry security workflow #258 (run ID `41427219214`) and Cloudflare production build workflow #17 (run ID `41427219283`) passed on 2026-11-02 for commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, **81/81 pgTAP assertions**, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. The latest static integration guard and PostgREST schema-isolation check passed in Registry workflow #265 (run `41429152642`); the latest Next.js/OpenNext build passed in workflow #32 (run `41429152617`). Automated tests do not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
+Historical baseline: GitHub Actions Registry workflow #258 and Cloudflare build workflow #17 passed on commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`, including **81/81 pgTAP assertions**, disposable backup/restore and cleanup. Workflow #265 also passed the static integration and PostgREST schema-isolation guards, and build workflow #32 passed Next.js/OpenNext. These are historical results, not verification of the current feature-branch head. The current branch has since expanded the security suite to 89 assertions and added live-role, consent-review RLS and exact Preview-origin guards. Verify the latest GitHub Actions runs for the current head before merge. Automated tests do not certify hosted Auth, file-upload/reviewer browser workflows or production readiness.
 
 ## Current server-side integrity boundary
 
@@ -35,7 +35,7 @@ GitHub Actions Registry security workflow #258 (run ID `41427219214`) and Cloudf
 3. Test the deployed Edge Function from the actual Registry browser origin, including unauthenticated rejection, owner mismatch, invalid file signatures, hash mismatch and size mismatch.
 4. Configure and verify Supabase Auth site/redirect URLs, email confirmation/recovery, session policy, rate limits and privileged-user MFA through the project Dashboard/Admin API.
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
-6. Review query plans with representative synthetic data before changing the current 27 unindexed-FK and 1 unused-index INFO notices. Do not add speculative indexes to an empty database.
+6. The feature branch includes an idempotent migration for the 27 advisor-identified missing foreign-key indexes. The hosted staging project has not applied that migration and still reports those INFO notices. Review query plans with representative synthetic data before applying it to the empty hosted project; retain the one currently unused index until real workload data supports a removal decision.
 7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
 8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The complete feature stack remains draft and unmerged; obtain explicit approval before merge/deploy.
 9. Obtain an independent security/penetration review and remediate critical/high findings.
