@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(81);
+select plan(83);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -262,7 +262,12 @@ select throws_ok(
   '42501', null, 'ordinary therapist cannot access the reviewer queue');
 
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}', true);
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
+select throws_ok(
+  $reviewer_aal1$select count(*) from clinical_api.list_cases_for_review()$reviewer_aal1$,
+  '42501', null, 'reviewer cannot read protected queues without an AAL2 session');
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}', true);
 select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 0,
   'reviewer queue excludes evidence until server-side integrity is verified');
 create temporary table registry_test_consent_evidence as
@@ -299,7 +304,7 @@ reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}',true);
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
 select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 1,
   'reviewer queue exposes evidence only after server integrity is recorded');
 select throws_ok(
@@ -465,7 +470,12 @@ select throws_ok(
 
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"operator"}}',true);
+select throws_ok(
+  $operator_aal1$select count(*) from clinical_api.list_therapist_verification_queue()$operator_aal1$,
+  '42501', null, 'operator cannot inspect identity-verification queue without an AAL2 session');
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","aal":"aal2","aal":"aal2","app_metadata":{"registry_role":"operator"}}',true);
 select is((select count(*)::int from clinical_api.list_therapist_verification_queue()), 1,
   'trusted operator can view pending verification applications');
 select throws_ok(
@@ -503,7 +513,7 @@ select throws_ok(
 
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);
 select set_config('request.jwt.claims',
-  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","app_metadata":{"registry_role":"operator"}}',true);
+  '{"sub":"10000000-0000-4000-8000-000000000004","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"operator"}}',true);
 select ok(clinical_api.set_therapist_membership_active(
   '10000000-0000-4000-8000-000000000003',true,
   'Registration rechecked and access restored'
