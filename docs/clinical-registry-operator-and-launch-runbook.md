@@ -41,6 +41,7 @@
 - Entry point: `supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts`
 - JWT verification: enabled.
 - Browser origin allowlist: `https://physionexusacademy.com` and `https://www.physionexusacademy.com`.
+- For a protected Cloudflare Preview, set the Edge Function secret `REGISTRY_ALLOWED_ORIGINS` to the exact preview origin (or comma-separated exact origins). Never use wildcard origins. Remove preview origins after acceptance testing.
 - Uses Supabase-provided server environment variables. It must never receive service-role credentials from the browser.
 - The service-only database RPCs are:
   - `clinical_api.get_consent_evidence_integrity_request(uuid)`
