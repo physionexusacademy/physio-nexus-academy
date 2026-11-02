@@ -240,3 +240,112 @@ COMMENT ON FUNCTION clinical_api.publish_approved_case(uuid)
 IS 'Publishes only when the case, patient, owner, and latest publication-consent grant all match.';
 COMMENT ON FUNCTION clinical_api.list_public_cases(text,integer)
 IS 'Public read surface returns only published cases with a matching current publication-consent grant.';
+
+-- The browser-facing clinical_api RPCs are SECURITY INVOKER and deliberately
+-- rely on RLS. The private schema remains absent from PostgREST's exposed
+-- schemas, so grant only the minimum underlying privileges needed by those
+-- RPCs; RLS remains the tenant boundary. No anon grants are made.
+GRANT USAGE ON SCHEMA clinical_private TO authenticated;
+
+GRANT SELECT ON
+  clinical_private.audit_events,
+  clinical_private.case_library_entries,
+  clinical_private.clinical_interventions,
+  clinical_private.clinical_outcomes,
+  clinical_private.clinical_report_versions,
+  clinical_private.clinical_reports,
+  clinical_private.correction_requests,
+  clinical_private.correction_resolution_events,
+  clinical_private.patient_consent_events,
+  clinical_private.patient_record_access_events,
+  clinical_private.patients,
+  clinical_private.therapist_memberships
+TO authenticated;
+
+GRANT INSERT ON
+  clinical_private.case_library_entries,
+  clinical_private.clinical_interventions,
+  clinical_private.clinical_outcomes,
+  clinical_private.clinical_reports,
+  clinical_private.correction_requests,
+  clinical_private.patient_consent_events,
+  clinical_private.patients
+TO authenticated;
+
+GRANT UPDATE ON
+  clinical_private.case_library_entries,
+  clinical_private.clinical_interventions,
+  clinical_private.clinical_outcomes,
+  clinical_private.clinical_reports,
+  clinical_private.patients
+TO authenticated;
+
+-- Repair two tautological predicates in earlier RLS policies. They must bind
+-- the referenced patient/report/consent rows to the case being inserted.
+DROP POLICY IF EXISTS verified_owner_creates_case_submissions
+  ON clinical_private.case_library_entries;
+CREATE POLICY verified_owner_creates_case_submissions
+ON clinical_private.case_library_entries
+FOR INSERT TO authenticated
+WITH CHECK (
+  owner_id = (select auth.uid())
+  AND status = 'draft'
+  AND EXISTS (
+    SELECT 1 FROM clinical_private.clinical_reports r
+    WHERE r.id = case_library_entries.report_id
+      AND r.patient_id = case_library_entries.patient_id
+      AND r.owner_id = (select auth.uid())
+      AND r.status = 'final'
+      AND r.archived_at IS NULL
+  )
+  AND EXISTS (
+    SELECT 1 FROM clinical_private.patients p
+    WHERE p.id = case_library_entries.patient_id
+      AND p.owner_id = (select auth.uid())
+      AND p.archived_at IS NULL
+  )
+  AND EXISTS (
+    SELECT 1 FROM clinical_private.patient_consent_events ce
+    WHERE ce.id = case_library_entries.publication_consent_event_id
+      AND ce.patient_id = case_library_entries.patient_id
+      AND ce.owner_id = (select auth.uid())
+      AND ce.purpose = 'public_case_publication'
+      AND ce.consent_status = 'granted'
+      AND NOT EXISTS (
+        SELECT 1 FROM clinical_private.patient_consent_events later
+        WHERE later.patient_id = ce.patient_id
+          AND later.owner_id = ce.owner_id
+          AND later.purpose = ce.purpose
+          AND later.event_sequence > ce.event_sequence
+      )
+  )
+  AND EXISTS (
+    SELECT 1 FROM clinical_private.therapist_memberships tm
+    WHERE tm.user_id = (select auth.uid())
+      AND tm.is_active
+      AND tm.verification_status = 'verified'
+  )
+);
+
+DROP POLICY IF EXISTS owner_submits_correction_requests
+  ON clinical_private.correction_requests;
+CREATE POLICY owner_submits_correction_requests
+ON clinical_private.correction_requests
+FOR INSERT TO authenticated
+WITH CHECK (
+  owner_id = (select auth.uid())
+  AND EXISTS (
+    SELECT 1 FROM clinical_private.patients p
+    WHERE p.id = correction_requests.patient_id
+      AND p.owner_id = (select auth.uid())
+  )
+  AND (
+    report_id IS NULL
+    OR EXISTS (
+      SELECT 1 FROM clinical_private.clinical_reports r
+      WHERE r.id = correction_requests.report_id
+        AND r.patient_id = correction_requests.patient_id
+        AND r.owner_id = (select auth.uid())
+    )
+  )
+);
