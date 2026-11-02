@@ -96,3 +96,43 @@
   .pna-mobile-dock-label{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.pna-mobile-dock-item{transition:none}}
+
+/* Clinical Registry: focused browser print layout. This is a convenience print
+   stylesheet, not a digitally signed or institution-validated clinical PDF. */
+@media print {
+  @page { size: A4; margin: 16mm; }
+  body { padding: 0 !important; background: #fff !important; }
+  body * { visibility: hidden !important; }
+  #registry-report-print,
+  #registry-report-print * { visibility: visible !important; }
+  #registry-report-print {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    color: #111 !important;
+    background: #fff !important;
+  }
+  #registry-report-print .no-print { display: none !important; }
+  #registry-report-print pre {
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    color: #111 !important;
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+  }
+  #registry-report-print section,
+  #registry-report-print article { break-inside: avoid; }
+  #registry-report-print h2,
+  #registry-report-print h3 { color: #111 !important; }
+  #registry-report-print p,
+  #registry-report-print li { color: #222 !important; }
+}

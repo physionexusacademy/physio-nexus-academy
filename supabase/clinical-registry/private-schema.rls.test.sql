@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(52);
+select plan(60);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -229,6 +229,39 @@ select is((select clinical_summary from clinical_private.clinical_reports
   where id = '30000000-0000-4000-8000-000000000001'),
   'Corrected synthetic clinical summary',
   'report correction is applied and auditable');
+
+select is((select count(*)::int from clinical_api.list_my_report_versions(
+  '30000000-0000-4000-8000-000000000001')), 2,
+  'report finalisation and correction each create an owner-readable immutable pre-update snapshot');
+select ok((select change_reason like '%Synthetic correction test with clear rationale%'
+  from clinical_api.list_my_report_versions(
+    '30000000-0000-4000-8000-000000000001')
+  order by revision_number desc limit 1),
+  'clinician-entered correction rationale is preserved in the immutable report version');
+select throws_ok(
+  $version_mutation$update clinical_private.clinical_report_versions
+    set change_reason = 'tampered'
+    where report_id = '30000000-0000-4000-8000-000000000001'$version_mutation$,
+  '42501', null, 'therapist cannot mutate immutable report history');
+select ok(clinical_api.log_report_print_request(
+  '30000000-0000-4000-8000-000000000001'
+), 'owner can log a report print/PDF request');
+select is((select count(*)::int from clinical_api.list_my_record_access_events(
+  '20000000-0000-4000-8000-000000000001')
+  where action = 'report_print_requested'), 1,
+  'report print/PDF request is visible in the owner access history');
+select ok((clinical_api.export_my_patient_record(
+  '20000000-0000-4000-8000-000000000001') -> 'patient' ->> 'id') =
+  '20000000-0000-4000-8000-000000000001',
+  'patient JSON export returns the owner patient record');
+select is((select count(*)::int from clinical_api.list_my_record_access_events(
+  '20000000-0000-4000-8000-000000000001')
+  where action = 'patient_json_export'), 1,
+  'patient JSON export is audit-logged');
+select throws_ok(
+  $foreign_print$select clinical_api.log_report_print_request(
+    '30000000-0000-4000-8000-000000000002')$foreign_print$,
+  '42501', null, 'therapist cannot create access logs for another therapist report');
 
 -- Deliberately give the withdrawal the same wall-clock timestamp as the
 -- grant. event_sequence, not timestamp precision, must make withdrawal win.

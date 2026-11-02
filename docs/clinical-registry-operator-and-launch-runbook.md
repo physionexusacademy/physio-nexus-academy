@@ -44,13 +44,13 @@ Until then, do not provision real therapist memberships in a hosted environment.
 - The author’s de-identification checkbox is an attestation, **not** an automated de-identification system.
 - The current public case text fields are not protected by a reliable automatic detector for names, addresses, dates, phone numbers, faces, or rare combinations of clinical details.
 - Reviewer workflow must include a human privacy review. Do not publish a case until direct and indirect identifiers have been removed and the consent evidence has been independently checked.
-- There is not yet a signed-consent document upload/verification workflow. The consent event metadata alone is not proof that an approved signed form was obtained and retained.
+- There is not yet a signed-consent document upload/verification workflow. The consent event metadata and therapist checkbox are not proof that an approved signed form was obtained, verified, and retained. This remains a hard gate before using the Registry for real patient records or public case submissions.
 
 ## Clinical documentation
 
-The secure therapist workspace currently supports draft reports, initial and follow-up assessments, interventions, outcomes, finalisation, owner correction requests, and a browser print flow. Browser print can be used to save a PDF locally, but this is not a validated, digitally signed clinical PDF service.
+The secure therapist workspace currently supports draft reports, initial and follow-up assessments, interventions, outcomes, finalisation, owner correction requests, immutable pre-update report snapshots, JSON export logging, and an audited browser print / Save PDF request. Earlier report snapshots are owner-readable and append-only. The access log records that a print/export was requested; it cannot prove that a physical print or PDF file was successfully created or retained. Browser print can be used to save a PDF locally, but this is not a validated, digitally signed clinical PDF service.
 
-Before clinical use, add institution-approved report templates, identity/author attribution, timestamps and time zone, version history, explicit amendment labels, export access logging, and a tested PDF rendering path. Confirm that the report contains no unsupported clinical decision or automatic diagnosis.
+Before clinical use, add institution-approved report templates, verified identity/author attribution, timestamps and time zone, explicit amendment labels/reason capture for every change, a tested PDF rendering path, and retention/export access procedures. The current automatic snapshots record the pre-update database state but do not yet capture a clinician-entered amendment reason. Confirm that the report contains no unsupported clinical decision or automatic diagnosis.
 
 ## Hosting, privacy, and operational launch gates
 
