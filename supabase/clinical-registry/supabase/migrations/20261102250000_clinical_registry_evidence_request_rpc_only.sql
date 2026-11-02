@@ -40,8 +40,7 @@ begin
     v_path,p_declared_sha256,p_content_type,p_declared_size_bytes);
   return query select v_id,v_path;
 end;
-$function$
-
+$function$;
 
 revoke insert on clinical_private.patient_consent_evidence from authenticated;
 
