@@ -57,11 +57,10 @@ Hosted Auth has no users yet. Before any real therapist is onboarded:
 3. Under Authentication → Multi-Factor, ensure App Authenticator/TOTP enrollment and verification are enabled. The Registry UI guides trusted reviewer/operator accounts through TOTP enrollment and challenge; database RPCs, private consent RLS, Storage downloads and case-workflow triggers require AAL2.
 4. Add the exact protected Preview origin to the Edge Function secret `REGISTRY_ALLOWED_ORIGINS` as a comma-separated exact origin list, and add the matching exact callback URL to Auth Redirect URLs. Remove Preview origins after acceptance testing.
 5. Review session lifetime, rate limits and abuse monitoring.
-3. Create the first trusted operator only through the approved administrator process.
-4. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action.
-5. Assign reviewer role only to named, authorised reviewers. Do not give every therapist a reviewer/operator role.
-6. Enrol and require MFA for operator/reviewer accounts. **Current code still needs a database-side AAL2 check on every privileged operator/reviewer RPC and RLS policy before any privileged role is assigned.** Do not create/assign privileged roles until that enforcement and its tests are in place; a Dashboard MFA toggle alone is not proof of backend enforcement.
-7. Independently verify every therapist's identity and professional registration before activating membership.
+6. Create the first trusted operator only through the approved administrator process, after the live-role/AAL2 migrations have passed CI and have been applied to the dedicated hosted Registry project.
+7. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action. Assign reviewer role only to named, authorised reviewers; never give every therapist a reviewer/operator role.
+8. Enrol and verify TOTP for every operator/reviewer account before enabling privileged work. The current feature branch adds database-side AAL2 checks to all ten privileged RPCs, current Auth app_metadata checks to defeat stale JWT role claims, and matching protections for consent-table RLS, Storage downloads and the case-workflow trigger. These protections are not active on the hosted project until the migrations are deployed.
+9. Independently verify every therapist's identity and professional registration before activating membership.
 
 The available Supabase connection can inspect the database, migrations, project URL and publishable keys, but it does not expose Auth user administration or project Auth settings. The settings above require the project owner/operator in the Supabase Dashboard or an approved Admin API client. GitHub Actions repository secrets are also not exposed to the connected GitHub integration; the owner must add them directly in repository Settings → Secrets and variables → Actions.
 
