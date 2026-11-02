@@ -140,6 +140,8 @@ assert(
 assert(
   "Reviewer and operator database actions require AAL2",
   mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
+    mfaMigration.includes("consent_evidence_owner_or_reviewer_download") &&
+    mfaMigration.includes("reviewers must also hold an AAL2 session") &&
     (mfaMigration.match(/perform clinical_private\.require_registry_aal2\(\);/g) ?? []).length === 10,
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
 );
