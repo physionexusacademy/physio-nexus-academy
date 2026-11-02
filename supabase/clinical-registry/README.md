@@ -50,6 +50,8 @@ GitHub Actions workflow #245 (run ID `41422997869`) passed on 2026-11-02 for com
 
 ## Registry environment variables
 
+- In GitHub Actions repository secrets, configure `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` using values from the **dedicated PNA Clinical Registry** project only. The deployment workflow passes these at build time; if they are absent, the main PNA website can still deploy, but Registry sign-in and the public library remain unconfigured.
+- Configure GitHub Actions repository variable `CLINICAL_REGISTRY_CONSENT_VERSION` only after the exact institution/ethics-approved form version is approved. Keep it unset/empty meanwhile; the signed-consent UI flags remain hard-coded fail-closed.
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` — dedicated Registry project URL.
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` — preferred Registry publishable key; `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` is accepted as a legacy fallback. Both must belong to the dedicated Registry project.
 - `NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION` — exact institution-approved form version; keep empty until approved.
