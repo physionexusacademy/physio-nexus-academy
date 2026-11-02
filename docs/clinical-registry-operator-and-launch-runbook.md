@@ -53,7 +53,7 @@
 
 ## Auth and privileged accounts
 
-Hosted Auth currently has three email-confirmed synthetic test users. They are not yet assigned trusted Registry roles and have no therapist memberships. Before any real therapist is onboarded:
+Hosted Auth currently has four email-confirmed synthetic test users intended for Therapist A, Therapist B, Reviewer and Operator acceptance testing. They are not yet assigned trusted Registry roles and have no therapist memberships. Before any real therapist is onboarded:
 
 1. The project owner has already entered the production Auth Site URL and redirect URL. Keep Site URL as `https://physionexusacademy.com`; verify the production callback `https://physionexusacademy.com/clinical-registry` remains allowlisted. For Preview testing, add these exact additional Redirect URLs (no wildcard): `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev/clinical-registry` and `https://pna-clinical-registry-preview.physionexusacademypk.workers.dev/clinical-registry?recovery=1`. The Registry sign-up and confirmation-resend code now explicitly returns to the current origin; password recovery also uses the current origin with `?recovery=1`.
 2. Enable the Email provider and email confirmations, keep anonymous sign-ins disabled, configure production SMTP and the default Reset Password template, set the minimum password length to 12, and keep Secure Password Change enabled.
@@ -84,7 +84,7 @@ The available Supabase connection can inspect the database, migrations, project 
 - Perform backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
 - Obtain independent penetration testing and remediate all critical/high findings.
 
-The current hosted project has three confirmed synthetic Auth identities but no trusted Registry roles or therapist memberships. Consent evidence records and private consent objects remain at zero. The available management connector does not expose Auth user administration or a Storage object upload operation. Therefore hosted authenticated browser end-to-end tests cannot be truthfully marked complete yet. The owner must assign trusted roles through Supabase Auth app_metadata using the Dashboard/Admin API and provide synthetic consent files through an authenticated browser session.
+The current hosted project has four confirmed synthetic Auth identities but no trusted Registry roles or therapist memberships. Consent evidence records and private consent objects remain at zero. The available management connector does not expose Auth user administration or a Storage object upload operation. Therefore hosted authenticated browser end-to-end tests cannot be truthfully marked complete yet. The owner must assign trusted roles through Supabase Auth app_metadata using the Dashboard/Admin API and provide synthetic consent files through an authenticated browser session.
 
 ## Database advisor notes
 
