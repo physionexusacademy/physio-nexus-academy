@@ -58,6 +58,14 @@ jobs:
       - name: Type-check website and Registry integration
         run: npm run typecheck
 
+      - name: Set up Deno for Registry Edge Functions
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type-check Registry Edge Functions
+        run: deno check supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts
+
       # Keep the local Supabase config outside the repository to avoid replaying PNA migrations.
       - name: Initialise isolated Registry test workspace
         shell: bash
