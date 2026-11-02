@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(74);
+select plan(79);
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
@@ -265,6 +265,44 @@ select throws_ok(
      where patient_reference='TEST-CONSENT-001' limit 1),
     'verified','Synthetic reviewer check')$unverified_consent_review$,
   '22023', null, 'reviewer cannot approve evidence without server-side integrity verification');
+
+reset role;
+set local role service_role;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"service_role"}',true);
+select is((select owner_id::text from clinical_api.get_consent_evidence_integrity_request(
+  (select id from clinical_private.patient_consent_evidence
+   where patient_reference='TEST-CONSENT-001' limit 1)
+)), '10000000-0000-4000-8000-000000000001',
+  'service-only integrity lookup returns the matching evidence owner');
+select throws_ok(
+  $integrity_mismatch$select clinical_api.record_consent_evidence_integrity(
+    (select id from clinical_private.patient_consent_evidence
+     where patient_reference='TEST-CONSENT-001' limit 1),
+    '10000000-0000-4000-8000-000000000001',repeat('b',64),1024
+  )$integrity_mismatch$,
+  '22023', null, 'server integrity RPC rejects a mismatched SHA-256');
+select ok(clinical_api.record_consent_evidence_integrity(
+  (select id from clinical_private.patient_consent_evidence
+   where patient_reference='TEST-CONSENT-001' limit 1),
+  '10000000-0000-4000-8000-000000000001',repeat('a',64),1024
+), 'service role records a matching server-computed integrity result');
+
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claims',
+  '{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated","app_metadata":{"registry_role":"reviewer"}}',true);
+select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 1,
+  'reviewer queue exposes evidence only after server integrity is recorded');
+select throws_ok(
+  $missing_object_review$select clinical_api.review_consent_evidence(
+    (select id from clinical_private.patient_consent_evidence
+     where patient_reference='TEST-CONSENT-001' limit 1),
+    'verified','Synthetic reviewer inspected metadata')$missing_object_review$,
+  '22023', null, 'reviewer cannot approve evidence without the actual private Storage object');
+
 select is((select count(*)::int from clinical_api.list_cases_for_review()), 1,
   'trusted reviewer sees the submitted de-identified case queue');
 select ok(clinical_api.review_case_submission(
