@@ -9,6 +9,7 @@ const assert = (name, condition, detail) => {
 const routePath = "src/app/clinical-registry/page.tsx";
 const clientPath = "src/lib/clinical-registry/client.ts";
 const securePath = "src/app/clinical-registry/ClinicalRegistrySecureClient.tsx";
+const edgeFunctionPath = "supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts";
 const libraryPath = "src/app/clinical-registry/library/page.tsx";
 const deployPath = ".github/workflows/deploy-cloudflare-production.yml";
 const configPath = "supabase/clinical-registry/supabase/config.toml";
@@ -21,6 +22,7 @@ const liveRoleMigrationPath = "supabase/clinical-registry/supabase/migrations/20
 const route = read(routePath);
 const client = read(clientPath);
 const secure = read(securePath);
+const edgeFunction = read(edgeFunctionPath);
 const library = read(libraryPath);
 const deploy = read(deployPath);
 const config = read(configPath);
@@ -133,6 +135,14 @@ assert(
     secure.includes("if (!recoveryMode && session && mfaRequired") &&
     secure.includes("Reviewer and operator actions require a verified authenticator"),
   "The client must not request privileged queues while the session is below AAL2."
+);
+assert(
+  "Consent verifier supports exact protected Preview origins without wildcard CORS",
+  edgeFunction.includes('Deno.env.get("REGISTRY_ALLOWED_ORIGINS")') &&
+    edgeFunction.includes("https://physionexusacademy.com") &&
+    edgeFunction.includes("https://www.physionexusacademy.com") &&
+    !edgeFunction.includes('Access-Control-Allow-Origin", "*'),
+  "The Edge Function must support explicitly configured Preview origins while retaining an exact-origin allowlist."
 );
 assert(
   "Local Supabase enables the TOTP MFA flow used by privileged accounts",
