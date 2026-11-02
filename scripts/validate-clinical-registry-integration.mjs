@@ -21,6 +21,7 @@ const liveRoleMigrationPath = "supabase/clinical-registry/supabase/migrations/20
 const patientConsentMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102230000_clinical_registry_require_verified_consent_for_patient_creation.sql";
 const consentGrantMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102240000_clinical_registry_evidence_only_consent_grants.sql";
 const evidenceRequestMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102250000_clinical_registry_evidence_request_rpc_only.sql";
+const reportInsertGuardMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102170712_clinical_registry_report_insert_guard.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -37,6 +38,7 @@ const liveRoleMigration = read(liveRoleMigrationPath);
 const patientConsentMigration = read(patientConsentMigrationPath);
 const consentGrantMigration = read(consentGrantMigrationPath);
 const evidenceRequestMigration = read(evidenceRequestMigrationPath);
+const reportInsertGuardMigration = read(reportInsertGuardMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -241,7 +243,7 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(100);") &&
+    rlsTests.includes("select plan(103);") &&
     rlsTests.includes("authenticated therapists can create evidence rows only through the validated RPC") &&
     rlsTests.includes("legacy consent-grant RPC is not executable") &&
     rlsTests.includes("authenticated therapists cannot directly create consent grants") &&
@@ -255,6 +257,21 @@ assert(
     read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes('parsed.protocol !== "https:"') &&
     read("supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts").includes("parsed.origin !== origin"),
   "Preview CORS must use explicit HTTPS origins; wildcard, path and malformed origins must be rejected."
+);
+
+assert(
+  "New clinical reports must begin as active drafts",
+  reportInsertGuardMigration.includes("guard_report_initial_state") &&
+    reportInsertGuardMigration.includes("new.finalised_at is not null") &&
+    reportInsertGuardMigration.includes("new.archived_at is not null") &&
+    rlsTests.includes("new clinical reports cannot be inserted as final") &&
+    rlsTests.includes("new clinical reports cannot be inserted as archived"),
+  "Direct authenticated INSERTs must not manufacture final or archived reports outside the draft workflow."
+);
+assert(
+  "Normal report creation still succeeds through the Registry RPC",
+  rlsTests.includes("verified therapist can create a new report through the normal RPC"),
+  "The database guard must preserve valid draft creation for verified therapists."
 );
 
 assert(
