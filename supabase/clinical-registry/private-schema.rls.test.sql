@@ -333,7 +333,7 @@ select ok(clinical_api.record_consent_evidence_integrity(
 
 reset role;
 set local role authenticated;
-select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000006',true);
 select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2","app_metadata":{"registry_role":"reviewer"}}',true);
 select is((select count(*)::int from clinical_api.list_consent_evidence_for_review()), 1,
