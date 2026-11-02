@@ -37,6 +37,7 @@ const validatedOrigins = configuredOrigins.map((origin) => {
 const ALLOWED_ORIGINS = new Set([
   "https://physionexusacademy.com",
   "https://www.physionexusacademy.com",
+  "https://pna-clinical-registry-preview.physionexusacademypk.workers.dev",
   ...validatedOrigins,
 ]);
 
