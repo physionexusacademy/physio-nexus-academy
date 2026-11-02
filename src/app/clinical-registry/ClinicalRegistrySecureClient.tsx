@@ -397,9 +397,43 @@ export function ClinicalRegistrySecureClient() {
   };
 
   const signIn = async (event: FormEvent) => {
-    event.preventDefault(); if (!client) return; setBusy(true); setError(""); setNotice("");
-    const { error: authError } = await client.auth.signInWithPassword({ email, password });
-    setBusy(false); if (authError) setError(authError.message);
+    event.preventDefault();
+    if (!client) {
+      setError("The Registry authentication service is not configured. Please contact the Registry administrator.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
+      const { data, error: authError } = await client.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (authError) {
+        setError(authError.message);
+        return;
+      }
+      // Set the returned session directly as well as listening for auth events.
+      // This avoids leaving the sign-in form mounted if the browser auth event
+      // is delayed or missed during hydration/navigation.
+      if (!data.session) {
+        const { data: refreshed, error: sessionError } = await client.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!refreshed.session) {
+          setError("Sign-in did not establish a browser session. Check that the account email is confirmed, then try again. If this continues, send the administrator the time of your attempt.");
+          return;
+        }
+        setSession(refreshed.session);
+      } else {
+        setSession(data.session);
+      }
+      setPassword("");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Sign-in could not be completed. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const signUp = async () => {
