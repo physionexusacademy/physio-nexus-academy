@@ -24,12 +24,14 @@ type PublicCase = {
 
 export default async function PublicClinicalCaseLibraryPage() {
   const url = process.env.NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY;
-  if (!url || !anonKey) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY;
+  const legacyAnonKey = process.env.NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY;
+  const apiKey = publishableKey || legacyAnonKey;
+  if (!url || !apiKey) {
     return <main className="min-h-screen bg-slate-50 px-5 py-16"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8"><h1 className="text-2xl font-bold text-[#173653]">Public Clinical Case Library</h1><p className="mt-3 text-sm leading-6 text-slate-600">The dedicated Registry service is not configured. This page does not connect to the PNA website database.</p></section></main>;
   }
 
-  const registry = createClient(url, anonKey).schema("clinical_api");
+  const registry = createClient(url, apiKey).schema("clinical_api");
   const { data, error } = await registry.rpc("list_public_cases", { p_search: null, p_limit: 50 });
   const cases = (data ?? []) as PublicCase[];
 
