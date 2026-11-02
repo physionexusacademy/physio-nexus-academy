@@ -7,7 +7,7 @@
 - Fifteen migrations are recorded in hosted staging.
 - Hosted staging currently has zero Auth users, therapist memberships, patients, clinical reports, consent events, consent evidence records, and public case entries. The private consent bucket has zero objects.
 - Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE with JWT verification enabled.
-- Latest fully passed checks before the new static guard: Registry security workflow #258 / run `41427219214` and production build workflow #17 / run `41427219283`, both on commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, 81/81 pgTAP assertions, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. New integration guard CI #261 and build #24 are pending on the latest code. These are automated test results, not hosted browser E2E or production acceptance.
+- Latest fully passed checks before the new static guard: Registry security workflow #258 / run `41427219214` and production build workflow #17 / run `41427219283`, both on commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, 81/81 pgTAP assertions, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. The latest integration guard and PostgREST schema-isolation check passed in CI #265 / run `41429152642`; the latest Next.js/OpenNext build passed in #32 / run `41429152617`. These are automated test results, not hosted browser E2E or production acceptance.
 - PR #156 remains a draft and unmerged. It is not deployed to the production website.
 
 ## Architecture and access boundaries
@@ -65,8 +65,8 @@ The available Supabase connection can inspect the database, migrations, project 
 ### Already passed
 - Hosted rollback-only SQL tests for cross-therapist isolation, wrong-owner consent denial, purpose separation, case submission/review/publication and withdrawal.
 - Hosted role-separation tests proving ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
-- Local disposable CI run #258: TypeScript, Deno Edge Function type-check, secure-only route guard, migrations, 81 pgTAP assertions, backup/restore and cleanup.
-- Cloudflare production build workflow #17: dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build.
+- Local disposable CI run #265: TypeScript, Deno Edge Function type-check, secure-only route and PostgREST schema-isolation guards, migrations, 81 pgTAP assertions, backup/restore and cleanup.
+- Cloudflare production build workflow #32: dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build.
 - Hosted read-only checks: `clinical_api` is exposed to PostgREST; expected schema usage and public RPC execute grants are present; all Registry Auth users, therapist memberships, patients, reports, consent events/evidence, public cases and consent Storage objects remain at zero.
 
 ### Still required
