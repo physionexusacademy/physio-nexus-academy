@@ -358,4 +358,25 @@ begin
 end;
 $function$
 
+-- Storage downloads are a separate authorization surface from the reviewer RPCs.
+-- Owners may retrieve their own evidence; reviewers must also hold an AAL2 session.
+drop policy if exists consent_evidence_owner_or_reviewer_download on storage.objects;
+create policy consent_evidence_owner_or_reviewer_download
+on storage.objects for select to authenticated
+using (
+  bucket_id = 'clinical-consent-evidence'
+  and exists (
+    select 1
+    from clinical_private.patient_consent_evidence e
+    where e.object_path = objects.name
+      and (
+        e.owner_id = (select auth.uid())
+        or (
+          coalesce((select auth.jwt() -> 'app_metadata' ->> 'registry_role') = 'reviewer', false)
+          and coalesce((select auth.jwt() ->> 'aal') = 'aal2', false)
+        )
+      )
+  )
+);
+
 commit;
