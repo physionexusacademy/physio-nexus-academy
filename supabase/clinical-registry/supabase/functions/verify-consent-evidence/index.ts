@@ -6,10 +6,30 @@ const configuredOrigins = (Deno.env.get("REGISTRY_ALLOWED_ORIGINS") ?? "")
   .split(",")
   .map((value) => value.trim())
   .filter(Boolean);
+const validatedOrigins = configuredOrigins.map((origin) => {
+  let parsed: URL;
+  try {
+    parsed = new URL(origin);
+  } catch {
+    throw new Error("REGISTRY_ALLOWED_ORIGINS must contain exact HTTPS origins only.");
+  }
+  if (
+    parsed.protocol !== "https:" ||
+    parsed.origin !== origin ||
+    parsed.username ||
+    parsed.password ||
+    parsed.pathname !== "/" ||
+    parsed.search ||
+    parsed.hash
+  ) {
+    throw new Error("REGISTRY_ALLOWED_ORIGINS must contain exact HTTPS origins only; wildcards and paths are not allowed.");
+  }
+  return origin;
+});
 const ALLOWED_ORIGINS = new Set([
   "https://physionexusacademy.com",
   "https://www.physionexusacademy.com",
-  ...configuredOrigins,
+  ...validatedOrigins,
 ]);
 
 function response(body: unknown, status = 200, origin?: string | null) {
