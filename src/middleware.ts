@@ -34,6 +34,8 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/clinical-registry/");
 
   // The Preview build is protected at the edge with a Cloudflare Worker secret.
+  // This gate is an outer Preview perimeter only; Supabase Auth, MFA, RLS and ownership
+  // checks remain mandatory inside the Registry and must never rely on this shared secret.
   // Production builds bypass this shared Preview-only gate and retain normal Registry auth.
   if (isClinicalRegistryRoute && process.env.PNA_PREVIEW_BUILD === "true") {
     let expectedPassword: string | undefined;
