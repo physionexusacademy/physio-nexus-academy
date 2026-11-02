@@ -32,7 +32,7 @@ create table if not exists clinical_private.patient_consent_evidence (
   verified_by uuid references auth.users(id) on delete restrict,
   reviewer_note text,
   created_at timestamptz not null default now(),
-  check ((status = 'verified') = (verified_at is not null and verified_by is not null)),
+  check ((status = 'verified') = (verified_at is not null and verified_by is not null))
 );
 
 create index if not exists consent_evidence_owner_created_idx
