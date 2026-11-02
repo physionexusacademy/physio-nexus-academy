@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(84);
+select plan(85);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -28,7 +28,10 @@ insert into auth.users (
    'registry-pending@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now()),
   ('10000000-0000-4000-8000-000000000004',
    '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
-   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now())
+   'registry-operator@example.invalid','',now(),'{"provider":"email","providers":["email"]}'::jsonb,'{"registry_test_role":"operator"}'::jsonb,now(),now()),
+  ('10000000-0000-4000-8000-000000000005',
+   '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
+   'registry-unconfirmed@example.invalid','',null,'{"provider":"email","providers":["email"]}'::jsonb,'{}'::jsonb,now(),now())
 on conflict (id) do nothing;
 
 insert into clinical_private.therapist_memberships
@@ -532,6 +535,14 @@ select set_config('request.jwt.claims',
   '{"sub":"10000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
 select is((select count(*)::int from clinical_private.patients), 0,
   'pending therapist still cannot access patient data before operator approval');
+
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000005',true);
+select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000005","role":"authenticated"}',true);
+select throws_ok(
+  $unconfirmed_email$select clinical_api.submit_therapist_verification_request(
+    'Unconfirmed Applicant','Physiotherapist',array['DPT'],
+    'Registration Body','UNCONFIRMED-005',null)$unconfirmed_email$,
+  '42501', null, 'unconfirmed email cannot submit a professional verification request');
 
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
