@@ -42,7 +42,7 @@ begin
   order by c.submitted_at asc nulls last, c.updated_at asc
   limit 100;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.list_consent_evidence_for_review()
  RETURNS TABLE(evidence_id uuid, owner_id uuid, patient_reference text, purpose text, consent_version text, object_path text, content_type text, declared_size_bytes bigint, declared_sha256 text, submitted_at timestamp with time zone, verified_sha256 text, actual_size_bytes bigint, integrity_verified_at timestamp with time zone)
@@ -63,7 +63,7 @@ begin
    and e.verified_sha256 = e.declared_sha256 and e.actual_size_bytes = e.declared_size_bytes
  order by e.submitted_at asc limit 100;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.list_my_therapist_operator_audit()
  RETURNS TABLE(target_user_id uuid, action text, evidence_reference text, reason text, occurred_at timestamp with time zone)
@@ -84,7 +84,7 @@ begin
   order by a.occurred_at desc
   limit 100;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.list_therapist_verification_queue()
  RETURNS TABLE(request_id uuid, user_id uuid, full_name text, professional_title text, credentials text[], registration_label text, registration_number text, institution_or_clinic text, status text, submitted_at timestamp with time zone, reviewed_at timestamp with time zone, reviewer_note text)
@@ -107,7 +107,7 @@ begin
   order by r.submitted_at asc
   limit 100;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.list_verified_therapist_memberships()
  RETURNS TABLE(user_id uuid, full_name text, professional_title text, registration_label text, registration_number text, verification_status text, is_active boolean, verified_at timestamp with time zone)
@@ -130,7 +130,7 @@ begin
   order by tm.full_name
   limit 200;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.publish_approved_case(p_case_id uuid)
  RETURNS boolean
@@ -176,7 +176,7 @@ BEGIN
 
   RETURN found;
 END;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.review_case_submission(p_case_id uuid, p_decision text, p_reviewer_note text DEFAULT NULL::text)
  RETURNS boolean
@@ -203,7 +203,7 @@ begin
   where id = p_case_id and status = 'submitted';
   return found;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.review_consent_evidence(p_evidence_id uuid, p_decision text, p_note text)
  RETURNS boolean
@@ -247,7 +247,7 @@ begin
   end if;
   return true;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.review_therapist_verification_request(p_request_id uuid, p_decision text, p_evidence_reference text, p_reason text, p_identity_verified boolean, p_registration_verified boolean)
  RETURNS boolean
@@ -324,7 +324,7 @@ begin
   );
   return true;
 end;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION clinical_api.set_therapist_membership_active(p_user_id uuid, p_is_active boolean, p_reason text)
  RETURNS boolean
@@ -356,7 +356,7 @@ begin
   );
   return true;
 end;
-$function$
+$function$;
 
 -- Storage downloads are a separate authorization surface from the reviewer RPCs.
 -- Owners may retrieve their own evidence; reviewers must also hold an AAL2 session.
