@@ -64,16 +64,29 @@ jobs:
           NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION: ""
         run: npx opennextjs-cloudflare build
 
-      - name: Check Cloudflare credentials
+      - name: Check Cloudflare credentials and Preview password
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PNA_PREVIEW_ACCESS_PASSWORD: ${{ secrets.PNA_PREVIEW_ACCESS_PASSWORD }}
         run: |
           set -euo pipefail
           if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
             echo "::error::CLOUDFLARE_API_TOKEN is missing from repository Actions secrets."
             exit 1
           fi
+          if [ "${#PNA_PREVIEW_ACCESS_PASSWORD}" -lt 32 ]; then
+            echo "::error::Add PNA_PREVIEW_ACCESS_PASSWORD as a GitHub Actions secret with at least 32 characters. Preview deployment is blocked until configured."
+            exit 1
+          fi
           npx wrangler whoami
+
+      - name: Install fail-closed Preview Worker password secret
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PNA_PREVIEW_ACCESS_PASSWORD: ${{ secrets.PNA_PREVIEW_ACCESS_PASSWORD }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$PNA_PREVIEW_ACCESS_PASSWORD" | npx wrangler secret put PNA_PREVIEW_ACCESS_PASSWORD --config wrangler.registry-preview.jsonc
 
       - name: Deploy isolated Registry Preview Worker
         id: preview
@@ -98,21 +111,41 @@ jobs:
             echo "This is an isolated Worker. It does not attach to the production custom domain."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Smoke-test Registry routes and preview headers
+      - name: Smoke-test Preview access gate and Registry routes
         env:
           PREVIEW_URL: ${{ steps.preview.outputs.url }}
+          PNA_PREVIEW_ACCESS_PASSWORD: ${{ secrets.PNA_PREVIEW_ACCESS_PASSWORD }}
         run: |
           set -euo pipefail
+          unauth_body="$(mktemp)"
+          unauth_headers="$(mktemp)"
           registry_html="$(mktemp)"
           library_html="$(mktemp)"
           registry_headers="$(mktemp)"
-          trap 'rm -f "$registry_html" "$library_html" "$registry_headers"' EXIT
-          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 -D "$registry_headers" "$PREVIEW_URL/clinical-registry" -o "$registry_html"
+          trap 'rm -f "$unauth_body" "$unauth_headers" "$registry_html" "$library_html" "$registry_headers"' EXIT
+
+          unauth_status="$(curl --silent --show-error --connect-timeout 10 --max-time 30 -D "$unauth_headers" -o "$unauth_body" -w '%{http_code}' "$PREVIEW_URL/clinical-registry")"
+          if [ "$unauth_status" != "401" ]; then
+            echo "::error::Unauthenticated Preview request returned $unauth_status instead of 401."
+            exit 1
+          fi
+          grep -Fqi 'www-authenticate: Basic realm="PNA Clinical Registry Preview"' "$unauth_headers"
+
+          registry_status="$(curl --silent --show-error --connect-timeout 10 --max-time 30 --user "pna-preview:$PNA_PREVIEW_ACCESS_PASSWORD" -D "$registry_headers" -o "$registry_html" -w '%{http_code}' "$PREVIEW_URL/clinical-registry")"
+          if [ "$registry_status" != "200" ]; then
+            echo "::error::Authenticated Registry Preview route returned $registry_status instead of 200."
+            exit 1
+          fi
           grep -Fq "Clinical Registry" "$registry_html"
           grep -Fqi "x-robots-tag: noindex, nofollow" "$registry_headers"
-          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 "$PREVIEW_URL/clinical-registry/library" -o "$library_html"
+
+          library_status="$(curl --silent --show-error --connect-timeout 10 --max-time 30 --user "pna-preview:$PNA_PREVIEW_ACCESS_PASSWORD" "$PREVIEW_URL/clinical-registry/library" -o "$library_html" -w '%{http_code}')"
+          if [ "$library_status" != "200" ]; then
+            echo "::error::Authenticated case-library Preview route returned $library_status instead of 200."
+            exit 1
+          fi
           grep -Fq "Public Clinical Case Library" "$library_html"
-          echo "Both Registry routes returned the expected content; preview noindex header is present."
+          echo "Preview denies unauthenticated access and serves both Registry routes only with the configured password."
 
       - name: Verify exact-origin consent verifier CORS
         env:
