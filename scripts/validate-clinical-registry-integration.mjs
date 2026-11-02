@@ -46,7 +46,7 @@ assert(
 );
 assert(
   "Private schema is not exposed by PostgREST",
-  config.includes('schemas = ["clinical_api"]') && !/^schemas\\s*=.*clinical_private/m.test(config),
+  config.includes('schemas = ["clinical_api"]') && !/^schemas\s*=.*clinical_private/m.test(config),
   "Only clinical_api may be exposed through the Data API; clinical_private stays hidden."
 );
 assert(
