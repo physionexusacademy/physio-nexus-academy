@@ -60,12 +60,8 @@ jobs:
       - name: Type-check website and Registry integration
         run: npm run typecheck
 
-      - name: Verify the production Registry route is secure-only
-        shell: bash
-        run: |
-          set -euo pipefail
-          grep -Fq 'import { ClinicalRegistrySecureClient } from "./ClinicalRegistrySecureClient";' src/app/clinical-registry/page.tsx
-          test ! -f src/app/clinical-registry/ClinicalRegistryClient.tsx
+      - name: Validate secure Registry frontend integration
+        run: npm run validate:clinical-registry
 
 
       - name: Set up Deno for Registry Edge Functions
