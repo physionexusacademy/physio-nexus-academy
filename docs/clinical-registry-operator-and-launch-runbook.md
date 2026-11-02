@@ -12,7 +12,7 @@
 
 ## Architecture and access boundaries
 
-- Browser client uses only `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY`.
+- Browser client and public library use `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` plus the preferred `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` (or the legacy `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` fallback). Both keys must belong to the dedicated Registry project.
 - `clinical_api` is the intended PostgREST API schema. `clinical_private` is not exposed to browser clients.
 - Private clinical tables have RLS enabled and forced. Anonymous clients have no direct private-table access. Therapists are restricted to their own patient/report records.
 - Therapist verification, case review, signed-consent review and operator actions use distinct trusted roles. Role claims must be placed in Supabase Auth `app_metadata` by a trusted administrator; never use user-editable `user_metadata`.
