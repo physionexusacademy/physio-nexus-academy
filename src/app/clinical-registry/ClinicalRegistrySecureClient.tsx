@@ -16,6 +16,8 @@ type PublicCase = { case_id: string; case_title: string; condition_label: string
 type ReviewerCase = { case_id: string; case_title: string; condition_label: string; age_band?: string | null; clinical_context: string; intervention_summary: string; outcome_summary: string; evidence_reference?: string | null; status: "submitted" | "approved"; reviewer_note?: string | null; submitted_at?: string | null; reviewed_at?: string | null };
 type TherapistVerificationApplication = { request_id: string; user_id: string; full_name: string; professional_title: string; credentials: string[]; registration_label?: string | null; registration_number?: string | null; institution_or_clinic?: string | null; status: string; submitted_at: string; };
 type VerifiedTherapist = { user_id: string; full_name: string; professional_title: string; registration_label?: string | null; registration_number?: string | null; is_active: boolean; verified_at?: string | null };
+type ConsentEvidence = { evidence_id: string; purpose: "clinical_care" | "public_case_publication"; patient_reference: string; consent_version: string; status: "pending_review" | "verified" | "rejected" | "withdrawn"; submitted_at: string; verified_at?: string | null; reviewer_note?: string | null };
+type ConsentReviewItem = { evidence_id: string; owner_id: string; patient_reference: string; purpose: "clinical_care" | "public_case_publication"; consent_version: string; object_path: string; content_type: string; declared_size_bytes: number; declared_sha256: string; submitted_at: string };
 
 // Fail closed until an institution-approved signed-consent evidence and reviewer-verification workflow is implemented and independently tested.
 const SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY = false;
@@ -45,6 +47,11 @@ export function ClinicalRegistrySecureClient() {
   const [patientName, setPatientName] = useState("");
   const [consentMethod, setConsentMethod] = useState("written");
   const [consentConfirmed, setConsentConfirmed] = useState(false);
+  const [consentEvidenceList, setConsentEvidenceList] = useState<ConsentEvidence[]>([]);
+  const [consentReviewQueue, setConsentReviewQueue] = useState<ConsentReviewItem[]>([]);
+  const [consentEvidencePurpose, setConsentEvidencePurpose] = useState<"clinical_care" | "public_case_publication">("clinical_care");
+  const [consentEvidenceFile, setConsentEvidenceFile] = useState<File | null>(null);
+  const [consentReviewNote, setConsentReviewNote] = useState("");
   const [category, setCategory] = useState("Musculoskeletal");
   const [condition, setCondition] = useState("");
   const [assessmentJson, setAssessmentJson] = useState('{\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
@@ -91,6 +98,20 @@ export function ClinicalRegistrySecureClient() {
     const { data, error: rpcError } = await client.rpc("list_my_reports", { p_patient_id: patientId });
     if (rpcError) throw rpcError;
     setReports((data ?? []) as Report[]);
+  }, [client]);
+
+  const loadMyConsentEvidence = useCallback(async () => {
+    if (!client) return;
+    const { data, error: rpcError } = await client.rpc("list_my_consent_evidence");
+    if (rpcError) throw rpcError;
+    setConsentEvidenceList((data ?? []) as ConsentEvidence[]);
+  }, [client]);
+
+  const loadConsentReviewQueue = useCallback(async () => {
+    if (!client) return;
+    const { data, error: rpcError } = await client.rpc("list_consent_evidence_for_review");
+    if (rpcError) throw rpcError;
+    setConsentReviewQueue((data ?? []) as ConsentReviewItem[]);
   }, [client]);
 
   const loadCaseSubmissions = useCallback(async () => {
@@ -230,11 +251,19 @@ export function ClinicalRegistrySecureClient() {
 
   useEffect(() => {
     if (!client || !session || session.user.app_metadata?.registry_role !== "reviewer") {
-      setReviewerCases([]);
+      setReviewerCases([]); setConsentReviewQueue([]);
       return;
     }
     loadReviewerCases().catch((e: Error) => setError(e.message));
-  }, [client, session, loadReviewerCases]);
+    loadConsentReviewQueue().catch((e: Error) => setError(e.message));
+  }, [client, session, loadReviewerCases, loadConsentReviewQueue]);
+
+  useEffect(() => {
+    if (!client || !session || membership?.verificationStatus !== "verified" || !membership.isActive) {
+      setConsentEvidenceList([]); return;
+    }
+    loadMyConsentEvidence().catch((e: Error) => setError(e.message));
+  }, [client, session, membership, loadMyConsentEvidence]);
 
   const openReport = async (reportId: string) => {
     if (!client) return;
@@ -311,6 +340,68 @@ export function ClinicalRegistrySecureClient() {
     setPatientReference(""); setPatientName(""); setConsentConfirmed(false);
     setNotice("Patient record and clinical-care consent event saved.");
     await loadPatients();
+  };
+
+  const uploadConsentEvidence = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!client || !consentEvidenceFile || !CLINICAL_REGISTRY_CONSENT_VERSION) return;
+    if (consentEvidenceFile.size < 1 || consentEvidenceFile.size > 10 * 1024 * 1024) { setError("Choose a PDF or image up to 10 MB."); return; }
+    if (!["application/pdf", "image/jpeg", "image/png"].includes(consentEvidenceFile.type)) { setError("Only PDF, JPG or PNG signed documents are accepted."); return; }
+    if (consentEvidencePurpose === "clinical_care" && patientReference.trim().length < 2) { setError("Enter a non-identifying patient reference/code."); return; }
+    if (consentEvidencePurpose === "public_case_publication" && !selectedPatient) { setError("Select the patient whose publication consent is being submitted."); return; }
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const bytes = await consentEvidenceFile.arrayBuffer();
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const declaredSha256 = Array.from(new Uint8Array(digest)).map(v => v.toString(16).padStart(2, "0")).join("");
+      const patientId = consentEvidencePurpose === "public_case_publication" ? selectedPatient?.id ?? null : null;
+      const reference = consentEvidencePurpose === "public_case_publication" ? selectedPatient?.patient_reference ?? "" : patientReference.trim();
+      const { data, error: requestError } = await client.rpc("create_consent_evidence_request", {
+        p_purpose: consentEvidencePurpose, p_patient_id: patientId, p_patient_reference: reference,
+        p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_declared_sha256: declaredSha256,
+        p_content_type: consentEvidenceFile.type, p_declared_size_bytes: consentEvidenceFile.size
+      });
+      if (requestError) throw requestError;
+      const request = Array.isArray(data) ? data[0] : data;
+      if (!request?.object_path) throw new Error("The secure evidence request was not created.");
+      const { error: uploadError } = await client.storage.from("clinical-consent-evidence").upload(request.object_path, consentEvidenceFile, { contentType: consentEvidenceFile.type, upsert: false });
+      if (uploadError) throw uploadError;
+      setConsentEvidenceFile(null); setNotice("Signed document uploaded to private storage and submitted for reviewer verification. It is not yet an approved consent grant.");
+      await loadMyConsentEvidence();
+    } catch (e) { setError(e instanceof Error ? e.message : "Consent evidence upload failed."); }
+    finally { setBusy(false); }
+  };
+
+  const createPatientAfterConsent = async (evidenceId: string) => {
+    if (!client || patientName.trim().length < 1) { setError("Enter the patient display name after consent verification."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const { error: rpcError } = await client.rpc("create_patient_after_verified_consent", { p_evidence_id: evidenceId, p_display_name: patientName.trim() });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    setPatientName(""); setPatientReference(""); setNotice("Patient record created against the verified clinical-care consent evidence.");
+    await loadPatients(); await loadMyConsentEvidence();
+  };
+
+  const openConsentEvidence = async (path: string) => {
+    if (!client) return;
+    setBusy(true); setError("");
+    const { data, error: downloadError } = await client.storage.from("clinical-consent-evidence").download(path);
+    setBusy(false);
+    if (downloadError || !data) { setError(downloadError?.message ?? "Could not download the private consent document."); return; }
+    const url = URL.createObjectURL(data);
+    const anchor = document.createElement("a"); anchor.href = url; anchor.target = "_blank"; anchor.rel = "noreferrer"; anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  };
+
+  const reviewConsentEvidence = async (evidenceId: string, decision: "verified" | "rejected") => {
+    if (!client || consentReviewNote.trim().length < 5) { setError("Add a reviewer note of at least five characters."); return; }
+    setBusy(true); setError(""); setNotice("");
+    const { data, error: rpcError } = await client.rpc("review_consent_evidence", { p_evidence_id: evidenceId, p_decision: decision, p_note: consentReviewNote.trim() });
+    setBusy(false);
+    if (rpcError) { setError(rpcError.message); return; }
+    if (!data) { setError("Evidence could not be reviewed. Refresh the queue."); return; }
+    setConsentReviewNote(""); await loadConsentReviewQueue();
+    setNotice(decision === "verified" ? "Consent document marked verified. Publication consent was activated only for its matching patient." : "Consent evidence rejected with an audit record.");
   };
 
   const createReport = async (event: FormEvent) => {
@@ -393,11 +484,8 @@ export function ClinicalRegistrySecureClient() {
     if (!SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY) { setError("Case submission is disabled until separate signed publication consent can be securely verified by an authorised reviewer."); return; }
     if (!client || !selectedPatient || !selectedReport || !CLINICAL_REGISTRY_CONSENT_VERSION || !publicationConsentConfirmed || !deidentifiedConfirmed) return;
     setBusy(true); setError(""); setNotice("");
-    const { data: consentId, error: consentError } = await client.rpc("record_patient_consent", {
-      p_patient_id: selectedPatient.id, p_purpose: "public_case_publication", p_status: "granted",
-      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION, p_capture_method: consentMethod, p_prior_event_id: null
-    });
-    if (consentError) { setBusy(false); setError(consentError.message); return; }
+    const { data: consentId, error: consentError } = await client.rpc("get_current_publication_consent_event", { p_patient_id: selectedPatient.id });
+    if (consentError || !consentId) { setBusy(false); setError(consentError?.message ?? "A separately uploaded and reviewer-verified publication consent is required before case submission."); return; }
     const { data: caseId, error: createError } = await client.rpc("create_case_draft", {
       p_report_id: selectedReport.id, p_publication_consent_event_id: consentId,
       p_case_title: caseTitle, p_condition_label: caseCondition, p_age_band: caseAgeBand,
@@ -512,7 +600,7 @@ export function ClinicalRegistrySecureClient() {
       </section> : <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
         <aside className="space-y-5">
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><Users size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My patients</h2></div><p className="mt-1 text-[11px] text-slate-400">Only records owned by your therapist account are listed.</p><div className="mt-4 max-h-72 space-y-2 overflow-y-auto">{patients.map(p=><button key={p.id} onClick={()=>{setSelectedPatient(p);setSelectedReport(null);loadReports(p.id).catch((e:Error)=>setError(e.message));loadRecordAccessEvents(p.id).catch((e:Error)=>setError(e.message));}} className={`w-full rounded-xl border p-3 text-left ${selectedPatient?.id===p.id?"border-teal-500 bg-teal-50":"border-slate-100 hover:bg-slate-50"}`}><p className="text-sm font-semibold">{p.display_name}</p><p className="mt-1 text-[10px] text-slate-500">{p.patient_reference}</p></button>)}{patients.length===0&&<p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No patient records yet.</p>}</div></section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><UserPlus size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Register patient</h2></div>{!CLINICAL_REGISTRY_CONSENT_VERSION || !SIGNED_CONSENT_EVIDENCE_WORKFLOW_READY?<p className="mt-3 rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-900">Patient registration is temporarily locked. The current checkbox records therapist attestation only; signed consent evidence verification and approved retention are not yet implemented. Do not enter real patient information.</p>:<form onSubmit={registerPatient} className="mt-4 space-y-3"><input required value={patientReference} onChange={e=>setPatientReference(e.target.value)} placeholder="Patient reference / code" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="Patient display name (private)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><select value={consentMethod} onChange={e=>setConsentMethod(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="written">Written consent</option><option value="electronic">Electronic consent</option><option value="documented_verbal">Documented verbal consent</option></select><label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600"><input type="checkbox" checked={consentConfirmed} onChange={e=>setConsentConfirmed(e.target.checked)} className="mt-1"/> I have obtained and documented clinical-care consent using the institution-approved form.</label><button disabled={busy||!consentConfirmed} className="w-full rounded-xl bg-teal-700 px-3 py-2.5 text-xs font-bold text-white disabled:opacity-40">Save patient and consent</button></form>}</section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><UserPlus size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Signed consent evidence</h2></div><p className="mt-2 text-[11px] leading-5 text-slate-500">Upload the signed institution-approved form. The original stays in private storage; patient creation and publication consent require reviewer verification.</p><form onSubmit={uploadConsentEvidence} className="mt-4 space-y-3"><select value={consentEvidencePurpose} onChange={e=>setConsentEvidencePurpose(e.target.value as "clinical_care" | "public_case_publication")} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="clinical_care">Clinical-care consent (before patient registration)</option><option value="public_case_publication">Separate public case publication consent</option></select>{consentEvidencePurpose==="clinical_care"?<input required value={patientReference} onChange={e=>setPatientReference(e.target.value)} placeholder="Non-identifying patient reference / code" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>:<p className="rounded-lg bg-slate-50 p-3 text-xs text-slate-600">{selectedPatient?`Selected patient: ${selectedPatient.patient_reference}`:"Select a patient from My patients before uploading publication consent."}</p>}<input required type="file" accept="application/pdf,image/jpeg,image/png" onChange={e=>setConsentEvidenceFile(e.target.files?.[0]??null)} className="w-full text-xs"/><p className="text-[10px] text-slate-400">PDF, JPG or PNG · maximum 10 MB · no public link is created</p><button disabled={busy||!consentEvidenceFile||!CLINICAL_REGISTRY_CONSENT_VERSION||(consentEvidencePurpose==="public_case_publication"&&!selectedPatient)} className="w-full rounded-xl bg-teal-700 px-3 py-2.5 text-xs font-bold text-white disabled:opacity-40">Upload signed document for review</button></form>{consentEvidenceList.length>0&&<div className="mt-4 space-y-2 border-t border-slate-100 pt-3"><p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">My consent evidence</p>{consentEvidenceList.map(e=><div key={e.evidence_id} className="rounded-lg border border-slate-100 p-3"><div className="flex items-center justify-between gap-2"><p className="text-xs font-semibold">{e.purpose==="clinical_care"?"Clinical care":"Public case publication"} · {e.patient_reference}</p><span className="text-[10px] font-semibold text-slate-500">{e.status.replace("_"," ")}</span></div>{e.reviewer_note&&<p className="mt-1 text-[10px] text-slate-500">Reviewer: {e.reviewer_note}</p>}{e.purpose==="clinical_care"&&e.status==="verified"&&<div className="mt-2 space-y-2"><input value={patientName} onChange={ev=>setPatientName(ev.target.value)} placeholder="Patient display name (only saved after verification)" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/><button disabled={busy||!patientName.trim()} onClick={()=>createPatientAfterConsent(e.evidence_id)} className="rounded-lg bg-teal-700 px-3 py-2 text-[10px] font-bold text-white disabled:opacity-40">Create patient using verified consent</button></div>}</div>)}</div>}</section>
         </aside>
         <section className="space-y-5">
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h2 className="font-bold text-[#173653]">Clinical reports</h2><p className="mt-1 text-[11px] text-slate-400">{selectedPatient?`${selectedPatient.display_name} · ${selectedPatient.patient_reference}`:"Select a patient to view reports."}</p></div>{selectedPatient&&<button onClick={exportPatient} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><FileDown size={14}/> Export record</button>}</div>
@@ -586,6 +674,7 @@ export function ClinicalRegistrySecureClient() {
           <div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Restricted access</p><h2 className="mt-1 text-lg font-bold text-[#173653]">Case reviewer console</h2><p className="mt-1 text-xs text-slate-500">Only de-identified submissions are shown. Patient identifiers and private clinical-record links are not returned by the reviewer queue.</p></div>
           <button onClick={()=>loadReviewerCases().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh queue</button>
         </div>
+        <section className="mb-5 rounded-2xl border border-slate-200 bg-white p-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Restricted evidence review</p><h2 className="mt-1 font-bold text-[#173653]">Signed consent verification queue</h2><p className="mt-1 text-[11px] text-slate-500">Inspect the original private document and verify its version, patient reference, purpose and signatures before deciding.</p></div><button onClick={()=>loadConsentReviewQueue().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh evidence</button></div><div className="mt-3 space-y-3">{consentReviewQueue.map(item=><article key={item.evidence_id} className="rounded-xl border border-slate-100 p-3"><p className="text-xs font-semibold">{item.purpose==="clinical_care"?"Clinical-care consent":"Public-case publication consent"} · {item.patient_reference}</p><p className="mt-1 text-[10px] text-slate-500">Submitted {new Date(item.submitted_at).toLocaleString()} · {item.content_type} · {Math.round(item.declared_size_bytes/1024)} KB</p><button onClick={()=>openConsentEvidence(item.object_path)} disabled={busy} className="mt-2 rounded-lg border border-slate-200 px-3 py-2 text-[10px] font-semibold">Open private signed document</button><textarea value={consentReviewNote} onChange={e=>setConsentReviewNote(e.target.value)} rows={2} maxLength={2000} placeholder="Reviewer verification note (required)" className="mt-2 w-full rounded-lg border border-slate-200 p-2 text-xs"/><div className="mt-2 flex gap-2"><button disabled={busy||consentReviewNote.trim().length<5} onClick={()=>reviewConsentEvidence(item.evidence_id,"verified")} className="rounded-lg bg-teal-700 px-3 py-2 text-[10px] font-bold text-white disabled:opacity-40">Verify consent</button><button disabled={busy||consentReviewNote.trim().length<5} onClick={()=>reviewConsentEvidence(item.evidence_id,"rejected")} className="rounded-lg border border-red-200 px-3 py-2 text-[10px] font-semibold text-red-700 disabled:opacity-40">Reject evidence</button></div></article>)}{consentReviewQueue.length===0&&<p className="rounded-lg bg-slate-50 p-3 text-xs text-slate-500">No consent documents awaiting review.</p>}</div></section>
         <div className="mt-4 space-y-3">
           {reviewerCases.map(item=><article key={item.case_id} className="rounded-xl border border-slate-200 p-4">
             <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="text-sm font-bold text-[#173653]">{item.case_title}</h3><p className="mt-1 text-[10px] text-slate-500">{item.condition_label} · {item.age_band ?? "Age not reported"} · Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleDateString() : "date unavailable"}</p></div><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold">{item.status}</span></div>
