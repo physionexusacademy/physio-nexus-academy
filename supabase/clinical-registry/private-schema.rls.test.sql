@@ -1,11 +1,11 @@
--- Clinical Registry private-schema RLS and workflow security tests (99 assertions)
+-- Clinical Registry private-schema RLS and workflow security tests (100 assertions)
 -- pgTAP security tests for the private Clinical Registry prototype.
 -- Run only against a disposable local Supabase database with synthetic UUIDs.
 
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(99);
+select plan(100);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -28,7 +28,7 @@ select ok(
    from pg_policies
    where schemaname='clinical_private'
      and tablename='case_library_entries'
-     and policyname='reviewer_updates_case_workflow'),
+     and policyname='case_owner_or_reviewer_updates_workflow'),
   'case workflow UPDATE policy requires a current reviewer with AAL2'
 );
 select ok(
@@ -36,8 +36,16 @@ select ok(
      from pg_policies
      where schemaname='clinical_private'
        and tablename='case_library_entries'
-       and policyname='reviewer_reads_case_workflow'),
+       and policyname='case_owner_or_reviewer_reads_submissions'),
   'case workflow SELECT policy makes submitted rows visible only to current AAL2 reviewers'
+);
+select is(
+  (select count(*)::int from pg_policies
+   where schemaname='clinical_private'
+     and tablename='case_library_entries'
+     and cmd in ('SELECT','UPDATE')),
+  2,
+  'case library owner and reviewer access is consolidated to one SELECT and one UPDATE policy'
 );
 
 insert into auth.users (
