@@ -17,6 +17,7 @@ AS $function$
 DECLARE
   v_id uuid;
   v_latest clinical_private.patient_consent_events%rowtype;
+  v_prior_event_id uuid := NULL;
 BEGIN
   IF (select auth.uid()) IS NULL THEN
     RAISE EXCEPTION 'Authentication required' USING errcode = '42501';
@@ -51,10 +52,12 @@ BEGIN
   IF p_status = 'withdrawn' THEN
     IF v_latest.id IS NULL
       OR v_latest.consent_status <> 'granted'
-      OR p_prior_event_id IS DISTINCT FROM v_latest.id THEN
+      OR (p_prior_event_id IS NOT NULL AND p_prior_event_id IS DISTINCT FROM v_latest.id) THEN
       RAISE EXCEPTION 'Withdrawal must reference the latest active consent grant'
         USING errcode = '22023';
     END IF;
+    -- Resolve the latest grant server-side when callers omit the prior event.
+    v_prior_event_id := v_latest.id;
   ELSIF p_prior_event_id IS NOT NULL THEN
     RAISE EXCEPTION 'A new consent grant cannot reference a prior event'
       USING errcode = '22023';
@@ -66,7 +69,7 @@ BEGIN
   )
   VALUES (
     p_patient_id, (select auth.uid()), p_purpose, p_status,
-    trim(p_consent_version), p_capture_method, p_prior_event_id
+    trim(p_consent_version), p_capture_method, v_prior_event_id
   )
   RETURNING id INTO v_id;
 
