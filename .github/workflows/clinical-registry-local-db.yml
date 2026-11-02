@@ -83,7 +83,7 @@ jobs:
               done
             ROOT_MIGRATION_SOURCE="$GITHUB_WORKSPACE/supabase/migrations"
             if [ -d "$ROOT_MIGRATION_SOURCE" ]; then
-              find "$ROOT_MIGRATION_SOURCE" -maxdepth 1 -type f \\
+              find "$ROOT_MIGRATION_SOURCE" -maxdepth 1 -type f \
                 \( -name '*_registry_*.sql' -o -name '*_clinical_registry_*.sql' \) -print0 | sort -z |
                 while IFS= read -r -d '' SOURCE_MIGRATION; do
                   TARGET_MIGRATION="$REGISTRY_TEST_DIR/supabase/migrations/$(basename "$SOURCE_MIGRATION")"
