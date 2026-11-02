@@ -84,8 +84,9 @@ select ok((select evidence_id is not null from clinical_api.create_consent_evide
   'application/pdf', 1024
 )), 'verified therapist can create an owner-scoped consent evidence request');
 select is((select count(*)::int from clinical_api.list_my_consent_evidence()
-  where patient_reference='TEST-CONSENT-001' and status='pending_review'),
-  1, 'owner can see their pending consent evidence metadata');
+  where patient_reference='TEST-CONSENT-001' and status='pending_review'
+    and integrity_verified_at is null),
+  1, 'owner can see pending consent metadata and its unverified integrity state');
 select throws_ok(
   $review_queue$select * from clinical_api.list_consent_evidence_for_review()$review_queue$,
   '42501', null, 'ordinary therapist cannot access the consent reviewer queue');
