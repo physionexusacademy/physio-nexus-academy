@@ -1,4 +1,4 @@
--- Clinical Registry private-schema RLS and workflow security tests (100 assertions)
+-- Clinical Registry private-schema RLS and workflow security tests (91 assertions)
 -- pgTAP security tests for the private Clinical Registry prototype.
 -- Run only against a disposable local Supabase database with synthetic UUIDs.
 
