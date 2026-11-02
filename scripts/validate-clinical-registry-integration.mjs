@@ -11,12 +11,14 @@ const clientPath = "src/lib/clinical-registry/client.ts";
 const securePath = "src/app/clinical-registry/ClinicalRegistrySecureClient.tsx";
 const libraryPath = "src/app/clinical-registry/library/page.tsx";
 const deployPath = ".github/workflows/deploy-cloudflare-production.yml";
+const configPath = "supabase/clinical-registry/supabase/config.toml";
 
 const route = read(routePath);
 const client = read(clientPath);
 const secure = read(securePath);
 const library = read(libraryPath);
 const deploy = read(deployPath);
+const config = read(configPath);
 
 assert(
   "Registry route uses the secure client",
@@ -36,6 +38,16 @@ assert(
     !client.includes("NEXT_PUBLIC_SUPABASE_ANON_KEY") &&
     !client.includes("SERVICE_ROLE"),
   "The Registry client must never fall back to the main PNA Supabase project or a privileged key."
+);
+assert(
+  "Browser client selects the clinical API schema",
+  client.includes('db: { schema: "clinical_api" }'),
+  "All browser RPC calls must target the dedicated clinical_api schema."
+);
+assert(
+  "Private schema is not exposed by PostgREST",
+  config.includes('schemas = ["clinical_api"]') && !/^schemas\s*=.*clinical_private/m.test(config),
+  "Only clinical_api may be exposed through the Data API; clinical_private stays hidden."
 );
 assert(
   "Public library uses the dedicated Registry project",
