@@ -7,7 +7,7 @@
 - Fifteen migrations are recorded in hosted staging.
 - Hosted staging currently has zero Auth users, therapist memberships, patients, clinical reports, consent events, consent evidence records, and public case entries. The private consent bucket has zero objects.
 - Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE with JWT verification enabled.
-- Latest verified workflow: GitHub Actions #245 / run `41422997869` on commit `cb257c697f52358730c01d8a018093cda40e2c6c`, success: website/Registry TypeScript, Deno Edge Function type-check, isolated migrations, 81/81 pgTAP assertions, disposable backup/restore and cleanup. This is automated test evidence, not hosted browser E2E or production acceptance.
+- Latest fully passed checks before the new static guard: Registry security workflow #258 / run `41427219214` and production build workflow #17 / run `41427219283`, both on commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, 81/81 pgTAP assertions, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. New integration guard CI #261 and build #24 are pending on the latest code. These are automated test results, not hosted browser E2E or production acceptance.
 - PR #156 remains a draft and unmerged. It is not deployed to the production website.
 
 ## Architecture and access boundaries
@@ -15,7 +15,7 @@
 - Browser client and public library use `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` plus the preferred `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` (or the legacy `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY` fallback). Both keys must belong to the dedicated Registry project.
 - The Cloudflare production build workflow reads `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL` and `NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY` from GitHub Actions repository secrets. Add both using the dedicated Registry project values only; do not reuse the main PNA website project URL/key. Missing values intentionally leave Registry unavailable without blocking unrelated PNA deployment.
 - The deployment workflow reads `CLINICAL_REGISTRY_CONSENT_VERSION` from a GitHub Actions repository variable. Keep it empty until the exact institution/ethics-approved form version is approved. No service-role or secret key is used by the browser Registry client.
-- `clinical_api` is the intended PostgREST API schema. `clinical_private` is not exposed to browser clients.
+- `clinical_api` is exposed to PostgREST (`pgrst.db_schemas=public, clinical_api` verified on the hosted `authenticator` role); `anon` and `authenticated` have schema usage, and `anon` can execute only the intended public-list RPC. `clinical_private` is not exposed to browser clients.
 - Private clinical tables have RLS enabled and forced. Anonymous clients have no direct private-table access. Therapists are restricted to their own patient/report records.
 - Therapist verification, case review, signed-consent review and operator actions use distinct trusted roles. Role claims must be placed in Supabase Auth `app_metadata` by a trusted administrator; never use user-editable `user_metadata`.
 - The service-role key is backend-only. Never put it in source control, browser code, `NEXT_PUBLIC_*`, Cloudflare client variables or logs.
@@ -52,21 +52,23 @@
 Hosted Auth has no users yet. Before any real therapist is onboarded:
 
 1. Configure the Auth Site URL and exact redirect allowlist for the Registry and its password recovery flow.
-2. Configure email confirmation, production SMTP, password recovery, session lifetime, sign-in rate limits and abuse monitoring.
+2. Set the Auth Site URL to `https://physionexusacademy.com` and allow the exact redirect `https://physionexusacademy.com/clinical-registry` (the app adds `?recovery=1` for password recovery). Add the exact Preview origin only when a protected Preview URL exists. Enable the Email provider, require email confirmation, keep anonymous sign-ins disabled, configure production SMTP and recovery templates, and review session lifetime, rate limits and abuse monitoring.
 3. Create the first trusted operator only through the approved administrator process.
 4. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action.
 5. Assign reviewer role only to named, authorised reviewers. Do not give every therapist a reviewer/operator role.
-6. Enforce MFA for operator/reviewer accounts and document account recovery and revocation.
+6. Enrol and require MFA for operator/reviewer accounts. **Current code still needs a database-side AAL2 check on every privileged operator/reviewer RPC and RLS policy before any privileged role is assigned.** Do not create/assign privileged roles until that enforcement and its tests are in place; a Dashboard MFA toggle alone is not proof of backend enforcement.
 7. Independently verify every therapist's identity and professional registration before activating membership.
 
-The Supabase MCP integration does not expose Auth user administration or project Auth settings in this workflow. These exact settings require the project owner/operator in the Supabase Dashboard or an approved Admin API client.
+The available Supabase connection can inspect the database, migrations, project URL and publishable keys, but it does not expose Auth user administration or project Auth settings. The settings above require the project owner/operator in the Supabase Dashboard or an approved Admin API client. GitHub Actions repository secrets are also not exposed to the connected GitHub integration; the owner must add them directly in repository Settings → Secrets and variables → Actions.
 
 ## Testing and acceptance
 
 ### Already passed
 - Hosted rollback-only SQL tests for cross-therapist isolation, wrong-owner consent denial, purpose separation, case submission/review/publication and withdrawal.
 - Hosted role-separation tests proving ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
-- Local disposable CI run #245: TypeScript, Deno Edge Function type-check, migrations, 81 pgTAP assertions, backup/restore and cleanup.
+- Local disposable CI run #258: TypeScript, Deno Edge Function type-check, secure-only route guard, migrations, 81 pgTAP assertions, backup/restore and cleanup.
+- Cloudflare production build workflow #17: dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build.
+- Hosted read-only checks: `clinical_api` is exposed to PostgREST; expected schema usage and public RPC execute grants are present; all Registry Auth users, therapist memberships, patients, reports, consent events/evidence, public cases and consent Storage objects remain at zero.
 
 ### Still required
 - Hosted authenticated end-to-end testing with disposable therapist/reviewer identities and synthetic consent files.
@@ -94,6 +96,6 @@ Keep `SIGNED_CONSENT_FORM_APPROVED = false` and `SIGNED_CONSENT_EVIDENCE_WORKFLO
 - Trusted operator/reviewer identities, Auth settings and MFA configured.
 - Hosted end-to-end tests and independent security review passed.
 - Protected browser Preview and production acceptance passed.
-- PR #151 is now based on `cloudflare-deploy` and GitHub reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative final head is The cumulative feature stack is 4 commits behind `cloudflare-deploy`; the complete stack still needs final diff/build review and explicit merge/deploy approval.
+- PR #151 targets `cloudflare-deploy`; PRs #152–#156 remain stacked on their preceding feature branches. Preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The cumulative stack remains a draft and unmerged; review the complete diff and obtain explicit approval before merging or deploying.
 
 Do not enter real patient data, upload real signed forms, publish cases, merge PR #156 or deploy to production before those gates are closed.
