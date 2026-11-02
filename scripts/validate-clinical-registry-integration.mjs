@@ -188,16 +188,16 @@ assert(
 );
 assert(
   "Consent grants use authenticated therapist attestations",
-  read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("create_patient_with_consent_attestation") &&
-    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("record_publication_consent_attestation") &&
-    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("Active verified therapist membership required"),
+  read("supabase/clinical-registry/supabase/migrations/20261102280000_clinical_registry_lightweight_consent_attestation.sql").includes("create_patient_with_consent_attestation") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102280000_clinical_registry_lightweight_consent_attestation.sql").includes("record_publication_consent_attestation") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102280000_clinical_registry_lightweight_consent_attestation.sql").includes("Active verified therapist membership required"),
   "Only active verified therapists can create the minimal consent audit events."
 );
 assert(
   "Patient creation requires explicit written-consent attestation",
-  read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("p_written_consent_confirmed") &&
-    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("Confirm that written clinical-care consent has been obtained") &&
-    read("supabase/clinical-registry/supabase/migrations/20261102211710_clinical_registry_lightweight_consent_attestation.sql").includes("revoke all on function clinical_api.create_patient_with_consent_attestation"),
+  read("supabase/clinical-registry/supabase/migrations/20261102280000_clinical_registry_lightweight_consent_attestation.sql").includes("p_written_consent_confirmed") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102280000_clinical_registry_lightweight_consent_attestation.sql").includes("Confirm that written clinical-care consent has been obtained") &&
+    read("supabase/clinical-registry/supabase/migrations/20261102280000_clinical_registry_lightweight_consent_attestation.sql").includes("revoke all on function clinical_api.create_patient_with_consent_attestation"),
   "Patient creation is atomic and requires a therapist attestation; direct patient inserts remain revoked."
 );
 assert(
