@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - registry-preview
+    paths:
+      - ".github/workflows/deploy-clinical-registry-preview.yml"
+      - "src/**"
+      - "public/**"
+      - "scripts/**"
+      - "supabase/clinical-registry/**"
+      - "next.config.js"
+      - "wrangler.jsonc"
+      - "wrangler.registry-preview.jsonc"
+      - "package.json"
+      - "package-lock.json"
   workflow_dispatch:
 
 permissions:
@@ -87,16 +98,43 @@ jobs:
             echo "This is an isolated Worker. It does not attach to the production custom domain."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Smoke-test Registry routes
+      - name: Smoke-test Registry routes and preview headers
         env:
           PREVIEW_URL: ${{ steps.preview.outputs.url }}
         run: |
           set -euo pipefail
           registry_html="$(mktemp)"
           library_html="$(mktemp)"
-          trap 'rm -f "$registry_html" "$library_html"' EXIT
-          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 "$PREVIEW_URL/clinical-registry" -o "$registry_html"
+          registry_headers="$(mktemp)"
+          trap 'rm -f "$registry_html" "$library_html" "$registry_headers"' EXIT
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 -D "$registry_headers" "$PREVIEW_URL/clinical-registry" -o "$registry_html"
           grep -Fq "Clinical Registry" "$registry_html"
+          grep -Fqi "x-robots-tag: noindex, nofollow" "$registry_headers"
           curl --fail --silent --show-error --location --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30 "$PREVIEW_URL/clinical-registry/library" -o "$library_html"
           grep -Fq "Public Clinical Case Library" "$library_html"
-          echo "Both Registry routes returned the expected content."
+          echo "Both Registry routes returned the expected content; preview noindex header is present."
+
+      - name: Verify exact-origin consent verifier CORS
+        env:
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
+          REGISTRY_SUPABASE_URL: https://zfoohwqyoengbszuylxj.supabase.co
+        run: |
+          set -euo pipefail
+          allowed_headers="$(mktemp)"
+          denied_headers="$(mktemp)"
+          trap 'rm -f "$allowed_headers" "$denied_headers"' EXIT
+          function_url="$REGISTRY_SUPABASE_URL/functions/v1/verify-consent-evidence"
+          curl --silent --show-error --output /dev/null --dump-header "$allowed_headers" -X OPTIONS \
+            -H "Origin: $PREVIEW_URL" \
+            -H "Access-Control-Request-Method: POST" \
+            "$function_url"
+          grep -Fqi "access-control-allow-origin: $PREVIEW_URL" "$allowed_headers"
+          curl --silent --show-error --output /dev/null --dump-header "$denied_headers" -X OPTIONS \
+            -H "Origin: https://not-allowed.invalid" \
+            -H "Access-Control-Request-Method: POST" \
+            "$function_url"
+          if grep -Fqi "access-control-allow-origin: https://not-allowed.invalid" "$denied_headers"; then
+            echo "::error::Consent verifier accepted an unlisted CORS origin."
+            exit 1
+          fi
+          echo "Consent verifier allows the exact Preview origin and denies an unlisted origin."
