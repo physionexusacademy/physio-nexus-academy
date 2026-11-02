@@ -14,6 +14,7 @@ const deployPath = ".github/workflows/deploy-cloudflare-production.yml";
 const configPath = "supabase/clinical-registry/supabase/config.toml";
 const mfaMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102190000_clinical_registry_privileged_mfa_enforcement.sql";
 const rlsTestPath = "supabase/clinical-registry/private-schema.rls.test.sql";
+const fkIndexMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102200000_clinical_registry_foreign_key_indexes.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -23,6 +24,7 @@ const deploy = read(deployPath);
 const config = read(configPath);
 const mfaMigration = read(mfaMigrationPath);
 const rlsTests = read(rlsTestPath);
+const fkIndexMigration = read(fkIndexMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -132,6 +134,11 @@ assert(
   mfaMigration.includes("auth.jwt() ->> 'aal') = 'aal2'") &&
     (mfaMigration.match(/perform clinical_private\.require_registry_aal2\(\);/g) ?? []).length === 10,
   "All ten privileged reviewer/operator RPCs must enforce MFA in the database, not only in the UI."
+);
+assert(
+  "All advisor-identified foreign keys receive a narrow index",
+  (fkIndexMigration.match(/create index if not exists idx_fk_/g) ?? []).length === 27,
+  "Create only the 27 missing foreign-key indexes; retain the currently unused index until workload data exists."
 );
 assert(
   "Database security tests cover both AAL1 denial and AAL2 success",
