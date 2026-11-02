@@ -4,10 +4,10 @@
 
 - Dedicated hosted project: **PNA Clinical Registry**, Singapore, ref `zfoohwqyoengbszuylxj`; current status `ACTIVE_HEALTHY`.
 - This project is separate from the PNA website Supabase project. Never substitute the website's credentials or replay website migrations into this project.
-- Fifteen migrations are recorded in hosted staging.
+- Twenty-four migrations are recorded in hosted staging, including the latest AAL2/live-role, consent-enforcement, 27 foreign-key index, reviewer-read and consolidated case-library policy migrations.
 - Hosted staging currently has zero Auth users, therapist memberships, patients, clinical reports, consent events, consent evidence records, and public case entries. The private consent bucket has zero objects.
-- Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE with JWT verification enabled.
-- Latest fully passed checks before the new static guard: Registry security workflow #258 / run `41427219214` and production build workflow #17 / run `41427219283`, both on commit `a29e3bb7e03b0e9ec0a108fc999b177264241f5f`. The Registry run passed TypeScript, Deno, secure-route guard, isolated migrations, 81/81 pgTAP assertions, disposable backup/restore and cleanup. The build run passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build. The latest integration guard and PostgREST schema-isolation check passed in CI #265 / run `41429152642`; the latest Next.js/OpenNext build passed in #32 / run `41429152617`. These are automated test results, not hosted browser E2E or production acceptance.
+- Supabase Edge Function `verify-consent-evidence` is deployed and ACTIVE at version 2 with JWT verification enabled. The deployed code supports exact HTTPS origins from the server-side `REGISTRY_ALLOWED_ORIGINS` secret; production origins remain built in.
+- Latest feature-branch head `02899b4c31d38bda2db4fd8497871c91c4524c98` passed Registry security workflow run `41461518799` (100/100 pgTAP assertions, isolated migrations, disposable backup/restore and cleanup), dependency/build run `41461518640` (dependency audit, TypeScript, Next.js and OpenNext Cloudflare build), and the Cloudflare Workers build check. These are automated checks, not hosted browser E2E or production acceptance.
 - PR #156 remains a draft and unmerged. It is not deployed to the production website.
 
 ## Architecture and access boundaries
@@ -59,7 +59,7 @@ Hosted Auth has no users yet. Before any real therapist is onboarded:
 5. Review session lifetime, rate limits and abuse monitoring.
 6. Create the first trusted operator only through the approved administrator process, after the live-role/AAL2 migrations have passed CI and have been applied to the dedicated hosted Registry project.
 7. Assign `app_metadata.registry_role = operator` to that account through a trusted Dashboard/Admin API action. Assign reviewer role only to named, authorised reviewers; never give every therapist a reviewer/operator role.
-8. Enrol and verify TOTP for every operator/reviewer account before enabling privileged work. The current feature branch adds database-side AAL2 checks to all ten privileged RPCs, current Auth app_metadata checks to defeat stale JWT role claims, and matching protections for consent-table RLS, Storage downloads and the case-workflow trigger. These protections are not active on the hosted project until the migrations are deployed.
+8. Enrol and verify TOTP for every operator/reviewer account before enabling privileged work. The hosted staging project now has database-side AAL2 checks on privileged RPCs, live Auth app_metadata role checks to defeat stale JWT role claims, and matching protections for consent-table RLS, Storage downloads and the case-workflow trigger; these migrations have been applied and recorded.
 9. Independently verify every therapist's identity and professional registration before activating membership.
 
 The available Supabase connection can inspect the database, migrations, project URL and publishable keys, but it does not expose Auth user administration or project Auth settings. The settings above require the project owner/operator in the Supabase Dashboard or an approved Admin API client. GitHub Actions repository secrets are also not exposed to the connected GitHub integration; the owner must add them directly in repository Settings → Secrets and variables → Actions.
@@ -69,7 +69,7 @@ The available Supabase connection can inspect the database, migrations, project 
 ### Already passed
 - Hosted rollback-only SQL tests for cross-therapist isolation, wrong-owner consent denial, purpose separation, case submission/review/publication and withdrawal.
 - Hosted role-separation tests proving ordinary therapists cannot access reviewer/operator queues and reviewer/operator roles cannot cross into each other's queues.
-- Historical baseline CI run #265 passed TypeScript, Deno Edge Function type-check, secure-route and PostgREST schema-isolation guards, migrations, 81 pgTAP assertions, backup/restore and cleanup. The current branch has since expanded the suite to 89 assertions and added further authorization/CORS guards; treat the current head as unverified until its own latest CI runs pass.
+- Historical baseline CI run #265 passed TypeScript, Deno Edge Function type-check, secure-route and PostgREST schema-isolation guards, migrations, 81 pgTAP assertions, backup/restore and cleanup. The current branch now passes 100/100 assertions on its latest head, including live-role, consent-review RLS, reviewer SELECT visibility and consolidated owner/reviewer policy checks.
 - Historical Cloudflare build workflow #32 passed dependency audit, TypeScript, Next.js build and OpenNext Cloudflare build. The current head must pass its own latest build workflow before release.
 - Hosted read-only checks: `clinical_api` is exposed to PostgREST; expected schema usage and public RPC execute grants are present; all Registry Auth users, therapist memberships, patients, reports, consent events/evidence, public cases and consent Storage objects remain at zero.
 
@@ -87,7 +87,7 @@ The current hosted project has no Auth identities or consent objects, and the av
 
 Latest Advisor read:
 - Seven INFO-level `rls_enabled_no_policy` notices relate to intentionally private internal/governance tables. Do not add broad policies just to silence them.
-- Twenty-seven unindexed foreign-key notices and one unused-index notice remain. Review after representative synthetic workload and query plans exist; do not add/drop indexes speculatively on an empty database.
+- The 27 advisor-identified foreign-key indexes have been applied, and the duplicate permissive case-library SELECT/UPDATE policies have been consolidated. The advisor now reports 28 unused indexes because the staging tables are empty (27 new FK indexes plus one pre-existing index); do not remove them until representative workload and query plans justify it.
 - No new consent-evidence security warning was introduced by the integrity migration.
 
 ## Product and legal release gates
