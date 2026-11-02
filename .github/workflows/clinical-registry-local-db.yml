@@ -161,6 +161,12 @@ jobs:
             --file=/tmp/clinical-registry-backup.dump
           docker exec "$DB_CONTAINER" pg_restore -U postgres --list \
             /tmp/clinical-registry-backup.dump >/dev/null
+          # The consent evidence table is referenced by two Storage RLS policies.
+          # They live on storage.objects (outside the dumped schemas), so remove
+          # only these disposable-DB policies before --clean drops clinical_private.
+          docker exec "$DB_CONTAINER" psql -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -c \
+            'DROP POLICY IF EXISTS consent_evidence_owner_upload ON storage.objects; DROP POLICY IF EXISTS consent_evidence_owner_or_reviewer_download ON storage.objects;'
           # Restore only into this disposable CI database, never a hosted project.
           docker exec "$DB_CONTAINER" pg_restore -U postgres --clean --if-exists \
             --no-owner --no-privileges --dbname=postgres \
