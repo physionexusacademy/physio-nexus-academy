@@ -4,7 +4,13 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(79);
+select plan(81);
+select ok((select relrowsecurity and relforcerowsecurity
+  from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
+  'case workflow authorization table has forced deny-by-default RLS');
+select ok((select relrowsecurity and relforcerowsecurity
+  from pg_class where oid='clinical_private.report_correction_authorizations'::regclass),
+  'report correction authorization table has forced deny-by-default RLS');
 
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
