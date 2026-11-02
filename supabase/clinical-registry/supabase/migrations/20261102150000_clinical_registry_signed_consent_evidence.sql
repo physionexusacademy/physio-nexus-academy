@@ -33,7 +33,6 @@ create table if not exists clinical_private.patient_consent_evidence (
   reviewer_note text,
   created_at timestamptz not null default now(),
   check ((status = 'verified') = (verified_at is not null and verified_by is not null)),
-  check (purpose <> 'clinical_care' or patient_id is null or patient_id is not null)
 );
 
 create index if not exists consent_evidence_owner_created_idx
@@ -299,9 +298,6 @@ begin
     v_patient_id, auth.uid(), 'clinical_care', 'granted',
     v_e.consent_version, 'written', v_e.id
   );
-  update clinical_private.patient_consent_evidence
-  set patient_id = v_patient_id
-  where id = v_e.id;
   return v_patient_id;
 end;
 $function$;
@@ -342,9 +338,6 @@ begin
     p_patient_id, auth.uid(), p_purpose, 'withdrawn',
     trim(p_consent_version), 'written', v_latest.id, v_latest.evidence_id
   ) returning id into v_id;
-  update clinical_private.patient_consent_evidence
-  set status = 'withdrawn'
-  where id = v_latest.evidence_id and owner_id = auth.uid();
   return v_id;
 end;
 $function$;
