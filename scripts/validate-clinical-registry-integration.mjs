@@ -46,7 +46,7 @@ assert(
 );
 assert(
   "Private schema is not exposed by PostgREST",
-  config.includes('schemas = ["clinical_api"]') && !/^schemas\s*=.*clinical_private/m.test(config),
+  config.includes('schemas = ["clinical_api"]') && !/^schemas\\s*=.*clinical_private/m.test(config),
   "Only clinical_api may be exposed through the Data API; clinical_private stays hidden."
 );
 assert(
@@ -76,6 +76,36 @@ assert(
     deploy.includes("NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY") &&
     deploy.includes("NEXT_PUBLIC_CLINICAL_REGISTRY_CONSENT_VERSION"),
   "Registry configuration must be wired from dedicated build-time secrets/variables."
+);
+assert(
+  "Password recovery sends a reset email to the allowlisted Registry route",
+  secure.includes("client.auth.resetPasswordForEmail(email.trim(), { redirectTo })") &&
+    secure.includes("/clinical-registry?recovery=1"),
+  "The reset email must return to the dedicated Clinical Registry recovery route."
+);
+assert(
+  "Password recovery event opens the new-password screen",
+  secure.includes('event === "PASSWORD_RECOVERY"') &&
+    secure.includes("if (recoveryMode) return"),
+  "A valid Supabase recovery event must display the password update form."
+);
+assert(
+  "Recovered password is updated securely and the recovery session is closed",
+  secure.includes("client.auth.updateUser({ password: newPassword })") &&
+    secure.includes("await client.auth.signOut()"),
+  "The new password must be saved before the recovery session is signed out."
+);
+assert(
+  "Recovery form enforces the Registry password length",
+  secure.includes("newPassword.length < 12") &&
+    secure.includes('minLength={12}') &&
+    secure.includes("Choose a password with at least 12 characters."),
+  "Recovery must enforce the same 12-character minimum used at registration."
+);
+assert(
+  "Recovery email response does not disclose whether an account exists",
+  secure.includes("If an account exists for this email, a password-reset link has been sent."),
+  "The UI must not reveal whether an email address is registered."
 );
 
 for (const check of checks) {
