@@ -443,4 +443,22 @@ using (
   )
 );
 
+-- Keep the private evidence table's own RLS policies aligned with the RPC,
+-- Storage and trigger role checks. Owners retain access to their own evidence.
+drop policy if exists consent_evidence_owner_or_reviewer_read
+  on clinical_private.patient_consent_evidence;
+create policy consent_evidence_owner_or_reviewer_read
+on clinical_private.patient_consent_evidence for select to authenticated
+using (
+  owner_id = (select auth.uid())
+  or clinical_private.is_current_registry_reviewer_aal2()
+);
+
+drop policy if exists consent_evidence_reviewer_update
+  on clinical_private.patient_consent_evidence;
+create policy consent_evidence_reviewer_update
+on clinical_private.patient_consent_evidence for update to authenticated
+using (clinical_private.is_current_registry_reviewer_aal2())
+with check (clinical_private.is_current_registry_reviewer_aal2());
+
 commit;
