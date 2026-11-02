@@ -401,7 +401,7 @@ export function ClinicalRegistrySecureClient() {
     setError("");
     setNotice("");
     const normalizedEmail = email.trim();
-    if (!normalizedEmail || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail)) {
+    if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setError("Enter a valid professional email address.");
       return;
     }
