@@ -5,7 +5,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(100);
+select plan(103);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -138,6 +138,21 @@ set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 
+select throws_ok(
+  $final_report_insert$insert into clinical_private.clinical_reports
+    (patient_id, owner_id, category, condition, status, finalised_at)
+    values ('20000000-0000-4000-8000-000000000001',
+      '10000000-0000-4000-8000-000000000001',
+      'Musculoskeletal','Forged final report','final',now())$final_report_insert$,
+  '42501', null, 'new clinical reports cannot be inserted as final');
+select throws_ok(
+  $archived_report_insert$insert into clinical_private.clinical_reports
+    (patient_id, owner_id, category, condition, status, archived_at)
+    values ('20000000-0000-4000-8000-000000000001',
+      '10000000-0000-4000-8000-000000000001',
+      'Musculoskeletal','Forged archived report','archived',now())$archived_report_insert$,
+  '42501', null, 'new clinical reports cannot be inserted as archived');
+
 select ok(not has_table_privilege('anon','clinical_private.patient_consent_evidence','SELECT'),
   'anonymous role cannot read consent evidence metadata');
 select ok(not has_table_privilege('authenticated','clinical_private.patient_consent_evidence','UPDATE'),
@@ -205,6 +220,10 @@ select throws_ok(
       'Musculoskeletal','Cross-tenant attempt'
     )$cross_owner_report$,
   '42501', null, 'therapist A cannot create a report against therapist B patient');
+select ok(clinical_api.create_report(
+  '20000000-0000-4000-8000-000000000001',
+  'Musculoskeletal','Draft report created through the Registry RPC'
+) is not null, 'verified therapist can create a new report through the normal RPC');
 
 select throws_ok(
   $provision_sql$select clinical_api.provision_verified_therapist(
