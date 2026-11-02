@@ -214,11 +214,23 @@ export function ClinicalRegistrySecureClient() {
 
   useEffect(() => {
     if (!client) return;
+    const recoveryErrorCode = new URL(window.location.href).searchParams.get("error_code");
+    if (recoveryErrorCode) {
+      setError(
+        recoveryErrorCode === "otp_expired"
+          ? "This password-reset link has expired. Request a new link and use it promptly."
+          : "This password-reset link is invalid or has already been used. Request a new link."
+      );
+    }
     let mounted = true;
     client.auth.getSession().then(({ data }) => { if (mounted) setSession(data.session); });
     const { data: authListener } = client.auth.onAuthStateChange((event, nextSession) => {
       if (!mounted) return;
-      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+      if (event === "PASSWORD_RECOVERY") {
+        setRecoveryMode(true);
+        setError("");
+        setNotice("");
+      }
       if (event === "SIGNED_OUT") setRecoveryMode(false);
       setSession(nextSession); setMembership(null); setPatients([]); setReports([]); setSelectedPatient(null); setSelectedReport(null);
     });
