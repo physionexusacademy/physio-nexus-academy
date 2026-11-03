@@ -450,7 +450,7 @@ export function ClinicalRegistrySecureClient() {
     setError("");
     setNotice("");
     const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail)) {
+    if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setError("Enter a valid professional email address before creating your account.");
       return;
     }
