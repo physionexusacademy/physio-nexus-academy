@@ -599,8 +599,8 @@ insert into clinical_private.therapist_verification_requests(
 set local role authenticated;
 select throws_ok(
   $operator_self_approval$select clinical_api.review_therapist_verification_request(
-    (select id from clinical_private.therapist_verification_requests
-     where user_id='10000000-0000-4000-8000-000000000004'),
+    (select item.request_id from clinical_api.list_therapist_verification_queue() as item
+     where item.user_id='10000000-0000-4000-8000-000000000004' limit 1),
     'approved','https://regulator.example.invalid/verification/SELF',
     'Attempted self approval',true,true)$operator_self_approval$,
   '42501', null, 'operator cannot approve their own therapist application');
