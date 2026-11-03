@@ -1182,7 +1182,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
  outcomes:["The child improved in four of five measured outcomes, including timed sitting balance and modified 5-times sit-to-stand and 9-hole peg tests.","The report also described improved assistance with transfers, independent sitting and use of both hands during play and self-care tasks."],
  clinicalLessons:["For children with significant motor limitations, intensive programmes can combine postural control, mobility and upper-limb practice.","Choose outcomes that reflect participation and meaningful daily tasks, not only isolated movement tests.","Adaptive equipment and family-centred goals may be important components of paediatric rehabilitation."],
  limitations:["Single case report; it cannot establish the superiority or optimal dose of intensive therapy.","The abstract does not provide all numerical outcome values or long-term follow-up."]
-}
+},
 
 
 {
