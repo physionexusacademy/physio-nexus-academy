@@ -185,6 +185,8 @@ jobs:
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
           # Case Lab currently ships the real-patients-v1 library signature.
           check_url "https://physionexusacademy.com/case-lab" "PNA · RESEARCH CASE LIBRARY"
+          check_url "https://physionexusacademy.com/case-lab" "Physiotherapy Care for the Long-Term Sequelae of Electrical Thermal Injury With 12-Month Follow-Up: A Case Report"
+          check_url "https://physionexusacademy.com/case-lab/research/electrical-injury-long-term-physiotherapy" "THE CASE IN PLAIN ENGLISH"
           check_url "https://physionexusacademy.com/case-lab/research/plantar-fasciitis-rehabilitation" "THE CASE IN PLAIN ENGLISH"
           check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
