@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Rebuilds complete Phase 1 apply script from 4 base64 parts, then runs it.
+ * Rebuilds complete Phase 1 apply script from 19 base64 parts, then runs it.
  *   node scripts/bootstrap-phase1.mjs
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -10,8 +10,8 @@ import { execSync } from "node:child_process";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const parts = [];
-for (let i = 0; i < 4; i++) {
-  const p = join(root, `scripts/phase1-complete.${i}.b64`);
+for (let i = 0; i < 19; i++) {
+  const p = join(root, `scripts/phase1-s${i}.b64`);
   if (!existsSync(p)) {
     console.error("Missing required file:", p);
     process.exit(1);
