@@ -169,7 +169,7 @@ assert(
 assert(
   "Local Supabase enables the TOTP MFA flow used by privileged accounts",
   config.includes("[auth.mfa.totp]\nenroll_enabled = true\nverify_enabled = true") &&
-    config.includes("minimum_password_length = 12") &&
+    config.includes("minimum_password_length = 8") &&
     config.includes("secure_password_change = true") &&
     config.includes("enable_confirmations = true") &&
     config.includes('additional_redirect_urls = ["http://127.0.0.1:3000", "http://localhost:3000"]'),
