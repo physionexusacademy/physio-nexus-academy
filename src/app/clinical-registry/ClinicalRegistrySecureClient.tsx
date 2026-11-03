@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import type { Session } from "@supabase/supabase-js";
 import { BookOpen, FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
+import { ClinicalDocumentationForms } from "./ClinicalDocumentationForms";
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
 type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
@@ -52,13 +53,28 @@ export function ClinicalRegistrySecureClient() {
   const [careConsentConfirmed, setCareConsentConfirmed] = useState(false);
   const [category, setCategory] = useState("Musculoskeletal");
   const [condition, setCondition] = useState("");
-  const [assessmentJson, setAssessmentJson] = useState('{\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
-  const [followUpJson, setFollowUpJson] = useState('{\n  "date": "",\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
-  const [interventionText, setInterventionText] = useState("");
+  // Phase 1: structured clinical fields (no raw JSON for therapists)
+  const [assessSubjective, setAssessSubjective] = useState("");
+  const [assessObjective, setAssessObjective] = useState("");
+  const [assessPainScore, setAssessPainScore] = useState("");
+  const [assessImpression, setAssessImpression] = useState("");
+  const [assessGoals, setAssessGoals] = useState("");
+  const [followUpDate, setFollowUpDate] = useState("");
+  const [followUpSubjective, setFollowUpSubjective] = useState("");
+  const [followUpObjective, setFollowUpObjective] = useState("");
+  const [followUpPainScore, setFollowUpPainScore] = useState("");
+  const [followUpNotes, setFollowUpNotes] = useState("");
+  const [interventionDate, setInterventionDate] = useState("");
+  const [interventionBodyRegion, setInterventionBodyRegion] = useState("");
+  const [interventionTechnique, setInterventionTechnique] = useState("");
+  const [interventionDosage, setInterventionDosage] = useState("");
+  const [interventionResponse, setInterventionResponse] = useState("");
+  const [interventionHomeAdvice, setInterventionHomeAdvice] = useState("");
   const [outcomeName, setOutcomeName] = useState("");
   const [outcomeCode, setOutcomeCode] = useState("");
   const [outcomeValue, setOutcomeValue] = useState("");
   const [outcomeDirection, setOutcomeDirection] = useState("lower_is_better");
+  const [outcomeUnit, setOutcomeUnit] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -614,47 +630,106 @@ export function ClinicalRegistrySecureClient() {
 
   const saveAssessment = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
-    let parsed: Record<string, unknown>;
-    try { parsed = JSON.parse(assessmentJson); } catch { setError("Initial assessment must be valid JSON."); return; }
+    if (!assessSubjective.trim() && !assessObjective.trim()) {
+      setError("Please enter at least a subjective or objective finding before saving the assessment.");
+      return;
+    }
+    const parsed: Record<string, unknown> = {
+      assessmentDate: new Date().toISOString().slice(0, 10),
+      presentingComplaint: assessSubjective.trim() || undefined,
+      objectiveFindings: assessObjective.trim() || undefined,
+      clinicalImpression: assessImpression.trim() || undefined,
+      goals: assessGoals.split(/\n|,/).map((g) => g.trim()).filter(Boolean),
+    };
+    if (assessPainScore.trim() !== "") {
+      const pain = Number(assessPainScore);
+      if (!Number.isFinite(pain) || pain < 0 || pain > 10) {
+        setError("Pain score must be a number between 0 and 10.");
+        return;
+      }
+      parsed.painScore = pain;
+    }
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
     if (saved !== true) { setError("The initial assessment was not saved. Confirm that this report is still an editable draft."); return; }
+    setAssessSubjective(""); setAssessObjective(""); setAssessPainScore(""); setAssessImpression(""); setAssessGoals("");
+    setNotice("Initial assessment saved.");
     await openReport(selectedReport.id);
   };
 
   const addFollowUp = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
-    let parsed: Record<string, unknown>;
-    try { parsed = JSON.parse(followUpJson); } catch { setError("Follow-up assessment must be valid JSON."); return; }
+    if (!followUpSubjective.trim() && !followUpObjective.trim()) {
+      setError("Please enter at least a subjective or objective note for this session.");
+      return;
+    }
+    const parsed: Record<string, unknown> = {
+      assessmentDate: followUpDate || new Date().toISOString().slice(0, 10),
+      presentingComplaint: followUpSubjective.trim() || undefined,
+      objectiveFindings: followUpObjective.trim() || undefined,
+      clinicalImpression: followUpNotes.trim() || undefined,
+    };
+    if (followUpPainScore.trim() !== "") {
+      const pain = Number(followUpPainScore);
+      if (!Number.isFinite(pain) || pain < 0 || pain > 10) {
+        setError("Pain score must be a number between 0 and 10.");
+        return;
+      }
+      parsed.painScore = pain;
+    }
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("add_followup_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
     if (saved !== true) { setError("The follow-up was not saved. Confirm that this report is still an editable draft."); return; }
+    setFollowUpDate(""); setFollowUpSubjective(""); setFollowUpObjective(""); setFollowUpPainScore(""); setFollowUpNotes("");
+    setNotice("Session / follow-up assessment saved.");
     await openReport(selectedReport.id);
   };
 
   const addIntervention = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
+    if (!interventionTechnique.trim()) {
+      setError("Please describe the technique or treatment given in this session.");
+      return;
+    }
+    const parts = [
+      interventionDate && `Date: ${interventionDate}`,
+      interventionBodyRegion && `Region: ${interventionBodyRegion}`,
+      `Technique: ${interventionTechnique.trim()}`,
+      interventionDosage && `Dosage / parameters: ${interventionDosage.trim()}`,
+      interventionResponse && `Response: ${interventionResponse.trim()}`,
+      interventionHomeAdvice && `Home advice: ${interventionHomeAdvice.trim()}`,
+    ].filter(Boolean);
+    const interventionPayload = parts.join(" | ");
     setBusy(true); setError("");
-    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionText });
+    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionPayload });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
     if (!interventionId) { setError("The intervention was not saved. Confirm that this report is still an editable draft."); return; }
-    setInterventionText(""); await openReport(selectedReport.id);
+    setInterventionDate(""); setInterventionBodyRegion(""); setInterventionTechnique(""); setInterventionDosage(""); setInterventionResponse(""); setInterventionHomeAdvice("");
+    setNotice("Intervention recorded for this session.");
+    await openReport(selectedReport.id);
   };
 
   const addOutcome = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
+    if (!outcomeName.trim() || !outcomeCode.trim()) {
+      setError("Please enter both a measure name (e.g. Pain) and a short code (e.g. NPRS).");
+      return;
+    }
     const value = Number(outcomeValue); if (!Number.isFinite(value)) { setError("Enter a valid numeric outcome value."); return; }
     setBusy(true); setError("");
-    const { data: outcomeId, error: rpcError } = await client.rpc("add_outcome", { p_report_id: selectedReport.id, p_measure_code: outcomeCode, p_measure_name: outcomeName, p_value: value, p_direction: outcomeDirection });
+    const measureLabel = outcomeName.trim() + (outcomeUnit.trim() ? ` (${outcomeUnit.trim()})` : "");
+    const { data: outcomeId, error: rpcError } = await client.rpc("add_outcome", { p_report_id: selectedReport.id, p_measure_code: outcomeCode.trim(), p_measure_name: measureLabel, p_value: value, p_direction: outcomeDirection });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
     if (!outcomeId) { setError("The outcome was not saved. Confirm that this report is still an editable draft."); return; }
-    setOutcomeName(""); setOutcomeCode(""); setOutcomeValue(""); await openReport(selectedReport.id);
+    setOutcomeName(""); setOutcomeCode(""); setOutcomeValue(""); setOutcomeUnit("");
+    setNotice("Outcome measure saved.");
+    await openReport(selectedReport.id);
   };
 
   const finaliseReport = async () => {
@@ -873,14 +948,44 @@ export function ClinicalRegistrySecureClient() {
             {reportVersions.length > 0 && <section className="mt-5 rounded-xl border border-slate-100 p-4 no-print"><h3 className="text-xs font-bold text-[#173653]">Version history</h3><p className="mt-1 text-[10px] leading-5 text-slate-500">Read-only snapshots captured automatically before report updates. Earlier versions are preserved; they cannot be edited or deleted.</p><div className="mt-3 space-y-2">{reportVersions.map(version=><details key={version.version_id} className="rounded-lg border border-slate-100 p-3"><summary className="cursor-pointer text-xs font-semibold">Revision {version.revision_number} · {new Date(version.created_at).toLocaleString()}</summary><p className="mt-2 text-[10px] text-slate-500">{version.change_reason}</p><pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-slate-50 p-3 text-[10px] leading-5">{JSON.stringify(version.snapshot,null,2)}</pre></details>)}</div></section>}
             {(selectedReport.clinicalSummary || selectedReport.dischargeStatus || (selectedReport.recommendations?.length ?? 0) > 0) && <section className="mt-5 rounded-xl border border-slate-100 p-4"><h3 className="text-xs font-bold text-[#173653]">Clinical summary and plan</h3>{selectedReport.clinicalSummary&&<p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-700">{selectedReport.clinicalSummary}</p>}{selectedReport.dischargeStatus&&<p className="mt-2 text-xs"><strong>Discharge status:</strong> {selectedReport.dischargeStatus}</p>}{(selectedReport.recommendations?.length??0)>0&&<ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-700">{selectedReport.recommendations?.map((item,i)=><li key={i}>{item}</li>)}</ul>}</section>}
             <div className="mt-4 grid gap-4 md:grid-cols-2"><div><h3 className="text-xs font-bold text-[#173653]">Initial assessment</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.initialAssessment??{},null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Follow-ups</h3><pre className="mt-2 max-h-56 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.followUpAssessments??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Interventions</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.interventions??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Outcomes</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.outcomes??[],null,2)}</pre></div></div>
-            {selectedReport.status==="draft"&&<div className="mt-5 grid gap-4 border-t border-slate-100 pt-5 xl:grid-cols-2 no-print"><form onSubmit={saveAssessment} className="space-y-2"><h3 className="text-xs font-bold">Save initial assessment (JSON)</h3><textarea value={assessmentJson} onChange={e=>setAssessmentJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save assessment</button></form><form onSubmit={addFollowUp} className="space-y-2"><h3 className="text-xs font-bold">Add follow-up (JSON)</h3><textarea value={followUpJson} onChange={e=>setFollowUpJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Add follow-up</button></form><form onSubmit={addIntervention} className="space-y-2"><h3 className="text-xs font-bold">Record intervention</h3><input required value={interventionText} onChange={e=>setInterventionText(e.target.value)} placeholder="Intervention / technique" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save intervention</button></form><form onSubmit={addOutcome} className="space-y-2"><h3 className="text-xs font-bold">Record outcome</h3><input required value={outcomeCode} onChange={e=>setOutcomeCode(e.target.value)} placeholder="Measure code (e.g. NPRS)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required value={outcomeName} onChange={e=>setOutcomeName(e.target.value)} placeholder="Measure name" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required type="number" step="any" value={outcomeValue} onChange={e=>setOutcomeValue(e.target.value)} placeholder="Measured value" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><select value={outcomeDirection} onChange={e=>setOutcomeDirection(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="lower_is_better">Lower is better</option><option value="higher_is_better">Higher is better</option><option value="descriptive">Descriptive</option></select><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save outcome</button></form></div>}
+            {selectedReport.status==="draft"&&(
+              <ClinicalDocumentationForms
+                busy={busy}
+                assessSubjective={assessSubjective} setAssessSubjective={setAssessSubjective}
+                assessObjective={assessObjective} setAssessObjective={setAssessObjective}
+                assessPainScore={assessPainScore} setAssessPainScore={setAssessPainScore}
+                assessImpression={assessImpression} setAssessImpression={setAssessImpression}
+                assessGoals={assessGoals} setAssessGoals={setAssessGoals}
+                onSaveAssessment={saveAssessment}
+                followUpDate={followUpDate} setFollowUpDate={setFollowUpDate}
+                followUpSubjective={followUpSubjective} setFollowUpSubjective={setFollowUpSubjective}
+                followUpObjective={followUpObjective} setFollowUpObjective={setFollowUpObjective}
+                followUpPainScore={followUpPainScore} setFollowUpPainScore={setFollowUpPainScore}
+                followUpNotes={followUpNotes} setFollowUpNotes={setFollowUpNotes}
+                onAddFollowUp={addFollowUp}
+                interventionDate={interventionDate} setInterventionDate={setInterventionDate}
+                interventionBodyRegion={interventionBodyRegion} setInterventionBodyRegion={setInterventionBodyRegion}
+                interventionTechnique={interventionTechnique} setInterventionTechnique={setInterventionTechnique}
+                interventionDosage={interventionDosage} setInterventionDosage={setInterventionDosage}
+                interventionResponse={interventionResponse} setInterventionResponse={setInterventionResponse}
+                interventionHomeAdvice={interventionHomeAdvice} setInterventionHomeAdvice={setInterventionHomeAdvice}
+                onAddIntervention={addIntervention}
+                outcomeName={outcomeName} setOutcomeName={setOutcomeName}
+                outcomeCode={outcomeCode} setOutcomeCode={setOutcomeCode}
+                outcomeValue={outcomeValue} setOutcomeValue={setOutcomeValue}
+                outcomeDirection={outcomeDirection} setOutcomeDirection={setOutcomeDirection}
+                outcomeUnit={outcomeUnit} setOutcomeUnit={setOutcomeUnit}
+                onAddOutcome={addOutcome}
+              />
+            )}
           </section>}
           {selectedReport && selectedPatient && <section className="rounded-2xl border border-slate-200 bg-white p-5">
             <h2 className="font-bold text-[#173653]">Correct an existing report</h2>
             <p className="mt-1 text-[11px] leading-5 text-slate-500">Only you, as the record owner, can apply a correction. Changed fields are recorded in the audit trail; the original record is not silently erased.</p>
             <form onSubmit={applyReportCorrection} className="mt-3 space-y-3">
               <textarea required minLength={5} value={correctionReason} onChange={e=>setCorrectionReason(e.target.value)} placeholder="Reason for correction" rows={2} className="w-full rounded-xl border border-slate-200 p-3 text-xs"/>
-              <textarea required value={correctionJson} onChange={e=>setCorrectionJson(e.target.value)} rows={6} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/>
+              <p className="mb-2 text-[10px] leading-4 text-slate-500">Advanced correction only. Prefer updating sessions and outcomes above when possible.</p>
+              <textarea required value={correctionJson} onChange={e=>setCorrectionJson(e.target.value)} rows={5} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]" placeholder='{"clinical_summary":"","discharge_status":"","recommendations":[]}'/>
               <p className="text-[10px] text-slate-400">Permitted keys: category, condition, clinical_summary, discharge_status, recommendations.</p>
               <button disabled={busy} className="rounded-xl border border-teal-700 px-4 py-2.5 text-xs font-bold text-teal-800 disabled:opacity-40">Submit and apply owner correction</button>
             </form>
