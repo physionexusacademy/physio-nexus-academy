@@ -1184,5 +1184,127 @@ export const publishedCaseReports: PublishedCaseReport[] = [
  limitations:["Single case report; it cannot establish the superiority or optimal dose of intensive therapy.","The abstract does not provide all numerical outcome values or long-term follow-up."]
 }
 
+
+{
+ slug:"remote-seated-exercise-post-stroke", title:"Remote Delivery of Seated Exercises Transfers to Improved Balance and Mobility After Stroke: A Case Report",
+ authors:"Paul Mackie, Maureen C. Ashe, Ben W. Mortenson, Courtney L. Pollock, Sally Stelling, Jennifer Yao, Janice J. Eng", journal:"Physiotherapy Theory and Practice", year:2025, specialty:"Neurological Rehabilitation",
+ tags:["Stroke","Remote rehabilitation","Seated exercise","Balance"], openAccess:false, licenseNote:"Publisher/PubMed record available; full text access may depend on institution or subscription.",
+ sourceUrl:"https://pubmed.ncbi.nlm.nih.gov/39514035/", doi:"10.1080/09593985.2024.2422510",
+ caseSummary:"A 68-year-old man living with chronic stroke and moderate disability completed a remotely delivered seated exercise programme. The report examined whether gains from seated training transferred to broader balance and mobility outcomes.",
+ clinicalFindings:["The participant was more than one year post-stroke and had moderate disability (Modified Rankin Scale 3).","The report focused on balance and mobility limitations after stroke and the feasibility of remotely supervised exercise."],
+ intervention:["A two-week seated exercise programme was delivered by videoconferencing, with 60-minute sessions three times per week.","The participant worked at an average of 37% heart-rate reserve; the stable seated position meant in-person support was not required during sessions."],
+ outcomes:["No adverse events were reported during the two-week programme.","Berg Balance Scale improved by five points; six-minute walk distance increased from 218 m to 278 m, 30-second sit-to-stands from 5 to 9, and walking speed improved."],
+ clinicalLessons:["Remote exercise may support participation when in-person access is limited, if safety and home circumstances are suitable.","Measure transfer to mobility and balance, not only performance of the trained seated exercises."],
+ limitations:["Single case report cannot establish effectiveness across different stroke presentations or equivalence to in-person rehabilitation.","Safety, cognition, home environment and communication access may affect suitability."]
+},
+{
+ slug:"stroke-homonymous-hemianopia-early-physiotherapy", title:"Impact of Early Physiotherapy Intervention in Managing Homonymous Hemianopia Due to Posterior Cerebral Artery Infarct: A Case Report",
+ authors:"Abhishek Abhinandan, Sneha Chakraverty, Sonali Soumyashree, Dushyant Bawiskar", journal:"Bulletin of Faculty of Physical Therapy", year:2024, specialty:"Neurological Rehabilitation",
+ tags:["Posterior cerebral artery stroke","Homonymous hemianopia","Visual rehabilitation","Balance"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://link.springer.com/article/10.1186/s43161-024-00180-z", doi:"10.1186/s43161-024-00180-z",
+ caseSummary:"A 72-year-old man presented with three days of right-sided weakness and difficulty seeing on his right side. Imaging identified a left posterior cerebral artery territory infarct involving medial temporal and occipital regions, thalamus and splenium of the corpus callosum; physiotherapy assessment identified right hemiparesis and homonymous hemianopia.",
+ clinicalFindings:["Right-sided weakness and right visual-field difficulty were present at presentation.","Visual-field loss co-existed with hemiparesis and impaired dynamic balance.","Assessment included visual field testing, strength, coordination and balance."],
+ intervention:["A six-week individualised programme combined visual restoration exercises with balance training.","Balance work included tandem standing and single-leg standing, alongside interventions for hemiparesis and dynamic balance."],
+ outcomes:["The authors reported improvement in visual-field symptoms following the early rehabilitation programme.","The report describes a favourable individual outcome; consult the original paper for detailed assessment values."],
+ clinicalLessons:["Post-stroke assessment should include visual-field deficits as well as limb weakness and balance.","Combining visual rehabilitation with balance-focused physiotherapy may be relevant when both impairments are present."],
+ limitations:["Single case report cannot establish that physiotherapy alone caused visual recovery.","Spontaneous neurological recovery and other aspects of stroke care may contribute to observed change."]
+},
+{
+ slug:"multiligament-knee-dislocation-rehabilitation", title:"Rehabilitation Strategies Following Posterolateral Corner Repair for Left Knee Dislocation With Multiligament Injury: A Case Report",
+ authors:"Prajyot Ankar, Pratik Phansopkar", journal:"Cureus", year:2024, specialty:"Orthopaedic Rehabilitation",
+ tags:["Knee dislocation","Multiligament injury","Posterolateral corner repair","Post-operative rehabilitation"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11040420/", doi:"10.7759/cureus.56863",
+ caseSummary:"A 54-year-old woman sustained a left knee dislocation with multiligament injury and underwent surgical repair of the posterolateral corner. Persistent pain and difficulty bearing weight affected recovery after surgery.",
+ clinicalFindings:["Left knee dislocation with multiligament damage requiring posterolateral corner repair.","Persistent pain and weight-bearing difficulty during post-operative recovery.","Clinical focus included knee range of motion, strength, proprioception and equilibrium."],
+ intervention:["A phased programme addressed pain, range-of-motion restoration, muscle strengthening, proprioception and balance.","Reported components included cryotherapy, compression, manual therapy and an individualised exercise programme, progressed in the context of surgical restrictions."],
+ outcomes:["The authors reported improvements in pain and functional recovery, including range of motion, strength and balance-related goals."],
+ clinicalLessons:["Complex knee dislocation requires staged rehabilitation rather than an uncomplicated knee-sprain approach.","Surgical restrictions and repaired-structure stability must guide progression."],
+ limitations:["A single case cannot establish superiority of a particular rehabilitation protocol.","The original surgical details and surgeon-directed precautions must be checked before clinical application."]
+},
+{
+ slug:"cricket-player-partial-rotator-cuff-tear-rehab", title:"The Rehabilitation Journey of a Cricket Player With Partial Rotator Cuff Tear: A Case Report of Pre- and Postoperative Physiotherapy",
+ authors:"Shraddha S. Kochar, Swapnil U. Ramteke, Subrat Samal", journal:"Cureus", year:2024, specialty:"Sports Rehabilitation",
+ tags:["Cricket","Partial rotator cuff tear","Shoulder pain","Return to sport"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC10867298/", doi:"10.7759/cureus.52336",
+ caseSummary:"A 27-year-old male cricket player developed right shoulder pain and restricted movement after forcefully throwing a ball. The report describes physiotherapy before and after surgery for a partial rotator cuff tear, with rehabilitation directed toward pain, shoulder mobility, muscle strength and sport-related function.",
+ clinicalFindings:["Right shoulder pain and restricted movement after a forceful throwing injury.","The report concerns a partial rotator cuff tear managed across pre-operative and post-operative phases.","DASH and Upper Extremity Functional Scale scores were used to monitor progress."],
+ intervention:["The programme emphasised pain management, range-of-motion restoration, isometric exercise and progressive strengthening.","Functional activities were incorporated, with pre-operative and post-operative phases described separately."],
+ outcomes:["The authors describe progress in shoulder mobility, strength and functional recovery through the rehabilitation course."],
+ clinicalLessons:["Sport-specific demands matter when planning shoulder rehabilitation for an overhead athlete.","Pre-operative and post-operative rehabilitation have different constraints and should not be treated as interchangeable."],
+ limitations:["A single athlete's case cannot establish the best treatment for all partial rotator cuff tears.","Exact surgical details and rehabilitation progression should be reviewed before clinical application."]
+},
+{
+ slug:"bilateral-knee-osteoarthritis-multimodal-physiotherapy", title:"Effectiveness of Recent Physiotherapy Techniques Along With Conventional Physiotherapy Techniques in a Patient With Knee Osteoarthritis: A Case Report",
+ authors:"Kamya J. Somaiya, Subrat Samal, Manali A. Boob", journal:"Cureus", year:2024, specialty:"Musculoskeletal",
+ tags:["Knee osteoarthritis","Mulligan mobilisation","Kinesio taping","Plyometric exercise"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC10964959/", doi:"10.7759/cureus.54872",
+ caseSummary:"A 47-year-old woman with bilateral knee osteoarthritis completed a six-week physiotherapy programme combining conventional care with additional techniques. Pain, range of motion, muscle performance and patient-reported knee function were monitored.",
+ clinicalFindings:["Bilateral knee osteoarthritis with pain and stiffness, particularly during prolonged walking and sit-to-stand transitions.","Assessment included WOMAC, KOOS, visual analogue pain scale, range of motion and manual muscle testing."],
+ intervention:["The six-week programme combined conventional physiotherapy with Mulligan mobilisation, Kinesio taping and low-intensity plyometric exercise.","Eccentric strengthening and balance training were also described in the rehabilitation plan."],
+ outcomes:["The authors reported improvements in pain, range of motion, muscle testing and patient-reported outcomes following the programme.","The publication presents one patient's course, not a controlled comparison of the individual techniques."],
+ clinicalLessons:["Use multiple outcome measures to follow knee osteoarthritis rehabilitation.","When interventions are combined, improvement cannot confidently be attributed to one component."],
+ limitations:["A single case cannot demonstrate that newer techniques are superior to conventional physiotherapy.","The result should not be generalised to every person with knee osteoarthritis."]
+},
+{
+ slug:"proximal-tibia-fracture-ilizarov-foot-drop", title:"A Comprehensive Physiotherapeutic Intervention for Complex Proximal Tibia Fracture With Ilizarov Fixator and Foot Drop in an 18-Year-Old Adult: A Case Report",
+ authors:"Anam F. Pathan, Subrat Samal", journal:"Cureus", year:2024, specialty:"Orthopaedic Rehabilitation",
+ tags:["Proximal tibia fracture","Ilizarov fixator","Foot drop","Neurovascular injury"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11096688/", doi:"10.7759/cureus.58355",
+ caseSummary:"An 18-year-old man sustained a high-energy left lower-limb injury in a road traffic accident. The injury included a grade 3C open proximal tibial fracture managed with an Ilizarov fixator and a neurovascular deficit associated with left foot drop.",
+ clinicalFindings:["Grade 3C open proximal tibial fracture with Ilizarov fixation and left foot drop.","Previous femoral shaft fracture fixation further complicated the presentation.","Pain, restricted range of motion, weakness and sensory impairment were documented."],
+ intervention:["A comprehensive post-operative physiotherapy programme was organised in phases from inpatient to outpatient care.","Treatment addressed pain, range of motion, muscle strength, sensory impairment and functional independence while accounting for external fixation."],
+ outcomes:["Numerical pain rating decreased from 8/10 to 4/10; Lower Extremity Functional Scale improved from 12/80 to 30/80.","Foot and Ankle Ability Measure improved from 20% to 55%, and Stanmore assessment changed from 56/100 (poor) to 80/100 (good)."],
+ clinicalLessons:["Complex fracture rehabilitation must address bone healing, neurovascular deficits and functional mobility together.","External fixation, tissue healing and neurological status influence safe progression."],
+ limitations:["A single case cannot establish a standard protocol for high-energy proximal tibial fractures or foot drop.","Surgical stability and treating-team restrictions determine what is appropriate for another patient."]
+},
+{
+ slug:"ac-joint-sprain-wrist-instability-physiotherapy", title:"Physiotherapeutic Management for Acromioclavicular Joint Sprain With Volar Intercalated Segment Instability at the Wrist: A Case Report",
+ authors:"Harsh R. Nathani, Swapnil U. Ramteke, Pratik R. Jaiswal", journal:"Cureus", year:2024, specialty:"Musculoskeletal",
+ tags:["Acromioclavicular joint sprain","Wrist instability","Mulligan mobilisation","Sports injury"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11097279/", doi:"10.7759/cureus.58399",
+ caseSummary:"A 22-year-old male student and recreational badminton player reported left shoulder and wrist pain following a road traffic accident. The report describes a grade 1 acromioclavicular joint sprain alongside volar intercalated segment instability at the wrist.",
+ clinicalFindings:["Left shoulder and wrist pain after a fall on an outstretched hand.","Radiographs identified a grade 1 AC joint sprain and carpal instability at the wrist.","Both upper-limb regions required assessment and rehabilitation."],
+ intervention:["Conservative physiotherapy included Mulligan movement with mobilization, cryotherapy, low-level laser therapy and progressive exercises.","Treatment addressed both shoulder and wrist presentations."],
+ outcomes:["The authors reported reduced pain and improved function during the conservative rehabilitation course."],
+ clinicalLessons:["When multiple joints are symptomatic after trauma, each region requires its own assessment.","Intervention selection should reflect the specific joint diagnosis rather than assuming all upper-limb pain has one source."],
+ limitations:["A single case cannot establish the effectiveness of any individual modality or mobilization technique.","The report's findings should not replace appropriate assessment of traumatic wrist instability."]
+},
+{
+ slug:"cerebellar-ataxia-after-brainstem-encephalitis", title:"Physiotherapy Rehabilitation Approach for Enhancing Stability and Gait in a Patient With Cerebellar Ataxia: A Case Report",
+ authors:"Devashish Thote, Vaishnavi Yadav, Nikita Bhusari, Ritik Daf, Ishika Agrawal, Sarang Bhoyar", journal:"Cureus", year:2024, specialty:"Neurological Rehabilitation",
+ tags:["Cerebellar ataxia","Brainstem encephalitis","Gait training","Balance"], openAccess:true, licenseNote:"Open access; consult the article's licence and credit the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11538478/", doi:"10.7759/cureus.70967",
+ caseSummary:"A 23-year-old woman developed weakness in the upper and lower limbs, seizures and an ataxic gait after sepsis-related brainstem encephalitis. MRI showed marked cerebellar atrophy, and a goal-oriented physiotherapy programme targeted mobility, strength, balance and coordination.",
+ clinicalFindings:["Weakness in all four limbs, seizures and ataxic gait after a history of sepsis-related brainstem encephalitis.","MRI showed gross cerebellar hemisphere and vermis atrophy; initial muscle strength was 2/5.","Initial SARA was 25/40, Berg Balance Scale 18/56, Barthel Index 25/100 and FIM 68/126."],
+ intervention:["A six-week programme included task-specific activities, sit-to-stand, progressive resistance exercise, parallel-bar gait practice and stair training.","Balance-board, single-leg stance, coordination drills and Frenkel exercises were included."],
+ outcomes:["SARA improved from 25/40 to 22/40 and Berg Balance Scale from 18/56 to 29/56.","Manual muscle testing improved from 2/5 to 4/5, Barthel Index from 25/100 to 65/100 and FIM from 68/126 to 98/126."],
+ clinicalLessons:["Cerebellar ataxia affects coordination and postural control as well as strength.","Use ataxia-specific and functional measures alongside gait and balance rehabilitation."],
+ limitations:["A single case cannot establish effectiveness for all causes or severities of cerebellar ataxia.","Neurological recovery, medical management and the patient's initial condition may influence outcomes."]
+},
+{
+ slug:"poststroke-gait-nonparetic-knee-immobilization", title:"Effect of Gait Training With Non-Paretic Knee Immobilization on Lower Limb and Trunk Acceleration in a Post-Stroke Hemiparetic Patient: A Case Report",
+ authors:"Ryosuke Todaka, Tetsu Kajiyama, Naoya Kariu, Masaya Anan", journal:"Cureus", year:2024, specialty:"Neurological Rehabilitation",
+ tags:["Stroke","Gait training","Constraint-based training","Trunk kinematics"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11310361/", doi:"10.7759/cureus.64193",
+ caseSummary:"A woman in her fifties experienced right-sided paralysis after a left corona radiata infarction. Following acute care and admission to rehabilitation, she was able to walk with a cane by day 17; the report examined gait training with the non-paretic knee immobilised.",
+ clinicalFindings:["Right upper- and lower-limb paralysis after left corona radiata infarction.","Independent cane walking was achieved by day 17 after onset.","The report tracked gait, muscle activity and trunk kinematics across intervention phases."],
+ intervention:["Initial conventional physiotherapy included ergometer cycling, gait training, muscle training and electrical stimulation of the paretic lower limb.","In the second phase, gait training was performed with the non-paretic knee immobilised at full extension using a knee brace."],
+ outcomes:["The authors reported increased activity in the paretic lateral gastrocnemius without compromising trunk stability.","Balance measures improved during the intervention period, while gait speed did not show a clear improvement."],
+ clinicalLessons:["A targeted gait-training constraint can be studied using biomechanical and functional measures.","Improved muscle activity does not necessarily mean gait speed or every functional outcome improves."],
+ limitations:["A single case with an AB design cannot establish general safety or effectiveness of non-paretic knee immobilisation.","This specialised intervention requires careful assessment of balance, fall risk, knee mechanics and individual suitability."]
+},
+{
+ slug:"scapular-pnf-gangliocapsular-stroke", title:"Targeting Scapular Muscles With Facilitatory Movement Patterns to Improve Upper Extremity Function in Gangliocapsular Stroke: A Case Report",
+ authors:"Akshaya Saklecha, Moh’d Irshad Quershi, Raghumahanti Raghuveer, Pallavi Harjpal", journal:"Journal of Medical Case Reports", year:2024, specialty:"Neurological Rehabilitation",
+ tags:["Gangliocapsular stroke","Scapular PNF","Upper-limb function","Motor control"], openAccess:true, licenseNote:"Open access under CC BY 4.0; credit the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11624588/", doi:"10.1186/s13256-024-04929-x",
+ caseSummary:"A 54-year-old South Asian man developed left-sided hemiplegia following a right gangliocapsular stroke. The report focused on scapular alignment and upper-limb function, which can be affected after stroke alongside limb weakness.",
+ clinicalFindings:["Left-sided hemiplegia following a right gangliocapsular haemorrhage involving the internal capsule.","Assessment included scapular alignment, upper-limb function and functional independence.","Outcome measures included a palpation meter, Fugl-Meyer Assessment of the Upper Extremity and Functional Independence Measure."],
+ intervention:["The programme ran for four weeks, five days per week, with 60-minute sessions.","Scapular and upper-limb PNF D1/D2 flexion and extension patterns were combined with conventional physiotherapy, progressing from side-lying to sitting using rhythmic initiation and repeated contractions."],
+ outcomes:["The authors reported improvements in muscle tone and scapular alignment after four weeks.","Fugl-Meyer upper-extremity and Functional Independence Measure scores also improved."],
+ clinicalLessons:["Assess scapular positioning as part of upper-limb rehabilitation after stroke.","The report combined targeted PNF patterns with conventional physiotherapy rather than presenting PNF as a stand-alone treatment."],
+ limitations:["Single case report cannot determine whether PNF alone caused the observed changes.","The authors call for larger studies; dose and applicability should not be generalised automatically."]
+}
+
 ].sort((a,b)=>b.year-a.year);
 export function getPublishedCaseReport(slug:string){return publishedCaseReports.find(item=>item.slug===slug);}
