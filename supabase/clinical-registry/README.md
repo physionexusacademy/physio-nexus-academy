@@ -35,12 +35,12 @@ The hosted project now uses lightweight consent attestations rather than documen
 
 1. Complete hosted end-to-end testing with a separate authorised reviewer: create a synthetic patient with clinical-care attestation, create a final report, record separate publication attestation, submit for review, approve/publish, withdraw consent and confirm public-case suppression.
 2. Confirm no client path invokes Storage upload/download or the retired consent verifier.
-4. Configure and verify Supabase Auth site/redirect URLs, email confirmation/recovery, session policy, rate limits and privileged-user MFA through the project Dashboard/Admin API.
-5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
-6. The 27 advisor-identified foreign-key indexes have now been applied to hosted staging. The duplicate permissive case-library SELECT/UPDATE policies have also been consolidated. Supabase no longer reports missing foreign-key indexes or duplicate permissive policies; it reports 28 unused indexes because the Registry has no workload yet (27 new FK indexes plus one pre-existing index). Retain them until representative workload and query plans justify removal.
-7. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
-8. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The complete feature stack remains draft and unmerged; obtain explicit approval before merge/deploy.
-9. Obtain an independent security/penetration review and remediate critical/high findings.
+3. Verify Supabase Auth site/redirect URLs, email confirmation/recovery, session policy, rate limits and privileged-user MFA through the project Dashboard/Admin API; enable leaked-password protection.
+4. Complete manual desktop/mobile/accessibility/browser acceptance on the already-deployed isolated Preview Worker, including Supabase sign-in, MFA, email confirmation and recovery.
+5. The 27 advisor-identified foreign-key indexes have now been applied to hosted staging. The duplicate permissive case-library SELECT/UPDATE policies have also been consolidated. Supabase no longer reports missing foreign-key indexes or duplicate permissive policies; it reports 28 unused indexes because the Registry has no workload yet (27 new FK indexes plus one pre-existing index). Retain them until representative workload and query plans justify removal.
+6. Complete backup/restore and export/recovery drills against the hosted project, not only the disposable CI database.
+7. PR #151 has been retargeted to `cloudflare-deploy` and GitHub currently reports it mergeable/clean. PRs #152–#156 remain stacked on their preceding feature branches; preserve merge order #151 → #152 → #153 → #154 → #155 → #156. The complete feature stack remains draft and unmerged; obtain explicit approval before merge/deploy.
+8. Obtain an independent security/penetration review and remediate critical/high findings.
 
 ## Institutional / operational release gates (not code tasks)
 
