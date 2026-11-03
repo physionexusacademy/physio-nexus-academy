@@ -257,6 +257,37 @@ assert(
   "The UI must not reveal whether an email address is registered."
 );
 
+
+assert(
+  "Therapist registration opens a dedicated account-creation form",
+  secure.includes('setRegistrationOpen(true)') &&
+    secure.includes('if (!session && registrationOpen)') &&
+    secure.includes('Create therapist account'),
+  "The login action must open a separate registration screen, not submit signup directly."
+);
+assert(
+  "New account form validates identity, qualifications and password confirmation",
+  secure.includes('applicantName.trim().length < 2') &&
+    secure.includes('applicantCredentials.trim().length < 2') &&
+    secure.includes('password !== confirmPassword') &&
+    secure.includes('Passwords do not match.'),
+  "The noValidate form must still enforce all required fields in application code."
+);
+assert(
+  "Registration profile is restored after email confirmation and sign-in",
+  secure.includes('metadata.full_name') &&
+    secure.includes('setApplicantName(metadata.full_name)') &&
+    secure.includes('setApplicantTitle(metadata.professional_title)') &&
+    secure.includes('setRegistrationNumber(metadata.registration_number'),
+  "Details entered during account creation should prefill the therapist verification application."
+);
+assert(
+  "Applicants without a registration number can declare that status explicitly",
+  secure.includes('value==="Not registered yet"') &&
+    secure.includes('setRegistrationNumber("Not registered yet")'),
+  "The application must not block applicants who explicitly declare that they are not registered yet."
+);
+
 for (const check of checks) {
   console.log(`${check.ok ? "PASS" : "FAIL"}: ${check.name} — ${check.detail}`);
 }
