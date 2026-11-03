@@ -21,6 +21,7 @@ begin
     or coalesce(auth.jwt() -> 'app_metadata' ->> 'registry_role' = 'operator', false) is not true then
     raise exception 'Registry operator permission required' using errcode = '42501';
   end if;
+  perform clinical_private.require_registry_role('operator');
   if p_decision not in ('approved','rejected') then
     raise exception 'Decision must be approved or rejected' using errcode = '22023';
   end if;
@@ -100,6 +101,7 @@ begin
     or coalesce(auth.jwt() -> 'app_metadata' ->> 'registry_role' = 'operator', false) is not true then
     raise exception 'Registry operator permission required' using errcode = '42501';
   end if;
+  perform clinical_private.require_registry_role('operator');
   if length(trim(coalesce(p_reason,''))) not between 5 and 2000 then
     raise exception 'A reason of at least five characters is required' using errcode = '22023';
   end if;
