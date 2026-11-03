@@ -13,6 +13,15 @@ const photos = ["student", "physiotherapist", "workshops", "patient-care"];
 const groups = ["learn", "practice", "professional", "care"];
 const headings = ["I’m a Student", "I’m a Physiotherapist", "Workshops & Professional Growth", "I Need Physiotherapy"];
 const report = { commit: process.env.GITHUB_SHA, origin, assets: [], viewports: [] };
+
+async function openMobileMenu(page) {
+  const menuButton = page.getByRole("button", { name: "Open menu" });
+  await menuButton.waitFor({ state: "visible" });
+  await menuButton.click();
+  // A visible drawer confirms React hydration and that the menu click was handled.
+  await page.getByRole("button", { name: "Close menu" }).waitFor({ state: "visible" });
+}
+
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 
@@ -23,7 +32,7 @@ try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-install-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open menu" }).click();
+    await openMobileMenu(page);
     const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
     // Wait until the app is hydrated and its navigation is interactive before
     // dispatching the synthetic browser event, so the component listener sees it.
@@ -48,8 +57,11 @@ try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-fallback-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("button", { name: "Install PNA App" }).click();
+    await openMobileMenu(page);
+    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
+    const installButton = mobileNav.getByRole("button", { name: "Install PNA App" });
+    await installButton.waitFor({ state: "visible" });
+    await installButton.click();
     await page.getByRole("dialog", { name: "Add PNA to your device" }).getByText("Install app", { exact: true }).waitFor();
     console.log("PASS: Unsupported-browser install guidance opens from the mobile menu");
     await context.close();
