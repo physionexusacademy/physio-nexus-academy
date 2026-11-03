@@ -5,7 +5,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public;
-select plan(91);
+select plan(93);
 select ok((select relrowsecurity and relforcerowsecurity
   from pg_class where oid='clinical_private.case_workflow_authorizations'::regclass),
   'case workflow authorization table has forced deny-by-default RLS');
@@ -586,6 +586,27 @@ select is((select count(*)::int from clinical_api.list_verified_therapist_member
 select is((select count(*)::int from clinical_api.list_my_therapist_operator_audit()
   where action = 'approved'), 1,
   'operator approval creates an actor-attributed immutable audit event');
+
+insert into clinical_private.therapist_verification_requests(
+  user_id, full_name, professional_title, credentials,
+  registration_label, registration_number, status
+) values (
+  '10000000-0000-4000-8000-000000000004',
+  'Synthetic Operator Applicant','Physiotherapist',array['DPT'],
+  'TEST','OPERATOR-SELF-001','pending'
+);
+select throws_ok(
+  $operator_self_approval$select clinical_api.review_therapist_verification_request(
+    (select id from clinical_private.therapist_verification_requests
+     where user_id='10000000-0000-4000-8000-000000000004'),
+    'approved','https://regulator.example.invalid/verification/SELF',
+    'Attempted self approval',true,true)$operator_self_approval$,
+  '42501', null, 'operator cannot approve their own therapist application');
+select throws_ok(
+  $operator_self_manage$select clinical_api.set_therapist_membership_active(
+    '10000000-0000-4000-8000-000000000004',true,
+    'Attempted self activation')$operator_self_manage$,
+  '42501', null, 'operator cannot activate or manage their own therapist membership');
 select ok(clinical_api.set_therapist_membership_active(
   '10000000-0000-4000-8000-000000000003',false,
   'Temporary suspension pending credential recheck'
