@@ -1,6 +1,6 @@
 # PNA Clinical Registry — secure staging implementation
 
-**Status: lightweight-consent staging implementation is deployed; production use remains blocked.** The dedicated Supabase project `PNA Clinical Registry` (`zfoohwqyoengbszuylxj`, Singapore) is separate from the PNA public website database and is ACTIVE_HEALTHY. The hosted ledger records 27 migrations. Current hosted counts: 4 Auth users, 1 therapist membership, 1 therapist application, 0 patients, 0 reports, 0 consent events and 0 public case entries. No real patient data is present.
+**Status: lightweight-consent staging implementation is deployed; production use remains blocked.** The dedicated Supabase project `PNA Clinical Registry` (`zfoohwqyoengbszuylxj`, Singapore) is separate from the PNA public website database and is ACTIVE_HEALTHY. The hosted ledger records 28 migrations. Current hosted counts: 4 Auth users, 1 operator, 0 reviewers, 1 active verified therapist membership, 1 approved application, 1 patient row, 0 reports, 1 consent event, 0 case entries and 0 consent files. The patient row has not been inspected or changed; confirm whether it is synthetic before further testing or cleanup. The existing membership was self-approved by the same operator account and requires independent review before production.
 
 ## Implemented
 
@@ -18,7 +18,7 @@
 
 ## Latest automated verification (2026-11-03)
 
-Consent redesign code commit `cd2e4a11a40ae709c6122774f526f1563a8fe60a` passed the local Registry database-security workflow [run 41529678175](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41529678175): TypeScript, **29/29 integration checks**, Deno type-check, ordered migration reset, **91/91 pgTAP assertions**, disposable backup/restore and cleanup. The isolated Preview deployment [run 41529678128](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41529678128) also passed the Cloudflare build, Worker deployment and protected-route smoke tests. These automated checks do not replace hosted authenticated browser acceptance or institutional/privacy approval.
+Consent redesign and independent-operator guard passed local Registry database-security workflow [run 41577824280](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41577824280): TypeScript, **29/29 integration checks**, Deno type-check, ordered migration reset, **93/93 pgTAP assertions**, disposable backup/restore and cleanup. Preview deployment [run 41577824241](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41577824241) passed Cloudflare build, Worker deployment and protected-route smoke tests. The self-approval migration is applied to hosted staging and hosted negative tests confirm that self-approval and self-membership changes are denied. These checks do not replace hosted browser acceptance or institutional/privacy approval.
 
 ## Consent architecture change (2026-11-03)
 
@@ -33,7 +33,7 @@ The hosted project now uses lightweight consent attestations rather than documen
 
 ## Remaining technical acceptance work
 
-1. Complete hosted end-to-end testing with disposable authenticated therapist/reviewer identities: create a patient with clinical-care attestation, create a final report, record separate publication attestation, submit for review, approve/publish, withdraw consent and confirm public-case suppression.
+1. Complete hosted end-to-end testing with a separate authorised reviewer: create a synthetic patient with clinical-care attestation, create a final report, record separate publication attestation, submit for review, approve/publish, withdraw consent and confirm public-case suppression.
 2. Confirm no client path invokes Storage upload/download or the retired consent verifier.
 4. Configure and verify Supabase Auth site/redirect URLs, email confirmation/recovery, session policy, rate limits and privileged-user MFA through the project Dashboard/Admin API.
 5. Enable a protected Cloudflare Preview/staging URL and complete desktop/mobile/accessibility/browser acceptance. Preview URLs were previously disabled for this Worker.
@@ -47,7 +47,7 @@ The hosted project now uses lightweight consent attestations rather than documen
 - Approve the offline signed consent form(s) and immutable version identifiers for clinical care and separate public case publication. Keep originals in the therapist's secure clinic/institution records; do not store copies in PNA.
 - Approve privacy impact assessment, lawful basis, retention/deletion periods, patient correction/access process, breach response and backup retention.
 - Approve clinical data processing and any public case publication process for the intended jurisdiction.
-- Name the trusted operator/reviewer personnel and independently verify their credentials.
+- Add a second trusted operator to independently verify the current operator-therapist membership; assign reviewer personnel separately and independently verify their credentials.
 - Obtain explicit product-owner approval before production merge/deployment.
 
 ## Registry environment variables
