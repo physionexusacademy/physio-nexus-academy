@@ -136,7 +136,7 @@ assert(
   secure.includes("newPassword.length < 8") &&
     secure.includes('minLength={8}') &&
     secure.includes("Choose a password with at least 8 characters."),
-  "Recovery must enforce the same 12-character minimum used at registration."
+  "Recovery must enforce the same eight-character minimum used at registration."
 );
 assert(
   "Expired or invalid recovery links show a safe recovery-specific error",
