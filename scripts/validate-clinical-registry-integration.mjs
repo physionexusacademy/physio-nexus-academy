@@ -22,7 +22,7 @@ const patientConsentMigrationPath = "supabase/clinical-registry/supabase/migrati
 const consentGrantMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102240000_clinical_registry_evidence_only_consent_grants.sql";
 const evidenceRequestMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102250000_clinical_registry_evidence_request_rpc_only.sql";
 const reportInsertGuardMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102170712_clinical_registry_report_insert_guard.sql";
-const independentOperatorMigrationPath = "supabase/clinical-registry/supabase/migrations/20261103000200_clinical_registry_prevent_self_operator_approval.sql";
+const independentOperatorMigrationPath = "supabase/clinical-registry/supabase/migrations/20261103042622_clinical_registry_prevent_self_operator_approval.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
