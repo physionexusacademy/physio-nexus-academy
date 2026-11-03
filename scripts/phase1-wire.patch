@@ -1,0 +1,42 @@
+--- a/src/app/clinical-registry/ClinicalRegistrySecureClient.tsx
++++ b/src/app/clinical-registry/ClinicalRegistrySecureClient.tsx
+@@ -4,6 +4,7 @@
+ import type { Session } from "@supabase/supabase-js";
+ import { BookOpen, FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
+ import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
++import { ClinicalDocumentationForms } from "./ClinicalDocumentationForms";
+ 
+ type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
+ type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
+@@ -52,13 +53,28 @@
+   const [careConsentConfirmed, setCareConsentConfirmed] = useState(false);
+   const [category, setCategory] = useState("Musculoskeletal");
+   const [condition, setCondition] = useState("");
+-  const [assessmentJson, setAssessmentJson] = useState('{\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
+-  const [followUpJson, setFollowUpJson] = useState('{\n  "date": "",\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
+-  const [interventionText, setInterventionText] = useState("");
++  // Phase 1: structured clinical fields (no raw JSON for therapists)
++  const [assessSubjective, setAssessSubjective] = useState("");
++  const [assessObjective, setAssessObjective] = useState("");
++  const [assessPainScore, setAssessPainScore] = useState("");
++  const [assessImpression, setAssessImpression] = useState("");
++  const [assessGoals, setAssessGoals] = useState("");
++  const [followUpDate, setFollowUpDate] = useState("");
++  const [followUpSubjective, setFollowUpSubjective] = useState("");
++  const [followUpObjective, setFollowUpObjective] = useState("");
++  const [followUpPainScore, setFollowUpPainScore] = useState("");
++  const [followUpNotes, setFollowUpNotes] = useState("");
++  const [interventionDate, setInterventionDate] = useState("");
++  const [interventionBodyRegion, setInterventionBodyRegion] = useState("");
++  const [interventionTechnique, setInterventionTechnique] = useState("");
++  const [interventionDosage, setInterventionDosage] = useState("");
++  const [interventionResponse, setInterventionResponse] = useState("");
++  const [interventionHomeAdvice, setInterventionHomeAdvice] = useState("");
+   const [outcomeName, setOutcomeName] = useState("");
+   const [outcomeCode, setOutcomeCode] = useState("");
+   const [outcomeValue, setOutcomeValue] = useState("");
+   const [outcomeDirection, setOutcomeDirection] = useState("lower_is_better");
++  const [outcomeUnit, setOutcomeUnit] = useState("");
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState("");
+   const [notice, setNotice] = useState("");
