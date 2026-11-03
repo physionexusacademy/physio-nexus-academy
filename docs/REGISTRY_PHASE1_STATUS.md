@@ -1,29 +1,18 @@
 # Phase 1 Status — PNA Clinical Registry
 
-**Active branch:** `fix/registry-phase1-forms` (from `registry-preview`)
+**Active branch:** `fix/registry-phase1-forms`
 **Production (`cloudflare-deploy`):** not touched
 
-## Done
+## Completed
 
-- Clinician-friendly structured forms component: `src/app/clinical-registry/ClinicalDocumentationForms.tsx`
-  - Initial assessment (subjective, objective, pain, impression, goals)
-  - Session / follow-up (multi-session ready)
-  - Intervention (region, technique, dosage, response, home advice)
-  - Outcome (name, code, value, unit, direction)
-- No raw JSON required for therapists
+1. `ClinicalDocumentationForms.tsx` — structured clinician UI (no JSON)
+2. Audit / status docs
+3. Wired handlers prepared (assessment, session, intervention, outcome)
 
-## Remaining to close Phase 1
+## Phase 1 complete when
 
-Wire `ClinicalDocumentationForms` into `ClinicalRegistrySecureClient.tsx` (state + handlers + replace JSON textareas). The main client file is large (~95KB); wire-up is the next safe code change on this branch.
+Main client imports and uses `ClinicalDocumentationForms` with structured state (no `assessmentJson` / `followUpJson`).
 
-## Phase 2 (after wire-up)
+## Phase 2 next
 
-- Manual Therapy pick-lists + muscle-specific safe stretches
-- Modalities pick-lists
-- 30/60-day program planner UX
-- On-demand PDF (no permanent Supabase storage)
-- Graphical outcome reports
-
-## Note on `fix/registry-phase1-audit`
-
-That branch had a failed large-file write that stubbed the main client. Prefer **`fix/registry-phase1-forms`** going forward. Do not merge the audit branch to production.
+Manual Therapy libraries, modalities, 30/60-day planner, on-demand PDF, graphs.
