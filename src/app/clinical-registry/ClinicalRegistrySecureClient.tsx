@@ -413,6 +413,26 @@ export function ClinicalRegistrySecureClient() {
     }
   };
 
+  const assignTrustedReviewer = async () => {
+    if (!client || session?.user.id !== "fc9992a5-557f-4b9e-83a4-6f560c9e4134" || session.user.app_metadata?.registry_role !== "operator" || aalLevel !== "aal2" || mfaRequired) {
+      setError("Reviewer assignment requires the designated Operator account with verified AAL2 authenticator MFA.");
+      return;
+    }
+    if (!window.confirm("Assign the Case Reviewer role to physionexusacademypk@gmail.com? The server will verify the confirmed account and active therapist membership before changing its trusted role.")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const { data, error: invokeError } = await client.functions.invoke("assign-registry-reviewer", { body: {} });
+      if (invokeError) throw invokeError;
+      if (!data?.ok) throw new Error(data?.error ?? "Reviewer role assignment was not confirmed.");
+      setNotice(data.message ?? "Reviewer role assigned. Sign in again to refresh the account role.");
+      await client.auth.signOut();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Secure reviewer role assignment failed.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const signIn = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
@@ -889,7 +909,7 @@ export function ClinicalRegistrySecureClient() {
       {session.user.app_metadata?.registry_role === "operator" && <section className="mt-5 rounded-2xl border border-amber-200 bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div><p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">Restricted operator access</p><h2 className="mt-1 text-lg font-bold text-[#173653]">Therapist verification console</h2><p className="mt-1 text-xs text-slate-500">Verify identity and current registration independently. No patient records are exposed in this console.</p></div>
-          <button onClick={()=>loadOperatorData().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh</button>
+          <div className="flex flex-wrap gap-2"><button onClick={()=>loadOperatorData().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh</button><button onClick={assignTrustedReviewer} disabled={busy || aalLevel !== "aal2" || mfaRequired} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-40">Assign designated Case Reviewer</button></div>
         </div>
         <div className="mt-4 rounded-xl bg-slate-50 p-3">
           <label className="block text-xs font-semibold text-slate-700">Decision / access-change reason</label>
