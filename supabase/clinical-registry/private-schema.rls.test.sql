@@ -587,6 +587,7 @@ select is((select count(*)::int from clinical_api.list_my_therapist_operator_aud
   where action = 'approved'), 1,
   'operator approval creates an actor-attributed immutable audit event');
 
+reset role;
 insert into clinical_private.therapist_verification_requests(
   user_id, full_name, professional_title, credentials,
   registration_label, registration_number, status
@@ -595,6 +596,7 @@ insert into clinical_private.therapist_verification_requests(
   'Synthetic Operator Applicant','Physiotherapist',array['DPT'],
   'TEST','OPERATOR-SELF-001','pending'
 );
+set local role authenticated;
 select throws_ok(
   $operator_self_approval$select clinical_api.review_therapist_verification_request(
     (select id from clinical_private.therapist_verification_requests
