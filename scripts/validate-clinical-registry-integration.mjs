@@ -225,6 +225,7 @@ assert(
     rlsTests.includes("operator cannot activate or manage their own therapist membership") &&
     independentOperatorMigration.includes("if v_actor = v_request.user_id") &&
     independentOperatorMigration.includes("if v_actor = p_user_id") &&
+    independentOperatorMigration.includes("perform clinical_private.require_registry_role('operator');") &&
     rlsTests.includes("lightweight consent attestation creates a private patient and clinical-care event") &&
     rlsTests.includes("publication consent attestation is owner-scoped and idempotent") &&
     rlsTests.includes("signed consent upload tables and policies are removed") &&
