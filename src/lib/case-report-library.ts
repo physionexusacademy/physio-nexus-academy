@@ -1304,7 +1304,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
  outcomes:["The authors reported improvements in muscle tone and scapular alignment after four weeks.","Fugl-Meyer upper-extremity and Functional Independence Measure scores also improved."],
  clinicalLessons:["Assess scapular positioning as part of upper-limb rehabilitation after stroke.","The report combined targeted PNF patterns with conventional physiotherapy rather than presenting PNF as a stand-alone treatment."],
  limitations:["Single case report cannot determine whether PNF alone caused the observed changes.","The authors call for larger studies; dose and applicability should not be generalised automatically."]
-}
+},
 
 
 {
