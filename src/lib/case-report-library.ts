@@ -1062,5 +1062,127 @@ export const publishedCaseReports: PublishedCaseReport[] = [
     "The patient's clinical context and safety screening are essential when interpreting the programme."
   ]
 }
+
+{
+ slug:"electrical-injury-long-term-physiotherapy", title:"Physiotherapy Care for the Long-Term Sequelae of Electrical Thermal Injury With 12-Month Follow-Up: A Case Report",
+ authors:"Christopher K. Wong, Alyssa L. Wong", journal:"Journal of Medical Case Reports", year:2026, specialty:"Neurological & Musculoskeletal Rehabilitation",
+ tags:["Electrical injury","Chronic neuropathy","Balance","Gait rehabilitation"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC13019901/", doi:"10.1186/s13256-026-05876-5",
+ caseSummary:"A 78-year-old woman sought physiotherapy for persistent symptoms three decades after a severe electrical injury. Her presentation included lumbopelvic pain, bilateral leg tingling, impaired balance and gait, recurrent drop attacks, and reduced participation in her preferred exercise activity.",
+ clinicalFindings:["Limited lumbopelvic and hip mobility with bilateral hip weakness.","Berg Balance Scale findings indicated impaired balance and fall risk; gait with a cane was slow and unsteady.","Central nervous system and cardiopulmonary causes had been screened before the rehabilitation plan was developed."],
+ intervention:["Twelve physiotherapy sessions over three months, guided by the ICF framework.","A staged programme combined manual therapy and nerve mobilisation, progressive hip strengthening, balance and gait exercises, graded activity, and pain-science counselling."],
+ outcomes:["Radiating symptoms resolved and measured impairments improved after three months.","Balance and gait reached age-matched normal levels; the patient returned to Zumba without limitation and reported no further drop attacks at 12-month follow-up."],
+ clinicalLessons:["Long-term electrical injury may involve persistent neurological, musculoskeletal and participation restrictions.","Screen for serious neurological and cardiac causes of falls before attributing them to a chronic injury.","Progress from impairment-focused care toward meaningful activity and participation goals."],
+ limitations:["Single case report; improvement cannot be attributed to any one intervention or combination of interventions.","The unusual injury history and individual clinical context limit generalisability."]
+},
+{
+ slug:"gunshot-injury-common-peroneal-nerve-foot-drop", title:"Physiotherapy-Led Rehabilitation of Foot Drop Following Lower Limb Gunshot Injury",
+ authors:"Mahmuda Akter Akhi, Kazi Md Azman Hossain, Sabrina Tina, Md Abdul Alim", journal:"Clinical Case Reports", year:2026, specialty:"Neurological & Trauma Rehabilitation",
+ tags:["Foot drop","Common peroneal nerve injury","Orthotic management","Gait training"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC12831205/", doi:"10.1002/ccr3.71930",
+ caseSummary:"A patient developed foot drop and functional limitations after a lower-limb gunshot injury. Following emergency management, the injury was associated with common peroneal nerve damage and the patient was referred for structured rehabilitation.",
+ clinicalFindings:["Foot drop with discomfort and paraesthesia after the traumatic injury.","Reduced mobility and functional capacity, with wheelchair dependence described before rehabilitation.","The report identifies common peroneal nerve injury as the neurological basis of the foot-drop presentation."],
+ intervention:["Individualised physiotherapy included education, orthotic support, stretching, range-of-motion exercises and progressive strengthening.","The programme also used electrical stimulation, sensorimotor exercises and mobility training; the report should be consulted for its full clinical context."],
+ outcomes:["The authors report improvements in pain, muscle strength, range of motion, functional capacity and quality of life.","The patient progressed from wheelchair dependence to standing and walking independently."],
+ clinicalLessons:["Assess peripheral nerve function and the full injury pattern after penetrating trauma.","Combine appropriate orthotic support with strength, sensorimotor and task-specific mobility work.","Monitor functional independence as well as impairment-level measures."],
+ limitations:["A single case cannot establish the effectiveness of the combined programme or predict recovery after other gunshot injuries.","The abstract does not provide detailed numerical outcome values or a reproducible treatment dose."]
+},
+{
+ slug:"clinical-reasoning-biceps-tendinopathy", title:"Clinical Reasoning-Led Physiotherapy Intervention for Biceps Tendinopathy: A Case Report",
+ authors:"Siddiqua Syeda Ummul, Kazi Md Azman Hossain, Fabiha Alam, Saleha Fazal, Farzana Sharmin, Md Mafrohi Sattar, Md Ershad Ali", journal:"Clinical Case Reports", year:2026, specialty:"Musculoskeletal",
+ tags:["Long head of biceps tendinopathy","Shoulder pain","Clinical reasoning","Exercise rehabilitation"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC12953175/", doi:"10.1002/ccr3.72189",
+ caseSummary:"A 56-year-old woman with chronic anterior shoulder pain was assessed using a clinical-reasoning approach and the ICF framework. The authors identified long-head-of-biceps tendinopathy in a presentation where overlapping shoulder conditions can complicate diagnosis.",
+ clinicalFindings:["Baseline pain was 7/10 with restricted shoulder and elbow movement.","Shoulder strength was graded 4/5 and functional disability was substantial.","The assessment considered the clinical presentation within an ICF framework rather than relying on one isolated test."],
+ intervention:["A six-week individualised programme included pain management, manual therapy, range-of-motion exercises, strengthening and patient education.","The report describes a combined programme; it does not isolate the effect of any single component."],
+ outcomes:["Pain decreased from 7/10 to 1/10 and muscle strength improved from 4/5 to 5/5.","SPADI decreased from 62.3% to 12%; DASH decreased from 55.6/100 to 9.7/100 by discharge."],
+ clinicalLessons:["Anterior shoulder pain requires differential assessment because several shoulder disorders can overlap.","Combine impairment measures with patient-reported function when monitoring progress.","Use individualised loading and education rather than assuming one technique is responsible for recovery."],
+ limitations:["Single-patient case report without a comparison group; it cannot establish treatment efficacy or causation.","The combined intervention prevents attribution of the observed changes to a specific treatment component."]
+},
+{
+ slug:"functional-neurological-disorder-inpatient-rehabilitation", title:"Multidisciplinary Rehabilitation for Functional Neurological Disorder Using Psychobehavioral Approaches in an Acute Inpatient Setting: A Case Report",
+ authors:"YuanDian Zheng, Taesung Kim, Yoshiki Takeyama, Etienne B. Rossert, Yu Jen Lai", journal:"SAGE Open Medical Case Reports", year:2025, specialty:"Neurological Rehabilitation",
+ tags:["Functional neurological symptoms","Inpatient rehabilitation","Task-oriented training","Psychobehavioral care"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC12166243/", doi:"10.1177/2050313X251348413",
+ caseSummary:"A 44-year-old man with complex medical history was admitted for acute inpatient rehabilitation with symptoms considered suggestive of functional neurological disorder. The authors describe an interdisciplinary programme addressing physical function, cognition, communication and psychological factors; a definitive specialist diagnosis was not confirmed during the reported admission.",
+ clinicalFindings:["Right-sided weakness and impaired task performance affected activities of daily living.","Balance was poor and the patient required assistance for transfers and walking at admission.","Cognitive-communication difficulties, anxiety and uncertainty about the diagnosis were also documented."],
+ intervention:["Daily physical and occupational therapy used structured functional tasks, graded task progression, cueing, feedback and education.","The wider team included speech-language therapy, medical and nursing staff, social work and psychology input; psychobehavioral strategies were incorporated into task practice."],
+ outcomes:["After eight days of inpatient rehabilitation, the patient achieved independence in transfers and several walking tasks, progressing from a rolling walker to a cane.","The authors reported improvements in activities of daily living, balance-related function and communication; follow-up after discharge was unavailable."],
+ clinicalLessons:["FND rehabilitation should be coordinated across disciplines and focus on meaningful function.","Graded task practice, attention to movement execution, feedback and clear communication may support engagement.","Do not assume an FND diagnosis without appropriate positive clinical features and specialist assessment."],
+ limitations:["The diagnosis remained uncertain during the acute admission and the patient was lost to follow-up.","A single case with concurrent medical management cannot establish which rehabilitation or psychobehavioral components contributed to improvement."]
+},
+{
+ slug:"klippel-feil-syndrome-paediatric-rehabilitation", title:"Therapeutic Rehabilitation for Klippel-Feil Syndrome: A Case Report",
+ authors:"Wardah Rauf, Samia Sarmad, Sameed Liaqat, Safa Saleem, Muhammad Jawad, Muhammad Ahad", journal:"Journal of the Pakistan Medical Association", year:2025, specialty:"Paediatric Musculoskeletal Rehabilitation",
+ tags:["Klippel-Feil syndrome","Congenital cervical fusion","Paediatric physiotherapy","Goal setting"], openAccess:false, licenseNote:"PubMed identifies this as a free article; use the linked PubMed record to access the available publication information.",
+ sourceUrl:"https://pubmed.ncbi.nlm.nih.gov/39948796/", doi:"10.47391/JPMA.11563",
+ caseSummary:"An eight-year-old girl presented to a paediatric physical therapy and neurorehabilitation centre in Lahore with pain, numbness and features of Klippel-Feil syndrome, a congenital condition associated with fused cervical vertebrae and restricted neck movement.",
+ clinicalFindings:["The report describes the classic clinical features of Klippel-Feil syndrome, including a short neck, limited cervical range and low posterior hairline.","Pain and numbness were reported in the child.","The publication emphasises goal setting for a rare paediatric presentation."],
+ intervention:["A physiotherapy intervention protocol was designed around the child's presentation and rehabilitation goals over four weeks.","The PubMed abstract does not provide sufficient detail to reproduce individual exercises, treatment dosage or progression."],
+ outcomes:["The authors describe the case as demonstrating the value of structured goal setting and a planned rehabilitation approach.","Quantitative outcome values are not available in the PubMed abstract and are therefore not inferred here."],
+ clinicalLessons:["Recognise congenital cervical conditions and assess the child's functional needs rather than focusing on appearance alone.","Set measurable, age-appropriate goals with the family and relevant clinical team.","Respect cervical structural considerations and avoid assuming that routine neck techniques are appropriate."],
+ limitations:["Single case report with limited intervention and outcome detail in the accessible abstract.","No numerical results or comparison group are available in the PubMed record."]
+},
+{
+ slug:"parsonage-turner-syndrome-multimodal-rehabilitation", title:"Functional Restoring in Parsonage-Turner Syndrome With a Multimodal Rehabilitation Program: A Case Report",
+ authors:"Eric Chun-Pu Chu", journal:"Cureus", year:2025, specialty:"Neurological & Shoulder Rehabilitation",
+ tags:["Parsonage-Turner syndrome","Neuralgic amyotrophy","Scapular winging","Shoulder rehabilitation"], openAccess:true, licenseNote:"Open access under CC BY 4.0; attribute the original author and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11983356/", doi:"10.7759/cureus.80383",
+ caseSummary:"A 63-year-old man presented with severe right shoulder pain and scapular winging associated with Parsonage-Turner syndrome (neuralgic amyotrophy). The report also describes a complex presentation involving supraspinatus tendon and long thoracic nerve pathology.",
+ clinicalFindings:["Severe unilateral shoulder pain with right scapular winging.","The report discusses long thoracic nerve injury, serratus anterior neuralgic amyotrophy and a supraspinatus tendon tear.","The authors highlight the importance of diagnostic timing and integrating clinical and electrodiagnostic information."],
+ intervention:["An eight-week multimodal programme combined physiotherapy with spinal manipulation, magnetic muscle stimulation and scraping therapy.","The intervention was tailored to the patient's symptoms and neuromuscular presentation."],
+ outcomes:["The authors report improvement in shoulder stability, range of motion and pain after eight weeks.","Muscle wasting was not fully restored, despite reported functional improvement."],
+ clinicalLessons:["Sudden severe shoulder pain followed by weakness or scapular winging should prompt consideration of neuralgic amyotrophy and relevant differentials.","Assess shoulder function and neurological involvement together.","Interpret multimodal case outcomes cautiously because the contribution of each treatment cannot be separated."],
+ limitations:["Single case report without a control group; the combined interventions prevent attribution of benefit to physiotherapy or any other individual component.","The report itself calls for controlled research and notes incomplete restoration of muscle wasting."]
+},
+{
+ slug:"home-pnf-chronic-stroke-hemiplegia", title:"Home Physiotherapy Using the Proprioceptive Neuromuscular Facilitation Concept in a Patient With Chronic Hemiplegia in a Rural Area: A Case Report",
+ authors:"Tomasz Zwoliński, Kamila Gworys, Michał Licznerski, Katarzyna Zorena", journal:"Journal of Clinical Medicine", year:2025, specialty:"Neurological Rehabilitation",
+ tags:["Chronic stroke","Hemiplegia","PNF","Home-based rehabilitation"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC12734076/", doi:"10.3390/jcm14248913",
+ caseSummary:"A 71-year-old woman living in a rural area had severe right-sided hemiplegia five years after a left-hemisphere ischaemic stroke. The report evaluates a structured home-based physiotherapy programme using techniques based on the PNF concept.",
+ clinicalFindings:["Severe right hemiplegia persisted five years after stroke.","Baseline lower-limb Fugl-Meyer score was 50 and Timed Up and Go was 69 seconds.","The report assessed motor function, trunk control, mobility, activities of daily living and quality of life."],
+ intervention:["Twenty one-hour home physiotherapy sessions over two months, delivered two to three times per week.","PNF-based techniques were used with individualised goals and repeated outcome assessment; the full paper should be consulted for the detailed session content."],
+ outcomes:["Lower-limb Fugl-Meyer score increased from 50 to 59 after 20 sessions; TUG improved from 69 to 65 seconds.","Quality-of-life scores improved, while Barthel Index remained 85 and overall Rivermead Motor Assessment changes were minimal."],
+ clinicalLessons:["Home-based rehabilitation may be feasible for people with chronic stroke who have limited access to specialised services.","Track motor impairment, mobility, ADLs and quality of life separately because they may not change in parallel.","Continue follow-up after treatment ends because some gains may decline."],
+ limitations:["Single case report; results cannot be generalised to the wider stroke population or establish PNF superiority.","The study reported no change in Barthel independence and only limited change in some functional measures."]
+},
+{
+ slug:"post-surgical-potts-spine-activity-based-rehabilitation", title:"Neuroplasticity and Activity-Based Rehabilitation of a Patient With Post-Surgical Chronic Pott’s Spine: A Case Report",
+ authors:"Raveena Kini, Prachita Walankar, Aman Minocha et al.", journal:"Bulletin of Faculty of Physical Therapy", year:2025, specialty:"Neurological & Spinal Rehabilitation",
+ tags:["Pott's disease","Spinal tuberculosis","Post-operative rehabilitation","Sensorimotor retraining"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://link.springer.com/article/10.1186/s43161-025-00269-z", doi:"10.1186/s43161-025-00269-z",
+ caseSummary:"A 17-year-old male with a long history of spinal tuberculosis presented with progressive lower-limb weakness and walking difficulty. Imaging showed T7–T9 vertebral body collapse and gibbus deformity with spinal cord compression; he underwent posterior decompression and fixation before physiotherapy.",
+ clinicalFindings:["History of Pott’s spine dating back to early childhood.","Anterior wedge compression and resorption of T7, T8 and T9 vertebral bodies with thoracic gibbus deformity.","Progressive bilateral lower-limb weakness and difficulty walking before surgery."],
+ intervention:["Post-operative rehabilitation included progressively advanced mobility, balance and strengthening exercises.","A major focus was sensorimotor skill retraining and activity-based relearning in supine, side-lying, sitting and standing, alongside conventional rehabilitation."],
+ outcomes:["The authors report improved functional status and quality of life following surgery and the activity-based rehabilitation programme.","The abstract does not provide numerical outcome values, so no specific score change is inferred."],
+ clinicalLessons:["Spinal tuberculosis with deformity and cord compression requires medical and surgical management before rehabilitation progression.","After stabilisation, graded task practice can be organised around the patient's neurological level and functional goals.","Progression must respect surgical precautions and neurological status."],
+ limitations:["Single case report; improvement cannot be attributed to neuroplasticity-focused training alone.","The accessible abstract does not provide sufficient numerical data to quantify the rehabilitation effect."]
+},
+{
+ slug:"ild-malnutrition-tachypnoea-rehabilitation", title:"Aggressive Nutrition Therapy in a Rehabilitation Hospital for Severe Tachypnoea and Profound Weight Loss With Interstitial Lung Disease: A Case Report",
+ authors:"Yosuke Morimoto, Tomoki Yanase, Tomohiro Matsuo, Takuro Ohtsubo, Kazuna Tokihisa, Ai Shinbo, Kosuke Miyamoto, Katsuhiro Ueno, Shuichi Kozawa", journal:"Respirology Case Reports", year:2026, specialty:"Cardiorespiratory Rehabilitation",
+ tags:["Interstitial lung disease","Malnutrition","Exercise tolerance","Skeletal muscle stimulation"], openAccess:true, licenseNote:"Open access; cite the original authors and source.",
+ sourceUrl:"https://pmc.ncbi.nlm.nih.gov/articles/PMC13239472/", doi:"10.1002/rcr2.70623",
+ caseSummary:"A 67-year-old man with polymyositis-associated interstitial lung disease was transferred to a rehabilitation hospital after a complicated acute illness. He had severe malnutrition, marked muscle loss and rapid shallow breathing that restricted exercise tolerance.",
+ clinicalFindings:["At rehabilitation admission, weight was 32.0 kg, BMI 12.10 kg/m² and skeletal muscle index 3.8 kg/m².","Resting respiratory rate was 40 breaths per minute, with severe exercise-related tachypnoea.","The patient had dysphagia and a prolonged period of inadequate nutritional intake during the acute illness."],
+ intervention:["Physiotherapy combined belt-electrode skeletal muscle electrical stimulation with carefully titrated aerobic and resistance exercise.","Nutrition was progressively increased with oral nutritional supplements and monitoring for complications; exercise was adjusted or paused when respiratory symptoms were severe."],
+ outcomes:["At discharge, body weight increased by 4.6 kg and skeletal muscle mass increased from 13.9 to 15.5 kg; skeletal muscle index rose to 4.4 kg/m².","Continuous aerobic exercise duration increased to 30 minutes and six-minute walk distance was 306 metres."],
+ clinicalLessons:["Exercise tolerance in complex respiratory disease may be limited by both cardiopulmonary impairment and severe malnutrition.","Coordinate physiotherapy, nutrition and medical monitoring, particularly when refeeding risk is present.","Adjust exercise intensity to respiratory response and clinical stability."],
+ limitations:["Single case with multiple simultaneous interventions; the separate effects of nutrition, electrical stimulation and exercise cannot be determined.","The patient's severe and specific clinical context limits generalisability."]
+},
+{
+ slug:"modified-intensive-physical-therapy-child-cerebral-palsy", title:"A 6-Week Modified Physical Therapy Intensive Program for a Child With Cerebral Palsy",
+ authors:"Meredith Flowers", journal:"Pediatric Physical Therapy", year:2025, specialty:"Paediatric Neurorehabilitation",
+ tags:["Cerebral palsy","GMFCS IV","Intensive therapy","Gross motor skills"], openAccess:false, licenseNote:"PubMed abstract available; full-text access may depend on publisher or institutional access.",
+ sourceUrl:"https://pubmed.ncbi.nlm.nih.gov/39961031/", doi:"10.1097/PEP.0000000000001191",
+ caseSummary:"This case report describes a four-year-old boy with cerebral palsy classified at Gross Motor Function Classification System level IV. A modified six-week intensive programme was designed to address developmental gross motor skills, supported standing, gait and upper-limb use.",
+ clinicalFindings:["The child was four years old and classified GMFCS level IV.","The report evaluated sitting balance, sit-to-stand performance, hand function, transfers and everyday participation."],
+ intervention:["A six-week modified intensive programme included developmental gross motor practice and standing/gait training using adaptive equipment.","Constraint-induced movement therapy and whole-body vibration were also included in the programme."],
+ outcomes:["The child improved in four of five measured outcomes, including timed sitting balance and modified 5-times sit-to-stand and 9-hole peg tests.","The report also described improved assistance with transfers, independent sitting and use of both hands during play and self-care tasks."],
+ clinicalLessons:["For children with significant motor limitations, intensive programmes can combine postural control, mobility and upper-limb practice.","Choose outcomes that reflect participation and meaningful daily tasks, not only isolated movement tests.","Adaptive equipment and family-centred goals may be important components of paediatric rehabilitation."],
+ limitations:["Single case report; it cannot establish the superiority or optimal dose of intensive therapy.","The abstract does not provide all numerical outcome values or long-term follow-up."]
+}
+
 ].sort((a,b)=>b.year-a.year);
 export function getPublishedCaseReport(slug:string){return publishedCaseReports.find(item=>item.slug===slug);}
