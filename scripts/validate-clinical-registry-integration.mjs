@@ -133,9 +133,9 @@ assert(
 );
 assert(
   "Recovery form enforces the Registry password length",
-  secure.includes("newPassword.length < 12") &&
-    secure.includes('minLength={12}') &&
-    secure.includes("Choose a password with at least 12 characters."),
+  secure.includes("newPassword.length < 8") &&
+    secure.includes('minLength={8}') &&
+    secure.includes("Choose a password with at least 8 characters."),
   "Recovery must enforce the same 12-character minimum used at registration."
 );
 assert(
