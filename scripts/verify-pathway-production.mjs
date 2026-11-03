@@ -36,7 +36,7 @@ try {
     const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
     // Wait until the app is hydrated and its navigation is interactive before
     // dispatching the synthetic browser event, so the component listener sees it.
-    await mobileNav.getByRole("button", { name: "Install PNA App" }).waitFor();
+    await mobileNav.getByRole("button", { name: "Install PNA App" }).waitFor({ state: "visible" });
     await page.evaluate(() => {
       const promptEvent = new Event("beforeinstallprompt", { cancelable: true });
       Object.defineProperties(promptEvent, {
@@ -75,8 +75,11 @@ try {
     });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-ios-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("button", { name: "Install PNA App" }).click();
+    await openMobileMenu(page);
+    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
+    const installButton = mobileNav.getByRole("button", { name: "Install PNA App" });
+    await installButton.waitFor({ state: "visible" });
+    await installButton.click();
     const dialog = page.getByRole("dialog", { name: "Add PNA to your device" });
     await dialog.getByText("Open this website in Safari.").waitFor();
     await dialog.getByText("Tap the Share button.").waitFor();
