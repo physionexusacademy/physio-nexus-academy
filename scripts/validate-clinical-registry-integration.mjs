@@ -22,6 +22,7 @@ const patientConsentMigrationPath = "supabase/clinical-registry/supabase/migrati
 const consentGrantMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102240000_clinical_registry_evidence_only_consent_grants.sql";
 const evidenceRequestMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102250000_clinical_registry_evidence_request_rpc_only.sql";
 const reportInsertGuardMigrationPath = "supabase/clinical-registry/supabase/migrations/20261102170712_clinical_registry_report_insert_guard.sql";
+const independentOperatorMigrationPath = "supabase/clinical-registry/supabase/migrations/20261103000200_clinical_registry_prevent_self_operator_approval.sql";
 
 const route = read(routePath);
 const client = read(clientPath);
@@ -39,6 +40,7 @@ const patientConsentMigration = read(patientConsentMigrationPath);
 const consentGrantMigration = read(consentGrantMigrationPath);
 const evidenceRequestMigration = read(evidenceRequestMigrationPath);
 const reportInsertGuardMigration = read(reportInsertGuardMigrationPath);
+const independentOperatorMigration = read(independentOperatorMigrationPath);
 
 assert(
   "Registry route uses the secure client",
@@ -218,7 +220,11 @@ assert(
   rlsTests.includes("reviewer cannot read protected queues without an AAL2 session") &&
     rlsTests.includes("operator cannot inspect identity-verification queue without an AAL2 session") &&
     rlsTests.includes('"aal":"aal2"') &&
-    rlsTests.includes("select plan(91);") &&
+    rlsTests.includes("select plan(93);") &&
+    rlsTests.includes("operator cannot approve their own therapist application") &&
+    rlsTests.includes("operator cannot activate or manage their own therapist membership") &&
+    independentOperatorMigration.includes("if v_actor = v_request.user_id") &&
+    independentOperatorMigration.includes("if v_actor = p_user_id") &&
     rlsTests.includes("lightweight consent attestation creates a private patient and clinical-care event") &&
     rlsTests.includes("publication consent attestation is owner-scoped and idempotent") &&
     rlsTests.includes("signed consent upload tables and policies are removed") &&
