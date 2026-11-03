@@ -1061,7 +1061,7 @@ export const publishedCaseReports: PublishedCaseReport[] = [
     "Single case report; it cannot establish efficacy or an optimal aerobic-training prescription for all people with SCI.",
     "The patient's clinical context and safety screening are essential when interpreting the programme."
   ]
-}
+},
 
 {
  slug:"electrical-injury-long-term-physiotherapy", title:"Physiotherapy Care for the Long-Term Sequelae of Electrical Thermal Injury With 12-Month Follow-Up: A Case Report",
