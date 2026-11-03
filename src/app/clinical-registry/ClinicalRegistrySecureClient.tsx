@@ -450,7 +450,9 @@ export function ClinicalRegistrySecureClient() {
   const signUp = async () => {
     setError("");
     setNotice("");
-    const normalizedEmail = email.trim().toLowerCase();
+    // Read the live DOM value too: mobile autofill/password managers may update
+    // the input without dispatching React onChange, leaving controlled state stale.
+    const normalizedEmail = (emailInputRef.current?.value ?? email).trim().toLowerCase();
     if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setError("Enter a valid professional email address before creating your account.");
       return;
