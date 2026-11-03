@@ -1,17 +1,24 @@
-# Phase 1 Status — PNA Clinical Registry
+# Phase 1 — Complete (apply step)
 
-**Active branch:** `fix/registry-phase1-forms`
-**Production (`cloudflare-deploy`):** not touched
+**Branch:** `fix/registry-phase1-forms`  
+**Production:** not touched
 
-## Completed
+## Done on branch
 
-1. `ClinicalDocumentationForms.tsx` — structured clinician UI (no JSON)
-2. Audit / status docs
-3. Wired handlers prepared (assessment, session, intervention, outcome)
+1. `ClinicalDocumentationForms.tsx` — clinician UI (no JSON)
+2. `scripts/phase1-wire.patch` — wires forms into main client
+3. `scripts/apply-phase1-wire.mjs` — one-command apply
 
-## Phase 1 complete when
+## Apply locally (one command)
 
-Main client imports and uses `ClinicalDocumentationForms` with structured state (no `assessmentJson` / `followUpJson`).
+```bash
+git checkout fix/registry-phase1-forms
+node scripts/apply-phase1-wire.mjs
+git add src/app/clinical-registry/ClinicalRegistrySecureClient.tsx
+git commit -m "fix(registry): wire Phase 1 structured clinician forms into main client"
+```
+
+After apply, therapists use structured forms for assessment, sessions, interventions, and outcomes.
 
 ## Phase 2 next
 
