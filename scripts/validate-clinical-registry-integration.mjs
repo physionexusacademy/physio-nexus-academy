@@ -111,7 +111,9 @@ assert(
 );
 assert(
   "Sign-up confirmation and resend preserve the current Preview origin",
-  secure.includes("client.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } })") &&
+  secure.includes("client.auth.signUp({") &&
+    secure.includes("email: normalizedEmail") &&
+    secure.includes("options: { emailRedirectTo: redirectTo }") &&
     secure.includes('client.auth.resend({ type: "signup", email: email.trim(), options: { emailRedirectTo: redirectTo } })') &&
     secure.includes("const redirectTo = `${window.location.origin}/clinical-registry`;"),
   "Signup and confirmation-resend emails must return to the exact origin where the user started."
