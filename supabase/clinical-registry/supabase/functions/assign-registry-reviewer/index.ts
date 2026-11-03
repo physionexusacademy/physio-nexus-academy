@@ -55,7 +55,7 @@ Deno.serve(async (req: Request) => {
     if (target.app_metadata?.registry_role === "reviewer") return respond({ ok: true, alreadyAssigned: true, message: "The designated account already has the Case Reviewer role. Sign out and sign back in to refresh role claims." }, 200, origin);
     if (target.app_metadata?.registry_role) return respond({ error: "The target account already has a different privileged Registry role." }, 409, origin);
 
-    const { data: memberships, error: membershipError } = await admin.schema("clinical_api").rpc("list_verified_therapist_memberships");
+    const { data: memberships, error: membershipError } = await userClient.schema("clinical_api").rpc("list_verified_therapist_memberships");
     if (membershipError) return respond({ error: "The approved therapist membership could not be verified; no role was changed." }, 503, origin);
     const membership = (memberships ?? []).find((m: any) => m.user_id === target.id && m.is_active === true);
     if (!membership) return respond({ error: "The target account must have an active verified therapist membership before reviewer access can be granted." }, 403, origin);
