@@ -1033,6 +1033,9 @@ export function ClinicalRegistrySecureClient() {
                   <label className="text-xs font-medium">Relieving factors<input value={relievingFactors} onChange={e=>setRelievingFactors(e.target.value)} placeholder="What makes it better?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 </div>
                 <label className="block text-xs font-medium">History / subjective findings<textarea value={subjectiveNotes} onChange={e=>setSubjectiveNotes(e.target.value)} rows={2} placeholder="Relevant history, symptoms and functional limitations" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                <details className="rounded-xl border border-slate-100 p-3">
+                  <summary className="cursor-pointer text-xs font-semibold text-teal-800">Additional examination and treatment plan (optional)</summary>
+                  <div className="mt-3 space-y-3">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="text-xs font-medium">Objective findings<textarea value={objectiveFindings} onChange={e=>setObjectiveFindings(e.target.value)} rows={2} placeholder="Observation, palpation, functional tests…" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                   <label className="text-xs font-medium">Range of motion<textarea value={romFindings} onChange={e=>setRomFindings(e.target.value)} rows={2} placeholder="Relevant ROM findings" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
@@ -1045,6 +1048,8 @@ export function ClinicalRegistrySecureClient() {
                   <label className="text-xs font-medium">Goals<textarea value={treatmentGoals} onChange={e=>setTreatmentGoals(e.target.value)} rows={2} placeholder="Short- and long-term goals" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 </div>
                 <label className="block text-xs font-medium">Plan of care<textarea value={planOfCare} onChange={e=>setPlanOfCare(e.target.value)} rows={2} placeholder="Planned treatment and review frequency" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  </div>
+                </details>
                 <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-[10px] text-slate-400">Only clinically relevant fields need completion.</p><button disabled={busy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white">{busy?"Saving…":"Save assessment"}</button></div>
               </form>
               <div className="grid gap-4 xl:grid-cols-2">
