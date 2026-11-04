@@ -15,11 +15,28 @@ const headings = ["I’m a Student", "I’m a Physiotherapist", "Workshops & Pro
 const report = { commit: process.env.GITHUB_SHA, origin, assets: [], viewports: [] };
 
 async function openMobileMenu(page) {
-  const menuButton = page.getByRole("button", { name: "Open menu" });
+  const menuButton = page.locator('header button[aria-expanded]').first();
   await menuButton.waitFor({ state: "visible" });
-  await menuButton.click();
-  // A visible drawer confirms React hydration and that the menu click was handled.
-  await page.getByRole("button", { name: "Close menu" }).waitFor({ state: "visible" });
+  // HTML may arrive before React hydrates. Retry only while the menu is closed.
+  for (let attempt = 0; attempt < 20; attempt++) {
+    if (await menuButton.getAttribute("aria-expanded") === "true") break;
+    await menuButton.click();
+    try {
+      await page.waitForFunction(
+        () => document.querySelector('header button[aria-expanded]')?.getAttribute("aria-expanded") === "true",
+        { timeout: 500 },
+      );
+      break;
+    } catch {
+      // React has not attached the click handler yet; retry after a short wait.
+      await page.waitForTimeout(250);
+    }
+  }
+  await page.waitForFunction(
+    () => document.querySelector('header button[aria-expanded]')?.getAttribute("aria-expanded") === "true",
+    { timeout: 5000 },
+  );
+  await page.getByRole("navigation", { name: "Mobile navigation" }).waitFor({ state: "visible" });
 }
 
 await fs.mkdir(output, { recursive: true });
