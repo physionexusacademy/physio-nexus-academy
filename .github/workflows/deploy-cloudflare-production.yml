@@ -122,7 +122,7 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           PAYMENTS_ENABLED: "false"
         run: |
           # Publish is controlled by the reviewed 35-cover manifest (not a
@@ -131,6 +131,17 @@ jobs:
             node scripts/validate-manual-visuals.mjs --publish
           fi
           npx wrangler whoami
+
+          # Email secrets must exist in the deployed Worker runtime, not only in the CI build environment.
+          if [ -n "${RESEND_API_KEY}" ]; then
+            printf '%s' "$RESEND_API_KEY" | npx wrangler secret put RESEND_API_KEY
+          else
+            echo "::warning::RESEND_API_KEY is not configured; reviewer email alerts will be skipped."
+          fi
+          if [ -n "${RESEND_FROM_EMAIL}" ]; then
+            printf '%s' "$RESEND_FROM_EMAIL" | npx wrangler secret put RESEND_FROM_EMAIL
+          fi
+
           npm run deploy
 
       - name: Smoke test production

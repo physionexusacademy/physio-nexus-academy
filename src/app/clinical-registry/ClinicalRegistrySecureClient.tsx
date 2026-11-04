@@ -5,10 +5,11 @@ import type { Session } from "@supabase/supabase-js";
 import { BookOpen, FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
 import { PublicCasePdfButton } from "./library/PublicCasePdfButton";
+import { notifyRegistryReviewer } from "@/lib/clinical-registry/notify-reviewer";
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
 type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
-type TherapistStatus = { fullName?: string; professionalTitle?: string; credentials?: string[]; verificationStatus?: string; isActive?: boolean; verifiedAt?: string | null };
+type TherapistStatus = { fullName?: string; professionalTitle?: string; credentials?: string[]; registrationLabel?: string; verificationStatus?: string; isActive?: boolean; verifiedAt?: string | null };
 type ReportVersion = { version_id: string; revision_number: number; change_reason: string; snapshot: Record<string, unknown>; created_at: string };
 type RecordAccessEvent = { action: string; report_id?: string | null; occurred_at: string };
 type ClinicalReport = { id: string; patient?: { patientReference?: string; displayName?: string }; category: string; condition: string; status: string; assessmentDate: string; initialAssessment?: Record<string, unknown>; followUpAssessments?: Record<string, unknown>[]; clinicalSummary?: string; dischargeStatus?: string; recommendations?: string[]; interventions?: Record<string, unknown>[]; outcomes?: Record<string, unknown>[] };
@@ -956,7 +957,18 @@ export function ClinicalRegistrySecureClient() {
       if (auditError) throw new Error(`PDF export was not started because its access event could not be recorded: ${auditError.message}`);
       if (accessLogged !== true) throw new Error("PDF export could not be audited. Refresh the report and try again.");
       const { downloadClinicalReportPdf } = await import("@/lib/clinical-registry/pdf");
-      downloadClinicalReportPdf(selectedReport as unknown as Record<string, unknown>);
+      const profile = session?.user.user_metadata ?? {};
+      await downloadClinicalReportPdf({
+        ...(selectedReport as unknown as Record<string, unknown>),
+        therapist: {
+          fullName: membership?.fullName || profile.full_name,
+          professionalTitle: membership?.professionalTitle || profile.professional_title,
+          credentials: membership?.credentials || profile.credentials,
+          registrationLabel: membership?.registrationLabel || profile.registration_body,
+          registrationNumber: profile.registration_number,
+          institutionOrClinic: profile.institution,
+        },
+      });
       if (selectedPatient) await loadRecordAccessEvents(selectedPatient.id);
       setNotice("Your clinical report PDF has been downloaded.");
     } catch (e) {
@@ -1010,7 +1022,10 @@ export function ClinicalRegistrySecureClient() {
       setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
       setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
       await loadCaseSubmissions();
-      setNotice("Submission confirmed: your de-identified case is now in the reviewer queue. It remains private until approved and separately published.");
+      const emailNotice = await notifyRegistryReviewer(client, String(caseId));
+      setNotice(emailNotice.sent
+        ? "Submission confirmed and reviewer email notification sent."
+        : "Submission confirmed and stored in the reviewer queue, but the email alert was not delivered: " + emailNotice.message);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
       await loadCaseSubmissions().catch(() => undefined);
@@ -1027,7 +1042,10 @@ export function ClinicalRegistrySecureClient() {
       if (rpcError) throw rpcError;
       if (data !== true) throw new Error("The draft could not be submitted. It may no longer be in draft status; refresh your submissions.");
       await loadCaseSubmissions();
-      setNotice("Submission confirmed. The de-identified case is now in the reviewer queue.");
+      const emailNotice = await notifyRegistryReviewer(client, caseId);
+      setNotice(emailNotice.sent
+        ? "Submission confirmed and reviewer email notification sent."
+        : "Submission confirmed in the reviewer queue, but the email alert was not delivered: " + emailNotice.message);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
     } finally {
@@ -1360,7 +1378,7 @@ export function ClinicalRegistrySecureClient() {
               <p className="rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-900 md:col-span-2">The original signed publication consent must be retained securely by the therapist. Do not upload patient documents to PNA. Submission records the therapist attestation and remains subject to independent privacy review.</p><button disabled={busy||!publicationConsentConfirmed||!deidentifiedConfirmed} className="rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-40 md:col-span-2">Submit de-identified case for review</button>
             </form> : <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 p-4"><p className="text-xs leading-5 text-amber-900">Complete the report and finalise it before reviewer submission is enabled. The finalise action locks the report version for the case workflow.</p><button type="button" onClick={finaliseReport} disabled={busy} className="mt-3 rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">Finalise report to unlock submission</button></div>}
           </section>}
-          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My case submissions</h2></div><p className="mt-2 text-[11px] leading-5 text-slate-500">Submitted cases appear in the authorised reviewer dashboard. The Registry does not send email notifications; the reviewer must sign in with authenticator MFA and refresh the queue. Only the de-identified case summary is shared.</p><div className="mt-3 space-y-2">{caseSubmissions.map(c=><div key={c.case_id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 p-3"><div className="min-w-0"><p className="text-xs font-semibold text-slate-800">{c.case_title}</p><p className="mt-1 text-[10px] text-slate-500">{c.status==="submitted"?"Awaiting independent review":c.status==="approved"?"Approved · awaiting publication":c.status==="published"?"Published":c.status==="draft"?"Draft · not yet in reviewer queue":c.status}{c.reviewer_note ? " · " + c.reviewer_note : ""}</p></div><div className="flex flex-wrap gap-2">{c.status==="draft"&&<button disabled={busy} onClick={()=>retryCaseSubmission(c.case_id)} className="rounded-lg bg-teal-700 px-3 py-2 text-[10px] font-semibold text-white">Submit for review</button>}{c.status!=="withdrawn"&&<button disabled={busy} onClick={()=>withdrawPublishedCase(c)} className="rounded-lg border border-red-200 px-3 py-2 text-[10px] font-semibold text-red-700">Withdraw consent & case</button>}</div></div>)}{caseSubmissions.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No case submissions yet.</p>}</div></section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My case submissions</h2></div><p className="mt-2 text-[11px] leading-5 text-slate-500">Submitted cases are stored in the authorised reviewer dashboard. A separate email alert will notify the designated reviewer and link to the secure queue; the email will not contain patient identifiers or private clinical records.</p><div className="mt-3 space-y-2">{caseSubmissions.map(c=><div key={c.case_id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 p-3"><div className="min-w-0"><p className="text-xs font-semibold text-slate-800">{c.case_title}</p><p className="mt-1 text-[10px] text-slate-500">{c.status==="submitted"?"Awaiting independent review":c.status==="approved"?"Approved · awaiting publication":c.status==="published"?"Published":c.status==="draft"?"Draft · not yet in reviewer queue":c.status}{c.reviewer_note ? " · " + c.reviewer_note : ""}</p></div><div className="flex flex-wrap gap-2">{c.status==="draft"&&<button disabled={busy} onClick={()=>retryCaseSubmission(c.case_id)} className="rounded-lg bg-teal-700 px-3 py-2 text-[10px] font-semibold text-white">Submit for review</button>}{c.status!=="withdrawn"&&<button disabled={busy} onClick={()=>withdrawPublishedCase(c)} className="rounded-lg border border-red-200 px-3 py-2 text-[10px] font-semibold text-red-700">Withdraw consent & case</button>}</div></div>)}{caseSubmissions.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No case submissions yet.</p>}</div></section>
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Public Case Library</h2></div><p className="mt-1 text-[11px] text-slate-400">Only independently reviewed, published, de-identified cases appear here.</p><div className="mt-3 space-y-3">{publicCases.map(c=><article key={c.case_id} className="rounded-xl border border-slate-100 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-bold text-[#173653]">{c.case_title}</h3><span className="text-[10px] text-slate-500">{c.condition_label} · {c.age_band??"Age not reported"}</span></div><p className="mt-2 text-xs leading-5 text-slate-600">{c.clinical_context}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Intervention:</strong> {c.intervention_summary}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Outcome:</strong> {c.outcome_summary}</p>{c.evidence_reference&&/^https?:\/\//i.test(c.evidence_reference)&&<a href={c.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Evidence reference</a>}</article>)}{publicCases.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No published cases available yet.</p>}</div></section>
         </section>
       </div>}

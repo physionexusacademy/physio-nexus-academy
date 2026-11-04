@@ -24,7 +24,7 @@ export function PublicCasePdfButton({ item }: { item: PublicCasePdfData }) {
     setError("");
     try {
       const { downloadClinicalReportPdf } = await import("@/lib/clinical-registry/pdf");
-      downloadClinicalReportPdf({
+      await downloadClinicalReportPdf({
         patient: { displayName: "De-identified educational case" },
         category: item.condition_label,
         condition: item.case_title,

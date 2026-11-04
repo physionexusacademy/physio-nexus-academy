@@ -34,7 +34,34 @@ const wrap = (value: string, width = 92): string[] => {
   return result.length ? result : [""];
 };
 
-export function downloadClinicalReportPdf(report: ReportRecord): void {
+async function loadPnaLogoForPdf(): Promise<{ hex: string; width: number; height: number } | null> {
+  try {
+    const image = new Image();
+    image.src = "/images/pna-logo.png";
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0);
+    const base64 = canvas.toDataURL("image/jpeg", 0.9).split(",")[1];
+    if (!base64) return null;
+    const binary = atob(base64);
+    let hex = "";
+    for (let index = 0; index < binary.length; index += 1) {
+      hex += binary.charCodeAt(index).toString(16).padStart(2, "0");
+    }
+    return { hex, width: canvas.width, height: canvas.height };
+  } catch {
+    return null;
+  }
+}
+
+export async function downloadClinicalReportPdf(report: ReportRecord): Promise<void> {
+  const logo = await loadPnaLogoForPdf();
   const patient = (report.patient && typeof report.patient === "object" ? report.patient : {}) as ReportRecord;
   const assessment = (report.initialAssessment && typeof report.initialAssessment === "object" ? report.initialAssessment : {}) as ReportRecord;
   const demographics = (assessment.demographics && typeof assessment.demographics === "object" ? assessment.demographics : {}) as ReportRecord;
@@ -53,6 +80,15 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
     ["Occupation / work demands", demographics.occupation],
     ["Dominant side", demographics.dominantSide],
     ["Activity level", demographics.activityLevel],
+  ]);
+  const therapist = (report.therapist && typeof report.therapist === "object" ? report.therapist : {}) as ReportRecord;
+  add("TREATING THERAPIST", [
+    ["Therapist name", therapist.fullName],
+    ["Professional title", therapist.professionalTitle],
+    ["Qualifications", Array.isArray(therapist.credentials) ? therapist.credentials.join(", ") : therapist.credentials],
+    ["Registration body", therapist.registrationLabel],
+    ["Registration / licence number", therapist.registrationNumber],
+    ["Institution / clinic", therapist.institutionOrClinic],
   ]);
   add("REPORT OVERVIEW", [
     ["Clinical category", report.category],
@@ -137,8 +173,13 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
   const startPage = (pageNumber: number) => {
     commands = [];
     drawRect(0, 790, pageWidth, 52, "0.08 0.20 0.31");
-    drawText("PHYSIO NEXUS ACADEMY", 42, 817, 9, "1 1 1");
-    drawText("CLINICAL REGISTRY", 42, 800, 8, "0.78 0.91 0.91");
+    if (logo) {
+      const logoWidth = 38;
+      const logoHeight = logoWidth * logo.height / logo.width;
+      commands.push(`q ${logoWidth} 0 0 ${logoHeight} 42 ${796 + (40 - logoHeight) / 2} cm /PnaLogo Do Q`);
+    }
+    drawText("PHYSIO NEXUS ACADEMY", logo ? 92 : 42, 817, 9, "1 1 1");
+    drawText("CLINICAL REGISTRY · PROFESSIONAL REPORT", logo ? 92 : 42, 800, 7, "0.78 0.91 0.91");
     drawText(title, 42, 768, 16, "0.08 0.20 0.31");
     drawText(`${patientName}${patientRef ? "  |  " + patientRef : ""}`, 42, 748, 9, "0.30 0.38 0.45");
     y = 718;
@@ -195,9 +236,14 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
     const pageId = 4 + index * 2;
     const streamId = pageId + 1;
     const stream = page.join("\n") + "\n";
-    objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${streamId} 0 R >>`;
+    const logoResource = logo ? ` /XObject << /PnaLogo ${4 + pageContents.length * 2} 0 R >>` : "";
+    objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R >>${logoResource} >> /Contents ${streamId} 0 R >>`;
     objects[streamId] = `<< /Length ${stream.length} >>\nstream\n${stream}endstream`;
   });
+  if (logo) {
+    const logoObjectId = 4 + pageContents.length * 2;
+    objects[logoObjectId] = `<< /Type /XObject /Subtype /Image /Width ${logo.width} /Height ${logo.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter [/ASCIIHexDecode /DCTDecode] /Length ${logo.hex.length + 1} >>\nstream\n${logo.hex}>\nendstream`;
+  }
 
   let pdf = "%PDF-1.4\n";
   const offsets = [0];
