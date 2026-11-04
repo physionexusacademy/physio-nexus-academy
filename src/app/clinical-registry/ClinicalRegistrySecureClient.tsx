@@ -856,7 +856,14 @@ export function ClinicalRegistrySecureClient() {
       romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
       specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
       clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
-      planOfCare: planOfCare.trim()
+      planOfCare: planOfCare.trim(),
+      demographics: {
+        ageYears: patientAgeYears === "" ? null : Number(patientAgeYears),
+        sex: patientSex || null,
+        occupation: patientOccupation.trim(),
+        dominantSide: patientDominantSide || null,
+        activityLevel: patientActivityLevel || null
+      }
     };
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
@@ -1276,6 +1283,7 @@ export function ClinicalRegistrySecureClient() {
                   <label className="text-xs font-medium">Aggravating factors<input value={aggravatingFactors} onChange={e=>setAggravatingFactors(e.target.value)} placeholder="What makes it worse?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                   <label className="text-xs font-medium">Relieving factors<input value={relievingFactors} onChange={e=>setRelievingFactors(e.target.value)} placeholder="What makes it better?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 </div>
+                <details className="rounded-xl border border-slate-100 p-3"><summary className="cursor-pointer text-xs font-semibold text-teal-800">Patient demographics (optional)</summary><div className="mt-3 grid gap-3 sm:grid-cols-2"><label className="text-xs font-medium">Age (years)<input type="number" min="0" max="120" step="1" value={patientAgeYears} onChange={e=>setPatientAgeYears(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label><label className="text-xs font-medium">Sex<select value={patientSex} onChange={e=>setPatientSex(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Female</option><option>Male</option><option>Intersex</option><option>Prefer not to say</option></select></label><label className="text-xs font-medium">Occupation / work demands<input maxLength={160} value={patientOccupation} onChange={e=>setPatientOccupation(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label><label className="text-xs font-medium">Dominant side<select value={patientDominantSide} onChange={e=>setPatientDominantSide(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Right</option><option>Left</option><option>Ambidextrous</option></select></label><label className="text-xs font-medium">Activity level<select value={patientActivityLevel} onChange={e=>setPatientActivityLevel(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Sedentary</option><option>Low active</option><option>Moderately active</option><option>Very active</option></select></label></div></details>
                 <label className="block text-xs font-medium">History / subjective findings<textarea value={subjectiveNotes} onChange={e=>setSubjectiveNotes(e.target.value)} rows={2} placeholder="Relevant history, symptoms and functional limitations" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 <details className="rounded-xl border border-slate-100 p-3">
                   <summary className="cursor-pointer text-xs font-semibold text-teal-800">Additional examination and treatment plan (optional)</summary>
