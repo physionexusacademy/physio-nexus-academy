@@ -181,7 +181,8 @@ assert(
 );
 assert(
   "Public case evidence references require HTTPS",
-  library.includes('item.evidence_reference.startsWith("https://")') &&
+  (library.includes('item.evidence_reference.startsWith("https://")') ||
+      library.includes('item.evidence_reference?.startsWith("https://")')) &&
     !library.includes('item.evidence_reference.startsWith("http://")'),
   "Public evidence links must use encrypted HTTPS transport."
 );
