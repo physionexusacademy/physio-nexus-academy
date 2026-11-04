@@ -9,7 +9,7 @@ import { notifyRegistryReviewer } from "@/lib/clinical-registry/notify-reviewer"
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
 type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
-type TherapistStatus = { fullName?: string; professionalTitle?: string; credentials?: string[]; verificationStatus?: string; isActive?: boolean; verifiedAt?: string | null };
+type TherapistStatus = { fullName?: string; professionalTitle?: string; credentials?: string[]; registrationLabel?: string; verificationStatus?: string; isActive?: boolean; verifiedAt?: string | null };
 type ReportVersion = { version_id: string; revision_number: number; change_reason: string; snapshot: Record<string, unknown>; created_at: string };
 type RecordAccessEvent = { action: string; report_id?: string | null; occurred_at: string };
 type ClinicalReport = { id: string; patient?: { patientReference?: string; displayName?: string }; category: string; condition: string; status: string; assessmentDate: string; initialAssessment?: Record<string, unknown>; followUpAssessments?: Record<string, unknown>[]; clinicalSummary?: string; dischargeStatus?: string; recommendations?: string[]; interventions?: Record<string, unknown>[]; outcomes?: Record<string, unknown>[] };
@@ -957,7 +957,18 @@ export function ClinicalRegistrySecureClient() {
       if (auditError) throw new Error(`PDF export was not started because its access event could not be recorded: ${auditError.message}`);
       if (accessLogged !== true) throw new Error("PDF export could not be audited. Refresh the report and try again.");
       const { downloadClinicalReportPdf } = await import("@/lib/clinical-registry/pdf");
-      downloadClinicalReportPdf(selectedReport as unknown as Record<string, unknown>);
+      const profile = session?.user.user_metadata ?? {};
+      await downloadClinicalReportPdf({
+        ...(selectedReport as unknown as Record<string, unknown>),
+        therapist: {
+          fullName: membership?.fullName || profile.full_name,
+          professionalTitle: membership?.professionalTitle || profile.professional_title,
+          credentials: membership?.credentials || profile.credentials,
+          registrationLabel: membership?.registrationLabel || profile.registration_body,
+          registrationNumber: profile.registration_number,
+          institutionOrClinic: profile.institution,
+        },
+      });
       if (selectedPatient) await loadRecordAccessEvents(selectedPatient.id);
       setNotice("Your clinical report PDF has been downloaded.");
     } catch (e) {
