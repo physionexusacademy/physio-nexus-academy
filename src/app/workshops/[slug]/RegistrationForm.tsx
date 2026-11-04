@@ -16,7 +16,7 @@ const schema = z.object({
   city: z.string().min(2, "Please enter your city"),
   groupRegistration: z.boolean().optional(),
   consent: z.literal(true, {
-    errorMap: () => ({ message: "Consent is required to register" }),
+    error: "Consent is required to register",
   }),
 });
 

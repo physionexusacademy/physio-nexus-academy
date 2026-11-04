@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClinicalRegistryClient } from "./ClinicalRegistryClient";
+import { ClinicalRegistrySecureClient } from "./ClinicalRegistrySecureClient";
 
 export const dynamic = "force-dynamic";
 
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function ClinicalRegistryPage() {
-  return <ClinicalRegistryClient />;
+  return <ClinicalRegistrySecureClient />;
 }

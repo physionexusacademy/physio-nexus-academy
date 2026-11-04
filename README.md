@@ -1,6 +1,6 @@
 # Physio Nexus Academy — Website
 
-Next.js 14 + TypeScript + Tailwind CSS + Supabase. Built for **Dr. Sajjad Raza PT**, Founder
+Next.js 15.5.28 + TypeScript + Tailwind CSS + Supabase. Built for **Dr. Sajjad Raza PT**, Founder
 of Physio Nexus Academy.
 
 ## Current status: all 4 stages complete
