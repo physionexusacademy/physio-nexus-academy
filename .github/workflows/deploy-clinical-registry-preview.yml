@@ -121,8 +121,9 @@ jobs:
           unauth_headers="$(mktemp)"
           registry_html="$(mktemp)"
           library_html="$(mktemp)"
+          homepage_html="$(mktemp)"
           registry_headers="$(mktemp)"
-          trap 'rm -f "$unauth_body" "$unauth_headers" "$registry_html" "$library_html" "$registry_headers"' EXIT
+          trap 'rm -f "$unauth_body" "$unauth_headers" "$registry_html" "$library_html" "$homepage_html" "$registry_headers"' EXIT
 
           unauth_status="$(curl --silent --show-error --connect-timeout 10 --max-time 30 -D "$unauth_headers" -o "$unauth_body" -w '%{http_code}' "$PREVIEW_URL/clinical-registry")"
           if [ "$unauth_status" != "401" ]; then
@@ -145,5 +146,12 @@ jobs:
             exit 1
           fi
           grep -Fq "Public Clinical Case Library" "$library_html"
+          homepage_status="$(curl --silent --show-error --connect-timeout 10 --max-time 30 --user "pna-preview:$PNA_PREVIEW_ACCESS_PASSWORD" "$PREVIEW_URL/" -o "$homepage_html" -w '%{http_code}')"
+          if [ "$homepage_status" != "200" ] || ! grep -Fq 'data-pna-home-feature="clinical-registry-v1"' "$homepage_html"; then
+            echo "::error::Preview homepage did not render the Clinical Registry feature (HTTP $homepage_status)."
+            exit 1
+          fi
+          echo "Preview homepage visibly links to the Clinical Registry."
+
           echo "Preview denies unauthenticated access and serves both Registry routes only with the configured password."
 
