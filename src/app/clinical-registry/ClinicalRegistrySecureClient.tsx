@@ -1109,13 +1109,13 @@ export function ClinicalRegistrySecureClient() {
   };
   const demographicRecord = selectedReport?.initialAssessment?.demographics && typeof selectedReport.initialAssessment.demographics === "object"
     ? selectedReport.initialAssessment.demographics as Record<string, unknown> : {};
-  const demographicItems: Array<[string, string]> = [
+  const demographicItems = ([
     ["Age", typeof demographicRecord.ageYears === "number" ? String(demographicRecord.ageYears) + " years" : ""],
     ["Sex", typeof demographicRecord.sex === "string" ? demographicRecord.sex : ""],
     ["Occupation", typeof demographicRecord.occupation === "string" ? demographicRecord.occupation : ""],
     ["Dominant side", typeof demographicRecord.dominantSide === "string" ? demographicRecord.dominantSide : ""],
     ["Activity level", typeof demographicRecord.activityLevel === "string" ? demographicRecord.activityLevel : ""]
-  ].filter(([, value]) => value.trim() !== "");
+  ] as Array<[string, string]>).filter(([, value]) => value.trim() !== "");
 
   if (!client) return <main className="min-h-screen bg-slate-50 px-5 py-16 text-slate-800"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><ShieldCheck className="text-teal-700" size={30}/><h1 className="mt-4 text-2xl font-bold text-[#173653]">PNA Clinical Registry</h1><p className="mt-3 text-sm leading-6 text-slate-600">The isolated Registry service is not configured yet. This workspace will not connect to or reuse the PNA website database.</p><p className="mt-4 rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-900">Required environment settings: NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL, NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY (or the legacy NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY) The Registry consent attestation uses its built-in lightweight version label; no consent files are uploaded or stored.</p></section></main>;
 
