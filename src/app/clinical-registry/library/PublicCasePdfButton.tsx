@@ -10,7 +10,7 @@ type PublicCasePdfData = {
   clinical_context: string;
   intervention_summary: string;
   outcome_summary: string;
-  evidence_reference: string | null;
+  evidence_reference?: string | null;
   published_at?: string | null;
   submitted_at?: string | null;
 };
