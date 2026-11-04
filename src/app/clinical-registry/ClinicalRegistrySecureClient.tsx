@@ -297,7 +297,6 @@ export function ClinicalRegistrySecureClient() {
     if (!client) return;
     loadPublicCases().catch((e: Error) => setError(e.message));
   }, [client, loadPublicCases]);
-
   useEffect(() => {
     if (!client || !session) return;
     loadMembership().catch((e: Error) => setError(e.message));
@@ -557,10 +556,21 @@ export function ClinicalRegistrySecureClient() {
         setError(authError.message);
         return;
       }
+      // Supabase deliberately returns an obfuscated successful signup response
+      // for an email that already belongs to an existing account. Do not tell
+      // the user a new account was created or imply another confirmation mail
+      // will arrive when the address is already registered and confirmed.
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setPassword("");
+        setConfirmPassword("");
+        setRegistrationOpen(false);
+        setNotice("An account with this email already exists. Sign in with your existing password, or use Forgot password if you cannot remember it. If the account is still awaiting confirmation, use Resend confirmation email.");
+        return;
+      }
       setPassword("");
       setNotice(data.session
         ? "Account created. Therapist verification is still required before clinical records can be accessed."
-        : "Account created. Check your email and confirm your address. Therapist verification is still required before clinical records can be accessed.");
+        : "Account request received. If this is a new email address, check your inbox and spam folder for the confirmation link. Therapist verification is still required before clinical records can be accessed.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Account creation could not be completed. Please try again.");
     } finally {
@@ -597,8 +607,7 @@ export function ClinicalRegistrySecureClient() {
     if (updateError) { setError(updateError.message); return; }
     await client.auth.signOut();
     setNewPassword(""); setRecoveryMode(false);
-    setNotice("Password updated. Sign in again with your new password.");
-  };
+    setNotice("Password updated. Sign in again with your new password.");  };
 
   const createPatientWithConsentAttestation = async (event: FormEvent) => {
     event.preventDefault();
@@ -897,8 +906,7 @@ export function ClinicalRegistrySecureClient() {
         <h2 className="mt-1 text-lg font-bold text-[#173653]">Initialize the first Registry Operator</h2>
         <p className="mt-2 text-xs leading-5 text-slate-600">This restricted action verifies your signed-in account on the Registry server and assigns the first Operator role only if no other Operator exists. It does not approve your pending therapist application. Afterward, sign in again and complete authenticator MFA before privileged access is enabled.</p>
         <button type="button" onClick={bootstrapFirstRegistryOperator} disabled={busy} className="mt-4 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">{busy ? "Verifying securely…" : "Set up first Registry Operator"}</button>
-      </section>}
-      {!verified ? <section className="grid gap-5 lg:grid-cols-2">
+      </section>}      {!verified ? <section className="grid gap-5 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <ShieldCheck size={28} className="text-teal-700"/>
           <h2 className="mt-3 text-lg font-bold text-[#173653]">Professional verification</h2>
