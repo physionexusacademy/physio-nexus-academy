@@ -123,7 +123,6 @@ jobs:
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
-          NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
           PAYMENTS_ENABLED: "false"
         run: |
           # Publish is controlled by the reviewed 35-cover manifest (not a
@@ -138,9 +137,6 @@ jobs:
             printf '%s' "$RESEND_API_KEY" | npx wrangler secret put RESEND_API_KEY
           else
             echo "::warning::RESEND_API_KEY is not configured; reviewer email alerts will be skipped."
-          fi
-          if [ -n "${NOTIFICATION_EMAIL_TO}" ]; then
-            printf '%s' "$NOTIFICATION_EMAIL_TO" | npx wrangler secret put NOTIFICATION_EMAIL_TO
           fi
           if [ -n "${RESEND_FROM_EMAIL}" ]; then
             printf '%s' "$RESEND_FROM_EMAIL" | npx wrangler secret put RESEND_FROM_EMAIL
