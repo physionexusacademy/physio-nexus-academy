@@ -34,6 +34,32 @@ const wrap = (value: string, width = 92): string[] => {
   return result.length ? result : [""];
 };
 
+async function loadPnaLogoForPdf(): Promise<{ hex: string; width: number; height: number } | null> {
+  try {
+    const image = new Image();
+    image.src = "/images/pna-logo.png";
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0);
+    const base64 = canvas.toDataURL("image/jpeg", 0.9).split(",")[1];
+    if (!base64) return null;
+    const binary = atob(base64);
+    let hex = "";
+    for (let index = 0; index < binary.length; index += 1) {
+      hex += binary.charCodeAt(index).toString(16).padStart(2, "0");
+    }
+    return { hex, width: canvas.width, height: canvas.height };
+  } catch {
+    return null;
+  }
+}
+
 export function downloadClinicalReportPdf(report: ReportRecord): void {
   const patient = (report.patient && typeof report.patient === "object" ? report.patient : {}) as ReportRecord;
   const assessment = (report.initialAssessment && typeof report.initialAssessment === "object" ? report.initialAssessment : {}) as ReportRecord;
