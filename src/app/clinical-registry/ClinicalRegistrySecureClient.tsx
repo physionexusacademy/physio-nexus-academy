@@ -568,7 +568,7 @@ export function ClinicalRegistrySecureClient() {
     if (!client || !email.trim()) { setError("Enter your professional email address first."); return; }
     setBusy(true); setError(""); setNotice("");
     const redirectTo = `${window.location.origin}/clinical-registry`;
-    const { error: resendError } = await client.auth.resend({ type: "signup", email: email.trim().toLowerCase(), options: { emailRedirectTo: redirectTo } });
+    const { error: resendError } = await client.auth.resend({ type: "signup", email: email.trim(), options: { emailRedirectTo: redirectTo } });
     setBusy(false);
     if (resendError) setError(resendError.message);
     else setNotice("If this account is awaiting confirmation, a new confirmation email has been sent. Check your inbox and spam folder.");
