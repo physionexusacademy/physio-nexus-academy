@@ -122,6 +122,7 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_3D_ENABLED: "true"
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           NOTIFICATION_EMAIL_TO: ${{ secrets.NOTIFICATION_EMAIL_TO }}
           PAYMENTS_ENABLED: "false"
         run: |
