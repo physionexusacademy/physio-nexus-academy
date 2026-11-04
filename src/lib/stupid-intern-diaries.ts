@@ -419,6 +419,87 @@ export const stupidInternEpisodes: StupidInternEpisode[] = ([
     ],
     lesson: "Shoulder or arm discomfort accompanied by chest pressure, sweating, breathlessness, faintness or other possible cardiac symptoms may represent an acute medical emergency. Stop routine physiotherapy, do not attempt to exercise through the symptoms, and activate the local emergency response pathway for prompt medical assessment. Do not assume the referral diagnosis explains every symptom."
   }
+,
+  {
+    id: 26,
+    title: "The Sugar-Coated Workout",
+    field: "Diabetes and Exercise Safety",
+    date: "2026-11-04",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why has the patient stopped exercising and started sweating and shaking?" },
+      { speaker: "Intern", text: "They said they feel weak, Sir. I told them to finish the last two sets. Motivation is important!" },
+      { speaker: "Dr. Sajjad", text: "Did you consider hypoglycaemia? Does the patient have diabetes or a personal glucose-management plan?" },
+      { speaker: "Intern", text: "Yes, Sir. But I thought exercise burns sugar, so more exercise should balance everything." },
+      { speaker: "Dr. Sajjad", text: "That is not how you manage a possible low glucose level. Stop the session, keep the patient safe and follow their individual hypoglycaemia plan. If you are trained and equipment is available, check glucose. If they are fully conscious and can swallow safely, use the fast-acting carbohydrate plan. If they are unconscious, having a seizure or cannot swallow, give nothing by mouth and activate emergency care." },
+      { speaker: "Intern", text: "So today the only set I should complete is the set of safety checks?" },
+      { speaker: "Dr. Sajjad", text: "Exactly. The patient is not a glucose-powered treadmill." }
+    ],
+    lesson: "Sweating, tremor, weakness, dizziness or confusion during exercise may indicate hypoglycaemia, although other causes are possible. Stop activity and follow the patient's individualized diabetes plan and local protocol. Check glucose when trained and equipped. Give fast-acting carbohydrate only when the person is conscious and can swallow safely. Never give food or drink to someone with impaired consciousness or unsafe swallowing; activate emergency care and follow the emergency plan."
+  },
+  {
+    id: 27,
+    title: "The Wound-Healing Detective",
+    field: "Post-operative Rehabilitation and Red Flags",
+    date: "2026-11-05",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "What did you notice around the patient's surgical incision today?" },
+      { speaker: "Intern", text: "More redness, warmth and some discharge, Sir. The patient also says the pain is getting worse." },
+      { speaker: "Dr. Sajjad", text: "And what did you do?" },
+      { speaker: "Intern", text: "I planned a little massage around it to improve circulation. I was going to add heat if needed." },
+      { speaker: "Dr. Sajjad", text: "You saw a changing wound and decided to become a massage detective? These may be signs of a wound complication or infection. Do not massage or apply heat over the area. Pause the session and contact the surgical team promptly for assessment." },
+      { speaker: "Intern", text: "What if the patient also has fever or feels very unwell?" },
+      { speaker: "Dr. Sajjad", text: "Escalate urgently according to the local emergency pathway. Rehabilitation never means ignoring a warning sign." }
+    ],
+    lesson: "Increasing or spreading redness, warmth, swelling, new or increasing discharge, wound separation, fever, worsening pain or feeling systemically unwell after surgery may indicate a complication. Compare with the expected post-operative course, do not massage or apply heat to a concerning incision, pause treatment and contact the surgical team promptly. Escalate urgently if systemic illness or rapid deterioration is present."
+  },
+  {
+    id: 28,
+    title: "The Wheelchair Pit Stop",
+    field: "Transfers and Patient Handling",
+    date: "2026-11-06",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why did the wheelchair move when the patient tried to stand?" },
+      { speaker: "Intern", text: "I was helping them transfer, Sir. The chair was in the right place, so I thought we were ready." },
+      { speaker: "Dr. Sajjad", text: "Did you lock the brakes and move the footplates out of the way?" },
+      { speaker: "Intern", text: "No, Sir. I thought the brakes were just for parking when nobody was using it." },
+      { speaker: "Dr. Sajjad", text: "A wheelchair is not a shopping trolley. Before a transfer, assess the patient's ability, prepare a stable surface, lock the brakes, move footrests clear and use the appropriate assistance or transfer equipment." },
+      { speaker: "Intern", text: "I also pulled the patient up by both arms." },
+      { speaker: "Dr. Sajjad", text: "And you nearly turned a transfer into a shoulder injury. Use a safe, trained technique; never pull on the patient's arms. Get another trained helper if the transfer exceeds your safe capacity." }
+    ],
+    lesson: "Before a wheelchair transfer, assess the patient's mobility, cognition, strength, balance and required assistance. Position the chair close to the destination, lock both brakes, move footrests clear and check the transfer surface. Use an appropriate transfer aid and trained technique; do not pull the patient by the arms or attempt a transfer beyond your competence or safe capacity."
+  },
+  {
+    id: 29,
+    title: "The Clinic Influencer",
+    field: "Professional Ethics and Patient Privacy",
+    date: "2026-11-07",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why is there a patient's treatment video on your personal social media account?" },
+      { speaker: "Intern", text: "Sir, I wanted to show my followers a great rehabilitation technique. I did not write the patient's name." },
+      { speaker: "Dr. Sajjad", text: "Did the patient give explicit permission for recording and public sharing?" },
+      { speaker: "Intern", text: "No, Sir. They agreed to physiotherapy, so I thought the video was included." },
+      { speaker: "Dr. Sajjad", text: "Consent for treatment is not consent for photography or publication. A face is not the only identifier; voices, tattoos, dates and surroundings can reveal identity too." },
+      { speaker: "Intern", text: "So I should delete it and ask next time?" },
+      { speaker: "Dr. Sajjad", text: "Follow your clinic's privacy and incident-reporting policy now. Never record or share patient material on a personal device or account without the required specific consent and institutional authorization. Your clinical skills do not need a patient's privacy as a marketing strategy." }
+    ],
+    lesson: "Consent to assessment or treatment does not automatically authorize photography, video recording, teaching use or social-media publication. Follow applicable law and institutional policy, obtain specific informed consent and required authorization before any recording or sharing, and protect identifiable information. Personal devices and accounts must not be used for patient material unless explicitly permitted by policy and securely managed."
+  },
+  {
+    id: 30,
+    title: "The Dizzy Standing Ovation",
+    field: "Geriatric and Cardiovascular Safety",
+    date: "2026-11-08",
+    dialogue: [
+      { speaker: "Dr. Sajjad", text: "Why is the older patient sitting back down after standing?" },
+      { speaker: "Intern", text: "They felt light-headed, Sir. I told them to stand again quickly so their body could get used to it." },
+      { speaker: "Dr. Sajjad", text: "Did you support them and check whether the symptoms settled?" },
+      { speaker: "Intern", text: "No, Sir. I thought standing practice means more standing." },
+      { speaker: "Dr. Sajjad", text: "Not when the patient is dizzy. Help them sit or lie safely, prevent a fall and assess the symptoms. If indicated and you are trained, check lying and standing blood pressure using the correct protocol. Consider orthostatic hypotension, but do not diagnose from one symptom." },
+      { speaker: "Intern", text: "Should I repeat the standing test until they stop feeling dizzy?" },
+      { speaker: "Dr. Sajjad", text: "No. Stop provoking the symptom. Review the situation, follow escalation guidance and only resume mobility when it is safe." }
+    ],
+    lesson: "Light-headedness or dizziness after moving to sitting or standing may be related to orthostatic hypotension, but other causes must also be considered. Assist the patient to a safe sitting or lying position, prevent falls and assess symptoms. Measure postural blood pressure only when indicated and according to a correct protocol by a trained clinician. Escalate persistent, severe or concerning symptoms and do not repeatedly provoke dizziness to complete a mobility task."
+  }
 
 ] satisfies StupidInternEpisode[]).sort((a, b) => b.id - a.id);
 

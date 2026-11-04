@@ -13,6 +13,32 @@ const photos = ["student", "physiotherapist", "workshops", "patient-care"];
 const groups = ["learn", "practice", "professional", "care"];
 const headings = ["I’m a Student", "I’m a Physiotherapist", "Workshops & Professional Growth", "I Need Physiotherapy"];
 const report = { commit: process.env.GITHUB_SHA, origin, assets: [], viewports: [] };
+
+async function openMobileMenu(page) {
+  const menuButton = page.locator('header button[aria-expanded]').first();
+  await menuButton.waitFor({ state: "visible" });
+  // HTML may arrive before React hydrates. Retry only while the menu is closed.
+  for (let attempt = 0; attempt < 20; attempt++) {
+    if (await menuButton.getAttribute("aria-expanded") === "true") break;
+    await menuButton.click();
+    try {
+      await page.waitForFunction(
+        () => document.querySelector('header button[aria-expanded]')?.getAttribute("aria-expanded") === "true",
+        { timeout: 500 },
+      );
+      break;
+    } catch {
+      // React has not attached the click handler yet; retry after a short wait.
+      await page.waitForTimeout(250);
+    }
+  }
+  await page.waitForFunction(
+    () => document.querySelector('header button[aria-expanded]')?.getAttribute("aria-expanded") === "true",
+    { timeout: 5000 },
+  );
+  await page.getByRole("navigation", { name: "Mobile navigation" }).waitFor({ state: "visible" });
+}
+
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 
@@ -23,11 +49,11 @@ try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-install-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open menu" }).click();
+    await openMobileMenu(page);
     const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
     // Wait until the app is hydrated and its navigation is interactive before
     // dispatching the synthetic browser event, so the component listener sees it.
-    await mobileNav.getByRole("button", { name: "Install PNA App" }).waitFor();
+    await mobileNav.getByRole("button", { name: "Install PNA App" }).waitFor({ state: "visible" });
     await page.evaluate(() => {
       const promptEvent = new Event("beforeinstallprompt", { cancelable: true });
       Object.defineProperties(promptEvent, {
@@ -48,8 +74,11 @@ try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-fallback-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("button", { name: "Install PNA App" }).click();
+    await openMobileMenu(page);
+    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
+    const installButton = mobileNav.getByRole("button", { name: "Install PNA App" });
+    await installButton.waitFor({ state: "visible" });
+    await installButton.click();
     await page.getByRole("dialog", { name: "Add PNA to your device" }).getByText("Install app", { exact: true }).waitFor();
     console.log("PASS: Unsupported-browser install guidance opens from the mobile menu");
     await context.close();
@@ -63,8 +92,11 @@ try {
     });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-ios-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("button", { name: "Install PNA App" }).click();
+    await openMobileMenu(page);
+    const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
+    const installButton = mobileNav.getByRole("button", { name: "Install PNA App" });
+    await installButton.waitFor({ state: "visible" });
+    await installButton.click();
     const dialog = page.getByRole("dialog", { name: "Add PNA to your device" });
     await dialog.getByText("Open this website in Safari.").waitFor();
     await dialog.getByText("Tap the Share button.").waitFor();

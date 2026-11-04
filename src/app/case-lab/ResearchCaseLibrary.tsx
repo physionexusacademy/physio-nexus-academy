@@ -5,29 +5,41 @@ import {ArrowRight,BookOpen,ExternalLink,FileText,Search,ShieldCheck} from "luci
 import type {PublishedCaseReport} from "@/lib/case-report-library";
 
 export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
- const specialties=useMemo(()=>["All specialties",...Array.from(new Set(reports.map(r=>r.specialty))).sort((a,b)=>a.localeCompare(b))],[reports]);
- const clinicalAreaCount=useMemo(()=>new Set(reports.map(r=>r.specialty)).size,[reports]);
+ // Deduplicate by DOI and canonical source URL so one article cannot appear twice.
+ const uniqueReports=useMemo(()=>{
+  const seen=new Set<string>();
+  return reports.filter(r=>{
+   const doi=r.doi?.trim().toLowerCase().replace(/^https?:\/\/(dx\.)?doi\.org\//,"").replace(/^doi:\s*/,"");
+   const source=r.sourceUrl.trim().toLowerCase().replace(/[?#].*$/,"").replace(/\/+$/,"");
+   const keys=[doi?"doi:"+doi:"",source?"url:"+source:""].filter(Boolean);
+   if(keys.some(key=>seen.has(key))) return false;
+   keys.forEach(key=>seen.add(key));
+   return true;
+  });
+ },[reports]);
+ const specialties=useMemo(()=>["All specialties",...Array.from(new Set(uniqueReports.map(r=>r.specialty))).sort((a,b)=>a.localeCompare(b))],[uniqueReports]);
+ const clinicalAreaCount=useMemo(()=>new Set(uniqueReports.map(r=>r.specialty)).size,[uniqueReports]);
  const [query,setQuery]=useState("");
  const [specialty,setSpecialty]=useState("All specialties");
  const [openAccess,setOpenAccess]=useState(false);
- const filtered=useMemo(()=>reports.filter(r=>{
+ const filtered=useMemo(()=>uniqueReports.filter(r=>{
   const text=[r.title,r.authors,r.journal,r.specialty,...r.tags].join(" ").toLowerCase();
   return (!query.trim()||text.includes(query.toLowerCase().trim()))&&(specialty==="All specialties"||r.specialty===specialty)&&(!openAccess||r.openAccess);
- }),[reports,query,specialty,openAccess]);
+ }),[uniqueReports,query,specialty,openAccess]);
  return <main className="case-library">
   <div className="cr-wrap">
    <section className="cr-hero">
     <div className="cr-eyebrow"><BookOpen size={15}/> PNA · RESEARCH CASE LIBRARY</div>
     <h1>Real cases.<br/><span>Clinical lessons.</span></h1>
     <p className="cr-lead">Learn from published rehabilitation case reports. Each file links to the original paper and separates what the authors reported from what a clinician can cautiously learn.</p>
-    <div className="cr-stats"><div><strong>{reports.length}</strong><span>curated reports</span></div><div><strong>{clinicalAreaCount}</strong><span>clinical areas</span></div><div><strong>100%</strong><span>original source links</span></div></div>
+    <div className="cr-stats"><div><strong>{uniqueReports.length}</strong><span>curated reports</span></div><div><strong>{clinicalAreaCount}</strong><span>clinical areas</span></div><div><strong>100%</strong><span>original source links</span></div></div>
     <div className="cr-note"><ShieldCheck size={18}/><p><strong>Evidence honesty:</strong> a case report describes one clinical story. It can teach clinical reasoning, but it cannot prove that a treatment works for everyone.</p></div>
    </section>
    <section className="cr-controls" aria-label="Search and filter published case reports">
     <label className="cr-search"><Search size={19}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search condition, technique, journal or keyword…" aria-label="Search case reports"/></label>
     <div className="cr-filterrow">{specialties.map(s=><button key={s} className="cr-filter" data-active={specialty===s} onClick={()=>setSpecialty(s)}>{s}</button>)}</div>
     <label className="cr-check"><input type="checkbox" checked={openAccess} onChange={e=>setOpenAccess(e.target.checked)}/> Free full text available</label>
-    <p className="cr-results">Showing <strong>{filtered.length}</strong> of {reports.length} published reports</p>
+    <p className="cr-results">Showing <strong>{filtered.length}</strong> of {uniqueReports.length} published reports</p>
    </section>
    <section className="cr-grid" aria-label="Published case reports">
     {filtered.map((r,i)=><article key={r.slug} className="cr-card">

@@ -1,0 +1,38 @@
+name: Phase1 Wire Once
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fix branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/registry-phase1-forms
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Apply Phase 1 forms wire-up
+        run: node scripts/bootstrap-phase1.mjs
+
+      - name: Commit and push to fix branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/app/clinical-registry/ClinicalRegistrySecureClient.tsx
+          if git diff --staged --quiet; then
+            echo "Already wired — nothing to commit."
+          else
+            git commit -m "fix(registry): wire Phase 1 structured clinician forms into main client"
+            git push origin HEAD:fix/registry-phase1-forms
+            echo "SUCCESS: Phase 1 wired on fix/registry-phase1-forms only."
+          fi
