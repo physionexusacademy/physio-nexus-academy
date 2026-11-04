@@ -42,7 +42,7 @@ export default async function PublicClinicalCaseLibraryPage() {
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-teal-700">Physio Nexus Academy</p>
         <h1 className="mt-2 text-3xl font-bold text-[#173653]">Public Clinical Case Library</h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Educational case summaries that have been de-identified, separately consented for publication and independently reviewed. No patient identifiers or therapist account details are displayed.</p>
-        <Link href="/clinical-registry" className="mt-4 inline-block text-xs font-bold text-teal-700 underline">Therapist Registry sign in</Link>
+        <Link href="/clinical-registry/therapist" className="mt-4 inline-block text-xs font-bold text-teal-700 underline">Therapist Portal — Sign in / Create account</Link>
       </header>
       {error ? <section className="rounded-2xl border border-red-200 bg-white p-5 text-sm text-red-700">The public case library is temporarily unavailable. Please try again later.</section> : <div className="space-y-4">
         {cases.map((item) => {
