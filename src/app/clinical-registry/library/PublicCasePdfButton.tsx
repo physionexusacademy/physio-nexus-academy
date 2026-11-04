@@ -6,7 +6,7 @@ import { useState } from "react";
 type PublicCasePdfData = {
   case_title: string;
   condition_label: string;
-  age_band: string | null;
+  age_band?: string | null;
   clinical_context: string;
   intervention_summary: string;
   outcome_summary: string;
