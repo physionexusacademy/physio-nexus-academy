@@ -51,6 +51,11 @@ export function ClinicalRegistrySecureClient() {
   const [mfaSecret, setMfaSecret] = useState("");
   const [patientReference, setPatientReference] = useState("");
   const [patientName, setPatientName] = useState("");
+  const [patientAgeYears, setPatientAgeYears] = useState("");
+  const [patientSex, setPatientSex] = useState("");
+  const [patientOccupation, setPatientOccupation] = useState("");
+  const [patientDominantSide, setPatientDominantSide] = useState("");
+  const [patientActivityLevel, setPatientActivityLevel] = useState("");
   const [careConsentConfirmed, setCareConsentConfirmed] = useState(false);
   const [category, setCategory] = useState("Musculoskeletal");
   const [condition, setCondition] = useState("");
@@ -435,6 +440,12 @@ export function ClinicalRegistrySecureClient() {
       setSpecialTests(value("specialTests")); setNeuroFindings(value("neuroFindings"));
       setClinicalImpression(value("clinicalImpression")); setTreatmentGoals(value("treatmentGoals"));
       setPlanOfCare(value("planOfCare"));
+      const demographics = a.demographics && typeof a.demographics === "object" ? a.demographics as Record<string, unknown> : {};
+      setPatientAgeYears(typeof demographics.ageYears === "number" ? String(demographics.ageYears) : "");
+      setPatientSex(typeof demographics.sex === "string" ? demographics.sex : "");
+      setPatientOccupation(typeof demographics.occupation === "string" ? demographics.occupation : "");
+      setPatientDominantSide(typeof demographics.dominantSide === "string" ? demographics.dominantSide : "");
+      setPatientActivityLevel(typeof demographics.activityLevel === "string" ? demographics.activityLevel : "");
     }
   };
 
@@ -758,7 +769,14 @@ export function ClinicalRegistrySecureClient() {
       romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
       specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
       clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
-      planOfCare: planOfCare.trim()
+      planOfCare: planOfCare.trim(),
+      demographics: {
+        ageYears: patientAgeYears === "" ? null : Number(patientAgeYears),
+        sex: patientSex || null,
+        occupation: patientOccupation.trim(),
+        dominantSide: patientDominantSide || null,
+        activityLevel: patientActivityLevel || null
+      }
     };
     const { data: assessmentSaved, error: assessmentError } = await client.rpc("save_initial_assessment", {
       p_report_id: reportId as string, p_assessment: assessment
@@ -799,7 +817,8 @@ export function ClinicalRegistrySecureClient() {
         return;
       }
     }
-    setPatientName(""); setPatientReference(""); setCareConsentConfirmed(false);
+    setPatientName(""); setPatientReference(""); setPatientAgeYears(""); setPatientSex(""); setPatientOccupation("");
+    setPatientDominantSide(""); setPatientActivityLevel(""); setCareConsentConfirmed(false);
     setCondition(""); setChiefComplaint(""); setSymptomDuration(""); setPainLocation(""); setPainScore("");
     setAggravatingFactors(""); setRelievingFactors(""); setSubjectiveNotes(""); setObjectiveFindings("");
     setRomFindings(""); setStrengthFindings(""); setSpecialTests(""); setNeuroFindings("");
@@ -921,6 +940,24 @@ export function ClinicalRegistrySecureClient() {
     window.print();
   };
 
+  const downloadReportPdf = async () => {
+    if (!client || !selectedReport) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const { data: accessLogged, error: auditError } = await client.rpc("log_report_print_request", { p_report_id: selectedReport.id });
+      if (auditError) throw new Error(`PDF export was not started because its access event could not be recorded: ${auditError.message}`);
+      if (accessLogged !== true) throw new Error("PDF export could not be audited. Refresh the report and try again.");
+      const { downloadClinicalReportPdf } = await import("@/lib/clinical-registry/pdf");
+      downloadClinicalReportPdf(selectedReport as unknown as Record<string, unknown>);
+      if (selectedPatient) await loadRecordAccessEvents(selectedPatient.id);
+      setNotice("Your clinical report PDF has been downloaded.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The PDF could not be generated. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const exportPatient = async () => {
     if (!client || !selectedPatient) return; setBusy(true); setError("");
     const { data, error: rpcError } = await client.rpc("export_my_patient_record", { p_patient_id: selectedPatient.id });
@@ -935,32 +972,59 @@ export function ClinicalRegistrySecureClient() {
 
   const submitCaseForReview = async (event: FormEvent) => {
     event.preventDefault();
-    if (!client || !selectedPatient || !selectedReport || !publicationConsentConfirmed || !deidentifiedConfirmed) return;
+    if (!client || !selectedPatient || !selectedReport) { setError("Select a patient and a clinical report before submitting a case."); return; }
+    if (selectedReport.status !== "final") { setError("Finalise the clinical report before submitting a de-identified case for review."); return; }
+    if (!publicationConsentConfirmed || !deidentifiedConfirmed) { setError("Confirm separate written publication consent and de-identification before submission."); return; }
     setBusy(true); setError(""); setNotice("");
-    const { data: consentId, error: consentError } = await client.rpc("record_publication_consent_attestation", {
-      p_patient_id: selectedPatient.id,
-      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION,
-      p_written_consent_confirmed: true
-    });
-    if (consentError || !consentId) {
+    try {
+      const { data: consentId, error: consentError } = await client.rpc("record_publication_consent_attestation", {
+        p_patient_id: selectedPatient.id,
+        p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION,
+        p_written_consent_confirmed: true
+      });
+      if (consentError || !consentId) throw new Error(consentError?.message ?? "Written publication consent could not be recorded.");
+      const { data: caseId, error: createError } = await client.rpc("create_case_draft", {
+        p_report_id: selectedReport.id, p_publication_consent_event_id: consentId,
+        p_case_title: caseTitle.trim(), p_condition_label: caseCondition.trim(), p_age_band: caseAgeBand,
+        p_clinical_context: caseContext.trim(), p_intervention_summary: caseIntervention.trim(),
+        p_outcome_summary: caseOutcome.trim(), p_evidence_reference: caseEvidence.trim() || null, p_deidentified_confirmed: true
+      });
+      if (createError || !caseId) throw new Error(createError?.message ?? "Consent was recorded, but the case draft was not created. Check that the selected report is final and belongs to your account.");
+      const { data: submitted, error: submitError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
+      if (submitError) {
+        await loadCaseSubmissions();
+        throw new Error(`Case draft ${caseId} was created, but reviewer submission failed: ${submitError.message}. You can retry it from My case submissions.`);
+      }
+      if (submitted !== true) {
+        await loadCaseSubmissions();
+        throw new Error(`Case draft ${caseId} was created, but the Registry did not confirm submission. You can retry it from My case submissions.`);
+      }
+      setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
+      setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
+      await loadCaseSubmissions();
+      setNotice("Submission confirmed: your de-identified case is now in the reviewer queue. It remains private until approved and separately published.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
+      await loadCaseSubmissions().catch(() => undefined);
+    } finally {
       setBusy(false);
-      setError(consentError?.message ?? "Written publication consent could not be recorded.");
-      return;
     }
-    const { data: caseId, error: createError } = await client.rpc("create_case_draft", {
-      p_report_id: selectedReport.id, p_publication_consent_event_id: consentId,
-      p_case_title: caseTitle, p_condition_label: caseCondition, p_age_band: caseAgeBand,
-      p_clinical_context: caseContext, p_intervention_summary: caseIntervention,
-      p_outcome_summary: caseOutcome, p_evidence_reference: caseEvidence, p_deidentified_confirmed: true
-    });
-    if (createError || !caseId) { setBusy(false); setError(createError?.message ?? "Could not create case submission."); return; }
-    const { data: submitted, error: submitError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
-    setBusy(false);
-    if (submitError || !submitted) { setError(submitError?.message ?? "Case draft saved, but it could not be submitted for review."); await loadCaseSubmissions(); return; }
-    setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
-    setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
-    setNotice("Case submitted for review. It will not appear publicly until an authorised reviewer approves and publishes it.");
-    await loadCaseSubmissions();
+  };
+
+  const retryCaseSubmission = async (caseId: string) => {
+    if (!client) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const { data, error: rpcError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
+      if (rpcError) throw rpcError;
+      if (data !== true) throw new Error("The draft could not be submitted. It may no longer be in draft status; refresh your submissions.");
+      await loadCaseSubmissions();
+      setNotice("Submission confirmed. The de-identified case is now in the reviewer queue.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const applyReportCorrection = async (event: FormEvent) => {
