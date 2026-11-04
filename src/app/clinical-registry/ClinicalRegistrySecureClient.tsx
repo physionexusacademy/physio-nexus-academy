@@ -36,6 +36,7 @@ export function ClinicalRegistrySecureClient() {
   const [email, setEmail] = useState("");
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [confirmationPending, setConfirmationPending] = useState(false);
+  const onboardingAutoSubmitRef = useRef<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState("");
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState("");
@@ -289,8 +290,67 @@ export function ClinicalRegistrySecureClient() {
   }, [client, session, loadMembership]);
 
   useEffect(() => {
-    if (!client || !session) { setVerificationRequest(null); return; }
-    loadVerificationRequest().catch((e: Error) => setError(e.message));
+    if (!client || !session) {
+      setVerificationRequest(null);
+      onboardingAutoSubmitRef.current = null;
+      return;
+    }
+
+    const user = session.user;
+    const registryRole = user.app_metadata?.registry_role;
+    if (registryRole === "operator" || registryRole === "reviewer" || !user.email_confirmed_at) {
+      loadVerificationRequest().catch((e: Error) => setError(e.message));
+      return;
+    }
+
+    // Email confirmation returns an authenticated session. Submit the professional
+    // verification application automatically at this point, rather than making
+    // the therapist discover and submit a second form manually.
+    if (onboardingAutoSubmitRef.current === user.id) return;
+    onboardingAutoSubmitRef.current = user.id;
+
+    void (async () => {
+      const { data: existingRequest, error: lookupError } = await client.rpc("my_therapist_verification_request");
+      if (lookupError) throw lookupError;
+      setVerificationRequest((existingRequest ?? null) as {status:string;submittedAt?:string;reviewedAt?:string;reviewerNote?:string|null}|null);
+      if (existingRequest) return;
+
+      const metadata = user.user_metadata ?? {};
+      const fullName = typeof metadata.full_name === "string" ? metadata.full_name.trim() : "";
+      const professionalTitle = typeof metadata.professional_title === "string" ? metadata.professional_title.trim() : "";
+      const credentials = typeof metadata.credentials === "string"
+        ? metadata.credentials.split(",").map((value: string) => value.trim()).filter(Boolean)
+        : [];
+      const registrationLabel = typeof metadata.registration_body === "string" ? metadata.registration_body.trim() : "";
+      const registrationNumber = typeof metadata.registration_number === "string"
+        ? metadata.registration_number.trim()
+        : registrationLabel === "Not registered yet" ? "Not registered yet" : "";
+      const institution = typeof metadata.institution === "string" ? metadata.institution.trim() : "";
+
+      // Keep the existing manual application form available if an older account
+      // has incomplete profile metadata; never submit partial identity data.
+      if (fullName.length < 2 || professionalTitle.length < 2 || credentials.length === 0
+        || registrationLabel.length < 2 || registrationNumber.length < 2) {
+        onboardingAutoSubmitRef.current = null;
+        return;
+      }
+
+      const { data, error: submitError } = await client.rpc("submit_therapist_verification_request", {
+        p_full_name: fullName,
+        p_professional_title: professionalTitle,
+        p_credentials: credentials,
+        p_registration_label: registrationLabel,
+        p_registration_number: registrationNumber,
+        p_institution_or_clinic: institution || null
+      });
+      if (submitError) throw submitError;
+      if (!data) throw new Error("Your professional verification request could not be submitted. Please use the application form below.");
+      setVerificationRequest({ status: data?.status ?? "pending", submittedAt: new Date().toISOString() });
+      setNotice("Email confirmed. Your professional verification request has been sent to the Registry Operator for review.");
+    })().catch((e: Error) => {
+      onboardingAutoSubmitRef.current = null;
+      setError(e.message);
+    });
   }, [client, session, loadVerificationRequest]);
 
   useEffect(() => {
@@ -546,7 +606,7 @@ export function ClinicalRegistrySecureClient() {
       setConfirmationPending(!data.session);
       setNotice(data.session
         ? "Account created. Therapist verification is still required before clinical records can be accessed."
-        : "Account request received. Check your inbox and spam folder for the confirmation link. If this email was already registered, use the resend button below. Therapist verification is still required before clinical records can be accessed.");
+        : "Account request received. Check your inbox and spam folder for the confirmation link. After confirming your email, your professional verification request will be sent to the Registry Operator automatically. If you have registered before, sign in or use password recovery instead.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Account creation could not be completed. Please try again.");
     } finally {
