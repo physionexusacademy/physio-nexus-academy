@@ -236,9 +236,14 @@ export async function downloadClinicalReportPdf(report: ReportRecord): Promise<v
     const pageId = 4 + index * 2;
     const streamId = pageId + 1;
     const stream = page.join("\n") + "\n";
-    objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${streamId} 0 R >>`;
+    const logoResource = logo ? ` /XObject << /PnaLogo ${4 + pageContents.length * 2} 0 R >>` : "";
+    objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R >>${logoResource} >> /Contents ${streamId} 0 R >>`;
     objects[streamId] = `<< /Length ${stream.length} >>\nstream\n${stream}endstream`;
   });
+  if (logo) {
+    const logoObjectId = 4 + pageContents.length * 2;
+    objects[logoObjectId] = `<< /Type /XObject /Subtype /Image /Width ${logo.width} /Height ${logo.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter [/ASCIIHexDecode /DCTDecode] /Length ${logo.hex.length + 1} >>\nstream\n${logo.hex}>\nendstream`;
+  }
 
   let pdf = "%PDF-1.4\n";
   const offsets = [0];
