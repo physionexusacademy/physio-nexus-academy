@@ -110,6 +110,7 @@ export function ClinicalRegistrySecureClient() {
   const [correctionSummary, setCorrectionSummary] = useState("");
   const [correctionDischarge, setCorrectionDischarge] = useState("");
   const [correctionRecommendations, setCorrectionRecommendations] = useState("");
+  const [newPatientFormOpen, setNewPatientFormOpen] = useState(false);
 
   const loadPatients = useCallback(async () => {
     if (!client) return;
@@ -702,6 +703,114 @@ export function ClinicalRegistrySecureClient() {
     await loadPatients();
   };
 
+  const createCompletePatientRecord = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!client || !CLINICAL_REGISTRY_CONSENT_VERSION || !careConsentConfirmed) return;
+    if (!patientReference.trim() || !patientName.trim() || !condition.trim()) {
+      setError("Enter the patient reference, patient display name and condition before saving.");
+      return;
+    }
+    if (!chiefComplaint.trim() && !subjectiveNotes.trim() && !objectiveFindings.trim() && !clinicalImpression.trim()) {
+      setError("Add the main complaint or at least one clinical finding before saving.");
+      return;
+    }
+    const hasPartialOutcome = Boolean(outcomeCode.trim() || outcomeName.trim() || outcomeValue.trim());
+    if (hasPartialOutcome && (!outcomeCode.trim() || !outcomeName.trim() || !outcomeValue.trim() || !Number.isFinite(Number(outcomeValue)))) {
+      setError("Complete all outcome measure fields or leave the outcome section blank.");
+      return;
+    }
+    setBusy(true); setError(""); setNotice("");
+    const { data: patientId, error: patientError } = await client.rpc("create_patient_with_consent_attestation", {
+      p_patient_reference: patientReference.trim(),
+      p_display_name: patientName.trim(),
+      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION,
+      p_written_consent_confirmed: true
+    });
+    if (patientError || !patientId) {
+      setBusy(false);
+      setError(patientError?.message ?? "Patient record could not be created. No clinical report was saved.");
+      return;
+    }
+    const patient: Patient = {
+      id: patientId as string,
+      patient_reference: patientReference.trim(),
+      display_name: patientName.trim(),
+      updated_at: new Date().toISOString()
+    };
+    setSelectedPatient(patient);
+    const { data: reportId, error: reportError } = await client.rpc("create_report", {
+      p_patient_id: patient.id, p_category: category, p_condition: condition.trim()
+    });
+    if (reportError || !reportId) {
+      setBusy(false);
+      await loadPatients();
+      setNewPatientFormOpen(false);
+      setPatientName(""); setPatientReference(""); setCareConsentConfirmed(false);
+      setError("Patient profile was created, but the clinical report could not be created. Select this patient and use New report to continue. " + (reportError?.message ?? ""));
+      return;
+    }
+    const assessment: Record<string, unknown> = {
+      chiefComplaint: chiefComplaint.trim(), symptomDuration: symptomDuration.trim(),
+      painLocation: painLocation.trim(), painScore: painScore === "" ? null : Number(painScore),
+      aggravatingFactors: aggravatingFactors.trim(), relievingFactors: relievingFactors.trim(),
+      subjectiveNotes: subjectiveNotes.trim(), objectiveFindings: objectiveFindings.trim(),
+      romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
+      specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
+      clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
+      planOfCare: planOfCare.trim()
+    };
+    const { data: assessmentSaved, error: assessmentError } = await client.rpc("save_initial_assessment", {
+      p_report_id: reportId as string, p_assessment: assessment
+    });
+    if (assessmentError || assessmentSaved !== true) {
+      setBusy(false);
+      await loadPatients(); await loadReports(patient.id);
+      setNewPatientFormOpen(false);
+      setPatientName(""); setPatientReference(""); setCareConsentConfirmed(false);
+      setError("Patient and report were created, but the assessment did not save. Open the report and save the assessment there. " + (assessmentError?.message ?? ""));
+      return;
+    }
+    if (interventionText.trim()) {
+      const { error: interventionError } = await client.rpc("add_intervention", {
+        p_report_id: reportId as string, p_intervention: interventionText,
+        p_body_region: interventionRegion.trim() || null,
+        p_technique_or_parameters: interventionTechnique.trim() || null,
+        p_dosage: interventionDosage.trim() || null,
+        p_response: interventionResponse.trim() || null,
+        p_home_advice: homeAdvice.trim() || null
+      });
+      if (interventionError) {
+        setBusy(false); await loadPatients(); await loadReports(patient.id); await openReport(reportId as string);
+        setNewPatientFormOpen(false);
+        setError("Patient and initial assessment were saved, but the treatment entry could not be saved: " + interventionError.message);
+        return;
+      }
+    }
+    if (outcomeValue.trim()) {
+      const { error: outcomeError } = await client.rpc("add_outcome", {
+        p_report_id: reportId as string, p_measure_code: outcomeCode.trim(),
+        p_measure_name: outcomeName.trim(), p_value: Number(outcomeValue), p_direction: outcomeDirection
+      });
+      if (outcomeError) {
+        setBusy(false); await loadPatients(); await loadReports(patient.id); await openReport(reportId as string);
+        setNewPatientFormOpen(false);
+        setError("Patient and assessment were saved, but the outcome measure could not be saved: " + outcomeError.message);
+        return;
+      }
+    }
+    setPatientName(""); setPatientReference(""); setCareConsentConfirmed(false);
+    setCondition(""); setChiefComplaint(""); setSymptomDuration(""); setPainLocation(""); setPainScore("");
+    setAggravatingFactors(""); setRelievingFactors(""); setSubjectiveNotes(""); setObjectiveFindings("");
+    setRomFindings(""); setStrengthFindings(""); setSpecialTests(""); setNeuroFindings("");
+    setClinicalImpression(""); setTreatmentGoals(""); setPlanOfCare("");
+    setInterventionText(""); setInterventionRegion(""); setInterventionTechnique(""); setInterventionDosage("");
+    setInterventionResponse(""); setHomeAdvice(""); setOutcomeCode(""); setOutcomeName(""); setOutcomeValue("");
+    setNewPatientFormOpen(false);
+    await loadPatients(); await loadReports(patient.id); await openReport(reportId as string);
+    setBusy(false);
+    setNotice("Patient and initial clinical record saved successfully. Add follow-up visits as they occur.");
+  };
+
   const createReport = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedPatient) return;
     setBusy(true); setError("");
@@ -954,6 +1063,61 @@ export function ClinicalRegistrySecureClient() {
         <p className="mt-2 text-xs leading-5 text-slate-600">This restricted action verifies your signed-in account on the Registry server and assigns the first Operator role only if no other Operator exists. It does not approve your pending therapist application. Afterward, sign in again and complete authenticator MFA before privileged access is enabled.</p>
         <button type="button" onClick={bootstrapFirstRegistryOperator} disabled={busy} className="mt-4 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">{busy ? "Verifying securely…" : "Set up first Registry Operator"}</button>
       </section>}
+      {newPatientFormOpen && verified && <div className="fixed inset-0 z-50 overflow-y-auto bg-[#f5f8fb] p-3 sm:p-6">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:p-7">
+          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
+            <div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy · Clinical Registry</p><h2 className="mt-1 text-xl font-bold text-[#173653] sm:text-2xl">New patient — complete clinical intake</h2><p className="mt-1 text-xs leading-5 text-slate-500">Enter patient details and the first assessment on this single page. Complete relevant fields; optional clinical details can remain blank.</p></div>
+            <button type="button" onClick={()=>setNewPatientFormOpen(false)} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600">Close</button>
+          </div>
+          <form onSubmit={createCompletePatientRecord} className="mt-5 space-y-6">
+            <section><h3 className="text-sm font-bold text-[#173653]">1. Patient information</h3><p className="mt-1 text-[11px] text-slate-500">Use a non-identifying patient code where possible. Do not enter CNIC or other unnecessary sensitive identifiers.</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <label className="text-xs font-medium">Patient reference / code *<input required minLength={2} maxLength={64} value={patientReference} onChange={e=>setPatientReference(e.target.value)} placeholder="e.g. PNA-001" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                <label className="text-xs font-medium">Patient display name *<input required minLength={1} maxLength={160} value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="Name or clinic-approved identifier" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              </div>
+              <label className="mt-3 flex items-start gap-2 text-[11px] leading-5 text-slate-600"><input type="checkbox" required checked={careConsentConfirmed} onChange={e=>setCareConsentConfirmed(e.target.checked)} className="mt-1"/> I confirm the patient has provided written consent for clinical care and documentation, and I retain the signed original securely outside PNA.</label>
+            </section>
+            <section className="border-t border-slate-100 pt-5"><h3 className="text-sm font-bold text-[#173653]">2. Clinical report</h3><div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <label className="text-xs font-medium">Clinical category<select value={category} onChange={e=>setCategory(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option>Musculoskeletal</option><option>Neurological</option><option>Cardiorespiratory</option><option>Sports Rehabilitation</option><option>Paediatrics</option><option>Other</option></select></label>
+              <label className="text-xs font-medium">Condition / working diagnosis *<input required value={condition} onChange={e=>setCondition(e.target.value)} placeholder="e.g. Non-specific low back pain" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+            </div></section>
+            <section className="border-t border-slate-100 pt-5"><h3 className="text-sm font-bold text-[#173653]">3. Initial subjective assessment</h3><div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <label className="text-xs font-medium">Main complaint *<input value={chiefComplaint} onChange={e=>setChiefComplaint(e.target.value)} placeholder="e.g. Low back pain" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Symptom duration<input value={symptomDuration} onChange={e=>setSymptomDuration(e.target.value)} placeholder="e.g. 3 weeks" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Pain location<input value={painLocation} onChange={e=>setPainLocation(e.target.value)} placeholder="e.g. Right lumbar region" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Pain score (NPRS 0–10)<input type="number" min="0" max="10" step="1" value={painScore} onChange={e=>setPainScore(e.target.value)} placeholder="Optional" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Aggravating factors<input value={aggravatingFactors} onChange={e=>setAggravatingFactors(e.target.value)} placeholder="What makes symptoms worse?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Relieving factors<input value={relievingFactors} onChange={e=>setRelievingFactors(e.target.value)} placeholder="What eases symptoms?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium sm:col-span-2">Subjective history / functional limitations<textarea value={subjectiveNotes} onChange={e=>setSubjectiveNotes(e.target.value)} rows={3} placeholder="Relevant history, activity limitations, red flags or other subjective information" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+            </div></section>
+            <details className="border-t border-slate-100 pt-5"><summary className="cursor-pointer text-sm font-bold text-[#173653]">4. Objective examination & clinical reasoning (optional)</summary><div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <label className="text-xs font-medium">Objective findings<textarea value={objectiveFindings} onChange={e=>setObjectiveFindings(e.target.value)} rows={3} placeholder="Observation, palpation, functional tests…" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Range of motion (ROM)<textarea value={romFindings} onChange={e=>setRomFindings(e.target.value)} rows={3} placeholder="Relevant active / passive ROM findings" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Muscle strength / MMT<textarea value={strengthFindings} onChange={e=>setStrengthFindings(e.target.value)} rows={2} placeholder="Muscle strength findings" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Special tests<textarea value={specialTests} onChange={e=>setSpecialTests(e.target.value)} rows={2} placeholder="Test name and result" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium sm:col-span-2">Neurological findings<textarea value={neuroFindings} onChange={e=>setNeuroFindings(e.target.value)} rows={2} placeholder="Dermatomes, myotomes, reflexes or neural signs, if relevant" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Clinical impression<textarea value={clinicalImpression} onChange={e=>setClinicalImpression(e.target.value)} rows={2} placeholder="Clinical impression / working diagnosis" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Treatment goals<textarea value={treatmentGoals} onChange={e=>setTreatmentGoals(e.target.value)} rows={2} placeholder="Short- and long-term goals" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium sm:col-span-2">Plan of care<textarea value={planOfCare} onChange={e=>setPlanOfCare(e.target.value)} rows={2} placeholder="Planned treatment and review frequency" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+            </div></details>
+            <details className="border-t border-slate-100 pt-5"><summary className="cursor-pointer text-sm font-bold text-[#173653]">5. Initial treatment provided (optional)</summary><div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <label className="text-xs font-medium">Intervention<select value={interventionText} onChange={e=>setInterventionText(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded yet</option>{["Manual therapy","Therapeutic exercise","Stretching","Strengthening","Neuromuscular training","Electrotherapy","Education / advice","Gait training","Balance training","Functional training","Other"].map(v=><option key={v}>{v}</option>)}</select></label>
+              <label className="text-xs font-medium">Body region<input value={interventionRegion} onChange={e=>setInterventionRegion(e.target.value)} placeholder="e.g. Lumbar spine" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Technique / parameters<input value={interventionTechnique} onChange={e=>setInterventionTechnique(e.target.value)} placeholder="Technique, intensity or parameters" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Dosage<input value={interventionDosage} onChange={e=>setInterventionDosage(e.target.value)} placeholder="Sets, reps, duration" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Patient response<input value={interventionResponse} onChange={e=>setInterventionResponse(e.target.value)} placeholder="Tolerance / immediate response" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Home advice<input value={homeAdvice} onChange={e=>setHomeAdvice(e.target.value)} placeholder="Home exercise / advice" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+            </div></details>
+            <details className="border-t border-slate-100 pt-5"><summary className="cursor-pointer text-sm font-bold text-[#173653]">6. Baseline outcome measure (optional)</summary><div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <label className="text-xs font-medium">Measure code<input value={outcomeCode} onChange={e=>setOutcomeCode(e.target.value)} placeholder="e.g. NPRS, ODI, NDI, LEFS" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Measure name<input value={outcomeName} onChange={e=>setOutcomeName(e.target.value)} placeholder="Full measure name" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Baseline score<input type="number" step="any" value={outcomeValue} onChange={e=>setOutcomeValue(e.target.value)} placeholder="Score" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+              <label className="text-xs font-medium">Score direction<select value={outcomeDirection} onChange={e=>setOutcomeDirection(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="lower_is_better">Lower is better</option><option value="higher_is_better">Higher is better</option><option value="descriptive">Descriptive</option></select></label>
+            </div></details>
+            <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white py-4"><p className="text-[11px] text-slate-500">One save action creates the patient and first clinical report. Follow-up visits are added later when they occur.</p><div className="flex gap-2"><button type="button" onClick={()=>setNewPatientFormOpen(false)} className="rounded-xl border border-slate-200 px-4 py-3 text-xs font-semibold text-slate-600">Cancel</button><button disabled={busy || !patientReference.trim() || !patientName.trim() || !condition.trim() || !careConsentConfirmed} className="rounded-xl bg-teal-700 px-5 py-3 text-xs font-bold text-white disabled:opacity-40">{busy?"Saving complete record…":"Save Patient Record"}</button></div></div>
+          </form>
+        </div>
+      </div>}
       {!verified ? <section className="grid gap-5 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <ShieldCheck size={28} className="text-teal-700"/>
@@ -984,14 +1148,10 @@ export function ClinicalRegistrySecureClient() {
         <aside className="space-y-5">
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><Users size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My patients</h2></div><p className="mt-1 text-[11px] text-slate-400">Only records owned by your therapist account are listed.</p><div className="mt-4 max-h-72 space-y-2 overflow-y-auto">{patients.map(p=><button key={p.id} onClick={()=>{setSelectedPatient(p);setSelectedReport(null);loadReports(p.id).catch((e:Error)=>setError(e.message));loadRecordAccessEvents(p.id).catch((e:Error)=>setError(e.message));}} className={`w-full rounded-xl border p-3 text-left ${selectedPatient?.id===p.id?"border-teal-500 bg-teal-50":"border-slate-100 hover:bg-slate-50"}`}><p className="text-sm font-semibold">{p.display_name}</p><p className="mt-1 text-[10px] text-slate-500">{p.patient_reference}</p></button>)}{patients.length===0&&<p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No patient records yet.</p>}</div></section>
           <section className="rounded-2xl border border-slate-200 bg-white p-5">
-            <div className="flex items-center gap-2"><UserPlus size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Add patient</h2></div>
-            <p className="mt-2 text-[11px] leading-5 text-slate-500">Keep the patient's signed clinical-care consent in your clinic's secure records. PNA does not upload or store the document.</p>
-            <form onSubmit={createPatientWithConsentAttestation} className="mt-4 space-y-3">
-              <input required minLength={2} maxLength={64} value={patientReference} onChange={e=>setPatientReference(e.target.value)} placeholder="Non-identifying patient reference / code" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
-              <input required minLength={1} maxLength={160} value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="Patient display name (private record)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
-              <label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600"><input type="checkbox" checked={careConsentConfirmed} onChange={e=>setCareConsentConfirmed(e.target.checked)} className="mt-1"/> I confirm that the patient has provided written consent for clinical care and documentation, and that I retain the signed original securely outside PNA.</label>
-              <button disabled={busy||!patientReference.trim()||!patientName.trim()||!careConsentConfirmed} className="w-full rounded-xl bg-teal-700 px-3 py-2.5 text-xs font-bold text-white disabled:opacity-40">Add patient</button>
-            </form>
+            <div className="flex items-center gap-2"><UserPlus size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">New patient record</h2></div>
+            <p className="mt-2 text-[11px] leading-5 text-slate-500">Open one complete intake form for patient details and the initial clinical assessment.</p>
+            <button type="button" onClick={()=>{setError("");setNotice("");setNewPatientFormOpen(true);}} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white"><UserPlus size={15}/> Add New Patient</button>
+          </section>
           </section>
         </aside>
         <section className="space-y-5">
