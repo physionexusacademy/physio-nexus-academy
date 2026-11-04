@@ -428,7 +428,7 @@ export function ClinicalRegistrySecureClient() {
       setChiefComplaint(value("chiefComplaint")); setSymptomDuration(value("symptomDuration"));
       setPainLocation(value("painLocation")); setPainScore(value("painScore"));
       setAggravatingFactors(value("aggravatingFactors")); setRelievingFactors(value("relievingFactors"));
-      setSubjectiveNotes(value("subjectiveNotes")); setObjectiveFindings(value("objectiveFindings"));
+      setSubjectiveNotes(value("subjectiveNotes") || value("subjective")); setObjectiveFindings(value("objectiveFindings") || value("objective"));
       setRomFindings(value("romFindings")); setStrengthFindings(value("strengthFindings"));
       setSpecialTests(value("specialTests")); setNeuroFindings(value("neuroFindings"));
       setClinicalImpression(value("clinicalImpression")); setTreatmentGoals(value("treatmentGoals"));
@@ -718,6 +718,7 @@ export function ClinicalRegistrySecureClient() {
       setError("Add the main complaint or at least one clinical finding before saving."); return;
     }
     const parsed: Record<string, unknown> = {
+      ...(selectedReport.initialAssessment ?? {}),
       chiefComplaint: chiefComplaint.trim(), symptomDuration: symptomDuration.trim(),
       painLocation: painLocation.trim(), painScore: painScore === "" ? null : Number(painScore),
       aggravatingFactors: aggravatingFactors.trim(), relievingFactors: relievingFactors.trim(),
