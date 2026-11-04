@@ -60,7 +60,8 @@ async function loadPnaLogoForPdf(): Promise<{ hex: string; width: number; height
   }
 }
 
-export function downloadClinicalReportPdf(report: ReportRecord): void {
+export async function downloadClinicalReportPdf(report: ReportRecord): Promise<void> {
+  const logo = await loadPnaLogoForPdf();
   const patient = (report.patient && typeof report.patient === "object" ? report.patient : {}) as ReportRecord;
   const assessment = (report.initialAssessment && typeof report.initialAssessment === "object" ? report.initialAssessment : {}) as ReportRecord;
   const demographics = (assessment.demographics && typeof assessment.demographics === "object" ? assessment.demographics : {}) as ReportRecord;
@@ -172,8 +173,13 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
   const startPage = (pageNumber: number) => {
     commands = [];
     drawRect(0, 790, pageWidth, 52, "0.08 0.20 0.31");
-    drawText("PHYSIO NEXUS ACADEMY", 42, 817, 9, "1 1 1");
-    drawText("CLINICAL REGISTRY", 42, 800, 8, "0.78 0.91 0.91");
+    if (logo) {
+      const logoWidth = 38;
+      const logoHeight = logoWidth * logo.height / logo.width;
+      commands.push(`q ${logoWidth} 0 0 ${logoHeight} 42 ${796 + (40 - logoHeight) / 2} cm /PnaLogo Do Q`);
+    }
+    drawText("PHYSIO NEXUS ACADEMY", logo ? 92 : 42, 817, 9, "1 1 1");
+    drawText("CLINICAL REGISTRY · PROFESSIONAL REPORT", logo ? 92 : 42, 800, 7, "0.78 0.91 0.91");
     drawText(title, 42, 768, 16, "0.08 0.20 0.31");
     drawText(`${patientName}${patientRef ? "  |  " + patientRef : ""}`, 42, 748, 9, "0.30 0.38 0.45");
     y = 718;
