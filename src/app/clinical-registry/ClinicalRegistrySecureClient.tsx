@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import type { Session } from "@supabase/supabase-js";
 import { BookOpen, FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
+import { PublicCasePdfButton } from "./library/PublicCasePdfButton";
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
 type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
@@ -51,6 +52,11 @@ export function ClinicalRegistrySecureClient() {
   const [mfaSecret, setMfaSecret] = useState("");
   const [patientReference, setPatientReference] = useState("");
   const [patientName, setPatientName] = useState("");
+  const [patientAgeYears, setPatientAgeYears] = useState("");
+  const [patientSex, setPatientSex] = useState("");
+  const [patientOccupation, setPatientOccupation] = useState("");
+  const [patientDominantSide, setPatientDominantSide] = useState("");
+  const [patientActivityLevel, setPatientActivityLevel] = useState("");
   const [careConsentConfirmed, setCareConsentConfirmed] = useState(false);
   const [category, setCategory] = useState("Musculoskeletal");
   const [condition, setCondition] = useState("");
@@ -435,6 +441,12 @@ export function ClinicalRegistrySecureClient() {
       setSpecialTests(value("specialTests")); setNeuroFindings(value("neuroFindings"));
       setClinicalImpression(value("clinicalImpression")); setTreatmentGoals(value("treatmentGoals"));
       setPlanOfCare(value("planOfCare"));
+      const demographics = a.demographics && typeof a.demographics === "object" ? a.demographics as Record<string, unknown> : {};
+      setPatientAgeYears(typeof demographics.ageYears === "number" ? String(demographics.ageYears) : "");
+      setPatientSex(typeof demographics.sex === "string" ? demographics.sex : "");
+      setPatientOccupation(typeof demographics.occupation === "string" ? demographics.occupation : "");
+      setPatientDominantSide(typeof demographics.dominantSide === "string" ? demographics.dominantSide : "");
+      setPatientActivityLevel(typeof demographics.activityLevel === "string" ? demographics.activityLevel : "");
     }
   };
 
@@ -758,7 +770,14 @@ export function ClinicalRegistrySecureClient() {
       romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
       specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
       clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
-      planOfCare: planOfCare.trim()
+      planOfCare: planOfCare.trim(),
+      demographics: {
+        ageYears: patientAgeYears === "" ? null : Number(patientAgeYears),
+        sex: patientSex || null,
+        occupation: patientOccupation.trim(),
+        dominantSide: patientDominantSide || null,
+        activityLevel: patientActivityLevel || null
+      }
     };
     const { data: assessmentSaved, error: assessmentError } = await client.rpc("save_initial_assessment", {
       p_report_id: reportId as string, p_assessment: assessment
@@ -799,7 +818,8 @@ export function ClinicalRegistrySecureClient() {
         return;
       }
     }
-    setPatientName(""); setPatientReference(""); setCareConsentConfirmed(false);
+    setPatientName(""); setPatientReference(""); setPatientAgeYears(""); setPatientSex(""); setPatientOccupation("");
+    setPatientDominantSide(""); setPatientActivityLevel(""); setCareConsentConfirmed(false);
     setCondition(""); setChiefComplaint(""); setSymptomDuration(""); setPainLocation(""); setPainScore("");
     setAggravatingFactors(""); setRelievingFactors(""); setSubjectiveNotes(""); setObjectiveFindings("");
     setRomFindings(""); setStrengthFindings(""); setSpecialTests(""); setNeuroFindings("");
@@ -836,7 +856,14 @@ export function ClinicalRegistrySecureClient() {
       romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
       specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
       clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
-      planOfCare: planOfCare.trim()
+      planOfCare: planOfCare.trim(),
+      demographics: {
+        ageYears: patientAgeYears === "" ? null : Number(patientAgeYears),
+        sex: patientSex || null,
+        occupation: patientOccupation.trim(),
+        dominantSide: patientDominantSide || null,
+        activityLevel: patientActivityLevel || null
+      }
     };
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
@@ -921,6 +948,24 @@ export function ClinicalRegistrySecureClient() {
     window.print();
   };
 
+  const downloadReportPdf = async () => {
+    if (!client || !selectedReport) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const { data: accessLogged, error: auditError } = await client.rpc("log_report_print_request", { p_report_id: selectedReport.id });
+      if (auditError) throw new Error(`PDF export was not started because its access event could not be recorded: ${auditError.message}`);
+      if (accessLogged !== true) throw new Error("PDF export could not be audited. Refresh the report and try again.");
+      const { downloadClinicalReportPdf } = await import("@/lib/clinical-registry/pdf");
+      downloadClinicalReportPdf(selectedReport as unknown as Record<string, unknown>);
+      if (selectedPatient) await loadRecordAccessEvents(selectedPatient.id);
+      setNotice("Your clinical report PDF has been downloaded.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The PDF could not be generated. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const exportPatient = async () => {
     if (!client || !selectedPatient) return; setBusy(true); setError("");
     const { data, error: rpcError } = await client.rpc("export_my_patient_record", { p_patient_id: selectedPatient.id });
@@ -935,32 +980,59 @@ export function ClinicalRegistrySecureClient() {
 
   const submitCaseForReview = async (event: FormEvent) => {
     event.preventDefault();
-    if (!client || !selectedPatient || !selectedReport || !publicationConsentConfirmed || !deidentifiedConfirmed) return;
+    if (!client || !selectedPatient || !selectedReport) { setError("Select a patient and a clinical report before submitting a case."); return; }
+    if (selectedReport.status !== "final") { setError("Finalise the clinical report before submitting a de-identified case for review."); return; }
+    if (!publicationConsentConfirmed || !deidentifiedConfirmed) { setError("Confirm separate written publication consent and de-identification before submission."); return; }
     setBusy(true); setError(""); setNotice("");
-    const { data: consentId, error: consentError } = await client.rpc("record_publication_consent_attestation", {
-      p_patient_id: selectedPatient.id,
-      p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION,
-      p_written_consent_confirmed: true
-    });
-    if (consentError || !consentId) {
+    try {
+      const { data: consentId, error: consentError } = await client.rpc("record_publication_consent_attestation", {
+        p_patient_id: selectedPatient.id,
+        p_consent_version: CLINICAL_REGISTRY_CONSENT_VERSION,
+        p_written_consent_confirmed: true
+      });
+      if (consentError || !consentId) throw new Error(consentError?.message ?? "Written publication consent could not be recorded.");
+      const { data: caseId, error: createError } = await client.rpc("create_case_draft", {
+        p_report_id: selectedReport.id, p_publication_consent_event_id: consentId,
+        p_case_title: caseTitle.trim(), p_condition_label: caseCondition.trim(), p_age_band: caseAgeBand,
+        p_clinical_context: caseContext.trim(), p_intervention_summary: caseIntervention.trim(),
+        p_outcome_summary: caseOutcome.trim(), p_evidence_reference: caseEvidence.trim() || null, p_deidentified_confirmed: true
+      });
+      if (createError || !caseId) throw new Error(createError?.message ?? "Consent was recorded, but the case draft was not created. Check that the selected report is final and belongs to your account.");
+      const { data: submitted, error: submitError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
+      if (submitError) {
+        await loadCaseSubmissions();
+        throw new Error(`Case draft ${caseId} was created, but reviewer submission failed: ${submitError.message}. You can retry it from My case submissions.`);
+      }
+      if (submitted !== true) {
+        await loadCaseSubmissions();
+        throw new Error(`Case draft ${caseId} was created, but the Registry did not confirm submission. You can retry it from My case submissions.`);
+      }
+      setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
+      setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
+      await loadCaseSubmissions();
+      setNotice("Submission confirmed: your de-identified case is now in the reviewer queue. It remains private until approved and separately published.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
+      await loadCaseSubmissions().catch(() => undefined);
+    } finally {
       setBusy(false);
-      setError(consentError?.message ?? "Written publication consent could not be recorded.");
-      return;
     }
-    const { data: caseId, error: createError } = await client.rpc("create_case_draft", {
-      p_report_id: selectedReport.id, p_publication_consent_event_id: consentId,
-      p_case_title: caseTitle, p_condition_label: caseCondition, p_age_band: caseAgeBand,
-      p_clinical_context: caseContext, p_intervention_summary: caseIntervention,
-      p_outcome_summary: caseOutcome, p_evidence_reference: caseEvidence, p_deidentified_confirmed: true
-    });
-    if (createError || !caseId) { setBusy(false); setError(createError?.message ?? "Could not create case submission."); return; }
-    const { data: submitted, error: submitError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
-    setBusy(false);
-    if (submitError || !submitted) { setError(submitError?.message ?? "Case draft saved, but it could not be submitted for review."); await loadCaseSubmissions(); return; }
-    setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
-    setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
-    setNotice("Case submitted for review. It will not appear publicly until an authorised reviewer approves and publishes it.");
-    await loadCaseSubmissions();
+  };
+
+  const retryCaseSubmission = async (caseId: string) => {
+    if (!client) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const { data, error: rpcError } = await client.rpc("submit_case_for_review", { p_case_id: caseId });
+      if (rpcError) throw rpcError;
+      if (data !== true) throw new Error("The draft could not be submitted. It may no longer be in draft status; refresh your submissions.");
+      await loadCaseSubmissions();
+      setNotice("Submission confirmed. The de-identified case is now in the reviewer queue.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const applyReportCorrection = async (event: FormEvent) => {
@@ -1035,6 +1107,16 @@ export function ClinicalRegistrySecureClient() {
     await loadReviewerCases();
     await loadPublicCases();
   };
+  const demographicRecord = selectedReport?.initialAssessment?.demographics && typeof selectedReport.initialAssessment.demographics === "object"
+    ? selectedReport.initialAssessment.demographics as Record<string, unknown> : {};
+  const demographicItems = ([
+    ["Age", typeof demographicRecord.ageYears === "number" ? String(demographicRecord.ageYears) + " years" : ""],
+    ["Sex", typeof demographicRecord.sex === "string" ? demographicRecord.sex : ""],
+    ["Occupation", typeof demographicRecord.occupation === "string" ? demographicRecord.occupation : ""],
+    ["Dominant side", typeof demographicRecord.dominantSide === "string" ? demographicRecord.dominantSide : ""],
+    ["Activity level", typeof demographicRecord.activityLevel === "string" ? demographicRecord.activityLevel : ""]
+  ] as Array<[string, string]>).filter(([, value]) => value.trim() !== "");
+
   if (!client) return <main className="min-h-screen bg-slate-50 px-5 py-16 text-slate-800"><section className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><ShieldCheck className="text-teal-700" size={30}/><h1 className="mt-4 text-2xl font-bold text-[#173653]">PNA Clinical Registry</h1><p className="mt-3 text-sm leading-6 text-slate-600">The isolated Registry service is not configured yet. This workspace will not connect to or reuse the PNA website database.</p><p className="mt-4 rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-900">Required environment settings: NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_URL, NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_PUBLISHABLE_KEY (or the legacy NEXT_PUBLIC_CLINICAL_REGISTRY_SUPABASE_ANON_KEY) The Registry consent attestation uses its built-in lightweight version label; no consent files are uploaded or stored.</p></section></main>;
 
   if (!recoveryMode && session && mfaRequired && (session.user.app_metadata?.registry_role === "operator" || session.user.app_metadata?.registry_role === "reviewer")) return <main className="min-h-screen bg-[#f5f8fb] px-5 py-16 text-slate-800"><section className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"><div className="flex items-center gap-3"><ShieldCheck className="text-teal-700" size={30}/><div><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Physio Nexus Academy</p><h1 className="text-2xl font-bold text-[#173653]">Extra security required</h1></div></div><p className="mt-3 text-sm leading-6 text-slate-600">Reviewer and operator actions require a verified authenticator and an AAL2 session. Your privileged queues remain locked until this step is complete.</p>{!mfaFactorId ? <button type="button" onClick={enrollRegistryMfa} disabled={busy} className="mt-6 w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Please wait…":"Set up authenticator MFA"}</button> : <><p className="mt-4 text-xs font-semibold text-slate-700">Authenticator factor detected: {mfaQrCode ? "Setup pending verification" : "Ready to verify"}</p>{mfaQrCode&&<div className="mt-4 rounded-xl border border-slate-200 p-3 text-center"><img src={mfaQrCode} alt="Authenticator setup QR code" className="mx-auto h-48 w-48"/><p className="mt-3 break-all text-xs text-slate-500">Manual setup key: <span className="font-mono font-semibold text-slate-800">{mfaSecret}</span></p></div>}<button type="button" onClick={startRegistryMfaChallenge} disabled={busy} className="mt-4 w-full rounded-xl border border-teal-700 px-4 py-3 text-sm font-bold text-teal-800 disabled:opacity-50">{busy?"Please wait…":mfaQrCode?"I've scanned the QR — send verification challenge":"Send authenticator challenge"}</button>{mfaChallengeId&&<form onSubmit={verifyRegistryMfa} className="mt-4 space-y-3"><input required inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="6-digit authenticator code" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-600"/><button disabled={busy||mfaCode.length!==6} className="w-full rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy?"Verifying…":"Verify and unlock privileged access"}</button></form>}</>}{error&&<p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs text-red-700">{error}</p>}{notice&&<p role="status" className="mt-4 rounded-xl bg-teal-50 p-3 text-xs text-teal-800">{notice}</p>}<button type="button" onClick={()=>client?.auth.signOut()} className="mt-4 w-full px-2 py-2 text-xs font-semibold text-slate-500 underline">Sign out</button></section></main>;
@@ -1076,7 +1158,14 @@ export function ClinicalRegistrySecureClient() {
                 <label className="text-xs font-medium">Patient reference / code *<input required minLength={2} maxLength={64} value={patientReference} onChange={e=>setPatientReference(e.target.value)} placeholder="e.g. PNA-001" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 <label className="text-xs font-medium">Patient display name *<input required minLength={1} maxLength={160} value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="Name or clinic-approved identifier" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
               </div>
-              <p className="mt-2 text-[11px] leading-5 text-slate-500">PNA does not upload or store the document. The therapist retains the signed original securely in clinic records.</p>
+              <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3"><h4 className="text-xs font-bold text-[#173653]">Patient demographics <span className="font-normal text-slate-400">· optional</span></h4><div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <label className="text-xs font-medium">Age (years)<input type="number" min="0" max="120" step="1" value={patientAgeYears} onChange={e=>setPatientAgeYears(e.target.value)} placeholder="e.g. 42" className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs"/></label>
+                <label className="text-xs font-medium">Sex<select value={patientSex} onChange={e=>setPatientSex(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Female</option><option>Male</option><option>Intersex</option><option>Prefer not to say</option></select></label>
+                <label className="text-xs font-medium">Dominant side<select value={patientDominantSide} onChange={e=>setPatientDominantSide(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Right</option><option>Left</option><option>Ambidextrous</option></select></label>
+                <label className="text-xs font-medium sm:col-span-2 lg:col-span-1">Occupation / work demands<input maxLength={160} value={patientOccupation} onChange={e=>setPatientOccupation(e.target.value)} placeholder="e.g. Office worker, teacher" className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs"/></label>
+                <label className="text-xs font-medium">Activity level<select value={patientActivityLevel} onChange={e=>setPatientActivityLevel(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Sedentary</option><option>Low active</option><option>Moderately active</option><option>Very active</option></select></label>
+              </div></div>
+              <p className="mt-3 text-[11px] leading-5 text-slate-500">Do not enter CNIC, home address or unnecessary identifiers. PNA does not upload or store the document. The therapist retains the signed original securely in clinic records.</p>
                <label className="mt-3 flex items-start gap-2 text-[11px] leading-5 text-slate-600"><input type="checkbox" required checked={careConsentConfirmed} onChange={e=>setCareConsentConfirmed(e.target.checked)} className="mt-1"/> I confirm the patient has provided written consent for clinical care and documentation, and I retain the signed original securely outside PNA.</label>
             </section>
             <section className="border-t border-slate-100 pt-5"><h3 className="text-sm font-bold text-[#173653]">2. Clinical report</h3><div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -1152,7 +1241,7 @@ export function ClinicalRegistrySecureClient() {
           <section className="rounded-2xl border border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2"><UserPlus size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">New patient record</h2></div>
             <p className="mt-2 text-[11px] leading-5 text-slate-500">Open one complete intake form for patient details and the initial clinical assessment.</p>
-            <button type="button" onClick={()=>{setError("");setNotice("");setNewPatientFormOpen(true);}} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white"><UserPlus size={15}/> Add New Patient</button>
+            <button type="button" onClick={()=>{setError("");setNotice("");setPatientAgeYears("");setPatientSex("");setPatientOccupation("");setPatientDominantSide("");setPatientActivityLevel("");setNewPatientFormOpen(true);}} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white"><UserPlus size={15}/> Add New Patient</button>
           </section>
         </aside>
         <section className="space-y-5">
@@ -1161,12 +1250,13 @@ export function ClinicalRegistrySecureClient() {
             {selectedPatient&&<form onSubmit={createReport} className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto]"><select value={category} onChange={e=>setCategory(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option>Musculoskeletal</option><option>Neurological</option><option>Cardiorespiratory</option><option>Sports Rehabilitation</option><option>Paediatrics</option><option>Other</option></select><input required value={condition} onChange={e=>setCondition(e.target.value)} placeholder="Condition / diagnosis" className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><button disabled={busy} className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white"><Plus size={14}/> New report</button></form>}
             <div className="mt-4 space-y-2">{reports.map(r=><button key={r.report_id} onClick={()=>openReport(r.report_id)} className={`flex w-full flex-wrap items-center justify-between gap-2 rounded-xl border p-3 text-left ${selectedReport?.id===r.report_id?"border-teal-500 bg-teal-50":"border-slate-100 hover:bg-slate-50"}`}><span><span className="block text-sm font-semibold">{r.condition}</span><span className="mt-1 block text-[10px] text-slate-500">{r.category} · {r.assessment_date}</span></span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold">{r.status}</span></button>)}{selectedPatient&&reports.length===0&&<p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No reports for this patient yet.</p>}</div>
           </section>
-          {selectedReport&&<section className="rounded-2xl border border-slate-200 bg-white p-5" id="registry-report-print"><div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4"><div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Clinical report</p><h2 className="mt-1 text-xl font-bold text-[#173653]">{selectedReport.condition}</h2><p className="mt-1 text-xs text-slate-500">{selectedReport.patient?.displayName} · {selectedReport.patient?.patientReference} · {selectedReport.category} · {selectedReport.assessmentDate}</p><p className="mt-1 text-[10px] uppercase tracking-wide text-slate-400">Status: {selectedReport.status}</p></div><div className="no-print flex gap-2"><button onClick={printReport} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><Printer size={14}/> Export PDF</button>{selectedReport.status==="draft"&&<button onClick={finaliseReport} disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Finalise</button>}</div></div>
+          {selectedReport&&<section className="rounded-2xl border border-slate-200 bg-white p-5" id="registry-report-print"><div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4"><div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Clinical report</p><h2 className="mt-1 text-xl font-bold text-[#173653]">{selectedReport.condition}</h2><p className="mt-1 text-xs text-slate-500">{selectedReport.patient?.displayName} · {selectedReport.patient?.patientReference} · {selectedReport.category} · {selectedReport.assessmentDate}</p><p className="mt-1 text-[10px] uppercase tracking-wide text-slate-400">Status: {selectedReport.status}</p></div><div className="no-print flex flex-wrap gap-2"><button onClick={downloadReportPdf} disabled={busy} className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white"><FileDown size={14}/> Download PDF</button><button onClick={printReport} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><Printer size={14}/> Print</button>{selectedReport.status==="draft"&&<button onClick={finaliseReport} disabled={busy} className="rounded-xl border border-teal-700 px-3 py-2 text-xs font-bold text-teal-800">Finalise</button>}</div></div>
             {reportVersions.length > 0 && <section className="mt-5 rounded-xl border border-slate-100 p-4 no-print"><h3 className="text-xs font-bold text-[#173653]">Version history</h3><p className="mt-1 text-[10px] leading-5 text-slate-500">Read-only snapshots captured automatically before report updates. Earlier versions are preserved; they cannot be edited or deleted.</p><div className="mt-3 space-y-2">{reportVersions.map(version=><details key={version.version_id} className="rounded-lg border border-slate-100 p-3"><summary className="cursor-pointer text-xs font-semibold">Revision {version.revision_number} · {new Date(version.created_at).toLocaleString()}</summary><p className="mt-2 text-[10px] text-slate-500">{version.change_reason}</p><pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-slate-50 p-3 text-[10px] leading-5">{JSON.stringify(version.snapshot,null,2)}</pre></details>)}</div></section>}
             {(selectedReport.clinicalSummary || selectedReport.dischargeStatus || (selectedReport.recommendations?.length ?? 0) > 0) && <section className="mt-5 rounded-xl border border-slate-100 p-4"><h3 className="text-xs font-bold text-[#173653]">Clinical summary and plan</h3>{selectedReport.clinicalSummary&&<p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-700">{selectedReport.clinicalSummary}</p>}{selectedReport.dischargeStatus&&<p className="mt-2 text-xs"><strong>Discharge status:</strong> {selectedReport.dischargeStatus}</p>}{(selectedReport.recommendations?.length??0)>0&&<ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-700">{selectedReport.recommendations?.map((item,i)=><li key={i}>{item}</li>)}</ul>}</section>}
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {demographicItems.length > 0 && <section className="mt-4 rounded-xl border border-teal-100 bg-teal-50/40 p-4"><div className="flex items-center justify-between gap-2"><h3 className="text-xs font-bold uppercase tracking-wide text-[#173653]">Patient demographics</h3><span className="text-[10px] text-slate-400">Private clinical record</span></div><div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">{demographicItems.map(([label,value])=><div key={label}><p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">{label}</p><p className="mt-1 text-xs font-semibold text-slate-700">{value}</p></div>)}</div></section>}
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
               <section className="rounded-xl border border-slate-100 p-4"><h3 className="text-sm font-bold text-[#173653]">Initial assessment</h3>
-                {Object.entries(selectedReport.initialAssessment??{}).filter(([key,value])=>key!=="schemaVersion"&&value!==null&&value!=="").map(([key,value])=><p key={key} className="mt-2 text-xs leading-5 text-slate-700"><strong>{key.replace(/([A-Z])/g," $1").replace(/^./,s=>s.toUpperCase())}:</strong> {String(value)}</p>)}
+                {Object.entries(selectedReport.initialAssessment??{}).filter(([key,value])=>key!=="schemaVersion"&&key!=="demographics"&&value!==null&&value!==""&&typeof value!=="object").map(([key,value])=><p key={key} className="mt-2 text-xs leading-5 text-slate-700"><strong>{key.replace(/([A-Z])/g," $1").replace(/^./,s=>s.toUpperCase())}:</strong> {String(value)}</p>)}
                 {Object.keys(selectedReport.initialAssessment??{}).length===0&&<p className="mt-2 text-xs text-slate-400">No assessment saved yet.</p>}
               </section>
               <section className="rounded-xl border border-slate-100 p-4"><h3 className="text-sm font-bold text-[#173653]">Follow-up visits</h3>
@@ -1193,6 +1283,7 @@ export function ClinicalRegistrySecureClient() {
                   <label className="text-xs font-medium">Aggravating factors<input value={aggravatingFactors} onChange={e=>setAggravatingFactors(e.target.value)} placeholder="What makes it worse?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                   <label className="text-xs font-medium">Relieving factors<input value={relievingFactors} onChange={e=>setRelievingFactors(e.target.value)} placeholder="What makes it better?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 </div>
+                <details className="rounded-xl border border-slate-100 p-3"><summary className="cursor-pointer text-xs font-semibold text-teal-800">Patient demographics (optional)</summary><div className="mt-3 grid gap-3 sm:grid-cols-2"><label className="text-xs font-medium">Age (years)<input type="number" min="0" max="120" step="1" value={patientAgeYears} onChange={e=>setPatientAgeYears(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label><label className="text-xs font-medium">Sex<select value={patientSex} onChange={e=>setPatientSex(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Female</option><option>Male</option><option>Intersex</option><option>Prefer not to say</option></select></label><label className="text-xs font-medium">Occupation / work demands<input maxLength={160} value={patientOccupation} onChange={e=>setPatientOccupation(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label><label className="text-xs font-medium">Dominant side<select value={patientDominantSide} onChange={e=>setPatientDominantSide(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Right</option><option>Left</option><option>Ambidextrous</option></select></label><label className="text-xs font-medium">Activity level<select value={patientActivityLevel} onChange={e=>setPatientActivityLevel(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded</option><option>Sedentary</option><option>Low active</option><option>Moderately active</option><option>Very active</option></select></label></div></details>
                 <label className="block text-xs font-medium">History / subjective findings<textarea value={subjectiveNotes} onChange={e=>setSubjectiveNotes(e.target.value)} rows={2} placeholder="Relevant history, symptoms and functional limitations" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
                 <details className="rounded-xl border border-slate-100 p-3">
                   <summary className="cursor-pointer text-xs font-semibold text-teal-800">Additional examination and treatment plan (optional)</summary>
@@ -1253,10 +1344,10 @@ export function ClinicalRegistrySecureClient() {
               <button disabled={busy} className="rounded-xl border border-teal-700 px-4 py-2.5 text-xs font-bold text-teal-800 disabled:opacity-40">Submit and apply owner correction</button>
             </form>
           </section>}
-          {selectedReport?.status === "final" && selectedPatient && CLINICAL_REGISTRY_CONSENT_VERSION && <section className="rounded-2xl border border-slate-200 bg-white p-5">
+          {selectedReport && selectedPatient && CLINICAL_REGISTRY_CONSENT_VERSION && <section className="rounded-2xl border border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Submit de-identified case</h2></div>
-            <p className="mt-1 text-[11px] leading-5 text-slate-500">Only a final report can be submitted. Obtain separate written patient consent for public educational case publication and retain the signed original securely in your clinic records. PNA stores only a small consent attestation record, not the document. An independent reviewer must still approve and publish the de-identified case.</p>
-            <form onSubmit={submitCaseForReview} className="mt-4 grid gap-3 md:grid-cols-2">
+            <p className="mt-1 text-[11px] leading-5 text-slate-500">{selectedReport.status === "final" ? "The reviewer receives this de-identified educational summary, not the patient's private clinical record. Obtain separate written patient consent for public case publication and retain the signed original securely in your clinic records. PNA stores only a small consent attestation record, not the document." : "This report is still a draft. Finalise the clinical report first; only final reports can be submitted as de-identified cases for independent review."}</p>
+            {selectedReport.status === "final" ? <form onSubmit={submitCaseForReview} className="mt-4 grid gap-3 md:grid-cols-2">
               <input required value={caseTitle} onChange={e=>setCaseTitle(e.target.value)} placeholder="Case title" className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
               <input required value={caseCondition} onChange={e=>setCaseCondition(e.target.value)} placeholder="Condition label" className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/>
               <select value={caseAgeBand} onChange={e=>setCaseAgeBand(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="child">Child</option><option value="adolescent">Adolescent</option><option value="18-29">18–29</option><option value="30-44">30–44</option><option value="45-59">45–59</option><option value="60-74">60–74</option><option value="75+">75+</option><option value="not_reported">Not reported</option></select>
@@ -1267,9 +1358,9 @@ export function ClinicalRegistrySecureClient() {
               <label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600 md:col-span-2"><input type="checkbox" checked={publicationConsentConfirmed} onChange={e=>setPublicationConsentConfirmed(e.target.checked)} className="mt-1"/> I confirm that the patient has separately consented in writing to public educational case publication, and that I retain the signed original securely outside PNA.</label>
               <label className="flex items-start gap-2 text-[11px] leading-5 text-slate-600 md:col-span-2"><input type="checkbox" checked={deidentifiedConfirmed} onChange={e=>setDeidentifiedConfirmed(e.target.checked)} className="mt-1"/> I confirm this narrative is de-identified and contains no names, dates of birth, contact details, addresses, record numbers or other direct identifiers.</label>
               <p className="rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-900 md:col-span-2">The original signed publication consent must be retained securely by the therapist. Do not upload patient documents to PNA. Submission records the therapist attestation and remains subject to independent privacy review.</p><button disabled={busy||!publicationConsentConfirmed||!deidentifiedConfirmed} className="rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white disabled:opacity-40 md:col-span-2">Submit de-identified case for review</button>
-            </form>
+            </form> : <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 p-4"><p className="text-xs leading-5 text-amber-900">Complete the report and finalise it before reviewer submission is enabled. The finalise action locks the report version for the case workflow.</p><button type="button" onClick={finaliseReport} disabled={busy} className="mt-3 rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">Finalise report to unlock submission</button></div>}
           </section>}
-          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My case submissions</h2></div><div className="mt-3 space-y-2">{caseSubmissions.map(c=><div key={c.case_id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-100 p-3"><div><p className="text-xs font-semibold">{c.case_title}</p><p className="mt-1 text-[10px] text-slate-500">{c.status}{c.reviewer_note?` · ${c.reviewer_note}`:""}</p></div>{c.status!=="withdrawn"&&<button disabled={busy} onClick={()=>withdrawPublishedCase(c)} className="rounded-lg border border-red-200 px-3 py-2 text-[10px] font-semibold text-red-700">Withdraw consent & case</button>}</div>)}{caseSubmissions.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No case submissions yet.</p>}</div></section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">My case submissions</h2></div><p className="mt-2 text-[11px] leading-5 text-slate-500">Submitted cases appear in the authorised reviewer dashboard. The Registry does not send email notifications; the reviewer must sign in with authenticator MFA and refresh the queue. Only the de-identified case summary is shared.</p><div className="mt-3 space-y-2">{caseSubmissions.map(c=><div key={c.case_id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 p-3"><div className="min-w-0"><p className="text-xs font-semibold text-slate-800">{c.case_title}</p><p className="mt-1 text-[10px] text-slate-500">{c.status==="submitted"?"Awaiting independent review":c.status==="approved"?"Approved · awaiting publication":c.status==="published"?"Published":c.status==="draft"?"Draft · not yet in reviewer queue":c.status}{c.reviewer_note ? " · " + c.reviewer_note : ""}</p></div><div className="flex flex-wrap gap-2">{c.status==="draft"&&<button disabled={busy} onClick={()=>retryCaseSubmission(c.case_id)} className="rounded-lg bg-teal-700 px-3 py-2 text-[10px] font-semibold text-white">Submit for review</button>}{c.status!=="withdrawn"&&<button disabled={busy} onClick={()=>withdrawPublishedCase(c)} className="rounded-lg border border-red-200 px-3 py-2 text-[10px] font-semibold text-red-700">Withdraw consent & case</button>}</div></div>)}{caseSubmissions.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No case submissions yet.</p>}</div></section>
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center gap-2"><BookOpen size={17} className="text-teal-700"/><h2 className="font-bold text-[#173653]">Public Case Library</h2></div><p className="mt-1 text-[11px] text-slate-400">Only independently reviewed, published, de-identified cases appear here.</p><div className="mt-3 space-y-3">{publicCases.map(c=><article key={c.case_id} className="rounded-xl border border-slate-100 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-bold text-[#173653]">{c.case_title}</h3><span className="text-[10px] text-slate-500">{c.condition_label} · {c.age_band??"Age not reported"}</span></div><p className="mt-2 text-xs leading-5 text-slate-600">{c.clinical_context}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Intervention:</strong> {c.intervention_summary}</p><p className="mt-2 text-xs leading-5 text-slate-600"><strong>Outcome:</strong> {c.outcome_summary}</p>{c.evidence_reference&&/^https?:\/\//i.test(c.evidence_reference)&&<a href={c.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Evidence reference</a>}</article>)}{publicCases.length===0&&<p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No published cases available yet.</p>}</div></section>
         </section>
       </div>}
@@ -1304,18 +1395,17 @@ export function ClinicalRegistrySecureClient() {
           <button onClick={()=>loadReviewerCases().catch((e:Error)=>setError(e.message))} disabled={busy} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold">Refresh queue</button>
         </div>
         <div className="mt-4 space-y-3">
-          {reviewerCases.map(item=><article key={item.case_id} className="rounded-xl border border-slate-200 p-4">
-            <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="text-sm font-bold text-[#173653]">{item.case_title}</h3><p className="mt-1 text-[10px] text-slate-500">{item.condition_label} · {item.age_band ?? "Age not reported"} · Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleDateString() : "date unavailable"}</p></div><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold">{item.status}</span></div>
-            <p className="mt-3 whitespace-pre-wrap text-xs leading-5 text-slate-700">{item.clinical_context}</p>
-            <p className="mt-2 text-xs leading-5 text-slate-700"><strong>Intervention:</strong> {item.intervention_summary}</p>
-            <p className="mt-2 text-xs leading-5 text-slate-700"><strong>Outcome:</strong> {item.outcome_summary}</p>
-            {item.evidence_reference && /^https?:\/\//i.test(item.evidence_reference) && <a href={item.evidence_reference} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[11px] font-semibold text-teal-700 underline">Open evidence reference</a>}
-            {item.reviewer_note && <p className="mt-2 rounded-lg bg-slate-50 p-3 text-xs text-slate-600"><strong>Previous reviewer note:</strong> {item.reviewer_note}</p>}
-            {item.status === "submitted" && <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+          {reviewerCases.map(item=><article key={item.case_id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-slate-50/80 p-4"><div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">De-identified case submission</p><h3 className="mt-1 text-base font-bold text-[#173653]">{item.case_title}</h3><p className="mt-1 text-[11px] text-slate-500">{item.condition_label} · {item.age_band ?? "Age not reported"} · Submitted {item.submitted_at ? new Date(item.submitted_at).toLocaleDateString() : "date unavailable"}</p></div><span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">{item.status}</span></div>
+            <div className="grid gap-3 p-4 md:grid-cols-2"><section className="rounded-xl border border-slate-100 p-3 md:col-span-2"><p className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Clinical presentation</p><p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-700">{item.clinical_context}</p></section><section className="rounded-xl border border-slate-100 p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Intervention</p><p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-700">{item.intervention_summary}</p></section><section className="rounded-xl border border-slate-100 p-3"><p className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Outcome</p><p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-700">{item.outcome_summary}</p></section></div>
+            {item.evidence_reference && /^https?:\/\//i.test(item.evidence_reference) && <div className="px-4 pb-3"><a href={item.evidence_reference} target="_blank" rel="noreferrer" className="inline-flex items-center rounded-lg border border-teal-100 px-3 py-2 text-[11px] font-semibold text-teal-800 underline">Open evidence reference</a></div>}
+            <div className="px-4 pb-4"><PublicCasePdfButton item={item}/></div>
+            {item.reviewer_note && <p className="mx-4 mb-3 rounded-lg border border-amber-100 bg-amber-50 p-3 text-xs leading-5 text-amber-900"><strong>Previous reviewer note:</strong> {item.reviewer_note}</p>}
+            {item.status === "submitted" && <div className="space-y-2 border-t border-slate-100 bg-white p-4">
               <textarea value={reviewerNote} onChange={e=>setReviewerNote(e.target.value)} rows={2} maxLength={2000} placeholder="Reviewer note (required when rejecting)" className="w-full rounded-xl border border-slate-200 p-3 text-xs"/>
               <div className="flex flex-wrap gap-2"><button disabled={busy} onClick={()=>reviewCaseSubmission(item.case_id,"approved")} className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">Approve</button><button disabled={busy||!reviewerNote.trim()} onClick={()=>reviewCaseSubmission(item.case_id,"rejected")} className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-700 disabled:opacity-50">Reject with reason</button></div>
             </div>}
-            {item.status === "approved" && <div className="mt-3 border-t border-slate-100 pt-3"><p className="mb-2 text-[11px] text-slate-500">Approved cases are not public until this separate action is completed.</p><button disabled={busy} onClick={()=>publishReviewedCase(item.case_id)} className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">Publish to public library</button></div>}
+            {item.status === "approved" && <div className="border-t border-slate-100 bg-white p-4"><p className="mb-2 text-[11px] text-slate-500">Approved cases are not public until this separate action is completed.</p><button disabled={busy} onClick={()=>publishReviewedCase(item.case_id)} className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">Publish to public library</button></div>}
           </article>)}
           {reviewerCases.length===0 && <p className="rounded-xl bg-slate-50 p-4 text-xs text-slate-500">No submitted or approved cases are awaiting reviewer action.</p>}
         </div>
