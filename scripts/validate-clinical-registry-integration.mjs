@@ -279,10 +279,12 @@ assert(
 
 assert(
   "Therapist registration opens a dedicated account-creation form",
-  secure.includes('setRegistrationOpen(true)') &&
-    secure.includes('if (!session && registrationOpen)') &&
-    secure.includes('Create therapist account'),
-  "The login action must open a separate registration screen, not submit signup directly."
+  secure.includes('onClick={()=>{setRegistrationOpen(true);') &&
+    secure.includes('{registrationOpen ? <>') &&
+    secure.includes('<form noValidate onSubmit={e=>{e.preventDefault();void createAccount();}}') &&
+    secure.includes('Create therapist account') &&
+    secure.includes('onClick={()=>{setRegistrationOpen(false);'),
+  "The registration choice must switch to a distinct account-creation form; the therapist portal choice must switch back to sign-in."
 );
 assert(
   "New account form validates identity, qualifications and password confirmation",
