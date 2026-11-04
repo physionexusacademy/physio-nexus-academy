@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
   const recipient = "physionexusacademypk@gmail.com";
   const sender = process.env.RESEND_FROM_EMAIL || "PNA Clinical Registry <onboarding@resend.dev>";
-  const caseTitle = typeof submission.case_title === "string" ? submission.case_title : "New clinical case";
+  const caseTitle = (typeof submission.case_title === "string" ? submission.case_title : "New clinical case").replace(/[\\r\\n\\t]+/g, " ").slice(0, 160);
   const reviewUrl = "https://physionexusacademy.com/clinical-registry/therapist";
   const safeTitle = escapeHtml(caseTitle);
   const safeId = escapeHtml(caseId);
