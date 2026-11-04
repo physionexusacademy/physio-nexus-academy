@@ -7,6 +7,7 @@ const assert = (name, condition, detail) => {
 };
 
 const routePath = "src/app/clinical-registry/page.tsx";
+const therapistRoutePath = "src/app/clinical-registry/therapist/page.tsx";
 const homePath = "src/app/page.tsx";
 const clientPath = "src/lib/clinical-registry/client.ts";
 const securePath = "src/app/clinical-registry/ClinicalRegistrySecureClient.tsx";
@@ -26,6 +27,7 @@ const reportInsertGuardMigrationPath = "supabase/clinical-registry/supabase/migr
 const independentOperatorMigrationPath = "supabase/clinical-registry/supabase/migrations/20261103042622_clinical_registry_prevent_self_operator_approval.sql";
 
 const route = read(routePath);
+const therapistRoute = read(therapistRoutePath);
 const home = read(homePath);
 const client = read(clientPath);
 const secure = read(securePath);
@@ -54,9 +56,15 @@ assert(
 );
 
 assert(
-  "Registry route uses the secure client",
-  route.includes('ClinicalRegistrySecureClient') && !route.includes('ClinicalRegistryClient'),
-  "The private route must not render the legacy demo client."
+  "Registry entry opens the public library without login",
+  route.includes("RegistryEntry") && route.includes("PublicClinicalCaseLibrary") &&
+    read("src/app/clinical-registry/RegistryEntry.tsx").includes("ClinicalRegistrySecureClient"),
+  "The public entry must render the open case library and preserve secure auth callbacks."
+);
+assert(
+  "Therapist portal uses the secure client",
+  therapistRoute.includes("ClinicalRegistrySecureClient") && !therapistRoute.includes("ClinicalRegistryClient"),
+  "The dedicated therapist route must use the secure clinical workspace, never the legacy demo client."
 );
 assert(
   "Legacy demo client is absent",
