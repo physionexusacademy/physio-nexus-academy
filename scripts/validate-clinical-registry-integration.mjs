@@ -7,6 +7,7 @@ const assert = (name, condition, detail) => {
 };
 
 const routePath = "src/app/clinical-registry/page.tsx";
+const homePath = "src/app/page.tsx";
 const clientPath = "src/lib/clinical-registry/client.ts";
 const securePath = "src/app/clinical-registry/ClinicalRegistrySecureClient.tsx";
 const edgeFunctionPath = "supabase/clinical-registry/supabase/functions/verify-consent-evidence/index.ts";
@@ -25,6 +26,7 @@ const reportInsertGuardMigrationPath = "supabase/clinical-registry/supabase/migr
 const independentOperatorMigrationPath = "supabase/clinical-registry/supabase/migrations/20261103042622_clinical_registry_prevent_self_operator_approval.sql";
 
 const route = read(routePath);
+const home = read(homePath);
 const client = read(clientPath);
 const secure = read(securePath);
 const edgeFunction = read(edgeFunctionPath);
@@ -41,6 +43,15 @@ const consentGrantMigration = read(consentGrantMigrationPath);
 const evidenceRequestMigration = read(evidenceRequestMigrationPath);
 const reportInsertGuardMigration = read(reportInsertGuardMigrationPath);
 const independentOperatorMigration = read(independentOperatorMigrationPath);
+
+assert(
+  "Homepage prominently links to the Clinical Registry",
+  home.includes('data-pna-home-feature="clinical-registry-v1"') &&
+    home.includes("PNA Clinical Registry") &&
+    home.includes('href="/clinical-registry"') &&
+    home.includes("Explore Registry"),
+  "The homepage must expose a responsive, accessible Registry feature and direct route link."
+);
 
 assert(
   "Registry route uses the secure client",
