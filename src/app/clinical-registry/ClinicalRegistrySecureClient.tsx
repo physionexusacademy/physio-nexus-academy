@@ -54,9 +54,32 @@ export function ClinicalRegistrySecureClient() {
   const [careConsentConfirmed, setCareConsentConfirmed] = useState(false);
   const [category, setCategory] = useState("Musculoskeletal");
   const [condition, setCondition] = useState("");
-  const [assessmentJson, setAssessmentJson] = useState('{\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
-  const [followUpJson, setFollowUpJson] = useState('{\n  "date": "",\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
+  const [chiefComplaint, setChiefComplaint] = useState("");
+  const [symptomDuration, setSymptomDuration] = useState("");
+  const [painLocation, setPainLocation] = useState("");
+  const [painScore, setPainScore] = useState("");
+  const [aggravatingFactors, setAggravatingFactors] = useState("");
+  const [relievingFactors, setRelievingFactors] = useState("");
+  const [subjectiveNotes, setSubjectiveNotes] = useState("");
+  const [objectiveFindings, setObjectiveFindings] = useState("");
+  const [romFindings, setRomFindings] = useState("");
+  const [strengthFindings, setStrengthFindings] = useState("");
+  const [specialTests, setSpecialTests] = useState("");
+  const [neuroFindings, setNeuroFindings] = useState("");
+  const [clinicalImpression, setClinicalImpression] = useState("");
+  const [treatmentGoals, setTreatmentGoals] = useState("");
+  const [planOfCare, setPlanOfCare] = useState("");
+  const [followUpDate, setFollowUpDate] = useState(new Date().toISOString().slice(0,10));
+  const [followUpPainScore, setFollowUpPainScore] = useState("");
+  const [followUpSubjective, setFollowUpSubjective] = useState("");
+  const [followUpObjective, setFollowUpObjective] = useState("");
+  const [followUpResponse, setFollowUpResponse] = useState("");
   const [interventionText, setInterventionText] = useState("");
+  const [interventionRegion, setInterventionRegion] = useState("");
+  const [interventionTechnique, setInterventionTechnique] = useState("");
+  const [interventionDosage, setInterventionDosage] = useState("");
+  const [interventionResponse, setInterventionResponse] = useState("");
+  const [homeAdvice, setHomeAdvice] = useState("");
   const [outcomeName, setOutcomeName] = useState("");
   const [outcomeCode, setOutcomeCode] = useState("");
   const [outcomeValue, setOutcomeValue] = useState("");
@@ -84,7 +107,9 @@ export function ClinicalRegistrySecureClient() {
   const [publicationConsentConfirmed, setPublicationConsentConfirmed] = useState(false);
   const [deidentifiedConfirmed, setDeidentifiedConfirmed] = useState(false);
   const [correctionReason, setCorrectionReason] = useState("");
-  const [correctionJson, setCorrectionJson] = useState('{\n  "clinical_summary": "",\n  "discharge_status": "",\n  "recommendations": []\n}');
+  const [correctionSummary, setCorrectionSummary] = useState("");
+  const [correctionDischarge, setCorrectionDischarge] = useState("");
+  const [correctionRecommendations, setCorrectionRecommendations] = useState("");
 
   const loadPatients = useCallback(async () => {
     if (!client) return;
@@ -394,8 +419,21 @@ export function ClinicalRegistrySecureClient() {
     setBusy(false);
     if (reportResult.error) { setError(reportResult.error.message); return; }
     if (versionsResult.error) { setError(versionsResult.error.message); return; }
-    setSelectedReport((reportResult.data ?? null) as ClinicalReport | null);
+    const report = (reportResult.data ?? null) as ClinicalReport | null;
+    setSelectedReport(report);
     setReportVersions((versionsResult.data ?? []) as ReportVersion[]);
+    if (report) {
+      const a = report.initialAssessment ?? {};
+      const value = (key: string) => typeof a[key] === "string" || typeof a[key] === "number" ? String(a[key]) : "";
+      setChiefComplaint(value("chiefComplaint")); setSymptomDuration(value("symptomDuration"));
+      setPainLocation(value("painLocation")); setPainScore(value("painScore"));
+      setAggravatingFactors(value("aggravatingFactors")); setRelievingFactors(value("relievingFactors"));
+      setSubjectiveNotes(value("subjectiveNotes")); setObjectiveFindings(value("objectiveFindings"));
+      setRomFindings(value("romFindings")); setStrengthFindings(value("strengthFindings"));
+      setSpecialTests(value("specialTests")); setNeuroFindings(value("neuroFindings"));
+      setClinicalImpression(value("clinicalImpression")); setTreatmentGoals(value("treatmentGoals"));
+      setPlanOfCare(value("planOfCare"));
+    }
   };
 
   const enrollRegistryMfa = async () => {
@@ -676,36 +714,63 @@ export function ClinicalRegistrySecureClient() {
 
   const saveAssessment = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
-    let parsed: Record<string, unknown>;
-    try { parsed = JSON.parse(assessmentJson); } catch { setError("Initial assessment must be valid JSON."); return; }
+    if (!chiefComplaint.trim() && !subjectiveNotes.trim() && !objectiveFindings.trim() && !clinicalImpression.trim()) {
+      setError("Add the main complaint or at least one clinical finding before saving."); return;
+    }
+    const parsed: Record<string, unknown> = {
+      chiefComplaint: chiefComplaint.trim(), symptomDuration: symptomDuration.trim(),
+      painLocation: painLocation.trim(), painScore: painScore === "" ? null : Number(painScore),
+      aggravatingFactors: aggravatingFactors.trim(), relievingFactors: relievingFactors.trim(),
+      subjectiveNotes: subjectiveNotes.trim(), objectiveFindings: objectiveFindings.trim(),
+      romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
+      specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
+      clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
+      planOfCare: planOfCare.trim()
+    };
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
-    if (saved !== true) { setError("The initial assessment was not saved. Confirm that this report is still an editable draft."); return; }
-    await openReport(selectedReport.id);
+    if (saved !== true) { setError("Assessment was not saved. Confirm that this report is still an editable draft."); return; }
+    setNotice("Clinical assessment saved."); await openReport(selectedReport.id);
   };
 
   const addFollowUp = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
-    let parsed: Record<string, unknown>;
-    try { parsed = JSON.parse(followUpJson); } catch { setError("Follow-up assessment must be valid JSON."); return; }
+    if (!followUpSubjective.trim() && !followUpObjective.trim() && !followUpResponse.trim()) {
+      setError("Add at least one follow-up finding or treatment response."); return;
+    }
+    const parsed: Record<string, unknown> = {
+      date: followUpDate, painScore: followUpPainScore === "" ? null : Number(followUpPainScore),
+      subjective: followUpSubjective.trim(), objective: followUpObjective.trim(),
+      treatmentResponse: followUpResponse.trim()
+    };
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("add_followup_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
-    if (saved !== true) { setError("The follow-up was not saved. Confirm that this report is still an editable draft."); return; }
-    await openReport(selectedReport.id);
+    if (saved !== true) { setError("Follow-up was not saved. Confirm that this report is still an editable draft."); return; }
+    setFollowUpSubjective(""); setFollowUpObjective(""); setFollowUpResponse(""); setFollowUpPainScore("");
+    setNotice("Follow-up saved."); await openReport(selectedReport.id);
   };
 
   const addIntervention = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     setBusy(true); setError("");
-    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionText });
+    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", {
+      p_report_id: selectedReport.id, p_intervention: interventionText,
+      p_body_region: interventionRegion.trim() || null,
+      p_technique_or_parameters: interventionTechnique.trim() || null,
+      p_dosage: interventionDosage.trim() || null,
+      p_response: interventionResponse.trim() || null,
+      p_home_advice: homeAdvice.trim() || null
+    });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
     if (!interventionId) { setError("The intervention was not saved. Confirm that this report is still an editable draft."); return; }
-    setInterventionText(""); await openReport(selectedReport.id);
+    setInterventionText(""); setInterventionRegion(""); setInterventionTechnique("");
+    setInterventionDosage(""); setInterventionResponse(""); setHomeAdvice("");
+    setNotice("Treatment intervention saved."); await openReport(selectedReport.id);
   };
 
   const addOutcome = async (event: FormEvent) => {
@@ -789,8 +854,11 @@ export function ClinicalRegistrySecureClient() {
 
   const applyReportCorrection = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedPatient || !selectedReport) return;
-    let changes: Record<string, unknown>;
-    try { changes = JSON.parse(correctionJson); } catch { setError("Correction details must be valid JSON."); return; }
+    const changes: Record<string, unknown> = {
+      clinical_summary: correctionSummary.trim(),
+      discharge_status: correctionDischarge.trim(),
+      recommendations: correctionRecommendations.split("\n").map(v => v.trim()).filter(Boolean)
+    };
     setBusy(true); setError(""); setNotice("");
     const { data: requestId, error: requestError } = await client.rpc("request_record_correction", {
       p_patient_id: selectedPatient.id, p_report_id: selectedReport.id, p_target_type: "report",
