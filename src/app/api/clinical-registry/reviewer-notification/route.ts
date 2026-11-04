@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
   const resendKey = process.env.RESEND_API_KEY;
   if (!resendKey) return NextResponse.json({ ok: false, error: "Reviewer email is not configured yet. The case remains safely in the reviewer dashboard." }, { status: 503 });
 
-  const recipient = process.env.NOTIFICATION_EMAIL_TO || "physionexusacademypk@gmail.com";
+  const recipient = "physionexusacademypk@gmail.com";
   const sender = process.env.RESEND_FROM_EMAIL || "PNA Clinical Registry <onboarding@resend.dev>";
   const caseTitle = typeof submission.case_title === "string" ? submission.case_title : "New clinical case";
   const reviewUrl = "https://physionexusacademy.com/clinical-registry/therapist";
