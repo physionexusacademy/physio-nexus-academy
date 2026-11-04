@@ -16,9 +16,9 @@
 - Retention rules remain inactive by default; there is no automatic deletion.
 - Hosted staging has the 27 foreign-key support indexes and consolidated case-library owner/reviewer SELECT and UPDATE policies; no duplicate permissive policy warning remains.
 
-## Latest automated verification (2026-11-03)
+## Latest automated verification (2026-11-04)
 
-Consent redesign and independent-operator guard passed local Registry database-security workflow [run 41577824280](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41577824280): TypeScript, **29/29 integration checks**, Deno type-check, ordered migration reset, **93/93 pgTAP assertions**, disposable backup/restore and cleanup. Preview deployment [run 41577824241](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41577824241) passed Cloudflare build, Worker deployment and protected-route smoke tests. The self-approval migration is applied to hosted staging and hosted negative tests confirm that self-approval and self-membership changes are denied. These checks do not replace hosted browser acceptance or institutional/privacy approval.
+Latest synchronized Preview verification passed on 2026-11-04: [Preview deploy #86](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41777969564) deployed the isolated Worker and passed protected-route smoke tests; [Registry local DB security #445](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41777992079) passed the isolated migration reset, **33/33 integration checks**, **93/93 pgTAP assertions**, and disposable backup/restore; [Registry dependency/build #236](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41777991983) passed dependency audit, TypeScript, Next.js and OpenNext Cloudflare build; [Manual Therapy build #46](https://github.com/physionexusacademy/physio-nexus-academy/actions/runs/41777992125) passed. npm audit reported 0 vulnerabilities. The self-approval guard remains applied to hosted staging and hosted negative tests have confirmed self-approval denial. These automated/local checks do not replace hosted authenticated therapist/reviewer acceptance, institutional/privacy approval, hosted backup/restore or independent penetration testing.
 
 ## Consent architecture change (2026-11-03)
 
