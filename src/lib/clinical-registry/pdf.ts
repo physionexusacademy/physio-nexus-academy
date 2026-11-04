@@ -48,6 +48,7 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
     ["Patient name / identifier", patient.displayName],
     ["Patient reference", patient.patientReference],
     ["Age (years)", demographics.ageYears],
+    ["Age band", demographics.ageBand],
     ["Sex", demographics.sex],
     ["Occupation / work demands", demographics.occupation],
     ["Dominant side", demographics.dominantSide],
@@ -165,8 +166,8 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
       const value = textValue(rawValue);
       if (!value) continue;
       const wrapped = wrap(`${label}: ${value}`, 92);
-      ensureSpace(wrapped.length * 13 + 5);
       for (const line of wrapped) {
+        ensureSpace(17);
         drawText(line, 50, y, 8.5);
         y -= 13;
       }
