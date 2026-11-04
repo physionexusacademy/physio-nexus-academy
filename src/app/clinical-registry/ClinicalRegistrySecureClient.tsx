@@ -5,6 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import { BookOpen, FileDown, LockKeyhole, LogOut, Plus, Printer, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { CLINICAL_REGISTRY_CONSENT_VERSION, getClinicalRegistryClient } from "@/lib/clinical-registry/client";
 import { PublicCasePdfButton } from "./library/PublicCasePdfButton";
+import { notifyRegistryReviewer } from "@/lib/clinical-registry/notify-reviewer";
 
 type Patient = { id: string; patient_reference: string; display_name: string; updated_at: string };
 type Report = { report_id: string; patient_id: string; patient_reference: string; patient_display_name: string; category: string; condition: string; status: string; assessment_date: string; updated_at: string };
@@ -1010,7 +1011,10 @@ export function ClinicalRegistrySecureClient() {
       setCaseTitle(""); setCaseCondition(""); setCaseContext(""); setCaseIntervention(""); setCaseOutcome(""); setCaseEvidence("");
       setPublicationConsentConfirmed(false); setDeidentifiedConfirmed(false);
       await loadCaseSubmissions();
-      setNotice("Submission confirmed: your de-identified case is now in the reviewer queue. It remains private until approved and separately published.");
+      const emailNotice = await notifyRegistryReviewer(client, String(caseId));
+      setNotice(emailNotice.sent
+        ? "Submission confirmed and reviewer email notification sent."
+        : "Submission confirmed and stored in the reviewer queue, but the email alert was not delivered: " + emailNotice.message);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
       await loadCaseSubmissions().catch(() => undefined);
@@ -1027,7 +1031,10 @@ export function ClinicalRegistrySecureClient() {
       if (rpcError) throw rpcError;
       if (data !== true) throw new Error("The draft could not be submitted. It may no longer be in draft status; refresh your submissions.");
       await loadCaseSubmissions();
-      setNotice("Submission confirmed. The de-identified case is now in the reviewer queue.");
+      const emailNotice = await notifyRegistryReviewer(client, caseId);
+      setNotice(emailNotice.sent
+        ? "Submission confirmed and reviewer email notification sent."
+        : "Submission confirmed in the reviewer queue, but the email alert was not delivered: " + emailNotice.message);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The case could not be submitted. Please retry.");
     } finally {
