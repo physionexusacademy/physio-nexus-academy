@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { ClinicalRegistrySecureClient } from "./ClinicalRegistrySecureClient";
+import { PublicClinicalCaseLibrary } from "./library/PublicClinicalCaseLibrary";
+import { RegistryEntry } from "./RegistryEntry";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "PNA Clinical Registry",
-  description:
-    "A professional clinical documentation and outcome-reporting workspace by Physio Nexus Academy.",
-  robots: { index: false, follow: false },
+  title: "PNA Clinical Case Library | Physio Nexus Academy",
+  description: "Browse independently reviewed, de-identified physiotherapy case reports from Physio Nexus Academy.",
+  robots: { index: true, follow: true },
 };
 
 export default function ClinicalRegistryPage() {
-  return <ClinicalRegistrySecureClient />;
+  return <RegistryEntry publicLibrary={<PublicClinicalCaseLibrary />} />;
 }
