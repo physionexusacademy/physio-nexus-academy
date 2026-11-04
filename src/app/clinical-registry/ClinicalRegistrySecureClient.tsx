@@ -54,9 +54,32 @@ export function ClinicalRegistrySecureClient() {
   const [careConsentConfirmed, setCareConsentConfirmed] = useState(false);
   const [category, setCategory] = useState("Musculoskeletal");
   const [condition, setCondition] = useState("");
-  const [assessmentJson, setAssessmentJson] = useState('{\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
-  const [followUpJson, setFollowUpJson] = useState('{\n  "date": "",\n  "subjective": "",\n  "objective": "",\n  "painScore": null\n}');
+  const [chiefComplaint, setChiefComplaint] = useState("");
+  const [symptomDuration, setSymptomDuration] = useState("");
+  const [painLocation, setPainLocation] = useState("");
+  const [painScore, setPainScore] = useState("");
+  const [aggravatingFactors, setAggravatingFactors] = useState("");
+  const [relievingFactors, setRelievingFactors] = useState("");
+  const [subjectiveNotes, setSubjectiveNotes] = useState("");
+  const [objectiveFindings, setObjectiveFindings] = useState("");
+  const [romFindings, setRomFindings] = useState("");
+  const [strengthFindings, setStrengthFindings] = useState("");
+  const [specialTests, setSpecialTests] = useState("");
+  const [neuroFindings, setNeuroFindings] = useState("");
+  const [clinicalImpression, setClinicalImpression] = useState("");
+  const [treatmentGoals, setTreatmentGoals] = useState("");
+  const [planOfCare, setPlanOfCare] = useState("");
+  const [followUpDate, setFollowUpDate] = useState(new Date().toISOString().slice(0,10));
+  const [followUpPainScore, setFollowUpPainScore] = useState("");
+  const [followUpSubjective, setFollowUpSubjective] = useState("");
+  const [followUpObjective, setFollowUpObjective] = useState("");
+  const [followUpResponse, setFollowUpResponse] = useState("");
   const [interventionText, setInterventionText] = useState("");
+  const [interventionRegion, setInterventionRegion] = useState("");
+  const [interventionTechnique, setInterventionTechnique] = useState("");
+  const [interventionDosage, setInterventionDosage] = useState("");
+  const [interventionResponse, setInterventionResponse] = useState("");
+  const [homeAdvice, setHomeAdvice] = useState("");
   const [outcomeName, setOutcomeName] = useState("");
   const [outcomeCode, setOutcomeCode] = useState("");
   const [outcomeValue, setOutcomeValue] = useState("");
@@ -84,7 +107,9 @@ export function ClinicalRegistrySecureClient() {
   const [publicationConsentConfirmed, setPublicationConsentConfirmed] = useState(false);
   const [deidentifiedConfirmed, setDeidentifiedConfirmed] = useState(false);
   const [correctionReason, setCorrectionReason] = useState("");
-  const [correctionJson, setCorrectionJson] = useState('{\n  "clinical_summary": "",\n  "discharge_status": "",\n  "recommendations": []\n}');
+  const [correctionSummary, setCorrectionSummary] = useState("");
+  const [correctionDischarge, setCorrectionDischarge] = useState("");
+  const [correctionRecommendations, setCorrectionRecommendations] = useState("");
 
   const loadPatients = useCallback(async () => {
     if (!client) return;
@@ -394,8 +419,21 @@ export function ClinicalRegistrySecureClient() {
     setBusy(false);
     if (reportResult.error) { setError(reportResult.error.message); return; }
     if (versionsResult.error) { setError(versionsResult.error.message); return; }
-    setSelectedReport((reportResult.data ?? null) as ClinicalReport | null);
+    const report = (reportResult.data ?? null) as ClinicalReport | null;
+    setSelectedReport(report);
     setReportVersions((versionsResult.data ?? []) as ReportVersion[]);
+    if (report) {
+      const a = report.initialAssessment ?? {};
+      const value = (key: string) => typeof a[key] === "string" || typeof a[key] === "number" ? String(a[key]) : "";
+      setChiefComplaint(value("chiefComplaint")); setSymptomDuration(value("symptomDuration"));
+      setPainLocation(value("painLocation")); setPainScore(value("painScore"));
+      setAggravatingFactors(value("aggravatingFactors")); setRelievingFactors(value("relievingFactors"));
+      setSubjectiveNotes(value("subjectiveNotes") || value("subjective")); setObjectiveFindings(value("objectiveFindings") || value("objective"));
+      setRomFindings(value("romFindings")); setStrengthFindings(value("strengthFindings"));
+      setSpecialTests(value("specialTests")); setNeuroFindings(value("neuroFindings"));
+      setClinicalImpression(value("clinicalImpression")); setTreatmentGoals(value("treatmentGoals"));
+      setPlanOfCare(value("planOfCare"));
+    }
   };
 
   const enrollRegistryMfa = async () => {
@@ -676,36 +714,64 @@ export function ClinicalRegistrySecureClient() {
 
   const saveAssessment = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
-    let parsed: Record<string, unknown>;
-    try { parsed = JSON.parse(assessmentJson); } catch { setError("Initial assessment must be valid JSON."); return; }
+    if (!chiefComplaint.trim() && !subjectiveNotes.trim() && !objectiveFindings.trim() && !clinicalImpression.trim()) {
+      setError("Add the main complaint or at least one clinical finding before saving."); return;
+    }
+    const parsed: Record<string, unknown> = {
+      ...(selectedReport.initialAssessment ?? {}),
+      chiefComplaint: chiefComplaint.trim(), symptomDuration: symptomDuration.trim(),
+      painLocation: painLocation.trim(), painScore: painScore === "" ? null : Number(painScore),
+      aggravatingFactors: aggravatingFactors.trim(), relievingFactors: relievingFactors.trim(),
+      subjectiveNotes: subjectiveNotes.trim(), objectiveFindings: objectiveFindings.trim(),
+      romFindings: romFindings.trim(), strengthFindings: strengthFindings.trim(),
+      specialTests: specialTests.trim(), neuroFindings: neuroFindings.trim(),
+      clinicalImpression: clinicalImpression.trim(), treatmentGoals: treatmentGoals.trim(),
+      planOfCare: planOfCare.trim()
+    };
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("save_initial_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
-    if (saved !== true) { setError("The initial assessment was not saved. Confirm that this report is still an editable draft."); return; }
-    await openReport(selectedReport.id);
+    if (saved !== true) { setError("Assessment was not saved. Confirm that this report is still an editable draft."); return; }
+    setNotice("Clinical assessment saved."); await openReport(selectedReport.id);
   };
 
   const addFollowUp = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
-    let parsed: Record<string, unknown>;
-    try { parsed = JSON.parse(followUpJson); } catch { setError("Follow-up assessment must be valid JSON."); return; }
+    if (!followUpSubjective.trim() && !followUpObjective.trim() && !followUpResponse.trim()) {
+      setError("Add at least one follow-up finding or treatment response."); return;
+    }
+    const parsed: Record<string, unknown> = {
+      date: followUpDate, painScore: followUpPainScore === "" ? null : Number(followUpPainScore),
+      subjective: followUpSubjective.trim(), objective: followUpObjective.trim(),
+      treatmentResponse: followUpResponse.trim()
+    };
     setBusy(true); setError("");
     const { data: saved, error: rpcError } = await client.rpc("add_followup_assessment", { p_report_id: selectedReport.id, p_assessment: parsed });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
-    if (saved !== true) { setError("The follow-up was not saved. Confirm that this report is still an editable draft."); return; }
-    await openReport(selectedReport.id);
+    if (saved !== true) { setError("Follow-up was not saved. Confirm that this report is still an editable draft."); return; }
+    setFollowUpSubjective(""); setFollowUpObjective(""); setFollowUpResponse(""); setFollowUpPainScore("");
+    setNotice("Follow-up saved."); await openReport(selectedReport.id);
   };
 
   const addIntervention = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedReport) return;
     setBusy(true); setError("");
-    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", { p_report_id: selectedReport.id, p_intervention: interventionText });
+    const { data: interventionId, error: rpcError } = await client.rpc("add_intervention", {
+      p_report_id: selectedReport.id, p_intervention: interventionText,
+      p_body_region: interventionRegion.trim() || null,
+      p_technique_or_parameters: interventionTechnique.trim() || null,
+      p_dosage: interventionDosage.trim() || null,
+      p_response: interventionResponse.trim() || null,
+      p_home_advice: homeAdvice.trim() || null
+    });
     setBusy(false);
     if (rpcError) { setError(rpcError.message); return; }
     if (!interventionId) { setError("The intervention was not saved. Confirm that this report is still an editable draft."); return; }
-    setInterventionText(""); await openReport(selectedReport.id);
+    setInterventionText(""); setInterventionRegion(""); setInterventionTechnique("");
+    setInterventionDosage(""); setInterventionResponse(""); setHomeAdvice("");
+    setNotice("Treatment intervention saved."); await openReport(selectedReport.id);
   };
 
   const addOutcome = async (event: FormEvent) => {
@@ -789,8 +855,11 @@ export function ClinicalRegistrySecureClient() {
 
   const applyReportCorrection = async (event: FormEvent) => {
     event.preventDefault(); if (!client || !selectedPatient || !selectedReport) return;
-    let changes: Record<string, unknown>;
-    try { changes = JSON.parse(correctionJson); } catch { setError("Correction details must be valid JSON."); return; }
+    const changes: Record<string, unknown> = {
+      clinical_summary: correctionSummary.trim(),
+      discharge_status: correctionDischarge.trim(),
+      recommendations: correctionRecommendations.split("\n").map(v => v.trim()).filter(Boolean)
+    };
     setBusy(true); setError(""); setNotice("");
     const { data: requestId, error: requestError } = await client.rpc("request_record_correction", {
       p_patient_id: selectedPatient.id, p_report_id: selectedReport.id, p_target_type: "report",
@@ -934,16 +1003,92 @@ export function ClinicalRegistrySecureClient() {
           {selectedReport&&<section className="rounded-2xl border border-slate-200 bg-white p-5" id="registry-report-print"><div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4"><div><p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">Clinical report</p><h2 className="mt-1 text-xl font-bold text-[#173653]">{selectedReport.condition}</h2><p className="mt-1 text-xs text-slate-500">{selectedReport.patient?.displayName} · {selectedReport.patient?.patientReference} · {selectedReport.category} · {selectedReport.assessmentDate}</p><p className="mt-1 text-[10px] uppercase tracking-wide text-slate-400">Status: {selectedReport.status}</p></div><div className="no-print flex gap-2"><button onClick={printReport} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><Printer size={14}/> Export PDF</button>{selectedReport.status==="draft"&&<button onClick={finaliseReport} disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Finalise</button>}</div></div>
             {reportVersions.length > 0 && <section className="mt-5 rounded-xl border border-slate-100 p-4 no-print"><h3 className="text-xs font-bold text-[#173653]">Version history</h3><p className="mt-1 text-[10px] leading-5 text-slate-500">Read-only snapshots captured automatically before report updates. Earlier versions are preserved; they cannot be edited or deleted.</p><div className="mt-3 space-y-2">{reportVersions.map(version=><details key={version.version_id} className="rounded-lg border border-slate-100 p-3"><summary className="cursor-pointer text-xs font-semibold">Revision {version.revision_number} · {new Date(version.created_at).toLocaleString()}</summary><p className="mt-2 text-[10px] text-slate-500">{version.change_reason}</p><pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-slate-50 p-3 text-[10px] leading-5">{JSON.stringify(version.snapshot,null,2)}</pre></details>)}</div></section>}
             {(selectedReport.clinicalSummary || selectedReport.dischargeStatus || (selectedReport.recommendations?.length ?? 0) > 0) && <section className="mt-5 rounded-xl border border-slate-100 p-4"><h3 className="text-xs font-bold text-[#173653]">Clinical summary and plan</h3>{selectedReport.clinicalSummary&&<p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-700">{selectedReport.clinicalSummary}</p>}{selectedReport.dischargeStatus&&<p className="mt-2 text-xs"><strong>Discharge status:</strong> {selectedReport.dischargeStatus}</p>}{(selectedReport.recommendations?.length??0)>0&&<ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-700">{selectedReport.recommendations?.map((item,i)=><li key={i}>{item}</li>)}</ul>}</section>}
-            <div className="mt-4 grid gap-4 md:grid-cols-2"><div><h3 className="text-xs font-bold text-[#173653]">Initial assessment</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.initialAssessment??{},null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Follow-ups</h3><pre className="mt-2 max-h-56 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.followUpAssessments??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Interventions</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.interventions??[],null,2)}</pre></div><div><h3 className="text-xs font-bold text-[#173653]">Outcomes</h3><pre className="mt-2 overflow-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-5">{JSON.stringify(selectedReport.outcomes??[],null,2)}</pre></div></div>
-            {selectedReport.status==="draft"&&<div className="mt-5 grid gap-4 border-t border-slate-100 pt-5 xl:grid-cols-2 no-print"><form onSubmit={saveAssessment} className="space-y-2"><h3 className="text-xs font-bold">Save initial assessment (JSON)</h3><textarea value={assessmentJson} onChange={e=>setAssessmentJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save assessment</button></form><form onSubmit={addFollowUp} className="space-y-2"><h3 className="text-xs font-bold">Add follow-up (JSON)</h3><textarea value={followUpJson} onChange={e=>setFollowUpJson(e.target.value)} rows={7} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Add follow-up</button></form><form onSubmit={addIntervention} className="space-y-2"><h3 className="text-xs font-bold">Record intervention</h3><input required value={interventionText} onChange={e=>setInterventionText(e.target.value)} placeholder="Intervention / technique" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save intervention</button></form><form onSubmit={addOutcome} className="space-y-2"><h3 className="text-xs font-bold">Record outcome</h3><input required value={outcomeCode} onChange={e=>setOutcomeCode(e.target.value)} placeholder="Measure code (e.g. NPRS)" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required value={outcomeName} onChange={e=>setOutcomeName(e.target.value)} placeholder="Measure name" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><input required type="number" step="any" value={outcomeValue} onChange={e=>setOutcomeValue(e.target.value)} placeholder="Measured value" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"/><select value={outcomeDirection} onChange={e=>setOutcomeDirection(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs"><option value="lower_is_better">Lower is better</option><option value="higher_is_better">Higher is better</option><option value="descriptive">Descriptive</option></select><button disabled={busy} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-bold text-white">Save outcome</button></form></div>}
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <section className="rounded-xl border border-slate-100 p-4"><h3 className="text-sm font-bold text-[#173653]">Initial assessment</h3>
+                {Object.entries(selectedReport.initialAssessment??{}).filter(([key,value])=>key!=="schemaVersion"&&value!==null&&value!=="").map(([key,value])=><p key={key} className="mt-2 text-xs leading-5 text-slate-700"><strong>{key.replace(/([A-Z])/g," $1").replace(/^./,s=>s.toUpperCase())}:</strong> {String(value)}</p>)}
+                {Object.keys(selectedReport.initialAssessment??{}).length===0&&<p className="mt-2 text-xs text-slate-400">No assessment saved yet.</p>}
+              </section>
+              <section className="rounded-xl border border-slate-100 p-4"><h3 className="text-sm font-bold text-[#173653]">Follow-up visits</h3>
+                {(selectedReport.followUpAssessments??[]).map((item,i)=><article key={i} className="mt-3 border-t border-slate-100 pt-3"><p className="text-xs font-semibold">{String(item.date??"Visit")} {item.painScore!==null&&item.painScore!==undefined?"· NPRS "+String(item.painScore)+"/10":""}</p>{item.subjective!==null&&item.subjective!==undefined&&String(item.subjective)!==""&&<p className="mt-1 text-xs text-slate-600"><strong>Subjective:</strong> {String(item.subjective)}</p>}{item.objective!==null&&item.objective!==undefined&&String(item.objective)!==""&&<p className="mt-1 text-xs text-slate-600"><strong>Objective:</strong> {String(item.objective)}</p>}{item.treatmentResponse!==null&&item.treatmentResponse!==undefined&&String(item.treatmentResponse)!==""&&<p className="mt-1 text-xs text-slate-600"><strong>Response:</strong> {String(item.treatmentResponse)}</p>}</article>)}
+                {(selectedReport.followUpAssessments??[]).length===0&&<p className="mt-2 text-xs text-slate-400">No follow-ups recorded yet.</p>}
+              </section>
+              <section className="rounded-xl border border-slate-100 p-4"><h3 className="text-sm font-bold text-[#173653]">Treatment interventions</h3>
+                {(selectedReport.interventions??[]).map((item,i)=><article key={String(item.id??i)} className="mt-3 border-t border-slate-100 pt-3"><p className="text-xs font-semibold">{String(item.intervention??"Intervention")} · {String(item.date??"")}</p>{item.bodyRegion!==null&&item.bodyRegion!==undefined&&String(item.bodyRegion)!==""&&<p className="mt-1 text-xs text-slate-600">Region: {String(item.bodyRegion)}</p>}{item.techniqueOrParameters!==null&&item.techniqueOrParameters!==undefined&&String(item.techniqueOrParameters)!==""&&<p className="mt-1 text-xs text-slate-600">Technique: {String(item.techniqueOrParameters)}</p>}{item.dosage!==null&&item.dosage!==undefined&&String(item.dosage)!==""&&<p className="mt-1 text-xs text-slate-600">Dosage: {String(item.dosage)}</p>}{item.response!==null&&item.response!==undefined&&String(item.response)!==""&&<p className="mt-1 text-xs text-slate-600">Response: {String(item.response)}</p>}{item.homeAdvice!==null&&item.homeAdvice!==undefined&&String(item.homeAdvice)!==""&&<p className="mt-1 text-xs text-slate-600">Home advice: {String(item.homeAdvice)}</p>}</article>)}
+                {(selectedReport.interventions??[]).length===0&&<p className="mt-2 text-xs text-slate-400">No interventions recorded yet.</p>}
+              </section>
+              <section className="rounded-xl border border-slate-100 p-4"><h3 className="text-sm font-bold text-[#173653]">Outcome measures</h3>
+                {(selectedReport.outcomes??[]).map((item,i)=><p key={String(item.id??i)} className="mt-2 text-xs text-slate-700"><strong>{String(item.measureName??item.measureCode)}:</strong> {String(item.value)} {String(item.unit??"")} · {String(item.date??"")}</p>)}
+                {(selectedReport.outcomes??[]).length===0&&<p className="mt-2 text-xs text-slate-400">No outcome measures recorded yet.</p>}
+              </section>
+            </div>
+            {selectedReport.status==="draft"&&<div className="mt-5 space-y-5 border-t border-slate-100 pt-5 no-print">
+              <form onSubmit={saveAssessment} className="space-y-4 rounded-xl border border-slate-200 p-4">
+                <div><h3 className="text-sm font-bold text-[#173653]">Initial clinical assessment</h3><p className="mt-1 text-[11px] text-slate-500">Fill in what is relevant to this patient. You can leave unrelated fields blank.</p></div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="text-xs font-medium">Main complaint<input value={chiefComplaint} onChange={e=>setChiefComplaint(e.target.value)} placeholder="e.g. Low back pain" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Duration<input value={symptomDuration} onChange={e=>setSymptomDuration(e.target.value)} placeholder="e.g. 3 weeks" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Pain location<input value={painLocation} onChange={e=>setPainLocation(e.target.value)} placeholder="e.g. Right lumbar region" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Pain score (0–10)<input type="number" min="0" max="10" step="1" value={painScore} onChange={e=>setPainScore(e.target.value)} placeholder="NPRS" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Aggravating factors<input value={aggravatingFactors} onChange={e=>setAggravatingFactors(e.target.value)} placeholder="What makes it worse?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Relieving factors<input value={relievingFactors} onChange={e=>setRelievingFactors(e.target.value)} placeholder="What makes it better?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                </div>
+                <label className="block text-xs font-medium">History / subjective findings<textarea value={subjectiveNotes} onChange={e=>setSubjectiveNotes(e.target.value)} rows={2} placeholder="Relevant history, symptoms and functional limitations" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                <details className="rounded-xl border border-slate-100 p-3">
+                  <summary className="cursor-pointer text-xs font-semibold text-teal-800">Additional examination and treatment plan (optional)</summary>
+                  <div className="mt-3 space-y-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="text-xs font-medium">Objective findings<textarea value={objectiveFindings} onChange={e=>setObjectiveFindings(e.target.value)} rows={2} placeholder="Observation, palpation, functional tests…" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Range of motion<textarea value={romFindings} onChange={e=>setRomFindings(e.target.value)} rows={2} placeholder="Relevant ROM findings" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Muscle strength<textarea value={strengthFindings} onChange={e=>setStrengthFindings(e.target.value)} rows={2} placeholder="MMT / strength findings" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Special tests<textarea value={specialTests} onChange={e=>setSpecialTests(e.target.value)} rows={2} placeholder="Test and result; if relevant" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium sm:col-span-2">Neurological findings (if relevant)<textarea value={neuroFindings} onChange={e=>setNeuroFindings(e.target.value)} rows={2} placeholder="Dermatomes, myotomes, reflexes, neural signs…" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="text-xs font-medium">Clinical impression<textarea value={clinicalImpression} onChange={e=>setClinicalImpression(e.target.value)} rows={2} placeholder="Your clinical impression / working diagnosis" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  <label className="text-xs font-medium">Goals<textarea value={treatmentGoals} onChange={e=>setTreatmentGoals(e.target.value)} rows={2} placeholder="Short- and long-term goals" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                </div>
+                <label className="block text-xs font-medium">Plan of care<textarea value={planOfCare} onChange={e=>setPlanOfCare(e.target.value)} rows={2} placeholder="Planned treatment and review frequency" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
+                  </div>
+                </details>
+                <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-[10px] text-slate-400">Only clinically relevant fields need completion.</p><button disabled={busy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white">{busy?"Saving…":"Save assessment"}</button></div>
+              </form>
+              <div className="grid gap-4 xl:grid-cols-2">
+                <form onSubmit={addFollowUp} className="space-y-3 rounded-xl border border-slate-200 p-4">
+                  <h3 className="text-sm font-bold text-[#173653]">Follow-up visit</h3>
+                  <div className="grid grid-cols-2 gap-2"><label className="text-xs font-medium">Visit date<input type="date" value={followUpDate} onChange={e=>setFollowUpDate(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label><label className="text-xs font-medium">Pain score (0–10)<input type="number" min="0" max="10" value={followUpPainScore} onChange={e=>setFollowUpPainScore(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label></div>
+                  <label className="block text-xs font-medium">Patient-reported change<textarea value={followUpSubjective} onChange={e=>setFollowUpSubjective(e.target.value)} rows={2} placeholder="What has changed since the last visit?" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label>
+                  <label className="block text-xs font-medium">Updated clinical findings<textarea value={followUpObjective} onChange={e=>setFollowUpObjective(e.target.value)} rows={2} placeholder="Relevant reassessment findings" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label>
+                  <label className="block text-xs font-medium">Treatment response<textarea value={followUpResponse} onChange={e=>setFollowUpResponse(e.target.value)} rows={2} placeholder="Response and changes to treatment plan" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label>
+                  <button disabled={busy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white">Save follow-up</button>
+                </form>
+                <form onSubmit={addIntervention} className="space-y-3 rounded-xl border border-slate-200 p-4">
+                  <h3 className="text-sm font-bold text-[#173653]">Treatment provided</h3>
+                  <label className="block text-xs font-medium">Intervention<select required value={interventionText} onChange={e=>setInterventionText(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Select treatment</option>{["Manual therapy","Therapeutic exercise","Stretching","Strengthening","Neuromuscular training","Electrotherapy","Education / advice","Gait training","Balance training","Functional training","Other"].map(v=><option key={v}>{v}</option>)}</select></label>
+                  <div className="grid grid-cols-2 gap-2"><label className="text-xs font-medium">Body region<input value={interventionRegion} onChange={e=>setInterventionRegion(e.target.value)} placeholder="e.g. Lumbar spine" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label><label className="text-xs font-medium">Dosage<input value={interventionDosage} onChange={e=>setInterventionDosage(e.target.value)} placeholder="Sets, reps, duration" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label></div>
+                  <label className="block text-xs font-medium">Technique / parameters<input value={interventionTechnique} onChange={e=>setInterventionTechnique(e.target.value)} placeholder="Technique, intensity or parameters" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label>
+                  <label className="block text-xs font-medium">Patient response<input value={interventionResponse} onChange={e=>setInterventionResponse(e.target.value)} placeholder="Tolerance / immediate response" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label>
+                  <label className="block text-xs font-medium">Home advice<input value={homeAdvice} onChange={e=>setHomeAdvice(e.target.value)} placeholder="Home exercise / advice" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs"/></label>
+                  <button disabled={busy||!interventionText} className="rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white">Save treatment</button>
+                </form>
+              </div>
+              <form onSubmit={addOutcome} className="grid gap-3 rounded-xl border border-slate-200 p-4 sm:grid-cols-2">
+                <div className="sm:col-span-2"><h3 className="text-sm font-bold text-[#173653]">Outcome measure</h3><p className="mt-1 text-[11px] text-slate-500">Record a baseline or follow-up score, such as NPRS, ODI, NDI or LEFS.</p></div>
+                <input required value={outcomeCode} onChange={e=>setOutcomeCode(e.target.value)} placeholder="Measure code (e.g. NPRS)" className="rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/>
+                <input required value={outcomeName} onChange={e=>setOutcomeName(e.target.value)} placeholder="Measure name" className="rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/>
+                <input required type="number" step="any" value={outcomeValue} onChange={e=>setOutcomeValue(e.target.value)} placeholder="Measured score" className="rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/>
+                <select value={outcomeDirection} onChange={e=>setOutcomeDirection(e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="lower_is_better">Lower is better</option><option value="higher_is_better">Higher is better</option><option value="descriptive">Descriptive</option></select>
+                <button disabled={busy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white sm:col-span-2">Save outcome</button>
+              </form>
+            </div>}
           </section>}
           {selectedReport && selectedPatient && <section className="rounded-2xl border border-slate-200 bg-white p-5">
             <h2 className="font-bold text-[#173653]">Correct an existing report</h2>
             <p className="mt-1 text-[11px] leading-5 text-slate-500">Only you, as the record owner, can apply a correction. Changed fields are recorded in the audit trail; the original record is not silently erased.</p>
             <form onSubmit={applyReportCorrection} className="mt-3 space-y-3">
               <textarea required minLength={5} value={correctionReason} onChange={e=>setCorrectionReason(e.target.value)} placeholder="Reason for correction" rows={2} className="w-full rounded-xl border border-slate-200 p-3 text-xs"/>
-              <textarea required value={correctionJson} onChange={e=>setCorrectionJson(e.target.value)} rows={6} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-[11px]"/>
-              <p className="text-[10px] text-slate-400">Permitted keys: category, condition, clinical_summary, discharge_status, recommendations.</p>
+              <label className="block text-xs font-medium text-slate-700">Clinical summary<textarea value={correctionSummary} onChange={e=>setCorrectionSummary(e.target.value)} rows={3} placeholder="Updated clinical summary" className="mt-1 w-full rounded-xl border border-slate-200 p-3 text-xs"/></label>
+              <label className="block text-xs font-medium text-slate-700">Discharge status<input value={correctionDischarge} onChange={e=>setCorrectionDischarge(e.target.value)} placeholder="e.g. Discharged with home programme" className="mt-1 w-full rounded-xl border border-slate-200 p-3 text-xs"/></label>
+              <label className="block text-xs font-medium text-slate-700">Recommendations (one per line)<textarea value={correctionRecommendations} onChange={e=>setCorrectionRecommendations(e.target.value)} rows={3} placeholder="Home exercise programme" className="mt-1 w-full rounded-xl border border-slate-200 p-3 text-xs"/></label>
               <button disabled={busy} className="rounded-xl border border-teal-700 px-4 py-2.5 text-xs font-bold text-teal-800 disabled:opacity-40">Submit and apply owner correction</button>
             </form>
           </section>}
