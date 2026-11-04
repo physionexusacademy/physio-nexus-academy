@@ -54,6 +54,15 @@ export function downloadClinicalReportPdf(report: ReportRecord): void {
     ["Dominant side", demographics.dominantSide],
     ["Activity level", demographics.activityLevel],
   ]);
+  const therapist = (report.therapist && typeof report.therapist === "object" ? report.therapist : {}) as ReportRecord;
+  add("TREATING THERAPIST", [
+    ["Therapist name", therapist.fullName],
+    ["Professional title", therapist.professionalTitle],
+    ["Qualifications", Array.isArray(therapist.credentials) ? therapist.credentials.join(", ") : therapist.credentials],
+    ["Registration body", therapist.registrationLabel],
+    ["Registration / licence number", therapist.registrationNumber],
+    ["Institution / clinic", therapist.institutionOrClinic],
+  ]);
   add("REPORT OVERVIEW", [
     ["Clinical category", report.category],
     ["Condition / working diagnosis", report.condition],
