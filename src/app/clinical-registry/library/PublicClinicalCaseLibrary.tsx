@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { ArrowRight, ArrowUpRight, BookOpen, FileText, ShieldCheck, Sparkles } from "lucide-react";
