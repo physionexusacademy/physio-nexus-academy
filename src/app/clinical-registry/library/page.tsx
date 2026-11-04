@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import { PublicCasePdfButton } from "./PublicCasePdfButton";
 
 export const dynamic = "force-dynamic";
 
@@ -46,12 +47,10 @@ export default async function PublicClinicalCaseLibraryPage() {
       {error ? <section className="rounded-2xl border border-red-200 bg-white p-5 text-sm text-red-700">The public case library is temporarily unavailable. Please try again later.</section> : <div className="space-y-4">
         {cases.map((item) => {
           const safeEvidence = item.evidence_reference && (item.evidence_reference.startsWith("https://")) ? item.evidence_reference : null;
-          return <article key={item.case_id} className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-            <div className="flex flex-wrap items-start justify-between gap-2"><div><h2 className="text-lg font-bold text-[#173653]">{item.case_title}</h2><p className="mt-1 text-xs text-teal-700">{item.condition_label} · {item.age_band ?? "Age not reported"}</p></div><time className="text-[10px] text-slate-400" dateTime={item.published_at}>Published {new Date(item.published_at).toLocaleDateString()}</time></div>
-            <section className="mt-4"><h3 className="text-xs font-bold text-[#173653]">Clinical context</h3><p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">{item.clinical_context}</p></section>
-            <section className="mt-4"><h3 className="text-xs font-bold text-[#173653]">Intervention</h3><p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">{item.intervention_summary}</p></section>
-            <section className="mt-4"><h3 className="text-xs font-bold text-[#173653]">Outcome</h3><p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">{item.outcome_summary}</p></section>
-            {safeEvidence && <a href={safeEvidence} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-xs font-semibold text-teal-700 underline">Open evidence reference</a>}
+          return <article key={item.case_id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <header className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-slate-50/80 p-5 sm:p-6"><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-teal-700">Reviewed clinical case</p><h2 className="mt-1 text-lg font-bold text-[#173653] sm:text-xl">{item.case_title}</h2><div className="mt-2 flex flex-wrap gap-2"><span className="rounded-full border border-teal-100 bg-white px-3 py-1 text-[10px] font-semibold text-teal-800">{item.condition_label}</span><span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] text-slate-600">{item.age_band ?? "Age not reported"}</span></div></div><time className="text-[10px] text-slate-400" dateTime={item.published_at}>Published {new Date(item.published_at).toLocaleDateString()}</time></header>
+            <div className="grid gap-3 p-5 sm:p-6 md:grid-cols-2"><section className="rounded-xl border border-slate-100 p-4 md:col-span-2"><h3 className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Clinical context</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">{item.clinical_context}</p></section><section className="rounded-xl border border-slate-100 p-4"><h3 className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Intervention</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">{item.intervention_summary}</p></section><section className="rounded-xl border border-slate-100 p-4"><h3 className="text-[10px] font-bold uppercase tracking-wide text-teal-700">Outcome</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">{item.outcome_summary}</p></section></div>
+            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-4 sm:px-6"><div>{safeEvidence ? <a href={safeEvidence} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-teal-700 underline">Open evidence reference</a> : <span className="text-[10px] text-slate-400">No external evidence link supplied</span>}</div><PublicCasePdfButton item={item}/></footer>
           </article>;
         })}
         {cases.length === 0 && <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">No cases have been approved and published yet.</section>}
