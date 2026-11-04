@@ -75,6 +75,7 @@ export function ClinicalRegistrySecureClient() {
   const [followUpObjective, setFollowUpObjective] = useState("");
   const [followUpResponse, setFollowUpResponse] = useState("");
   const [interventionText, setInterventionText] = useState("");
+  const [initialInterventions, setInitialInterventions] = useState<string[]>([]);
   const [interventionRegion, setInterventionRegion] = useState("");
   const [interventionTechnique, setInterventionTechnique] = useState("");
   const [interventionDosage, setInterventionDosage] = useState("");
@@ -770,9 +771,9 @@ export function ClinicalRegistrySecureClient() {
       setError("Patient and report were created, but the assessment did not save. Open the report and save the assessment there. " + (assessmentError?.message ?? ""));
       return;
     }
-    if (interventionText.trim()) {
+    if (initialInterventions.length > 0) {
       const { error: interventionError } = await client.rpc("add_intervention", {
-        p_report_id: reportId as string, p_intervention: interventionText,
+        p_report_id: reportId as string, p_intervention: initialInterventions.join(", "),
         p_body_region: interventionRegion.trim() || null,
         p_technique_or_parameters: interventionTechnique.trim() || null,
         p_dosage: interventionDosage.trim() || null,
@@ -803,7 +804,7 @@ export function ClinicalRegistrySecureClient() {
     setAggravatingFactors(""); setRelievingFactors(""); setSubjectiveNotes(""); setObjectiveFindings("");
     setRomFindings(""); setStrengthFindings(""); setSpecialTests(""); setNeuroFindings("");
     setClinicalImpression(""); setTreatmentGoals(""); setPlanOfCare("");
-    setInterventionText(""); setInterventionRegion(""); setInterventionTechnique(""); setInterventionDosage("");
+    setInterventionText(""); setInitialInterventions([]); setInterventionRegion(""); setInterventionTechnique(""); setInterventionDosage("");
     setInterventionResponse(""); setHomeAdvice(""); setOutcomeCode(""); setOutcomeName(""); setOutcomeValue("");
     setNewPatientFormOpen(false);
     await loadPatients(); await loadReports(patient.id); await openReport(reportId as string);
@@ -1102,7 +1103,7 @@ export function ClinicalRegistrySecureClient() {
               <label className="text-xs font-medium sm:col-span-2">Plan of care<textarea value={planOfCare} onChange={e=>setPlanOfCare(e.target.value)} rows={2} placeholder="Planned treatment and review frequency" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
             </div></details>
             <details className="border-t border-slate-100 pt-5"><summary className="cursor-pointer text-sm font-bold text-[#173653]">5. Initial treatment provided (optional)</summary><div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <label className="text-xs font-medium">Intervention<select value={interventionText} onChange={e=>setInterventionText(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"><option value="">Not recorded yet</option>{["Manual therapy","Therapeutic exercise","Stretching","Strengthening","Neuromuscular training","Electrotherapy","Education / advice","Gait training","Balance training","Functional training","Other"].map(v=><option key={v}>{v}</option>)}</select></label>
+              <fieldset className="sm:col-span-2"><legend className="text-xs font-medium">Interventions provided (select all that apply)</legend><p className="mt-1 text-[11px] text-slate-500">You can choose multiple treatments delivered during this initial session.</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{["Manual therapy","Stretching exercises","TENS","Heating pad / hot pack","Strengthening exercises","Other therapeutic exercises","Neuromuscular training","Electrotherapy (other)","Education / advice","Gait training","Balance training","Functional training","Other"].map(option=><label key={option} className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-normal"><input type="checkbox" checked={initialInterventions.includes(option)} onChange={e=>setInitialInterventions(current=>e.target.checked?[...current,option]:current.filter(item=>item!==option))} className="accent-teal-700"/>{option}</label>)}</div></fieldset>
               <label className="text-xs font-medium">Body region<input value={interventionRegion} onChange={e=>setInterventionRegion(e.target.value)} placeholder="e.g. Lumbar spine" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
               <label className="text-xs font-medium">Technique / parameters<input value={interventionTechnique} onChange={e=>setInterventionTechnique(e.target.value)} placeholder="Technique, intensity or parameters" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
               <label className="text-xs font-medium">Dosage<input value={interventionDosage} onChange={e=>setInterventionDosage(e.target.value)} placeholder="Sets, reps, duration" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-xs"/></label>
