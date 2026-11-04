@@ -1152,7 +1152,6 @@ export function ClinicalRegistrySecureClient() {
             <p className="mt-2 text-[11px] leading-5 text-slate-500">Open one complete intake form for patient details and the initial clinical assessment.</p>
             <button type="button" onClick={()=>{setError("");setNotice("");setNewPatientFormOpen(true);}} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white"><UserPlus size={15}/> Add New Patient</button>
           </section>
-          </section>
         </aside>
         <section className="space-y-5">
           <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h2 className="font-bold text-[#173653]">Clinical reports</h2><p className="mt-1 text-[11px] text-slate-400">{selectedPatient?`${selectedPatient.display_name} · ${selectedPatient.patient_reference}`:"Select a patient to view reports."}</p></div>{selectedPatient&&<button onClick={exportPatient} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold"><FileDown size={14}/> Export record</button>}</div>
