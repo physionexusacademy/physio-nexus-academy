@@ -8,13 +8,67 @@ import "./daily-challenge.css";
 
 export const dynamic="force-dynamic";
 export const revalidate=0;
+
 export const metadata:Metadata={
- title:"Daily Clinical Challenge | PNA Champions Leaderboard",
- description:"Return every day for five clinical knowledge questions, compete for a public ranking, and explore monthly and yearly physiotherapy champions.",
- alternates:{canonical:"https://physionexusacademy.com/daily-challenge"}
+ title:"Daily Clinical Challenge | Free Physiotherapy Quiz + Live Leaderboard",
+ description:"Take the free daily physiotherapy clinical challenge. Five practical questions every day, public leaderboard, monthly & yearly champions. Sharpen clinical reasoning with Physio Nexus Academy.",
+ keywords:[
+  "daily physiotherapy quiz",
+  "physiotherapy clinical challenge",
+  "physiotherapy quiz Pakistan",
+  "clinical reasoning quiz",
+  "physiotherapy leaderboard",
+  "free physiotherapy quiz",
+  "daily clinical challenge",
+  "Physio Nexus Academy quiz",
+  "physiotherapy knowledge test",
+  "CPD physiotherapy quiz",
+ ],
+ alternates:{canonical:"https://physionexusacademy.com/daily-challenge"},
+ openGraph:{
+  title:"Daily Clinical Challenge | Free Physiotherapy Quiz + Live Leaderboard",
+  description:"Five practical physiotherapy questions every day. Compete on the public leaderboard and build clinical reasoning skills.",
+  url:"https://physionexusacademy.com/daily-challenge",
+  siteName:"Physio Nexus Academy",
+  locale:"en_PK",
+  type:"website",
+  images:[{url:"https://physionexusacademy.com/images/founder-dr-sajjad.jpg",width:1200,height:630,alt:"PNA Daily Clinical Challenge"}],
+ },
+ twitter:{
+  card:"summary_large_image",
+  title:"Daily Clinical Challenge | Physiotherapy Quiz",
+  description:"Five clinical questions daily. Public leaderboard. Monthly & yearly champions. Free for every learner.",
+  images:["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+ },
+ robots:{index:true,follow:true},
 };
+
+const quizJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Quiz",
+  "name": "PNA Daily Clinical Challenge",
+  "description": "A free daily physiotherapy clinical knowledge challenge with five questions, timed scoring and a public leaderboard for students and clinicians.",
+  "url": "https://physionexusacademy.com/daily-challenge",
+  "educationalLevel": "Professional",
+  "learningResourceType": "Quiz",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "Physio Nexus Academy",
+    "url": "https://physionexusacademy.com"
+  },
+  "about": ["Physiotherapy", "Clinical Reasoning", "Musculoskeletal", "Rehabilitation"]
+};
+
 export default function DailyChallengePage(){
  return <main className="dc-page">
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(quizJsonLd).replace(/</g, "\\u003c"),
+    }}
+  />
   <div className="container-content py-7 sm:py-10">
    <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
     <Link href="/knowledge-hub" className="inline-flex items-center gap-1 text-teal-800 hover:underline"><ArrowLeft className="h-4 w-4"/> Knowledge Hub</Link>

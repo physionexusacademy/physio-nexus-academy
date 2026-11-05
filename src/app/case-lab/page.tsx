@@ -46,4 +46,37 @@ export const metadata:Metadata={
  },
  robots:{index:true,follow:true},
 };
-export default function CaseLabPage(){return <ResearchCaseLibrary reports={publishedCaseReports}/>;}
+
+const libraryJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "PNA Research Case Library",
+  "description": "A curated library of published physiotherapy and rehabilitation case reports with plain-English summaries, original source links, clinical lessons and limitations.",
+  "url": "https://physionexusacademy.com/case-lab",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Physio Nexus Academy",
+    "url": "https://physionexusacademy.com"
+  },
+  "about": ["Physiotherapy", "Rehabilitation", "Case Reports", "Evidence-based practice"],
+  "numberOfItems": publishedCaseReports.length,
+  "provider": {
+    "@type": "Organization",
+    "name": "Physio Nexus Academy",
+    "url": "https://physionexusacademy.com"
+  }
+};
+
+export default function CaseLabPage(){
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(libraryJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <ResearchCaseLibrary reports={publishedCaseReports}/>
+    </>
+  );
+}

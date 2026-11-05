@@ -55,11 +55,38 @@ export const metadata: Metadata = {
   },
 };
 
+const seriesJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWorkSeries",
+  "name": "Stupid Intern Diaries",
+  "description": "A daily educational series of funny clinic conversations that teach real physiotherapy safety lessons, red flags and clinical reasoning through memorable mistakes.",
+  "url": "https://physionexusacademy.com/stupid-intern-diaries",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "creator": {
+    "@type": "Person",
+    "name": "Dr. Sajjad Raza PT",
+    "url": "https://physionexusacademy.com/founder"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Physio Nexus Academy",
+    "url": "https://physionexusacademy.com"
+  },
+  "about": ["Physiotherapy education", "Clinical safety", "Red flags", "Clinical reasoning"]
+};
+
 export default function StupidInternDiariesPage() {
   const latest = getLatestEpisode();
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#f0f9f7] to-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(seriesJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="container-content py-8 sm:py-12">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
           <Link href="/" className="inline-flex items-center gap-1 text-teal-800 hover:underline">

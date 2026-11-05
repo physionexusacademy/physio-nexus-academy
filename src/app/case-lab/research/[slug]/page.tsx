@@ -11,12 +11,68 @@ export const revalidate=false;
 export function generateStaticParams(){return publishedCaseReports.map(r=>({slug:r.slug}));}
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{
  const {slug}=await params; const report=getPublishedCaseReport(slug); if(!report)return {};
- return {title:report.title+" | PNA Research Case Library",description:report.caseSummary,alternates:{canonical:base+"/case-lab/research/"+report.slug},openGraph:{title:report.title,description:report.caseSummary,url:base+"/case-lab/research/"+report.slug,type:"article"}};
+ return {
+  title:report.title+" | PNA Research Case Library",
+  description:report.caseSummary,
+  keywords: [report.specialty, "physiotherapy case report", "rehabilitation case study", "clinical lessons", "Physio Nexus Academy"],
+  alternates:{canonical:base+"/case-lab/research/"+report.slug},
+  openGraph:{
+   title:report.title,
+   description:report.caseSummary,
+   url:base+"/case-lab/research/"+report.slug,
+   type:"article",
+   siteName: "Physio Nexus Academy",
+   locale: "en_PK",
+  },
+  twitter: {
+   card: "summary_large_image",
+   title: report.title,
+   description: report.caseSummary,
+  },
+  robots: { index: true, follow: true },
+ };
 }
 function Section({title,items,kind="normal"}:{title:string;items:string[];kind?:"normal"|"lesson"|"limit"}){return <section className={"rr-section "+(kind==="lesson"?"rr-lesson":kind==="limit"?"rr-limit":"")}><h2>{title}</h2><ul>{items.map((x,i)=><li key={i}>{x}</li>)}</ul></section>}
 export default async function PublishedReportPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params; const r=getPublishedCaseReport(slug); if(!r)notFound();
- return <main className="rr-page"><div className="rr-wrap">
+
+ const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": r.title,
+  "name": r.title,
+  "description": r.caseSummary,
+  "author": r.authors.split(",").map((name: string) => ({
+   "@type": "Person",
+   "name": name.trim()
+  })),
+  "datePublished": String(r.year),
+  "isPartOf": {
+   "@type": "Periodical",
+   "name": r.journal
+  },
+  "url": base + "/case-lab/research/" + r.slug,
+  "mainEntityOfPage": base + "/case-lab/research/" + r.slug,
+  "publisher": {
+   "@type": "Organization",
+   "name": "Physio Nexus Academy",
+   "url": "https://physionexusacademy.com"
+  },
+  "about": [r.specialty, "Physiotherapy", "Rehabilitation"],
+  "educationalUse": "Clinical education",
+  "isAccessibleForFree": true,
+  "license": r.licenseNote || "See original publication",
+  ...(r.doi ? { "identifier": { "@type": "PropertyValue", "propertyID": "DOI", "value": r.doi } } : {})
+ };
+
+ return <main className="rr-page">
+  <script
+   type="application/ld+json"
+   dangerouslySetInnerHTML={{
+    __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+   }}
+  />
+  <div className="rr-wrap">
   <Link className="rr-back" href="/case-lab"><ArrowLeft size={16}/> All published case reports</Link>
   <header className="rr-hero"><span className="rr-kicker"><BookOpen size={14}/> PNA RESEARCH CASE LIBRARY</span><span className="rr-specialty">{r.specialty} · {r.year}</span><h1>{r.title}</h1><p className="rr-authors">{r.authors}</p><p className="rr-journal"><em>{r.journal}</em> · {r.year}{r.doi?" · DOI: "+r.doi:""}</p>
    <div className="rr-actions"><a className="rr-primary" href={r.sourceUrl} target="_blank" rel="noopener noreferrer">Read original paper <ExternalLink size={16}/></a>{r.doi&&<a className="rr-secondary" href={"https://doi.org/"+r.doi} target="_blank" rel="noopener noreferrer">Open DOI <ExternalLink size={15}/></a>}</div>
