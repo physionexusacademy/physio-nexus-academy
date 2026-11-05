@@ -1426,7 +1426,401 @@ export const publishedCaseReports: PublishedCaseReport[] = [
  outcomes:["After symmetry retraining, knee motion and moments were restored to normal levels in the reported patient.","Walking showed greater and more symmetrical knee excursion than the comparison cohort."],
  clinicalLessons:["Assess movement symmetry after TKA in addition to pain and range of motion.","Visual, verbal and tactile feedback can be used to cue more symmetrical loading during functional tasks."],
  limitations:["Single case report with comparison to a historical cohort rather than a randomised control group.","The report supports a clinical rationale but cannot establish effectiveness across all TKA patients."]
+},
+{
+ "slug": "spinocerebellar-ataxia-biomechanical-rehabilitation",
+ "title": "Physiotherapy in Spinocerebellar Ataxia Following COVID-19: A Biomechanical and Biopsychosocial Case Report",
+ "authors": "Luiz Humberto Figueiredo Monteiro, Isabela Natalia de Souza Rêgo, Ana Beatriz Souza da Conceição, Hugo Miranda de Souza Coroa, Brenno Ribeiro Braz, Suellen Alessandra Soares de Moraes",
+ "journal": "Physiotherapy Research International",
+ "year": 2026,
+ "specialty": "Neurological Rehabilitation",
+ "tags": [
+  "Spinocerebellar ataxia",
+  "Postural control",
+  "Dizziness",
+  "Biomechanical assessment"
+ ],
+ "openAccess": true,
+ "licenseNote": "Free full text is available through PubMed Central; check the article-level licence before reuse.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635432/",
+ "doi": "10.1002/pri.70122",
+ "caseSummary": "A 56-year-old man with clinically diagnosed spinocerebellar ataxia had a history of COVID-19 infection before symptom onset. The report examined physiotherapy-related changes using functional, biomechanical and patient-reported measures.",
+ "clinicalFindings": [
+  "Assessment included the Timed Up and Go test, Romberg test and Dizziness Handicap Inventory.",
+  "Baropodometric and stabilometric testing quantified plantar contact and centre-of-pressure behaviour."
+ ],
+ "intervention": [
+  "Thirty physiotherapy sessions focused on muscle strengthening, balance training and coordination exercises.",
+  "Clinical measures were combined with baropodometric and stabilometric assessment."
+ ],
+ "outcomes": [
+  "The patient reported less dizziness, and the Dizziness Handicap Inventory improved by nearly 50%, particularly in its physical domain.",
+  "Some plantar contact and arch measures improved, but centre-of-pressure area and mean oscillation speed increased, suggesting worse postural stability; balance and mobility did not show clear perceived improvement."
+ ],
+ "clinicalLessons": [
+  "Do not equate subjective symptom improvement with global functional recovery.",
+  "In progressive ataxia, combine patient-reported outcomes with objective balance and mobility measures."
+ ],
+ "limitations": [
+  "One patient cannot establish treatment effectiveness or a causal link between COVID-19 and ataxia.",
+  "The mixed objective results caution against describing the programme as uniformly successful."
+ ]
+},
+{
+ "slug": "vestibular-rehabilitation-hypertrophic-olivary-degeneration",
+ "title": "Vestibular Rehabilitation of Patient with Hypertrophic Olivary Degeneration: A Case Report",
+ "authors": "Miaomiao Yin, Liling Cui, Yue Zhang",
+ "journal": "Journal of the American Academy of Audiology",
+ "year": 2025,
+ "specialty": "Vestibular Rehabilitation",
+ "tags": [
+  "Hypertrophic olivary degeneration",
+  "Pontine haemorrhage",
+  "Nystagmus",
+  "Vestibular rehabilitation"
+ ],
+ "openAccess": true,
+ "licenseNote": "Free full text is available through PubMed Central; consult the publisher's licence before reuse.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12673815/",
+ "doi": "10.1055/a-2320-5600",
+ "caseSummary": "A 43-year-old man developed persistent dizziness, blurred vision and balance problems after a pontine haemorrhage, with imaging later showing bilateral hypertrophic olivary degeneration.",
+ "clinicalFindings": [
+  "Dizziness and blurred vision persisted for more than ten months, with tremor and ataxia for more than six months.",
+  "Clinical features included palatal myoclonus and nystagmus; assessment identified impaired vestibulo-ocular reflex, optokinetic reflex and balance."
+ ],
+ "intervention": [
+  "A four-month vestibular rehabilitation programme was delivered following comprehensive vestibular and balance assessment.",
+  "Consult the full paper for exact exercise selection and progression; this summary does not infer an unreported protocol."
+ ],
+ "outcomes": [
+  "The authors reported improvement in eye symptoms and balance function after four months of vestibular rehabilitation."
+ ],
+ "clinicalLessons": [
+  "Central vestibular presentations can include ocular motor findings and balance impairment that require broad assessment.",
+  "Track gaze stability, visual symptoms and balance separately rather than relying on dizziness intensity alone."
+ ],
+ "limitations": [
+  "A single case cannot establish effectiveness for all people with hypertrophic olivary degeneration."
+ ]
+},
+{
+ "slug": "cauda-equina-rehabilitation-after-spinal-manipulation",
+ "title": "Rehabilitation in a Case With Cauda Equina Syndrome After Spinal Manipulation: A Long and Difficult Process",
+ "authors": "Burak Kamil Turan, Birkan Sonel Tur",
+ "journal": "Turkish Journal of Physical Medicine and Rehabilitation",
+ "year": 2025,
+ "specialty": "Neurological & Spinal Rehabilitation",
+ "tags": [
+  "Cauda equina syndrome",
+  "Lumbar disc herniation",
+  "Multidisciplinary rehabilitation",
+  "Neurological emergency"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open-access journal article; verify non-commercial reuse conditions before adapting or redistributing content.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12305677/",
+ "doi": "10.5606/tftrd.2024.14930",
+ "caseSummary": "A 38-year-old woman developed cauda equina syndrome after spinal manipulation performed for lumbar disc herniation. The report follows the challenging rehabilitation process after this serious neurological complication.",
+ "clinicalFindings": [
+  "The patient developed cauda equina syndrome in the setting of lumbar disc herniation after spinal manipulation.",
+  "The report focuses on functional consequences and prolonged rehabilitation challenges."
+ ],
+ "intervention": [
+  "The authors describe a comprehensive multidisciplinary rehabilitation programme.",
+  "The published abstract does not provide enough detail to reproduce a specific exercise dose; consult the full article."
+ ],
+ "outcomes": [
+  "The authors describe gains in independence and a return towards daily activities, social life and work despite a difficult rehabilitation course."
+ ],
+ "clinicalLessons": [
+  "New saddle sensory change, bladder or bowel dysfunction, or progressive neurological deficit requires urgent emergency assessment, not routine manual therapy.",
+  "After medical stabilization, rehabilitation goals should address mobility, self-care, participation and psychosocial impact."
+ ],
+ "limitations": [
+  "The accessible abstract provides limited intervention and outcome detail; exact treatment parameters should not be inferred.",
+  "One case cannot quantify risk or establish causation for spinal manipulation in other patients."
+ ]
+},
+{
+ "slug": "heart-failure-cardiac-rehabilitation-return-to-work",
+ "title": "Comprehensive Cardiac Rehabilitation Utilized to Support a Patient With Heart Failure in Balancing Treatment and Work: A Case Report",
+ "authors": "Kazufumi Kitagaki, Yuji Hongo, Rie Futai, Takeshi Hasegawa, Tatsuyoshi Azuma, Hiroshi Morikawa, Hazuki Koizumi, Takuya Kiyohara, Hisashi Shimoyama",
+ "journal": "Journal of Cardiology Cases",
+ "year": 2025,
+ "specialty": "Cardiorespiratory Rehabilitation",
+ "tags": [
+  "Heart failure",
+  "Cardiac rehabilitation",
+  "Return to work",
+  "Wearable monitoring"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open access under CC BY-NC-ND; cite the original authors and do not adapt or redistribute modified versions.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12013755/",
+ "doi": "10.1016/j.jccase.2024.10.003",
+ "caseSummary": "A 47-year-old woman presented with exertional dyspnoea and severe heart failure, with a left ventricular ejection fraction of 13.1%. The case illustrates how supervised cardiac rehabilitation and activity-intensity guidance supported a gradual return to employment.",
+ "clinicalFindings": [
+  "Echocardiography showed markedly reduced left ventricular ejection fraction and elevated brain natriuretic peptide.",
+  "Cardiopulmonary exercise testing identified an anaerobic-threshold heart rate used to guide activity intensity."
+ ],
+ "intervention": [
+  "After medical stabilization, graded early mobilization and bicycle ergometer exercise were introduced during admission.",
+  "Outpatient cardiac rehabilitation combined aerobic exercise, resistance training, education and home-activity guidance.",
+  "A wearable device monitored pulse rate, with activity initially kept at or below the heart rate associated with anaerobic threshold."
+ ],
+ "outcomes": [
+  "The patient gradually resumed work, initially for limited hours and frequency.",
+  "Five months after discharge, she was working four days per week for eight hours without reported worsening of heart-failure symptoms."
+ ],
+ "clinicalLessons": [
+  "Cardiac rehabilitation can include vocational goals and activity pacing, not only exercise capacity.",
+  "Use individualized clinical thresholds and symptom monitoring when progressing activity after severe heart failure."
+ ],
+ "limitations": [
+  "A single case cannot establish that wearable-guided activity management is suitable for every patient with heart failure.",
+  "Concurrent medical treatment means recovery cannot be attributed to rehabilitation alone."
+ ]
+},
+{
+ "slug": "robotic-exoskeleton-gait-training-thoracic-spinal-cord-injury",
+ "title": "Gait Training Using a Powered Robotic Exoskeleton for a Person With Spinal Cord Injury: A Case Report",
+ "authors": "Sunpreet Singh Hanspal, Harvinder Singh Chhabra, Ankush Gera, Gouree Sengar et al.",
+ "journal": "Spinal Cord Series and Cases",
+ "year": 2025,
+ "specialty": "Neurological Rehabilitation",
+ "tags": [
+  "Spinal cord injury",
+  "T12 paraplegia",
+  "Robotic exoskeleton",
+  "Gait training"
+ ],
+ "openAccess": false,
+ "licenseNote": "Publisher page provides the abstract; full text may require institutional access. Do not reproduce figures or tables without permission.",
+ "sourceUrl": "https://www.nature.com/articles/s41394-025-00716-y",
+ "doi": "10.1038/s41394-025-00716-y",
+ "caseSummary": "A 31-year-old man with chronic paraplegia after a T12 spinal cord injury sustained in a fall completed a four-week programme combining powered robotic exoskeleton gait training with conventional rehabilitation.",
+ "clinicalFindings": [
+  "Assessment included the Function in Sitting Test, Walking Index for Spinal Cord Injury II, lower-extremity motor scores, Spinal Cord Independence Measure III, six-minute walk test and assistive-technology satisfaction."
+ ],
+ "intervention": [
+  "Fifteen sessions of powered robotic exoskeleton training were delivered over four weeks alongside conventional therapy.",
+  "Gait training progressed from assisted weight-bearing towards crutch-assisted walking."
+ ],
+ "outcomes": [
+  "The authors reported better sitting balance and functional mobility, with improved psychological well-being and rehabilitation adherence.",
+  "The abstract describes progression to crutch-assisted walking but does not establish independent unaided walking."
+ ],
+ "clinicalLessons": [
+  "Robotic gait training should be considered an adjunct to individualized spinal cord injury rehabilitation.",
+  "Use validated mobility, independence and patient-satisfaction measures when evaluating assistive technology."
+ ],
+ "limitations": [
+  "A single case with a short intervention period cannot establish comparative effectiveness or long-term community walking outcomes.",
+  "The full article is not freely available on the publisher page, so details beyond the abstract should not be assumed."
+ ]
+},
+{
+ "slug": "post-covid-pneumonia-cpet-guided-rehabilitation",
+ "title": "Rehabilitation Assessment and Exercise Using Cardiopulmonary Exercise Testing After Coronavirus-Disease Pneumonia: A Case Report",
+ "authors": "Ken Kouda, Hideki Konishi, Toshikazu Kubo, Fumihiro Tajima",
+ "journal": "Frontiers in Rehabilitation Sciences",
+ "year": 2025,
+ "specialty": "Cardiorespiratory Rehabilitation",
+ "tags": [
+  "Post-COVID pneumonia",
+  "Cardiopulmonary exercise testing",
+  "Oxygen weaning",
+  "Pulmonary rehabilitation"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open access under CC BY 4.0; attribute the authors and original publication.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12271168/",
+ "doi": "10.3389/fresc.2025.1533239",
+ "caseSummary": "This report describes two patients with persistent respiratory distress about one month after acute COVID-19 treatment. Cardiopulmonary exercise testing was used to identify limitations and individualize rehabilitation exercise.",
+ "clinicalFindings": [
+  "Both patients showed reduced exercise tolerance and impairments involving ventilation, oxygenation, heart-rate reserve, stroke volume and muscle metabolism.",
+  "One 80-year-old man required continuous supplemental oxygen and desaturated to 85% after walking 100 metres at rehabilitation admission."
+ ],
+ "intervention": [
+  "Rehabilitation exercise was prescribed and progressed according to cardiopulmonary exercise test findings and clinical monitoring.",
+  "Oxygen requirement, exercise capacity and functional status were followed over time."
+ ],
+ "outcomes": [
+  "Both patients discontinued supplemental oxygen and improved peak exercise aerobic capacity.",
+  "Reported peak aerobic capacity increased from 17.4 to 22.1 in case one and from 9.0 to 16.1 in case two; both were discharged home after approximately three months of training."
+ ],
+ "clinicalLessons": [
+  "Persistent post-pneumonia limitation may involve multiple cardiopulmonary and peripheral factors.",
+  "CPET can help individualize exercise prescription when available and clinically appropriate.",
+  "Monitor oxygen saturation, symptoms and stopping criteria; do not generalize a case-based exercise dose to all post-COVID patients."
+ ],
+ "limitations": [
+  "Only two cases are described and there is no control group.",
+  "Improvement cannot be attributed to CPET-guided exercise alone, and findings do not establish safety for unstable patients."
+ ]
+},
+{
+ "slug": "b12-deficiency-spinal-cord-injury-inpatient-rehabilitation",
+ "title": "Functional Recovery in a Young Adult With Spinal Cord Injury Secondary to Vitamin B12 Deficiency and Substance Use: A Case Report",
+ "authors": "Fereshteh Kargar Bafrani, Nozima Akbarova, Paul Rutkowski",
+ "journal": "Archives of Rehabilitation Research and Clinical Translation",
+ "year": 2025,
+ "specialty": "Neurological Rehabilitation",
+ "tags": [
+  "Vitamin B12 deficiency",
+  "Subacute combined degeneration",
+  "Neuropathic pain",
+  "Inpatient rehabilitation"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open-access full text is available through PubMed Central; check the article's licence before reuse.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12750418/",
+ "doi": "10.1016/j.arrct.2025.100531",
+ "caseSummary": "A 26-year-old woman developed substantial functional decline and neuropathic pain associated with vitamin B12-deficiency spinal cord dysfunction. Her history included nitrous oxide and ketamine use, and spinal MRI was reported as normal despite marked bilateral lower-limb weakness.",
+ "clinicalFindings": [
+  "The presentation included profound bilateral lower-extremity weakness and neuropathic pain.",
+  "Spinal MRI was normal, illustrating that a normal scan does not always exclude clinically important neurological dysfunction."
+ ],
+ "intervention": [
+  "A multidisciplinary inpatient programme involved physical therapy, occupational therapy, physiatric oversight and psychiatric support.",
+  "Rehabilitation included progressive gait training, neuromuscular re-education, activities-of-daily-living retraining and energy-conservation strategies.",
+  "Vitamin B12 replacement and neuropathic-pain medication were concurrent medical management, not physiotherapy interventions."
+ ],
+ "outcomes": [
+  "Within nine days, the patient progressed from maximal to minimal assistance for ambulation and transfers.",
+  "At discharge, she walked more than 100 feet using a rolling walker with minimal assistance, and bed mobility and daily activities were nearly independent."
+ ],
+ "clinicalLessons": [
+  "A normal MRI should not override a concerning neurological examination or relevant biochemical findings.",
+  "Rehabilitation planning should integrate neurological recovery, pain, mobility, self-care and psychosocial needs."
+ ],
+ "limitations": [
+  "A single case cannot separate the contribution of rehabilitation from vitamin B12 replacement and other medical care.",
+  "The patient's substance-use history is case-specific and should not be assumed in other patients with similar symptoms."
+ ]
+},
+{
+ "slug": "capsular-warning-syndrome-internal-capsule-stroke-rehabilitation",
+ "title": "Capsular Warning Syndrome Followed by Right Internal Capsule Infarction: A Case Report Emphasising Post-Stroke Rehabilitation",
+ "authors": "Quoc Dung Nguyen, Jim Xu, Friedbert Kohler",
+ "journal": "SAGE Open Medical Case Reports",
+ "year": 2025,
+ "specialty": "Neurological Rehabilitation",
+ "tags": [
+  "Capsular warning syndrome",
+  "Internal capsule infarction",
+  "Stroke rehabilitation",
+  "Upper-limb recovery"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open-access SAGE case report; consult article reuse permissions before reproducing published material.",
+ "sourceUrl": "https://journals.sagepub.com/doi/10.1177/2050313X251364366",
+ "doi": "10.1177/2050313X251364366",
+ "caseSummary": "A 72-year-old man experienced three stereotyped episodes of left-sided weakness within 24 hours before developing a right internal-capsule infarct. Following acute stroke treatment, the report describes early inpatient rehabilitation and recovery of functional independence.",
+ "clinicalFindings": [
+  "The patient experienced recurrent transient unilateral weakness before a confirmed right posterior-limb internal-capsule infarct.",
+  "At presentation, left facial droop and hemiparesis were recorded, with an NIH Stroke Scale score of 7.",
+  "Before the event, he had been independent in daily activities, with modified Rankin Scale 0 and Barthel Index 100/100."
+ ],
+ "intervention": [
+  "After acute stroke management, inpatient rehabilitation targeted upper- and lower-limb recovery.",
+  "The programme included the Graded Repetitive Arm Supplementary Programme approach and proprioceptive balance training as part of multidisciplinary care."
+ ],
+ "outcomes": [
+  "The authors reported near-complete functional independence by discharge."
+ ],
+ "clinicalLessons": [
+  "Repeated transient focal neurological symptoms are an emergency and should not be dismissed when they resolve.",
+  "Early rehabilitation after medical stabilization should target upper-limb function and balance-related mobility."
+ ],
+ "limitations": [
+  "A single case cannot establish superiority of the described rehabilitation protocols.",
+  "Acute medical treatment and spontaneous neurological recovery also contribute to the observed outcome."
+ ]
+},
+{
+ "slug": "multicomponent-rehabilitation-median-nerve-injury",
+ "title": "Efficacy of Multi-component Therapy for Peripheral Nerve Injury: A Case Report",
+ "authors": "Naoki Mori, Chiharu Endo, Kento Ito, Risako Katada, Ikumi Takagi, Hisae Onaka",
+ "journal": "Progress in Rehabilitation Medicine",
+ "year": 2025,
+ "specialty": "Hand & Upper Limb Rehabilitation",
+ "tags": [
+  "Median nerve injury",
+  "Peripheral nerve repair",
+  "Hand function",
+  "Sensory re-education"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open access under CC BY-NC-ND 4.0; cite the source and do not adapt or redistribute modified versions.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12259477/",
+ "doi": "10.2490/prm.20250017",
+ "caseSummary": "A 28-year-old man presented for rehabilitation two months after a traumatic left median nerve laceration with associated flexor and extensor tendon injuries that had undergone surgical repair. He had impaired grip, finger dexterity and sensation despite independence in basic daily activities.",
+ "clinicalFindings": [
+  "Nerve conduction testing showed severe left median-nerve abnormalities, including absent sensory nerve action potential.",
+  "Initial grip strength was 7.5 kg on the affected side compared with 45 kg on the other side; pinch strength and finger movement were also reduced.",
+  "Two-point discrimination and monofilament testing showed marked sensory impairment in the median-nerve distribution."
+ ],
+ "intervention": [
+  "The outpatient programme used two-hour sessions five times per week and combined sensory and motor rehabilitation.",
+  "The report described transcutaneous electrical nerve stimulation, peripheral magnetic stimulation, exercise therapy, sensory re-education, finger dexterity tasks and strengthening.",
+  "From day 84, the patient also performed a home programme including aerobic exercise, dexterity training and finger-muscle strengthening."
+ ],
+ "outcomes": [
+  "The authors reported substantial improvements in grip and pinch strength, fine-motor control and sensory discrimination, with improved functional hand use.",
+  "No synkinesis, dysesthesia or adverse effects were reported during the described recovery course."
+ ],
+ "clinicalLessons": [
+  "After nerve repair, assess motor function, sensory discrimination and meaningful hand tasks rather than relying on strength alone.",
+  "Combine protected tendon rehabilitation with nerve-related sensory and motor retraining according to surgical status.",
+  "The intensive protocol is a single-case description, not a universal dosage recommendation."
+ ],
+ "limitations": [
+  "A single case with a complex combined nerve-and-tendon injury cannot isolate the contribution of each treatment component.",
+  "The authors note that evidence for multi-component stimulation approaches in humans remains limited."
+ ]
+},
+{
+ "slug": "breast-lymphoedema-lymphorrhoea-compression-case",
+ "title": "Management of Lymphoedema and Lymphorrhoea With Wrap-around Compression in Breast Secondary to Carcinoma Breast: A Case Report",
+ "authors": "Aradhana Shukla, Nitesh Gonnade, Manoj Kamal",
+ "journal": "Indian Journal of Palliative Care",
+ "year": 2024,
+ "specialty": "Oncology & Lymphoedema Rehabilitation",
+ "tags": [
+  "Breast lymphoedema",
+  "Lymphorrhoea",
+  "Compression bandaging",
+  "Cancer rehabilitation"
+ ],
+ "openAccess": true,
+ "licenseNote": "Open access under CC BY-NC-SA 4.0; non-commercial reuse requires attribution and the same licence for adaptations.",
+ "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11021050/",
+ "doi": "10.25259/IJPC_165_2023",
+ "caseSummary": "A 56-year-old woman being evaluated for right breast carcinoma presented with breast enlargement, a non-healing wound at a fine-needle aspiration site and continuous lymphorrhoea. The unusual presentation caused repeated clothing soakage, skin damage and substantial distress.",
+ "clinicalFindings": [
+  "The wound measured approximately 5 × 6 cm and had necrotic margins and slough, with surrounding oedema, induration and skin maceration.",
+  "The patient reported heaviness and sleep disruption because fluid leakage required frequent clothing changes.",
+  "The report describes breast lymphoedema with lymphorrhoea rather than the more familiar upper-limb lymphoedema after breast cancer treatment."
+ ],
+ "intervention": [
+  "The wound was dressed and a modified wrap-around compression technique was applied using soft-roll pre-wrap and crepe bandage, with support routed around the ipsilateral shoulder.",
+  "The patient and caregiver were taught how to continue the dressing and compression approach at home; the bandage was changed regularly to manage fluid soakage.",
+  "Upper-limb mobility exercises and concurrent medical management were also described; the case does not isolate the effect of compression from other care."
+ ],
+ "outcomes": [
+  "After approximately two weeks, lymphorrhoea had resolved and clothing soakage stopped.",
+  "Skin induration reduced and wound dimensions decreased to approximately 4.2 × 5.1 cm, with improvement in satellite wounds and reported quality of life."
+ ],
+ "clinicalLessons": [
+  "Lymphoedema can affect the breast itself and may present with skin leakage, maceration and wound-care challenges.",
+  "Listen to the patient's immediate quality-of-life concerns while the underlying diagnosis is being investigated.",
+  "Compression must be individualized to wound status, skin tolerance and specialist advice; this case is not a routine self-bandaging protocol."
+ ],
+ "limitations": [
+  "This is a single palliative-care case involving compression and concurrent pharmacological management.",
+  "The contribution of each component cannot be separated, and the authors note that evidence for pharmacological treatment of lymphoedema is limited."
+ ]
 }
-
 ].sort((a,b)=>b.year-a.year);
 export function getPublishedCaseReport(slug:string){return publishedCaseReports.find(item=>item.slug===slug);}
