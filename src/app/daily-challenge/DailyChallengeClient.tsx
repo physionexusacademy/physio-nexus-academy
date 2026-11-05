@@ -2,7 +2,7 @@
 import {FormEvent,useCallback,useEffect,useRef,useState} from "react";
 import Link from "next/link";
 import { recordLearningActivity } from "@/lib/unified-progress";
-import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Flame,LockKeyhole,Play,RotateCcw,ShieldCheck,Sparkles,Timer,Trophy} from "lucide-react";
+import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Copy,Flame,LockKeyhole,Play,RotateCcw,Share2,ShieldCheck,Sparkles,Timer,Trophy} from "lucide-react";
 
 type PublicQuestion={id:string;topic:string;question:string;options:{value:string;label:string}[]};
 type ActiveChallenge={attemptId:string;token:string;date:string;expiresAt:string;resetAt:string;questions:PublicQuestion[];timePerQuestionSeconds:number};
@@ -36,6 +36,53 @@ const motivational=[
  "Nice work. The best clinicians are curious, not just quick.",
  "You've completed today's learning mission. Come back tomorrow for a new challenge."
 ];
+
+function ShareScoreButtons({score, correctCount, total}:{score:number; correctCount:number; total:number}){
+  const [copied, setCopied] = useState(false);
+  const shareText = `I scored ${score}/100 (${correctCount}/${total}) on today's PNA Daily Clinical Challenge! Can you beat my score?`;
+  const shareUrl = "https://physionexusacademy.com/daily-challenge";
+
+  async function handleNativeShare(){
+    if(navigator.share){
+      try{
+        await navigator.share({title:"PNA Daily Clinical Challenge", text:shareText, url:shareUrl});
+      }catch{}
+    }
+  }
+
+  function handleWhatsApp(){
+    const url = `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  async function handleCopy(){
+    try{
+      await navigator.clipboard.writeText(shareText + "\n" + shareUrl);
+      setCopied(true);
+      setTimeout(()=>setCopied(false), 2000);
+    }catch{}
+  }
+
+  return (
+    <div className="dc-share-row">
+      <p className="dc-share-label">Share your score</p>
+      <div className="dc-share-buttons">
+        <button type="button" className="dc-share-btn dc-share-whatsapp" onClick={handleWhatsApp} aria-label="Share on WhatsApp">
+          WhatsApp
+        </button>
+        {typeof navigator !== "undefined" && !!navigator.share && (
+          <button type="button" className="dc-share-btn" onClick={handleNativeShare} aria-label="Share">
+            <Share2 className="h-3.5 w-3.5" /> Share
+          </button>
+        )}
+        <button type="button" className="dc-share-btn" onClick={handleCopy} aria-label="Copy score">
+          <Copy className="h-3.5 w-3.5" /> {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function DailyChallengeClient(){
  const [name,setName]=useState("");
  const [email,setEmail]=useState("");
@@ -210,6 +257,11 @@ export function DailyChallengeClient(){
    <div className="dc-score-number" aria-live="polite">{result.score}<span>/100</span></div>
    <p className="text-sm font-semibold text-[#274c60]">{result.correctCount} of {result.total} questions correct</p>
    <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600">{result.expired?"The challenge window expired, so today's competitive score is zero. You can still review the clinical explanations.":motivational[result.score>=80?2:result.score>=40?1:0]}</p>
+   
+   {!result.expired && (
+     <ShareScoreButtons score={result.score} correctCount={result.correctCount} total={result.total} />
+   )}
+
    <div className="mt-6 flex flex-wrap justify-center gap-3">
     <button className="dc-primary" type="button" onClick={replayReview}>{reviewOpen?"Hide answers":"Review all answers"} <ChevronDown className="h-4 w-4"/></button>
     <a href="#full-leaderboard" className="dc-secondary">View my competition <Trophy className="h-4 w-4"/></a>

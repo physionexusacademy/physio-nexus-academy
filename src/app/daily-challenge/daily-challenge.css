@@ -83,6 +83,14 @@
  .dc-page *, .dc-page *:before,.dc-page *:after{animation:none!important;transition:none!important}
 }
 
+/* Share score buttons - lightweight, no external deps */
+.dc-share-row{margin:22px auto 6px;max-width:360px}
+.dc-share-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5a7a82;margin-bottom:10px}
+.dc-share-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.dc-share-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:8px 14px;border-radius:11px;border:1px solid #c5e0da;background:#fff;color:#0a6f68;font-size:12px;font-weight:800;transition:background .18s,transform .18s,border-color .18s}
+.dc-share-btn:hover{background:#f0faf7;border-color:#9dcdc4;transform:translateY(-1px)}
+.dc-share-whatsapp{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+.dc-share-whatsapp:hover{background:#d1fae5;border-color:#6ee7b7}
 
 /* Homepage flagship: PNA Daily Clinical Challenge is the top-level attraction. */
 .dc-flagship-shell{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 7% 8%,#ccf3e8 0,transparent 38%),radial-gradient(circle at 98% 86%,#e6f2ff 0,transparent 39%),linear-gradient(135deg,#f5fcf9 0%,#fff 57%,#f5fcfe 100%);border-bottom:1px solid #dcebe8}
