@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Share2, Copy, MessageCircle, Check } from "lucide-react";
+import { Share2, Copy, MessageCircle, Check, Image as ImageIcon } from "lucide-react";
 
 type DialogueLine = {
   speaker: "Dr. Sajjad" | "Intern" | "Other";
@@ -21,6 +21,195 @@ const REACTIONS = [
   { key: "fire", emoji: "🔥", label: "Savage" },
 ] as const;
 
+const IMAGE_WIDTH = 1080;
+const IMAGE_PADDING = 68;
+const CONTENT_WIDTH = IMAGE_WIDTH - IMAGE_PADDING * 2;
+
+function roundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+  fill: string,
+  stroke?: string,
+) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, height, radius);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  if (stroke) {
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+}
+
+function wrapCanvasText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+): string[] {
+  const words = text.trim().split(/\s+/);
+  const lines: string[] = [];
+  let line = "";
+
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (ctx.measureText(candidate).width <= maxWidth || !line) {
+      line = candidate;
+    } else {
+      lines.push(line);
+      line = word;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : [""];
+}
+
+function createEpisodeImage(
+  episodeId: number,
+  episodeTitle: string,
+  dialogue: DialogueLine[],
+  lesson: string,
+): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      reject(new Error("Your browser could not create the share image."));
+      return;
+    }
+
+    const left = IMAGE_PADDING;
+    const right = IMAGE_WIDTH - IMAGE_PADDING;
+    const innerWidth = CONTENT_WIDTH;
+    let y = 0;
+
+    const titleFont = "700 52px Arial, sans-serif";
+    const bodyFont = "400 31px Arial, sans-serif";
+    const labelFont = "700 25px Arial, sans-serif";
+    const smallFont = "600 22px Arial, sans-serif";
+
+    const titleLines = (() => {
+      ctx.font = titleFont;
+      return wrapCanvasText(ctx, episodeTitle, innerWidth - 60);
+    })();
+
+    const dialogueLayouts = dialogue.map((line) => {
+      ctx.font = bodyFont;
+      const textLines = wrapCanvasText(ctx, line.text, innerWidth - 72);
+      return {
+        speaker: line.speaker === "Other" ? "Senior Doctor" : line.speaker,
+        textLines,
+        height: 38 + 34 + textLines.length * 43 + 30,
+        isIntern: line.speaker === "Intern",
+      };
+    });
+
+    ctx.font = "400 30px Arial, sans-serif";
+    const lessonLines = wrapCanvasText(ctx, lesson, innerWidth - 76);
+
+    const headerHeight = 300 + titleLines.length * 62;
+    const dialogueHeight = dialogueLayouts.reduce((sum, item) => sum + item.height + 18, 0);
+    const lessonHeight = 150 + lessonLines.length * 43;
+    const footerHeight = 190;
+    const totalHeight = IMAGE_PADDING + headerHeight + 46 + dialogueHeight + 42 + lessonHeight + footerHeight + IMAGE_PADDING;
+
+    canvas.width = IMAGE_WIDTH;
+    canvas.height = totalHeight;
+
+    // Premium PNA clinical palette with a soft, readable canvas background.
+    ctx.fillStyle = "#edf7f5";
+    ctx.fillRect(0, 0, IMAGE_WIDTH, totalHeight);
+
+    // Header panel.
+    y = IMAGE_PADDING;
+    roundedRect(ctx, left, y, innerWidth, headerHeight, 34, "#ffffff", "#c8e7df");
+    ctx.fillStyle = "#087e78";
+    ctx.font = "700 24px Arial, sans-serif";
+    ctx.fillText("PHYSIO NEXUS ACADEMY  •  LEARN WITH A LAUGH", left + 42, y + 58);
+
+    ctx.fillStyle = "#193e50";
+    ctx.font = "800 58px Arial, sans-serif";
+    ctx.fillText("STUPID INTERN DIARIES", left + 42, y + 137);
+
+    roundedRect(ctx, left + 42, y + 164, 220, 52, 26, "#e5f5f1");
+    ctx.fillStyle = "#087e78";
+    ctx.font = "700 25px Arial, sans-serif";
+    ctx.fillText(`EPISODE #${String(episodeId).padStart(2, "0")}`, left + 62, y + 199);
+
+    ctx.fillStyle = "#193e50";
+    ctx.font = titleFont;
+    let titleY = y + 286;
+    for (const line of titleLines) {
+      ctx.fillText(line, left + 42, titleY);
+      titleY += 62;
+    }
+    ctx.fillStyle = "#647b83";
+    ctx.font = smallFont;
+    ctx.fillText("REAL CLINIC CONVERSATIONS  •  MEMORABLE CLINICAL LESSONS", left + 42, y + headerHeight - 36);
+
+    // Dialogue section.
+    y += headerHeight + 46;
+    ctx.fillStyle = "#193e50";
+    ctx.font = "800 32px Arial, sans-serif";
+    ctx.fillText("THE CONVERSATION", left + 4, y);
+    y += 28;
+
+    for (const item of dialogueLayouts) {
+      const cardY = y;
+      const cardFill = item.isIntern ? "#ffffff" : "#e1f2ee";
+      roundedRect(ctx, left, cardY, innerWidth, item.height, 24, cardFill, "#d4e8e3");
+
+      ctx.fillStyle = item.isIntern ? "#a45b12" : "#087e78";
+      ctx.font = labelFont;
+      ctx.fillText(item.speaker.toUpperCase(), left + 34, cardY + 48);
+
+      ctx.fillStyle = "#263f4b";
+      ctx.font = bodyFont;
+      let lineY = cardY + 100;
+      for (const line of item.textLines) {
+        ctx.fillText(line, left + 34, lineY);
+        lineY += 43;
+      }
+      y += item.height + 18;
+    }
+
+    // Clinical takeaway panel.
+    y += 20;
+    roundedRect(ctx, left, y, innerWidth, lessonHeight, 28, "#193e50");
+    ctx.fillStyle = "#8ce0cf";
+    ctx.font = "800 27px Arial, sans-serif";
+    ctx.fillText("CLINICAL TAKEAWAY", left + 38, y + 58);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "400 30px Arial, sans-serif";
+    let lessonY = y + 112;
+    for (const line of lessonLines) {
+      ctx.fillText(line, left + 38, lessonY);
+      lessonY += 43;
+    }
+
+    // Footer and source link.
+    y += lessonHeight + 52;
+    ctx.fillStyle = "#193e50";
+    ctx.font = "800 28px Arial, sans-serif";
+    ctx.fillText("LEARN WITH A LAUGH. PRACTISE WITH CARE.", left + 4, y);
+    ctx.fillStyle = "#087e78";
+    ctx.font = "700 25px Arial, sans-serif";
+    ctx.fillText("physionexusacademy.com/stupid-intern-diaries", left + 4, y + 48);
+    ctx.fillStyle = "#71858b";
+    ctx.font = "600 21px Arial, sans-serif";
+    ctx.fillText("Physio Nexus Academy  |  #DrSajjadRazaPT", left + 4, y + 91);
+
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error("The share image could not be generated."));
+    }, "image/png");
+  });
+}
+
 export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }: Props) {
   const [counts, setCounts] = useState<Record<string, number>>({
     laugh: 0,
@@ -29,6 +218,7 @@ export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }
   });
   const [myReaction, setMyReaction] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<string[]>([]);
@@ -76,30 +266,42 @@ export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }
     } catch {}
   };
 
-  const handleWhatsApp = () => {
-    const conversation = dialogue
-      .map((line) => {
-        const speaker = line.speaker === "Other" ? "Senior Doctor" : line.speaker;
-        return `${speaker}: ${line.text}`;
-      })
-      .join("\n\n");
+  const handleWhatsApp = async () => {
+    if (sharing) return;
+    setSharing(true);
+    const caption = `😂 Stupid Intern Diaries | Episode #${String(episodeId).padStart(2, "0")}\n${episodeTitle}\n\nLearn with a laugh. Practise with care.\nPhysio Nexus Academy\n${episodeUrl}`;
 
-    const shareText = [
-      `😂 STUPID INTERN DIARIES | EP ${String(episodeId).padStart(2, "0")}`,
-      episodeTitle,
-      "",
-      conversation,
-      "",
-      "🩺 CLINICAL TAKEAWAY",
-      lesson,
-      "",
-      "Learn with a laugh. Practise with care.",
-      "",
-      "Physio Nexus Academy",
-      episodeUrl,
-    ].join("\n");
+    try {
+      const blob = await createEpisodeImage(episodeId, episodeTitle, dialogue, lesson);
+      const file = new File([blob], `stupid-intern-diaries-ep-${episodeId}.png`, {
+        type: "image/png",
+      });
 
-    window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Stupid Intern Diaries — Episode #${episodeId}`,
+          text: caption,
+        });
+      } else {
+        // Older browsers: save the complete image, then open WhatsApp with its caption.
+        const objectUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = objectUrl;
+        anchor.download = file.name;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        window.open(`https://wa.me/?text=${encodeURIComponent(caption)}`, "_blank", "noopener,noreferrer");
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return;
+      console.error("Episode image sharing failed:", error);
+      alert("Image share could not start. Please try again or use Copy Link.");
+    } finally {
+      setSharing(false);
+    }
   };
 
   const handleAddComment = () => {
@@ -134,9 +336,11 @@ export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }
       <div className="flex flex-wrap gap-2">
         <button
           onClick={handleWhatsApp}
-          className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1ebe57]"
+          disabled={sharing}
+          className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1ebe57] disabled:cursor-wait disabled:opacity-70"
         >
-          <Share2 className="h-4 w-4" /> WhatsApp
+          {sharing ? <ImageIcon className="h-4 w-4 animate-pulse" /> : <Share2 className="h-4 w-4" />}
+          {sharing ? "Preparing image..." : "Share as Image"}
         </button>
         <button
           onClick={handleCopy}
