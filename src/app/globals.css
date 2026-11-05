@@ -52,6 +52,56 @@
   }
 }
 
+/* ============================================================
+   Global micro-interactions (safe, CSS-only, no extra load)
+   Soft polish for cards, CTAs and mobile taps site-wide.
+   ============================================================ */
+
+/* Cards / feature blocks that already use Tailwind group + hover */
+.group.rounded-3xl,
+.group.rounded-2xl {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+/* Primary teal CTAs used across homepage feature strips */
+a.rounded-full.bg-teal-700,
+button.rounded-full.bg-teal-700 {
+  transition: background-color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+}
+a.rounded-full.bg-teal-700:hover,
+button.rounded-full.bg-teal-700:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -12px rgba(4, 90, 88, 0.55);
+}
+a.rounded-full.bg-teal-700:active,
+button.rounded-full.bg-teal-700:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Outline / secondary pills */
+a.rounded-full.border.border-teal-200 {
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+}
+a.rounded-full.border.border-teal-200:active {
+  transform: scale(0.98);
+}
+
+/* Mobile dock — slightly snappier press feedback */
+.pna-mobile-dock-item {
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+}
+.pna-mobile-dock-item:active {
+  transform: scale(0.94);
+}
+
+/* Soft lift for common card patterns on touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .group.rounded-3xl:hover,
+  .group.rounded-2xl:hover {
+    transform: translateY(-2px);
+  }
+}
+
 /* Respect reduced-motion preference site-wide */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -61,6 +111,16 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  a.rounded-full.bg-teal-700:hover,
+  button.rounded-full.bg-teal-700:hover,
+  a.rounded-full.bg-teal-700:active,
+  button.rounded-full.bg-teal-700:active,
+  .group.rounded-3xl:hover,
+  .group.rounded-2xl:hover,
+  .pna-mobile-dock-item:active {
+    transform: none !important;
   }
 }
 
@@ -74,7 +134,7 @@
 .pna-mobile-dock-grid{gap:3px}
 .pna-mobile-dock-item{
   position:relative;min-width:0;min-height:59px;border:1px solid transparent;border-radius:17px;
-  color:#345c70;transition:color .18s,background .18s,border-color .18s,transform .18s;
+  color:#345c70;
 }
 .pna-mobile-dock-icon{width:21px;height:21px;stroke-width:2.1}
 .pna-mobile-dock-label{font-size:10px;line-height:1.2;font-weight:850;letter-spacing:-.01em}
@@ -86,7 +146,6 @@
   content:"";position:absolute;top:-7px;left:31%;right:31%;height:3px;
   border-radius:999px;background:#08a99d;
 }
-.pna-mobile-dock-item:active{transform:scale(.96)}
 .pna-mobile-dock-item:focus-visible{outline:2px solid #048e95;outline-offset:1px}
 @media(max-width:1023px){body{padding-bottom:calc(104px + env(safe-area-inset-bottom))!important}}
 @media(min-width:1024px){.pna-mobile-dock{display:none}}
@@ -95,7 +154,6 @@
   .pna-mobile-dock-item{min-height:56px}
   .pna-mobile-dock-label{font-size:9px}
 }
-@media(prefers-reduced-motion:reduce){.pna-mobile-dock-item{transition:none}}
 
 /* Clinical Registry: focused browser print layout. This is a convenience print
    stylesheet, not a digitally signed or institution-validated clinical PDF. */

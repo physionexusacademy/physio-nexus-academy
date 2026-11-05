@@ -14,9 +14,12 @@ type ButtonProps = {
 };
 
 const variants = {
-  primary: "bg-teal-500 text-white hover:bg-teal-600 focus-visible:bg-teal-600",
-  secondary: "bg-navy-800 text-white hover:bg-navy-700 focus-visible:bg-navy-700",
-  outline: "border border-navy-800 text-navy-800 hover:bg-navy-50 focus-visible:bg-navy-50",
+  primary:
+    "bg-teal-500 text-white hover:bg-teal-600 focus-visible:bg-teal-600 shadow-sm hover:shadow-md active:scale-[0.98]",
+  secondary:
+    "bg-navy-800 text-white hover:bg-navy-700 focus-visible:bg-navy-700 shadow-sm hover:shadow-md active:scale-[0.98]",
+  outline:
+    "border border-navy-800 text-navy-800 hover:bg-navy-50 focus-visible:bg-navy-50 active:scale-[0.98]",
 };
 
 const sizes = {
@@ -36,7 +39,7 @@ export function Button({
   tabIndex,
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60",
+    "inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-all duration-200 ease-out disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100",
     variants[variant],
     sizes[size],
     className
