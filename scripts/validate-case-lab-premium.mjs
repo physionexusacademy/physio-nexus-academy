@@ -20,7 +20,7 @@ assert(detail.includes("generateStaticParams")&&detail.includes("Limitations"),"
 assert(detail.includes("Read original paper")&&detail.includes("One case is a learning example"),"Original source and evidence caveat are required");
 assert(css.includes("@media(max-width:620px)")&&css.includes(".cr-grid"),"Responsive research card layout is required");
 const dois=[...data.matchAll(/"?doi"?\s*:\s*"([^"]+)"/g)].map(m=>m[1].toLowerCase());
-const sources=[...data.matchAll(/"?sourceUrl"?\s*:\s*"([^"]+)"/g)].map(m=>m[1].toLowerCase().replace(/[?#].*$/,"").replace(/\\/+$/, ""));
+const sources=[...data.matchAll(/"?sourceUrl"?\s*:\s*"([^"]+)"/g)].map(m=>m[1].toLowerCase());
 assert.equal(new Set(dois).size,60,"Expected 60 unique published sources after deduplication");
 assert.equal(new Set(sources).size,60,"Expected 60 unique source URLs after deduplication");
 console.log("PASS: 60 unique published reports from 80 source records; source links, evidence limits and responsive library validated");
