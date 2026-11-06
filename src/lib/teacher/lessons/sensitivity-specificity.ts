@@ -1,0 +1,280 @@
+import type { TeacherLesson } from "../types.ts";
+
+export const sensitivitySpecificity: TeacherLesson = {
+  slug: "sensitivity-specificity",
+  title: "Sensitivity, Specificity, SnNout & SpPin",
+  hook: {
+    en: "A positive test doesn't always mean 'yes'. Learn what a result really tells you.",
+    ur: "Positive test ka matlab hamesha 'haan' nahi hota. Seekhein result asal mein kya batata hai.",
+  },
+  area: "Clinical Reasoning",
+  level: "Clinical",
+  bestFor: "3rd year, final year & interns",
+  minutes: 11,
+  goal: {
+    en: "By the end, you'll know when a negative test rules a condition OUT, when a positive test rules it IN — and the trap most students fall into.",
+    ur: "End tak aap jaan jayenge ke negative test kab condition ko rule OUT karta hai, positive test kab rule IN karta hai — aur woh trap jis mein zyada tar students girte hain.",
+  },
+  beats: [
+    {
+      type: "say",
+      text: {
+        en: "Quick question before we start: if a special test is positive, does the patient definitely have the condition? Most students say yes. By the end of this lesson you'll know why the honest answer is: **it depends on the test**.",
+        ur: "Shuru karne se pehle ek sawal: agar special test positive aaye to kya patient ko yaqeenan woh condition hai? Zyada tar students kehte hain haan. Is lesson ke end tak aap samajh jayenge ke imaandar jawab hai: **test par depend karta hai**.",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "**Sensitivity**: out of all the people who truly HAVE the condition, how many does the test catch (test positive)?\n**Specificity**: out of all the people who DON'T have the condition, how many does the test correctly clear (test negative)?",
+        ur: "**Sensitivity**: jin logon ko waqai condition HAI, un mein se test kitnon ko pakarta hai (positive)?\n**Specificity**: jin logon ko condition NAHI hai, un mein se test kitnon ko sahi tor par clear karta hai (negative)?",
+      },
+      simpler: {
+        en: "Sensitivity = how good the test is at catching sick people. Specificity = how good the test is at clearing healthy people.",
+        ur: "Sensitivity = test beemar logon ko pakarne mein kitna acha hai. Specificity = test sehatmand logon ko clear karne mein kitna acha hai.",
+      },
+    },
+    {
+      type: "analogy",
+      text: {
+        en: "Think of airport security. A **very sensitive** scanner beeps for every weapon — but also for belts, keys and coins. So if it stays **silent**, you can be very confident there's no weapon. A **very specific** sniffer dog barks only for real explosives — so when it **barks**, you take it very seriously, even though it may miss some.",
+        ur: "Airport security sochein. **Bohat sensitive** scanner har hathiyar par beep karta hai — lekin belt, chabiyon aur sikkon par bhi. Is liye agar woh **khamosh** rahe to aap ko poora yaqeen ho sakta hai ke hathiyar nahi hai. **Bohat specific** sniffer kutta sirf asli explosive par bhonkta hai — is liye jab woh **bhonke** to aap usay bohat seriously lete hain, chahe woh kuch miss bhi kar de.",
+      },
+    },
+    {
+      type: "memory",
+      text: {
+        en: "**SnNout** — high **S**e**n**sitivity + **N**egative result → rule **OUT**.\n**SpPin** — high **Sp**ecificity + **P**ositive result → rule **IN**.",
+        ur: "**SnNout** — high **S**e**n**sitivity + **N**egative result → rule **OUT**.\n**SpPin** — high **Sp**ecificity + **P**ositive result → rule **IN**.",
+      },
+    },
+    {
+      type: "widget",
+      widget: "sensitivity-specificity",
+      intro: {
+        en: "Let's test 20 patients: 10 have a knee ligament injury and 10 don't. Choose a test, then filter the results. (Illustrative numbers.)",
+        ur: "Chaliye 20 patients test karte hain: 10 ko knee ligament injury hai aur 10 ko nahi. Test choose karein, phir results filter karein. (Numbers samjhane ke liye hain.)",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "See what happened? With the **sensitive** test, a **negative** result left almost no injured people behind — that's why a negative rules OUT. With the **specific** test, a **positive** result was almost always a truly injured person — that's why a positive rules IN.",
+        ur: "Dekha kya hua? **Sensitive** test mein **negative** result ke baad shayad hi koi injured patient bacha — is liye negative rule OUT karta hai. **Specific** test mein **positive** result taqreeban hamesha asli injured patient tha — is liye positive rule IN karta hai.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "A test has very high sensitivity. The result is NEGATIVE. What can you say?",
+        ur: "Ek test ki sensitivity bohat high hai. Result NEGATIVE aaya. Aap kya keh sakte hain?",
+      },
+      options: [
+        {
+          text: { en: "The condition is now unlikely", ur: "Ab condition ka imkaan kam hai" },
+          correct: true,
+          feedback: {
+            en: "That's SnNout in action! A sensitive test rarely misses the condition, so a negative result makes it unlikely.",
+            ur: "Yehi SnNout hai! Sensitive test condition ko kam hi miss karta hai, is liye negative result se condition ka imkaan kam ho jata hai.",
+          },
+        },
+        {
+          text: { en: "The condition is confirmed", ur: "Condition confirm ho gayi" },
+          feedback: {
+            en: "A negative result can't confirm a condition. With high sensitivity, a negative is useful for ruling **out**.",
+            ur: "Negative result condition confirm nahi kar sakta. High sensitivity mein negative result rule **out** ke liye kaam aata hai.",
+          },
+        },
+        {
+          text: { en: "Nothing — sensitivity only matters for positive results", ur: "Kuch nahi — sensitivity sirf positive results mein kaam aati hai" },
+          feedback: {
+            en: "That's the reverse trap! High sensitivity is most useful when the test is **negative**.",
+            ur: "Yeh ulta trap hai! High sensitivity sab se zyada tab kaam aati hai jab test **negative** ho.",
+          },
+        },
+      ],
+    },
+    {
+      type: "check",
+      question: {
+        en: "A test has very high specificity and the result is POSITIVE. What's the best conclusion?",
+        ur: "Ek test ki specificity bohat high hai aur result POSITIVE hai. Behtareen nateeja kya hai?",
+      },
+      options: [
+        {
+          text: { en: "The condition becomes much more likely", ur: "Condition ka imkaan kaafi barh jata hai" },
+          correct: true,
+          feedback: {
+            en: "SpPin! A specific test rarely fires in healthy people, so a positive result helps rule the condition **in**.",
+            ur: "SpPin! Specific test sehatmand logon mein kam hi positive aata hai, is liye positive result condition ko rule **in** karne mein madad karta hai.",
+          },
+        },
+        {
+          text: { en: "The condition is ruled out", ur: "Condition rule out ho gayi" },
+          feedback: {
+            en: "A positive result points towards the condition, not away from it.",
+            ur: "Positive result condition ki taraf ishara karta hai, us se door nahi.",
+          },
+        },
+        {
+          text: { en: "The test is useless when positive", ur: "Positive aaye to test bekaar hai" },
+          feedback: {
+            en: "The opposite — positive is exactly when a highly specific test is most useful.",
+            ur: "Bilkul ulta — highly specific test sab se zyada kaam ka tab hai jab positive aaye.",
+          },
+        },
+      ],
+    },
+    {
+      type: "mistake",
+      text: {
+        en: "The classic trap: \"high sensitivity → a positive means you have it\". No! A sensitive test can still give lots of false positives — remember the healthy people who 'beeped' with Test A. Sensitivity earns its value when the result is **negative**.",
+        ur: "Classic trap: \"high sensitivity → positive ka matlab condition hai\". Nahi! Sensitive test bohat se false positive bhi de sakta hai — Test A mein woh sehatmand log yaad karein jo 'beep' hue. Sensitivity ki asal value tab hai jab result **negative** ho.",
+      },
+    },
+    {
+      type: "clinic",
+      text: {
+        en: "How this changes your assessment: use **sensitive** tests early to screen (so you don't miss something serious), then **specific** tests to confirm. And never decide on one test alone — combine the history, a **cluster** of tests, and how likely the condition was **before** you tested (pre-test probability).",
+        ur: "Is se aap ki assessment kaise badalti hai: shuru mein screening ke liye **sensitive** tests (taake koi serious cheez miss na ho), phir confirm karne ke liye **specific** tests. Aur kabhi sirf ek test par faisla na karein — history, tests ka **cluster**, aur test se **pehle** condition ka imkaan (pre-test probability) mila kar sochein.",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "Bonus for top students: SnNout and SpPin are shortcuts, not laws. A test also needs reasonable performance on the other measure to really change your thinking. That's why researchers use **likelihood ratios (LR)**, which combine both. As a rough guide, a **positive LR above 10** or a **negative LR below 0.1** usually causes a large, often decisive, shift.",
+        ur: "Top students ke liye bonus: SnNout aur SpPin shortcuts hain, qanoon nahi. Test ko doosre measure par bhi theek hona chahiye tab hi woh soch badalta hai. Isi liye researchers **likelihood ratios (LR)** use karte hain jo dono ko mila dete hain. Andaazan, **positive LR 10 se upar** ya **negative LR 0.1 se neeche** aam tor par bari aur aksar faisla kun tabdeeli lata hai.",
+      },
+      simpler: {
+        en: "Likelihood ratios combine sensitivity and specificity into one number. LR+ above 10 = strong for ruling in. LR− below 0.1 = strong for ruling out.",
+        ur: "Likelihood ratio sensitivity aur specificity ko ek number mein jor deta hai. LR+ 10 se upar = rule in ke liye strong. LR− 0.1 se neeche = rule out ke liye strong.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "Final check — which statement is TRUE?",
+        ur: "Aakhri check — kaun sa jumla SAHI hai?",
+      },
+      options: [
+        {
+          text: {
+            en: "A positive result on a highly sensitive test confirms the diagnosis",
+            ur: "Highly sensitive test ka positive result diagnosis confirm kar deta hai",
+          },
+          feedback: {
+            en: "That's the classic trap. Sensitive tests can have many false positives.",
+            ur: "Yehi classic trap hai. Sensitive tests mein bohat se false positives ho sakte hain.",
+          },
+        },
+        {
+          text: {
+            en: "A negative result on a highly sensitive test makes the condition unlikely",
+            ur: "Highly sensitive test ka negative result condition ka imkaan kam kar deta hai",
+          },
+          correct: true,
+          feedback: {
+            en: "Spot on. You've mastered SnNout — and you'll use it in every assessment you do.",
+            ur: "Bilkul theek. Aap ne SnNout master kar liya — aur yeh aap har assessment mein use karenge.",
+          },
+        },
+        {
+          text: {
+            en: "Specificity tells you how many sick people the test catches",
+            ur: "Specificity batati hai ke test kitne beemar logon ko pakarta hai",
+          },
+          feedback: {
+            en: "That's sensitivity. Specificity is about correctly clearing people who **don't** have the condition.",
+            ur: "Yeh sensitivity hai. Specificity un logon ko sahi clear karne ke baare mein hai jinhein condition **nahi** hai.",
+          },
+        },
+      ],
+    },
+  ],
+  summary: [
+    {
+      en: "Sensitivity catches the sick; specificity clears the healthy.",
+      ur: "Sensitivity beemar ko pakarti hai; specificity sehatmand ko clear karti hai.",
+    },
+    {
+      en: "SnNout: sensitive test + negative → rule out. SpPin: specific test + positive → rule in.",
+      ur: "SnNout: sensitive test + negative → rule out. SpPin: specific test + positive → rule in.",
+    },
+    {
+      en: "Never rely on one test: combine history, test clusters and pre-test probability.",
+      ur: "Kabhi ek test par bharosa na karein: history, test clusters aur pre-test probability mila kar sochein.",
+    },
+  ],
+  flashcards: [
+    {
+      id: "ss-1",
+      front: { en: "Define sensitivity.", ur: "Sensitivity ki definition?" },
+      back: {
+        en: "The proportion of people WITH the condition who test positive (true positive rate).",
+        ur: "Jin logon ko condition HAI un mein se kitne positive aate hain (true positive rate).",
+      },
+    },
+    {
+      id: "ss-2",
+      front: { en: "Define specificity.", ur: "Specificity ki definition?" },
+      back: {
+        en: "The proportion of people WITHOUT the condition who test negative (true negative rate).",
+        ur: "Jin logon ko condition NAHI un mein se kitne negative aate hain (true negative rate).",
+      },
+    },
+    {
+      id: "ss-3",
+      front: { en: "What does SnNout mean?", ur: "SnNout ka matlab?" },
+      back: {
+        en: "High Sensitivity + Negative result → helps rule the condition OUT.",
+        ur: "High Sensitivity + Negative result → condition rule OUT karne mein madad.",
+      },
+    },
+    {
+      id: "ss-4",
+      front: { en: "What does SpPin mean?", ur: "SpPin ka matlab?" },
+      back: {
+        en: "High Specificity + Positive result → helps rule the condition IN.",
+        ur: "High Specificity + Positive result → condition rule IN karne mein madad.",
+      },
+    },
+    {
+      id: "ss-5",
+      front: { en: "Rough thresholds for strong likelihood ratios?", ur: "Strong likelihood ratios ki andaazan hadd?" },
+      back: {
+        en: "LR+ > 10 (strong for ruling in); LR− < 0.1 (strong for ruling out).",
+        ur: "LR+ > 10 (rule in ke liye strong); LR− < 0.1 (rule out ke liye strong).",
+      },
+    },
+  ],
+  goDeeper: [
+    {
+      title: "MSK Special Tests library",
+      href: "/msk-special-tests",
+      note: { en: "Put SnNout and SpPin to work on real tests.", ur: "SnNout aur SpPin ko asli tests par apply karein." },
+    },
+    {
+      title: "ACL Injury",
+      href: "/msk-injuries/acl-injury",
+      note: { en: "See how a knee assessment combines tests.", ur: "Dekhein knee assessment mein tests kaise milaye jaate hain." },
+    },
+    {
+      title: "RCT vs Observational Study",
+      href: "/knowledge-hub/rct-vs-observational-study",
+      note: { en: "Keep building your evidence skills.", ur: "Apni evidence skills barhate rahein." },
+    },
+  ],
+  sources: [
+    {
+      citation:
+        "Pewsner D, Battaglia M, Minder C, Marx A, Bucher HC, Egger M. Ruling a diagnosis in or out with \"SpPIn\" and \"SnNOut\": a note of caution. BMJ. 2004;329(7459):209–213.",
+      pubmedQuery: "Ruling a diagnosis in or out with SpPIn and SnNOut a note of caution",
+    },
+    {
+      citation:
+        "Jaeschke R, Guyatt GH, Sackett DL. Users' guides to the medical literature. III. How to use an article about a diagnostic test. B. What are the results and will they help me in caring for my patients? JAMA. 1994;271(9):703–707.",
+      pubmedQuery: "Users' guides to the medical literature how to use an article about a diagnostic test what are the results",
+    },
+    { citation: "Cook CE, Hegedus EJ. Orthopedic Physical Examination Tests: An Evidence-Based Approach. 2nd ed. Pearson; 2013." },
+  ],
+};

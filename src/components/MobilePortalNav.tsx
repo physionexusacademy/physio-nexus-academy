@@ -1,12 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BookOpen, Trophy, CalendarDays, HeartPulse, Home } from "lucide-react";
+import { GraduationCap, Trophy, CalendarDays, HeartPulse, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Learn", href: "/knowledge-hub", icon: BookOpen },
+  { label: "Learn", href: "/learn", icon: GraduationCap },
   { label: "Challenge", href: "/daily-challenge", icon: Trophy },
   { label: "Workshops", href: "/workshops", icon: CalendarDays },
   { label: "Care", href: "/patient-services", icon: HeartPulse },

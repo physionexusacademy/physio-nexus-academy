@@ -18,6 +18,7 @@ import {
   Info,
   HeartPulse,
   FlaskConical,
+  GraduationCap,
 } from "lucide-react";
 import { mainNav, siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
@@ -26,6 +27,7 @@ import { InstallApp } from "@/components/InstallApp";
 
 /** Primary desktop links — kept short so the bar feels calm, not crowded. */
 const PRIMARY_HREFS = new Set([
+  "/learn",
   "/daily-challenge",
   "/case-lab",
   "/workshops",
@@ -172,6 +174,9 @@ export function Header() {
               >
                 {item.href === "/daily-challenge" && (
                   <Trophy className="h-4 w-4" aria-hidden="true" />
+                )}
+                {item.href === "/learn" && (
+                  <GraduationCap className="mr-1 inline h-4 w-4 text-teal-700" aria-hidden="true" />
                 )}
                 {item.label === "Learn" ? "Knowledge Hub" : item.label}
               </a>

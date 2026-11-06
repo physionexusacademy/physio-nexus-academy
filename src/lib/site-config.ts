@@ -152,6 +152,7 @@ export const whatsappLink = (message?: string) => {
 
 export const mainNav = [
   { label: "Home", href: "/" },
+  { label: "PNA Teacher", href: "/learn" },
   { label: "Learn", href: "/knowledge-hub" },
   { label: "Daily Challenge", href: "/daily-challenge" },
   { label: "Case Lab", href: "/case-lab" },
@@ -179,6 +180,7 @@ export const footerLinks = {
     { label: "Contact", href: "/contact" },
   ],
   students: [
+    { label: "PNA Teacher · Step-by-step lessons", href: "/learn" },
     { label: "Knowledge Hub", href: "/knowledge-hub" },
     { label: "Manual Therapy Mastery", href: "/manual-therapy" },
     { label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" },

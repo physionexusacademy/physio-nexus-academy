@@ -8,6 +8,8 @@ import { clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { mskConditions } from "@/lib/msk-injury-hub";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { clinicalCases } from "@/lib/all-clinical-cases";
+import { teacherLessons } from "@/lib/teacher/lessons";
+import { teacherPaths } from "@/lib/teacher/paths";
 
 export type PnaLearningResource = {
   id: string;
@@ -66,6 +68,34 @@ const manualResources: PnaLearningResource[] = [
     summary: item.clinicalUse.slice(0, 2).join(" "),
     level: item.applicability ?? "Clinical",
     keywords: [item.title, item.slug, item.techniqueName, item.region, ...item.clinicalUse].join(" "),
+  })),
+];
+
+const teacherResources: PnaLearningResource[] = [
+  ...teacherLessons.map((lesson) => ({
+    id: `teacher:${lesson.slug}`,
+    title: `${lesson.title} — PNA Teacher lesson`,
+    href: `/learn/${encodeURIComponent(lesson.slug)}`,
+    category: `PNA Teacher · ${lesson.area}`,
+    summary: `${lesson.hook.en} ${lesson.goal.en}`,
+    level: lesson.level,
+    keywords: [
+      lesson.title,
+      lesson.slug,
+      lesson.area,
+      "step by step lesson explained simply Roman Urdu interactive",
+      ...lesson.summary.map((point) => point.en),
+      ...lesson.flashcards.map((card) => card.front.en),
+    ].join(" "),
+  })),
+  ...teacherPaths.map((path) => ({
+    id: `teacher-path:${path.slug}`,
+    title: `${path.title} — PNA Teacher learning path`,
+    href: `/learn/paths/${encodeURIComponent(path.slug)}`,
+    category: "PNA Teacher · Learning path",
+    summary: path.tagline.en,
+    level: path.audience,
+    keywords: [path.title, path.slug, path.audience, "learning path course step by step", ...path.outcomes.map((outcome) => outcome.en)].join(" "),
   })),
 ];
 
@@ -385,7 +415,7 @@ const browseResources: PnaLearningResource[] = [
 ];
 
 const uniqueResources = new Map<string, PnaLearningResource>();
-for (const resource of [...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
+for (const resource of [...teacherResources, ...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
   if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
 }
 

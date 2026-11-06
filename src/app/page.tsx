@@ -38,6 +38,7 @@ import "./home-premium.css";
 import "./pna-hero.css";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
+import { MeetPnaTeacher } from "@/components/home/MeetPnaTeacher";
 import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 import { ReviewQueueCard } from "@/components/learning/ReviewQueueCard";
 import { getLatestEpisode, stupidInternEpisodes } from "@/lib/stupid-intern-diaries";
@@ -138,6 +139,8 @@ export default async function HomePage() {
   return (
     <>
       <PremiumHomeHero />
+
+      <MeetPnaTeacher />
 
       <section className="container-content py-4 sm:py-5" aria-label="Featured tools">
         <div className="grid gap-3 sm:grid-cols-2">

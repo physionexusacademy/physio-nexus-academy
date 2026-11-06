@@ -13,9 +13,12 @@ import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
 import { publishedCaseReports } from "@/lib/case-report-library";
+import { teacherLessons } from "@/lib/teacher/lessons";
+import { teacherPaths } from "@/lib/teacher/paths";
 
 const routes = [
   "",
+  "/learn",
   "/about",
   "/founder",
   "/faculty",
@@ -58,6 +61,7 @@ function getRoutePriority(route: string): number {
   if (route === "") return 1;
   if (route === "/home-visit" || route === "/appointment") return 0.9;
   if (route === "/case-lab" || route === "/stupid-intern-diaries") return 0.88;
+  if (route === "/learn") return 0.95;
   return 0.7;
 }
 
@@ -171,8 +175,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.84,
     }));
 
+  const teacherRoutes: MetadataRoute.Sitemap = [
+    ...teacherLessons.map((lesson) => ({
+      url: `${base}/learn/${encodeURIComponent(lesson.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
+    ...teacherPaths.map((path) => ({
+      url: `${base}/learn/paths/${encodeURIComponent(path.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.88,
+    })),
+  ];
+
   const sitemapEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
+    ...teacherRoutes,
     ...cityRoutes,
     ...workshopRoutes,
     ...trainingRoutes,

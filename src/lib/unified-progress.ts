@@ -1,6 +1,6 @@
 "use client";
 
-export type LearningSource = "daily-challenge" | "clinical-arena";
+export type LearningSource = "daily-challenge" | "clinical-arena" | "pna-teacher";
 export type UnifiedProgress = {
   version: 1;
   totalXP: number;

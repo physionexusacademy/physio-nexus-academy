@@ -41,10 +41,11 @@ export function UnifiedProgressCard() {
         <div>
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-teal-700"><Activity className="h-4 w-4"/> Your PNA learning journey</p>
           <h2 id="pna-progress-title" className="mt-2 text-2xl font-bold tracking-tight text-[#183c4d] sm:text-3xl">Small steps. Stronger clinical thinking.</h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Your streak grows when you complete a Daily Clinical Challenge or finish a Clinical Arena case. Your progress stays on this browser and device.</p>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Your streak grows when you finish a PNA Teacher lesson, complete a Daily Clinical Challenge or solve a Clinical Arena case. Your progress stays on this browser and device.</p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/daily-challenge#play-daily" className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800">Today's challenge <ArrowRight className="h-4 w-4"/></Link>
             <Link href="/clinical-arena" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Solve a case <ArrowRight className="h-4 w-4"/></Link>
+            <Link href="/learn" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-white px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-50">Learn with PNA Teacher <ArrowRight className="h-4 w-4"/></Link>
           </div>
         </div>
         <div className="rounded-2xl bg-[#f2f9f7] p-4 sm:p-5">
@@ -56,7 +57,7 @@ export function UnifiedProgressCard() {
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#dcebe7]" role="progressbar" aria-label="Progress to next level" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progressPercent)}><div className="h-full rounded-full bg-teal-700 transition-all" style={{ width: progressPercent + "%" }}/></div>
           <div className="mt-4 flex items-center justify-between gap-2"><span className="flex items-center gap-1.5 text-xs font-semibold text-slate-600"><CalendarCheck className="h-4 w-4 text-teal-700"/> Last 7 days</span><span className="text-xs text-slate-500">Best streak: {progress.longestStreak} days</span></div>
           <div className="mt-2 grid grid-cols-7 gap-1.5" aria-label="Activity in the last seven Pakistan-local days">{week.map((day) => <div key={day.date} title={day.date + (day.active ? " · learning completed" : " · no completed activity")} className={"h-7 rounded-md border " + (day.active ? "border-teal-700 bg-teal-600" : "border-slate-200 bg-white")}/>)}</div>
-          <p className="mt-3 text-xs leading-5 text-slate-600" role="status">{activeToday ? "Today's learning mission is complete. Come back tomorrow to keep your streak going." : progress.currentStreak > 0 ? "One completed case or today's challenge keeps your streak alive." : "Start today: finish a clinical case or the Daily Clinical Challenge to begin your streak."}</p>
+          <p className="mt-3 text-xs leading-5 text-slate-600" role="status">{activeToday ? "Today's learning mission is complete. Come back tomorrow to keep your streak going." : progress.currentStreak > 0 ? "One lesson, one completed case or today's challenge keeps your streak alive." : "Start today: finish a PNA Teacher lesson, a clinical case or the Daily Clinical Challenge to begin your streak."}</p>
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#e5efed] px-5 py-3 text-xs text-slate-500 sm:px-7"><span><Trophy className="mr-1 inline h-3.5 w-3.5 text-amber-500"/> Best streak: {progress.longestStreak} days</span><span>Dates follow Pakistan time · Progress stored on this device</span></div>

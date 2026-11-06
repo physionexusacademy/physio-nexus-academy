@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
-  ClipboardList, Eye, FileBadge2, FlaskConical, Hand, HeartPulse,
+  ClipboardList, Eye, FileBadge2, FlaskConical, GraduationCap, Hand, HeartPulse,
   Home, LibraryBig, ShieldCheck, Stethoscope, Trophy, Users
 } from "lucide-react";
 import { PnaPathwayArtwork } from "./PnaPathwayArtwork";
@@ -12,7 +12,7 @@ const icons = {
   library: LibraryBig, eye: Eye, hand: Hand, clipboard: ClipboardList,
   book: BookOpen, brain: BrainCircuit, trophy: Trophy, calendar: CalendarDays,
   research: FlaskConical, people: Users, care: HeartPulse, shield: ShieldCheck,
-  symptoms: Stethoscope, home: Home, certificate: FileBadge2,
+  symptoms: Stethoscope, home: Home, certificate: FileBadge2, teacher: GraduationCap,
 } as const;
 
 type IconKey = keyof typeof icons;
@@ -73,7 +73,8 @@ const groups: Group[] = [
     headline: "Turn theory into clinical confidence.",
     description: "Structured learning, real cases, quizzes and practical skills — designed for physiotherapy students.",
     links: [
-      { title: "Knowledge Hub", description: "Study MSK, neuro, cardio, pediatrics, sports and more.", href: "/knowledge-hub", icon: "library", featured: true },
+      { title: "PNA Teacher", description: "Hard concepts explained step by step — with checks, visuals and Roman Urdu.", href: "/learn", icon: "teacher", featured: true },
+      { title: "Knowledge Hub", description: "Study MSK, neuro, cardio, pediatrics, sports and more.", href: "/knowledge-hub", icon: "library" },
       { title: "Clinical Visual Atlas", description: "See clinical anatomy, pathology and rehabilitation visuals.", href: "/clinical-visual-atlas", icon: "eye" },
       { title: "Manual Therapy Mastery", description: "Approaches, hand placement, dosage, safety and reasoning.", href: "/manual-therapy", icon: "hand" },
       { title: "Treatment Plans", description: "Condition-based assessment and exercise progression.", href: "/treatment-plans", icon: "clipboard" },

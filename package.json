@@ -14,7 +14,8 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "typecheck": "tsc --noEmit",
     "validate:unified-progress": "node --experimental-strip-types scripts/validate-unified-progress.ts",
-    "validate:clinical-registry": "node scripts/validate-clinical-registry-integration.mjs"
+    "validate:clinical-registry": "node scripts/validate-clinical-registry-integration.mjs",
+    "validate:teacher": "node --experimental-strip-types scripts/validate-pna-teacher.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

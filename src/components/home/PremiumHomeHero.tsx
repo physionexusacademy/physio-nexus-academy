@@ -20,10 +20,12 @@ import {
   FlaskConical,
   FileBadge2,
   Sparkles,
+  GraduationCap,
 } from "lucide-react";
 import "@/app/pna-hero.css";
 
 const destinations = [
+  { title: "PNA Teacher", description: "Step-by-step lessons: convex-concave rule, Maitland grades, SnNout SpPin, UMN vs LMN, tissue healing, pain science · Roman Urdu", href: "/learn", icon: GraduationCap },
   { title: "Knowledge Hub", description: "MSK, neurology, cardiopulmonary, sports and more", href: "/knowledge-hub", icon: LibraryBig },
   { title: "Clinical Visual Atlas", description: "Anatomy, pathology and visual learning", href: "/clinical-visual-atlas", icon: Eye },
   { title: "Manual Therapy Mastery", description: "Maitland, Mulligan and manual therapy", href: "/manual-therapy", icon: Hand },
