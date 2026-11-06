@@ -3,6 +3,8 @@ import {notFound} from "next/navigation";
 import Link from "next/link";
 import {ArrowLeft,ExternalLink,BookOpen,CheckCircle2,AlertTriangle} from "lucide-react";
 import {getPublishedCaseReport,publishedCaseReports} from "@/lib/case-report-library";
+import {EvidenceBadge} from "@/components/clinical/EvidenceBadge";
+import {SaveForReviewButton} from "@/components/learning/SaveForReviewButton";
 import "../../case-lab.css";
 import "./research-report.css";
 const base="https://physionexusacademy.com";
@@ -74,8 +76,25 @@ export default async function PublishedReportPage({params}:{params:Promise<{slug
   />
   <div className="rr-wrap">
   <Link className="rr-back" href="/case-lab"><ArrowLeft size={16}/> All published case reports</Link>
-  <header className="rr-hero"><span className="rr-kicker"><BookOpen size={14}/> PNA RESEARCH CASE LIBRARY</span><span className="rr-specialty">{r.specialty} · {r.year}</span><h1>{r.title}</h1><p className="rr-authors">{r.authors}</p><p className="rr-journal"><em>{r.journal}</em> · {r.year}{r.doi?" · DOI: "+r.doi:""}</p>
-   <div className="rr-actions"><a className="rr-primary" href={r.sourceUrl} target="_blank" rel="noopener noreferrer">Read original paper <ExternalLink size={16}/></a>{r.doi&&<a className="rr-secondary" href={"https://doi.org/"+r.doi} target="_blank" rel="noopener noreferrer">Open DOI <ExternalLink size={15}/></a>}</div>
+  <header className="rr-hero">
+   <span className="rr-kicker"><BookOpen size={14}/> PNA RESEARCH CASE LIBRARY</span>
+   <div className="mt-2 flex flex-wrap items-center gap-2">
+    <span className="rr-specialty">{r.specialty} · {r.year}</span>
+    <EvidenceBadge level="case-report" />
+   </div>
+   <h1>{r.title}</h1>
+   <p className="rr-authors">{r.authors}</p>
+   <p className="rr-journal"><em>{r.journal}</em> · {r.year}{r.doi?" · DOI: "+r.doi:""}</p>
+   <div className="rr-actions">
+    <a className="rr-primary" href={r.sourceUrl} target="_blank" rel="noopener noreferrer">Read original paper <ExternalLink size={16}/></a>
+    {r.doi&&<a className="rr-secondary" href={"https://doi.org/"+r.doi} target="_blank" rel="noopener noreferrer">Open DOI <ExternalLink size={15}/></a>}
+    <SaveForReviewButton
+     id={"case:"+r.slug}
+     title={r.title}
+     href={"/case-lab/research/"+r.slug}
+     source="case-lab"
+    />
+   </div>
    <p className="rr-license"><CheckCircle2 size={16}/>{r.openAccess?"Free full text available":"Publisher/PubMed source record available"} · {r.licenseNote}</p>
   </header>
   <div className="rr-layout"><article className="rr-article">
