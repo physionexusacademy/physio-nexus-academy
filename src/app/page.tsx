@@ -138,52 +138,35 @@ export default async function HomePage() {
     <>
       <PremiumHomeHero />
 
-      <section
-        className="container-content py-5 sm:py-7"
-        aria-labelledby="clinical-registry-feature-title"
-        data-pna-home-feature="clinical-registry-v1"
-      >
-        <div className="group relative overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/80 to-cyan-50/60 p-5 shadow-sm transition hover:shadow-md sm:p-7">
-          <div className="pointer-events-none absolute -right-12 -top-16 h-48 w-48 rounded-full bg-teal-100/60 blur-3xl" aria-hidden="true" />
-          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-4">
-              <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm">
-                <ClipboardList className="h-7 w-7" aria-hidden="true" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-700">For verified physiotherapists & clinical teams</p>
-                <h2 id="clinical-registry-feature-title" className="mt-1 text-xl font-bold text-navy-800 sm:text-2xl">PNA Clinical Registry</h2>
-                <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
-                  A dedicated workspace for clinical documentation, patient outcomes and consent-aware, de-identified case submissions for professional review.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-slate-600">
-                  <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-teal-700" aria-hidden="true" /> Verified therapist access</span>
-                  <span className="inline-flex items-center gap-1.5"><Users className="h-4 w-4 text-teal-700" aria-hidden="true" /> Reviewer-led case workflow</span>
-                </div>
-              </div>
+      <section className="container-content py-4 sm:py-5" aria-label="Featured tools">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <a
+            href="/clinical-registry"
+            className="group flex items-center gap-3 rounded-2xl border border-teal-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-teal-700 text-white">
+              <ClipboardList className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base font-bold text-navy-800">Clinical Registry</h2>
+              <p className="text-xs leading-5 text-slate-600">Verified documentation & case review workspace</p>
             </div>
-            <a
-              href="/clinical-registry"
-              className="inline-flex flex-none items-center justify-center gap-2 self-start rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:self-center"
-            >
-              Explore Registry <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-          </div>
+            <ArrowRight className="h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
+          </a>
+          <a
+            href="/health-calculators/bmi"
+            className="group flex items-center gap-3 rounded-2xl border border-teal-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-teal-700 text-white">
+              <Activity className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base font-bold text-navy-800">BMI Calculator</h2>
+              <p className="text-xs leading-5 text-slate-600">Quick BMI check with age-aware notes</p>
+            </div>
+            <ArrowRight className="h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
+          </a>
         </div>
-      </section>
-
-      <section className="container-content py-6 sm:py-8" aria-label="PNA health tools">
-        <a href="/health-calculators/bmi" className="group flex flex-col gap-4 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-r from-white via-teal-50/70 to-cyan-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <div className="flex items-center gap-4">
-            <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm"><Activity className="h-7 w-7" aria-hidden="true" /></span>
-            <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-700">PNA Health Tools · New</p>
-              <h2 className="mt-1 text-xl font-bold text-navy-800 sm:text-2xl">BMI Calculator</h2>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Calculate your BMI and understand why age-specific interpretation matters.</p>
-            </div>
-          </div>
-          <span className="inline-flex items-center justify-center gap-2 self-start rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition group-hover:bg-teal-800 sm:self-center">Calculate BMI <ArrowRight className="h-4 w-4" /></span>
-        </a>
       </section>
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
@@ -191,8 +174,8 @@ export default async function HomePage() {
       {(() => {
         const latestEpisode = getLatestEpisode();
         return (
-          <section className="container-content py-8 sm:py-10" aria-labelledby="stupid-intern-feature-title">
-            <div className="relative overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-slate-50 p-6 shadow-sm sm:p-8">
+          <section className="container-content py-5 sm:py-6" aria-labelledby="stupid-intern-feature-title">
+            <div className="relative overflow-hidden rounded-2xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-slate-50 p-4 shadow-sm sm:p-5">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-4">
                   <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm">
@@ -245,19 +228,13 @@ export default async function HomePage() {
                 <Flame className="h-4 w-4" aria-hidden="true" /> DAILY CLINICAL
                 CHALLENGE <span className="dc-flagship-eyebrow-dot" />
               </div>
-              <div className="dc-flagship-category">
-                <Sparkles className="h-4 w-4" aria-hidden="true" /> LEARN ·
-                PRACTICE · IMPROVE
-              </div>
               <h2 id="pna-daily-flagship-title" className="dc-flagship-heading">
                 Five questions.
                 <br />
                 One focused <span>challenge.</span>
               </h2>
               <p className="dc-flagship-description">
-                A fresh clinical challenge every day. Sharpen your reasoning,
-                earn points, and see how you rank — then learn from clear
-                explanations after you submit.
+                Five timed questions daily. Score points, climb the leaderboard, and learn from the explanations.
               </p>
               <div className="dc-flagship-stats" aria-label="Daily challenge format">
                 <div className="dc-flagship-stat">
@@ -314,12 +291,6 @@ export default async function HomePage() {
                 Explore all scores, monthly leaders and yearly champions <ArrowRight className="h-4 w-4" />
               </a>
             </div>
-          </div>
-          <div className="dc-flagship-bottom">
-            <span>
-              <Trophy className="h-4 w-4" aria-hidden="true" /> A new mission at midnight Pakistan time
-            </span>
-            <span>Public scores · Monthly & yearly rankings · Clinical explanations</span>
           </div>
         </div>
       </section>
