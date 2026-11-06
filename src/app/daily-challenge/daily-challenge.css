@@ -83,7 +83,7 @@
  .dc-page *, .dc-page *:before,.dc-page *:after{animation:none!important;transition:none!important}
 }
 
-/* Share score buttons - lightweight, no external deps */
+/* Share score buttons */
 .dc-share-row{margin:22px auto 6px;max-width:360px}
 .dc-share-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5a7a82;margin-bottom:10px}
 .dc-share-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
@@ -92,7 +92,20 @@
 .dc-share-whatsapp{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
 .dc-share-whatsapp:hover{background:#d1fae5;border-color:#6ee7b7}
 
-/* Homepage flagship: PNA Daily Clinical Challenge is the top-level attraction. */
+/* Continue Learning after result */
+.dc-continue{margin:28px auto 0;max-width:520px;text-align:left}
+.dc-continue-label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5a7a82;margin-bottom:12px;text-align:center}
+.dc-continue-grid{display:grid;gap:8px}
+.dc-continue-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #d7e9e5;border-radius:14px;background:#fafdfb;transition:background .18s,border-color .18s,transform .18s}
+.dc-continue-card:hover{background:#f0faf7;border-color:#9dcdc4;transform:translateY(-1px)}
+.dc-continue-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;flex-shrink:0;border-radius:11px;background:#e8f5f1;color:#08796f}
+.dc-continue-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dc-continue-copy strong{font-size:13px;font-weight:850;color:#163446}
+.dc-continue-copy span{font-size:11px;color:#5f7a84;line-height:1.4}
+.dc-continue-arrow{flex-shrink:0;color:#0a8279;opacity:.7}
+.dc-continue-card:hover .dc-continue-arrow{opacity:1}
+
+/* Homepage flagship */
 .dc-flagship-shell{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 7% 8%,#ccf3e8 0,transparent 38%),radial-gradient(circle at 98% 86%,#e6f2ff 0,transparent 39%),linear-gradient(135deg,#f5fcf9 0%,#fff 57%,#f5fcfe 100%);border-bottom:1px solid #dcebe8}
 .dc-flagship-shell::before{content:"";position:absolute;pointer-events:none;top:-210px;right:-170px;width:550px;height:550px;border:1px solid #0b827519;border-radius:50%;box-shadow:0 0 0 45px #0b82750b,0 0 0 105px #0b827508}
 .dc-flagship-shell::after{content:"";position:absolute;inset:0;opacity:.4;pointer-events:none;background-image:radial-gradient(#0d827e24 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(90deg,transparent,#000 65%)}
@@ -141,24 +154,17 @@
 @media(max-width:560px){.dc-flagship-container{padding-top:24px;padding-bottom:21px}.dc-flagship-category{margin-top:21px}.dc-flagship-heading{font-size:clamp(2.5rem,11vw,3.5rem)}.dc-flagship-description{line-height:1.75;margin-top:22px}.dc-flagship-stats{gap:6px;margin-top:18px}.dc-flagship-stat{padding:10px 7px;gap:5px;flex-direction:column;align-items:start}.dc-flagship-stat-icon{width:27px;height:27px;border-radius:8px}.dc-flagship-stat strong{font-size:20px}.dc-flagship-play{width:100%;font-size:12px;justify-content:flex-start}.dc-flagship-end-arrow{margin-left:auto}.dc-flagship-hall{padding-left:4px}.dc-flagship-countdown{margin-top:10px}.dc-flagship-ranking{padding:10px;border-radius:20px}.dc-flagship-bottom{margin-top:18px}}
 @media(prefers-reduced-motion:reduce){.dc-flagship-shell *, .dc-flagship-shell *::before, .dc-flagship-shell *::after{animation:none!important;transition:none!important}}
 
-/* High-clarity timed quiz experience: visible on entry and comfortable on phones. */
+/* High-clarity timed quiz */
 .dc-play{scroll-margin-top:88px}
 .dc-question-panel{background:linear-gradient(160deg,#f5fcfa 0%,#fff 31%);min-height:500px}
-.dc-live-banner{
-  display:flex;align-items:center;gap:10px;margin-bottom:19px;padding:12px 14px;
-  border:1px solid #acdcd5;border-radius:13px;background:#eaf9f4;color:#07675e;
-  font-size:12px;font-weight:800;line-height:1.45;
-}
+.dc-live-banner{display:flex;align-items:center;gap:10px;margin-bottom:19px;padding:12px 14px;border:1px solid #acdcd5;border-radius:13px;background:#eaf9f4;color:#07675e;font-size:12px;font-weight:800;line-height:1.45}
 .dc-live-dot{display:inline-block;flex:0 0 9px;height:9px;border-radius:50%;background:#00a78e;box-shadow:0 0 0 4px #c7ede4}
 .dc-live-head{border-bottom:1px solid #e5efed;padding-bottom:15px}
 .dc-question-panel .dc-timer{font-size:17px;padding:10px 15px;background:#fff;border-width:1.5px;box-shadow:0 5px 14px -11px #066960}
 .dc-question-panel .dc-timer-urgent{background:#fff3ed;border-color:#e9b39c}
 .dc-question-title:focus{outline:none}
 .dc-question-panel .dc-eyebrow{font-size:11px;line-height:1.5;letter-spacing:.1em}
-.dc-question-panel .dc-option{
-  min-height:62px;border:1.5px solid #dae8e9;border-radius:16px;padding:15px;
-  box-shadow:0 5px 16px -17px rgba(21,72,94,.45);background:#fff;
-}
+.dc-question-panel .dc-option{min-height:62px;border:1.5px solid #dae8e9;border-radius:16px;padding:15px;box-shadow:0 5px 16px -17px rgba(21,72,94,.45);background:#fff}
 .dc-question-panel .dc-option:focus-visible{outline:3px solid #0b9f94;outline-offset:2px}
 .dc-question-panel .dc-option-selected{background:linear-gradient(110deg,#e7f8f3,#f9fffc);border-color:#0a9085;box-shadow:0 0 0 2px #c8ece6}
 .dc-question-panel .dc-option-letter{width:37px;height:37px;border-radius:11px;font-size:14px}
@@ -175,4 +181,5 @@
   .dc-action-row{flex-direction:column;align-items:stretch}
   .dc-action-row .dc-primary{order:0;width:100%}
   .dc-action-row p{order:1;text-align:center}
+  .dc-continue{margin-top:22px}
 }

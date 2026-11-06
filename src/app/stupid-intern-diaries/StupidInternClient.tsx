@@ -83,7 +83,6 @@ function createEpisodeImage(
     }
 
     const left = IMAGE_PADDING;
-    const right = IMAGE_WIDTH - IMAGE_PADDING;
     const innerWidth = CONTENT_WIDTH;
     let y = 0;
 
@@ -120,11 +119,9 @@ function createEpisodeImage(
     canvas.width = IMAGE_WIDTH;
     canvas.height = totalHeight;
 
-    // Premium PNA clinical palette with a soft, readable canvas background.
     ctx.fillStyle = "#edf7f5";
     ctx.fillRect(0, 0, IMAGE_WIDTH, totalHeight);
 
-    // Header panel.
     y = IMAGE_PADDING;
     roundedRect(ctx, left, y, innerWidth, headerHeight, 34, "#ffffff", "#c8e7df");
     ctx.fillStyle = "#087e78";
@@ -151,7 +148,6 @@ function createEpisodeImage(
     ctx.font = smallFont;
     ctx.fillText("REAL CLINIC CONVERSATIONS  •  MEMORABLE CLINICAL LESSONS", left + 42, y + headerHeight - 36);
 
-    // Dialogue section.
     y += headerHeight + 46;
     ctx.fillStyle = "#193e50";
     ctx.font = "800 32px Arial, sans-serif";
@@ -177,7 +173,6 @@ function createEpisodeImage(
       y += item.height + 18;
     }
 
-    // Clinical takeaway panel.
     y += 20;
     roundedRect(ctx, left, y, innerWidth, lessonHeight, 28, "#193e50");
     ctx.fillStyle = "#8ce0cf";
@@ -191,7 +186,6 @@ function createEpisodeImage(
       lessonY += 43;
     }
 
-    // Footer and source link.
     y += lessonHeight + 52;
     ctx.fillStyle = "#193e50";
     ctx.font = "800 28px Arial, sans-serif";
@@ -284,7 +278,6 @@ export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }
           text: caption,
         });
       } else {
-        // Older browsers: save the complete image, then open WhatsApp with its caption.
         const objectUrl = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
         anchor.href = objectUrl;
@@ -314,50 +307,51 @@ export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }
 
   return (
     <div className="mt-5 space-y-4">
-      {/* Reactions */}
       <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">React</span>
         {REACTIONS.map((r) => (
           <button
             key={r.key}
             onClick={() => handleReact(r.key)}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition active:scale-95 ${
               myReaction === r.key
-                ? "border-teal-500 bg-teal-50 text-teal-800"
-                : "border-slate-200 bg-white text-slate-600 hover:border-teal-300"
+                ? "border-teal-500 bg-teal-50 text-teal-800 shadow-sm"
+                : "border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:bg-teal-50/40"
             }`}
+            aria-pressed={myReaction === r.key}
+            aria-label={`${r.label} reaction`}
           >
-            <span className="text-base">{r.emoji}</span>
-            <span className="font-medium">{counts[r.key] || 0}</span>
+            <span className="text-base leading-none">{r.emoji}</span>
+            <span className="hidden font-semibold sm:inline">{r.label}</span>
+            <span className="font-bold tabular-nums">{counts[r.key] || 0}</span>
           </button>
         ))}
       </div>
 
-      {/* Actions */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={handleWhatsApp}
           disabled={sharing}
-          className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1ebe57] disabled:cursor-wait disabled:opacity-70"
+          className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1ebe57] active:scale-[0.98] disabled:cursor-wait disabled:opacity-70"
         >
           {sharing ? <ImageIcon className="h-4 w-4 animate-pulse" /> : <Share2 className="h-4 w-4" />}
           {sharing ? "Preparing image..." : "Share as Image"}
         </button>
         <button
           onClick={handleCopy}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-300"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-teal-300 active:scale-[0.98]"
         >
           {copied ? <Check className="h-4 w-4 text-teal-600" /> : <Copy className="h-4 w-4" />}
           {copied ? "Copied!" : "Copy Link"}
         </button>
         <button
           onClick={() => setShowComment(!showComment)}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-300"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-teal-300 active:scale-[0.98]"
         >
           <MessageCircle className="h-4 w-4" /> Comment
         </button>
       </div>
 
-      {/* Comment box */}
       {showComment && (
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <textarea
@@ -370,7 +364,7 @@ export function StupidInternClient({ episodeId, episodeTitle, dialogue, lesson }
           <div className="mt-2 flex justify-end">
             <button
               onClick={handleAddComment}
-              className="rounded-full bg-teal-700 px-4 py-1.5 text-sm font-semibold text-white hover:bg-teal-800"
+              className="rounded-full bg-teal-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-teal-800 active:scale-[0.98]"
             >
               Post
             </button>
