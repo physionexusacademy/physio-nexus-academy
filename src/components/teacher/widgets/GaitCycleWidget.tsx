@@ -7,6 +7,7 @@ import { t } from "../ui";
 
 type Phase = {
   name: string;
+  short: string;
   from: number;
   to: number;
   stance: boolean;
@@ -19,6 +20,7 @@ type Phase = {
 const phases: Phase[] = [
   {
     name: "Initial contact",
+    short: "IC",
     from: 0,
     to: 2,
     stance: true,
@@ -28,6 +30,7 @@ const phases: Phase[] = [
   },
   {
     name: "Loading response",
+    short: "LR",
     from: 2,
     to: 10,
     stance: true,
@@ -37,6 +40,7 @@ const phases: Phase[] = [
   },
   {
     name: "Mid stance",
+    short: "MSt",
     from: 10,
     to: 30,
     stance: true,
@@ -46,6 +50,7 @@ const phases: Phase[] = [
   },
   {
     name: "Terminal stance",
+    short: "TSt",
     from: 30,
     to: 50,
     stance: true,
@@ -55,6 +60,7 @@ const phases: Phase[] = [
   },
   {
     name: "Pre-swing",
+    short: "PSw",
     from: 50,
     to: 60,
     stance: true,
@@ -64,6 +70,7 @@ const phases: Phase[] = [
   },
   {
     name: "Initial swing",
+    short: "ISw",
     from: 60,
     to: 73,
     stance: false,
@@ -73,6 +80,7 @@ const phases: Phase[] = [
   },
   {
     name: "Mid swing",
+    short: "MSw",
     from: 73,
     to: 87,
     stance: false,
@@ -82,6 +90,7 @@ const phases: Phase[] = [
   },
   {
     name: "Terminal swing",
+    short: "TSw",
     from: 87,
     to: 100,
     stance: false,
@@ -98,7 +107,8 @@ export function GaitCycleWidget({ lang }: { lang: TeacherLang }) {
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4" data-pna-widget="gait-cycle">
-      <div className="relative" aria-hidden="true">
+      <div aria-hidden="true">
+        <div className="relative">
         <div className="flex h-9 overflow-hidden rounded-xl">
           {phases.map((item) => (
             <div
@@ -111,11 +121,12 @@ export function GaitCycleWidget({ lang }: { lang: TeacherLang }) {
               style={{ width: `${item.to - item.from}%` }}
               title={item.name}
             >
-              {item.to - item.from >= 10 ? item.name.split(" ").map((word) => word[0]).join("") : ""}
+              {item.to - item.from >= 8 ? item.short : ""}
             </div>
           ))}
         </div>
         <div className="pointer-events-none absolute -bottom-1 -top-1 w-0.5 -translate-x-1/2 rounded bg-navy-800" style={{ left: `${position}%` }} />
+        </div>
         <div className="mt-1.5 flex text-[11px] font-bold">
           <span className="text-teal-800" style={{ width: "60%" }}>
             {t(lang, "Stance ~60%", "Stance ~60%")}
@@ -142,7 +153,9 @@ export function GaitCycleWidget({ lang }: { lang: TeacherLang }) {
 
       <div className="mt-3 rounded-xl border border-slate-100 bg-slate-50 p-3" aria-live="polite">
         <div className="flex flex-wrap items-center gap-2">
-          <p className="text-base font-extrabold text-navy-800">{phase.name}</p>
+          <p className="text-base font-extrabold text-navy-800">
+            {phase.name} <span className="text-sm font-bold text-slate-400">({phase.short})</span>
+          </p>
           <span className={cn("rounded-full px-2.5 py-0.5 text-[11px] font-extrabold", phase.stance ? "bg-teal-100 text-teal-800" : "bg-amber-100 text-amber-800")}>
             {phase.stance ? t(lang, "Foot on the ground", "Paon zameen par") : t(lang, "Foot in the air", "Paon hawa mein")}
           </span>
