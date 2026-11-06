@@ -208,6 +208,10 @@ jobs:
           check_url "https://physionexusacademy.com/case-lab/research/electrical-injury-long-term-physiotherapy" "THE CASE IN PLAIN ENGLISH"
           check_url "https://physionexusacademy.com/case-lab/research/plantar-fasciitis-rehabilitation" "THE CASE IN PLAIN ENGLISH"
           check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
+          # PNA Teacher: hub, one lesson and one path must render on the Worker (not only prerender locally).
+          check_url "https://physionexusacademy.com/learn" 'data-pna-teacher-hub="v1"'
+          check_url "https://physionexusacademy.com/learn/convex-concave-rule" 'data-pna-teacher-lesson="convex-concave-rule"'
+          check_url "https://physionexusacademy.com/learn/paths/knee-rehab-mastery" "Knee Rehab Mastery"
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
           check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
 

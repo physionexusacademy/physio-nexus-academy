@@ -11,7 +11,10 @@ export function generateStaticParams() {
   return teacherLessons.map((lesson) => ({ slug: lesson.slug }));
 }
 
-export const dynamicParams = false;
+// Cloudflare (OpenNext) has no incremental cache configured, so pages must be
+// renderable on demand. `false` makes the Worker return 404 for every slug.
+// Unknown slugs still 404 through notFound() below.
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

@@ -189,6 +189,14 @@ for (const stage of stages) {
   }
 }
 
+/* ---------- deployment safety ---------- */
+
+for (const page of ["src/app/learn/[slug]/page.tsx", "src/app/learn/paths/[slug]/page.tsx"]) {
+  const source = fs.readFileSync(path.join(root, page), "utf8");
+  check(!/dynamicParams\s*=\s*false/.test(source), `${page}: dynamicParams must not be false — the Cloudflare Worker has no prerender cache and returns 404`);
+  check(source.includes("notFound()"), `${page}: unknown slugs must call notFound()`);
+}
+
 /* ---------- progress logic (browser storage simulated) ---------- */
 
 const store = new Map<string, string>();
