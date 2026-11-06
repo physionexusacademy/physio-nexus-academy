@@ -24,8 +24,8 @@ const countdown=read("src/components/daily-challenge/DailyChallengeCountdown.tsx
 const questions=[...data.matchAll(/\{id:"([^"]+)",topic:"([^"]+)",question:"/g)];
 const ids=new Set(questions.map(m=>m[1]));
 const tests={
-  thirtyUniqueQuestions:questions.length===30&&ids.size===30,
-  fiveRotatingQuestions:data.includes("Array.from({length:5}"),
+  oneHundredUniqueQuestions:questions.length===100&&ids.size===100,
+  fiveRotatingQuestions:data.includes("Array.from({length:5}")&&data.includes("day*5"),
   exactlyKarachiTimezone:data.includes('timeZone:"Asia/Karachi"')&&data.includes("formatToParts(now)"),
   midnightCalculatedInUTC:data.includes("date+\"T00:00:00Z\"")&&data.includes("19*3600000"),
   noAnswerKeyInPublicPayload:data.includes("publicDailyQuestions(date:string)")&&!data.slice(data.indexOf("export function publicDailyQuestions"),data.indexOf("export function pakistanMidnightUTC")).includes("correct:"),
