@@ -3,7 +3,7 @@ Date: 2026-10-09
 
 ## Features
 - The /daily-challenge page offers five 30-second physiotherapy knowledge questions per day, 20 points per correct answer, max 100 points.
-- 30 curated draft questions are stored at src/lib/daily-challenge.ts; source edits require clinical review. Challenge questions rotate deterministically with the calendar date.
+- 100 refreshed, unique educational questions are stored at src/lib/daily-challenge.ts. Five consecutive questions are selected per Pakistan calendar date; all 100 appear once within each 20-day cycle before the cycle repeats. Questions should receive documented clinical/editorial review and evidence updates.
 - The Pakistan calendar date (Asia/Karachi) is derived server-side; a new five-question set and fresh daily ranking become available at 00:00 PKT. **No cron job and no destructive nightly reset are required.**
 - The daily scoreboard includes all opted-in participants (30 per page) with public display name, points, rank and days completed. A compact Top 5 leaderboard is shown on the homepage.
 - Monthly and yearly tables aggregate scores across completed days. The Hall of Fame supports navigation to earlier months and years using stored historical attempts.
