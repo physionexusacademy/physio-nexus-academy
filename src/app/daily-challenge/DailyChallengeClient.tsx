@@ -2,7 +2,7 @@
 import {FormEvent,useCallback,useEffect,useRef,useState} from "react";
 import Link from "next/link";
 import { recordLearningActivity } from "@/lib/unified-progress";
-import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Copy,Flame,LockKeyhole,Play,RotateCcw,Share2,ShieldCheck,Sparkles,Timer,Trophy} from "lucide-react";
+import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Copy,Flame,FlaskConical,Laugh,LockKeyhole,Play,Share2,ShieldCheck,Sparkles,Timer,Trophy} from "lucide-react";
 
 type PublicQuestion={id:string;topic:string;question:string;options:{value:string;label:string}[]};
 type ActiveChallenge={attemptId:string;token:string;date:string;expiresAt:string;resetAt:string;questions:PublicQuestion[];timePerQuestionSeconds:number};
@@ -83,6 +83,31 @@ function ShareScoreButtons({score, correctCount, total}:{score:number; correctCo
   );
 }
 
+function ContinueLearning(){
+  const items = [
+    { href: "/case-lab", title: "Case Lab", desc: "Practise clinical reasoning with real cases", icon: FlaskConical },
+    { href: "/knowledge-hub", title: "Knowledge Hub", desc: "Deep-dive MSK & manual therapy guides", icon: BookOpen },
+    { href: "/stupid-intern-diaries", title: "Stupid Intern Diaries", desc: "Learn with a laugh — clinic lessons", icon: Laugh },
+  ];
+  return (
+    <div className="dc-continue">
+      <p className="dc-continue-label">Continue learning</p>
+      <div className="dc-continue-grid">
+        {items.map((item) => (
+          <Link key={item.href} href={item.href} className="dc-continue-card">
+            <span className="dc-continue-icon"><item.icon className="h-4 w-4" /></span>
+            <span className="dc-continue-copy">
+              <strong>{item.title}</strong>
+              <span>{item.desc}</span>
+            </span>
+            <ArrowRight className="h-4 w-4 dc-continue-arrow" />
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function DailyChallengeClient(){
  const [name,setName]=useState("");
  const [email,setEmail]=useState("");
@@ -103,7 +128,6 @@ export function DailyChallengeClient(){
  const current=active?.questions[step];
  useEffect(()=>{
   if(!active)return;
-  // Align the active question immediately: the 30s timer should never run off-screen.
   const frame=window.requestAnimationFrame(()=>{
    const panel=playRef.current;
    if(!panel)return;
@@ -279,7 +303,7 @@ export function DailyChallengeClient(){
     })}
    </div>}
    <p className="mt-6 text-xs text-slate-500">A fresh question set unlocks at midnight Pakistan time. Your monthly and yearly points are retained.</p>
-   <Link className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-teal-800 hover:underline" href="/knowledge-hub">Explore Knowledge Hub <ArrowRight className="h-4 w-4"/></Link>
+   <ContinueLearning />
   </div>:<div className="dc-question-panel">
    <div className="dc-live-banner" role="status"><span className="dc-live-dot"/> Challenge started — select one answer before time runs out.</div>
    <div className="dc-live-head flex flex-wrap items-center justify-between gap-3">
