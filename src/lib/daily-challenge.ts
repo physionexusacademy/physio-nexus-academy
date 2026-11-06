@@ -115,7 +115,7 @@ export function pakistanChallengeDate(now=new Date()):string {
  return get("year")+"-"+get("month")+"-"+get("day");
 }
 export function challengeQuestions(date:string):DailyChallengeQuestion[]{
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))throw new Error("Invalid date");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error("Invalid date");
  const day=Math.floor(Date.parse(date+"T00:00:00Z")/86400000);
  // Five consecutive questions per day: no repeats within each 20-day cycle.
  const start=((day*5)%dailyQuestionBank.length+dailyQuestionBank.length)%dailyQuestionBank.length;
