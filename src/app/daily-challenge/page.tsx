@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import Link from "next/link";
-import {ArrowLeft,ArrowRight,BookOpen,CalendarClock,BarChart3,CheckCircle2,Flame,ShieldCheck,Sparkles,Trophy} from "lucide-react";
+import {ArrowLeft,ArrowRight,CalendarClock,BarChart3,Flame,Trophy} from "lucide-react";
 import {DailyChallengeClient} from "./DailyChallengeClient";
 import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
 import {DailyHallOfFame,DailyLeaderboard} from "@/components/daily-challenge/DailyLeaderboard";
@@ -74,18 +74,17 @@ export default function DailyChallengePage(){
     <Link href="/knowledge-hub" className="inline-flex items-center gap-1 text-teal-800 hover:underline"><ArrowLeft className="h-4 w-4"/> Knowledge Hub</Link>
     <span aria-hidden="true">/</span><span>Daily Clinical Challenge</span>
    </nav>
-   <header className="dc-hero mt-6 p-6 sm:p-9">
-    <div className="relative max-w-4xl">
+   <header className="dc-hero mt-6 p-5 sm:p-7">
+    <div className="relative max-w-3xl">
      <span className="dc-hero-logo"><Flame className="h-4 w-4"/> PNA DAILY CLINICAL CHALLENGE</span>
-     <h1 className="dc-hero-heading mt-5">A new mission every day.<br/><span>A new chance to lead.</span></h1>
-     <p className="mt-5 max-w-2xl text-sm leading-8 text-slate-600 sm:text-base">
-      Five practical physiotherapy questions. One attempt each day.
-      Earn up to 100 points, challenge your clinical knowledge and see how you rank against other PNA learners.
+     <h1 className="dc-hero-heading mt-4">A new mission every day.<br/><span>A new chance to lead.</span></h1>
+     <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
+      Five practical questions. One attempt per day. Earn up to 100 points and climb the public leaderboard.
      </p>
-     <div className="dc-hero-banner mt-6">
-      <span className="dc-hero-chip"><CalendarClock className="h-5 w-5"/> New quiz at 12:00 AM PKT</span>
-      <span className="dc-hero-chip"><Trophy className="h-5 w-5"/> All scores visible</span>
-      <span className="dc-hero-chip"><BarChart3 className="h-5 w-5"/> Monthly & yearly champions</span>
+     <div className="dc-hero-banner mt-5">
+      <span className="dc-hero-chip"><CalendarClock className="h-5 w-5"/> Resets 12:00 AM PKT</span>
+      <span className="dc-hero-chip"><Trophy className="h-5 w-5"/> Live scores</span>
+      <span className="dc-hero-chip"><BarChart3 className="h-5 w-5"/> Monthly & yearly</span>
      </div>
     </div>
    </header>
@@ -95,30 +94,11 @@ export default function DailyChallengePage(){
     <div id="full-leaderboard" className="scroll-mt-28"><DailyLeaderboard title="Public leaderboard"/></div>
    </section>
    <DailyHallOfFame/>
-   <section className="mt-8 grid gap-4 md:grid-cols-3">
-    {[
-      {icon:BookOpen,title:"Learn while you compete",text:"After the submission, get explanations for every question and continue learning through PNA Knowledge Hub."},
-      {icon:ShieldCheck,title:"A fairer challenge",text:"One attempt per Gmail per day. Questions are scored on the server; the 30-second timer applies to each question. Identity verification is not yet enabled."},
-      {icon:Sparkles,title:"Your score lives on",text:"Every midnight brings a fresh set. Today's ranking resets, but monthly and yearly totals remain, and previous periods can be viewed."}
-    ].map(item=><div key={item.title} className="rounded-2xl border border-[#dbece7] bg-white p-5">
-     <item.icon className="h-5 w-5 text-teal-700"/>
-     <h2 className="mt-3 text-sm font-bold text-[#193e50]">{item.title}</h2>
-     <p className="mt-2 text-sm leading-7 text-slate-600">{item.text}</p>
-    </div>)}
-   </section>
-   <section className="mt-8 rounded-2xl border border-[#dbece7] bg-[#f4faf8] p-5 sm:p-6">
-    <div className="flex flex-wrap items-start justify-between gap-4">
-     <div className="max-w-2xl">
-      <h2 className="font-serif text-xl font-bold text-[#193d4d]">Knowledge earns the points. Practice builds the skill.</h2>
-      <p className="mt-2 text-sm leading-7 text-slate-600">
-       Today's competition is a learning activity, not professional certification or a substitute for patient assessment.
-       The public leaderboard shows opted-in display names and scores, never email addresses.
-      </p>
-     </div>
-     <Link className="dc-secondary" href="/knowledge-hub">Explore learning topics <ArrowRight className="h-4 w-4"/></Link>
-    </div>
-   </section>
-   <p className="dc-footnote mt-7 text-center">Challenge dates follow Pakistan Standard Time (Asia/Karachi). Scores are retained for historical rankings. If a challenge is started near midnight, it must finish before that day's cutoff.</p>
+   <p className="dc-footnote mt-6 text-center">
+    One attempt per day · Answers scored on the server · Learning activity only (not certification) · PKT timezone
+    {" · "}
+    <Link href="/knowledge-hub" className="font-semibold text-teal-800 hover:underline">Knowledge Hub <ArrowRight className="inline h-3.5 w-3.5"/></Link>
+   </p>
   </div>
  </main>;
 }
