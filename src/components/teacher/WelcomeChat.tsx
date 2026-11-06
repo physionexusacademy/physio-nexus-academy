@@ -6,6 +6,7 @@ import { ArrowRight, Map as MapIcon } from "lucide-react";
 import type { BiText, TeacherGoal, TeacherLang, TeacherLessonCard, TeacherProfile, TeacherStage } from "@/lib/teacher/types";
 import { getTeacherPath, recommendPathSlug, stepsPerDay } from "@/lib/teacher/paths";
 import { saveTeacherProfile, teacherToday } from "@/lib/teacher/progress";
+import { withPath } from "@/lib/teacher/href";
 import { Chip, RichText, StudentBubble, TeacherBubble, TypingBubble, pick, t } from "./ui";
 
 const stageOptions: { value: TeacherStage; label: BiText }[] = [
@@ -159,7 +160,7 @@ export function WelcomeChat({ lessons, onComplete }: { lessons: TeacherLessonCar
           <div className="mt-4 flex flex-wrap gap-2">
             {firstLesson ? (
               <Link
-                href={`/learn/${firstLesson.slug}?path=${path.slug}`}
+                href={withPath(firstLesson.href, path.slug)}
                 className="inline-flex min-h-11 items-center gap-2 rounded-full bg-teal-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800"
               >
                 {t(lang, "Start my first lesson", "Pehla lesson shuru karein")} <ArrowRight className="h-4 w-4" aria-hidden="true" />

@@ -9,6 +9,7 @@ import { worldManualDeepChapters } from "@/lib/manual-therapy-world-depth";
 import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadingNav";
+import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
@@ -34,6 +35,9 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
           Evidence position: {lesson.evidenceLabel}
         </p>
       </header>
+
+      {/* PNA Teacher: the chapter taught as a step-by-step conversation */}
+      <TechniqueTeacher slug={lesson.slug} />
 
       {/* Sticky nav */}
       <div className="mt-6">

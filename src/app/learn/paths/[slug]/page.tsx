@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Route } from "lucide-react";
-import { teacherLessonCards } from "@/lib/teacher/lessons";
+import { allTeacherLessonCards } from "@/lib/teacher/catalog";
 import { getTeacherPath, teacherPaths } from "@/lib/teacher/paths";
 import { PathJourney } from "@/components/teacher/PathJourney";
 
@@ -37,7 +37,7 @@ export default async function TeacherPathPage({ params }: { params: Promise<{ sl
   if (!path) notFound();
 
   const lessonSlugs = new Set(path.steps.flatMap((step) => (step.kind === "lesson" ? [step.lesson] : [])));
-  const lessons = teacherLessonCards.filter((lesson) => lessonSlugs.has(lesson.slug));
+  const lessons = allTeacherLessonCards.filter((lesson) => lessonSlugs.has(lesson.slug));
   const totalMinutes = path.steps.reduce(
     (sum, step) => sum + (step.kind === "lesson" ? lessons.find((lesson) => lesson.slug === step.lesson)?.minutes ?? 10 : step.minutes),
     0,

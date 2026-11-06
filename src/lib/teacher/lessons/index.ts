@@ -7,15 +7,23 @@ import { activePassiveInsufficiency } from "./active-passive-insufficiency.ts";
 import { openVsClosedChain } from "./open-vs-closed-chain.ts";
 import { tissueHealingPhases } from "./tissue-healing-phases.ts";
 import { painScienceBasics } from "./pain-science-basics.ts";
+import { dermatomesMyotomesReflexes } from "./dermatomes-myotomes-reflexes.ts";
+import { redFlagsScreening } from "./red-flags-screening.ts";
+import { exerciseDosage } from "./exercise-dosage.ts";
+import { gaitCycle } from "./gait-cycle.ts";
 
 /** Display order on the PNA Teacher hub. */
 export const teacherLessons: TeacherLesson[] = [
   convexConcaveRule,
   activePassiveInsufficiency,
   openVsClosedChain,
+  gaitCycle,
   tissueHealingPhases,
+  exerciseDosage,
   maitlandGrades,
   sensitivitySpecificity,
+  redFlagsScreening,
+  dermatomesMyotomesReflexes,
   umnVsLmn,
   painScienceBasics,
 ];
@@ -24,8 +32,9 @@ export function getTeacherLesson(slug: string): TeacherLesson | undefined {
   return teacherLessons.find((lesson) => lesson.slug === slug);
 }
 
-export function toLessonCard(lesson: TeacherLesson): TeacherLessonCard {
+export function toLessonCard(lesson: TeacherLesson, href = `/learn/${lesson.slug}`): TeacherLessonCard {
   return {
+    href,
     slug: lesson.slug,
     title: lesson.title,
     hook: lesson.hook,
@@ -37,4 +46,4 @@ export function toLessonCard(lesson: TeacherLesson): TeacherLessonCard {
   };
 }
 
-export const teacherLessonCards: TeacherLessonCard[] = teacherLessons.map(toLessonCard);
+export const teacherLessonCards: TeacherLessonCard[] = teacherLessons.map((lesson) => toLessonCard(lesson));

@@ -36,6 +36,7 @@ import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadingNav";
+import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -144,11 +145,15 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           {mastery?.oneLine ?? technique.summary}
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm font-bold">
-          <a href="#mastery" className="rounded-full bg-white px-4 py-2 text-violet-800">Start the lesson</a>
+          <a href="#pna-teacher" className="rounded-full bg-white px-4 py-2 text-violet-800">Learn with PNA Teacher</a>
+          <a href="#mastery" className="rounded-full border border-white/30 px-4 py-2 text-white">Read the chapter</a>
           <a href="#clinical-method" className="rounded-full border border-white/30 px-4 py-2 text-white">Hands-on detail</a>
           <a href="#clinical-essentials" className="rounded-full border border-white/30 px-4 py-2 text-white">Safety & dose</a>
         </div>
       </section>
+
+      {/* PNA Teacher: the chapter taught as a step-by-step conversation */}
+      <TechniqueTeacher slug={slug} />
 
       {/* Sticky reading navigation */}
       <div className="mt-6">

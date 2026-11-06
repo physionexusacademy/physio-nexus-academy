@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Clock3, GraduationCap, Layers, Target } from "lucide-react";
 import { getTeacherLesson, teacherLessons } from "@/lib/teacher/lessons";
+import { isManualTherapyLesson } from "@/lib/teacher/catalog";
 import { LessonPlayer } from "@/components/teacher/LessonPlayer";
 
 const siteUrl = "https://physionexusacademy.com";
@@ -33,6 +34,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function TeacherLessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  // Manual Therapy chapters are taught inside their own encyclopedia page.
+  if (isManualTherapyLesson(slug)) permanentRedirect(`/manual-therapy/${slug}#pna-teacher`);
   const lesson = getTeacherLesson(slug);
   if (!lesson) notFound();
 

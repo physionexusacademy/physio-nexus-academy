@@ -20,6 +20,7 @@ import {
 } from "@/lib/teacher/progress";
 import { getUnifiedProgress } from "@/lib/unified-progress";
 import { cn } from "@/lib/utils";
+import { withPath } from "@/lib/teacher/href";
 import { WelcomeChat } from "./WelcomeChat";
 import { LangToggle, RichText, TeacherBubble, pick, t } from "./ui";
 
@@ -133,7 +134,7 @@ export function TeacherHome({ lessons, paths }: { lessons: TeacherLessonCard[]; 
           const isLesson = step.kind === "lesson";
           const lesson = isLesson ? lessonMap.get(step.lesson) : undefined;
           const title = isLesson ? lesson?.title ?? step.lesson : step.title;
-          const href = isLesson ? `/learn/${step.lesson}?path=${path.slug}` : `/learn/paths/${path.slug}#step-${step.id}`;
+          const href = isLesson ? withPath(lesson?.href ?? `/learn/${step.lesson}`, path.slug) : `/learn/paths/${path.slug}#step-${step.id}`;
           const minutes = isLesson ? lesson?.minutes ?? 10 : step.minutes;
           return (
             <li key={step.id}>

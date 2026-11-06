@@ -6,7 +6,7 @@ import { teacherLessonCards } from "@/lib/teacher/lessons";
  * conversation shows how the teacher talks without loading any lesson code.
  */
 export function MeetPnaTeacher() {
-  const featured = ["convex-concave-rule", "sensitivity-specificity", "umn-vs-lmn", "pain-science-basics"]
+  const featured = ["convex-concave-rule", "red-flags-screening", "dermatomes-myotomes-reflexes", "gait-cycle", "pain-science-basics"]
     .map((slug) => teacherLessonCards.find((lesson) => lesson.slug === slug))
     .filter((lesson): lesson is (typeof teacherLessonCards)[number] => Boolean(lesson));
 
@@ -24,7 +24,7 @@ export function MeetPnaTeacher() {
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">
               Tell PNA Teacher your year and your goal. It builds your plan, then talks you through each concept — one small idea at a time, with analogies, interactive
-              visuals and quick checks that explain every mistake.
+              visuals and quick checks that explain every mistake. All 35 Manual Therapy techniques now teach this way too.
             </p>
             <ul className="mt-4 grid gap-2 text-sm font-semibold text-navy-700 sm:grid-cols-3">
               <li className="flex items-center gap-2">
@@ -90,6 +90,14 @@ export function MeetPnaTeacher() {
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href="/learn#manual-therapy"
+                className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-800 transition hover:border-teal-400"
+              >
+                🖐 All 35 Manual Therapy techniques
+              </a>
+            </li>
           </ul>
         </div>
       </div>

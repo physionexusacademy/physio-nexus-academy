@@ -52,6 +52,7 @@ type Entry =
   | { k: "student"; text: BiText }
   | { k: "feedback"; i: number; o: number }
   | { k: "sortDone"; i: number; correct: number; total: number }
+  | { k: "revealed"; i: number }
   | { k: "end" };
 
 type Session = { v: 1; log: Entry[]; attempts: Record<string, number[]> };
@@ -75,6 +76,11 @@ const beatLabels: Partial<Record<TeacherBeat["type"], { tone: BubbleTone; label:
   widget: { tone: "plain", label: { en: "🔬 See it for yourself", ur: "🔬 Khud dekhein" } },
   sort: { tone: "plain", label: { en: "🧩 Sorting game", ur: "🧩 Sorting game" } },
   compare: { tone: "plain", label: { en: "📊 Side by side", ur: "📊 Aamne saamne" } },
+  safety: { tone: "safety", label: { en: "🛑 Safety first", ur: "🛑 Pehle safety" } },
+  evidence: { tone: "evidence", label: { en: "🔬 What the evidence says", ur: "🔬 Evidence kya kehti hai" } },
+  steps: { tone: "plain", label: { en: "🪜 Step by step", ur: "🪜 Qadam ba qadam" } },
+  case: { tone: "clinic", label: { en: "🧑‍⚕️ Meet the patient", ur: "🧑‍⚕️ Patient se milein" } },
+  reveal: { tone: "check", label: { en: "🧠 Think first", ur: "🧠 Pehle khud sochiye" } },
 };
 
 function freshSession(): Session {
@@ -95,7 +101,7 @@ export function LessonPlayer({
   nextLesson,
 }: {
   lesson: TeacherLesson;
-  nextLesson: { slug: string; title: string } | null;
+  nextLesson: { slug: string; title: string; href?: string } | null;
 }) {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<Session>(freshSession);
@@ -164,6 +170,10 @@ export function LessonPlayer({
           if (beat.type === "try") return `${pick(beat.title, lang)}. ${beat.steps.map((step) => pick(step, lang)).join(". ")}. ${pick(beat.ask, lang)}`;
           if (beat.type === "sort") return pick(beat.prompt, lang);
           if (beat.type === "compare") return pick(beat.title, lang);
+          if (beat.type === "steps")
+            return `${pick(beat.title, lang)}. ${beat.steps.map((step, index) => `Step ${index + 1}: ${step.title}. ${step.detail}`).join(" ")}`;
+          if (beat.type === "case") return `${beat.patient} ${beat.assessment} ${beat.treatment} ${beat.reassess}`;
+          if (beat.type === "reveal") return pick(beat.question, lang);
           return pick(beat.text, lang);
         }
         case "simpler": {
@@ -178,6 +188,10 @@ export function LessonPlayer({
           const beat = beats[entry.i];
           if (beat?.type === "check" || beat?.type === "try") return pick(beat.options[entry.o].feedback, lang);
           return "";
+        }
+        case "revealed": {
+          const beat = beats[entry.i];
+          return beat?.type === "reveal" ? pick(beat.answer, lang) : "";
         }
         default:
           return "";
@@ -268,6 +282,7 @@ export function LessonPlayer({
     }
     if (beat.type === "try") return hasEntry("feedback", index);
     if (beat.type === "sort") return hasEntry("sortDone", index);
+    if (beat.type === "reveal") return hasEntry("revealed", index);
     return true;
   }
 
@@ -284,6 +299,8 @@ export function LessonPlayer({
       case "memory":
       case "mistake":
       case "clinic":
+      case "safety":
+      case "evidence":
         return (
           <TeacherBubble key={key} {...common}>
             <RichText text={pick(beat.text, lang)} />
@@ -339,6 +356,67 @@ export function LessonPlayer({
                 respond({ en: "Done sorting ✅", ur: "Sorting mukammal ✅" }, [{ k: "sortDone", i: index, correct, total }])
               }
             />
+          </TeacherBubble>
+        );
+      case "steps":
+        return (
+          <TeacherBubble key={key} {...common} wide>
+            <p className="font-bold text-navy-800">{pick(beat.title, lang)}</p>
+            {lang === "ur" && beat.ur ? (
+              <p className="mt-2">
+                <RichText text={beat.ur} />
+              </p>
+            ) : (
+              <ol className="mt-3 space-y-2.5">
+                {beat.steps.map((step, stepIndex) => (
+                  <li key={step.title + stepIndex} className="flex gap-3">
+                    <span className="mt-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-teal-100 text-xs font-extrabold text-teal-800">
+                      {stepIndex + 1}
+                    </span>
+                    <span>
+                      <span className="font-bold text-navy-800">{step.title}.</span> {step.detail}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </TeacherBubble>
+        );
+      case "case":
+        return (
+          <TeacherBubble key={key} {...common} wide>
+            {lang === "ur" && beat.ur ? (
+              <RichText text={beat.ur} />
+            ) : (
+              <dl className="grid gap-2.5 sm:grid-cols-2">
+                {(
+                  [
+                    [t(lang, "The patient", "Patient"), beat.patient],
+                    [t(lang, "What you find", "Assessment"), beat.assessment],
+                    [t(lang, "What you do", "Treatment"), beat.treatment],
+                    [t(lang, "Did it work?", "Kya faida hua?"), beat.reassess],
+                  ] as const
+                ).map(([label, value]) => (
+                  <div key={label} className="rounded-xl bg-white/80 p-3">
+                    <dt className="text-[11px] font-extrabold uppercase tracking-wider text-teal-700">{label}</dt>
+                    <dd className="mt-1 text-[15px] leading-7 text-slate-700">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </TeacherBubble>
+        );
+      case "reveal":
+        return (
+          <TeacherBubble key={key} {...common}>
+            <p className="font-bold text-navy-800">
+              <RichText text={pick(beat.question, lang)} />
+            </p>
+            {!isResolved(index) ? (
+              <p className="mt-1 text-sm text-slate-500">
+                {t(lang, "Answer it in your head (or out loud!) before you peek. 🤫", "Jawab dekhne se pehle dil mein (ya zor se!) jawab dein. 🤫")}
+              </p>
+            ) : null}
           </TeacherBubble>
         );
       case "compare":
@@ -460,6 +538,19 @@ export function LessonPlayer({
         }
         return null;
       }
+      case "revealed": {
+        const beat = beats[entry.i];
+        if (beat?.type !== "reveal") return null;
+        const text = pick(beat.answer, lang);
+        return (
+          <TeacherBubble key={key} tone="correct" label={t(lang, "✅ Model answer", "✅ Model jawab")} onListen={listen(text)} listening={speech.speakingId === key}>
+            <RichText text={text} />
+            <p className="mt-2 text-sm font-semibold text-emerald-800">
+              {t(lang, "Close to yours? Great. If not, no worries — this question is now in your flashcards.", "Aap ke jawab ke qareeb tha? Zabardast. Agar nahi, to fikar na karein — yeh sawal ab aap ke flashcards mein hai.")}
+            </p>
+          </TeacherBubble>
+        );
+      }
       case "sortDone": {
         const perfect = entry.correct === entry.total;
         const text = perfect
@@ -536,6 +627,14 @@ export function LessonPlayer({
           {pick(option.text, lang)}
         </Chip>
       ));
+    }
+
+    if (beat.type === "reveal" && !resolved) {
+      return (
+        <Chip onClick={() => respond({ en: "I've thought about it — show me 👀", ur: "Soch liya — jawab dikhayein 👀" }, [{ k: "revealed", i: lastBeat }])}>
+          👀 {t(lang, "Show me the answer", "Jawab dikhayein")}
+        </Chip>
+      );
     }
 
     if (beat.type === "sort" && !resolved) {
@@ -665,7 +764,7 @@ function CompletionCard({
   firstTryCorrect: number;
   checks: number;
   completion: ReturnType<typeof completeTeacherLesson> | null;
-  nextLesson: { slug: string; title: string } | null;
+  nextLesson: { slug: string; title: string; href?: string } | null;
   pathSlug: string | null;
   onRestart: () => void;
   doubtHref: string;
@@ -748,7 +847,7 @@ function CompletionCard({
               {t(lang, "Continue my path", "Apna path jaari rakhein")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           ) : nextLesson ? (
-            <Link href={`/learn/${nextLesson.slug}`} className="inline-flex items-center gap-2 rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800">
+            <Link href={nextLesson.href ?? `/learn/${nextLesson.slug}`} className="inline-flex items-center gap-2 rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800">
               {t(lang, "Next lesson:", "Agla lesson:")} {nextLesson.title} <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           ) : null}
@@ -793,7 +892,13 @@ function CompletionCard({
           <ul className="mt-3 space-y-2">
             {lesson.sources.map((source) => (
               <li key={source.citation} className="text-xs leading-5 text-slate-600">
-                {source.citation}
+                {source.url ? (
+                  <a href={source.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-700 hover:underline">
+                    {source.citation}
+                  </a>
+                ) : (
+                  source.citation
+                )}
                 {source.pubmedQuery ? (
                   <>
                     {" "}

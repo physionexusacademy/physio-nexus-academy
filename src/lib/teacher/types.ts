@@ -22,7 +22,9 @@ export type TeacherWidgetKey =
   | "sensitivity-specificity"
   | "healing-timeline"
   | "pain-inputs"
-  | "lesion-locator";
+  | "lesion-locator"
+  | "gait-cycle"
+  | "rpe-scale";
 
 export type CheckOption = {
   text: BiText;
@@ -62,6 +64,23 @@ export type TeacherBeat =
       categories: [BiText, BiText];
       items: { text: BiText; answer: 0 | 1; why: BiText }[];
     }
+  /** Stop signs: contraindications, red flags, when to refer. */
+  | { type: "safety"; text: BiText }
+  /** What the research does and does not support. */
+  | { type: "evidence"; text: BiText }
+  /** Ordered procedure. `ur`, when present, replaces the whole list in Roman Urdu. */
+  | { type: "steps"; title: BiText; steps: { title: string; detail: string }[]; ur?: string }
+  /** One patient followed from assessment to reassessment. */
+  | {
+      type: "case";
+      patient: string;
+      assessment: string;
+      treatment: string;
+      reassess: string;
+      ur?: string;
+    }
+  /** Retrieval practice: think first, then reveal the answer. */
+  | { type: "reveal"; question: BiText; answer: BiText }
   /** Side-by-side comparison table: first column is the feature. */
   | {
       type: "compare";
@@ -77,9 +96,15 @@ export type TeacherSource = {
   citation: string;
   /** When true, a PubMed search link is generated from `pubmedQuery`. */
   pubmedQuery?: string;
+  /** Direct link, used only for sources already verified elsewhere on PNA. */
+  url?: string;
 };
 
 export type TeacherArea =
+  | "Manual Therapy · Joint"
+  | "Manual Therapy · Soft Tissue"
+  | "Manual Therapy · World Approaches"
+  | "Exercise Prescription"
   | "Movement Science"
   | "Manual Therapy"
   | "Clinical Reasoning"
@@ -145,4 +170,4 @@ export type TeacherProfile = {
 export type TeacherLessonCard = Pick<
   TeacherLesson,
   "slug" | "title" | "hook" | "area" | "level" | "bestFor" | "minutes"
-> & { flashcardCount: number };
+> & { flashcardCount: number; href: string };

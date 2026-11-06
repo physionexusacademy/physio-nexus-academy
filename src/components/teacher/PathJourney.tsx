@@ -5,6 +5,7 @@ import { ArrowRight, BookOpen, Check, ExternalLink, RotateCcw, Target } from "lu
 import type { TeacherLessonCard, TeacherPath } from "@/lib/teacher/types";
 import { completeMission, isStepDone, pathCompletion, setTeacherLang, undoMission } from "@/lib/teacher/progress";
 import { cn } from "@/lib/utils";
+import { withPath } from "@/lib/teacher/href";
 import { useTeacherSnapshot } from "./TeacherHome";
 import { LangToggle, RichText, TeacherBubble, pick, t } from "./ui";
 
@@ -77,7 +78,7 @@ export function PathJourney({ path, lessons }: { path: TeacherPath; lessons: Tea
                 <div className="mt-3 flex flex-wrap items-center gap-2">
                   {step.kind === "lesson" ? (
                     <Link
-                      href={`/learn/${step.lesson}?path=${path.slug}`}
+                      href={withPath(lesson?.href ?? `/learn/${step.lesson}`, path.slug)}
                       className={cn(
                         "inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition",
                         done ? "border border-teal-200 bg-white text-teal-800 hover:bg-teal-50" : "bg-teal-700 text-white hover:bg-teal-800",

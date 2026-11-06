@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { BookOpenCheck, Brain, Hand, Lightbulb, MessagesSquare, Repeat2 } from "lucide-react";
-import { teacherLessonCards } from "@/lib/teacher/lessons";
+import { allTeacherLessonCards, conceptLessonCards, manualTherapyLessonCards } from "@/lib/teacher/catalog";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { TeacherHome } from "@/components/teacher/TeacherHome";
 import { TeacherCatalog } from "@/components/teacher/TeacherCatalog";
@@ -56,7 +56,7 @@ export default function LearnPage() {
     description: metadata.description,
     url,
     isPartOf: { "@type": "WebSite", name: "Physio Nexus Academy", url: "https://physionexusacademy.com" },
-    hasPart: teacherLessonCards.map((lesson) => ({
+    hasPart: conceptLessonCards.map((lesson) => ({
       "@type": "LearningResource",
       name: lesson.title,
       description: lesson.hook.en,
@@ -87,11 +87,11 @@ export default function LearnPage() {
         </header>
 
         <section className="mx-auto mt-8 max-w-3xl" aria-label="Your personal teacher">
-          <TeacherHome lessons={teacherLessonCards} paths={teacherPaths} />
+          <TeacherHome lessons={allTeacherLessonCards} paths={teacherPaths} />
         </section>
 
         <div className="mx-auto mt-14 max-w-6xl">
-          <TeacherCatalog lessons={teacherLessonCards} paths={teacherPaths} />
+          <TeacherCatalog conceptLessons={conceptLessonCards} manualLessons={manualTherapyLessonCards} paths={teacherPaths} />
         </div>
 
         <nav className="mx-auto mt-12 max-w-6xl rounded-3xl bg-navy-800 p-6 text-white sm:p-8" aria-label="Keep learning across PNA">

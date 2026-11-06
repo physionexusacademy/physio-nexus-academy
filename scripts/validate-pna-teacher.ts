@@ -10,6 +10,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { teacherLessons } from "../src/lib/teacher/lessons/index.ts";
+import { allTeacherLessons } from "../src/lib/teacher/catalog.ts";
+import { manualTherapyTeacherLessons } from "../src/lib/teacher/manual-therapy/index.ts";
+import { manualTherapyTechniques } from "../src/lib/manual-therapy.ts";
+import { manualTherapyAdditions } from "../src/lib/manual-therapy-additions.ts";
+import { worldManualApproaches } from "../src/lib/manual-therapy-world.ts";
 import { recommendPathSlug, teacherPaths } from "../src/lib/teacher/paths.ts";
 import type { BiText, TeacherGoal, TeacherStage } from "../src/lib/teacher/types.ts";
 
@@ -57,8 +62,11 @@ const cardIds = new Set<string>();
 let beatCount = 0;
 let checkCount = 0;
 
-for (const lesson of teacherLessons) {
+const manualSlugs = new Set(manualTherapyTeacherLessons.map((lesson) => lesson.slug));
+
+for (const lesson of allTeacherLessons) {
   const at = `lesson ${lesson.slug}`;
+  const isManual = manualSlugs.has(lesson.slug);
   check(/^[a-z0-9-]+$/.test(lesson.slug), `${at}: invalid slug`);
   check(!["paths", "review"].includes(lesson.slug), `${at}: slug collides with a /learn route`);
   check(!lessonSlugs.has(lesson.slug), `${at}: duplicate slug`);
@@ -66,11 +74,12 @@ for (const lesson of teacherLessons) {
   bi(lesson.hook, `${at} hook`);
   bi(lesson.goal, `${at} goal`);
   check(lesson.minutes >= 5 && lesson.minutes <= 20, `${at}: minutes out of range`);
+  if (!isManual) check(lesson.beats.length <= 20, `${at}: keep concept lessons to 20 beats or fewer`);
   check(lesson.beats.length >= 10, `${at}: needs at least 10 beats`);
   check(lesson.summary.length === 3, `${at}: summary must have exactly 3 points`);
   lesson.summary.forEach((point, i) => bi(point, `${at} summary ${i}`));
   check(lesson.flashcards.length >= 4, `${at}: needs at least 4 flashcards`);
-  check(lesson.sources.length >= 2, `${at}: needs at least 2 sources`);
+  check(lesson.sources.length >= (isManual ? 1 : 2), `${at}: needs at least ${isManual ? 1 : 2} sources`);
   check(lesson.goDeeper.length >= 2, `${at}: needs at least 2 go-deeper links`);
 
   const checks = lesson.beats.filter((beat) => beat.type === "check");
@@ -92,7 +101,21 @@ for (const lesson of teacherLessons) {
       case "memory":
       case "mistake":
       case "clinic":
+      case "safety":
+      case "evidence":
         bi(beat.text, where);
+        break;
+      case "steps":
+        bi(beat.title, where);
+        check(beat.steps.length >= 3, `${where}: needs 3+ steps`);
+        beat.steps.forEach((step, s) => check(step.title.trim() && step.detail.trim(), `${where}: step ${s} needs a title and detail`));
+        break;
+      case "case":
+        check(beat.patient.trim() && beat.assessment.trim() && beat.treatment.trim() && beat.reassess.trim(), `${where}: case needs all four parts`);
+        break;
+      case "reveal":
+        bi(beat.question, where);
+        bi(beat.answer, `${where} answer`);
         break;
       case "widget":
         bi(beat.intro, where);
@@ -189,6 +212,23 @@ for (const stage of stages) {
   }
 }
 
+/* ---------- manual therapy conversion ---------- */
+
+const chapterSlugs = [...manualTherapyTechniques, ...manualTherapyAdditions].map((item) => item.slug).concat(worldManualApproaches.map((item) => item.slug));
+check(chapterSlugs.length === 35, `expected 35 manual therapy chapters, found ${chapterSlugs.length}`);
+for (const slug of chapterSlugs) check(manualSlugs.has(slug), `manual therapy chapter without a PNA Teacher lesson: ${slug}`);
+check(manualTherapyTeacherLessons.length === chapterSlugs.length, "every manual therapy lesson must map to exactly one chapter");
+for (const lesson of manualTherapyTeacherLessons) {
+  const checks = lesson.beats.filter((beat) => beat.type === "check").length;
+  check(checks >= 3, `lesson ${lesson.slug}: manual lessons need 3+ checks`);
+  check(lesson.beats.some((beat) => beat.type === "safety"), `lesson ${lesson.slug}: manual lessons need a safety beat`);
+  check(lesson.beats.some((beat) => beat.type === "steps"), `lesson ${lesson.slug}: manual lessons need the step-by-step beat`);
+}
+for (const slug of lessonSlugs) check(!teacherLessons.some((l) => l.slug === slug) || !manualSlugs.has(slug), `slug used by both a concept and a manual lesson: ${slug}`);
+for (const page of ["src/app/manual-therapy/[slug]/page.tsx", "src/components/manual-therapy/WorldApproachChapter.tsx"]) {
+  check(fs.readFileSync(path.join(root, page), "utf8").includes("<TechniqueTeacher"), `${page}: must render <TechniqueTeacher>`);
+}
+
 /* ---------- deployment safety ---------- */
 
 for (const page of ["src/app/learn/[slug]/page.tsx", "src/app/learn/paths/[slug]/page.tsx"]) {
@@ -276,5 +316,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  `PNA Teacher checks passed: ${teacherLessons.length} lessons, ${beatCount} beats, ${checkCount} understanding checks, ${cardIds.size} flashcards, ${teacherPaths.length} paths, all links resolve, bilingual copy complete, progress/XP/spaced-review logic verified.`,
+  `PNA Teacher checks passed: ${teacherLessons.length} concept lessons + ${manualTherapyTeacherLessons.length} manual therapy lessons, ${beatCount} beats, ${checkCount} understanding checks, ${cardIds.size} flashcards, ${teacherPaths.length} paths, all links resolve, bilingual copy complete, progress/XP/spaced-review logic verified.`,
 );

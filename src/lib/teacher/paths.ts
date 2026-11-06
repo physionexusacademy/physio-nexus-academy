@@ -24,6 +24,7 @@ export const teacherPaths: TeacherPath[] = [
       { id: "mf-1", kind: "lesson", lesson: "convex-concave-rule" },
       { id: "mf-2", kind: "lesson", lesson: "active-passive-insufficiency" },
       { id: "mf-3", kind: "lesson", lesson: "open-vs-closed-chain" },
+      { id: "mf-3g", kind: "lesson", lesson: "gait-cycle" },
       {
         id: "mf-4",
         kind: "mission",
@@ -76,6 +77,7 @@ export const teacherPaths: TeacherPath[] = [
         },
         minutes: 10,
       },
+      { id: "cr-2r", kind: "lesson", lesson: "red-flags-screening" },
       { id: "cr-3", kind: "lesson", lesson: "umn-vs-lmn" },
       { id: "cr-4", kind: "lesson", lesson: "pain-science-basics" },
       {
@@ -119,28 +121,10 @@ export const teacherPaths: TeacherPath[] = [
     steps: [
       { id: "mt-1", kind: "lesson", lesson: "convex-concave-rule" },
       { id: "mt-2", kind: "lesson", lesson: "maitland-grades" },
-      {
-        id: "mt-3",
-        kind: "mission",
-        title: "Maitland Joint Mobilization guide",
-        href: "/manual-therapy/maitland-joint-mobilization",
-        mission: {
-          en: "Read the full guide. Note the hand placement and the safety checks you must do before you start.",
-          ur: "Poori guide parhein. Hand placement aur woh safety checks note karein jo shuru karne se pehle zaroori hain.",
-        },
-        minutes: 12,
-      },
-      {
-        id: "mt-4",
-        kind: "mission",
-        title: "Kaltenborn–Evjenth Mobilization",
-        href: "/manual-therapy/kaltenborn-evjenth-mobilization",
-        mission: {
-          en: "Compare it with Maitland: how does Kaltenborn grade a mobilization differently?",
-          ur: "Maitland se muqabla karein: Kaltenborn mobilization ko kaise alag grade karta hai?",
-        },
-        minutes: 10,
-      },
+      { id: "mt-3l", kind: "lesson", lesson: "maitland-joint-mobilization" },
+      { id: "mt-4l", kind: "lesson", lesson: "kaltenborn-evjenth-mobilization" },
+      { id: "mt-4m", kind: "lesson", lesson: "mulligan-mobilization-with-movement" },
+      { id: "mt-4r", kind: "lesson", lesson: "red-flags-screening" },
       { id: "mt-5", kind: "lesson", lesson: "pain-science-basics" },
       {
         id: "mt-6",
@@ -195,6 +179,8 @@ export const teacherPaths: TeacherPath[] = [
         minutes: 12,
       },
       { id: "kn-5", kind: "lesson", lesson: "open-vs-closed-chain" },
+      { id: "kn-5d", kind: "lesson", lesson: "exercise-dosage" },
+      { id: "kn-5g", kind: "lesson", lesson: "gait-cycle" },
       {
         id: "kn-6",
         kind: "mission",
@@ -219,6 +205,82 @@ export const teacherPaths: TeacherPath[] = [
       },
     ],
   },
+  {
+    slug: "safe-assessment-essentials",
+    title: "Safe Assessment Essentials",
+    tagline: {
+      en: "Screen for danger, read the nervous system and interpret tests honestly — before you treat anyone.",
+      ur: "Kisi ka ilaaj karne se pehle: khatre ke liye screen karein, nervous system ko parhein aur tests ko imaandari se samjhein.",
+    },
+    audience: "3rd year, interns & new graduates",
+    outcomes: [
+      { en: "Spot red flags and refer at the right speed", ur: "Red flags pehchan kar sahi raftaar se refer karna" },
+      { en: "Run a complete dermatome, myotome and reflex screen", ur: "Mukammal dermatome, myotome aur reflex screen karna" },
+      { en: "Tell UMN from LMN signs", ur: "UMN aur LMN signs mein farq karna" },
+      { en: "Use test results without over-trusting them", ur: "Test results ko zaroorat se zyada bharose ke baghair use karna" },
+    ],
+    steps: [
+      { id: "sa-1", kind: "lesson", lesson: "red-flags-screening" },
+      { id: "sa-2", kind: "lesson", lesson: "dermatomes-myotomes-reflexes" },
+      { id: "sa-3", kind: "lesson", lesson: "umn-vs-lmn" },
+      { id: "sa-4", kind: "lesson", lesson: "sensitivity-specificity" },
+      {
+        id: "sa-5",
+        kind: "mission",
+        title: "MSK Symptom Checker",
+        href: "/symptom-checker",
+        mission: {
+          en: "Run one example through the checker and notice which answers trigger a safety warning. Which red flags from the lesson did you spot?",
+          ur: "Checker mein ek misaal chalayein aur dekhein kaun se jawab safety warning dete hain. Lesson ke kaun se red flags aap ne pehchane?",
+        },
+        minutes: 8,
+      },
+      {
+        id: "sa-6",
+        kind: "mission",
+        title: "Clinical Challenge Arena",
+        href: "/clinical-arena",
+        mission: {
+          en: "Solve one case, and before you choose a diagnosis, list the red flags you screened for and the neuro findings you'd check.",
+          ur: "Ek case solve karein, aur diagnosis chunne se pehle woh red flags likhein jo aap ne screen kiye aur woh neuro findings jo aap check karenge.",
+        },
+        minutes: 10,
+      },
+    ],
+  },
+  {
+    slug: "soft-tissue-toolkit",
+    title: "Soft-Tissue Toolkit",
+    tagline: {
+      en: "The soft-tissue techniques you'll use most — when each fits, how to apply it safely, and how to prove it helped.",
+      ur: "Sab se zyada use hone wali soft-tissue techniques — har ek kab theek hai, safe tareeqe se kaise karein, aur kaise prove karein ke faida hua.",
+    },
+    audience: "Final year, interns & clinicians",
+    outcomes: [
+      { en: "Choose between MET, positional release, myofascial release and trigger-point work", ur: "MET, positional release, myofascial release aur trigger-point work mein se chunna" },
+      { en: "Explain how hands-on care can ease pain without 'fixing' tissue", ur: "Samjhana ke hands-on care tissue 'theek' kiye baghair dard kaise kam kar sakti hai" },
+      { en: "Respect safety limits and reassess every time", ur: "Safety ki hadood ka khayal aur har baar reassess karna" },
+    ],
+    steps: [
+      { id: "st-1", kind: "lesson", lesson: "pain-science-basics" },
+      { id: "st-2", kind: "lesson", lesson: "tissue-healing-phases" },
+      { id: "st-3", kind: "lesson", lesson: "muscle-energy-technique" },
+      { id: "st-4", kind: "lesson", lesson: "strain-counterstrain" },
+      { id: "st-5", kind: "lesson", lesson: "myofascial-release" },
+      { id: "st-6", kind: "lesson", lesson: "trigger-point-compression" },
+      {
+        id: "st-7",
+        kind: "mission",
+        title: "Regional applications",
+        href: "/manual-therapy/regions",
+        mission: {
+          en: "Pick one body region and compare two soft-tissue options for it. Which would you choose for an irritable, painful presentation — and why?",
+          ur: "Jism ka ek region chunein aur us ke liye do soft-tissue options compare karein. Irritable, dard wali presentation ke liye kaun sa chunenge — aur kyun?",
+        },
+        minutes: 10,
+      },
+    ],
+  },
 ];
 
 export function getTeacherPath(slug: string): TeacherPath | undefined {
@@ -228,7 +290,7 @@ export function getTeacherPath(slug: string): TeacherPath | undefined {
 const pathByStage: Record<TeacherStage, string> = {
   "year1-2": "movement-science-foundations",
   "year3-4": "clinical-reasoning-starter",
-  "final-intern": "knee-rehab-mastery",
+  "final-intern": "safe-assessment-essentials",
   graduate: "manual-therapy-starter",
 };
 

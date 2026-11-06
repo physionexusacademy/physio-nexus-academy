@@ -54,7 +54,19 @@ export function TeacherAvatar({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   );
 }
 
-export type BubbleTone = "plain" | "analogy" | "memory" | "mistake" | "clinic" | "check" | "try" | "correct" | "retry" | "simpler";
+export type BubbleTone =
+  | "plain"
+  | "analogy"
+  | "memory"
+  | "mistake"
+  | "clinic"
+  | "check"
+  | "try"
+  | "correct"
+  | "retry"
+  | "simpler"
+  | "safety"
+  | "evidence";
 
 const toneStyles: Record<BubbleTone, { box: string; label: string }> = {
   plain: { box: "border-slate-200 bg-white", label: "text-teal-700" },
@@ -67,6 +79,8 @@ const toneStyles: Record<BubbleTone, { box: string; label: string }> = {
   correct: { box: "border-emerald-300 bg-emerald-50", label: "text-emerald-800" },
   retry: { box: "border-amber-300 bg-amber-50", label: "text-amber-800" },
   simpler: { box: "border-cyan-200 bg-cyan-50", label: "text-cyan-800" },
+  safety: { box: "border-red-200 bg-red-50/80", label: "text-red-800" },
+  evidence: { box: "border-indigo-200 bg-indigo-50/70", label: "text-indigo-800" },
 };
 
 export function TeacherBubble({

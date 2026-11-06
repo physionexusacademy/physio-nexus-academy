@@ -134,6 +134,27 @@ export default function ManualTherapyPage() {
       className="container-content section-padding"
       data-pna-manual-theme="editorial-anatomy-luxe"
     >
+      <a
+        href="/learn#manual-therapy"
+        data-pna-manual-teacher-banner="v1"
+        className="mb-6 flex flex-col gap-3 rounded-3xl border border-teal-100 bg-gradient-to-r from-teal-50 via-white to-cyan-50 p-4 shadow-sm transition hover:border-teal-300 hover:shadow-md sm:flex-row sm:items-center sm:justify-between sm:p-5"
+      >
+        <span className="flex items-start gap-3">
+          <span className="flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-navy-700 text-lg text-white" aria-hidden="true">
+            🎓
+          </span>
+          <span>
+            <span className="block text-[11px] font-extrabold uppercase tracking-[0.16em] text-teal-700">New · PNA Teacher</span>
+            <span className="mt-0.5 block text-base font-bold text-navy-800 sm:text-lg">Every technique now teaches you step by step</span>
+            <span className="mt-0.5 block text-sm leading-6 text-slate-600">
+              Open any chapter and PNA Teacher walks you through it — analogy, safety, steps, a patient case, checks and flashcards, in English or Roman Urdu.
+            </span>
+          </span>
+        </span>
+        <span className="inline-flex flex-none items-center justify-center rounded-full bg-teal-700 px-4 py-2.5 text-sm font-bold text-white">
+          See my progress →
+        </span>
+      </a>
       <EditorialManualEncyclopedia
         items={libraryItems}
         families={libraryFamilies}

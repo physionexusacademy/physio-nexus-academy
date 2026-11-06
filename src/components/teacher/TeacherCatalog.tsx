@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock3, Route } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock3, Hand, Route } from "lucide-react";
 import type { TeacherLessonCard, TeacherPath } from "@/lib/teacher/types";
 import { pathCompletion } from "@/lib/teacher/progress";
 import { cn } from "@/lib/utils";
@@ -15,16 +15,32 @@ const areaTone: Record<string, string> = {
   Neurology: "bg-fuchsia-100 text-fuchsia-800",
   "Tissue Healing": "bg-emerald-100 text-emerald-800",
   "Pain Science": "bg-rose-100 text-rose-800",
+  "Exercise Prescription": "bg-lime-100 text-lime-800",
 };
 
-export function TeacherCatalog({ lessons, paths }: { lessons: TeacherLessonCard[]; paths: TeacherPath[] }) {
+const manualGroups: { area: TeacherLessonCard["area"]; title: string; blurb: string }[] = [
+  { area: "Manual Therapy · Joint", title: "Joint mobilization & manipulation", blurb: "Maitland, Kaltenborn, Mulligan, traction, neurodynamics and more." },
+  { area: "Manual Therapy · Soft Tissue", title: "Soft-tissue techniques", blurb: "MET, strain-counterstrain, myofascial release, trigger points, IASTM, lymphatic drainage…" },
+  { area: "Manual Therapy · World Approaches", title: "World approaches", blurb: "McKenzie, Paris, Mennell, osteopathic methods — and an honest look at disputed ones." },
+];
+
+export function TeacherCatalog({
+  conceptLessons,
+  manualLessons,
+  paths,
+}: {
+  conceptLessons: TeacherLessonCard[];
+  manualLessons: TeacherLessonCard[];
+  paths: TeacherPath[];
+}) {
   const snapshot = useTeacherSnapshot();
   const lang = snapshot?.lang ?? "en";
   const progress = snapshot?.progress;
+  const manualDone = manualLessons.filter((lesson) => progress?.lessons[lesson.slug]).length;
 
   return (
     <div className="space-y-12">
-      <section aria-labelledby="pna-teacher-paths">
+      <section aria-labelledby="pna-teacher-paths" id="pna-teacher-paths-section">
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-teal-700">Step-by-step</p>
         <h2 id="pna-teacher-paths" className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">
           Learning paths
@@ -67,18 +83,18 @@ export function TeacherCatalog({ lessons, paths }: { lessons: TeacherLessonCard[
       <section aria-labelledby="pna-teacher-lessons">
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-teal-700">Hard concepts, made easy</p>
         <h2 id="pna-teacher-lessons" className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">
-          All lessons
+          Concept lessons
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
           The topics students struggle with most — taught as a conversation, with analogies, interactive visuals and checks after every idea.
         </p>
         <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {lessons.map((lesson) => {
+          {conceptLessons.map((lesson) => {
             const done = Boolean(progress?.lessons[lesson.slug]);
             return (
               <li key={lesson.slug}>
                 <Link
-                  href={`/learn/${lesson.slug}`}
+                  href={lesson.href}
                   className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-md"
                 >
                   <div className="flex flex-wrap items-center gap-2">
@@ -102,6 +118,61 @@ export function TeacherCatalog({ lessons, paths }: { lessons: TeacherLessonCard[
             );
           })}
         </ul>
+      </section>
+
+      <section aria-labelledby="pna-teacher-manual" id="manual-therapy">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.18em] text-teal-700">
+              <Hand className="h-4 w-4" aria-hidden="true" /> Manual Therapy Encyclopedia
+            </p>
+            <h2 id="pna-teacher-manual" className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">
+              All {manualLessons.length} techniques, taught step by step
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              Every chapter of the encyclopedia now opens with PNA Teacher: what it is, an analogy, when it&apos;s safe, the steps with their reasons, a patient case, checks and flashcards.
+            </p>
+          </div>
+          <span className="rounded-full bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-800 ring-1 ring-teal-100">
+            {manualDone}/{manualLessons.length} completed
+          </span>
+        </div>
+        <div className="mt-6 space-y-6">
+          {manualGroups.map((group) => {
+            const lessons = manualLessons.filter((lesson) => lesson.area === group.area);
+            if (!lessons.length) return null;
+            return (
+              <div key={group.area} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h3 className="text-lg font-bold text-navy-800">{group.title}</h3>
+                <p className="mt-1 text-sm text-slate-500">{group.blurb}</p>
+                <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {lessons.map((lesson) => {
+                    const done = Boolean(progress?.lessons[lesson.slug]);
+                    return (
+                      <li key={lesson.slug}>
+                        <Link
+                          href={lesson.href}
+                          className={cn(
+                            "group flex h-full items-center justify-between gap-2 rounded-2xl border px-3.5 py-3 text-sm font-bold transition hover:border-teal-300 hover:bg-teal-50/50",
+                            done ? "border-emerald-200 bg-emerald-50/50 text-emerald-900" : "border-slate-200 text-navy-800",
+                          )}
+                        >
+                          <span className="flex min-w-0 items-center gap-2">
+                            {done ? <CheckCircle2 className="h-4 w-4 flex-none text-emerald-600" aria-label="Done" /> : null}
+                            <span className="leading-snug">{lesson.title}</span>
+                          </span>
+                          <span className="flex flex-none items-center gap-1 text-xs font-semibold text-slate-400">
+                            {lesson.minutes}m <ArrowRight className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </section>
     </div>
   );
