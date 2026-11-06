@@ -39,6 +39,7 @@ import "./pna-hero.css";
 import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
+import { ReviewQueueCard } from "@/components/learning/ReviewQueueCard";
 import { getLatestEpisode, stupidInternEpisodes } from "@/lib/stupid-intern-diaries";
 import "./premium-vision.css";
 import "./pna-signature-v2.css";
@@ -322,6 +323,10 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <div className="container-content py-4 sm:py-5">
+        <ReviewQueueCard />
+      </div>
 
       <UnifiedProgressCard />
 
