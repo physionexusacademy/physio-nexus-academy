@@ -183,14 +183,14 @@ try {
       const dock = page.getByRole("navigation", { name: "Mobile quick navigation" });
       assert(await dock.isVisible());
       assert.deepEqual(await dock.locator("a").evaluateAll(els => els.map(a => a.getAttribute("href"))),
-        ["/", "/knowledge-hub", "/daily-challenge", "/workshops", "/patient-services"]);
+        ["/", "/learn", "/daily-challenge", "/workshops", "/patient-services"]);
     }
     const screenshot = `pna-pathways-${width}.png`;
     await page.screenshot({ path: path.join(output, screenshot) });
     // Also verify a real navigation through the mobile dock without submitting data.
     if (width === 390) {
       await page.getByRole("navigation", { name: "Mobile quick navigation" }).getByRole("link", { name: "Learn", exact: true }).click();
-      await page.waitForURL("**/knowledge-hub");
+      await page.waitForURL("**/learn");
       assert(await page.locator("main").isVisible());
     }
     assert.deepEqual(errors, [], `Client runtime errors at ${width}px`);
