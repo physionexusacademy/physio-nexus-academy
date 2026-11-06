@@ -3,6 +3,7 @@ import {useMemo,useState} from "react";
 import Link from "next/link";
 import {ArrowRight,BookOpen,ExternalLink,FileText,Search,ShieldCheck} from "lucide-react";
 import type {PublishedCaseReport} from "@/lib/case-report-library";
+import {EvidenceBadge} from "@/components/clinical/EvidenceBadge";
 
 export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
  // Deduplicate by DOI and canonical source URL so one article cannot appear twice.
@@ -44,7 +45,10 @@ export function ResearchCaseLibrary({reports}:{reports:PublishedCaseReport[]}){
    <section className="cr-grid" aria-label="Published case reports">
     {filtered.map((r,i)=><article key={r.slug} className="cr-card">
       <div className="cr-card-top"><span className="cr-number">REPORT {String(i+1).padStart(2,"0")}</span><span className="cr-year">{r.year}</span></div>
-      <span className="cr-specialty">{r.specialty}</span>
+      <div className="mt-2 flex flex-wrap items-center gap-2">
+        <span className="cr-specialty">{r.specialty}</span>
+        <EvidenceBadge level="case-report" compact />
+      </div>
       <h2><Link href={"/case-lab/research/"+r.slug}>{r.title}</Link></h2>
       <p className="cr-authors">{r.authors}</p>
       <p className="cr-summary">{r.caseSummary}</p>
