@@ -6,7 +6,7 @@ import { ExamRoom, webglAvailable, type PatientPosition, type PickResult } from 
 import { NERVE_LABEL } from "@/lib/virtual-patient/anatomy";
 import { HISTORY } from "@/lib/virtual-patient/exam";
 import type { VirtualCase } from "@/lib/virtual-patient/cases";
-import { EXAM_KEY_LABEL, examKeyDone, saveResult, scoreSession, type ExamEvent, type SessionResult } from "@/lib/virtual-patient/session";
+import { EXAM_KEY_LABEL, examKeyDone, historyKeys, saveResult, scoreSession, type ExamEvent, type SessionResult } from "@/lib/virtual-patient/session";
 import { ExamContext, type ExamApi, type ExamMode, type Lang, type OverlayState } from "./ExamContext";
 import { Overlays, SpeechBubble } from "./Overlays";
 import { TOOLS, ToolPanel, type PickHandler, type ToolId } from "./ExamTools";
@@ -60,6 +60,13 @@ export function VirtualPatientApp() {
   const [now, setNow] = useState(0);
   const [result, setResult] = useState<SessionResult | null>(null);
   const pickRef = useRef<PickHandler>(null);
+  /** The toolbar over the 3D view: the camera frames the patient below it. */
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  /** ?case=<id> from a Skills Lab link: that patient is offered first. */
+  const [suggested, setSuggested] = useState<string | null>(null);
+  useEffect(() => {
+    setSuggested(new URLSearchParams(window.location.search).get("case"));
+  }, []);
   const speechTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   /* 3D room */
@@ -112,6 +119,7 @@ export function VirtualPatientApp() {
     setTool("look");
     room.clearMarkers();
     room.clearTape();
+    room.setCasePosture(c.findings.posture);
     room.setPosition(c.start);
     setPosition(c.start);
     setStartedAt(Date.now());
@@ -119,6 +127,22 @@ export function VirtualPatientApp() {
     setStage("exam");
     say(lang === "ur" ? `Assalam-o-alaikum, main ${c.patient.name} hoon.` : `Hello, I'm ${c.patient.name}.`);
   };
+
+  const toolbarShown = ready && stage !== "pick";
+  useEffect(() => {
+    const bar = toolbarRef.current;
+    if (!room || !bar || !toolbarShown) return;
+    const update = () => {
+      const inset = bar.offsetHeight;
+      if (Math.abs(inset - room.viewInsetTop) < 4) return;
+      room.viewInsetTop = inset;
+      room.frameCamera(false);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, [room, toolbarShown]);
 
   const changePosition = (next: PatientPosition) => {
     room?.setPosition(next);
@@ -205,7 +229,7 @@ export function VirtualPatientApp() {
             </div>
           ) : null}
           {ready && stage !== "pick" ? (
-            <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-center gap-1.5 p-3">
+            <div ref={toolbarRef} className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-center gap-1.5 p-3">
               {POSITIONS.map(({ id, label, icon: Icon }) => (
                 <button key={id} type="button" onClick={() => changePosition(id)} aria-pressed={position === id} className={"pointer-events-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold backdrop-blur " + (position === id ? "bg-[#2ee6d6] text-[#04263a]" : "bg-[#0a1f3d]/75 text-white hover:bg-[#0a1f3d]")}>
                   <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
@@ -274,7 +298,7 @@ export function VirtualPatientApp() {
                       <div className="rounded-2xl bg-slate-50 p-3">
                         <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-slate-500">Examiner's checklist</p>
                         <ul className="mt-2 space-y-1 text-[13px]">
-                          {caseData.key.history.map((id) => {
+                          {historyKeys(caseData).map((id) => {
                             const done = events.some((e) => e.kind === "history" && e.id === id);
                             return <li key={id} className="flex items-center gap-1.5">{done ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" /> : <Circle className="h-3.5 w-3.5 text-slate-300" aria-hidden="true" />} Ask: {HISTORY.find((h) => h.id === id)?.en}</li>;
                           })}
@@ -312,7 +336,7 @@ export function VirtualPatientApp() {
       </div>
       {stage === "pick" && ready ? (
         <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0a1f3d]/95">
-          <CasePicker onStart={start} />
+          <CasePicker onStart={start} suggested={suggested} />
         </div>
       ) : null}
     </div>

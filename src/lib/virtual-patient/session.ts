@@ -39,7 +39,8 @@ export function examKeyDone(key: ExamKey, events: ExamEvent[]) {
 
 export const EXAM_KEY_LABEL = (key: ExamKey) => {
   const [type, value = ""] = key.split(":");
-  const nice = value.replace(/-/g, " ");
+  // Abbreviations stay in capitals: ATFL, ASIS, PSIS, C7, SLR, AC joint.
+  const nice = value.replace(/-/g, " ").replace(/\b(atfl|asis|psis|c7|slr|ac)\b/g, (word) => word.toUpperCase());
   return {
     rom: `Range of motion: ${nice}`,
     mmt: `Muscle test: ${nice}`,
@@ -59,9 +60,13 @@ export type SessionResult = {
   passed: boolean;
 };
 
+/** Every OSCE starts with introduction and consent, then the case's key questions. */
+export const historyKeys = (c: VirtualCase): HistoryId[] => ["consent", ...c.key.history.filter((id) => id !== "consent")];
+
 export function scoreSession(c: VirtualCase, events: ExamEvent[], answers: { diagnosis: number | null; plan: number | null }): SessionResult {
   const asked = new Set(events.filter((e) => e.kind === "history").map((e) => (e as { id: HistoryId }).id));
-  const histHit = c.key.history.filter((id) => asked.has(id));
+  const keys = historyKeys(c);
+  const histHit = keys.filter((id) => asked.has(id));
   const examHit = c.key.exam.filter((key) => examKeyDone(key, events));
 
   // Accuracy of what the student recorded.
@@ -76,7 +81,7 @@ export function scoreSession(c: VirtualCase, events: ExamEvent[], answers: { dia
   const diagnosisOk = answers.diagnosis === c.questions.diagnosis.answer;
   const planOk = answers.plan === c.questions.plan.answer;
   const parts = [
-    { label: "History", max: 20, score: Math.round((20 * histHit.length) / Math.max(1, c.key.history.length)), detail: c.key.history.map((id) => `${asked.has(id) ? "✓" : "✗"} ${id}`) },
+    { label: "History", max: 20, score: Math.round((20 * histHit.length) / Math.max(1, keys.length)), detail: keys.map((id) => `${asked.has(id) ? "✓" : "✗"} ${id === "consent" ? "introduction and consent" : id}`) },
     { label: "Examination", max: 35, score: Math.round((35 * examHit.length) / Math.max(1, c.key.exam.length)), detail: c.key.exam.map((key) => `${examKeyDone(key, events) ? "✓" : "✗"} ${EXAM_KEY_LABEL(key)}`) },
     { label: "Accurate findings", max: 15, score: Math.round(15 * accuracy), detail: recorded.length ? recorded.map((r) => `${r.ok ? "✓" : "✗"} ${r.text}`) : ["Record grades, angles and test results as you examine — they are marked here."] },
     { label: "Diagnosis", max: 20, score: diagnosisOk ? 20 : 0, detail: [c.questions.diagnosis.why] },

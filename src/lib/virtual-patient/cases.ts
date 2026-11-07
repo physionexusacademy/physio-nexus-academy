@@ -30,6 +30,7 @@ const L = (en: string, ur: string): Line => ({ en, ur });
 const ALL_DERMATOMES: Dermatome[] = ["C2", "C3", "C4", "C5", "C6", "C7", "C8", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12", "L1", "L2", "L3", "L4", "L5", "S1", "S2"];
 
 export const DEFAULT_ANSWER = L("No, nothing like that.", "Nahi, aisa kuch nahi.");
+export const CONSENT_ANSWER = L("Yes, of course — please go ahead.", "Ji bilkul, zaroor — please start karein.");
 
 export const CASES: VirtualCase[] = [
   {
@@ -57,6 +58,7 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "Stands with a slight shift away from the left; walks with a mild left foot slap.",
+      posture: { standing: { trunk: { abd: 4 }, "knee.left": { flex: 6 } } },
       strength: { "ehl.left": 3, "ankle-df.left": 4, "hip-abd.left": 4 },
       strengthNote: { "hip-abd.left": "He hitches his pelvis to help lift the leg.", "ehl.left": "The big toe lifts but gives way under light pressure." },
       sensation: [{ sides: ["left"], dermatomes: ["L5"], change: "reduced" }],
@@ -198,6 +200,7 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "High-stepping gait on the right to clear the foot.",
+      posture: { supine: { "ankle.right": { flex: -28 } }, sitting: { "ankle.right": { flex: -25 } }, prone: { "ankle.right": { flex: -15 } } },
       strength: { "ankle-df.right": 1, "ehl.right": 1 },
       strengthNote: { "ankle-df.right": "Only a flicker in tibialis anterior.", "ehl.right": "A flicker, no movement." },
       rom: { "ankle-df.right": { active: 0, passive: 15 } },
@@ -242,7 +245,10 @@ export const CASES: VirtualCase[] = [
         "hawkins.right": { positive: true, text: "Pain in the outer shoulder on internal rotation. Positive." },
         "drop-arm.right": { positive: true, text: "The arm drops suddenly from about 90°. Positive." },
       },
-      tender: [{ side: "right", landmarks: ["ac-joint"], regions: ["Top of the shoulder"], text: "Tender just below the front edge of the acromion." }],
+      tender: [
+        { side: "right", landmarks: ["ac-joint"], text: "Pressing the AC joint itself: not tender." },
+        { side: "right", landmarks: ["subacromial"], regions: ["Top of the shoulder"], text: "“Ouch — yes, there.” Tender just below the front edge of the acromion, over the supraspinatus insertion." },
+      ],
     },
     key: { history: ["onset", "night"], exam: ["rom:shoulder-abduction", "mmt:shoulder-abd", "special:drop-arm", "special:empty-can"] },
     questions: {
@@ -271,6 +277,8 @@ export const CASES: VirtualCase[] = [
       goals: L("Write on the board and dress easily.", "Board par likhna aur aasani se kapre pehenna."),
     },
     findings: {
+      observation: "Holds the left arm close to the body, slightly internally rotated; reduced arm swing.",
+      posture: { standing: { "shoulder.left": { rot: 18 }, "elbow.left": { flex: 15 } }, sitting: { "shoulder.left": { rot: 18 } } },
       rom: {
         "shoulder-er.left": { active: 15, passive: 20, endFeel: "Firm, capsular — early", pain: "Painful at the end of range" },
         "shoulder-abduction.left": { active: 80, passive: 85, endFeel: "Firm, capsular" },
@@ -304,6 +312,7 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "Swollen right knee; walks with the knee held slightly bent.",
+      posture: { standing: { "knee.right": { flex: 12 }, "hip.right": { flex: 6 } }, supine: { "knee.right": { flex: 18 }, "hip.right": { flex: 8 } } },
       rom: {
         "knee-flexion.right": { active: 105, passive: 110, endFeel: "Firm — limited by swelling", pain: "Tight and sore at the end" },
         "knee-extension.right": { active: -5, passive: 0, pain: "Lacks the last few degrees actively" },
@@ -343,17 +352,21 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "Mild varus alignment of the right knee; slight antalgic gait.",
+      posture: { standing: { "knee.right": { flex: 6 }, "knee.left": { flex: 3 } }, supine: { "knee.right": { flex: 6 } } },
       rom: {
         "knee-flexion.right": { active: 100, passive: 105, endFeel: "Hard with crepitus", pain: "Ache at the end of range" },
         "knee-extension.right": { active: -5, passive: -5, endFeel: "Hard" },
       },
       strength: { "knee-ext.right": 4 },
-      tender: [{ side: "right", regions: ["Inner knee"], text: "Tender along the inner joint line." }],
+      tender: [
+        { side: "right", landmarks: ["medial-joint-line"], regions: ["Inner knee"], text: "Tender along the medial joint line." },
+        { side: "right", landmarks: ["lateral-joint-line"], text: "Lateral joint line: mildly uncomfortable, much less than the inside." },
+      ],
       tape: { "knee-girth.right": 1 },
       special: { "mcmurray.right": { positive: false, text: "Coarse crepitus but no click or locking. Negative." } },
       vitals: { hr: 78, bp: "142/88", rr: 15, spo2: 97, temp: 36.6 },
     },
-    key: { history: ["night", "behaviour", "location"], exam: ["rom:knee-flexion", "palpate:Inner knee", "mmt:knee-ext"] },
+    key: { history: ["night", "behaviour", "location"], exam: ["rom:knee-flexion", "palpate:medial-joint-line", "mmt:knee-ext"] },
     questions: {
       diagnosis: { options: ["Knee osteoarthritis (medial compartment)", "Rheumatoid arthritis", "ACL tear", "Gout"], answer: 0, why: "Over 45, activity-related pain and morning stiffness under 30 minutes (NICE clinical criteria), medial joint-line tenderness, crepitus and limited flexion." },
       plan: { options: ["Education, weight and activity advice, quadriceps and hip strengthening and a walking programme", "Immediate total knee replacement referral", "Complete rest", "Regular steroid injections"], answer: 0, why: "Exercise and education are first-line for knee OA." },
@@ -380,10 +393,11 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "Swelling and bruising over the outer left ankle.",
+      posture: { supine: { "ankle.left": { flex: -12 } } },
       rom: { "ankle-df.left": { active: 8, passive: 10, pain: "Tight and painful at the front" }, "ankle-pf.left": { active: 35, passive: 40 } },
       tender: [
         { side: "left", landmarks: ["lateral-malleolus"], text: "Pressing the bony tip and back edge of the lateral malleolus: not tender." },
-        { side: "left", regions: ["Lateral ankle", "Outer border of the foot"], text: "“Ouch — there!” Tender in the soft hollow just in front of the lateral malleolus (ATFL)." },
+        { side: "left", landmarks: ["atfl"], regions: ["Lateral ankle", "Outer border of the foot"], text: "“Ouch — there!” Tender in the soft hollow just in front of the lateral malleolus (ATFL)." },
         { side: "left", landmarks: ["medial-malleolus"], text: "Not tender over the medial malleolus." },
       ],
       special: {
@@ -391,7 +405,7 @@ export const CASES: VirtualCase[] = [
         "talar-tilt.left": { positive: false, text: "Slightly sore but similar to the right side. Negative." },
       },
     },
-    key: { history: ["onset", "behaviour"], exam: ["palpate:lateral-malleolus", "palpate:medial-malleolus", "special:ankle-anterior-drawer"] },
+    key: { history: ["onset", "behaviour"], exam: ["palpate:lateral-malleolus", "palpate:medial-malleolus", "palpate:atfl", "special:ankle-anterior-drawer"] },
     questions: {
       diagnosis: { options: ["Lateral ankle sprain (ATFL) — no X-ray needed by the Ottawa rules", "Lateral malleolus fracture", "Achilles tendon rupture", "High ankle (syndesmosis) sprain"], answer: 0, why: "Inversion injury, ATFL tender but no bone tenderness at either malleolus and able to bear weight — Ottawa rules negative; positive anterior drawer." },
       plan: { options: ["PEACE & LOVE: protect, elevate, early loading, balance and proprioception training, graded return to bowling", "X-ray and a plaster for six weeks", "Complete rest for four weeks", "Surgical repair"], answer: 0, why: "Functional rehab with balance training reduces re-injury — important after a previous sprain." },
@@ -418,6 +432,11 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "Left arm held flexed at the elbow; left face slightly droopy; walks with a stick, circumducting the left leg.",
+      posture: {
+        standing: { "shoulder.left": { abd: 6, rot: 25 }, "elbow.left": { flex: 80 }, "wrist.left": { flex: 35 }, "hand.left": { flex: 70 }, "knee.left": { flex: -3 }, trunk: { abd: -3 } },
+        sitting: { "shoulder.left": { flex: 10, rot: 25 }, "elbow.left": { flex: 85 }, "wrist.left": { flex: 35 }, "hand.left": { flex: 70 } },
+        supine: { "elbow.left": { flex: 60 }, "wrist.left": { flex: 30 }, "hand.left": { flex: 60 }, "ankle.left": { flex: -20, rot: 10 } },
+      },
       strength: { "shoulder-abd.left": 2, "elbow-flex.left": 3, "elbow-ext.left": 2, "wrist-ext.left": 1, "grip.left": 2, "finger-abd.left": 1, "hip-flex.left": 3, "hip-abd.left": 2, "knee-ext.left": 3, "knee-flex.left": 2, "ankle-df.left": 1, "ehl.left": 1, "ankle-pf.left": 2 },
       strengthNote: { "shoulder-abd.left": "He hitches the shoulder with upper trapezius to lift the arm.", "hip-flex.left": "He leans back to help lift the thigh." },
       reflexes: { "biceps.left": "3+", "brachioradialis.left": "3+", "triceps.left": "3+", "patellar.left": "3+", "achilles.left": "4+" },
@@ -453,6 +472,7 @@ export const CASES: VirtualCase[] = [
     },
     findings: {
       observation: "Wide-based, slightly stiff gait.",
+      posture: { standing: { "hip.left": { abd: 5 }, "hip.right": { abd: 5 }, "hand.left": { flex: 15 }, "hand.right": { flex: 15 } } },
       strength: { "finger-abd.left": 4, "finger-abd.right": 4, "grip.left": 4, "grip.right": 4 },
       reflexes: { "biceps.left": "3+", "biceps.right": "3+", "triceps.left": "3+", "triceps.right": "3+", "brachioradialis.left": "3+", "brachioradialis.right": "3+", "patellar.left": "3+", "patellar.right": "3+", "achilles.left": "3+", "achilles.right": "3+" },
       signs: { "hoffmann.left": true, "hoffmann.right": true, "babinski.left": true, "babinski.right": true },

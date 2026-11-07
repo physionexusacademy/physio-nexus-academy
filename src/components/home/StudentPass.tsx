@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Check, Flame, GraduationCap, Layers, Ruler, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Check, Flame, GraduationCap, Layers, PersonStanding, Ruler, Trophy, Zap } from "lucide-react";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
 import { getDeck, getDueCardIds, getTeacherProfile, getTeacherProgress, TEACHER_EVENT } from "@/lib/teacher/progress";
 import { getDueReviews } from "@/lib/clinical-review-queue";
 import { SKILLS_EVENT, dueSkillCards, getSkillsDeck, getSkillsProgress, passedLevelCount } from "@/lib/skills/progress";
+import { getVpProgress, VP_EVENT } from "@/lib/virtual-patient/session";
+import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 
 const levels = [
   { name: "New Student", min: 0 },
@@ -27,6 +29,9 @@ type PassState = {
   dueSkillCards: number;
   /** Skill whose flashcards are most overdue — the review step deep-links there. */
   dueSkill: string | null;
+  /** Virtual Patient cases passed and attempted (this device). */
+  vpPassed: number;
+  vpTried: number;
   lessonToday: boolean;
   challengeToday: boolean;
   reviewToday: boolean;
@@ -58,6 +63,15 @@ function readPass(): PassState {
   } catch {
     skillLevels = 0;
   }
+  let vpPassed = 0;
+  let vpTried = 0;
+  try {
+    const records = Object.values(getVpProgress().cases);
+    vpTried = records.length;
+    vpPassed = records.filter((record) => record.passedAt).length;
+  } catch {
+    vpTried = 0;
+  }
   return {
     name: profile?.name?.trim() || null,
     xp: progress.totalXP,
@@ -69,6 +83,8 @@ function readPass(): PassState {
     skillLevels,
     dueSkillCards: skillDue.length,
     dueSkill,
+    vpPassed,
+    vpTried,
     lessonToday: Object.values(teacher.lessons).some((lesson) => lesson.completedAt === today),
     challengeToday: progress.eventIds.includes("daily-challenge:daily:" + today),
     reviewToday: progress.eventIds.includes("pna-teacher:review:" + today),
@@ -88,7 +104,7 @@ export function StudentPass() {
 
   useEffect(() => {
     refresh();
-    const events = ["pna-unified-progress-updated", "storage", TEACHER_EVENT, SKILLS_EVENT, "pna-review-queue-updated", "pna-daily-score-saved"];
+    const events = ["pna-unified-progress-updated", "storage", TEACHER_EVENT, SKILLS_EVENT, VP_EVENT, "pna-review-queue-updated", "pna-daily-score-saved"];
     events.forEach((name) => window.addEventListener(name, refresh));
     return () => events.forEach((name) => window.removeEventListener(name, refresh));
   }, [refresh]);
@@ -175,6 +191,18 @@ export function StudentPass() {
                   {pass?.skillLevels
                     ? `${pass.skillLevels} skill level${pass.skillLevels === 1 ? "" : "s"} passed${pass.dueSkillCards ? ` · ${pass.dueSkillCards} card${pass.dueSkillCards === 1 ? "" : "s"} due` : ""}`
                     : "MMT, goniometry, neuro exam & more — start at Beginner"}
+                </small>
+              </span>
+              <ArrowRight className="h-4 w-4 flex-none text-[var(--nx-dim)]" aria-hidden="true" />
+            </a>
+            <a href="/virtual-patient" className="lobby-pass-skills lobby-pass-vp">
+              <PersonStanding className="h-4 w-4 flex-none text-[var(--nx-aqua)]" aria-hidden="true" />
+              <span className="min-w-0 flex-1">
+                <strong>Virtual Patient</strong>
+                <small>
+                  {pass?.vpTried
+                    ? `${pass.vpPassed} of ${VP_CASE_COUNT} patients passed${pass.vpTried > pass.vpPassed ? ` · ${pass.vpTried - pass.vpPassed} to retry` : ""}`
+                    : `${VP_CASE_COUNT} 3D patients — take a history, examine, diagnose`}
                 </small>
               </span>
               <ArrowRight className="h-4 w-4 flex-none text-[var(--nx-dim)]" aria-hidden="true" />

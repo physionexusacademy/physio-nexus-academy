@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CheckCircle2, MessageCircle, RotateCcw, Send, ShieldAlert, Stethoscope, Trophy, XCircle } from "lucide-react";
-import { CASES, DEFAULT_ANSWER, PRACTICE_CASE, type VirtualCase } from "@/lib/virtual-patient/cases";
+import { CASES, CONSENT_ANSWER, DEFAULT_ANSWER, PRACTICE_CASE, type VirtualCase } from "@/lib/virtual-patient/cases";
 import { HISTORY, type HistoryId } from "@/lib/virtual-patient/exam";
 import { getVpProgress, VP_EVENT, type SessionResult, type VpProgress } from "@/lib/virtual-patient/session";
 import { useExam, type ExamMode, type Lang } from "./ExamContext";
@@ -16,7 +16,7 @@ const LEVEL_TONE: Record<VirtualCase["level"], string> = {
   Expert: "bg-rose-100 text-rose-900",
 };
 
-export function CasePicker({ onStart }: { onStart: (c: VirtualCase, mode: ExamMode) => void }) {
+export function CasePicker({ onStart, suggested }: { onStart: (c: VirtualCase, mode: ExamMode) => void; suggested?: string | null }) {
   const [mode, setMode] = useState<ExamMode>("guided");
   const [progress, setProgress] = useState<VpProgress>({ cases: {} });
   useEffect(() => {
@@ -26,6 +26,7 @@ export function CasePicker({ onStart }: { onStart: (c: VirtualCase, mode: ExamMo
     return () => window.removeEventListener(VP_EVENT, read);
   }, []);
   const order: VirtualCase["level"][] = ["Beginner", "Intermediate", "Advanced", "Expert"];
+  const pick = CASES.find((c) => c.id === suggested);
   return (
     <div className="p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -41,6 +42,15 @@ export function CasePicker({ onStart }: { onStart: (c: VirtualCase, mode: ExamMo
           ))}
         </div>
       </div>
+      {pick ? (
+        <div className="mt-5 rounded-2xl border border-[#2ee6d6]/60 bg-[#2ee6d6]/10 p-4 text-white" data-pna-vp-suggested={pick.id}>
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#2ee6d6]">Your patient from the Skills Lab</p>
+          <p className="mt-1 text-sm"><strong>{pick.patient.name}, {pick.patient.age}</strong> — {pick.referral}</p>
+          <button type="button" onClick={() => onStart(pick, mode)} className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-[#2ee6d6] px-4 py-2 text-sm font-extrabold text-[#04263a]">
+            Start {mode === "osce" ? "OSCE" : "guided"} examination <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
       <button type="button" onClick={() => onStart(PRACTICE_CASE, "guided")} className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-dashed border-white/25 p-4 text-left text-white hover:border-[#2ee6d6]">
         <span className="grid h-10 w-10 flex-none place-items-center rounded-xl bg-white/10"><Stethoscope className="h-5 w-5 text-[#2ee6d6]" aria-hidden="true" /></span>
         <span className="min-w-0 flex-1">
@@ -89,7 +99,7 @@ export function HistoryPanel({ lang, setLang }: { lang: Lang; setLang: (lang: La
 
   const ask = (id: HistoryId, question?: string) => {
     const item = HISTORY.find((h) => h.id === id)!;
-    const answer = caseData.history[id] ?? DEFAULT_ANSWER;
+    const answer = caseData.history[id] ?? (id === "consent" ? CONSENT_ANSWER : DEFAULT_ANSWER);
     const a = lang === "ur" ? answer.ur : answer.en;
     setChat((c) => [...c, { q: question ?? (lang === "ur" ? item.ur : item.en), a }]);
     say(a);

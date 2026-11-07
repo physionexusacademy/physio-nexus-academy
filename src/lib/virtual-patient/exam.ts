@@ -212,10 +212,11 @@ export const TAPE: { id: TapeId; label: string; how: string; base: number; from?
 /* ------------------------------------------------------------------ */
 
 export type HistoryId =
-  | "complaint" | "onset" | "location" | "behaviour" | "night" | "severity" | "neuro" | "bladder"
+  | "consent" | "complaint" | "onset" | "location" | "behaviour" | "night" | "severity" | "neuro" | "bladder"
   | "redflags" | "pmh" | "previous" | "social" | "goals";
 
 export const HISTORY: { id: HistoryId; group: string; en: string; ur: string; keywords: RegExp }[] = [
+  { id: "consent", group: "Introduction", en: "Hello, I'm your physiotherapist. Is it okay if I ask some questions and examine you?", ur: "Assalam-o-alaikum, main aap ka physiotherapist hoon. Kya main aap se kuch questions pooch sakta hoon aur examination kar sakta hoon?", keywords: /\b(hello|hi|introduc|consent|okay if|permission|ijazat|assalam|salam)\b/i },
   { id: "complaint", group: "Presenting complaint", en: "What brings you in today?", ur: "Aaj aap kis problem ki wajah se aaye hain?", keywords: /\b(bring|problem|wrong|complain|help|wajah|masla|takleef|issue)\b/i },
   { id: "onset", group: "Presenting complaint", en: "When and how did it start?", ur: "Yeh kab aur kaise start hua?", keywords: /\b(start|began|when|how long|injur|onset|kab|shuru)\b/i },
   { id: "location", group: "Pain", en: "Where exactly is it? Does it spread anywhere?", ur: "Pain exactly kahan hai? Kahin aur bhi spread hota hai?", keywords: /\b(where|location|spread|radiat|travel|kahan|jaata|jata)\b/i },
@@ -251,6 +252,8 @@ export type CaseFindings = {
   tape?: Partial<Record<SideKey<TapeId>, number>>; // cm added to the healthy value
   vitals?: { hr: number; bp: string; rr: number; spo2: number; temp: number };
   observation?: string;
+  /** How the patient holds himself in each position (e.g. a flexed arm after stroke, a dropped foot). */
+  posture?: Partial<Record<PatientPosition, Pose>>;
 };
 
 export const HEALTHY_VITALS = { hr: 74, bp: "122/78", rr: 14, spo2: 98, temp: 36.8 };

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { NERVE_LABEL } from "@/lib/virtual-patient/anatomy";
+import { KEY_POINTS, SOFT_SITES } from "@/lib/virtual-patient/points";
 import type { PatientPosition, PickResult, Side } from "@/lib/virtual-patient/engine";
 import {
   HEALTHY_VITALS, MOTIONS, MUSCLE_TESTS, REFLEXES, REFLEX_AMPLITUDE, SPECIAL_TESTS, TAPE,
@@ -26,7 +27,36 @@ const LANDMARK_NAMES: Record<string, string> = {
   "greater-trochanter": "Greater trochanter", "ischial-tuberosity": "Ischial tuberosity", patella: "Patella", "tibial-tuberosity": "Tibial tuberosity",
   "popliteal-fossa": "Popliteal fossa", "fibular-head": "Head of the fibula", "medial-malleolus": "Medial malleolus",
   "lateral-malleolus": "Lateral malleolus", "dorsalis-pedis": "Dorsalis pedis pulse", calcaneus: "Calcaneus",
+  ...Object.fromEntries(SOFT_SITES.map((s) => [s.id, s.name])),
 };
+/** Palpation quick list: bony landmarks and soft-tissue sites, by body region. */
+const LANDMARK_GROUPS: { group: string; ids: string[] }[] = [
+  { group: "Neck and trunk", ids: ["c7", "suprasternal-notch", "sternal-angle", "xiphoid", "umbilicus"] },
+  { group: "Shoulder", ids: ["ac-joint", "coracoid", "subacromial", "bicipital-groove", "scapular-spine", "inferior-angle"] },
+  { group: "Elbow and wrist", ids: ["lateral-epicondyle", "common-extensor-origin", "medial-epicondyle", "olecranon", "radial-styloid"] },
+  { group: "Pelvis and hip", ids: ["iliac-crest", "asis", "psis", "greater-trochanter", "ischial-tuberosity", "femoral-pulse"] },
+  { group: "Knee", ids: ["patella", "tibial-tuberosity", "medial-joint-line", "lateral-joint-line", "popliteal-fossa", "fibular-head"] },
+  { group: "Ankle and foot", ids: ["lateral-malleolus", "atfl", "medial-malleolus", "calcaneus", "dorsalis-pedis"] },
+];
+const MIDLINE = new Set(["c7", "suprasternal-notch", "sternal-angle", "xiphoid", "umbilicus"]);
+
+/** "Go to" picker shared by Palpate and Sensation: choose a point and a side instead of tapping. */
+function QuickPoint({ label, options, onGo }: { label: string; options: { id: string; label: string; group?: string }[]; onGo: (id: string, side: Side) => void }) {
+  const [id, setId] = useState("");
+  const [side, setSide] = useState<Side>("left");
+  return (
+    <div className="mt-3 rounded-2xl border border-slate-200 p-3">
+      <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500">{label}</p>
+      <div className="mt-2 flex flex-wrap items-end gap-2">
+        <div className="min-w-0 flex-1">
+          <Select label="Point" value={id} onChange={setId} options={[{ id: "", label: "Choose…" }, ...options]} />
+        </div>
+        <SidePicker side={side} onChange={setSide} />
+        <Btn primary disabled={!id} onClick={() => id && onGo(id, side)}>Test</Btn>
+      </div>
+    </div>
+  );
+}
 
 function SidePicker({ side, onChange, disabled }: { side: Side; onChange: (side: Side) => void; disabled?: boolean }) {
   return (
@@ -112,8 +142,9 @@ function LookTool() {
 function PalpateTool({ registerPick }: { registerPick: (h: PickHandler) => void }) {
   const { caseData, log, say, mode, room } = useExam();
   const [last, setLast] = useState<{ name: string; tender: string | null } | null>(null);
+  const handler = useRef<PickHandler>(null);
   useEffect(() => {
-    registerPick((pick) => {
+    handler.current = (pick) => {
       if (!pick) return;
       const landmark = pick.landmark?.id ?? null;
       const tender = tenderFor(caseData.findings, pick.side, landmark, pick.region);
@@ -123,17 +154,20 @@ function PalpateTool({ registerPick }: { registerPick: (h: PickHandler) => void 
       setLast({ name: `${name} (${pick.side})`, tender });
       if (hurts) say(tender!.startsWith("“") ? tender!.replace(/[“”]/g, "") : "Ouch — that's sore.");
       log({ kind: "palpate", side: pick.side, landmark, region: pick.region, tender: hurts });
-    });
+    };
+    registerPick(handler.current);
     return () => registerPick(null);
   }, [caseData, log, say, registerPick, room]);
+  const options = LANDMARK_GROUPS.flatMap(({ group, ids }) => ids.filter((id) => room.landmarkIds().includes(id)).map((id) => ({ id, label: LANDMARK_NAMES[id] ?? title(id), group })));
   return (
     <div>
-      <p className="text-sm leading-6 text-slate-700">Tap the body to palpate. Compare both sides.</p>
+      <p className="text-sm leading-6 text-slate-700">Tap the body to palpate, or pick a landmark below. Compare both sides.</p>
       {last ? (
         <Note tone={last.tender && !/not tender/i.test(last.tender) ? "warn" : "info"}>
           <strong>{mode === "guided" ? last.name : "You palpate here."}</strong> {last.tender ?? "Not tender. Normal texture and temperature."}
         </Note>
       ) : null}
+      <QuickPoint label="Go to a landmark" options={options} onGo={(id, side) => handler.current?.(room.landmarkPick(id, MIDLINE.has(id) ? "left" : side))} />
       <div className="mt-3"><Btn onClick={() => room.clearMarkers()}>Clear marks</Btn></div>
     </div>
   );
@@ -151,8 +185,9 @@ function SensationTool({ registerPick }: { registerPick: (h: PickHandler) => voi
   const { caseData, log, say, mode, lang, room } = useExam();
   const [modality, setModality] = useState<"touch" | "pin">("touch");
   const [last, setLast] = useState<string | null>(null);
+  const handler = useRef<PickHandler>(null);
   useEffect(() => {
-    registerPick((pick) => {
+    handler.current = (pick) => {
       if (!pick) return;
       if (pick.covered) {
         setLast("Under the shorts — not tested in this simulator.");
@@ -164,9 +199,15 @@ function SensationTool({ registerPick }: { registerPick: (h: PickHandler) => voi
       const map = [pick.dermatome ? `Dermatome ${pick.dermatome}` : pick.nerve === "trigeminal" ? "Trigeminal nerve" : null, pick.nerve && pick.nerve !== "trigeminal" ? NERVE_LABEL[pick.nerve] : null].filter(Boolean).join(" · ");
       setLast(`${pick.region} (${pick.side}): ${response}${mode === "guided" && map ? ` — ${map}` : ""}`);
       log({ kind: "sensation", side: pick.side, dermatome: pick.dermatome, nerve: pick.nerve, region: pick.region, response });
-    });
+    };
+    registerPick(handler.current);
     return () => registerPick(null);
   }, [caseData, log, say, registerPick, room, mode, lang]);
+  const keyOptions = KEY_POINTS.map((k) => ({ id: k.id, label: k.group === "Nerve zones" ? `${k.label} — ${k.where.toLowerCase()}` : `${k.id} — ${k.where.toLowerCase()}`, group: k.group }));
+  const testKeyPoint = (id: string, side: Side) => {
+    const point = KEY_POINTS.find((k) => k.id === id);
+    if (point) handler.current?.(room.probeSkin(point.probe, side));
+  };
   return (
     <div>
       <div className="inline-flex rounded-full border border-slate-200 p-0.5">
@@ -176,6 +217,7 @@ function SensationTool({ registerPick }: { registerPick: (h: PickHandler) => voi
       </div>
       <p className="mt-2 text-sm leading-6 text-slate-700">His eyes are closed. Tap the skin to test, then the same point on the other side. Green = normal, amber = reduced, red = absent, purple = tingling.</p>
       {last ? <Note>{last}</Note> : null}
+      <QuickPoint label="Quick test — key points" options={keyOptions} onGo={testKeyPoint} />
       <div className="mt-3"><Btn onClick={() => room.clearMarkers()}>Clear marks</Btn></div>
     </div>
   );

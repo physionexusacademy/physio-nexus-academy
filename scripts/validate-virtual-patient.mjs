@@ -17,8 +17,10 @@ const entry = `
 export { CASES, PRACTICE_CASE } from "@/lib/virtual-patient/cases";
 export * as exam from "@/lib/virtual-patient/exam";
 export { classifySurface } from "@/lib/virtual-patient/anatomy";
-export { scoreSession, examKeyDone } from "@/lib/virtual-patient/session";
+export { scoreSession, examKeyDone, historyKeys } from "@/lib/virtual-patient/session";
 export { default as rig } from "@/lib/virtual-patient/generated/rig.json";
+export { SOFT_SITE_IDS, KEY_POINTS } from "@/lib/virtual-patient/points";
+export { SKILL_CASES, VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 `;
 const result = await build({
   stdin: { contents: entry, resolveDir: root, loader: "ts" },
@@ -41,7 +43,7 @@ const result = await build({
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pna-vp-"));
 const file = path.join(dir, "vp.mjs");
 fs.writeFileSync(file, result.outputFiles[0].text);
-const { CASES, PRACTICE_CASE, exam, classifySurface, scoreSession, examKeyDone, rig } = await import(pathToFileURL(file).href);
+const { CASES, PRACTICE_CASE, exam, classifySurface, scoreSession, examKeyDone, historyKeys, rig, SOFT_SITE_IDS, KEY_POINTS, SKILL_CASES, VP_CASE_COUNT } = await import(pathToFileURL(file).href);
 
 const failures = [];
 const fail = (where, message) => failures.push(`${where}: ${message}`);
@@ -89,7 +91,7 @@ const TAPE = new Set(exam.TAPE.map((t) => t.id));
 const HISTORY = new Set(exam.HISTORY.map((h) => h.id));
 const DERMATOMES = new Set(["C2", "C3", "C4", "C5", "C6", "C7", "C8", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12", "L1", "L2", "L3", "L4", "L5", "S1", "S2"]);
 const NERVES = new Set(["trigeminal", "axillary", "radial", "musculocutaneous", "median", "ulnar", "medial-antebrachial", "lateral-femoral-cutaneous", "femoral", "obturator", "saphenous", "superficial-fibular", "deep-fibular", "sural", "tibial", "posterior-femoral-cutaneous"]);
-const LANDMARKS = new Set(Object.keys(rig.landmarks));
+const LANDMARKS = new Set([...Object.keys(rig.landmarks), ...SOFT_SITE_IDS]);
 const keyOf = (k) => k.replace(/\.(left|right)$/, "");
 
 for (const c of [...CASES, PRACTICE_CASE]) {
@@ -137,9 +139,10 @@ for (const c of [...CASES, PRACTICE_CASE]) {
   }
   if (c.teaching.length < 2) fail(at("teaching"), "add take-home points");
 
-  // A perfect student: asks every key question, performs and records every key test correctly.
+  // A perfect student: introduces themselves and asks consent, asks every key question,
+  // performs and records every key test correctly.
   const events = [];
-  for (const id of c.key.history) events.push({ kind: "history", id });
+  for (const id of historyKeys(c)) events.push({ kind: "history", id });
   for (const key of c.key.exam) {
     const [type, value] = key.split(":");
     if (type === "rom") events.push({ kind: "rom", motion: value, side: "left", truth: 0, recorded: 0 });
@@ -156,7 +159,22 @@ for (const c of [...CASES, PRACTICE_CASE]) {
   if (perfect.total !== 100 || !perfect.passed) fail(at("scoring"), `perfect student scored ${perfect.total}`);
   const wrongPlan = (c.questions.plan.answer + 1) % c.questions.plan.options.length;
   const missed = scoreSession(c, events, { diagnosis: c.questions.diagnosis.answer, plan: wrongPlan });
+  const noConsent = scoreSession(c, events.filter((e) => !(e.kind === "history" && e.id === "consent")), { diagnosis: c.questions.diagnosis.answer, plan: c.questions.plan.answer });
+  if (noConsent.total >= 100) fail(at("scoring"), "skipping the introduction and consent must cost marks");
   if (c.key.redFlag && (missed.total > 40 || !missed.missedRedFlag)) fail(at("scoring"), "a missed red flag must cap the score at 40");
+}
+
+/* ---------- Skills Lab → case links ---------- */
+if (VP_CASE_COUNT !== CASES.length) fail("links", `VP_CASE_COUNT is ${VP_CASE_COUNT} but there are ${CASES.length} cases`);
+const skillSlugs = JSON.parse(fs.readFileSync(path.join(root, "src/lib/skills/generated/skills-index.json"), "utf8"));
+for (const slug of (skillSlugs.skills ?? skillSlugs).map((s) => s.slug)) if (!SKILL_CASES[slug]?.length) fail("links", `skill ${slug} has no Virtual Patient case`);
+for (const [slug, list] of Object.entries(SKILL_CASES)) for (const link of list) if (!CASES.some((c) => c.id === link.id)) fail("links", `${slug} links to unknown case ${link.id}`);
+
+/* ---------- Key points for the Sensation quick test ---------- */
+for (const k of KEY_POINTS) {
+  const known = k.group === "Dermatome key points" ? DERMATOMES : NERVES;
+  if (!known.has(k.id)) fail("key points", `${k.id} is not a known ${k.group === "Dermatome key points" ? "dermatome" : "nerve"}`);
+  if (!(k.probe.radius > 0) || k.probe.origin.some((n) => !Number.isFinite(n))) fail("key points", `${k.id} probe is invalid`);
 }
 
 /* ---------- 4. Findings match each diagnosis ---------- */

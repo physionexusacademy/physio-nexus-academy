@@ -28,10 +28,20 @@ export function SpeechBubble({ room, text }: { room: ExamRoom; text: string | nu
   if (!text) return null;
   const head = room.project(room.headWorld().add(new THREE.Vector3(0, 0.06, 0)));
   if (!head.visible) return null;
-  const left = Math.max(8, Math.min(head.x - 20, (room.renderer.domElement.clientWidth || 600) - 268));
-  const top = Math.max(52, head.y - 86);
+  const width = room.renderer.domElement.clientWidth || 600;
+  // Above his head when there is room under the toolbar; otherwise beside it (on the roomier
+  // side, narrowed on phones), so it never covers his face.
+  const rightSpace = width - head.x - 36;
+  const leftSpace = head.x - 36;
+  const sideWidth = Math.min(260, Math.max(rightSpace, leftSpace) - 8);
+  const minTop = Math.max(52, room.viewInsetTop + 6);
+  const above = head.y - 86 >= minTop || sideWidth < 140;
+  const bubbleWidth = above ? Math.min(260, width - 16) : sideWidth;
+  const beside = rightSpace >= leftSpace ? head.x + 36 : head.x - 36 - bubbleWidth;
+  const left = Math.max(8, Math.min(above ? head.x - 20 : beside, width - bubbleWidth - 8));
+  const top = above ? Math.max(minTop, head.y - 86) : Math.max(minTop, head.y - 24);
   return (
-    <div className="vp-bubble pointer-events-none absolute z-10 w-[260px]" style={{ left, top }} role="status" aria-live="polite">
+    <div className="vp-bubble pointer-events-none absolute z-10" style={{ left, top, width: bubbleWidth }} role="status" aria-live="polite">
       <div className="rounded-2xl rounded-bl-sm bg-white px-3.5 py-2.5 text-[13px] font-semibold leading-5 text-[#0a1f3d] shadow-[0_18px_40px_-18px_rgba(5,20,45,0.8)]">{text}</div>
     </div>
   );

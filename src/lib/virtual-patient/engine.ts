@@ -15,6 +15,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import rig from "./generated/rig.json";
 import { classifySurface, type SurfaceInfo } from "./anatomy";
+import { SOFT_SITES, mirrorProbe, type SkinProbe } from "./points";
 
 export type Side = "left" | "right";
 export type PatientPosition = "standing" | "supine" | "prone" | "sitting" | "sidelying";
@@ -50,6 +51,8 @@ export const PLINTH = { length: 1.95, width: 0.68, height: 0.66 };
 /* ------------------------------------------------------------------ */
 
 const restBone = new Map(RIG.bones.map((b) => [b.name, b]));
+/** GLTFLoader strips dots from bone names ("foot.L" → "footL"); map them back to the rig names. */
+const rigName = new Map(RIG.bones.map((b) => [sanitize(b.name), b.name]));
 const head = (name: string) => V(restBone.get(name)!.head);
 
 /** Rotation taking frame (a1, a2) onto frame (b1, b2): long axis + a reference direction. */
@@ -142,6 +145,8 @@ export class ExamRoom {
   private pose: Pose = {};
   /** The posture that defines the current position (e.g. hips and knees bent in sitting). */
   private basePose: Pose = {};
+  /** How this patient holds himself in each position (set per case). */
+  private casePosture: Partial<Record<PatientPosition, Pose>> = {};
   private target: Pose = {};
   private from: Pose = {};
   private tween: { start: number; duration: number } | null = null;
@@ -155,6 +160,19 @@ export class ExamRoom {
   readonly extras = new THREE.Group(); // tools (goniometer, tape, markers) live here
   private disposed = false;
   private boundsDirty = true;
+  /** Bony landmarks from the rig plus soft-tissue sites found on the mesh at load. */
+  private landmarks: RigData["landmarks"] = { ...RIG.landmarks };
+  /** Rest-pose (bind) position of every skin vertex, for surface lookup. */
+  private bindPositions: Float32Array | null = null;
+  /**
+   * Geometry → rest-pose body coordinates. The model's vertices are stored quantised
+   * (KHR_mesh_quantization folds the de-quantisation into the inverse bind matrices),
+   * so raw positions must go through a bone's inverse bind matrix and back out by that
+   * bone's rest position (every bone rests with identity rotation).
+   */
+  private restFromGeometry = new THREE.Matrix4();
+  /** Height (CSS px) of the toolbar laid over the top of the view; framing keeps the patient below it. */
+  viewInsetTop = 0;
 
   constructor(private container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
@@ -190,7 +208,10 @@ export class ExamRoom {
 
   private buildRoom() {
     const pmrem = new THREE.PMREMGenerator(this.renderer);
-    this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    const environment = new RoomEnvironment();
+    this.scene.environment = pmrem.fromScene(environment, 0.04).texture;
+    environment.dispose();
+    pmrem.dispose();
     this.scene.background = new THREE.Color("#e8eef3");
     this.scene.fog = new THREE.Fog("#e8eef3", 7, 14);
 
@@ -253,6 +274,7 @@ export class ExamRoom {
       if (event.total) onProgress?.(event.loaded / event.total);
     });
     if (this.disposed) return;
+    const originals: THREE.Material[] = [];
     gltf.scene.traverse((object) => {
       if ((object as THREE.Bone).isBone) this.bones.set(object.name, object as THREE.Bone);
       const mesh = object as THREE.SkinnedMesh;
@@ -261,6 +283,7 @@ export class ExamRoom {
         mesh.frustumCulled = false;
         const material = mesh.material as THREE.MeshStandardMaterial;
         if (material.name === "skin" && !this.skinned) {
+          originals.push(material);
           this.skinned = mesh;
           mesh.material = new THREE.MeshPhysicalMaterial({
             map: material.map,
@@ -276,6 +299,20 @@ export class ExamRoom {
     });
     // The three primitives (skin, eyes) share one skeleton; the skin is the pick target.
     this.patientRoot.add(gltf.scene);
+    this.originalMaterials = originals;
+    if (this.skinned) {
+      const skeleton = this.skinned.skeleton;
+      const rootName = rigName.get(skeleton.bones[0]?.name ?? "") ?? "root";
+      this.restFromGeometry = new THREE.Matrix4()
+        .makeTranslation(head(rootName))
+        .multiply(skeleton.boneInverses[0])
+        .multiply(this.skinned.bindMatrix);
+    }
+    for (const site of SOFT_SITES) {
+      const left = this.findSkin(site.probe);
+      const right = this.findSkin(mirrorProbe(site.probe));
+      if (left >= 0 && right >= 0) this.landmarks[site.id] = { left: this.vertexAnchor(left), right: this.vertexAnchor(right) };
+    }
     this.setPosition("standing", false);
     this.invalidate();
   }
@@ -310,11 +347,30 @@ export class ExamRoom {
       this.listeners.forEach((listener) => listener());
     }
   }
+  private originalMaterials: THREE.Material[] = [];
   dispose() {
     this.disposed = true;
     cancelAnimationFrame(this.frame);
     this.resizeObserver.disconnect();
     this.controls.dispose();
+    // Free GPU memory: geometries, materials and their textures, the environment map.
+    const textures = new Set<THREE.Texture>();
+    const materials = new Set<THREE.Material>(this.originalMaterials);
+    this.scene.traverse((object) => {
+      const mesh = object as THREE.Mesh;
+      mesh.geometry?.dispose();
+      const list = Array.isArray(mesh.material) ? mesh.material : mesh.material ? [mesh.material] : [];
+      list.forEach((m) => materials.add(m));
+    });
+    materials.forEach((material) => {
+      Object.values(material).forEach((value) => {
+        if ((value as THREE.Texture)?.isTexture) textures.add(value as THREE.Texture);
+      });
+      material.dispose();
+    });
+    if (this.scene.environment) textures.add(this.scene.environment);
+    textures.forEach((texture) => texture.dispose());
+    this.skinned?.skeleton.dispose();
     this.renderer.dispose();
     this.renderer.domElement.remove();
   }
@@ -477,6 +533,11 @@ export class ExamRoom {
   /* ---------------- patient positions ---------------- */
 
   /** Places the patient: standing beside the plinth, or on it (supine, prone, sitting, side-lying). */
+  /** Case-specific resting posture (merged under each position's own posture). */
+  setCasePosture(posture: Partial<Record<PatientPosition, Pose>> | undefined) {
+    this.casePosture = structuredClone(posture ?? {});
+  }
+
   setPosition(position: PatientPosition, animate = true, options: { down?: Side } = {}) {
     this.position = position;
     if (options.down) this.downSide = options.down;
@@ -499,8 +560,9 @@ export class ExamRoom {
         [`shoulder.${down}`]: { flex: 80 }, [`elbow.${down}`]: { flex: 70 }, [`shoulder.${up}`]: { flex: 10 },
       });
     }
-    this.basePose = base;
-    this.setPose(base, { animate: false, replace: true });
+    const merged: Pose = { ...structuredClone(this.casePosture[position] ?? {}), ...base };
+    this.basePose = merged;
+    this.setPose(merged, { animate: false, replace: true });
     // Orientation bases: where the patient's left (x), head (y) and face (z) point.
     const basis = (x: number[], y: number[], z: number[]) =>
       root.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(V(x), V(y), V(z)));
@@ -551,20 +613,27 @@ export class ExamRoom {
   /** Points the camera at the whole patient, or at a body part. */
   frameCamera(animate = true, focus?: THREE.Vector3, distance?: number) {
     const box = this.bodyBox();
+    const lying = this.position === "supine" || this.position === "prone" || this.position === "sidelying";
+    const height = this.container.clientHeight || 1;
+    // The part of the view not covered by the toolbar (phones wrap it onto two rows).
+    const free = Math.min(1, Math.max(0.6, (height - this.viewInsetTop) / height));
     const centre = focus ?? box.getCenter(new THREE.Vector3());
-    // Fit the whole patient: distance from the bounding-sphere radius and the narrower field of view.
+    // Fit the whole patient: distance from the bounding-sphere radius and the narrower free field of view.
     const radius = box.getBoundingSphere(new THREE.Sphere()).radius;
     const vfov = this.camera.fov * DEG;
+    const freeVfov = 2 * Math.atan(Math.tan(vfov / 2) * free);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.camera.aspect);
-    const size = distance ?? Math.max(1.2, (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 0.95);
-    const lying = this.position === "supine" || this.position === "prone" || this.position === "sidelying";
+    const size = distance ?? Math.max(1.2, (radius / Math.sin(Math.min(freeVfov, hfov) / 2)) * (lying ? 0.95 : 1.05));
+    // Centre him in the free area: raise the aim point by half the toolbar height (in world units at that distance).
+    const worldPerPixel = (2 * size * Math.tan(vfov / 2)) / height;
+    const target = centre.clone().add(new THREE.Vector3(0, (this.viewInsetTop / 2) * worldPerPixel + (lying || focus ? 0 : 0.03), 0));
     const dir = lying
       ? new THREE.Vector3(this.position === "sidelying" && this.downSide === "right" ? -1.15 : 1.15, 0.85, 0.45).normalize()
       : new THREE.Vector3(0.55, 0.22, 1).normalize();
-    const goal = centre.clone().add(dir.multiplyScalar(size));
+    const goal = target.clone().add(dir.multiplyScalar(size));
     if (!animate) {
       this.camera.position.copy(goal);
-      this.controls.target.copy(centre);
+      this.controls.target.copy(target);
       this.invalidate();
       return;
     }
@@ -575,7 +644,7 @@ export class ExamRoom {
       const t = Math.min(1, (now - start) / 600);
       const e = 1 - Math.pow(1 - t, 3);
       this.camera.position.lerpVectors(startPos, goal, e);
-      this.controls.target.lerpVectors(startTarget, centre, e);
+      this.controls.target.lerpVectors(startTarget, target, e);
       this.invalidate();
       if (t < 1 && !this.disposed) requestAnimationFrame(step);
     };
@@ -597,13 +666,13 @@ export class ExamRoom {
 
   /** World position of a palpation landmark in the current pose and position. */
   landmarkWorld(id: string, side: Side | "mid" = "left") {
-    const lm = RIG.landmarks[id];
+    const lm = this.landmarks[id];
     const anchor = (side === "mid" ? lm?.mid : lm?.[side]) ?? lm?.mid ?? lm?.left;
     if (!anchor) throw new Error(`Unknown landmark ${id}`);
     return this.anchorWorld(anchor);
   }
   landmarkIds() {
-    return Object.keys(RIG.landmarks);
+    return Object.keys(this.landmarks);
   }
 
   /** World position of a joint centre (bone head). */
@@ -645,7 +714,7 @@ export class ExamRoom {
     const bary = new THREE.Triangle(posed[0], posed[1], posed[2]).getBarycoord(local, new THREE.Vector3()) ?? new THREE.Vector3(1 / 3, 1 / 3, 1 / 3);
     const position = mesh.geometry.getAttribute("position");
     const bind = [a, b, c]
-      .map((i) => new THREE.Vector3().fromBufferAttribute(position, i).applyMatrix4(mesh.bindMatrix))
+      .map((i) => new THREE.Vector3().fromBufferAttribute(position, i).applyMatrix4(this.restFromGeometry))
       .reduce((sum, p, k) => sum.addScaledVector(p, [bary.x, bary.y, bary.z][k]), new THREE.Vector3());
     const skinIndex = mesh.geometry.getAttribute("skinIndex");
     const skinWeight = mesh.geometry.getAttribute("skinWeight");
@@ -655,18 +724,124 @@ export class ExamRoom {
       weights.set(j, (weights.get(j) ?? 0) + skinWeight.getComponent(i, k));
     }
     const dominant = [...weights.entries()].sort((x, y) => y[1] - x[1])[0][0];
-    const boneName = mesh.skeleton.bones[dominant]?.name ?? "";
-    const info = classifySurface([bind.x, bind.y, bind.z], boneName);
+    const normal = (hit.normal ?? new THREE.Vector3(0, 1, 0)).clone().transformDirection(mesh.matrixWorld);
+    return this.surface(bind, dominant, hit.point.clone(), normal);
+  }
 
-    let landmark: PickResult["landmark"] = null;
-    for (const id of Object.keys(RIG.landmarks)) {
-      for (const side of Object.keys(RIG.landmarks[id]) as (Side | "mid")[]) {
-        const d = this.landmarkWorld(id, side).distanceTo(hit.point);
-        if (d < 0.045 && (!landmark || d < landmark.distance)) landmark = { id, side, distance: d };
+  /** Builds a pick result for a skin point: region, dermatome, nerve and the nearest landmark. */
+  private surface(bind: THREE.Vector3, dominantJoint: number, point: THREE.Vector3, normal: THREE.Vector3, landmark?: PickResult["landmark"]): PickResult {
+    const boneName = this.skinned?.skeleton.bones[dominantJoint]?.name ?? "";
+    const info = classifySurface([bind.x, bind.y, bind.z], boneName);
+    let nearest: PickResult["landmark"] = landmark ?? null;
+    if (landmark === undefined) {
+      for (const id of Object.keys(this.landmarks)) {
+        for (const side of Object.keys(this.landmarks[id]) as (Side | "mid")[]) {
+          const d = this.landmarkWorld(id, side).distanceTo(point);
+          if (d < 0.045 && (!nearest || d < nearest.distance)) nearest = { id, side, distance: d };
+        }
       }
     }
-    const normal = (hit.normal ?? new THREE.Vector3(0, 1, 0)).clone().transformDirection(mesh.matrixWorld);
-    return { ...info, bone: boneName, point: hit.point.clone(), normal, landmark };
+    return { ...info, bone: boneName, point, normal, landmark: nearest };
+  }
+
+  /* ---------------- named skin points (no tap needed) ---------------- */
+
+  private bindPositionsOf() {
+    if (this.bindPositions || !this.skinned) return this.bindPositions;
+    const mesh = this.skinned;
+    const position = mesh.geometry.getAttribute("position");
+    const out = new Float32Array(position.count * 3);
+    const v = new THREE.Vector3();
+    for (let i = 0; i < position.count; i++) {
+      v.fromBufferAttribute(position, i).applyMatrix4(this.restFromGeometry);
+      out[i * 3] = v.x;
+      out[i * 3 + 1] = v.y;
+      out[i * 3 + 2] = v.z;
+    }
+    this.bindPositions = out;
+    return out;
+  }
+  /** The outermost skin vertex along a rest-pose probe ray (−1 if none). */
+  private findSkin(probe: SkinProbe) {
+    const bind = this.bindPositionsOf();
+    if (!bind) return -1;
+    const [ox, oy, oz] = probe.origin;
+    const [dx, dy, dz] = probe.dir;
+    const tolerance = Math.min(probe.radius, 0.022);
+    let best = -1;
+    let score = -Infinity;
+    for (let i = 0; i < bind.length / 3; i++) {
+      const rx = bind[i * 3] - ox, ry = bind[i * 3 + 1] - oy, rz = bind[i * 3 + 2] - oz;
+      const along = rx * dx + ry * dy + rz * dz;
+      if (along <= 0 || along > 0.25) continue;
+      const off = Math.hypot(rx - dx * along, ry - dy * along, rz - dz * along);
+      if (off <= tolerance && along > score) {
+        score = along;
+        best = i;
+      }
+    }
+    return best;
+  }
+  private nearestVertex(p: number[]) {
+    const bind = this.bindPositionsOf();
+    if (!bind) return -1;
+    let best = -1;
+    let d = Infinity;
+    for (let i = 0; i < bind.length / 3; i++) {
+      const e = (bind[i * 3] - p[0]) ** 2 + (bind[i * 3 + 1] - p[1]) ** 2 + (bind[i * 3 + 2] - p[2]) ** 2;
+      if (e < d) {
+        d = e;
+        best = i;
+      }
+    }
+    return best;
+  }
+  private skinOf(i: number) {
+    const geometry = this.skinned!.geometry;
+    const index = geometry.getAttribute("skinIndex");
+    const weight = geometry.getAttribute("skinWeight");
+    const out: { joint: number; weight: number }[] = [];
+    for (let k = 0; k < 4; k++) {
+      const w = weight.getComponent(i, k);
+      if (w > 0) out.push({ joint: index.getComponent(i, k), weight: w });
+    }
+    return out.sort((a, b) => b.weight - a.weight);
+  }
+  private vertexAnchor(i: number): Anchor {
+    const bind = this.bindPositionsOf()!;
+    const skin = this.skinOf(i);
+    const names = skin.map((s) => rigName.get(this.skinned!.skeleton.bones[s.joint]?.name ?? "") ?? "");
+    const total = skin.reduce((sum, s) => sum + s.weight, 0) || 1;
+    return {
+      p: [bind[i * 3], bind[i * 3 + 1], bind[i * 3 + 2]],
+      b: names.filter(Boolean),
+      w: skin.filter((_, k) => names[k]).map((s) => s.weight / total),
+    };
+  }
+  /** Pick result for skin vertex i in the current pose. */
+  private vertexPick(i: number, landmark?: PickResult["landmark"]): PickResult | null {
+    const mesh = this.skinned;
+    const bind = this.bindPositionsOf();
+    if (!mesh || !bind || i < 0) return null;
+    this.patientRoot.updateMatrixWorld(true);
+    mesh.skeleton.update();
+    const point = mesh.getVertexPosition(i, new THREE.Vector3()).applyMatrix4(mesh.matrixWorld);
+    const skin = this.skinOf(i);
+    const bone = mesh.skeleton.bones[skin[0]?.joint ?? 0];
+    const normal = bone ? point.clone().sub(new THREE.Vector3().setFromMatrixPosition(bone.matrixWorld)).normalize() : new THREE.Vector3(0, 1, 0);
+    return this.surface(new THREE.Vector3(bind[i * 3], bind[i * 3 + 1], bind[i * 3 + 2]), skin[0]?.joint ?? 0, point, normal, landmark);
+  }
+  /** The skin point a rest-pose probe finds on one side (e.g. a dermatome key point). */
+  probeSkin(probe: SkinProbe, side: Side) {
+    return this.vertexPick(this.findSkin(side === "left" ? probe : mirrorProbe(probe)));
+  }
+  /** A pick result for a named landmark, as if the student had tapped exactly on it. */
+  landmarkPick(id: string, side: Side) {
+    const lm = this.landmarks[id];
+    const key: Side | "mid" = lm?.[side] ? side : "mid";
+    const anchor = lm?.[key];
+    if (!anchor) return null;
+    return this.vertexPick(this.nearestVertex(anchor.p), { id, side: key, distance: 0 });
   }
 
   /* ---------------- tool props: markers, tape ---------------- */
