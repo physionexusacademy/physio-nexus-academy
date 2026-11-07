@@ -74,6 +74,9 @@ function checkSkill(skill: SkillDefinition, data: SkillData) {
   for (const level of LEVELS) if (!skill.goals[level]) fail(at("goals"), `missing goal for ${level}`);
   if (skill.sources.length < 2) fail(at("sources"), "cite at least two sources");
   for (const link of skill.related ?? []) if (!linkExists(link.href)) fail(at("related"), `dead link ${link.href}`);
+  // "Examine 15 key nerves…" must match the atlas, so marketing copy never drifts from the content.
+  const counted = /\b(\d+)\s+(?:[A-Za-z-]+\s+){0,4}?(joint motions|nerves|tests|muscles|deviations|landmarks)\b/.exec(skill.summary);
+  if (counted && Number(counted[1]) !== skill.atlas.length) fail(at("summary"), `says ${counted[1]} ${counted[2]} but the atlas has ${skill.atlas.length}`);
 
   // Concepts: every level taught.
   const conceptIds = new Set<string>();

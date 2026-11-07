@@ -621,7 +621,7 @@ export const goniometrySkill: SkillDefinition = {
   keywords: "goniometer goniometry rom range of motion joint angle measurement aaom aaos end feel naapna",
   phase: "measure",
   icon: "goniometer",
-  summary: "Measure joint range like an expert: landmarks, axis and arm alignment, normal ranges, end-feels and substitutions for 38 joint motions — with a drag-the-goniometer trainer.",
+  summary: "Measure joint range like an expert: landmarks, axis and arm alignment, normal ranges, end-feels and substitutions for 39 joint motions — with a drag-the-goniometer trainer.",
   ur: "Joint ki range ko goniometer se sahi naapna — axis, arms, normal values, end-feel aur ghaltiyon ke saath.",
   atlasLabel: "Joint measurement atlas",
   sources: [

@@ -334,8 +334,8 @@ export const palpationSkill: SkillDefinition = {
   keywords: "palpation surface anatomy surface marking bony landmarks pulses spinal levels ottawa rules",
   phase: "patient",
   icon: "palpation",
-  summary: "Find 25 key bony landmarks and pulses on the body map — how to palpate each, the spinal level it marks, what lies nearby and why it matters clinically.",
-  ur: "25 ahem bony landmarks aur pulses dhoondna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun zaroori hai.",
+  summary: "Find 26 key bony landmarks and pulses on the body map — how to palpate each, the spinal level it marks, what lies nearby and why it matters clinically.",
+  ur: "26 ahem bony landmarks aur pulses dhoondna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun zaroori hai.",
   atlasLabel: "Landmark atlas",
   sources: [
     { title: "Field — Anatomy: Palpation and Surface Markings (5th ed.)" },

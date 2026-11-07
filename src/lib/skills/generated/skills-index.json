@@ -98,12 +98,12 @@
  },
  {
   "slug": "goniometry",
-  "version": 659953510,
+  "version": 73818741,
   "title": "Goniometry",
   "short": "Goniometry",
   "phase": "measure",
   "icon": "goniometer",
-  "summary": "Measure joint range like an expert: landmarks, axis and arm alignment, normal ranges, end-feels and substitutions for 38 joint motions — with a drag-the-goniometer trainer.",
+  "summary": "Measure joint range like an expert: landmarks, axis and arm alignment, normal ranges, end-feels and substitutions for 39 joint motions — with a drag-the-goniometer trainer.",
   "ur": "Joint ki range ko goniometer se sahi naapna — axis, arms, normal values, end-feel aur ghaltiyon ke saath.",
   "atlasLabel": "Joint measurement atlas",
   "counts": {
@@ -759,13 +759,13 @@
  },
  {
   "slug": "palpation",
-  "version": 3047569614,
+  "version": 556457742,
   "title": "Surface Anatomy & Palpation",
   "short": "Palpation",
   "phase": "patient",
   "icon": "palpation",
-  "summary": "Find 25 key bony landmarks and pulses on the body map — how to palpate each, the spinal level it marks, what lies nearby and why it matters clinically.",
-  "ur": "25 ahem bony landmarks aur pulses dhoondna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun zaroori hai.",
+  "summary": "Find 26 key bony landmarks and pulses on the body map — how to palpate each, the spinal level it marks, what lies nearby and why it matters clinically.",
+  "ur": "26 ahem bony landmarks aur pulses dhoondna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun zaroori hai.",
   "atlasLabel": "Landmark atlas",
   "counts": {
    "concepts": 8,
