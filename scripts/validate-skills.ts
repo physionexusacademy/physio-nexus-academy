@@ -23,6 +23,7 @@ const ICONS = new Set(["mmt", "goniometer", "dermatomes", "myotomes", "reflexes"
 const MIN_QUESTIONS_PER_LEVEL = 9; // a level test draws 9 from its own level
 const MIN_BEGINNER_QUESTIONS = 12; // the Beginner test has no earlier level to borrow from
 const MIN_EXPERT_CASES = 8;
+const MIN_CARDS_PER_LEVEL = 9;
 
 /* 1. Generated files are up to date ------------------------------------------------ */
 const expected = serializeSkillsData();
@@ -179,6 +180,11 @@ function checkSkill(skill: SkillDefinition, data: SkillData) {
     if (!card.front.trim() || !card.back.trim()) fail(at(`card ${card.id}`), "empty side");
   }
   if (data.cards.length < 30) fail(at("cards"), `only ${data.cards.length} flashcards`);
+  // Every level needs cards, or its Flashcards tab is empty for students studying that level.
+  for (const level of LEVELS) {
+    const count = data.cards.filter((card) => card.level === level).length;
+    if (count < MIN_CARDS_PER_LEVEL) fail(at("cards"), `only ${count} ${level} flashcards (need ${MIN_CARDS_PER_LEVEL})`);
+  }
 
   // OSCE stations.
   if (skill.stations.length < 2) fail(at("stations"), "needs at least 2 OSCE stations");

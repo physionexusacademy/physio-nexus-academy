@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { FlashcardReview } from "@/components/teacher/FlashcardReview";
+import { SkillsReviewPanel } from "@/components/skills/SkillsReviewPanel";
+import { skillIndex } from "@/lib/skills/catalog";
 
 export const metadata: Metadata = {
   title: "My Flashcards — Spaced Review | PNA Teacher",
-  description: "Review the key facts from your PNA Teacher lessons with spaced repetition, in English or Roman Urdu.",
+  description: "Review the key facts from your PNA Teacher lessons and Clinical Skills Lab with spaced repetition.",
   alternates: { canonical: "https://physionexusacademy.com/learn/review" },
   robots: { index: false, follow: true },
 };
@@ -26,6 +28,9 @@ export default function TeacherReviewPage() {
         </header>
         <div className="mt-6">
           <FlashcardReview />
+        </div>
+        <div className="mt-8">
+          <SkillsReviewPanel skills={skillIndex.map((skill) => ({ slug: skill.slug, title: skill.title }))} />
         </div>
       </div>
     </div>

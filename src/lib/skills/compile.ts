@@ -106,8 +106,27 @@ export function compileSkill(skill: SkillDefinition): SkillData {
     }
   }
 
+  // Every hand-written question (including expert cases) is also a flashcard, so each level has cards to revise.
+  const questionCards: SkillCard[] = skill.questions.map((question) => ({
+    id: `${skill.slug}:q:${question.id}`,
+    level: question.level,
+    front: question.case ? `${question.case} — ${question.prompt}` : question.prompt,
+    back: `${sentence(question.options[question.answer])} ${question.explain}`,
+  }));
+  // Expert-only atlas notes (clinical pearls, pitfalls) become expert flashcards.
+  const pearlCards: SkillCard[] = skill.atlas.flatMap((item) =>
+    item.fields
+      .filter((field) => field.level === "expert" && !field.quiz && !field.cardOnly)
+      .map((field) => ({
+        id: `${skill.slug}:${item.id}:${slugPart(field.label)}`,
+        level: "expert" as const,
+        front: `${item.title} — ${field.label.toLowerCase()}: what must you remember?`,
+        back: field.value,
+      })),
+  );
+
   const questions = [...skill.questions.map(arrangeOptions), ...generatedQuestions];
-  const cards = [...(skill.cards ?? []), ...generatedCards];
+  const cards = [...(skill.cards ?? []), ...generatedCards, ...questionCards, ...pearlCards];
   const data: SkillData = { ...skill, questions, cards, version: 0 };
   data.version = hash(JSON.stringify(data));
   return data;

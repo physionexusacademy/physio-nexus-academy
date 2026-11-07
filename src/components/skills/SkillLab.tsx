@@ -503,15 +503,21 @@ function PractiseTab({ data, level }: { data: SkillData; level: SkillLevelId }) 
 
 /* ---------------- Flashcards ---------------- */
 
+type CardMode = "review" | "level" | "mix";
+
 function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
+  // review = spaced repetition (due + new cards); level/mix = free practice that never runs dry.
+  const [mode, setMode] = useState<CardMode>("review");
   const build = useCallback(() => {
+    if (mode === "level") return shuffled(data.cards.filter((card) => card.level === level)).slice(0, 12);
+    if (mode === "mix") return shuffled(data.cards).slice(0, 12);
     const deck = getSkillsDeck();
     const due = dueSkillCards(deck, data.slug);
     const byId = new Map(data.cards.map((card) => [card.id, card]));
     const dueCards = due.map((id) => byId.get(id)).filter((card): card is NonNullable<typeof card> => Boolean(card)).slice(0, 20);
     const fresh = shuffled(data.cards.filter((card) => card.level === level && !deck[card.id])).slice(0, 10);
     return [...dueCards, ...fresh];
-  }, [data, level]);
+  }, [data, level, mode]);
   const [session, setSession] = useState(build);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -525,29 +531,38 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
 
   const levelTotal = data.cards.filter((card) => card.level === level).length;
   const card = session[index];
+  const restart = (next: CardMode) => {
+    if (next === mode) {
+      setSession(build());
+      setIndex(0);
+      setFlipped(false);
+      setKnown(0);
+    } else setMode(next); // the build/useEffect pair starts the new session
+  };
 
   if (!card) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-6 text-center">
         <Layers className="mx-auto h-8 w-8 text-teal-600" aria-hidden="true" />
-        <h3 className="mt-3 text-xl font-bold text-navy-800">{session.length ? "Session complete" : "Nothing due right now"}</h3>
+        <h3 className="mt-3 text-xl font-bold text-navy-800">{session.length ? "Session complete" : "Spaced review is up to date"}</h3>
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">
           {session.length
             ? `You knew ${known} of ${session.length}. Cards you missed come back tomorrow; the ones you knew return later.`
-            : `All ${levelTotal} cards at this level are scheduled. Come back tomorrow, or choose another level.`}
+            : `All ${levelTotal} cards at this level are scheduled for later. Keep practising below — it never runs out.`}
         </p>
-        <button
-          type="button"
-          className="nx-btn nx-btn-light mt-4"
-          onClick={() => {
-            setSession(build());
-            setIndex(0);
-            setFlipped(false);
-            setKnown(0);
-          }}
-        >
-          <RotateCcw className="h-4 w-4" aria-hidden="true" /> Check again
-        </button>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <button type="button" className="nx-btn nx-btn-primary" onClick={() => restart("level")}>
+            <RotateCcw className="h-4 w-4" aria-hidden="true" /> Practise this level ({levelTotal} cards)
+          </button>
+          <button type="button" className="nx-btn nx-btn-light" onClick={() => restart("mix")}>
+            <Layers className="h-4 w-4" aria-hidden="true" /> Mix all levels ({data.cards.length})
+          </button>
+          {mode !== "review" ? (
+            <button type="button" className="nx-btn nx-btn-light" onClick={() => restart("review")}>
+              Back to spaced review
+            </button>
+          ) : null}
+        </div>
       </div>
     );
   }
@@ -565,7 +580,7 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
         <span>
           Card {index + 1} of {session.length}
         </span>
-        <span>{levelTotal} cards at this level · spaced repetition</span>
+        <span>{mode === "review" ? `${levelTotal} cards at this level · spaced repetition` : mode === "level" ? "Free practice · this level" : "Free practice · all levels"}</span>
       </div>
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
         <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-sky-500" style={{ width: `${(index / session.length) * 100}%` }} />
