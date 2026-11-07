@@ -15,7 +15,7 @@ import {
   VolumeX,
   Zap,
 } from "lucide-react";
-import type { BiText, TeacherBeat, TeacherLang, TeacherLesson } from "@/lib/teacher/types";
+import type { BiText, TeacherBeat, TeacherLang, TeacherLesson, TeacherLessonMeta } from "@/lib/teacher/types";
 import {
   clearLessonSession,
   completeTeacherLesson,
@@ -96,7 +96,62 @@ function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 }
 
-export function LessonPlayer({
+/**
+ * Lesson bodies live in static files (/teacher-data/lessons/<slug>.json) so they
+ * stay out of the Cloudflare Worker bundle. The greeting renders immediately on
+ * the server; the conversation starts as soon as the file arrives.
+ */
+export function LessonPlayer({ meta }: { meta: TeacherLessonMeta }) {
+  const [lesson, setLesson] = useState<TeacherLesson | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setFailed(false);
+    fetch(`/teacher-data/lessons/${encodeURIComponent(meta.slug)}.json`)
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json() as Promise<TeacherLesson>;
+      })
+      .then((data) => {
+        if (!cancelled && data && Array.isArray(data.beats)) setLesson(data);
+        else if (!cancelled) setFailed(true);
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [meta.slug, attempt]);
+
+  if (lesson) return <LessonConversation lesson={lesson} nextLesson={meta.next} />;
+
+  return (
+    <div className="mx-auto w-full max-w-3xl" data-pna-teacher-lesson={meta.slug} aria-busy={!failed}>
+      <div className="mt-5 space-y-4">
+        <TeacherBubble>
+          <RichText text={`Hello! 👋\nToday's concept: **${meta.title}**\n${meta.goal.en}`} />
+        </TeacherBubble>
+      </div>
+      <div className="mt-5 flex min-h-11 flex-wrap items-center gap-2 pl-10 sm:pl-[3.25rem]">
+        {failed ? (
+          <>
+            <p className="w-full text-sm font-semibold text-amber-800">The lesson couldn&apos;t load — please check your connection.</p>
+            <Chip onClick={() => setAttempt((value) => value + 1)}>Try again</Chip>
+          </>
+        ) : (
+          <Chip onClick={() => undefined} disabled>
+            Preparing your lesson…
+          </Chip>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function LessonConversation({
   lesson,
   nextLesson,
 }: {

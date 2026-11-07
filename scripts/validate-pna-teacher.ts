@@ -229,6 +229,28 @@ for (const page of ["src/app/manual-therapy/[slug]/page.tsx", "src/components/ma
   check(fs.readFileSync(path.join(root, page), "utf8").includes("<TechniqueTeacher"), `${page}: must render <TechniqueTeacher>`);
 }
 
+/* ---------- static lesson data (keeps lesson bodies out of the Worker bundle) ---------- */
+
+const { serializeTeacherData } = await import("../src/lib/teacher/build-data.ts");
+const expectedFiles = serializeTeacherData();
+for (const [file, content] of Object.entries(expectedFiles)) {
+  const full = path.join(root, file);
+  check(fs.existsSync(full) && fs.readFileSync(full, "utf8") === content, `${file} is missing or stale — run: npm run build:teacher-data`);
+}
+const lessonDataDir = path.join(root, "public/teacher-data/lessons");
+for (const file of fs.existsSync(lessonDataDir) ? fs.readdirSync(lessonDataDir) : []) {
+  check(`public/teacher-data/lessons/${file}` in expectedFiles, `orphaned lesson data file: public/teacher-data/lessons/${file}`);
+}
+const appSource = [...walk(path.join(root, "src/app")), ...walk(path.join(root, "src/components"))].filter((file) => /\.(ts|tsx)$/.test(file));
+appSource.push(path.join(root, "src/lib/physio-nexus-ai-index.ts"));
+for (const file of appSource) {
+  const source = fs.readFileSync(file, "utf8");
+  check(
+    !/@\/lib\/teacher\/(lessons|manual-therapy|catalog|build-data)/.test(source),
+    `${path.relative(root, file)} imports lesson source — use @/lib/teacher/lesson-index so lesson bodies stay out of the Worker bundle`,
+  );
+}
+
 /* ---------- deployment safety ---------- */
 
 for (const page of ["src/app/learn/[slug]/page.tsx", "src/app/learn/paths/[slug]/page.tsx"]) {

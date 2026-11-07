@@ -1,5 +1,5 @@
 import { BookOpenText, Clock3, Languages, Layers, Target } from "lucide-react";
-import { getManualTherapyTeacherLesson, nextManualTherapyLesson } from "@/lib/teacher/manual-therapy";
+import { getLessonMeta } from "@/lib/teacher/lesson-index";
 import { LessonPlayer } from "./LessonPlayer";
 import { TeacherAvatar } from "./ui";
 import "@/app/learn/teacher.css";
@@ -9,9 +9,9 @@ import "@/app/learn/teacher.css";
  * stays below for reading and revision.
  */
 export function TechniqueTeacher({ slug, readAnchor = "#mastery" }: { slug: string; readAnchor?: string }) {
-  const lesson = getManualTherapyTeacherLesson(slug);
-  if (!lesson) return null;
-  const checks = lesson.beats.filter((beat) => beat.type === "check").length;
+  const lesson = getLessonMeta(slug);
+  if (!lesson || lesson.kind !== "manual") return null;
+  const checks = lesson.checks;
 
   return (
     <section
@@ -36,7 +36,7 @@ export function TechniqueTeacher({ slug, readAnchor = "#mastery" }: { slug: stri
                 <Target className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {checks} checks
               </li>
               <li className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 ring-1 ring-slate-200">
-                <Layers className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.flashcards.length} flashcards
+                <Layers className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.flashcardCount} flashcards
               </li>
               <li className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 ring-1 ring-slate-200">
                 <Languages className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> English · Roman Urdu
@@ -48,7 +48,7 @@ export function TechniqueTeacher({ slug, readAnchor = "#mastery" }: { slug: stri
           </div>
         </div>
       </div>
-      <LessonPlayer lesson={lesson} nextLesson={nextManualTherapyLesson(slug)} />
+      <LessonPlayer meta={lesson} />
     </section>
   );
 }

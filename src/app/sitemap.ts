@@ -13,7 +13,7 @@ import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
 import { publishedCaseReports } from "@/lib/case-report-library";
-import { teacherLessons } from "@/lib/teacher/lessons";
+import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 
 const routes = [
@@ -176,7 +176,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
   const teacherRoutes: MetadataRoute.Sitemap = [
-    ...teacherLessons.map((lesson) => ({
+    ...conceptLessonMetas.map((lesson) => ({
       url: `${base}/learn/${encodeURIComponent(lesson.slug)}`,
       changeFrequency: "monthly" as const,
       priority: 0.9,

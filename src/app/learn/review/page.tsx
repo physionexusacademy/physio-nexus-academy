@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { allTeacherLessons } from "@/lib/teacher/catalog";
-import { FlashcardReview, type ReviewCardData } from "@/components/teacher/FlashcardReview";
+import { FlashcardReview } from "@/components/teacher/FlashcardReview";
 
 export const metadata: Metadata = {
   title: "My Flashcards — Spaced Review | PNA Teacher",
@@ -12,10 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function TeacherReviewPage() {
-  const cards: ReviewCardData[] = allTeacherLessons.flatMap((lesson) =>
-    lesson.flashcards.map((card) => ({ id: card.id, lesson: lesson.slug, lessonTitle: lesson.title, front: card.front, back: card.back })),
-  );
-
   return (
     <div className="container-content pb-16 pt-6 sm:pt-8">
       <div className="mx-auto max-w-3xl">
@@ -30,7 +25,7 @@ export default function TeacherReviewPage() {
           </p>
         </header>
         <div className="mt-6">
-          <FlashcardReview cards={cards} />
+          <FlashcardReview />
         </div>
       </div>
     </div>

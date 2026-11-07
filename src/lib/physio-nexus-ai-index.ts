@@ -8,7 +8,7 @@ import { clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { mskConditions } from "@/lib/msk-injury-hub";
 import { treatmentPlans } from "@/lib/treatment-plans";
 import { clinicalCases } from "@/lib/all-clinical-cases";
-import { teacherLessons } from "@/lib/teacher/lessons";
+import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 
 export type PnaLearningResource = {
@@ -72,21 +72,14 @@ const manualResources: PnaLearningResource[] = [
 ];
 
 const teacherResources: PnaLearningResource[] = [
-  ...teacherLessons.map((lesson) => ({
+  ...conceptLessonMetas.map((lesson) => ({
     id: `teacher:${lesson.slug}`,
     title: `${lesson.title} — PNA Teacher lesson`,
     href: `/learn/${encodeURIComponent(lesson.slug)}`,
     category: `PNA Teacher · ${lesson.area}`,
     summary: `${lesson.hook.en} ${lesson.goal.en}`,
     level: lesson.level,
-    keywords: [
-      lesson.title,
-      lesson.slug,
-      lesson.area,
-      "step by step lesson explained simply Roman Urdu interactive",
-      ...lesson.summary.map((point) => point.en),
-      ...lesson.flashcards.map((card) => card.front.en),
-    ].join(" "),
+    keywords: `${lesson.keywords} step by step lesson explained simply Roman Urdu interactive`,
   })),
   ...teacherPaths.map((path) => ({
     id: `teacher-path:${path.slug}`,

@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Clock3, GraduationCap, Layers, Target } from "lucide-react";
-import { getTeacherLesson, teacherLessons } from "@/lib/teacher/lessons";
-import { isManualTherapyLesson } from "@/lib/teacher/catalog";
+import { conceptLessonMetas, getLessonMeta } from "@/lib/teacher/lesson-index";
 import { LessonPlayer } from "@/components/teacher/LessonPlayer";
 
 const siteUrl = "https://physionexusacademy.com";
 
 export function generateStaticParams() {
-  return teacherLessons.map((lesson) => ({ slug: lesson.slug }));
+  return conceptLessonMetas.map((lesson) => ({ slug: lesson.slug }));
 }
 
 // Cloudflare (OpenNext) has no incremental cache configured, so pages must be
@@ -19,8 +18,8 @@ export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const lesson = getTeacherLesson(slug);
-  if (!lesson) return {};
+  const lesson = getLessonMeta(slug);
+  if (!lesson || lesson.kind !== "concept") return {};
   const url = `${siteUrl}/learn/${lesson.slug}`;
   const description = `${lesson.hook.en} ${lesson.goal.en} A step-by-step PNA Teacher lesson in English and Roman Urdu.`;
   return {
@@ -35,12 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function TeacherLessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // Manual Therapy chapters are taught inside their own encyclopedia page.
-  if (isManualTherapyLesson(slug)) permanentRedirect(`/manual-therapy/${slug}#pna-teacher`);
-  const lesson = getTeacherLesson(slug);
+  const lesson = getLessonMeta(slug);
+  if (lesson?.kind === "manual") permanentRedirect(`/manual-therapy/${slug}#pna-teacher`);
   if (!lesson) notFound();
-
-  const index = teacherLessons.findIndex((item) => item.slug === lesson.slug);
-  const next = teacherLessons[index + 1] ?? null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -54,7 +50,7 @@ export default async function TeacherLessonPage({ params }: { params: Promise<{ 
     timeRequired: `PT${lesson.minutes}M`,
     inLanguage: ["en", "ur-Latn"],
     isAccessibleForFree: true,
-    teaches: lesson.summary.map((point) => point.en),
+    teaches: lesson.summaryEn,
     provider: { "@type": "EducationalOrganization", name: "Physio Nexus Academy", url: siteUrl },
   };
 
@@ -77,17 +73,17 @@ export default async function TeacherLessonPage({ params }: { params: Promise<{ 
               <GraduationCap className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.bestFor}
             </li>
             <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">
-              <Target className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.beats.filter((beat) => beat.type === "check").length} checks
+              <Target className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.checks} checks
             </li>
             <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">
-              <Layers className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.flashcards.length} flashcards
+              <Layers className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" /> {lesson.flashcardCount} flashcards
             </li>
           </ul>
         </header>
       </div>
 
       <div className="mt-4">
-        <LessonPlayer lesson={lesson} nextLesson={next ? { slug: next.slug, title: next.title } : null} />
+        <LessonPlayer meta={lesson} />
       </div>
     </div>
   );

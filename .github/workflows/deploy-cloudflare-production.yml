@@ -102,6 +102,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-premium-homepage.mjs
 
+      - name: Validate PNA Teacher lessons, static lesson data and progress logic
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:teacher
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:
@@ -212,6 +216,12 @@ jobs:
           check_url "https://physionexusacademy.com/learn" 'data-pna-teacher-hub="v1"'
           check_url "https://physionexusacademy.com/learn/convex-concave-rule" 'data-pna-teacher-lesson="convex-concave-rule"'
           check_url "https://physionexusacademy.com/learn/paths/knee-rehab-mastery" "Knee Rehab Mastery"
+          check_url "https://physionexusacademy.com/learn/gait-cycle" 'data-pna-teacher-lesson="gait-cycle"'
+          # Lesson bodies are static assets outside the Worker; the player fetches them on demand.
+          check_url "https://physionexusacademy.com/teacher-data/lessons/convex-concave-rule.json" '"slug":"convex-concave-rule"'
+          # Every Manual Therapy chapter opens with PNA Teacher (technique + world approach layouts).
+          check_url "https://physionexusacademy.com/manual-therapy/maitland-joint-mobilization" 'data-pna-technique-teacher="maitland-joint-mobilization"'
+          check_url "https://physionexusacademy.com/manual-therapy/mckenzie-mdt" 'data-pna-technique-teacher="mckenzie-mdt"'
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
           check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
 

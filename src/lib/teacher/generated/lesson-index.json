@@ -1,0 +1,1451 @@
+[
+ {
+  "href": "/learn/convex-concave-rule",
+  "slug": "convex-concave-rule",
+  "title": "The Convex–Concave Rule",
+  "hook": {
+   "en": "Stop memorising roll and glide. See it once and you'll never forget it.",
+   "ur": "Roll aur glide ka ratta band. Ek baar dekh lein, phir kabhi nahi bhoolenge."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "1st–2nd year DPT",
+  "minutes": 10,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll know which way a joint surface glides — and how that decides your mobilization direction.",
+   "ur": "Is lesson ke end tak aap jaan jayenge ke joint surface kis taraf glide karti hai — aur yehi aap ki mobilization ki direction decide karta hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Convex moving on concave → roll and glide in opposite directions.",
+   "Concave moving on convex → roll and glide in the same direction.",
+   "Always ask which surface moves — and let reassessment, not the rule alone, guide treatment."
+  ],
+  "keywords": "The Convex–Concave Rule convex-concave-rule Movement Science Convex moving on concave → roll and glide in opposite directions. Concave moving on convex → roll and glide in the same direction. Always ask which surface moves — and let reassessment, not the rule alone, guide treatment. Name the three arthrokinematic movements. Convex surface moving on a fixed concave surface: roll and glide are…? Concave surface moving on a fixed convex surface: roll and glide are…? Rising from a squat (closed chain): which way does the femur glide during knee extension? Mobilization to gain shoulder abduction, based on the convex–concave rule?",
+  "next": {
+   "slug": "active-passive-insufficiency",
+   "title": "Active & Passive Insufficiency — Feel It in Your Own Hand",
+   "href": "/learn/active-passive-insufficiency"
+  }
+ },
+ {
+  "href": "/learn/active-passive-insufficiency",
+  "slug": "active-passive-insufficiency",
+  "title": "Active & Passive Insufficiency — Feel It in Your Own Hand",
+  "hook": {
+   "en": "Your own hand is the lab. Two quick experiments and this topic is yours.",
+   "ur": "Aap ka apna haath lab hai. Do chhotay experiments aur yeh topic aap ka."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "1st–2nd year DPT",
+  "minutes": 8,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain why two-joint muscles 'run out' of force or length — using your own body as proof.",
+   "ur": "End tak aap samjha sakenge ke two-joint muscles ki force ya length kyun 'khatam' ho jati hai — apne jism ko saboot bana kar."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Muscles are strongest at mid-length (length–tension relationship).",
+   "Active insufficiency: a two-joint muscle is too short across both joints to produce full force.",
+   "Passive insufficiency: a two-joint muscle is too stretched across both joints, limiting the opposite movement."
+  ],
+  "keywords": "Active & Passive Insufficiency — Feel It in Your Own Hand active-passive-insufficiency Movement Science Muscles are strongest at mid-length (length–tension relationship). Active insufficiency: a two-joint muscle is too short across both joints to produce full force. Passive insufficiency: a two-joint muscle is too stretched across both joints, limiting the opposite movement. Length–tension relationship in one line? Define active insufficiency. Define passive insufficiency. Why is a fist weak with the wrist fully flexed? How do you tell hamstring tightness from neural tension in an SLR?",
+  "next": {
+   "slug": "open-vs-closed-chain",
+   "title": "Open vs Closed Kinetic Chain — The Foot Decides",
+   "href": "/learn/open-vs-closed-chain"
+  }
+ },
+ {
+  "href": "/learn/open-vs-closed-chain",
+  "slug": "open-vs-closed-chain",
+  "title": "Open vs Closed Kinetic Chain — The Foot Decides",
+  "hook": {
+   "en": "Look at just one thing — the hand or the foot — and you'll classify any exercise in 3 seconds.",
+   "ur": "Sirf ek cheez dekhein — haath ya paon — aur kisi bhi exercise ko 3 second mein classify karein."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "2nd–3rd year DPT",
+  "minutes": 8,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll classify any exercise as open or closed chain and explain why it matters after a knee injury.",
+   "ur": "End tak aap kisi bhi exercise ko open ya closed chain mein classify kar sakenge aur bata sakenge ke knee injury ke baad yeh kyun zaroori hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Look at the distal segment: free = open chain; fixed = closed chain.",
+   "Closed chain = multi-joint and functional; open chain = isolates a muscle.",
+   "Both are tools — choose by load, range and healing stage (e.g. after ACL reconstruction)."
+  ],
+  "keywords": "Open vs Closed Kinetic Chain — The Foot Decides open-vs-closed-chain Movement Science Look at the distal segment: free = open chain; fixed = closed chain. Closed chain = multi-joint and functional; open chain = isolates a muscle. Both are tools — choose by load, range and healing stage (e.g. after ACL reconstruction). Define an open kinetic chain exercise. Define a closed kinetic chain exercise. Main advantage of closed chain exercise? Open-chain knee extension after ACL reconstruction?",
+  "next": {
+   "slug": "gait-cycle",
+   "title": "The Gait Cycle Made Easy",
+   "href": "/learn/gait-cycle"
+  }
+ },
+ {
+  "href": "/learn/gait-cycle",
+  "slug": "gait-cycle",
+  "title": "The Gait Cycle Made Easy",
+  "hook": {
+   "en": "Break one step into 8 pieces — and suddenly every limp starts making sense.",
+   "ur": "Ek qadam ko 8 hisson mein torein — aur achanak har langrahat samajh aane lagti hai."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name the 8 phases of gait, know which muscles work in each, and link common gait deviations to their cause.",
+   "ur": "End tak aap gait ke 8 phases ke naam bata sakenge, jaan jayenge har phase mein kaun se muscles kaam karte hain, aur aam gait deviations ko un ki wajah se jor sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "One cycle = heel strike to the same heel strike: ~60% stance, ~40% swing.",
+   "Eight phases — I Love My Tiny Puppy (stance), I'M Tired (swing).",
+   "Link the deviation to the phase and the muscle: foot slap → dorsiflexors; Trendelenburg → stance-side abductors."
+  ],
+  "keywords": "The Gait Cycle Made Easy gait-cycle Movement Science One cycle = heel strike to the same heel strike: ~60% stance, ~40% swing. Eight phases — I Love My Tiny Puppy (stance), I'M Tired (swing). Link the deviation to the phase and the muscle: foot slap → dorsiflexors; Trendelenburg → stance-side abductors. Stance vs swing at normal speed? Name the 5 stance phases. Foot slap after heel strike suggests weakness of…? Pelvis drops on the left while standing on the right leg → weak…? What is double support?",
+  "next": {
+   "slug": "tissue-healing-phases",
+   "title": "Tissue Healing Phases — What to Do and When",
+   "href": "/learn/tissue-healing-phases"
+  }
+ },
+ {
+  "href": "/learn/tissue-healing-phases",
+  "slug": "tissue-healing-phases",
+  "title": "Tissue Healing Phases — What to Do and When",
+  "hook": {
+   "en": "Protect, then repair, then rebuild. Match your treatment to the biology.",
+   "ur": "Pehle hifazat, phir marammat, phir mazbooti. Treatment ko biology ke mutabiq rakhein."
+  },
+  "area": "Tissue Healing",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 10,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll know what's happening inside an injured tissue week by week — and what the physio should do in each phase.",
+   "ur": "End tak aap jaan jayenge ke zakhmi tissue ke andar hafta ba hafta kya ho raha hai — aur har phase mein physio ko kya karna chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Inflammation (days) → proliferation/repair (weeks) → remodelling (months). They overlap.",
+   "Tissue adapts to load: protect early, then load progressively.",
+   "Return to activity by criteria, not by pain alone — and screen red flags first."
+  ],
+  "keywords": "Tissue Healing Phases — What to Do and When tissue-healing-phases Tissue Healing Inflammation (days) → proliferation/repair (weeks) → remodelling (months). They overlap. Tissue adapts to load: protect early, then load progressively. Return to activity by criteria, not by pain alone — and screen red flags first. Name the three phases of soft-tissue healing. What happens in the proliferative phase? What happens in remodelling? What does PEACE & LOVE stand for? Is 'pain-free' enough to return to sport?",
+  "next": {
+   "slug": "exercise-dosage",
+   "title": "Exercise Dosage — FITT, RPE & Reps in Reserve",
+   "href": "/learn/exercise-dosage"
+  }
+ },
+ {
+  "href": "/learn/exercise-dosage",
+  "slug": "exercise-dosage",
+  "title": "Exercise Dosage — FITT, RPE & Reps in Reserve",
+  "hook": {
+   "en": "Stop prescribing \"3 sets of 10 for everyone\". Learn to dose exercise like medicine.",
+   "ur": "\"Sab ke liye 3 sets of 10\" band karein. Exercise ko dawai ki tarah dose karna seekhein."
+  },
+  "area": "Exercise Prescription",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll write an exercise prescription that is specific, measurable and easy to progress — instead of guessing.",
+   "ur": "End tak aap aisi exercise prescription likh sakenge jo specific, measurable aur asaani se progress hone wali ho — andaze ke bajaye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Prescribe with FITT-VP: frequency, intensity, time, type, volume, progression.",
+   "Measure intensity: RPE and the talk test for aerobic work; reps in reserve or %1RM for strength.",
+   "Progress one variable at a time and use next-day symptoms to guide the dose."
+  ],
+  "keywords": "Exercise Dosage — FITT, RPE & Reps in Reserve exercise-dosage Exercise Prescription Prescribe with FITT-VP: frequency, intensity, time, type, volume, progression. Measure intensity: RPE and the talk test for aerobic work; reps in reserve or %1RM for strength. Progress one variable at a time and use next-day symptoms to guide the dose. What does FITT-VP stand for? Moderate aerobic intensity on the Borg 6–20 scale and talk test? What is \"reps in reserve\" (RIR)? Typical novice strength dose? WHO 2020 aerobic activity for adults?",
+  "next": {
+   "slug": "maitland-grades",
+   "title": "Maitland Grades I–V, Made Visual",
+   "href": "/learn/maitland-grades"
+  }
+ },
+ {
+  "href": "/learn/maitland-grades",
+  "slug": "maitland-grades",
+  "title": "Maitland Grades I–V, Made Visual",
+  "hook": {
+   "en": "Five grades, two questions: where in the range, and how big?",
+   "ur": "Paanch grades, sirf do sawal: range mein kahan, aur movement kitni bari?"
+  },
+  "area": "Manual Therapy",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 9,
+  "flashcardCount": 6,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll know where each grade happens in the range, how big it is, and when to choose it.",
+   "ur": "End tak aap jaan jayenge ke har grade range mein kahan hota hai, kitna bara hota hai, aur kab choose karna hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "A grade = where in the range + how big the movement is.",
+   "I & IV are small, II & III are large; III & IV enter resistance; V is a thrust.",
+   "Pain-dominant → I–II; stiffness-dominant → III–IV; reassess after every set."
+  ],
+  "keywords": "Maitland Grades I–V, Made Visual maitland-grades Manual Therapy A grade = where in the range + how big the movement is. I & IV are small, II & III are large; III & IV enter resistance; V is a thrust. Pain-dominant → I–II; stiffness-dominant → III–IV; reassess after every set. Maitland Grade I? Maitland Grade II? Maitland Grade III? Maitland Grade IV? Maitland Grade V? Pain-dominant vs stiffness-dominant joint: which grades?",
+  "next": {
+   "slug": "sensitivity-specificity",
+   "title": "Sensitivity, Specificity, SnNout & SpPin",
+   "href": "/learn/sensitivity-specificity"
+  }
+ },
+ {
+  "href": "/learn/sensitivity-specificity",
+  "slug": "sensitivity-specificity",
+  "title": "Sensitivity, Specificity, SnNout & SpPin",
+  "hook": {
+   "en": "A positive test doesn't always mean 'yes'. Learn what a result really tells you.",
+   "ur": "Positive test ka matlab hamesha 'haan' nahi hota. Seekhein result asal mein kya batata hai."
+  },
+  "area": "Clinical Reasoning",
+  "level": "Clinical",
+  "bestFor": "3rd year, final year & interns",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll know when a negative test rules a condition OUT, when a positive test rules it IN — and the trap most students fall into.",
+   "ur": "End tak aap jaan jayenge ke negative test kab condition ko rule OUT karta hai, positive test kab rule IN karta hai — aur woh trap jis mein zyada tar students girte hain."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Sensitivity catches the sick; specificity clears the healthy.",
+   "SnNout: sensitive test + negative → rule out. SpPin: specific test + positive → rule in.",
+   "Never rely on one test: combine history, test clusters and pre-test probability."
+  ],
+  "keywords": "Sensitivity, Specificity, SnNout & SpPin sensitivity-specificity Clinical Reasoning Sensitivity catches the sick; specificity clears the healthy. SnNout: sensitive test + negative → rule out. SpPin: specific test + positive → rule in. Never rely on one test: combine history, test clusters and pre-test probability. Define sensitivity. Define specificity. What does SnNout mean? What does SpPin mean? Rough thresholds for strong likelihood ratios?",
+  "next": {
+   "slug": "red-flags-screening",
+   "title": "Red Flags — When NOT to Treat (and What to Do Instead)",
+   "href": "/learn/red-flags-screening"
+  }
+ },
+ {
+  "href": "/learn/red-flags-screening",
+  "slug": "red-flags-screening",
+  "title": "Red Flags — When NOT to Treat (and What to Do Instead)",
+  "hook": {
+   "en": "Most back and neck pain is harmless. Learn to spot the few cases that aren't — and refer at the right speed.",
+   "ur": "Zyada tar kamar aur gardan ka dard khatarnak nahi hota. Un chand cases ko pehchanna seekhein jo khatarnak hain — aur sahi raftaar se refer karein."
+  },
+  "area": "Clinical Reasoning",
+  "level": "Clinical",
+  "bestFor": "All years & interns",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll recognise the warning signs of serious pathology, know which need emergency vs urgent referral, and tell red flags from yellow flags.",
+   "ur": "End tak aap serious pathology ki warning signs pehchan sakenge, jaan jayenge ke kaun si emergency aur kaun si urgent referral mangti hai, aur red flags ko yellow flags se alag kar sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Red flags suggest serious pathology → refer; yellow flags are psychosocial → address in your care.",
+   "Saddle numbness or new bladder/bowel change = same-day emergency (cauda equina).",
+   "Look for clusters, re-screen when things change, and stop neck techniques at any 5D/3N sign."
+  ],
+  "keywords": "Red Flags — When NOT to Treat (and What to Do Instead) red-flags-screening Clinical Reasoning Red flags suggest serious pathology → refer; yellow flags are psychosocial → address in your care. Saddle numbness or new bladder/bowel change = same-day emergency (cauda equina). Look for clusters, re-screen when things change, and stop neck techniques at any 5D/3N sign. Cauda equina syndrome warning signs? The 5 Ds and 3 Ns? Strongest single clue for spinal malignancy? Red flag vs yellow flag? Why look for clusters of red flags?",
+  "next": {
+   "slug": "dermatomes-myotomes-reflexes",
+   "title": "Dermatomes, Myotomes & Reflexes — The Neuro Screen Made Easy",
+   "href": "/learn/dermatomes-myotomes-reflexes"
+  }
+ },
+ {
+  "href": "/learn/dermatomes-myotomes-reflexes",
+  "slug": "dermatomes-myotomes-reflexes",
+  "title": "Dermatomes, Myotomes & Reflexes — The Neuro Screen Made Easy",
+  "hook": {
+   "en": "Three questions to ask the nervous system — and how to read the answers like a map.",
+   "ur": "Nervous system se poochne ke teen sawal — aur un ke jawab ko naqshe ki tarah parhna."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 6,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll run a quick upper- and lower-limb neuro screen and know which nerve root each finding points to.",
+   "ur": "End tak aap upper aur lower limb ka tez neuro screen kar sakenge aur jaan jayenge ke har finding kis nerve root ki taraf ishara karti hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Dermatome = sensation, myotome = strength, reflex = automatic loop — look for a matching pattern.",
+   "Know the key levels: L2–S1 and C5–T1, plus the reflex rhyme.",
+   "Always compare sides; saddle numbness or bladder/bowel change = same-day emergency."
+  ],
+  "keywords": "Dermatomes, Myotomes & Reflexes — The Neuro Screen Made Easy dermatomes-myotomes-reflexes Neurology Dermatome = sensation, myotome = strength, reflex = automatic loop — look for a matching pattern. Know the key levels: L2–S1 and C5–T1, plus the reflex rhyme. Always compare sides; saddle numbness or bladder/bowel change = same-day emergency. L4 myotome, dermatome and reflex? L5 myotome and dermatome? S1 myotome, dermatome and reflex? C6 myotome, dermatome and reflex? C7 myotome, dermatome and reflex? What is the Jendrassik manoeuvre for?",
+  "next": {
+   "slug": "umn-vs-lmn",
+   "title": "UMN vs LMN Lesions — Never Confuse Them Again",
+   "href": "/learn/umn-vs-lmn"
+  }
+ },
+ {
+  "href": "/learn/umn-vs-lmn",
+  "slug": "umn-vs-lmn",
+  "title": "UMN vs LMN Lesions — Never Confuse Them Again",
+  "hook": {
+   "en": "Replace two long lists of signs with one picture and one question.",
+   "ur": "Signs ki do lambi lists ki jagah sirf ek tasveer aur ek sawal."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "2nd–4th year DPT",
+  "minutes": 10,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll tell an upper from a lower motor neuron lesion in 30 seconds — and explain why the signs differ.",
+   "ur": "End tak aap 30 second mein upper aur lower motor neuron lesion ka farq bata sakenge — aur yeh bhi ke signs alag kyun hain."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "UMN = brain/cord pathway; LMN = anterior horn cell → peripheral nerve → muscle.",
+   "UMN = UP (tone, reflexes, Babinski). LMN = LOW (tone, reflexes, bulk).",
+   "Spasticity is velocity-dependent; rigidity is not. Mixed signs → think bigger and refer."
+  ],
+  "keywords": "UMN vs LMN Lesions — Never Confuse Them Again umn-vs-lmn Neurology UMN = brain/cord pathway; LMN = anterior horn cell → peripheral nerve → muscle. UMN = UP (tone, reflexes, Babinski). LMN = LOW (tone, reflexes, bulk). Spasticity is velocity-dependent; rigidity is not. Mixed signs → think bigger and refer. Where does the lower motor neuron start? Tone and reflexes in a UMN lesion? Tone, reflexes and bulk in an LMN lesion? Spasticity vs rigidity — the key difference? Floppy limb on day 1 after stroke — LMN lesion?",
+  "next": {
+   "slug": "pain-science-basics",
+   "title": "Pain Science Basics — Why Hurt ≠ Harm",
+   "href": "/learn/pain-science-basics"
+  }
+ },
+ {
+  "href": "/learn/pain-science-basics",
+  "slug": "pain-science-basics",
+  "title": "Pain Science Basics — Why Hurt ≠ Harm",
+  "hook": {
+   "en": "Pain is always real — but it isn't a damage meter. Learn to explain this to any patient.",
+   "ur": "Dard hamesha asli hota hai — lekin yeh nuqsan naapne ka meter nahi. Yeh baat kisi bhi patient ko samjhana seekhein."
+  },
+  "area": "Pain Science",
+  "level": "Clinical",
+  "bestFor": "All years & practising physios",
+  "minutes": 10,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain — in simple words a patient understands — why pain is real but isn't a direct measure of tissue damage.",
+   "ur": "End tak aap — aise asaan alfaaz mein jo patient samjhe — bata sakenge ke dard asli hai lekin tissue damage ka seedha paimana nahi."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Pain is always real, but it isn't a direct measure of tissue damage.",
+   "Nociception is a signal; pain is the brain's protective output, shaped by many factors.",
+   "Validate, reassure ('hurt ≠ harm'), screen red flags and pair education with graded activity."
+  ],
+  "keywords": "Pain Science Basics — Why Hurt ≠ Harm pain-science-basics Pain Science Pain is always real, but it isn't a direct measure of tissue damage. Nociception is a signal; pain is the brain's protective output, shaped by many factors. Validate, reassure ('hurt ≠ harm'), screen red flags and pair education with graded activity. IASP (2020) definition of pain? Nociception vs pain? What does the 'nail through the boot' case show? A simple, evidence-informed phrase for patients?",
+  "next": null
+ },
+ {
+  "href": "/manual-therapy/maitland-joint-mobilization#pna-teacher",
+  "slug": "maitland-joint-mobilization",
+  "title": "Maitland Joint Mobilization",
+  "hook": {
+   "en": "Gentle, rhythmic rocking of a joint, graded I to IV by how far into the range you go, chosen by how irritable the patient's pain is.",
+   "ur": "Maitland Joint Mobilization mein therapist joint ko patient ki taraf se relax halat mein chhoti, narm aur rhythm ke sath aagay-peechay harkat deta hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Maitland Joint Mobilization is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Maitland Joint Mobilization kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Test the movement, choose the glide and grade, test the movement again.",
+   "Use it for: A painful, stiff joint where one movement clearly reproduces the patient's pain (positive comparable sign).",
+   "Stop or avoid when: Unstable fracture, dislocation, active infection, or suspected cancer in the area."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "kaltenborn-evjenth-mobilization",
+   "title": "Kaltenborn–Evjenth Mobilization",
+   "href": "/manual-therapy/kaltenborn-evjenth-mobilization#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/kaltenborn-evjenth-mobilization#pna-teacher",
+  "slug": "kaltenborn-evjenth-mobilization",
+  "title": "Kaltenborn–Evjenth Mobilization",
+  "hook": {
+   "en": "Mobilization that uses joint shape (the convex-concave rule) to pick the glide direction, and traction grades to loosen, take up slack, or stretch.",
+   "ur": "Kaltenborn–Evjenth approach mein joint par sustained traction ya glide diya jata hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Kaltenborn–Evjenth Mobilization is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Kaltenborn–Evjenth Mobilization kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Know the joint shape, choose the glide direction, escalate the stage only if the joint is calm.",
+   "Use it for: A joint that moves less than the other side with a firm, capsular-type end-feel.",
+   "Stop or avoid when: Unstable joints, acute fractures, active infection or inflammation, and suspected tumour."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "manual-traction",
+   "title": "Manual Traction & Joint Distraction",
+   "href": "/manual-therapy/manual-traction#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/manual-traction#pna-teacher",
+  "slug": "manual-traction",
+  "title": "Manual Traction & Joint Distraction",
+  "hook": {
+   "en": "A gentle pull that separates joint surfaces to reduce compression and test or calm symptoms.",
+   "ur": "Manual traction ya joint distraction mein joint ko controlled direction mein ahista kheench kar compression-sensitive symptoms ka response dekha jata hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Manual Traction & Joint Distraction is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Manual Traction & Joint Distraction kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Less pressure, then test: if traction eases the symptom, the joint is involved.",
+   "Use it for: Joint pain that eases when compression is removed.",
+   "Stop or avoid when: Instability, fracture, infection, or rheumatoid involvement of the upper neck."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "mulligan-mobilization-with-movement",
+   "title": "Mulligan Mobilization With Movement (MWM)",
+   "href": "/manual-therapy/mulligan-mobilization-with-movement#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/mulligan-mobilization-with-movement#pna-teacher",
+  "slug": "mulligan-mobilization-with-movement",
+  "title": "Mulligan Mobilization With Movement (MWM)",
+  "hook": {
+   "en": "A sustained joint glide applied by the therapist while the patient performs the movement that normally hurts, aiming for an instant pain-free result.",
+   "ur": "Mulligan Mobilization With Movement (MWM) mein therapist ek sustained accessory glide deta hai aur patient usi waqt apni active movement karta hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Mulligan Mobilization With Movement (MWM) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Mulligan Mobilization With Movement (MWM) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Glide, move, ask: if it is not pain-free and instant, it is not the right glide.",
+   "Use it for: A clearly painful or restricted movement that is easy to repeat, for example painful gripping at the elbow or restricted ankle dorsiflexion.",
+   "Stop or avoid when: No immediate pain-free improvement after a few careful tries."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "mulligan-snags-nags",
+   "title": "Mulligan NAGs, SNAGs & Self-SNAGs",
+   "href": "/manual-therapy/mulligan-snags-nags#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/mulligan-snags-nags#pna-teacher",
+  "slug": "mulligan-snags-nags",
+  "title": "Mulligan NAGs, SNAGs & Self-SNAGs",
+  "hook": {
+   "en": "Neck and spine glides applied along the facet joint while the patient moves actively (SNAG) or in gentle oscillation (NAG).",
+   "ur": "NAGs, SNAGs aur Self-SNAGs spinal mobilization ke tareeqay hain jin mein joint ki glide ko passive ya active movement ke sath combine kiya jata hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Mulligan NAGs, SNAGs & Self-SNAGs is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Mulligan NAGs, SNAGs & Self-SNAGs kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Glide along the facet, move the neck, and keep it pain-free.",
+   "Use it for: Painful neck rotation or flexion where a segment is tender.",
+   "Stop or avoid when: Dizziness, visual disturbance, difficulty speaking or swallowing, or any neurological sign."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "paivm-ppivm-spinal-assessment",
+   "title": "PAIVM & PPIVM Spinal Assessment / Mobilization",
+   "href": "/manual-therapy/paivm-ppivm-spinal-assessment#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/paivm-ppivm-spinal-assessment#pna-teacher",
+  "slug": "paivm-ppivm-spinal-assessment",
+  "title": "PAIVM & PPIVM Spinal Assessment / Mobilization",
+  "hook": {
+   "en": "Hands-on spinal examination: PPIVMs test movement between vertebrae through natural bends; PAIVMs test small glides between them.",
+   "ur": "PAIVM aur PPIVM spinal assessment ke tareeqay hain: PAIVM mein accessory pressure aur PPIVM mein spine ki physiological movement assess ki jati hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what PAIVM & PPIVM Spinal Assessment / Mobilization is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke PAIVM & PPIVM Spinal Assessment / Mobilization kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Test each level, ask about pain, and prove relevance by retesting.",
+   "Use it for: Back or neck pain where you want to find the most relevant segment.",
+   "Stop or avoid when: Suspected fracture, instability or serious pathology (use medical assessment first)."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "high-velocity-low-amplitude-thrust",
+   "title": "HVLA Thrust Manipulation",
+   "href": "/manual-therapy/high-velocity-low-amplitude-thrust#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/high-velocity-low-amplitude-thrust#pna-teacher",
+  "slug": "high-velocity-low-amplitude-thrust",
+  "title": "HVLA Thrust Manipulation",
+  "hook": {
+   "en": "A fast, small, controlled thrust at the end of a joint's range, used only after careful screening and supervised training.",
+   "ur": "HVLA manipulation ek rapid aur chhoti-range thrust hai jo sirf appropriate examination, informed consent aur safety screening ke baad trained clinician perform karta hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what HVLA Thrust Manipulation is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke HVLA Thrust Manipulation kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Screen, consent, choose the safest effective option, then retest. Never trust the pop.",
+   "Use it for: Mechanical back or thoracic pain with local stiffness and no red flags, when the patient agrees and you are trained.",
+   "Stop or avoid when: Fracture, osteoporosis, infection, cancer, spinal instability or inflammatory spine disease."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "neurodynamic-mobilization",
+   "title": "Neurodynamic Mobilization",
+   "href": "/manual-therapy/neurodynamic-mobilization#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/neurodynamic-mobilization#pna-teacher",
+  "slug": "neurodynamic-mobilization",
+  "title": "Neurodynamic Mobilization",
+  "hook": {
+   "en": "Gentle movements that slide or lightly tension a nerve so it moves freely and tolerates movement better.",
+   "ur": "Neurodynamic mobilization mein nervous system aur us ke aas-paas ke tissues ki movement tolerance par kaam kiya jata hai."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Neurodynamic Mobilization is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Neurodynamic Mobilization kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Slide first, tension later, and never provoke sharp or lingering symptoms.",
+   "Use it for: Arm or leg symptoms (tingling, aching, pulling) reproduced by neural tension positions with a clear pattern.",
+   "Stop or avoid when: Worsening weakness, spinal cord signs or cauda equina symptoms."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "pnf-manual-techniques",
+   "title": "PNF Manual Techniques",
+   "href": "/manual-therapy/pnf-manual-techniques#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/pnf-manual-techniques#pna-teacher",
+  "slug": "pnf-manual-techniques",
+  "title": "PNF Manual Techniques",
+  "hook": {
+   "en": "Using the patient's own gentle muscle contractions, with your hand resistance, to improve range, strength and control.",
+   "ur": "PNF manual techniques mein therapist ki resistance, stretch aur diagonal movement patterns use hotay hain taake coordinated movement aur functional motor control ko facilitate kiya ja sake."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what PNF Manual Techniques is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke PNF Manual Techniques kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Gentle contraction, full relaxation, then move into the new range.",
+   "Use it for: Muscle tightness limiting range (hamstrings, calves, shoulder muscles).",
+   "Stop or avoid when: Uncontrolled high blood pressure or heart conditions (avoid strong breath-holding)."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "cyriax-deep-transverse-friction",
+   "title": "Cyriax Deep Transverse Friction",
+   "href": "/manual-therapy/cyriax-deep-transverse-friction#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/cyriax-deep-transverse-friction#pna-teacher",
+  "slug": "cyriax-deep-transverse-friction",
+  "title": "Cyriax Deep Transverse Friction",
+  "hook": {
+   "en": "Firm, small rubbing strokes across the fibres of a tendon or ligament, applied exactly on the sore spot.",
+   "ur": "Cyriax Deep Transverse Friction mein symptomatic tendon, ligament ya muscle ke tissue par us ke fibres ki direction ke aar-paar localized pressure aur movement di jati hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Cyriax Deep Transverse Friction is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Cyriax Deep Transverse Friction kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Find the exact spot, rub across the fibres, then load the tendon.",
+   "Use it for: A well-located tendon or ligament problem with a clear tender spot, for example tennis elbow.",
+   "Stop or avoid when: Open wounds, infection, skin problems or bruising."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "muscle-energy-technique",
+   "title": "Muscle Energy Technique (MET)",
+   "href": "/manual-therapy/muscle-energy-technique#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/muscle-energy-technique#pna-teacher",
+  "slug": "muscle-energy-technique",
+  "title": "Muscle Energy Technique (MET)",
+  "hook": {
+   "en": "A gentle muscle contraction by the patient against your precise resistance, followed by a stretch or movement into the new range.",
+   "ur": "Muscle Energy Technique (MET) mein patient apni muscle se controlled contraction karta hai aur therapist munasib resistance deta hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Muscle Energy Technique (MET) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Muscle Energy Technique (MET) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Light push, full relax, then move to the new barrier.",
+   "Use it for: Muscle tightness limiting range, for example hamstrings or hip muscles.",
+   "Stop or avoid when: Fracture, acute tear, severe osteoporosis or instability."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "strain-counterstrain",
+   "title": "Strain Counterstrain / Positional Release",
+   "href": "/manual-therapy/strain-counterstrain#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/strain-counterstrain#pna-teacher",
+  "slug": "strain-counterstrain",
+  "title": "Strain Counterstrain / Positional Release",
+  "hook": {
+   "en": "Finding a tender point, then holding the body in the position of most comfort for about 90 seconds to settle it.",
+   "ur": "Strain Counterstrain ya positional release ek indirect approach hai: sensitive area ko aisi position mein le jaya jata hai jahan patient ko zyada comfort ho, phir dheere se neutral position mein wapas laya jata hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Strain Counterstrain / Positional Release is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Strain Counterstrain / Positional Release kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Find the sore point, move toward ease, hold, return slowly.",
+   "Use it for: Acute or irritable muscle or joint tenderness where stretching hurts.",
+   "Stop or avoid when: Unstable fracture or serious joint or spine instability."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "facilitated-positional-release",
+   "title": "Facilitated Positional Release (FPR)",
+   "href": "/manual-therapy/facilitated-positional-release#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/facilitated-positional-release#pna-teacher",
+  "slug": "facilitated-positional-release",
+  "title": "Facilitated Positional Release (FPR)",
+  "hook": {
+   "en": "A short, gentle method: find the neutral position of a tight area, add a small compression, then move toward comfort for a few seconds.",
+   "ur": "Facilitated Positional Release (FPR) ek indirect positional technique hai jisme region ko relative comfort mein rakh kar gentle facilitating force di jati hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Facilitated Positional Release (FPR) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Facilitated Positional Release (FPR) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Neutral, light compression, ease, short hold, retest.",
+   "Use it for: Tight, tender muscle areas that are sensitive to firm treatment.",
+   "Stop or avoid when: Fracture, instability or unexplained severe pain."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "myofascial-release",
+   "title": "Myofascial Release (Direct & Indirect)",
+   "href": "/manual-therapy/myofascial-release#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/myofascial-release#pna-teacher",
+  "slug": "myofascial-release",
+  "title": "Myofascial Release (Direct & Indirect)",
+  "hook": {
+   "en": "Slow, sustained pressure or stretch on the tissue envelope (fascia) until it feels like it softens, either into the restriction (direct) or toward ease (indirect).",
+   "ur": "Myofascial Release mein skin, fascia aur soft tissues par sustained ya dheere barhta hua manual load diya jata hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Myofascial Release (Direct & Indirect) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Myofascial Release (Direct & Indirect) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Slow, steady, follow the tissue, retest.",
+   "Use it for: Tight, restricted areas where gentle sustained contact is acceptable.",
+   "Stop or avoid when: Open wounds, infection, acute inflammation, or fresh surgery."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "soft-tissue-mobilization",
+   "title": "Soft-Tissue Mobilization",
+   "href": "/manual-therapy/soft-tissue-mobilization#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/soft-tissue-mobilization#pna-teacher",
+  "slug": "soft-tissue-mobilization",
+  "title": "Soft-Tissue Mobilization",
+  "hook": {
+   "en": "Hands-on strokes, kneading and pressure on muscle and soft tissue to relax it, improve circulation and improve movement.",
+   "ur": "Soft-Tissue Mobilization ek broad category hai jisme longitudinal strokes, kneading, sustained pressure, skin rolling aur tissue gliding shamil ho sakte hain."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Soft-Tissue Mobilization is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Soft-Tissue Mobilization kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Warm up, deepen gradually, retest.",
+   "Use it for: Muscle tension, soreness or stiffness limiting movement.",
+   "Stop or avoid when: Deep vein thrombosis, infection, open wounds, fractures or severe bruising."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "trigger-point-compression",
+   "title": "Trigger-Point Pressure Release",
+   "href": "/manual-therapy/trigger-point-compression#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/trigger-point-compression#pna-teacher",
+  "slug": "trigger-point-compression",
+  "title": "Trigger-Point Pressure Release",
+  "hook": {
+   "en": "Steady pressure held on a tender knot in a muscle until its pain eases, usually followed by stretching.",
+   "ur": "Trigger-Point Pressure Release mein muscle ke ek sensitive hissay par ahista, bardasht ke qabil pressure diya jata hai aur symptoms ka response dekha jata hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Trigger-Point Pressure Release is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Trigger-Point Pressure Release kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Find the spot, hold steady, stretch, retest.",
+   "Use it for: Muscle pain with a clear tender spot that reproduces the patient's pain.",
+   "Stop or avoid when: Infection, open wounds, or fragile skin."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "fascial-manipulation",
+   "title": "Fascial Manipulation",
+   "href": "/manual-therapy/fascial-manipulation#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/fascial-manipulation#pna-teacher",
+  "slug": "fascial-manipulation",
+  "title": "Fascial Manipulation",
+  "hook": {
+   "en": "A system (Stecco) that uses tender points along fascial lines, treated with deep friction, to treat pain and movement problems.",
+   "ur": "Fascial Manipulation ek system hai jisme movement dysfunction ke patterns ko dekh kar selected fascial regions par focused manual loading ki jati hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Fascial Manipulation is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Fascial Manipulation kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Link the movement to the point, treat, then retest.",
+   "Use it for: Persistent musculoskeletal pain where movement patterns are not explained by one local area.",
+   "Stop or avoid when: Infection, wounds, tumours or fresh injury."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "active-release-style-soft-tissue",
+   "title": "Active Soft-Tissue Release",
+   "href": "/manual-therapy/active-release-style-soft-tissue#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/active-release-style-soft-tissue#pna-teacher",
+  "slug": "active-release-style-soft-tissue",
+  "title": "Active Soft-Tissue Release",
+  "hook": {
+   "en": "Hold a tight spot with your hand while the patient actively moves the muscle from short to long beneath your contact.",
+   "ur": "Active Soft-Tissue Release mein clinician soft tissue par targeted contact maintain karta hai jab patient related joint ya muscle ko active movement se range mein le jata hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Active Soft-Tissue Release is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Active Soft-Tissue Release kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Shorten, hold, lengthen actively, retest.",
+   "Use it for: Overuse tightness, such as hamstring or forearm muscle restriction.",
+   "Stop or avoid when: Acute tear, infection, open wounds or bleeding disorders."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "iastm",
+   "title": "Instrument-Assisted Soft-Tissue Mobilization (IASTM)",
+   "href": "/manual-therapy/iastm#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/iastm#pna-teacher",
+  "slug": "iastm",
+  "title": "Instrument-Assisted Soft-Tissue Mobilization (IASTM)",
+  "hook": {
+   "en": "Using a smooth hand-held tool to stroke and press the soft tissue to find tight areas and improve movement.",
+   "ur": "IASTM mein ek rigid instrument se soft tissue par controlled pressure aur gliding ki jati hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Instrument-Assisted Soft-Tissue Mobilization (IASTM) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Instrument-Assisted Soft-Tissue Mobilization (IASTM) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Scan, stroke gently, then load.",
+   "Use it for: Persistent tendon or muscle tightness where hands-on soft-tissue work is suitable.",
+   "Stop or avoid when: Open wounds, skin disease, infection, deep vein thrombosis or fragile skin."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "myofascial-decompression-dry-cupping",
+   "title": "Myofascial Decompression / Dry Cupping",
+   "href": "/manual-therapy/myofascial-decompression-dry-cupping#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/myofascial-decompression-dry-cupping#pna-teacher",
+  "slug": "myofascial-decompression-dry-cupping",
+  "title": "Myofascial Decompression / Dry Cupping",
+  "hook": {
+   "en": "Using suction cups on the skin to lift the tissue, either held still or moved, to ease tightness and pain.",
+   "ur": "Dry cupping mein cup ke zariye negative pressure create karke skin aur superficial tissue par sensory aur mechanical input diya jata hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Myofascial Decompression / Dry Cupping is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Myofascial Decompression / Dry Cupping kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Lift the tissue gently, protect the skin, and measure real change.",
+   "Use it for: Muscle tightness or soreness where a patient prefers or tolerates cupping.",
+   "Stop or avoid when: Skin infection, open wounds, sunburn or fragile skin."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "manual-lymphatic-drainage",
+   "title": "Manual Lymphatic Drainage",
+   "href": "/manual-therapy/manual-lymphatic-drainage#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/manual-lymphatic-drainage#pna-teacher",
+  "slug": "manual-lymphatic-drainage",
+  "title": "Manual Lymphatic Drainage",
+  "hook": {
+   "en": "Very light, slow skin-stretching strokes that move fluid toward the lymph nodes, done in a set order.",
+   "ur": "Manual Lymphatic Drainage mein bohat halkay, rhythmical skin-stretch strokes use hotay hain aur yeh lymphedema ke comprehensive management ka ek hissa hai."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Manual Lymphatic Drainage is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Manual Lymphatic Drainage kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Clear the nodes first, then move fluid toward them, very lightly.",
+   "Use it for: Lymphedema, usually with medical guidance.",
+   "Stop or avoid when: Acute infection, such as cellulitis, or acute blood clot."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "scar-mobilization",
+   "title": "Scar Mobilization",
+   "href": "/manual-therapy/scar-mobilization#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/scar-mobilization#pna-teacher",
+  "slug": "scar-mobilization",
+  "title": "Scar Mobilization",
+  "hook": {
+   "en": "Gentle massage, skin-rolling and stretching of a healed scar so it moves more freely and feels less tight.",
+   "ur": "Scar Mobilization mein healed scar aur aas-paas ke tissue par graded manual loading di jati hai taake comfort, mobility aur movement tolerance par kaam ho."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Foundation",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Scar Mobilization is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (3 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Scar Mobilization kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 3 checks.)"
+  },
+  "checks": 3,
+  "summaryEn": [
+   "In one line: Wait for healing, move the scar in all directions, teach self-care.",
+   "Use it for: Healed scars after surgery or injury that feel tight or limit movement.",
+   "Stop or avoid when: Open wound, scab, discharge, infection or unhealed sutures."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "paris-approach",
+   "title": "Paris Approach to Orthopedic Manual Therapy",
+   "href": "/manual-therapy/paris-approach#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/paris-approach#pna-teacher",
+  "slug": "paris-approach",
+  "title": "Paris Approach to Orthopedic Manual Therapy",
+  "hook": {
+   "en": "A step-by-step orthopedic examination that decides first whether a joint needs mobilizing, stabilizing or something else, then treats and retests.",
+   "ur": "Paris approach ek systematic orthopedic examination framework hai: pehle history aur movement check, phir problem ki classification, us ke mutabiq treatment aur dobara test."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Paris Approach to Orthopedic Manual Therapy is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Paris Approach to Orthopedic Manual Therapy kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Examine, classify, treat to match, retest.",
+   "Use it for: Joint or spine problems where you need a clear reason for choosing manual therapy.",
+   "Stop or avoid when: When red flags need medical review first."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "mckenzie-mdt",
+   "title": "McKenzie Method — Mechanical Diagnosis & Therapy (MDT)",
+   "href": "/manual-therapy/mckenzie-mdt#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/mckenzie-mdt#pna-teacher",
+  "slug": "mckenzie-mdt",
+  "title": "McKenzie Method — Mechanical Diagnosis & Therapy (MDT)",
+  "hook": {
+   "en": "An assessment system that uses how symptoms respond to repeated movements to guide a self-management exercise plan.",
+   "ur": "McKenzie MDT ek assessment aur self-management system hai jo repeated movements ya sustained positions ke baad symptoms ki tabdeeli dekh kar exercises choose karta hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what McKenzie Method — Mechanical Diagnosis & Therapy (MDT) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke McKenzie Method — Mechanical Diagnosis & Therapy (MDT) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Follow the symptom response, not the famous exercise.",
+   "Use it for: Back or neck pain, with or without arm or leg pain, with no red flags.",
+   "Stop or avoid when: Red flags: progressive weakness, loss of bowel or bladder control, saddle numbness, major trauma or systemic illness."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "mennell-joint-play",
+   "title": "Mennell Joint-Play Approach",
+   "href": "/manual-therapy/mennell-joint-play#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/mennell-joint-play#pna-teacher",
+  "slug": "mennell-joint-play",
+  "title": "Mennell Joint-Play Approach",
+  "hook": {
+   "en": "Testing tiny involuntary joint movements ('joint play') that you cannot do by yourself, to find out if a joint is blocked.",
+   "ur": "Mennell joint play mein joint ke chhote passive glides ya spins check kiye jate hain jo patient khud active movement se nahi kar sakta."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Mennell Joint-Play Approach is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Mennell Joint-Play Approach kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Test the hinge's wiggle, compare sides, and link to function.",
+   "Use it for: A joint with restricted movement and no clear tissue cause.",
+   "Stop or avoid when: Fractures, infection, or instability."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "fascial-distortion-model",
+   "title": "Fascial Distortion Model (FDM)",
+   "href": "/manual-therapy/fascial-distortion-model#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/fascial-distortion-model#pna-teacher",
+  "slug": "fascial-distortion-model",
+  "title": "Fascial Distortion Model (FDM)",
+  "hook": {
+   "en": "A model (Typaldos) that sorts pain into six fascial 'distortions', each treated with a specific manual technique.",
+   "ur": "Fascial Distortion Model (FDM) pain ko fascia ki chhe proposed distortion types se explain karta hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Fascial Distortion Model (FDM) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Fascial Distortion Model (FDM) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Use the model as a hypothesis, measure the result, stay safe.",
+   "Use it for: Practitioners trained in the model, where the patient understands and consents to firm techniques.",
+   "Stop or avoid when: Fractures, infection, bleeding disorders or red flags."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "balanced-ligamentous-tension",
+   "title": "Balanced Ligamentous Tension (BLT)",
+   "href": "/manual-therapy/balanced-ligamentous-tension#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/balanced-ligamentous-tension#pna-teacher",
+  "slug": "balanced-ligamentous-tension",
+  "title": "Balanced Ligamentous Tension (BLT)",
+  "hook": {
+   "en": "A very light osteopathic method: hold a joint at the point where its ligaments feel evenly balanced, until the tissue seems to settle.",
+   "ur": "Balanced Ligamentous Tension (BLT) ek bohat gentle osteopathic approach hai jisme joint ko us position mein rakha jata hai jahan ligament tension barabar mehsoos ho."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Balanced Ligamentous Tension (BLT) is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Balanced Ligamentous Tension (BLT) kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Balance, hold lightly, wait, retest.",
+   "Use it for: Gentle treatment of joints or soft tissues in people who cannot tolerate firm techniques.",
+   "Stop or avoid when: Fractures, instability, infection or unexplained severe pain."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "spencer-shoulder-sequence",
+   "title": "Spencer Shoulder Technique",
+   "href": "/manual-therapy/spencer-shoulder-sequence#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/spencer-shoulder-sequence#pna-teacher",
+  "slug": "spencer-shoulder-sequence",
+  "title": "Spencer Shoulder Technique",
+  "hook": {
+   "en": "A seven-step osteopathic sequence of gentle, rhythmic shoulder movements used for stiff shoulders.",
+   "ur": "Spencer technique shoulder ke liye saat gentle, rhythmic movements ka osteopathic sequence hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Spencer Shoulder Technique is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Spencer Shoulder Technique kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Seven gentle steps, then retest and exercise.",
+   "Use it for: A stiff shoulder in the stiff or recovery phase, once other causes have been screened.",
+   "Stop or avoid when: Shoulder fracture, dislocation, severe pain or infection."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "still-technique",
+   "title": "Still Technique",
+   "href": "/manual-therapy/still-technique#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/still-technique#pna-teacher",
+  "slug": "still-technique",
+  "title": "Still Technique",
+  "hook": {
+   "en": "An osteopathic method that moves the tissue into ease, adds a small compression, then guides it through the restriction.",
+   "ur": "Still technique mein pehle tissue ko ease ki direction mein le jate hain, phir gentle compression ya traction add karke restricted direction mein guide karte hain."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Still Technique is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Still Technique kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Ease first, guide second, retest.",
+   "Use it for: Stiff, tender joints or regions where a gentle method is wanted.",
+   "Stop or avoid when: Fractures, instability, infection or blood-vessel concerns."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "osteopathic-articulatory",
+   "title": "Osteopathic Articulatory Techniques",
+   "href": "/manual-therapy/osteopathic-articulatory#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/osteopathic-articulatory#pna-teacher",
+  "slug": "osteopathic-articulatory",
+  "title": "Osteopathic Articulatory Techniques",
+  "hook": {
+   "en": "Slow, rhythmic, repeated joint movements, taken a little further each time toward a stiff direction.",
+   "ur": "Osteopathic articulatory techniques mein joint ko slow, rhythmic aur repeated movements se gradually restricted direction ki taraf le jaya jata hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Osteopathic Articulatory Techniques is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Osteopathic Articulatory Techniques kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Rhythm, repetition, gradual range, retest.",
+   "Use it for: Stiff joints, such as the mid-back, where gentle repeated movement is suitable.",
+   "Stop or avoid when: Fractures, osteoporosis concerns, infection or instability."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "osteopathic-lymphatic-pump",
+   "title": "Osteopathic Lymphatic Pump Methods",
+   "href": "/manual-therapy/osteopathic-lymphatic-pump#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/osteopathic-lymphatic-pump#pna-teacher",
+  "slug": "osteopathic-lymphatic-pump",
+  "title": "Osteopathic Lymphatic Pump Methods",
+  "hook": {
+   "en": "Rhythmic pressure on the chest, belly or feet to encourage lymph and fluid movement, used as an adjunct in some settings.",
+   "ur": "Osteopathic lymphatic pump mein chest, abdomen ya feet par rhythmical compression se lymph/fluid movement encourage karne ki koshish hoti hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Osteopathic Lymphatic Pump Methods is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Osteopathic Lymphatic Pump Methods kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Gentle rhythm as an adjunct, with modest claims.",
+   "Use it for: Trained practitioners offering it as an adjunct, with medical approval where there is infection.",
+   "Stop or avoid when: Rib fractures, severe osteoporosis, or recent chest or abdominal surgery."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "rolfing-structural-integration",
+   "title": "Rolfing / Structural Integration",
+   "href": "/manual-therapy/rolfing-structural-integration#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/rolfing-structural-integration#pna-teacher",
+  "slug": "rolfing-structural-integration",
+  "title": "Rolfing / Structural Integration",
+  "hook": {
+   "en": "A structured series of deep soft-tissue sessions aimed at improving posture and movement.",
+   "ur": "Rolfing Structural Integration ek structured bodywork approach hai jisme sessions ki series mein soft-tissue work aur movement education di jati hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Rolfing / Structural Integration is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Rolfing / Structural Integration kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: A structured program with modest claims and measurable goals.",
+   "Use it for: People wanting a structured, longer program of bodywork with a trained practitioner.",
+   "Stop or avoid when: Acute injuries, infection, blood clots, or serious medical conditions without clearance."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "bowen-technique",
+   "title": "Bowen Technique / Bowenwork",
+   "href": "/manual-therapy/bowen-technique#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/bowen-technique#pna-teacher",
+  "slug": "bowen-technique",
+  "title": "Bowen Technique / Bowenwork",
+  "hook": {
+   "en": "Very light rolling moves on the muscles with built-in pauses; popular but with little strong evidence.",
+   "ur": "Bowen technique mein muscles ya tendons par bohat gentle rolling moves ke darmiyan pauses hotay hain."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Bowen Technique / Bowenwork is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Bowen Technique / Bowenwork kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Gentle and pleasant, but judge it by function, not calm.",
+   "Use it for: Someone who wants a gentle, relaxing option after screening.",
+   "Stop or avoid when: Red flags, progressive weakness, severe headache or serious illness."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "visceral-manipulation",
+   "title": "Visceral Manipulation / Visceral Fascial Therapy",
+   "href": "/manual-therapy/visceral-manipulation#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/visceral-manipulation#pna-teacher",
+  "slug": "visceral-manipulation",
+  "title": "Visceral Manipulation / Visceral Fascial Therapy",
+  "hook": {
+   "en": "Gentle hand pressure on the abdomen to affect the movement of organs and their connective tissue, with limited evidence.",
+   "ur": "Visceral manipulation mein abdomen par halkay, slow manual contact se organs ke connective tissue aur movement par kaam karne ka tasawwur hota hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Visceral Manipulation / Visceral Fascial Therapy is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Visceral Manipulation / Visceral Fascial Therapy kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Screen carefully, touch gently, claim modestly.",
+   "Use it for: Trained practitioners offering gentle abdominal touch for comfort when medically cleared.",
+   "Stop or avoid when: Acute abdominal pain, fever, vomiting, bleeding, pregnancy complications or unexplained weight loss."
+  ],
+  "keywords": "",
+  "next": {
+   "slug": "craniosacral-therapy",
+   "title": "Craniosacral Therapy",
+   "href": "/manual-therapy/craniosacral-therapy#pna-teacher"
+  }
+ },
+ {
+  "href": "/manual-therapy/craniosacral-therapy#pna-teacher",
+  "slug": "craniosacral-therapy",
+  "title": "Craniosacral Therapy",
+  "hook": {
+   "en": "Extremely light touch on the head, spine and sacrum, with claims about subtle rhythms that are not supported by evidence.",
+   "ur": "Craniosacral therapy mein head, spine aur sacrum par bohat halkay touch ka istemal hota hai."
+  },
+  "area": "Manual Therapy · World Approaches",
+  "level": "Clinical",
+  "bestFor": "Final year, interns & clinicians",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "manual",
+  "goal": {
+   "en": "By the end, you'll know what Craniosacral Therapy is, when it's safe and useful, how to apply it step by step — and how to prove it worked. (4 checks along the way.)",
+   "ur": "End tak aap jaan jayenge ke Craniosacral Therapy kya hai, kab safe aur faida-mand hai, qadam ba qadam kaise apply hoti hai — aur kaise prove karein ke kaam kiya. (Raste mein 4 checks.)"
+  },
+  "checks": 4,
+  "summaryEn": [
+   "In one line: Gentle and safe if screened, but claims must stay modest.",
+   "Use it for: People who want a gentle, relaxing hands-on session after screening.",
+   "Stop or avoid when: Recent head injury, bleeding in the brain, aneurysm or raised pressure in the skull."
+  ],
+  "keywords": "",
+  "next": null
+ }
+]

@@ -21,8 +21,10 @@ export type ReviewCardData = { id: string; lesson: string; lessonTitle: string; 
 
 type Mode = "due" | "practice";
 
-export function FlashcardReview({ cards }: { cards: ReviewCardData[] }) {
-  const cardMap = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
+export function FlashcardReview({ cards: initialCards }: { cards?: ReviewCardData[] }) {
+  const [cards, setCards] = useState<ReviewCardData[] | null>(initialCards ?? null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const cardMap = useMemo(() => new Map((cards ?? []).map((card) => [card.id, card])), [cards]);
   const [ready, setReady] = useState(false);
   const [lang, setLang] = useState<TeacherLang>("en");
   const [deck, setDeck] = useState<TeacherDeck>({});
@@ -35,13 +37,34 @@ export function FlashcardReview({ cards }: { cards: ReviewCardData[] }) {
   const [reviewed, setReviewed] = useState(0);
   const [started, setStarted] = useState(false);
 
+  // Card text is a static file, kept out of the Cloudflare Worker bundle.
   useEffect(() => {
+    if (cards) return;
+    let cancelled = false;
+    fetch("/teacher-data/flashcards.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json() as Promise<ReviewCardData[]>;
+      })
+      .then((data) => {
+        if (!cancelled) setCards(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [cards]);
+
+  useEffect(() => {
+    if (!cards) return;
     const current = getDeck();
     setLang(getTeacherLang());
     setDeck(current);
     setQueue(getDueCardIds(current).filter((id) => cardMap.has(id)));
     setReady(true);
-  }, [cardMap]);
+  }, [cards, cardMap]);
 
   const deckIds = Object.keys(deck).filter((id) => cardMap.has(id));
   const finished = started && position >= queue.length;
@@ -84,6 +107,14 @@ export function FlashcardReview({ cards }: { cards: ReviewCardData[] }) {
   function changeLang(value: TeacherLang) {
     setLang(value);
     setTeacherLang(value);
+  }
+
+  if (loadFailed) {
+    return (
+      <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-sm font-semibold text-amber-900">
+        Your flashcards couldn&apos;t load — please check your connection and refresh the page.
+      </div>
+    );
   }
 
   if (!ready) {

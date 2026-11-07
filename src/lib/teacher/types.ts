@@ -171,3 +171,14 @@ export type TeacherLessonCard = Pick<
   TeacherLesson,
   "slug" | "title" | "hook" | "area" | "level" | "bestFor" | "minutes"
 > & { flashcardCount: number; href: string };
+
+/** Everything the server needs about a lesson; the full lesson is fetched as a static file. */
+export type TeacherLessonMeta = TeacherLessonCard & {
+  kind: "concept" | "manual";
+  goal: BiText;
+  checks: number;
+  summaryEn: string[];
+  /** Search keywords for the PNA AI navigator (concept lessons). */
+  keywords: string;
+  next: { slug: string; title: string; href: string } | null;
+};

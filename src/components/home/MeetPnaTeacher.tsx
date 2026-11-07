@@ -1,5 +1,5 @@
 import { ArrowRight, GraduationCap, Languages, Layers, MousePointerClick } from "lucide-react";
-import { teacherLessonCards } from "@/lib/teacher/lessons";
+import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 
 /**
  * Homepage introduction to PNA Teacher. Server-rendered and static: the sample
@@ -7,8 +7,8 @@ import { teacherLessonCards } from "@/lib/teacher/lessons";
  */
 export function MeetPnaTeacher() {
   const featured = ["convex-concave-rule", "red-flags-screening", "dermatomes-myotomes-reflexes", "gait-cycle", "pain-science-basics"]
-    .map((slug) => teacherLessonCards.find((lesson) => lesson.slug === slug))
-    .filter((lesson): lesson is (typeof teacherLessonCards)[number] => Boolean(lesson));
+    .map((slug) => conceptLessonMetas.find((lesson) => lesson.slug === slug))
+    .filter((lesson): lesson is (typeof conceptLessonMetas)[number] => Boolean(lesson));
 
   return (
     <section className="container-content py-6 sm:py-8" aria-labelledby="meet-pna-teacher-title" data-pna-home-teacher="v1">
