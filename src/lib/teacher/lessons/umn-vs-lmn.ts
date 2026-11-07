@@ -38,14 +38,14 @@ export const umnVsLmn: TeacherLesson = {
       type: "analogy",
       text: {
         en: "Think of a company. The UMN is the **manager** in head office who sends instructions and keeps the team calm. The LMN is the **worker** who actually does the job.\nLose the **worker** → the job simply doesn't get done: the muscle goes limp, floppy and wastes away.\nLose the **manager** → the workers are still there, but nobody controls them: they become over-reactive and stiff.",
-        ur: "Ek company sochein. UMN head office ka **manager** hai jo hidayat bhejta hai aur team ko qaabu mein rakhta hai. LMN woh **worker** hai jo asal kaam karta hai.\n**Worker** chala jaye → kaam hota hi nahi: muscle dheeli, naram aur kamzor ho kar sookh jati hai.\n**Manager** chala jaye → workers maujood hain lekin un par koi control nahi: woh zyada react karte hain aur akar jaate hain.",
+        ur: "Ek company sochein. UMN head office ka **manager** hai jo hidayat bhejta hai aur team ko qaabu mein rakhta hai. LMN woh **worker** hai jo asal kaam karta hai.\n**Worker** chala jaye → kaam hota hi nahi: muscle dheeli, naram aur weak ho kar sookh jati hai.\n**Manager** chala jaye → workers maujood hain lekin un par koi control nahi: woh zyada react karte hain aur akar jaate hain.",
       },
     },
     {
       type: "memory",
       text: {
         en: "**UMN = UP**: tone up, reflexes up, toes up (Babinski).\n**LMN = LOW**: tone low, reflexes low, muscle bulk low.",
-        ur: "**UMN = UP (upar)**: tone upar, reflexes upar, angootha upar (Babinski).\n**LMN = LOW (neeche)**: tone kam, reflexes kam, muscle bulk kam.",
+        ur: "**UMN = UP (upar)**: tone upar, reflexes upar, big toe upar (Babinski).\n**LMN = LOW (neeche)**: tone kam, reflexes kam, muscle bulk kam.",
       },
     },
     {
@@ -88,7 +88,7 @@ export const umnVsLmn: TeacherLesson = {
           { en: "Absent", ur: "Nahi hota" },
         ],
         [
-          { en: "Weakness pattern", ur: "Kamzori ka pattern" },
+          { en: "Weakness pattern", ur: "Weakness ka pattern" },
           { en: "Groups of muscles / a whole region", ur: "Muscles ke groups / poora hissa" },
           { en: "Muscles of a specific root or nerve", ur: "Khaas root ya nerve ke muscles" },
         ],
@@ -121,14 +121,14 @@ export const umnVsLmn: TeacherLesson = {
           correct: true,
           feedback: {
             en: "Correct — the manager is gone: tone up, reflexes up, toes up. And because the motor pathway crosses in the medulla, a left-brain stroke affects the right side.",
-            ur: "Sahi — manager chala gaya: tone upar, reflexes upar, angootha upar. Aur kyun ke motor rasta medulla mein cross karta hai, left dimagh ka stroke right side ko affect karta hai.",
+            ur: "Sahi — manager chala gaya: tone upar, reflexes upar, thumb upar. Aur kyun ke motor rasta medulla mein cross karta hai, left dimagh ka stroke right side ko affect karta hai.",
           },
         },
         {
           text: { en: "LMN lesion", ur: "LMN lesion" },
           feedback: {
             en: "LMN lesions push everything DOWN — floppy, weak reflexes, wasting. These signs are all UP.",
-            ur: "LMN lesion sab kuch NEECHE le jata hai — dheela pan, kamzor reflexes, wasting. Yahan sab signs UPAR hain.",
+            ur: "LMN lesion sab kuch NEECHE le jata hai — dheela pan, weak reflexes, wasting. Yahan sab signs UPAR hain.",
           },
         },
         {
@@ -144,7 +144,7 @@ export const umnVsLmn: TeacherLesson = {
       type: "check",
       question: {
         en: "After a common fibular (peroneal) nerve injury, a patient has foot drop, a floppy ankle and wasting of the front of the leg. Lesion type?",
-        ur: "Common fibular (peroneal) nerve injury ke baad patient ko foot drop, dheela ankle aur taang ke aage wale hisse ki wasting hai. Lesion kis qism ka?",
+        ur: "Common fibular (peroneal) nerve injury ke baad patient ko foot drop, dheela ankle aur leg ke aage wale hisse ki wasting hai. Lesion kis qism ka?",
       },
       options: [
         {
@@ -217,7 +217,7 @@ export const umnVsLmn: TeacherLesson = {
       type: "clinic",
       text: {
         en: "Why it matters for treatment: in UMN lesions you work on tone management, positioning, task-specific training and motor control. In LMN lesions you protect weak or denervated muscle, prevent contracture and deformity, use orthoses (e.g. an AFO for foot drop) and strengthen as reinnervation allows. Same word 'weakness' — completely different plan.",
-        ur: "Treatment ke liye kyun zaroori hai: UMN lesion mein tone management, positioning, task-specific training aur motor control par kaam. LMN lesion mein kamzor ya denervated muscle ki hifazat, contracture aur deformity se bachao, orthoses (maslan foot drop ke liye AFO) aur reinnervation ke saath strengthening. Lafz ek hi 'kamzori' — plan bilkul alag.",
+        ur: "Treatment ke liye kyun zaroori hai: UMN lesion mein tone management, positioning, task-specific training aur motor control par kaam. LMN lesion mein weak ya denervated muscle ki hifazat, contracture aur deformity se bachao, orthoses (maslan foot drop ke liye AFO) aur reinnervation ke saath strengthening. Lafz ek hi 'weakness' — plan bilkul alag.",
       },
     },
     {

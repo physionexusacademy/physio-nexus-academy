@@ -186,7 +186,7 @@ export const postureSkill: SkillDefinition = {
   phase: "patient",
   icon: "posture",
   summary: "Assess standing posture against the plumb line, recognise 13 common deviations — from forward head to flat foot — and link each to likely short and weak muscles, measures and correction.",
-  ur: "Plumb line ke saath posture dekhna, 13 aam deviations pehchanna — aur har ek ke short/weak muscles, measurement aur correction samajhna.",
+  ur: "Plumb line ke saath posture assess karna, 13 common deviations identify karna — aur har ek ke short/weak muscles, measurement aur correction samajhna.",
   atlasLabel: "Posture atlas",
   sources: [
     { title: "Kendall et al. — Muscles: Testing and Function with Posture and Pain (5th ed.)" },
@@ -224,7 +224,7 @@ export const postureSkill: SkillDefinition = {
           ["Head", "Through the ear lobe (external auditory meatus)"],
         ],
       },
-      ur: "Side se plumb line: ankle ke thoda aage, knee ke thoda aage, trochanter, acromion aur kaan ki lau se guzarti hai.",
+      ur: "Side view mein plumb line: ankle ke thoda aage, knee ke thoda aage, greater trochanter, acromion aur ear lobe se guzarti hai.",
     },
     {
       id: "set-up",

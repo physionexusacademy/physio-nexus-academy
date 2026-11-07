@@ -29,7 +29,7 @@ type Message = {
 
 const starterTopics = [
   "Explain the convex–concave rule",
-  "Kamar dard ka ilaj kaise hota hai?",
+  "Back pain ka treatment kaise hota hai?",
   "Help me prepare for my viva",
   "Book a home visit",
 ];

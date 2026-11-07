@@ -109,7 +109,7 @@ export const teacherPaths: TeacherPath[] = [
     title: "Manual Therapy Starter",
     tagline: {
       en: "From joint mechanics to choosing the right grade — the thinking behind your hands.",
-      ur: "Joint mechanics se sahi grade chunne tak — aap ke haathon ke peeche ki soch.",
+      ur: "Joint mechanics se sahi grade chunne tak — aap ke hands ke peeche ki soch.",
     },
     audience: "Final year, interns & graduates",
     outcomes: [
@@ -174,7 +174,7 @@ export const teacherPaths: TeacherPath[] = [
         href: "/msk-special-tests",
         mission: {
           en: "Find the knee ligament tests. Practise the technique steps on a friend (gently!) — and decide which result would rule an ACL tear out.",
-          ur: "Knee ligament tests dhoondein. Technique ke steps kisi dost par (naram haath se!) practice karein — aur tay karein kaun sa result ACL tear rule out karega.",
+          ur: "Knee ligament tests dhoondein. Technique ke steps kisi dost par (naram hand se!) practice karein — aur tay karein kaun sa result ACL tear rule out karega.",
         },
         minutes: 12,
       },
@@ -275,7 +275,7 @@ export const teacherPaths: TeacherPath[] = [
         href: "/manual-therapy/regions",
         mission: {
           en: "Pick one body region and compare two soft-tissue options for it. Which would you choose for an irritable, painful presentation — and why?",
-          ur: "Jism ka ek region chunein aur us ke liye do soft-tissue options compare karein. Irritable, dard wali presentation ke liye kaun sa chunenge — aur kyun?",
+          ur: "Body ka ek region chunein aur us ke liye do soft-tissue options compare karein. Irritable, dard wali presentation ke liye kaun sa chunenge — aur kyun?",
         },
         minutes: 10,
       },

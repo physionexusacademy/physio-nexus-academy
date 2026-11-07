@@ -29,7 +29,7 @@ function zoneFor(value: number) {
     return {
       zone: { en: "Light", ur: "Halka" },
       talk: { en: "Could easily sing", ur: "Asaani se gaa sakte hain" },
-      use: { en: "Warm-up, recovery, very deconditioned patients", ur: "Warm-up, recovery, bohat kamzor patients" },
+      use: { en: "Warm-up, recovery, very deconditioned patients", ur: "Warm-up, recovery, bohat weak patients" },
       color: "bg-emerald-500",
     };
   if (value <= 13)

@@ -84,7 +84,7 @@ export const exerciseDosage: TeacherLesson = {
         ],
         [
           { en: "Muscular endurance", ur: "Muscular endurance" },
-          { en: "2–3 days/week · 15+ reps at lighter loads (~40–60% 1RM)", ur: "Hafte mein 2–3 din · halke wazan (~40–60% 1RM) se 15+ reps" },
+          { en: "2–3 days/week · 15+ reps at lighter loads (~40–60% 1RM)", ur: "Hafte mein 2–3 din · halke weight (~40–60% 1RM) se 15+ reps" },
           { en: "Local burn, form stays good", ur: "Muscle mein jalan, form theek rahe" },
         ],
         [
@@ -93,7 +93,7 @@ export const exerciseDosage: TeacherLesson = {
           { en: "Moderate: can talk, can't sing (RPE ~12–13)", ur: "Darmiyani: baat kar sakte hain, gaa nahi sakte (RPE ~12–13)" },
         ],
         [
-          { en: "Balance (older adults)", ur: "Balance (bazurg)" },
+          { en: "Balance (older adults)", ur: "Balance (armrg)" },
           { en: "3+ days/week as part of multicomponent activity", ur: "Hafte mein 3+ din, multicomponent activity ka hissa" },
           { en: "Challenging but safe — supervise if fall risk is high", ur: "Mushkil magar safe — fall risk zyada ho to supervision" },
         ],
@@ -136,7 +136,7 @@ export const exerciseDosage: TeacherLesson = {
       },
       options: [
         { text: { en: "Keep the same dose for three more months", ur: "Agle teen mahine wohi dose rakhein" }, feedback: { en: "RPE 9 is \"very light\" — too easy to drive adaptation. Time to progress.", ur: "RPE 9 \"bohat halka\" hai — adaptation ke liye bohat asaan. Progress ka waqt hai." } },
-        { text: { en: "Progress one variable — e.g. a lower chair or holding a weight", ur: "Ek variable progress karein — maslan neechi kursi ya haath mein wazan" }, correct: true, feedback: { en: "Exactly — one change, then see how the knee responds over the next 24 hours.", ur: "Bilkul — ek tabdeeli, phir agle 24 ghante mein knee ka response dekhein." } },
+        { text: { en: "Progress one variable — e.g. a lower chair or holding a weight", ur: "Ek variable progress karein — maslan neechi kursi ya hand mein weight" }, correct: true, feedback: { en: "Exactly — one change, then see how the knee responds over the next 24 hours.", ur: "Bilkul — ek tabdeeli, phir agle 24 ghante mein knee ka response dekhein." } },
         { text: { en: "Increase sets, reps and load all at once", ur: "Sets, reps aur load sab ek saath barhayein" }, feedback: { en: "Too many changes at once — if it flares, you won't know which change caused it.", ur: "Ek saath bohat tabdeeliyan — agar bharka to pata nahi chalega kis tabdeeli se." } },
       ],
     },
@@ -152,10 +152,10 @@ export const exerciseDosage: TeacherLesson = {
       ],
       items: [
         { text: { en: "Brisk walking", ur: "Tez chalna" }, answer: 0, why: { en: "Continuous, rhythmic, large muscles — aerobic.", ur: "Musalsal, rhythm wala, bare muscles — aerobic." } },
-        { text: { en: "Leg press", ur: "Leg press" }, answer: 1, why: { en: "Moves a load for sets of reps — strength.", ur: "Sets aur reps mein wazan — strength." } },
+        { text: { en: "Leg press", ur: "Leg press" }, answer: 1, why: { en: "Moves a load for sets of reps — strength.", ur: "Sets aur reps mein weight — strength." } },
         { text: { en: "Stationary cycling", ur: "Stationary cycling" }, answer: 0, why: { en: "Continuous rhythmic work — aerobic.", ur: "Musalsal rhythm wala kaam — aerobic." } },
-        { text: { en: "Dumbbell squats", ur: "Dumbbell squats" }, answer: 1, why: { en: "Loaded sets — strength.", ur: "Wazan ke saath sets — strength." } },
-        { text: { en: "Swimming laps", ur: "Swimming laps" }, answer: 0, why: { en: "Continuous whole-body work — aerobic.", ur: "Musalsal poore jism ka kaam — aerobic." } },
+        { text: { en: "Dumbbell squats", ur: "Dumbbell squats" }, answer: 1, why: { en: "Loaded sets — strength.", ur: "Weight ke saath sets — strength." } },
+        { text: { en: "Swimming laps", ur: "Swimming laps" }, answer: 0, why: { en: "Continuous whole-body work — aerobic.", ur: "Musalsal poore body ka kaam — aerobic." } },
         { text: { en: "Resistance-band rows", ur: "Resistance-band rows" }, answer: 1, why: { en: "Resistance for sets of reps — strength.", ur: "Sets aur reps mein resistance — strength." } },
       ],
     },
@@ -174,7 +174,7 @@ export const exerciseDosage: TeacherLesson = {
       },
       answer: {
         en: "Example: sit-to-stand from a standard chair · 2–3 days/week · 2 sets of 10–12 reps · last 2–3 reps feel hard (about 2 RIR, RPE ~13–15) · 1–2 min rest between sets. Progress by lowering the chair or holding a weight once all reps feel easy; reduce if knee pain is worse the next morning.",
-        ur: "Misaal: aam kursi se sit-to-stand · hafte mein 2–3 din · 2 sets, 10–12 reps · aakhri 2–3 reps mushkil (taqreeban 2 RIR, RPE ~13–15) · sets ke beech 1–2 min aaram. Jab saare reps asaan lagein to kursi neechi karein ya wazan pakrayein; agli subah knee ka dard barha ho to kam karein.",
+        ur: "Misaal: aam kursi se sit-to-stand · hafte mein 2–3 din · 2 sets, 10–12 reps · aakhri 2–3 reps mushkil (taqreeban 2 RIR, RPE ~13–15) · sets ke beech 1–2 min aaram. Jab saare reps asaan lagein to kursi neechi karein ya weight pakrayein; agli subah knee ka dard barha ho to kam karein.",
       },
     },
     {

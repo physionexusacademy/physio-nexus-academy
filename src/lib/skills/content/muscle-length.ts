@@ -235,7 +235,7 @@ export const muscleLengthSkill: SkillDefinition = {
   phase: "patient",
   icon: "length",
   summary: "Test 14 key muscles for length — Thomas, Ely, Ober, SLR, 90/90, calf, adductors, pectorals, lats and neck — with correct stabilisation, normal values and how to tell muscle from joint or nerve.",
-  ur: "14 ahem muscles ki length test karna — Thomas, Ely, Ober, SLR, 90/90, calf, pectorals aur neck — sahi stabilisation aur normal values ke saath.",
+  ur: "14 important muscles ki length test karna — Thomas, Ely, Ober, SLR, 90/90, calf, pectorals aur neck — sahi stabilisation aur normal values ke saath.",
   atlasLabel: "Length test atlas",
   sources: [
     { title: "Kendall et al. — Muscles: Testing and Function with Posture and Pain (5th ed.)" },
@@ -263,7 +263,7 @@ export const muscleLengthSkill: SkillDefinition = {
       title: "What a muscle length test is",
       body: "A length test **passively elongates a muscle across every joint it crosses** and checks whether it reaches normal range. You compare with the norm **and the other side**. A short muscle limits motion in one direction and often pulls the body into a posture.",
       bullets: ["Tight (short) = less range than normal, with a firm muscular stop", "Weak ≠ short — test strength separately with MMT", "Always test both sides"],
-      ur: "Muscle ko us ke saare joints par passively stretch karke dekhte hain ke normal length tak pohanchta hai ya nahi — aur dono sides compare karte hain.",
+      ur: "Muscle ko us ke saare joints par passively stretch kar ke dekhte hain ke normal length tak pohanchta hai ya nahi — aur dono sides compare karte hain.",
     },
     {
       id: "one-two-joint",

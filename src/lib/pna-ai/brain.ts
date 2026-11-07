@@ -352,7 +352,7 @@ const whyText: Record<Kind, { en: string; ur: string }> = {
   article: { en: "Evidence-informed article", ur: "Evidence-based article" },
   topic: { en: "All articles on this topic", ur: "Is topic ke saare articles" },
   technique: { en: "Technique chapter · taught by PNA Teacher", ur: "Technique chapter · PNA Teacher ke saath" },
-  regional: { en: "Applied to a body region", ur: "Jism ke region par apply" },
+  regional: { en: "Applied to a body region", ur: "Body ke region par apply" },
   condition: { en: "Condition guide: symptoms, tests, rehab", ur: "Condition guide: symptoms, tests, rehab" },
   plan: { en: "Treatment plan & progression", ur: "Treatment plan aur progression" },
   tests: { en: "How to perform the tests", ur: "Tests kaise karein" },
@@ -426,11 +426,11 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
   if (confidence === "low" || !top) {
     lines.push(
       ur
-        ? "Mujhe poora yaqeen nahi ke aap kya dhoond rahe hain. Jism ka hissa, condition ya technique ka naam likhein — jaise \"ghutne ka dard ka ilaj\" ya \"Maitland grades\"."
+        ? "Mujhe poora yaqeen nahi ke aap kya dhoond rahe hain. Body ka hissa, condition ya technique ka naam likhein — jaise \"knee pain ka treatment\" ya \"Maitland grades\"."
         : "I'm not fully sure what you're looking for. Try naming a body part, condition or technique — for example \"knee pain treatment\" or \"Maitland grades\".",
     );
     suggestions.push(
-      { label: ur ? "Kamar dard ka ilaj" : "Low back pain treatment", query: ur ? "kamar dard ka ilaj" : "low back pain treatment" },
+      { label: ur ? "Back pain ka treatment" : "Low back pain treatment", query: ur ? "back pain ka treatment" : "low back pain treatment" },
       { label: ur ? "Viva ki tayyari" : "Prepare for my viva", query: "viva preparation" },
       { label: "PNA Teacher", href: "/learn" },
     );
@@ -480,7 +480,7 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
           : "Below: the condition guide, how to test it and the treatment plan — read them in that order.",
     );
     suggestions.push(
-      { label: ur ? `${name} ka ilaj` : `How to treat ${name}`, query: `${name} treatment plan` },
+      { label: ur ? `${name} ka treatment` : `How to treat ${name}`, query: `${name} treatment plan` },
       { label: ur ? `${name} ke special tests` : `Special tests for ${name}`, query: `special tests for ${name}` },
     );
     if (u.intents.has("patient")) suggestions.push({ label: ur ? "Appointment request" : "Request an appointment", href: "/appointment" });

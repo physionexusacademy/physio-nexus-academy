@@ -89,11 +89,12 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
     return () => document.removeEventListener("mousedown", onDown);
   }, [openWing]);
 
-  // Swipe right→left opens the mobile menu, left→right closes it.
+  // While the mobile menu is open, a left→right swipe closes it. (Swiping never opens the
+  // menu: sideways swipes are needed for the 3D patient, sliders and scrolling content.)
   useEffect(() => {
+    if (!open) return;
     const onStart = (event: TouchEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest(".overflow-x-auto, [data-horizontal-scroll]") || event.touches.length !== 1 || (window.visualViewport?.scale ?? 1) > 1.05) {
+      if (event.touches.length !== 1 || (window.visualViewport?.scale ?? 1) > 1.05) {
         touchStart.current = null;
         return;
       }
@@ -104,9 +105,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
       const dx = event.changedTouches[0].clientX - touchStart.current.x;
       const dy = event.changedTouches[0].clientY - touchStart.current.y;
       touchStart.current = null;
-      if (Math.abs(dx) < 70 || Math.abs(dx) <= Math.abs(dy) * 1.25) return;
-      if (dx < 0 && !open) setOpen(true);
-      if (dx > 0 && open) setOpen(false);
+      if (dx > 70 && Math.abs(dx) > Math.abs(dy) * 1.25) setOpen(false);
     };
     window.addEventListener("touchstart", onStart, { passive: true });
     window.addEventListener("touchend", onEnd, { passive: true });

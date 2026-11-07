@@ -60,7 +60,7 @@ export const peripheralNervesSkill: SkillDefinition = {
   phase: "neuro",
   icon: "nerves",
   summary: "Examine 15 key nerves — roots, muscles, sensory areas, quick tests and classic lesion signs — plus neurodynamic tests (ULNTs, SLR, slump, prone knee bend).",
-  ur: "Har bari nerve ki roots, muscles, sensory area aur lesion sign — aur neurodynamic tests (ULNT, SLR, slump).",
+  ur: "Har major nerve ki roots, muscles, sensory area aur lesion sign — aur neurodynamic tests (ULNT, SLR, slump).",
   atlasLabel: "Nerve atlas",
   sources: [
     { title: "Aids to the Examination of the Peripheral Nervous System (Guarantors of Brain / MRC)" },
@@ -86,7 +86,7 @@ export const peripheralNervesSkill: SkillDefinition = {
       level: "beginner",
       title: "Nerve or root?",
       body: "A **peripheral nerve** carries fibres from several roots to a defined set of muscles and skin. A nerve lesion weakens **its** muscles and numbs **its** sensory area — which rarely matches a single dermatome or myotome.",
-      ur: "Nerve ka area aur root ka area alag hai — isi se pehchaan hoti hai ke masla nerve mein hai ya root mein.",
+      ur: "Nerve ka area aur root ka area different hai — isi se pata chalta hai ke problem nerve mein hai ya root mein.",
     },
     {
       id: "big-three-hand",
@@ -249,7 +249,7 @@ export const toneCoordinationSkill: SkillDefinition = {
   phase: "neuro",
   icon: "tone",
   summary: "Grade spasticity with the Modified Ashworth and Tardieu scales, tell spasticity from rigidity, and examine coordination and balance — finger-nose, heel-shin, Romberg and more.",
-  ur: "Spasticity ko MAS aur Tardieu se grade karna, rigidity se farq karna, aur coordination tests sahi tareeqe se karna.",
+  ur: "Spasticity ko MAS aur Tardieu se grade karna, rigidity se differentiate karna, aur coordination tests sahi tareeqe se karna.",
   atlasLabel: "Tone & coordination atlas",
   sources: [
     { title: "Bohannon & Smith (1987) — Modified Ashworth Scale" },
@@ -275,7 +275,7 @@ export const toneCoordinationSkill: SkillDefinition = {
       level: "beginner",
       title: "What is muscle tone?",
       body: "Tone is the **resistance you feel when you move a relaxed limb**. Too little (hypotonia) feels floppy — LMN or cerebellar problems. Too much (hypertonia) is either **spasticity** or **rigidity**.",
-      ur: "Tone = aaram ki halat mein limb ko hilaane par mehsoos hone wali resistance.",
+      ur: "Tone = rest par limb ko passively move karne par feel hone wali resistance.",
     },
     {
       id: "spasticity-vs-rigidity",

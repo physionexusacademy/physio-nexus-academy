@@ -335,7 +335,7 @@ export const palpationSkill: SkillDefinition = {
   phase: "patient",
   icon: "palpation",
   summary: "Find 26 key bony landmarks and pulses on the body map — how to palpate each, the spinal level it marks, what lies nearby and why it matters clinically.",
-  ur: "26 ahem bony landmarks aur pulses dhoondna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun zaroori hai.",
+  ur: "26 important bony landmarks aur pulses find karna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun important hai.",
   atlasLabel: "Landmark atlas",
   sources: [
     { title: "Field — Anatomy: Palpation and Surface Markings (5th ed.)" },
@@ -362,7 +362,7 @@ export const palpationSkill: SkillDefinition = {
       title: "How to palpate",
       body: "Explain, gain consent and expose only what you need (offer a chaperone). Use **flat finger pads**, start **light then deeper**, move slowly and **compare with the other side**.",
       bullets: ["Warm hands, short nails", "Watch the patient's face for pain", "Ask: 'Is that your familiar pain?'"],
-      ur: "Ijazat lein, sirf zaroori hissa kholen, ungliyon ke pad se pehle halka phir gehra dabayen aur dono sides compare karein.",
+      ur: "Consent lein, sirf zaroori area expose karein, fingertips ke pads se pehle light phir deep palpate karein aur dono sides compare karein.",
     },
     {
       id: "spinal-levels",

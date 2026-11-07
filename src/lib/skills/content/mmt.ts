@@ -774,7 +774,7 @@ export const mmtSkill: SkillDefinition = {
   phase: "measure",
   icon: "mmt",
   summary: "Grade strength from 0 to 5 like an expert: positions, stabilisation, resistance, gravity-minimised testing and substitutions for 46 muscle tests.",
-  ur: "Muscle ki taaqat 0 se 5 tak grade karna — sahi position, stabilisation, resistance aur substitutions ke saath.",
+  ur: "Muscle strength ko 0 se 5 tak grade karna — sahi position, stabilisation, resistance aur substitutions ke saath.",
   atlasLabel: "Muscle test atlas",
   sources: [
     { title: "Avers & Brown — Daniels and Worthingham's Muscle Testing (10th ed.)", note: "Grading convention, test positions and heel-raise criterion." },
@@ -805,7 +805,7 @@ export const mmtSkill: SkillDefinition = {
         "It grades **voluntary strength** — it assumes normal tone and the ability to follow commands.",
         "It is a **screen**, not a precise measure: grades 4 and 5 are subjective.",
       ],
-      ur: "MMT se pata chalta hai ke muscle gravity aur aap ki resistance ke khilaaf kitni taaqat laga sakta hai — dono sides ko compare karein.",
+      ur: "MMT se pata chalta hai ke muscle gravity aur aap ki resistance ke against kitni strength laga sakta hai — dono sides compare karein.",
     },
     {
       id: "grading-scale",
@@ -823,7 +823,7 @@ export const mmtSkill: SkillDefinition = {
           ["0", "Zero", "No contraction"],
         ],
       },
-      ur: "Grade 3 woh line hai jahan muscle bina resistance ke gravity ke khilaaf poori range kar le. Us se oopar resistance, neeche gravity minimised position.",
+      ur: "Grade 3 woh line hai jahan muscle bina resistance ke gravity ke against full range kar le. Us se upar resistance, neeche gravity-minimised position.",
     },
     {
       id: "gravity-decides",
@@ -831,14 +831,14 @@ export const mmtSkill: SkillDefinition = {
       title: "Gravity decides grade 3",
       body: "Grade 3 is the pivot. First ask the patient to move through range **against gravity** with no resistance. If they can, you go up (add resistance for 4 and 5). If they can't, you go down: reposition so the movement happens in the **horizontal plane** (gravity minimised) for grades 2, 1 and 0.",
       demo: { pose: "sitting", prox: 270, from: 270, rom: 90, proxLabel: "Trunk", distLabel: "Arm", axis: "Glenohumeral joint", gravity: "against", resist: true },
-      ur: "Pehle gravity ke khilaaf test karein. Ho jaye to resistance badhayein, na ho to position badal kar horizontal plane mein test karein.",
+      ur: "Pehle against gravity test karein. Ho jaye to resistance add karein, na ho to position change kar ke horizontal plane mein test karein.",
     },
     {
       id: "make-vs-break",
       level: "beginner",
       title: "Make test vs break test",
       body: "In a **break test** (the usual MMT method) the patient holds the end of the test range and you gradually push to 'break' the hold: “Hold — don't let me move you.” In a **make test** the patient pushes into your still hand. Break tests give higher, more discriminating grades; whichever you use, use it consistently and document it.",
-      ur: "Break test mein patient hold karta hai aur aap dheere dheere dabaate hain; make test mein patient aap ke haath ko dhakelta hai.",
+      ur: "Break test mein patient hold karta hai aur aap dheere dheere push karte hain; make test mein patient aap ke hand ko push karta hai.",
     },
     {
       id: "universal-sequence",
@@ -878,7 +878,7 @@ export const mmtSkill: SkillDefinition = {
         "Use a firm, comfortable hand; the patient can also hold the table.",
         "Never stabilise on a painful area.",
       ],
-      ur: "Jahan se muscle shuru hota hai us hisse ko mazboot pakrein taa ke doosre muscles madad na kar saken.",
+      ur: "Jahan se muscle start hota hai us part ko firmly stabilise karein taake doosre muscles help na kar saken.",
     },
     {
       id: "resistance",
@@ -886,7 +886,7 @@ export const mmtSkill: SkillDefinition = {
       title: "Resistance: where, which way, how fast",
       body: "Apply resistance at the **distal end of the moving segment** (long lever) but **never across a second joint**. Push in the direction **opposite** to the muscle's pull, building up smoothly over 2–3 seconds and holding — no sudden jerks.",
       demo: { pose: "sitting", prox: 90, from: 270, rom: 140, proxLabel: "Arm", distLabel: "Forearm", axis: "Lateral epicondyle", gravity: "against", resist: true },
-      ur: "Resistance hamesha moving hisse ke aakhir mein, muscle ki pull ke ulti taraf, dheere dheere 2–3 second mein.",
+      ur: "Resistance hamesha moving segment ke distal end par, muscle ki pull ke opposite direction mein, dheere dheere 2–3 seconds mein dein.",
     },
     {
       id: "positions-order",
@@ -924,7 +924,7 @@ export const mmtSkill: SkillDefinition = {
           ["2−", "Partial range with gravity minimised"],
         ],
       },
-      ur: "Plus/minus grades har kitaab mein thore mukhtalif hain — apni report mein likhein ke kaun sa system use kiya.",
+      ur: "Plus/minus grades har book mein thore different hain — apni report mein likhein ke kaun sa system use kiya.",
     },
     {
       id: "substitution",
@@ -966,7 +966,7 @@ export const mmtSkill: SkillDefinition = {
           ["Weakness that worsens with repetition", "Neuromuscular junction (e.g. myasthenia gravis)"],
         ],
       },
-      ur: "Ek muscle nahi, poora pattern dekhein: root, nerve, UMN, muscle ya junction.",
+      ur: "Sirf ek muscle nahi, poora pattern dekhein: root, nerve, UMN, muscle ya junction.",
     },
     {
       id: "when-mmt-fails",

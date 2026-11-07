@@ -9,10 +9,10 @@
 export type SkillLevelId = "beginner" | "intermediate" | "advanced" | "expert";
 
 export const SKILL_LEVELS: { id: SkillLevelId; label: string; labelUr: string; promise: string }[] = [
-  { id: "beginner", label: "Beginner", labelUr: "Shuruaat", promise: "Know the language and the basic rules." },
-  { id: "intermediate", label: "Intermediate", labelUr: "Darmiyana", promise: "Perform every test correctly, step by step." },
+  { id: "beginner", label: "Beginner", labelUr: "Beginner", promise: "Know the language and the basic rules." },
+  { id: "intermediate", label: "Intermediate", labelUr: "Intermediate", promise: "Perform every test correctly, step by step." },
   { id: "advanced", label: "Advanced", labelUr: "Advanced", promise: "Spot errors, substitutions and the tricky positions." },
-  { id: "expert", label: "Expert", labelUr: "Mahir", promise: "Reason like a clinician and pass any OSCE station." },
+  { id: "expert", label: "Expert", labelUr: "Expert", promise: "Reason like a clinician and pass any OSCE station." },
 ];
 
 export const levelRank = (level: SkillLevelId) => SKILL_LEVELS.findIndex((item) => item.id === level);

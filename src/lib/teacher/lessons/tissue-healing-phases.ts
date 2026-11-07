@@ -71,7 +71,7 @@ export const tissueHealingPhases: TeacherLesson = {
           text: { en: "Remodelling — full sport training", ur: "Remodelling — poori sport training" },
           feedback: {
             en: "Too early! The new collagen is still weak and disorganised. Sport-specific training comes later, guided by criteria.",
-            ur: "Bohat jaldi! Naya collagen abhi kamzor aur be-tarteeb hai. Sport-specific training baad mein, criteria ke mutabiq.",
+            ur: "Bohat jaldi! Naya collagen abhi weak aur be-tarteeb hai. Sport-specific training baad mein, criteria ke mutabiq.",
           },
         },
       ],
@@ -80,7 +80,7 @@ export const tissueHealingPhases: TeacherLesson = {
       type: "say",
       text: {
         en: "The big principle: **tissue adapts to the load you give it**. Too little load → a weak, disorganised scar. Too much too soon → re-injury. The physio's art is **the right load at the right time**.",
-        ur: "Bara usool: **tissue usi load ke mutabiq dhalta hai jo aap usay dete hain**. Bohat kam load → kamzor, be-tarteeb scar. Bohat zyada, bohat jaldi → dobara injury. Physio ka hunar hai **sahi waqt par sahi load**.",
+        ur: "Bara usool: **tissue usi load ke mutabiq dhalta hai jo aap usay dete hain**. Bohat kam load → weak, be-tarteeb scar. Bohat zyada, bohat jaldi → dobara injury. Physio ka hunar hai **sahi waqt par sahi load**.",
       },
       simpler: {
         en: "Healing tissue needs the right amount of work — not zero, not too much.",
@@ -168,7 +168,7 @@ export const tissueHealingPhases: TeacherLesson = {
           text: { en: "Rest completely for 3 more months", ur: "Mazeed 3 mahine mukammal aaraam" },
           feedback: {
             en: "Over-protection weakens tissue too. Keep loading progressively — just don't skip the criteria.",
-            ur: "Zaroorat se zyada hifazat bhi tissue ko kamzor karti hai. Load aahista aahista barhate rahein — bas criteria skip na karein.",
+            ur: "Zaroorat se zyada hifazat bhi tissue ko weak karti hai. Load aahista aahista barhate rahein — bas criteria skip na karein.",
           },
         },
       ],
@@ -177,7 +177,7 @@ export const tissueHealingPhases: TeacherLesson = {
       type: "clinic",
       text: {
         en: "Red flags override everything: suspected fracture (e.g. unable to bear weight), signs of infection, or calf swelling and tenderness that could suggest a DVT need medical assessment **before** routine rehab.",
-        ur: "Red flags har cheez se pehle: fracture ka shak (maslan wazan na daal sakna), infection ki nishaniyan, ya calf ki sojan aur tenderness jo DVT ki taraf ishara kare — routine rehab se **pehle** medical assessment.",
+        ur: "Red flags har cheez se pehle: fracture ka shak (maslan weight na daal sakna), infection ki nishaniyan, ya calf ki sojan aur tenderness jo DVT ki taraf ishara kare — routine rehab se **pehle** medical assessment.",
       },
     },
   ],
@@ -206,7 +206,7 @@ export const tissueHealingPhases: TeacherLesson = {
       front: { en: "What happens in the proliferative phase?", ur: "Proliferative phase mein kya hota hai?" },
       back: {
         en: "Fibroblasts lay down new (initially weaker, disorganised) collagen and new blood vessels form.",
-        ur: "Fibroblasts naya (shuru mein kamzor, be-tarteeb) collagen banate hain aur nayi blood vessels banti hain.",
+        ur: "Fibroblasts naya (shuru mein weak, be-tarteeb) collagen banate hain aur nayi blood vessels banti hain.",
       },
     },
     {

@@ -36,7 +36,7 @@
   "title": "Active & Passive Insufficiency — Feel It in Your Own Hand",
   "hook": {
    "en": "Your own hand is the lab. Two quick experiments and this topic is yours.",
-   "ur": "Aap ka apna haath lab hai. Do chhotay experiments aur yeh topic aap ka."
+   "ur": "Aap ka apna hand lab hai. Do chhotay experiments aur yeh topic aap ka."
   },
   "area": "Movement Science",
   "level": "Foundation",
@@ -46,7 +46,7 @@
   "kind": "concept",
   "goal": {
    "en": "By the end, you'll explain why two-joint muscles 'run out' of force or length — using your own body as proof.",
-   "ur": "End tak aap samjha sakenge ke two-joint muscles ki force ya length kyun 'khatam' ho jati hai — apne jism ko saboot bana kar."
+   "ur": "End tak aap samjha sakenge ke two-joint muscles ki force ya length kyun 'khatam' ho jati hai — apne body ko saboot bana kar."
   },
   "checks": 3,
   "summaryEn": [
@@ -67,7 +67,7 @@
   "title": "Open vs Closed Kinetic Chain — The Foot Decides",
   "hook": {
    "en": "Look at just one thing — the hand or the foot — and you'll classify any exercise in 3 seconds.",
-   "ur": "Sirf ek cheez dekhein — haath ya paon — aur kisi bhi exercise ko 3 second mein classify karein."
+   "ur": "Sirf ek cheez dekhein — hand ya foot — aur kisi bhi exercise ko 3 second mein classify karein."
   },
   "area": "Movement Science",
   "level": "Foundation",
@@ -253,7 +253,7 @@
   "title": "Red Flags — When NOT to Treat (and What to Do Instead)",
   "hook": {
    "en": "Most back and neck pain is harmless. Learn to spot the few cases that aren't — and refer at the right speed.",
-   "ur": "Zyada tar kamar aur gardan ka dard khatarnak nahi hota. Un chand cases ko pehchanna seekhein jo khatarnak hain — aur sahi raftaar se refer karein."
+   "ur": "Zyada tar back aur neck pain khatarnak nahi hota. Un chand cases ko pehchanna seekhein jo khatarnak hain — aur sahi raftaar se refer karein."
   },
   "area": "Clinical Reasoning",
   "level": "Clinical",
@@ -745,7 +745,7 @@
   "title": "Facilitated Positional Release (FPR)",
   "hook": {
    "en": "A short, gentle method: find the neutral position of a tight area, add a small compression, then move toward comfort for a few seconds.",
-   "ur": "Facilitated Positional Release (FPR) ek indirect positional technique hai jisme region ko relative comfort mein rakh kar gentle facilitating force di jati hai."
+   "ur": "Facilitated Positional Release (FPR) ek indirect positional technique hai bodye region ko relative comfort mein rakh kar gentle facilitating force di jati hai."
   },
   "area": "Manual Therapy · Soft Tissue",
   "level": "Clinical",
@@ -807,7 +807,7 @@
   "title": "Soft-Tissue Mobilization",
   "hook": {
    "en": "Hands-on strokes, kneading and pressure on muscle and soft tissue to relax it, improve circulation and improve movement.",
-   "ur": "Soft-Tissue Mobilization ek broad category hai jisme longitudinal strokes, kneading, sustained pressure, skin rolling aur tissue gliding shamil ho sakte hain."
+   "ur": "Soft-Tissue Mobilization ek broad category hai bodye longitudinal strokes, kneading, sustained pressure, skin rolling aur tissue gliding shamil ho sakte hain."
   },
   "area": "Manual Therapy · Soft Tissue",
   "level": "Foundation",
@@ -869,7 +869,7 @@
   "title": "Fascial Manipulation",
   "hook": {
    "en": "A system (Stecco) that uses tender points along fascial lines, treated with deep friction, to treat pain and movement problems.",
-   "ur": "Fascial Manipulation ek system hai jisme movement dysfunction ke patterns ko dekh kar selected fascial regions par focused manual loading ki jati hai."
+   "ur": "Fascial Manipulation ek system hai bodye movement dysfunction ke patterns ko dekh kar selected fascial regions par focused manual loading ki jati hai."
   },
   "area": "Manual Therapy · Soft Tissue",
   "level": "Clinical",
@@ -1179,7 +1179,7 @@
   "title": "Balanced Ligamentous Tension (BLT)",
   "hook": {
    "en": "A very light osteopathic method: hold a joint at the point where its ligaments feel evenly balanced, until the tissue seems to settle.",
-   "ur": "Balanced Ligamentous Tension (BLT) ek bohat gentle osteopathic approach hai jisme joint ko us position mein rakha jata hai jahan ligament tension barabar mehsoos ho."
+   "ur": "Balanced Ligamentous Tension (BLT) ek bohat gentle osteopathic approach hai bodye joint ko us position mein rakha jata hai jahan ligament tension barabar mehsoos ho."
   },
   "area": "Manual Therapy · World Approaches",
   "level": "Clinical",
@@ -1334,7 +1334,7 @@
   "title": "Rolfing / Structural Integration",
   "hook": {
    "en": "A structured series of deep soft-tissue sessions aimed at improving posture and movement.",
-   "ur": "Rolfing Structural Integration ek structured bodywork approach hai jisme sessions ki series mein soft-tissue work aur movement education di jati hai."
+   "ur": "Rolfing Structural Integration ek structured bodywork approach hai bodye sessions ki series mein soft-tissue work aur movement education di jati hai."
   },
   "area": "Manual Therapy · World Approaches",
   "level": "Clinical",

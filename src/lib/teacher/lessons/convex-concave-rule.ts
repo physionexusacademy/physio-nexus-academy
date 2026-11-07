@@ -89,7 +89,7 @@ export const convexConcaveRule: TeacherLesson = {
       type: "check",
       question: {
         en: "A patient lifts their arm into abduction. Which way does the humeral head glide?",
-        ur: "Patient bazu ko abduction mein upar uthata hai. Humeral head kis taraf glide karta hai?",
+        ur: "Patient arm ko abduction mein upar uthata hai. Humeral head kis taraf glide karta hai?",
       },
       hint: {
         en: "The humeral head is convex and it is the surface that moves.",
@@ -100,7 +100,7 @@ export const convexConcaveRule: TeacherLesson = {
           text: { en: "Superior (up)", ur: "Superior (upar)" },
           feedback: {
             en: "Tempting — the arm goes up, so it feels like everything goes up! But up is the **roll**. A convex head glides the **opposite** way: inferior.",
-            ur: "Yeh jawab dil ko lagta hai — bazu upar jata hai to lagta hai sab kuch upar jaye ga! Lekin upar **roll** hai. Convex head **ulti** taraf glide karta hai: inferior.",
+            ur: "Yeh jawab dil ko lagta hai — arm upar jata hai to lagta hai sab kuch upar jaye ga! Lekin upar **roll** hai. Convex head **ulti** taraf glide karta hai: inferior.",
           },
         },
         {
@@ -162,7 +162,7 @@ export const convexConcaveRule: TeacherLesson = {
       type: "mistake",
       text: {
         en: "The most common mistake: checking which bone is convex, but forgetting to ask **which bone is moving**. In closed chain — say, rising from a squat with the foot fixed — the **femur** moves on the tibia. Now a convex surface is moving, so the answer flips!",
-        ur: "Sab se aam ghalti: yeh to dekh liya ke kaun si bone convex hai, lekin yeh poochna bhool gaye ke **kaun si bone move kar rahi hai**. Closed chain mein — maslan squat se uthte waqt jab paon fixed ho — **femur**, tibia par move karti hai. Ab convex surface move kar rahi hai, to jawab ulat jata hai!",
+        ur: "Sab se aam ghalti: yeh to dekh liya ke kaun si bone convex hai, lekin yeh poochna bhool gaye ke **kaun si bone move kar rahi hai**. Closed chain mein — maslan squat se uthte waqt jab foot fixed ho — **femur**, tibia par move karti hai. Ab convex surface move kar rahi hai, to jawab ulat jata hai!",
       },
     },
     {

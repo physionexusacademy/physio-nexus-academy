@@ -5,7 +5,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
   title: "Active & Passive Insufficiency — Feel It in Your Own Hand",
   hook: {
     en: "Your own hand is the lab. Two quick experiments and this topic is yours.",
-    ur: "Aap ka apna haath lab hai. Do chhotay experiments aur yeh topic aap ka.",
+    ur: "Aap ka apna hand lab hai. Do chhotay experiments aur yeh topic aap ka.",
   },
   area: "Movement Science",
   level: "Foundation",
@@ -13,14 +13,14 @@ export const activePassiveInsufficiency: TeacherLesson = {
   minutes: 8,
   goal: {
     en: "By the end, you'll explain why two-joint muscles 'run out' of force or length — using your own body as proof.",
-    ur: "End tak aap samjha sakenge ke two-joint muscles ki force ya length kyun 'khatam' ho jati hai — apne jism ko saboot bana kar.",
+    ur: "End tak aap samjha sakenge ke two-joint muscles ki force ya length kyun 'khatam' ho jati hai — apne body ko saboot bana kar.",
   },
   beats: [
     {
       type: "say",
       text: {
         en: "Today your own body is the textbook. Keep one hand free — you'll need it in a minute. 🖐️",
-        ur: "Aaj aap ka apna jism textbook hai. Ek haath khaali rakhein — thori dair mein zaroorat paregi. 🖐️",
+        ur: "Aaj aap ka apna body textbook hai. Ek hand khaali rakhein — thori dair mein zaroorat paregi. 🖐️",
       },
     },
     {
@@ -31,21 +31,21 @@ export const activePassiveInsufficiency: TeacherLesson = {
       },
       simpler: {
         en: "A muscle is strongest in the middle. Too short or too long = weaker.",
-        ur: "Muscle beech mein sab se taqatwar hai. Bohat chhota ya bohat lamba = kamzor.",
+        ur: "Muscle beech mein sab se taqatwar hai. Bohat chhota ya bohat lamba = weak.",
       },
     },
     {
       type: "analogy",
       text: {
         en: "Imagine a team pulling a rope while standing in a line. Stand too far apart and they can barely grab it. Squeeze them too close and they bump into each other. In the middle, everyone pulls well. Inside a muscle fibre, the actin and myosin filaments behave in a similar way — their overlap decides how many 'hands' can pull.",
-        ur: "Sochein ek team line mein khari rassi kheench rahi hai. Bohat door khare hon to rassi mushkil se pakar paate hain. Bohat qareeb hon to aapas mein takrate hain. Beech mein sab ache se kheenchte hain. Muscle fibre ke andar actin aur myosin bhi kuch aisa hi karte hain — un ka overlap tay karta hai ke kitne 'haath' kheench sakte hain.",
+        ur: "Sochein ek team line mein khari rassi kheench rahi hai. Bohat door khare hon to rassi mushkil se pakar paate hain. Bohat qareeb hon to aapas mein takrate hain. Beech mein sab ache se kheenchte hain. Muscle fibre ke andar actin aur myosin bhi kuch aisa hi karte hain — un ka overlap tay karta hai ke kitne 'hand' kheench sakte hain.",
       },
     },
     {
       type: "say",
       text: {
         en: "Now, **two-joint muscles** cross two joints — like the long finger flexors (wrist + fingers), the hamstrings (hip + knee) and rectus femoris (hip + knee). When they try to act at BOTH joints at the same time, they hit a limit.",
-        ur: "Ab **two-joint muscles** do joints cross karte hain — jaise lambe finger flexors (wrist + ungliyan), hamstrings (hip + knee) aur rectus femoris (hip + knee). Jab yeh DONO joints par ek saath kaam karne ki koshish karte hain to limit aa jati hai.",
+        ur: "Ab **two-joint muscles** do joints cross karte hain — jaise lambe finger flexors (wrist + fingers), hamstrings (hip + knee) aur rectus femoris (hip + knee). Jab yeh DONO joints par ek saath kaam karne ki koshish karte hain to limit aa jati hai.",
       },
     },
     {
@@ -53,22 +53,22 @@ export const activePassiveInsufficiency: TeacherLesson = {
       title: { en: "Try it now: active insufficiency", ur: "Abhi try karein: active insufficiency" },
       steps: [
         { en: "Bend your wrist fully forward (wrist flexion) and hold it there.", ur: "Apni wrist ko poori tarah aage moorein (wrist flexion) aur wahin rokein." },
-        { en: "Now try to make a strong, tight fist.", ur: "Ab zor se, tight muthi banane ki koshish karein." },
+        { en: "Now try to make a strong, tight fist.", ur: "Ab zor se, tight fist banane ki koshish karein." },
       ],
       ask: { en: "What did you notice?", ur: "Aap ne kya mehsoos kiya?" },
       options: [
         {
-          text: { en: "My grip felt weak — I couldn't squeeze fully", ur: "Grip kamzor laga — poori tarah daba nahi saka" },
+          text: { en: "My grip felt weak — I couldn't squeeze fully", ur: "Grip weak laga — poori tarah daba nahi saka" },
           feedback: {
             en: "Exactly! That's **active insufficiency**. Your finger flexors are already shortened across the wrist, so they can't shorten enough to squeeze the fingers tightly as well. (The stretched finger extensors on the back of your forearm are adding a brake too.)",
-            ur: "Bilkul! Yehi **active insufficiency** hai. Aap ke finger flexors wrist par pehle hi chhotay ho chuke hain, is liye ungliyon ko bhi zor se dabane ke liye mazeed chhotay nahi ho sakte. (Forearm ki pusht par khinche hue finger extensors bhi brake laga rahe hain.)",
+            ur: "Bilkul! Yehi **active insufficiency** hai. Aap ke finger flexors wrist par pehle hi chhotay ho chuke hain, is liye fingers ko bhi zor se dabane ke liye mazeed chhotay nahi ho sakte. (Forearm ki pusht par khinche hue finger extensors bhi brake laga rahe hain.)",
           },
         },
         {
           text: { en: "I didn't notice any difference", ur: "Mujhe koi farq mehsoos nahi hua" },
           feedback: {
             en: "Try once more with the wrist bent as far as it goes, then compare with a fist made with the wrist slightly extended. Most people feel a clear drop in grip strength — that drop is active insufficiency.",
-            ur: "Ek baar phir try karein, wrist ko jitna ho sake moor kar, phir wrist thori peeche (extension) rakh kar muthi se compare karein. Zyada tar logon ko grip mein wazeh kami mehsoos hoti hai — yehi kami active insufficiency hai.",
+            ur: "Ek baar phir try karein, wrist ko jitna ho sake moor kar, phir wrist thori peeche (extension) rakh kar fist se compare karein. Zyada tar logon ko grip mein wazeh kami mehsoos hoti hai — yehi kami active insufficiency hai.",
           },
         },
       ],
@@ -85,7 +85,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
       title: { en: "Try it now: passive insufficiency", ur: "Abhi try karein: passive insufficiency" },
       steps: [
         { en: "Sit on a chair with one knee straight out in front of you.", ur: "Kursi par baith kar ek knee seedha aage phela lein." },
-        { en: "Keep that knee straight and lean forward from your hips, reaching towards your toes.", ur: "Knee seedha rakhte hue hips se aage jhukein aur paon ki ungliyon ki taraf haath barhayein." },
+        { en: "Keep that knee straight and lean forward from your hips, reaching towards your toes.", ur: "Knee seedha rakhte hue hips se aage jhukein aur toes ki taraf hand barhayein." },
       ],
       ask: { en: "Where did you feel the tightness?", ur: "Tightness kahan mehsoos hui?" },
       options: [
@@ -97,10 +97,10 @@ export const activePassiveInsufficiency: TeacherLesson = {
           },
         },
         {
-          text: { en: "In my lower back", ur: "Kamar ke neeche wale hisse mein" },
+          text: { en: "In my lower back", ur: "Lower back mein" },
           feedback: {
             en: "Some people feel it there — often the hamstrings hit their limit first and the spine bends to make up the difference. Bend the knee slightly and lean again: if you go further, the hamstrings were the limit.",
-            ur: "Kuch logon ko wahan mehsoos hota hai — aksar hamstrings pehle limit par pohanchte hain aur kamar jhuk kar kami poori karti hai. Knee thora moor kar dobara jhukein: agar zyada aage jaa sakein to limit hamstrings thay.",
+            ur: "Kuch logon ko wahan mehsoos hota hai — aksar hamstrings pehle limit par pohanchte hain aur back jhuk kar kami poori karti hai. Knee thora moor kar dobara jhukein: agar zyada aage jaa sakein to limit hamstrings thay.",
           },
         },
       ],
@@ -123,11 +123,11 @@ export const activePassiveInsufficiency: TeacherLesson = {
       type: "check",
       question: {
         en: "Back to the first experiment: wrist fully flexed, trying to make a fist. Which muscle group is PASSIVELY insufficient there?",
-        ur: "Pehla experiment yaad karein: wrist poori flexed, muthi banane ki koshish. Wahan kaun sa muscle group PASSIVELY insufficient hai?",
+        ur: "Pehla experiment yaad karein: wrist poori flexed, fist banane ki koshish. Wahan kaun sa muscle group PASSIVELY insufficient hai?",
       },
       hint: {
         en: "Look for the muscle being stretched across both the wrist and the fingers.",
-        ur: "Woh muscle dhoondein jo wrist aur ungliyon dono par khinch raha hai.",
+        ur: "Woh muscle dhoondein jo wrist aur fingers dono par khinch raha hai.",
       },
       options: [
         {
@@ -135,7 +135,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
           correct: true,
           feedback: {
             en: "Yes! They're stretched over the flexed wrist AND the bending fingers, so they act as a brake. Active insufficiency of the flexors + passive insufficiency of the extensors = weak fist.",
-            ur: "Haan! Woh flexed wrist AUR mudti ungliyon dono par khinch rahe hain, is liye brake ban jaate hain. Flexors ki active insufficiency + extensors ki passive insufficiency = kamzor muthi.",
+            ur: "Haan! Woh flexed wrist AUR mudti fingers dono par khinch rahe hain, is liye brake ban jaate hain. Flexors ki active insufficiency + extensors ki passive insufficiency = weak fist.",
           },
         },
         {
@@ -149,7 +149,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
           text: { en: "The biceps", ur: "Biceps" },
           feedback: {
             en: "The biceps doesn't cross the wrist or the fingers, so it isn't involved in this experiment.",
-            ur: "Biceps na wrist cross karta hai na ungliyan, is liye is experiment mein shamil nahi.",
+            ur: "Biceps na wrist cross karta hai na fingers, is liye is experiment mein shamil nahi.",
           },
         },
       ],
@@ -158,7 +158,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
       type: "check",
       question: {
         en: "During a passive straight-leg raise, the leg stops at about 60° with tension behind the thigh. Which concept best explains this?",
-        ur: "Passive straight-leg raise mein taang taqreeban 60° par ruk jati hai aur thigh ke peeche tightness hai. Kaun sa concept is ki behtareen wazahat hai?",
+        ur: "Passive straight-leg raise mein leg taqreeban 60° par ruk jati hai aur thigh ke peeche tightness hai. Kaun sa concept is ki behtareen wazahat hai?",
       },
       options: [
         {
@@ -227,7 +227,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
       type: "clinic",
       text: {
         en: "In the clinic: (1) Test two-joint muscle length in positions that load **both** joints — hamstrings with the hip flexed and the knee extending. (2) Grip is strongest with the wrist in slight extension, which is why functional wrist splints usually keep that position. (3) When a patient's grip test looks weak, check the wrist position first.",
-        ur: "Clinic mein: (1) Two-joint muscle ki length aisi positions mein test karein jo **dono** joints ko load karein — hamstrings: hip flexed aur knee extend hota hua. (2) Grip wrist ki halki extension mein sab se strong hoti hai, isi liye functional wrist splints aam tor par wohi position rakhte hain. (3) Agar patient ka grip test kamzor lage to pehle wrist ki position check karein.",
+        ur: "Clinic mein: (1) Two-joint muscle ki length aisi positions mein test karein jo **dono** joints ko load karein — hamstrings: hip flexed aur knee extend hota hua. (2) Grip wrist ki halki extension mein sab se strong hoti hai, isi liye functional wrist splints aam tor par wohi position rakhte hain. (3) Agar patient ka grip test weak lage to pehle wrist ki position check karein.",
       },
     },
   ],
@@ -269,7 +269,7 @@ export const activePassiveInsufficiency: TeacherLesson = {
     },
     {
       id: "api-4",
-      front: { en: "Why is a fist weak with the wrist fully flexed?", ur: "Wrist poori flexed ho to muthi kamzor kyun?" },
+      front: { en: "Why is a fist weak with the wrist fully flexed?", ur: "Wrist poori flexed ho to fist weak kyun?" },
       back: {
         en: "Active insufficiency of the long finger flexors (plus passive tension in the finger extensors).",
         ur: "Lambe finger flexors ki active insufficiency (aur finger extensors ki passive tension).",

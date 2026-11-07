@@ -230,7 +230,7 @@ export const limbMeasuresSkill: SkillDefinition = {
   phase: "patient",
   icon: "measures",
   summary: "Measure leg length (true, apparent, Galeazzi, blocks), girth and swelling, lymphoedema, chest expansion, Schober, grip strength, BMI/waist, navicular drop and Q-angle — reliably and with the right cut-offs.",
-  ur: "Leg length, girth aur swelling, lymphoedema, chest expansion, Schober, grip strength aur BMI — sahi landmarks aur cut-offs ke saath naapna.",
+  ur: "Leg length, girth aur swelling, lymphoedema, chest expansion, Schober, grip strength aur BMI — sahi landmarks aur cut-offs ke saath measure karna.",
   atlasLabel: "Measurement atlas",
   sources: [
     { title: "Magee — Orthopedic Physical Assessment (7th ed.)" },
@@ -257,7 +257,7 @@ export const limbMeasuresSkill: SkillDefinition = {
       level: "beginner",
       title: "Why measure instead of eyeballing?",
       body: "Numbers make change visible — to you, the patient and the referrer. A measure is only useful if it is **repeatable**: same landmarks, same position, same tape tension, same tester when possible.",
-      ur: "Andaze ke bajaye naapna — taake behtari ya kharabi number mein nazar aaye. Har dafa wohi landmarks, position aur tension.",
+      ur: "Andaza lagane ke bajaye measure karein — taake improvement ya deterioration number mein nazar aaye. Har dafa wohi landmarks, position aur tape tension.",
     },
     {
       id: "tape-rules",

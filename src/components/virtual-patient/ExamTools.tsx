@@ -140,10 +140,10 @@ function PalpateTool({ registerPick }: { registerPick: (h: PickHandler) => void 
 }
 
 const SENSE_TEXT = {
-  normal: ["Yes — feels normal.", "Haan, bilkul theek mehsoos hua."],
-  reduced: ["I feel it, but less than the other side.", "Mehsoos hota hai, magar doosri taraf se kam."],
-  absent: ["I can't feel that at all.", "Wahan kuch mehsoos nahi hua."],
-  tingling: ["It feels tingly — pins and needles.", "Jhunjhunahat si hoti hai."],
+  normal: ["Yes — feels normal.", "Haan, bilkul normal feel ho raha hai."],
+  reduced: ["I feel it, but less than the other side.", "Feel hota hai, lekin doosri side se kam."],
+  absent: ["I can't feel that at all.", "Wahan kuch feel nahi hua."],
+  tingling: ["It feels tingly — pins and needles.", "Tingling si ho rahi hai, pins and needles jaisi."],
 } as const;
 const SENSE_COLOR = { normal: "#16a34a", reduced: "#f59e0b", absent: "#e5484d", tingling: "#a855f7" } as const;
 

@@ -216,18 +216,18 @@ export type HistoryId =
   | "redflags" | "pmh" | "previous" | "social" | "goals";
 
 export const HISTORY: { id: HistoryId; group: string; en: string; ur: string; keywords: RegExp }[] = [
-  { id: "complaint", group: "Presenting complaint", en: "What brings you in today?", ur: "Aaj aap kis wajah se aaye hain?", keywords: /\b(bring|problem|wrong|complain|help|wajah|masla|takleef)\b/i },
-  { id: "onset", group: "Presenting complaint", en: "When and how did it start?", ur: "Yeh kab aur kaise shuru hua?", keywords: /\b(start|began|when|how long|injur|onset|kab|shuru)\b/i },
-  { id: "location", group: "Pain", en: "Where exactly is it? Does it spread anywhere?", ur: "Bilkul kahan hai? Kahin aur bhi jaata hai?", keywords: /\b(where|location|spread|radiat|travel|kahan|jaata)\b/i },
-  { id: "behaviour", group: "Pain", en: "What makes it worse, and what eases it?", ur: "Kis cheez se barhta hai aur kis se aaram aata hai?", keywords: /\b(worse|better|ease|aggravat|relie|barh|aaram)\b/i },
+  { id: "complaint", group: "Presenting complaint", en: "What brings you in today?", ur: "Aaj aap kis problem ki wajah se aaye hain?", keywords: /\b(bring|problem|wrong|complain|help|wajah|masla|takleef|issue)\b/i },
+  { id: "onset", group: "Presenting complaint", en: "When and how did it start?", ur: "Yeh kab aur kaise start hua?", keywords: /\b(start|began|when|how long|injur|onset|kab|shuru)\b/i },
+  { id: "location", group: "Pain", en: "Where exactly is it? Does it spread anywhere?", ur: "Pain exactly kahan hai? Kahin aur bhi spread hota hai?", keywords: /\b(where|location|spread|radiat|travel|kahan|jaata|jata)\b/i },
+  { id: "behaviour", group: "Pain", en: "What makes it worse, and what eases it?", ur: "Kis cheez se pain barhta hai, aur kis se relief milta hai?", keywords: /\b(worse|better|ease|aggravat|relie|relief|barh|aaram)\b/i },
   { id: "night", group: "Pain", en: "How is it at night and first thing in the morning?", ur: "Raat ko aur subah uthte waqt kaisa hota hai?", keywords: /\b(night|morning|sleep|stiff|raat|subah|neend)\b/i },
-  { id: "severity", group: "Pain", en: "How bad is it, from 0 to 10?", ur: "0 se 10 mein kitna dard hai?", keywords: /\b(severe|bad|score|scale|rate|0|10|kitna)\b/i },
-  { id: "neuro", group: "Nerves", en: "Any numbness, tingling or weakness?", ur: "Koi sunn-pan, jhunjhunahat ya kamzori?", keywords: /\b(numb|tingl|pins|weak|sunn|jhunjhun|kamzor)\b/i },
-  { id: "bladder", group: "Red flags", en: "Any change in bladder or bowel control, or numbness around the saddle area?", ur: "Peshab ya pakhane par control mein koi farq, ya beth-ne ki jagah sunn-pan?", keywords: /\b(bladder|bowel|urine|toilet|saddle|peshab|pakhan)\b/i },
-  { id: "redflags", group: "Red flags", en: "Any fever, weight loss, night sweats or history of cancer?", ur: "Bukhar, wazan kam hona, raat ko paseena ya cancer ki history?", keywords: /\b(fever|weight|sweat|cancer|bukhar|wazan|paseen)\b/i },
-  { id: "pmh", group: "Background", en: "Any other medical problems, or medicines you take?", ur: "Koi aur bimari, ya dawaiyan lete hain?", keywords: /\b(medical|diabet|pressure|medic|tablet|drug|bimar|dawai)\b/i },
-  { id: "previous", group: "Background", en: "Have you had this before, or any treatment so far?", ur: "Pehle kabhi hua hai, ya ab tak koi ilaj?", keywords: /\b(before|previous|treat|tried|scan|x-?ray|pehle|ilaj)\b/i },
-  { id: "social", group: "Background", en: "What is your work, and how are daily activities?", ur: "Aap kya kaam karte hain, aur roz-marra ke kaam kaise hain?", keywords: /\b(work|job|occupation|daily|activit|kaam|naukri)\b/i },
+  { id: "severity", group: "Pain", en: "How bad is it, from 0 to 10?", ur: "0 se 10 mein pain kitna hai?", keywords: /\b(severe|bad|score|scale|rate|0|10|kitna)\b/i },
+  { id: "neuro", group: "Nerves", en: "Any numbness, tingling or weakness?", ur: "Koi numbness, tingling ya weakness?", keywords: /\b(numb|tingl|pins|weak|sunn|jhunjhun|kamzor)\b/i },
+  { id: "bladder", group: "Red flags", en: "Any change in bladder or bowel control, or numbness around the saddle area?", ur: "Urine ya toilet control mein koi change, ya saddle area mein numbness?", keywords: /\b(bladder|bowel|urine|toilet|saddle|peshab|pakhan)\b/i },
+  { id: "redflags", group: "Red flags", en: "Any fever, weight loss, night sweats or history of cancer?", ur: "Fever, weight loss, raat ko paseena, ya cancer ki koi history?", keywords: /\b(fever|weight|sweat|cancer|bukhar|wazan|paseen)\b/i },
+  { id: "pmh", group: "Background", en: "Any other medical problems, or medicines you take?", ur: "Koi aur medical problem hai, ya koi medicines lete hain?", keywords: /\b(medical|diabet|pressure|medic|tablet|drug|bimar|dawai)\b/i },
+  { id: "previous", group: "Background", en: "Have you had this before, or any treatment so far?", ur: "Pehle kabhi hua hai, ya ab tak koi treatment liya?", keywords: /\b(before|previous|treat|tried|scan|x-?ray|pehle|ilaj)\b/i },
+  { id: "social", group: "Background", en: "What is your work, and how are daily activities?", ur: "Aap kya kaam karte hain, aur daily activities kaisi chal rahi hain?", keywords: /\b(work|job|occupation|daily|activit|kaam|naukri)\b/i },
   { id: "goals", group: "Background", en: "What would you most like to get back to?", ur: "Aap sab se zyada kya dobara karna chahte hain?", keywords: /\b(goal|want|hope|back to|chahte)\b/i },
 ];
 

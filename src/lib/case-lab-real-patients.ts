@@ -30,7 +30,7 @@ export const realPatients: RealPatient[] = [
     role: "Accounts officer",
     lifeLine: "Karachi · accounts officer · cannot put his shirt on alone",
     voice: "For four months my right shoulder has been so stiff I cannot reach behind my back — even dressing is hard.",
-    voiceUrdu: "Char mahine se right shoulder itna stiff hai ke peeche haath nahi jaata — dressing bhi mushkil.",
+    voiceUrdu: "Char mahine se right shoulder itna stiff hai ke peeche hand nahi jaata — dressing bhi mushkil.",
     clinicalAngle: "Progressive active AND passive loss — adhesive capsulitis pattern, not just cuff pain",
   },
   {
@@ -54,7 +54,7 @@ export const realPatients: RealPatient[] = [
     role: "Bank clerk",
     lifeLine: "Islamabad · bank clerk · night tingling, shakes her hand",
     voice: "At night my thumb, index and middle fingers go numb — shaking the hand eases it a little.",
-    voiceUrdu: "Raat ko angushta, index aur middle so jate hain — haath hilane se thoda asaan hota hai.",
+    voiceUrdu: "Raat ko thumb, index aur middle so jate hain — hand hilane se thoda asaan hota hai.",
     clinicalAngle: "Median distribution nocturnal paresthesia — carpal tunnel territory, not ulnar",
   },
   {
@@ -66,7 +66,7 @@ export const realPatients: RealPatient[] = [
     role: "Warehouse supervisor",
     lifeLine: "Faisalabad · warehouse · buttock pain after lifting; eases toward the spine with extension",
     voice: "After lifting, pain went from my low back into the buttock — with extension it moves back toward the spine.",
-    voiceUrdu: "Wazan uthane ke baad back se buttock tak dard — extension se dard spine ki taraf wapas aata hai.",
+    voiceUrdu: "Weight uthane ke baad back se buttock tak dard — extension se dard spine ki taraf wapas aata hai.",
     clinicalAngle: "Centralization with repeated extension — directional preference, not red-flag neuro",
   },
   {
@@ -102,7 +102,7 @@ export const realPatients: RealPatient[] = [
     role: "Delivery supervisor",
     lifeLine: "Delhi · delivery work · neck pain into the arm with tingling",
     voice: "Pain goes from my neck into the right arm with tingling — some positions make it worse.",
-    voiceUrdu: "Gardan se right arm mein tingling — kuch positions pe aur badh jati hai.",
+    voiceUrdu: "Neck se right arm mein tingling — kuch positions pe aur badh jati hai.",
     clinicalAngle: "Dermatomal sensory + myotomal weakness — radiculopathy pattern",
   },
   {
@@ -174,7 +174,7 @@ export const realPatients: RealPatient[] = [
     role: "Delivery driver",
     lifeLine: "Mumbai · delivery driver · neck to thumb; cough aggravates arm",
     voice: "Tingling runs from my neck to the forearm and thumb — coughing makes the arm pain worse.",
-    voiceUrdu: "Gardan se forearm aur thumb tak tingling — coughing se arm pain badhta hai.",
+    voiceUrdu: "Neck se forearm aur thumb tak tingling — coughing se arm pain badhta hai.",
     clinicalAngle: "Cough-aggravated arm pain + reflex change — nerve-root priority",
   },
   {
@@ -246,7 +246,7 @@ export const realPatients: RealPatient[] = [
     role: "Retired shopkeeper",
     lifeLine: "Bahawalpur · fell yesterday · cannot actively lift the arm",
     voice: "I fell on my shoulder yesterday — I cannot lift the arm myself; passive movement is better.",
-    voiceUrdu: "Kal kandhe pe gira — khud arm nahi utha sakta, passive better hai.",
+    voiceUrdu: "Kal shoulder pe gira — khud arm nahi utha sakta, passive better hai.",
     clinicalAngle: "Acute trauma + major active weakness — cuff tear/fracture urgency",
   },
   {

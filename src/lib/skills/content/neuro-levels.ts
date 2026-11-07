@@ -75,7 +75,7 @@ export const dermatomesSkill: SkillDefinition = {
       level: "beginner",
       title: "What is a dermatome?",
       body: "A **dermatome** is the strip of skin supplied by **one spinal nerve root**. A **peripheral nerve field** is the skin supplied by one named nerve (which carries fibres from several roots). Knowing both lets you tell a root problem from a nerve problem.",
-      ur: "Dermatome = ek spinal root ki skin. Peripheral nerve ka area alag hota hai kyunke ek nerve mein kai roots hoti hain.",
+      ur: "Dermatome = ek spinal root ki skin. Peripheral nerve ka area different hota hai kyunke ek nerve mein kai roots hoti hain.",
     },
     {
       id: "key-points",
@@ -83,7 +83,7 @@ export const dermatomesSkill: SkillDefinition = {
       title: "Key sensory points",
       body: "Dermatomes overlap, so the ISNCSCI standard uses one **key sensory point** per level — a spot that reliably belongs to that root. Test these points instead of guessing at borders.",
       bullets: ["**C6** thumb · **C7** middle finger · **C8** little finger", "**T4** nipple line · **T10** umbilicus · **T12** groin", "**L4** medial malleolus · **L5** dorsum of foot · **S1** lateral heel"],
-      ur: "Har level ka ek fix point hota hai — anguutha C6, beech ki ungli C7, chhoti ungli C8, naaf T10.",
+      ur: "Har level ka ek fixed key point hai — thumb C6, middle finger C7, little finger C8, umbilicus T10.",
     },
     {
       id: "memory-tricks",
@@ -102,7 +102,7 @@ export const dermatomesSkill: SkillDefinition = {
         "Score **2** normal, **1** altered (reduced or increased), **0** absent.",
         "Never use a needle that breaks the skin; discard single-use pins.",
       ],
-      ur: "Pehle chehre par dikhayein, phir aankhein band karwa ke har point test karein aur doosri side se compare karein.",
+      ur: "Pehle face par demonstrate karein, phir eyes band karwa ke har point test karein aur doosri side se compare karein.",
     },
     {
       id: "pathways",
@@ -146,7 +146,7 @@ export const dermatomesSkill: SkillDefinition = {
       level: "expert",
       title: "Never skip S3–S5",
       body: "Ask about saddle numbness and bladder or bowel change in every patient with back pain and leg symptoms. Reduced perianal sensation with urinary retention or incontinence is **cauda equina syndrome** — same-day emergency referral. In spinal cord injury, preserved **S4–S5** sensation (sacral sparing) means the injury is incomplete — a better prognosis.",
-      ur: "Kamar dard ke saath saddle numbness ya peshab/pakhane mein tabdeeli = emergency (cauda equina). Fauran refer karein.",
+      ur: "Back pain ke saath saddle numbness ya bladder/bowel mein change = emergency (cauda equina). Foran refer karein.",
     },
     {
       id: "overlap-variation",
@@ -293,7 +293,7 @@ export const myotomesSkill: SkillDefinition = {
   phase: "neuro",
   icon: "myotomes",
   summary: "Screen every root from C1 to S2 with one movement each, know the ISNCSCI key muscles, and combine myotome, dermatome and reflex to name the level.",
-  ur: "Har root (C1 se S2) ki ek movement test karna, ISNCSCI key muscles yaad rakhna aur dermatome + reflex ke saath level pehchaanna.",
+  ur: "Har root (C1 se S2) ki ek movement test karna, ISNCSCI key muscles yaad rakhna aur dermatome + reflex ke saath level identify karna.",
   atlasLabel: "Myotome atlas",
   sources: [
     { title: "ASIA — ISNCSCI (2019 revision)", note: "Key muscles and motor scoring, ASIA Impairment Scale." },
@@ -318,7 +318,7 @@ export const myotomesSkill: SkillDefinition = {
       level: "beginner",
       title: "What is a myotome?",
       body: "A **myotome** is the group of muscles supplied by **one spinal nerve root**. Most muscles get fibres from two or three roots, so a single root lesion causes **weakness**, not paralysis.",
-      ur: "Myotome = ek root ke muscles. Ek root kharab ho to kamzori aati hai, mukammal paralysis nahi.",
+      ur: "Myotome = ek root ke muscles. Ek root affect ho to weakness aati hai, complete paralysis nahi.",
     },
     {
       id: "myotome-list",
@@ -356,7 +356,7 @@ export const myotomesSkill: SkillDefinition = {
       level: "intermediate",
       title: "ISNCSCI key muscles",
       body: "For spinal cord injury the international standard grades **10 key muscles** per side (0–5, supine): C5 elbow flexors, C6 wrist extensors, C7 elbow extensors, C8 finger flexors, T1 little-finger abductors, L2 hip flexors, L3 knee extensors, L4 ankle dorsiflexors, L5 long toe extensors, S1 ankle plantarflexors.",
-      ur: "Spinal cord injury mein har side ke 10 key muscles ko 0–5 grade kiya jaata hai.",
+      ur: "Spinal cord injury mein har side ke 10 key muscles ko 0–5 grade kiya jata hai.",
     },
     {
       id: "pitfalls",
@@ -510,7 +510,7 @@ export const reflexesSkill: SkillDefinition = {
   phase: "neuro",
   icon: "reflexes",
   summary: "Elicit and grade every deep tendon reflex, use reinforcement, and recognise upper-motor-neuron signs — Babinski, Hoffmann, clonus and jaw jerk.",
-  ur: "Har tendon reflex sahi nikaalna aur 0 se 4+ grade karna, aur UMN signs (Babinski, Hoffmann, clonus) pehchaanna.",
+  ur: "Har tendon reflex sahi elicit karna aur 0 se 4+ grade karna, aur UMN signs (Babinski, Hoffmann, clonus) identify karna.",
   atlasLabel: "Reflex atlas",
   sources: [
     { title: "NINDS Muscle Stretch Reflex Scale (0–4+)" },
@@ -536,7 +536,7 @@ export const reflexesSkill: SkillDefinition = {
       level: "beginner",
       title: "The reflex arc in one breath",
       body: "Tapping the tendon stretches the muscle spindle → sensory signal enters the cord → synapses with the motor neuron → the muscle contracts. Damage anywhere in the arc (root, nerve, muscle) **reduces** the reflex; loss of the brain's inhibition from above (UMN lesion) makes it **brisk**.",
-      ur: "LMN/root kharab = reflex kam; UMN (brain/cord) kharab = reflex tez.",
+      ur: "LMN/root lesion = reflex kam; UMN (brain/cord) lesion = reflex brisk.",
     },
     {
       id: "reflex-roots",
@@ -566,7 +566,7 @@ export const reflexesSkill: SkillDefinition = {
       title: "Technique that works",
       body: "Relax the muscle completely, put the tendon on slight stretch and let the hammer **swing freely** from the wrist. Tap the tendon (or your thumb on it) briskly. Compare sides at the same strength.",
       bullets: ["**Reinforcement (Jendrassik)**: ask the patient to hook the fingers together and pull, or clench the teeth, as you tap.", "Watch and feel — some responses are easier to feel than to see."],
-      ur: "Muscle bilkul dheela ho, hammer ko girne dein, aur dono sides ko ek jaisi taaqat se tap karein.",
+      ur: "Muscle bilkul relaxed ho, hammer ko freely swing hone dein, aur dono sides par same force se tap karein.",
     },
     {
       id: "umn-signs",

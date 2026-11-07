@@ -42,7 +42,7 @@ const phases: Phase[] = [
     color: "bg-amber-400",
     inside: {
       en: "Fibroblasts lay down new collagen (mostly the weaker type III at first) in a messy pattern; new capillaries grow.",
-      ur: "Fibroblasts naya collagen (shuru mein zyada tar kamzor type III) be-tarteeb tareeqe se bichhate hain; nayi capillaries banti hain.",
+      ur: "Fibroblasts naya collagen (shuru mein zyada tar weak type III) be-tarteeb tareeqe se bichhate hain; nayi capillaries banti hain.",
     },
     see: { en: "Swelling settles; pain mainly with stretch or load. Tissue is still fragile.", ur: "Sojan kam; dard zyada tar stretch ya load par. Tissue abhi nazuk hai." },
     physio: {

@@ -5,7 +5,7 @@ export const redFlagsScreening: TeacherLesson = {
   title: "Red Flags — When NOT to Treat (and What to Do Instead)",
   hook: {
     en: "Most back and neck pain is harmless. Learn to spot the few cases that aren't — and refer at the right speed.",
-    ur: "Zyada tar kamar aur gardan ka dard khatarnak nahi hota. Un chand cases ko pehchanna seekhein jo khatarnak hain — aur sahi raftaar se refer karein.",
+    ur: "Zyada tar back aur neck pain khatarnak nahi hota. Un chand cases ko pehchanna seekhein jo khatarnak hain — aur sahi raftaar se refer karein.",
   },
   area: "Clinical Reasoning",
   level: "Clinical",
@@ -20,7 +20,7 @@ export const redFlagsScreening: TeacherLesson = {
       type: "say",
       text: {
         en: "Here's the truth: most back and neck pain is not dangerous. But a small number of patients have something serious hiding behind ordinary-looking pain — a fracture, cancer, infection, cauda equina syndrome or a vascular problem. Your job isn't to diagnose these. It's to **notice the pattern and refer at the right speed**.",
-        ur: "Sach yeh hai: zyada tar kamar aur gardan ka dard khatarnak nahi. Lekin chand patients mein aam se dard ke peeche koi serious cheez chhupi hoti hai — fracture, cancer, infection, cauda equina syndrome ya vascular masla. Aap ka kaam in ki diagnosis nahi. Aap ka kaam hai **pattern pehchanna aur sahi raftaar se refer karna**.",
+        ur: "Sach yeh hai: zyada tar back aur neck pain khatarnak nahi. Lekin chand patients mein aam se dard ke peeche koi serious cheez chhupi hoti hai — fracture, cancer, infection, cauda equina syndrome ya vascular masla. Aap ka kaam in ki diagnosis nahi. Aap ka kaam hai **pattern pehchanna aur sahi raftaar se refer karna**.",
       },
     },
     {
@@ -52,7 +52,7 @@ export const redFlagsScreening: TeacherLesson = {
       rows: [
         [
           { en: "Cauda equina syndrome", ur: "Cauda equina syndrome" },
-          { en: "Saddle numbness, new bladder/bowel dysfunction, symptoms in both legs, sexual dysfunction", ur: "Saddle sunn-pan, bladder/bowel ki nayi kharabi, dono taangon mein symptoms, sexual dysfunction" },
+          { en: "Saddle numbness, new bladder/bowel dysfunction, symptoms in both legs, sexual dysfunction", ur: "Saddle numbness, bladder/bowel ki nayi kharabi, dono legs mein symptoms, sexual dysfunction" },
           { en: "EMERGENCY — same day", ur: "EMERGENCY — usi din" },
         ],
         [
@@ -62,17 +62,17 @@ export const redFlagsScreening: TeacherLesson = {
         ],
         [
           { en: "Cancer", ur: "Cancer" },
-          { en: "Past history of cancer (strongest clue), unexplained weight loss, constant pain not eased by rest or position", ur: "Cancer ki purani history (sab se mazboot ishara), be-wajah wazan kam hona, musalsal dard jo aaram ya position se kam na ho" },
+          { en: "Past history of cancer (strongest clue), unexplained weight loss, constant pain not eased by rest or position", ur: "Cancer ki purani history (sab se mazboot ishara), be-wajah weight kam hona, musalsal dard jo aaram ya position se kam na ho" },
           { en: "Urgent medical referral", ur: "Urgent medical referral" },
         ],
         [
           { en: "Infection", ur: "Infection" },
-          { en: "Fever, recent infection, IV drug use, immunosuppression, recent spinal procedure", ur: "Bukhar, haal hi mein infection, IV drug use, kamzor immunity, haal hi mein spine ka procedure" },
+          { en: "Fever, recent infection, IV drug use, immunosuppression, recent spinal procedure", ur: "Bukhar, haal hi mein infection, IV drug use, weak immunity, haal hi mein spine ka procedure" },
           { en: "Urgent medical referral", ur: "Urgent medical referral" },
         ],
         [
           { en: "Vascular", ur: "Vascular" },
-          { en: "Pulsating abdominal pain/mass (aneurysm); neck: the 5 Ds & 3 Ns", ur: "Pait mein dhadakta dard/ubhaar (aneurysm); gardan: 5 Ds aur 3 Ns" },
+          { en: "Pulsating abdominal pain/mass (aneurysm); neck: the 5 Ds & 3 Ns", ur: "Abdomen mein pulsating dard/swelling (aneurysm); neck: 5 Ds aur 3 Ns" },
           { en: "Emergency if acute or severe; no manual therapy", ur: "Achanak ya shadeed ho to emergency; manual therapy nahi" },
         ],
       ],
@@ -81,14 +81,14 @@ export const redFlagsScreening: TeacherLesson = {
       type: "memory",
       text: {
         en: "Neck vascular warning signs — **5 Ds and 3 Ns**: Dizziness, Diplopia (double vision), Dysarthria (slurred speech), Dysphagia (difficulty swallowing), Drop attacks · Nystagmus, Nausea, Numbness.",
-        ur: "Gardan ke vascular warning signs — **5 Ds aur 3 Ns**: Dizziness (chakkar), Diplopia (do do nazar aana), Dysarthria (zaban larkharana), Dysphagia (nigalne mein mushkil), Drop attacks (achanak gir jana) · Nystagmus (aankhon ka larazna), Nausea (matli), Numbness (sunn-pan).",
+        ur: "Neck ke vascular warning signs — **5 Ds aur 3 Ns**: Dizziness (chakkar), Diplopia (do do nazar aana), Dysarthria (zaban larkharana), Dysphagia (nigalne mein mushkil), Drop attacks (achanak gir jana) · Nystagmus (aankhon ka larazna), Nausea (matli), Numbness (numbness).",
       },
     },
     {
       type: "check",
       question: {
         en: "A 45-year-old with low back pain reports numbness \"where you sit on a bike seat\" and difficulty starting to pass urine since yesterday. What do you do?",
-        ur: "45 saal ke low back pain wale patient ko \"jahan cycle ki seat lagti hai\" wahan sunn-pan hai aur kal se peshab shuru karne mein mushkil. Aap kya karenge?",
+        ur: "45 saal ke low back pain wale patient ko \"jahan cycle ki seat lagti hai\" wahan numbness hai aur kal se urine pass karne mein mushkil. Aap kya karenge?",
       },
       options: [
         {
@@ -98,7 +98,7 @@ export const redFlagsScreening: TeacherLesson = {
         {
           text: { en: "Same-day emergency referral for suspected cauda equina syndrome", ur: "Cauda equina syndrome ke shak par usi din emergency referral" },
           correct: true,
-          feedback: { en: "Exactly. Saddle numbness + new bladder change = emergency. Explain why, help them get there today, and document it.", ur: "Bilkul. Saddle sunn-pan + bladder mein nayi tabdeeli = emergency. Wajah samjhayein, aaj hi pohanchne mein madad karein, aur document karein." },
+          feedback: { en: "Exactly. Saddle numbness + new bladder change = emergency. Explain why, help them get there today, and document it.", ur: "Bilkul. Saddle numbness + bladder mein nayi tabdeeli = emergency. Wajah samjhayein, aaj hi pohanchne mein madad karein, aur document karein." },
         },
         {
           text: { en: "Home exercises and rest", ur: "Ghar ki exercises aur aaram" },
@@ -110,7 +110,7 @@ export const redFlagsScreening: TeacherLesson = {
       type: "mistake",
       text: {
         en: "Common mistakes: (1) Treating one flag in isolation — night pain alone, for example, is common in harmless back pain. Look for **clusters** and the whole story. (2) Screening once and never again — re-screen when symptoms change. (3) Vague questions like \"any bladder problems?\" — ask specifically: \"Any change in feeling when you wipe after the toilet? Any difficulty starting or controlling your urine?\"",
-        ur: "Aam ghaltiyan: (1) Ek flag ko akela dekhna — maslan sirf raat ka dard be-zarar kamar dard mein bhi aam hai. **Clusters** aur poori kahani dekhein. (2) Ek baar screen kar ke dobara na karna — symptoms badlein to dobara screen karein. (3) Mubham sawal jaise \"bladder ka koi masla?\" — khaas poochein: \"Toilet ke baad saaf karte waqt feeling mein koi farq? Peshab shuru karne ya rokne mein koi mushkil?\"",
+        ur: "Aam ghaltiyan: (1) Ek flag ko akela dekhna — maslan sirf raat ka dard be-zarar back pain mein bhi aam hai. **Clusters** aur poori kahani dekhein. (2) Ek baar screen kar ke dobara na karna — symptoms badlein to dobara screen karein. (3) Mubham sawal jaise \"bladder ka koi masla?\" — khaas poochein: \"Toilet ke baad saaf karte waqt feeling mein koi farq? Urine shuru karne ya rokne mein koi mushkil?\"",
       },
     },
     {
@@ -121,9 +121,9 @@ export const redFlagsScreening: TeacherLesson = {
         { en: "Yellow flag", ur: "Yellow flag" },
       ],
       items: [
-        { text: { en: "Unexplained weight loss", ur: "Be-wajah wazan kam hona" }, answer: 0, why: { en: "Can point to malignancy or systemic disease.", ur: "Cancer ya systemic beemari ki taraf ishara ho sakta hai." } },
+        { text: { en: "Unexplained weight loss", ur: "Be-wajah weight kam hona" }, answer: 0, why: { en: "Can point to malignancy or systemic disease.", ur: "Cancer ya systemic beemari ki taraf ishara ho sakta hai." } },
         { text: { en: "Believes \"hurt means harm\" and avoids all bending", ur: "Yaqeen ke \"dard = nuqsan\" aur har jhukne se parhez" }, answer: 1, why: { en: "Fear-avoidance belief — address it with education and graded activity.", ur: "Fear-avoidance belief — education aur graded activity se address karein." } },
-        { text: { en: "Fever with constant back pain", ur: "Bukhar ke saath musalsal kamar dard" }, answer: 0, why: { en: "Possible spinal infection.", ur: "Spine mein infection ka imkaan." } },
+        { text: { en: "Fever with constant back pain", ur: "Bukhar ke saath musalsal back pain" }, answer: 0, why: { en: "Possible spinal infection.", ur: "Spine mein infection ka imkaan." } },
         { text: { en: "Feels hopeless about ever getting better", ur: "Theek hone ke baare mein na-ummeed" }, answer: 1, why: { en: "Low mood can slow recovery — support it, refer for psychology if severe.", ur: "Udaasi recovery dheemi kar sakti hai — support karein, shadeed ho to psychology ke liye refer." } },
         { text: { en: "Past history of cancer", ur: "Cancer ki purani history" }, answer: 0, why: { en: "The strongest single clue for spinal malignancy.", ur: "Spinal malignancy ka sab se mazboot akela ishara." } },
         { text: { en: "Worried about losing their job; off work for weeks", ur: "Naukri jaane ka dar; hafton se kaam se chutti" }, answer: 1, why: { en: "Work and social stress — a classic yellow (sometimes called blue/black) flag.", ur: "Kaam aur samaji stress — classic yellow (kabhi blue/black bhi kehte hain) flag." } },
@@ -141,7 +141,7 @@ export const redFlagsScreening: TeacherLesson = {
       type: "safety",
       text: {
         en: "Before any manual therapy to the neck: screen for vascular pathology and upper cervical instability, and **stop immediately** if dizziness, visual disturbance, speech change or any new neurological symptom appears. Document what you screened and what you found.",
-        ur: "Gardan par kisi bhi manual therapy se pehle: vascular pathology aur upper cervical instability ke liye screen karein, aur agar chakkar, nazar mein tabdeeli, bolne mein farq ya koi naya neurological symptom aaye to **foran ruk jayein**. Jo screen kiya aur jo mila, document karein.",
+        ur: "Neck par kisi bhi manual therapy se pehle: vascular pathology aur upper cervical instability ke liye screen karein, aur agar chakkar, nazar mein tabdeeli, bolne mein farq ya koi naya neurological symptom aaye to **foran ruk jayein**. Jo screen kiya aur jo mila, document karein.",
       },
     },
     {
@@ -153,12 +153,12 @@ export const redFlagsScreening: TeacherLesson = {
           feedback: { en: "That's a possible red flag (needs the whole picture) — not a psychosocial factor.", ur: "Yeh mumkina red flag hai (poori tasveer chahiye) — psychosocial factor nahi." },
         },
         {
-          text: { en: "A strong belief that the back is \"damaged\" and must be rested", ur: "Pakka yaqeen ke kamar \"kharab\" hai aur aaram zaroori hai" },
+          text: { en: "A strong belief that the back is \"damaged\" and must be rested", ur: "Pakka yaqeen ke back \"kharab\" hai aur aaram zaroori hai" },
           correct: true,
           feedback: { en: "Yes — an unhelpful belief that drives fear and avoidance. You can change this with education and graded activity.", ur: "Haan — ek nuqsan-deh khayal jo dar aur parhez barhata hai. Education aur graded activity se ise badla ja sakta hai." },
         },
         {
-          text: { en: "Unexplained weight loss of 6 kg", ur: "6 kg be-wajah wazan kam hona" },
+          text: { en: "Unexplained weight loss of 6 kg", ur: "6 kg be-wajah weight kam hona" },
           feedback: { en: "That's a red flag — it needs medical assessment.", ur: "Yeh red flag hai — medical assessment chahiye." },
         },
       ],
@@ -167,7 +167,7 @@ export const redFlagsScreening: TeacherLesson = {
       type: "check",
       question: {
         en: "During neck mobilization, the patient suddenly feels dizzy and sees double. What now?",
-        ur: "Gardan ki mobilization ke dauraan patient ko achanak chakkar aata hai aur do do nazar aata hai. Ab kya?",
+        ur: "Neck ki mobilization ke dauraan patient ko achanak chakkar aata hai aur do do nazar aata hai. Ab kya?",
       },
       options: [
         {
@@ -180,8 +180,8 @@ export const redFlagsScreening: TeacherLesson = {
           feedback: { en: "Correct. Stop, monitor, don't let them leave alone, arrange urgent assessment and document everything.", ur: "Sahi. Ruk jayein, monitor karein, akela jaane na dein, urgent assessment ka intezam karein aur sab document karein." },
         },
         {
-          text: { en: "Switch to the other side of the neck", ur: "Gardan ki doosri taraf shift ho jayein" },
-          feedback: { en: "The symptom is the warning, not the side. Stop all neck techniques.", ur: "Warning symptom hai, side nahi. Gardan ki har technique rok dein." },
+          text: { en: "Switch to the other side of the neck", ur: "Neck ki doosri taraf shift ho jayein" },
+          feedback: { en: "The symptom is the warning, not the side. Stop all neck techniques.", ur: "Warning symptom hai, side nahi. Neck ki har technique rok dein." },
         },
       ],
     },
@@ -189,7 +189,7 @@ export const redFlagsScreening: TeacherLesson = {
       type: "evidence",
       text: {
         en: "Honest evidence: most single red flags have poor diagnostic accuracy on their own — many people with a flag don't have serious disease, and some with serious disease have few flags. That's why international frameworks stress **clinical reasoning**: the combination of flags, the patient's story and how symptoms behave over time.",
-        ur: "Imaandar evidence: zyada tar akele red flags ki diagnostic accuracy kamzor hai — bohat se logon mein flag hota hai magar serious beemari nahi, aur kuch serious beemari walon mein flags kam hote hain. Isi liye international frameworks **clinical reasoning** par zor dete hain: flags ka combination, patient ki kahani aur waqt ke saath symptoms ka rawaiya.",
+        ur: "Imaandar evidence: zyada tar akele red flags ki diagnostic accuracy weak hai — bohat se logon mein flag hota hai magar serious beemari nahi, aur kuch serious beemari walon mein flags kam hote hain. Isi liye international frameworks **clinical reasoning** par zor dete hain: flags ka combination, patient ki kahani aur waqt ke saath symptoms ka rawaiya.",
       },
     },
     {
@@ -202,15 +202,15 @@ export const redFlagsScreening: TeacherLesson = {
   ],
   summary: [
     { en: "Red flags suggest serious pathology → refer; yellow flags are psychosocial → address in your care.", ur: "Red flags serious pathology ki taraf → refer; yellow flags psychosocial → apni care mein address." },
-    { en: "Saddle numbness or new bladder/bowel change = same-day emergency (cauda equina).", ur: "Saddle sunn-pan ya bladder/bowel mein nayi tabdeeli = usi din emergency (cauda equina)." },
-    { en: "Look for clusters, re-screen when things change, and stop neck techniques at any 5D/3N sign.", ur: "Clusters dekhein, halaat badlein to dobara screen karein, aur kisi bhi 5D/3N sign par gardan ki techniques rok dein." },
+    { en: "Saddle numbness or new bladder/bowel change = same-day emergency (cauda equina).", ur: "Saddle numbness ya bladder/bowel mein nayi tabdeeli = usi din emergency (cauda equina)." },
+    { en: "Look for clusters, re-screen when things change, and stop neck techniques at any 5D/3N sign.", ur: "Clusters dekhein, halaat badlein to dobara screen karein, aur kisi bhi 5D/3N sign par neck ki techniques rok dein." },
   ],
   flashcards: [
-    { id: "rf-1", front: { en: "Cauda equina syndrome warning signs?", ur: "Cauda equina syndrome ke warning signs?" }, back: { en: "Saddle numbness, new bladder/bowel dysfunction, bilateral leg symptoms, sexual dysfunction → same-day emergency.", ur: "Saddle sunn-pan, bladder/bowel ki nayi kharabi, dono taangon mein symptoms, sexual dysfunction → usi din emergency." } },
+    { id: "rf-1", front: { en: "Cauda equina syndrome warning signs?", ur: "Cauda equina syndrome ke warning signs?" }, back: { en: "Saddle numbness, new bladder/bowel dysfunction, bilateral leg symptoms, sexual dysfunction → same-day emergency.", ur: "Saddle numbness, bladder/bowel ki nayi kharabi, dono legs mein symptoms, sexual dysfunction → usi din emergency." } },
     { id: "rf-2", front: { en: "The 5 Ds and 3 Ns?", ur: "5 Ds aur 3 Ns?" }, back: { en: "Dizziness, Diplopia, Dysarthria, Dysphagia, Drop attacks · Nystagmus, Nausea, Numbness.", ur: "Dizziness, Diplopia, Dysarthria, Dysphagia, Drop attacks · Nystagmus, Nausea, Numbness." } },
     { id: "rf-3", front: { en: "Strongest single clue for spinal malignancy?", ur: "Spinal malignancy ka sab se mazboot akela ishara?" }, back: { en: "A past history of cancer.", ur: "Cancer ki purani history." } },
     { id: "rf-4", front: { en: "Red flag vs yellow flag?", ur: "Red flag vs yellow flag?" }, back: { en: "Red = possible serious pathology (refer). Yellow = psychosocial barriers to recovery (address in care).", ur: "Red = mumkina serious pathology (refer). Yellow = recovery ki psychosocial rukawatein (care mein address)." } },
-    { id: "rf-5", front: { en: "Why look for clusters of red flags?", ur: "Red flags ke clusters kyun dekhein?" }, back: { en: "Single flags have poor accuracy on their own; combinations plus the story are more informative.", ur: "Akele flags ki accuracy kamzor hai; combinations aur kahani zyada maloomat dete hain." } },
+    { id: "rf-5", front: { en: "Why look for clusters of red flags?", ur: "Red flags ke clusters kyun dekhein?" }, back: { en: "Single flags have poor accuracy on their own; combinations plus the story are more informative.", ur: "Akele flags ki accuracy weak hai; combinations aur kahani zyada maloomat dete hain." } },
   ],
   goDeeper: [
     { title: "Sciatica red flags — when to seek care", href: "/knowledge-hub/sciatica-red-flags-when-to-seek-care", note: { en: "A patient-friendly version to share.", ur: "Patients ke saath share karne wala asaan version." } },

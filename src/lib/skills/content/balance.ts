@@ -248,7 +248,7 @@ export const balanceFunctionSkill: SkillDefinition = {
       level: "beginner",
       title: "Balance needs three senses and a brain",
       body: "Balance combines **vision**, **vestibular** (inner ear) and **somatosensory** (feet and joints) input, organised by the brain and executed by strong, quick muscles. A test that removes one input shows which system the person depends on.",
-      ur: "Balance teen cheezon par chalta hai — nazar, kaan (vestibular) aur pairon ka ehsaas — aur dimagh in sab ko jor kar muscles se kaam leta hai.",
+      ur: "Balance teen systems par chalta hai — vision, inner ear (vestibular) aur feet/joints ki sensation — aur brain in sab ko combine kar ke muscles se kaam leta hai.",
     },
     {
       id: "why-falls",

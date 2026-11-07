@@ -622,7 +622,7 @@ export const goniometrySkill: SkillDefinition = {
   phase: "measure",
   icon: "goniometer",
   summary: "Measure joint range like an expert: landmarks, axis and arm alignment, normal ranges, end-feels and substitutions for 39 joint motions — with a drag-the-goniometer trainer.",
-  ur: "Joint ki range ko goniometer se sahi naapna — axis, arms, normal values, end-feel aur ghaltiyon ke saath.",
+  ur: "Joint ki range ko goniometer se sahi measure karna — axis, arms, normal values, end-feel aur common mistakes ke saath.",
   atlasLabel: "Joint measurement atlas",
   sources: [
     { title: "Norkin & White — Measurement of Joint Motion: A Guide to Goniometry (5th ed.)", note: "Positions, landmarks and end-feels." },
@@ -649,7 +649,7 @@ export const goniometrySkill: SkillDefinition = {
       title: "What goniometry measures",
       body: "Goniometry measures the **angle a joint moves through**. It turns “the knee is stiff” into “knee flexion 0–95°” — a number you can compare between sides, between visits and with normal values.",
       bullets: ["**AROM** — the patient moves; shows willingness, strength and coordination.", "**PROM** — you move the joint; shows joint and soft-tissue mobility.", "Always record which one you measured."],
-      ur: "Goniometry se joint ki movement ka angle naapte hain — taa ke 'stiff' ki jagah number likh saken.",
+      ur: "Goniometry se joint movement ka angle measure karte hain — taake 'stiff' likhne ki jagah exact number likh saken.",
     },
     {
       id: "the-instrument",
@@ -664,7 +664,7 @@ export const goniometrySkill: SkillDefinition = {
       level: "beginner",
       title: "The 0–180 system",
       body: "The anatomical position is **0°** for almost every joint; movement is measured away from it. Record the **start and end** values: “knee flexion 0–135°”. A knee that cannot fully straighten is recorded as “10–135°” — it lacks 10° of extension.",
-      ur: "Anatomical position = 0°. Shuru aur aakhir dono likhein, jaise 0–135°.",
+      ur: "Anatomical position = 0°. Start aur end dono likhein, jaise 0–135°.",
     },
     {
       id: "six-steps",
@@ -777,7 +777,7 @@ export const goniometrySkill: SkillDefinition = {
         "**Painful arc** — impingement or tendinopathy; **empty end-feel** — stop and screen for red flags.",
         "Compare with **functional ranges**: elbow 30–130°, forearm 50°/50°, knee 90–105° to rise from a chair.",
       ],
-      ur: "Sirf number nahi — yeh samjhein ke range kis cheez ne roki aur kya mareez ke kaam ke liye kaafi hai.",
+      ur: "Sirf number nahi — yeh samjhein ke range ko kis cheez ne limit kiya aur kya yeh patient ke daily kaam ke liye kaafi hai.",
     },
     {
       id: "progress",

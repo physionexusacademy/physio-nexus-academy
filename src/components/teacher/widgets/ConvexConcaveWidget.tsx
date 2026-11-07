@@ -160,7 +160,7 @@ export function ConvexConcaveWidget({ lang }: { lang: TeacherLang }) {
               </g>
             </g>
             <text x="12" y="228" fontSize="11" fill="#0f766e" fontWeight="700">
-              {t(lang, "Tibia (concave, moving) · front of leg = right", "Tibia (concave, move ho rahi) · taang ka aage = right")}
+              {t(lang, "Tibia (concave, moving) · front of leg = right", "Tibia (concave, move ho rahi) · leg ka aage = right")}
             </text>
           </g>
         ) : null}

@@ -20,7 +20,7 @@ export const painScienceBasics: TeacherLesson = {
       type: "say",
       text: {
         en: "Let's start with a true story, reported in the BMJ. A builder jumped onto a 15 cm nail. It went straight through his boot. He was in agony and needed strong pain relief. At the hospital they carefully removed the boot… and the nail had passed **between his toes**. No wound at all.",
-        ur: "Ek sachi kahani se shuru karte hain jo BMJ mein report hui. Ek mistri 15 cm ke keel par kooda. Keel seedha boot ke aar paar ho gaya. Woh shadeed dard mein tha aur usay taqatwar dard ki dawa deni pari. Hospital mein ehtiyaat se boot utara gaya… aur keel **ungliyon ke beech** se guzra tha. Koi zakhm nahi.",
+        ur: "Ek sachi kahani se shuru karte hain jo BMJ mein report hui. Ek mistri 15 cm ke keel par kooda. Keel seedha boot ke aar paar ho gaya. Woh shadeed dard mein tha aur usay taqatwar dard ki dawa deni pari. Hospital mein ehtiyaat se boot utara gaya… aur keel **fingers ke beech** se guzra tha. Koi zakhm nahi.",
       },
     },
     {
@@ -126,14 +126,14 @@ export const painScienceBasics: TeacherLesson = {
       type: "mistake",
       text: {
         en: "Second mistake: using pain science to ignore the body. You still take a full history, examine properly and **screen for red flags**. Pain science adds to good assessment — it never replaces it.",
-        ur: "Doosri ghalti: pain science ke naam par jism ko nazar-andaaz karna. Phir bhi poori history lein, theek se examine karein aur **red flags screen** karein. Pain science achi assessment mein izafa karti hai — us ki jagah kabhi nahi leti.",
+        ur: "Doosri ghalti: pain science ke naam par body ko nazar-andaaz karna. Phir bhi poori history lein, theek se examine karein aur **red flags screen** karein. Pain science achi assessment mein izafa karti hai — us ki jagah kabhi nahi leti.",
       },
     },
     {
       type: "clinic",
       text: {
         en: "Simple words that work with patients: \"**Hurt doesn't always mean harm.**\" \"Your back is strong and adaptable.\" \"We'll build up activity step by step so your system becomes confident again.\" Pair this education with graded activity and exercise — education alone is rarely enough.",
-        ur: "Patients ke saath kaam karne wale asaan alfaaz: \"**Har dard nuqsan nahi hota.**\" \"Aap ki kamar mazboot hai aur dhal sakti hai.\" \"Hum qadam ba qadam activity barhayenge taake aap ka system dobara pur-aitmaad ho.\" Is education ke saath graded activity aur exercise zaroor dein — sirf education shayad hi kaafi hoti hai.",
+        ur: "Patients ke saath kaam karne wale asaan alfaaz: \"**Har dard nuqsan nahi hota.**\" \"Aap ki back mazboot hai aur dhal sakti hai.\" \"Hum qadam ba qadam activity barhayenge taake aap ka system dobara pur-aitmaad ho.\" Is education ke saath graded activity aur exercise zaroor dein — sirf education shayad hi kaafi hoti hai.",
       },
     },
     {

@@ -182,7 +182,7 @@ export const vitalSignsSkill: SkillDefinition = {
   phase: "patient",
   icon: "vitals",
   summary: "Measure pulse, blood pressure, breathing, SpO₂ and temperature properly — then use RPE, the talk test, pain monitoring and safety limits to dose and stop exercise safely.",
-  ur: "Pulse, BP, saans, SpO₂ aur temperature sahi tareeqe se lena — phir RPE, talk test aur safety limits se exercise ko safe rakhna.",
+  ur: "Pulse, BP, respiratory rate, SpO₂ aur temperature sahi tareeqe se lena — phir RPE, talk test aur safety limits se exercise ko safe rakhna.",
   atlasLabel: "Vitals atlas",
   sources: [
     { title: "ACSM's Guidelines for Exercise Testing and Prescription (11th ed.)" },
@@ -208,7 +208,7 @@ export const vitalSignsSkill: SkillDefinition = {
       level: "beginner",
       title: "Why physios measure vitals",
       body: "Vitals give a **baseline**, keep exercise **safe**, and show how the body **responds** to load. Measure **before** you start, **during** the session and **after** recovery.",
-      ur: "Exercise se pehle, dauran aur baad vitals lena — taake baseline, safety aur response teeno pata chalein.",
+      ur: "Exercise se pehle, during aur baad mein vitals lein — taake baseline, safety aur response teeno pata chalein.",
     },
     {
       id: "normal-values",

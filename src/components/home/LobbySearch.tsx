@@ -6,7 +6,7 @@ import { searchAcademy } from "@/lib/academy-map";
 import { AcademyIcon } from "@/components/nexus/AcademyIcon";
 import { askPhysioNexusAI } from "@/components/nexus/CommandPalette";
 
-const suggestions = ["Convex–concave rule", "Frozen shoulder", "Maitland grades", "Kamar dard", "Viva preparation"];
+const suggestions = ["Convex–concave rule", "Frozen shoulder", "Maitland grades", "Back pain", "Viva preparation"];
 
 /** The lobby's "ask the academy" bar: jumps to a place, or hands the question to Physio Nexus AI. */
 export function LobbySearch({ atlasPublished }: { atlasPublished: boolean }) {

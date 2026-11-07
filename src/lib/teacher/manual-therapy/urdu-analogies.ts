@@ -10,13 +10,13 @@ export const manualTherapyUrduAnalogies: Record<string, string> = {
   "mulligan-mobilization-with-movement":
     "Yeh atke hue darazon ko theek karne jaisa hai jab koi usay khol raha ho. Aap mukhtalif directions mein halka sa dhakka try karte hain jab tak daraz aaram se na khul jaye — zabardasti nahi karte.",
   "mulligan-snags-nags":
-    "Facet joint ek dhalaan (ramp) jaisa hai. Agar gardan ghumate waqt vertebra ko ramp ki apni dhalaan ke saath upar dhakelein to movement smooth hoti hai; agar dhalaan ke aar-paar dhakelein to movement atak jati hai.",
+    "Facet joint ek dhalaan (ramp) jaisa hai. Agar neck ghumate waqt vertebra ko ramp ki apni dhalaan ke saath upar dhakelein to movement smooth hoti hai; agar dhalaan ke aar-paar dhakelein to movement atak jati hai.",
   "paivm-ppivm-spinal-assessment":
     "Darwazon ki ek line ke saath chalte hue har darwaze ko halka sa dhakelna: aap note karte hain kaun sa atakta hai, kaun sa zarurat se zyada aasaani se khulta hai, aur kaun si 'cheekh' patient ki shikayat se milti hai.",
   "high-velocity-low-amplitude-thrust":
     "Jaise atke hue taale par lamba, musalsal dhakka dene ke bajaye ek tez, chhota sa jhatka. Yeh sirf tab samajh mein aata hai jab aap ko yaqeen ho ke darwaza yeh jhatka safely bardasht kar sakta hai.",
   "neurodynamic-mobilization":
-    "Nerve ek lachakdaar pipe ke andar taar jaisi hai. Jab aap bazu moorte hain to taar pipe ke andar slide honi chahiye. Agar woh atak jaye ya irritate ho, to joints ki movement us par khinchao daal kar symptoms paida kar sakti hai.",
+    "Nerve ek lachakdaar pipe ke andar taar jaisi hai. Jab aap arm moorte hain to taar pipe ke andar slide honi chahiye. Agar woh atak jaye ya irritate ho, to joints ki movement us par khinchao daal kar symptoms paida kar sakti hai.",
   "pnf-manual-techniques":
     "Jaise coach swing (bat ya golf) guide karta hai: aap bas utni resistance aur timing dete hain jitni muscles ko coordinate hone ke liye chahiye, phir asal kaam athlete khud karta hai.",
   "cyriax-deep-transverse-friction":
@@ -38,7 +38,7 @@ export const manualTherapyUrduAnalogies: Record<string, string> = {
   "active-release-style-soft-tissue":
     "Jaise tape ke ek tukde ko dabaye rakh kar us ke neeche wali surface ko kheenchna: dabana aur movement mil kar atke hue hisse ko azaad karte hain.",
   iastm:
-    "Jaise ubhri hui surface par chikna chamach pherna: tool aap ko be-qaidgiyan mehsoos karne aur un par kaam karne deta hai, aur aap ke haathon par kam zor parta hai.",
+    "Jaise ubhri hui surface par chikna chamach pherna: tool aap ko be-qaidgiyan mehsoos karne aur un par kaam karne deta hai, aur aap ke hands par kam zor parta hai.",
   "myofascial-decompression-dry-cupping":
     "Jaise chipakti tape ko surface par dabane ke bajaye usay upar uthana. Pressure neeche nahi, upar ki taraf jata hai.",
   "manual-lymphatic-drainage":

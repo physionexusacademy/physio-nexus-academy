@@ -101,7 +101,7 @@ export function HistoryPanel({ lang, setLang }: { lang: Lang; setLang: (lang: La
     const match = HISTORY.find((h) => h.keywords.test(q));
     if (match) ask(match.id, q);
     else {
-      const a = lang === "ur" ? "Maaf kijiye, samajh nahi aaya — doosre tareeqe se poochain?" : "Sorry, I didn't understand — could you ask another way?";
+      const a = lang === "ur" ? "Sorry, samajh nahi aaya — please doosre tareeqe se poochein?" : "Sorry, I didn't understand — could you ask another way?";
       setChat((c) => [...c, { q, a }]);
       say(a);
     }
@@ -130,7 +130,7 @@ export function HistoryPanel({ lang, setLang }: { lang: Lang; setLang: (lang: La
         <div ref={endRef} />
       </div>
       <form className="mt-2 flex gap-2" onSubmit={(e) => { e.preventDefault(); submit(); }}>
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={lang === "ur" ? "Apna sawal likhein…" : "Type a question…"} className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm" aria-label="Ask the patient" />
+        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={lang === "ur" ? "Apna question likhein…" : "Type a question…"} className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm" aria-label="Ask the patient" />
         <button type="submit" className="rounded-xl bg-[#0a1f3d] px-3 text-white" aria-label="Ask"><Send className="h-4 w-4" aria-hidden="true" /></button>
       </form>
       {groups.map((group) => (

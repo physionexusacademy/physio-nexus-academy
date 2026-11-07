@@ -23,7 +23,7 @@ const sites: Record<
     type: "UMN",
     note: {
       en: "UMN signs on the OPPOSITE side of the body — the pathway crosses in the medulla.",
-      ur: "Jism ki ULTI side par UMN signs — rasta medulla mein cross karta hai.",
+      ur: "Body ki ULTI side par UMN signs — rasta medulla mein cross karta hai.",
     },
     point: { x: 60, y: 34 },
   },

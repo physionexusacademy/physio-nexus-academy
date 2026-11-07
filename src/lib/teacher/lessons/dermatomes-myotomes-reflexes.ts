@@ -20,25 +20,25 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
       type: "say",
       text: {
         en: "A patient says, \"The pain goes down my leg.\" Now you ask the nervous system three questions: Can they **FEEL** normally? Can they **PUSH** normally? Do the **REFLEXES** fire normally? Together, that's the neuro screen.",
-        ur: "Patient kehta hai, \"Dard meri taang mein neeche jata hai.\" Ab aap nervous system se teen sawal poochte hain: Kya woh normal **MEHSOOS** kar sakta hai? Kya woh normal **ZOR** laga sakta hai? Kya **REFLEXES** normal hain? In teenon ko mila kar neuro screen kehte hain.",
+        ur: "Patient kehta hai, \"Dard meri leg mein neeche jata hai.\" Ab aap nervous system se teen sawal poochte hain: Kya woh normal **MEHSOOS** kar sakta hai? Kya woh normal **ZOR** laga sakta hai? Kya **REFLEXES** normal hain? In teenon ko mila kar neuro screen kehte hain.",
       },
     },
     {
       type: "say",
       text: {
         en: "**Dermatome**: the skin area supplied mainly by one spinal nerve root (tests sensation).\n**Myotome**: the group of muscles supplied mainly by one nerve root (tests strength).\n**Reflex**: an automatic muscle response that tests one root's loop into and out of the spinal cord.",
-        ur: "**Dermatome**: jild ka woh hissa jise zyada tar ek spinal nerve root supply karti hai (sensation test).\n**Myotome**: muscles ka woh group jise zyada tar ek nerve root supply karti hai (strength test).\n**Reflex**: ek automatic muscle response jo ek root ke spinal cord mein aane jaane wale loop ko test karta hai.",
+        ur: "**Dermatome**: skin ka woh hissa jise zyada tar ek spinal nerve root supply karti hai (sensation test).\n**Myotome**: muscles ka woh group jise zyada tar ek nerve root supply karti hai (strength test).\n**Reflex**: ek automatic muscle response jo ek root ke spinal cord mein aane jaane wale loop ko test karta hai.",
       },
       simpler: {
         en: "Dermatome = skin map. Myotome = muscle map. Reflex = the automatic loop test.",
-        ur: "Dermatome = jild ka naqsha. Myotome = muscles ka naqsha. Reflex = automatic loop ka test.",
+        ur: "Dermatome = skin ka naqsha. Myotome = muscles ka naqsha. Reflex = automatic loop ka test.",
       },
     },
     {
       type: "analogy",
       text: {
         en: "Think of the spinal cord as a building with many floors. Each floor sends out its own electric line: one wire to a patch of skin, one to a set of muscles, and a loop you can test with a tap. Damage one floor's line and you find a **matching pattern**: that skin feels different, those muscles are weak, that reflex is reduced.",
-        ur: "Spinal cord ko kai manzilon wali imarat samjhein. Har manzil apni bijli ki line bahar bhejti hai: ek taar jild ke ek hisse tak, ek muscles ke group tak, aur ek loop jise tap kar ke test kar sakte hain. Ek manzil ki line kharab ho to **milta julta pattern** milta hai: wahi jild alag mehsoos hoti hai, wahi muscles kamzor, wahi reflex kam.",
+        ur: "Spinal cord ko kai manzilon wali imarat samjhein. Har manzil apni bijli ki line bahar bhejti hai: ek taar skin ke ek hisse tak, ek muscles ke group tak, aur ek loop jise tap kar ke test kar sakte hain. Ek manzil ki line kharab ho to **milta julta pattern** milta hai: wahi skin alag mehsoos hoti hai, wahi muscles weak, wahi reflex kam.",
       },
     },
     {
@@ -63,17 +63,17 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
         [
           { en: "L4", ur: "L4" },
           { en: "Ankle dorsiflexion", ur: "Ankle dorsiflexion" },
-          { en: "Medial leg / medial malleolus · knee jerk (mainly L4)", ur: "Taang ka andar wala hissa / medial malleolus · knee jerk (zyada L4)" },
+          { en: "Medial leg / medial malleolus · knee jerk (mainly L4)", ur: "Leg ka andar wala hissa / medial malleolus · knee jerk (zyada L4)" },
         ],
         [
           { en: "L5", ur: "L5" },
-          { en: "Great-toe extension", ur: "Bare angoothe ki extension" },
-          { en: "Dorsum of the foot · no reliable routine reflex", ur: "Paon ki upar wali surface · reliable routine reflex nahi" },
+          { en: "Great-toe extension", ur: "Big toe ki extension" },
+          { en: "Dorsum of the foot · no reliable routine reflex", ur: "Foot ki upar wali surface · reliable routine reflex nahi" },
         ],
         [
           { en: "S1", ur: "S1" },
           { en: "Ankle plantarflexion / eversion", ur: "Ankle plantarflexion / eversion" },
-          { en: "Lateral foot & heel · ankle jerk (S1)", ur: "Paon aur aedi ka bahar wala hissa · ankle jerk (S1)" },
+          { en: "Lateral foot & heel · ankle jerk (S1)", ur: "Foot aur heel ka bahar wala hissa · ankle jerk (S1)" },
         ],
       ],
     },
@@ -89,26 +89,26 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
         [
           { en: "C5", ur: "C5" },
           { en: "Shoulder abduction (deltoid)", ur: "Shoulder abduction (deltoid)" },
-          { en: "Lateral upper arm · biceps jerk (C5–C6)", ur: "Bazu ka upar bahar wala hissa · biceps jerk (C5–C6)" },
+          { en: "Lateral upper arm · biceps jerk (C5–C6)", ur: "Upper arm ka bahar wala hissa · biceps jerk (C5–C6)" },
         ],
         [
           { en: "C6", ur: "C6" },
           { en: "Elbow flexion & wrist extension", ur: "Elbow flexion aur wrist extension" },
-          { en: "Lateral forearm & thumb · brachioradialis jerk (C6)", ur: "Forearm ka bahar wala hissa aur angootha · brachioradialis jerk (C6)" },
+          { en: "Lateral forearm & thumb · brachioradialis jerk (C6)", ur: "Forearm ka bahar wala hissa aur thumb · brachioradialis jerk (C6)" },
         ],
         [
           { en: "C7", ur: "C7" },
           { en: "Elbow extension & wrist flexion", ur: "Elbow extension aur wrist flexion" },
-          { en: "Middle finger · triceps jerk (C7)", ur: "Darmiyani ungli · triceps jerk (C7)" },
+          { en: "Middle finger · triceps jerk (C7)", ur: "Middle finger · triceps jerk (C7)" },
         ],
         [
           { en: "C8", ur: "C8" },
-          { en: "Finger flexion", ur: "Ungliyon ki flexion" },
-          { en: "Little finger & medial hand · no routine reflex", ur: "Chhoti ungli aur haath ka andar wala hissa · routine reflex nahi" },
+          { en: "Finger flexion", ur: "Fingers ki flexion" },
+          { en: "Little finger & medial hand · no routine reflex", ur: "Little finger aur hand ka andar wala hissa · routine reflex nahi" },
         ],
         [
           { en: "T1", ur: "T1" },
-          { en: "Finger abduction (interossei)", ur: "Ungliyon ki abduction (interossei)" },
+          { en: "Finger abduction (interossei)", ur: "Fingers ki abduction (interossei)" },
           { en: "Medial forearm · no routine reflex", ur: "Forearm ka andar wala hissa · routine reflex nahi" },
         ],
       ],
@@ -124,14 +124,14 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
       type: "check",
       question: {
         en: "Weak big-toe extension and reduced sensation over the top of the foot. Which root is most likely involved?",
-        ur: "Bare angoothe ki extension kamzor aur paon ki upar wali surface par sensation kam. Kaun si root zyada mumkin hai?",
+        ur: "Big toe ki extension weak aur foot ki upar wali surface par sensation kam. Kaun si root zyada mumkin hai?",
       },
       options: [
         {
           text: { en: "L4", ur: "L4" },
           feedback: {
             en: "L4 is tested with ankle dorsiflexion and medial-leg sensation. Big-toe extension + top of the foot point to the next level down.",
-            ur: "L4 ankle dorsiflexion aur taang ke andar wale hisse ki sensation se test hoti hai. Bara angootha + paon ki upar wali surface agle level ki taraf ishara karte hain.",
+            ur: "L4 ankle dorsiflexion aur leg ke andar wale hisse ki sensation se test hoti hai. Big toe + foot ki upar wali surface agle level ki taraf ishara karte hain.",
           },
         },
         {
@@ -139,14 +139,14 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
           correct: true,
           feedback: {
             en: "Yes! Great-toe extension (myotome) and dorsum of the foot (dermatome) both point to L5 — a matching pattern.",
-            ur: "Haan! Bare angoothe ki extension (myotome) aur paon ki upar wali surface (dermatome) dono L5 ki taraf — milta julta pattern.",
+            ur: "Haan! Big toe ki extension (myotome) aur foot ki upar wali surface (dermatome) dono L5 ki taraf — milta julta pattern.",
           },
         },
         {
           text: { en: "S1", ur: "S1" },
           feedback: {
             en: "S1 shows up as weak plantarflexion, lateral-foot sensation change and a reduced ankle jerk.",
-            ur: "S1 mein plantarflexion kamzor, paon ke bahar wale hisse ki sensation mein tabdeeli aur ankle jerk kam hota hai.",
+            ur: "S1 mein plantarflexion weak, foot ke bahar wale hisse ki sensation mein tabdeeli aur ankle jerk kam hota hai.",
           },
         },
       ],
@@ -155,7 +155,7 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
       type: "check",
       question: {
         en: "A reduced ankle jerk and numbness along the outer border of the foot. Which root?",
-        ur: "Ankle jerk kam aur paon ke bahar wale kinare par sunn-pan. Kaun si root?",
+        ur: "Ankle jerk kam aur foot ke bahar wale kinare par numbness. Kaun si root?",
       },
       options: [
         {
@@ -164,12 +164,12 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
         },
         {
           text: { en: "L5", ur: "L5" },
-          feedback: { en: "L5 has no reliable routine reflex and supplies the top of the foot, not the outer border.", ur: "L5 ka koi reliable routine reflex nahi aur woh paon ki upar wali surface supply karti hai, bahar wala kinara nahi." },
+          feedback: { en: "L5 has no reliable routine reflex and supplies the top of the foot, not the outer border.", ur: "L5 ka koi reliable routine reflex nahi aur woh foot ki upar wali surface supply karti hai, bahar wala kinara nahi." },
         },
         {
           text: { en: "S1", ur: "S1" },
           correct: true,
-          feedback: { en: "Correct — \"S1–2, buckle my shoe\". Ankle jerk + lateral foot = S1.", ur: "Sahi — \"S1–2, buckle my shoe\". Ankle jerk + paon ka bahar wala hissa = S1." },
+          feedback: { en: "Correct — \"S1–2, buckle my shoe\". Ankle jerk + lateral foot = S1.", ur: "Sahi — \"S1–2, buckle my shoe\". Ankle jerk + foot ka bahar wala hissa = S1." },
         },
       ],
     },
@@ -182,10 +182,10 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
       ],
       items: [
         { text: { en: "Resisted shoulder abduction", ur: "Resisted shoulder abduction" }, answer: 0, why: { en: "Strength of a muscle group → C5 myotome.", ur: "Muscle group ki taqat → C5 myotome." } },
-        { text: { en: "Light touch on the thumb", ur: "Angoothe par halka touch" }, answer: 1, why: { en: "Skin sensation → C6 dermatome.", ur: "Jild ki sensation → C6 dermatome." } },
-        { text: { en: "Repeated heel raises", ur: "Baar baar aedi uthana" }, answer: 0, why: { en: "Plantarflexion strength → S1 myotome.", ur: "Plantarflexion ki taqat → S1 myotome." } },
-        { text: { en: "Pin-prick on the little finger", ur: "Chhoti ungli par pin-prick" }, answer: 1, why: { en: "Skin sensation → C8 dermatome.", ur: "Jild ki sensation → C8 dermatome." } },
-        { text: { en: "Resisted great-toe extension", ur: "Bare angoothe ki resisted extension" }, answer: 0, why: { en: "Strength → L5 myotome.", ur: "Taqat → L5 myotome." } },
+        { text: { en: "Light touch on the thumb", ur: "Thumb par halka touch" }, answer: 1, why: { en: "Skin sensation → C6 dermatome.", ur: "Jild ki sensation → C6 dermatome." } },
+        { text: { en: "Repeated heel raises", ur: "Baar baar heel uthana" }, answer: 0, why: { en: "Plantarflexion strength → S1 myotome.", ur: "Plantarflexion ki taqat → S1 myotome." } },
+        { text: { en: "Pin-prick on the little finger", ur: "Little finger par pin-prick" }, answer: 1, why: { en: "Skin sensation → C8 dermatome.", ur: "Jild ki sensation → C8 dermatome." } },
+        { text: { en: "Resisted great-toe extension", ur: "Big toe ki resisted extension" }, answer: 0, why: { en: "Strength → L5 myotome.", ur: "Taqat → L5 myotome." } },
         { text: { en: "Light touch at the medial malleolus", ur: "Medial malleolus par halka touch" }, answer: 1, why: { en: "Skin sensation → L4 dermatome.", ur: "Jild ki sensation → L4 dermatome." } },
       ],
     },
@@ -193,21 +193,21 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
       type: "clinic",
       text: {
         en: "Doing it fast and well: **always compare left with right** at each level. Light touch (and pin-prick if needed) at each dermatome's key point; a resisted isometric hold for each myotome (\"hold — don't let me move you\"); reflexes with the patient relaxed — if a reflex seems absent, use reinforcement (the Jendrassik manoeuvre: patient pulls their hooked fingers apart) before calling it absent.",
-        ur: "Tez aur sahi tareeqa: har level par **hamesha left aur right ka muqabla karein**. Har dermatome ke key point par halka touch (aur zaroorat ho to pin-prick); har myotome ke liye resisted isometric hold (\"rokein — mujhe hilane na dein\"); reflexes patient ke relax hone par — agar reflex ghayab lage to absent kehne se pehle reinforcement karein (Jendrassik manoeuvre: patient apni phansi hui ungliyan zor se kheenche).",
+        ur: "Tez aur sahi tareeqa: har level par **hamesha left aur right ka muqabla karein**. Har dermatome ke key point par halka touch (aur zaroorat ho to pin-prick); har myotome ke liye resisted isometric hold (\"rokein — mujhe hilane na dein\"); reflexes patient ke relax hone par — agar reflex ghayab lage to absent kehne se pehle reinforcement karein (Jendrassik manoeuvre: patient apni interlocked fingers zor se kheenche).",
       },
     },
     {
       type: "mistake",
       text: {
         en: "Common mistakes: (1) Testing one side only. (2) Treating dermatome maps as exact borders — they overlap and vary between people, so look for a **pattern**, not a single spot. (3) Forgetting that one weak muscle can be a **peripheral nerve** problem, not a root — e.g. foot drop from a common fibular nerve injury vs an L5 radiculopathy (check hip abduction and inversion: often spared in fibular nerve palsy, weak in L5).",
-        ur: "Aam ghaltiyan: (1) Sirf ek side test karna. (2) Dermatome maps ko bilkul pakki sarhadein samajhna — yeh overlap karte hain aur har insaan mein thora farq hota hai, is liye ek jagah nahi, **pattern** dekhein. (3) Bhool jana ke ek kamzor muscle **peripheral nerve** ka masla bhi ho sakta hai, root ka nahi — maslan common fibular nerve injury se foot drop vs L5 radiculopathy (hip abduction aur inversion check karein: fibular nerve palsy mein aksar theek, L5 mein kamzor).",
+        ur: "Aam ghaltiyan: (1) Sirf ek side test karna. (2) Dermatome maps ko bilkul pakki sarhadein samajhna — yeh overlap karte hain aur har insaan mein thora farq hota hai, is liye ek jagah nahi, **pattern** dekhein. (3) Bhool jana ke ek weak muscle **peripheral nerve** ka masla bhi ho sakta hai, root ka nahi — maslan common fibular nerve injury se foot drop vs L5 radiculopathy (hip abduction aur inversion check karein: fibular nerve palsy mein aksar theek, L5 mein weak).",
       },
     },
     {
       type: "safety",
       text: {
         en: "Stop and refer **the same day** if you find: saddle numbness, new bladder or bowel changes, or symptoms in **both** legs — possible cauda equina syndrome. Rapidly worsening weakness also needs urgent medical review. These are emergencies, not physiotherapy cases.",
-        ur: "Agar yeh milein to **usi din** ruk kar refer karein: saddle area mein sunn-pan, bladder ya bowel mein nayi tabdeeli, ya **dono** taangon mein symptoms — cauda equina syndrome ka imkaan. Tezi se barhti kamzori ke liye bhi urgent medical review zaroori hai. Yeh emergencies hain, physiotherapy cases nahi.",
+        ur: "Agar yeh milein to **usi din** ruk kar refer karein: saddle area mein numbness, bladder ya bowel mein nayi tabdeeli, ya **dono** legs mein symptoms — cauda equina syndrome ka imkaan. Tezi se barhti weakness ke liye bhi urgent medical review zaroori hai. Yeh emergencies hain, physiotherapy cases nahi.",
       },
     },
     {
@@ -218,14 +218,14 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
       },
       options: [
         {
-          text: { en: "Mildly reduced sensation on one foot after lifting, stable for a week", ur: "Wazan uthane ke baad ek paon par halki kam sensation, ek hafte se stable" },
+          text: { en: "Mildly reduced sensation on one foot after lifting, stable for a week", ur: "Weight uthane ke baad ek foot par halki kam sensation, ek hafte se stable" },
           feedback: {
             en: "Worth monitoring and documenting — and refer if it worsens — but on its own it's usually managed conservatively.",
             ur: "Monitor aur document karna zaroori hai — aur barhe to refer karein — lekin akela yeh aam tor par conservative tareeqe se manage hota hai.",
           },
         },
         {
-          text: { en: "Saddle numbness with new difficulty passing urine", ur: "Saddle area mein sunn-pan aur peshab shuru karne mein nayi mushkil" },
+          text: { en: "Saddle numbness with new difficulty passing urine", ur: "Saddle area mein numbness aur urine pass karne mein nayi mushkil" },
           correct: true,
           feedback: {
             en: "Exactly — possible cauda equina syndrome. Same-day emergency referral.",
@@ -256,15 +256,15 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
   summary: [
     { en: "Dermatome = sensation, myotome = strength, reflex = automatic loop — look for a matching pattern.", ur: "Dermatome = sensation, myotome = taqat, reflex = automatic loop — milta julta pattern dhoondein." },
     { en: "Know the key levels: L2–S1 and C5–T1, plus the reflex rhyme.", ur: "Key levels yaad rakhein: L2–S1 aur C5–T1, saath reflex ki nazm." },
-    { en: "Always compare sides; saddle numbness or bladder/bowel change = same-day emergency.", ur: "Hamesha dono sides compare karein; saddle sunn-pan ya bladder/bowel tabdeeli = usi din emergency." },
+    { en: "Always compare sides; saddle numbness or bladder/bowel change = same-day emergency.", ur: "Hamesha dono sides compare karein; saddle numbness ya bladder/bowel tabdeeli = usi din emergency." },
   ],
   flashcards: [
-    { id: "dmr-1", front: { en: "L4 myotome, dermatome and reflex?", ur: "L4 myotome, dermatome aur reflex?" }, back: { en: "Ankle dorsiflexion · medial leg/medial malleolus · knee jerk (mainly L4).", ur: "Ankle dorsiflexion · taang ka andar wala hissa/medial malleolus · knee jerk (zyada L4)." } },
-    { id: "dmr-2", front: { en: "L5 myotome and dermatome?", ur: "L5 myotome aur dermatome?" }, back: { en: "Great-toe extension · dorsum of the foot (no reliable routine reflex).", ur: "Bare angoothe ki extension · paon ki upar wali surface (reliable routine reflex nahi)." } },
-    { id: "dmr-3", front: { en: "S1 myotome, dermatome and reflex?", ur: "S1 myotome, dermatome aur reflex?" }, back: { en: "Plantarflexion/eversion · lateral foot & heel · ankle jerk.", ur: "Plantarflexion/eversion · paon aur aedi ka bahar wala hissa · ankle jerk." } },
-    { id: "dmr-4", front: { en: "C6 myotome, dermatome and reflex?", ur: "C6 myotome, dermatome aur reflex?" }, back: { en: "Elbow flexion & wrist extension · lateral forearm & thumb · brachioradialis (and biceps C5–6).", ur: "Elbow flexion aur wrist extension · forearm ka bahar wala hissa aur angootha · brachioradialis (aur biceps C5–6)." } },
-    { id: "dmr-5", front: { en: "C7 myotome, dermatome and reflex?", ur: "C7 myotome, dermatome aur reflex?" }, back: { en: "Elbow extension & wrist flexion · middle finger · triceps jerk.", ur: "Elbow extension aur wrist flexion · darmiyani ungli · triceps jerk." } },
-    { id: "dmr-6", front: { en: "What is the Jendrassik manoeuvre for?", ur: "Jendrassik manoeuvre kis liye?" }, back: { en: "Reinforcement to bring out a lower-limb reflex that seems absent (patient pulls hooked fingers apart).", ur: "Ghayab lagte lower-limb reflex ko ubharne ke liye reinforcement (patient phansi ungliyan zor se kheenchta hai)." } },
+    { id: "dmr-1", front: { en: "L4 myotome, dermatome and reflex?", ur: "L4 myotome, dermatome aur reflex?" }, back: { en: "Ankle dorsiflexion · medial leg/medial malleolus · knee jerk (mainly L4).", ur: "Ankle dorsiflexion · leg ka andar wala hissa/medial malleolus · knee jerk (zyada L4)." } },
+    { id: "dmr-2", front: { en: "L5 myotome and dermatome?", ur: "L5 myotome aur dermatome?" }, back: { en: "Great-toe extension · dorsum of the foot (no reliable routine reflex).", ur: "Big toe ki extension · foot ki upar wali surface (reliable routine reflex nahi)." } },
+    { id: "dmr-3", front: { en: "S1 myotome, dermatome and reflex?", ur: "S1 myotome, dermatome aur reflex?" }, back: { en: "Plantarflexion/eversion · lateral foot & heel · ankle jerk.", ur: "Plantarflexion/eversion · foot aur heel ka bahar wala hissa · ankle jerk." } },
+    { id: "dmr-4", front: { en: "C6 myotome, dermatome and reflex?", ur: "C6 myotome, dermatome aur reflex?" }, back: { en: "Elbow flexion & wrist extension · lateral forearm & thumb · brachioradialis (and biceps C5–6).", ur: "Elbow flexion aur wrist extension · forearm ka bahar wala hissa aur thumb · brachioradialis (aur biceps C5–6)." } },
+    { id: "dmr-5", front: { en: "C7 myotome, dermatome and reflex?", ur: "C7 myotome, dermatome aur reflex?" }, back: { en: "Elbow extension & wrist flexion · middle finger · triceps jerk.", ur: "Elbow extension aur wrist flexion · middle finger · triceps jerk." } },
+    { id: "dmr-6", front: { en: "What is the Jendrassik manoeuvre for?", ur: "Jendrassik manoeuvre kis liye?" }, back: { en: "Reinforcement to bring out a lower-limb reflex that seems absent (patient pulls hooked fingers apart).", ur: "Ghayab lagte lower-limb reflex ko ubharne ke liye reinforcement (patient interlocked fingers zor se kheenchta hai)." } },
   ],
   goDeeper: [
     { title: "Lumbar Radiculopathy", href: "/msk-injuries/lumbar-radiculopathy", note: { en: "Put the lower-limb screen to work.", ur: "Lower-limb screen ko kaam mein layein." } },
