@@ -76,6 +76,13 @@ export const goldenCases = [
   // --- Follow-up memory
   { q: "how to treat it", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/treatment-plans/adhesive-capsulitis"], none: ["/knowledge-hub/intention-to-treat-per-protocol-analysis-2026"] },
   { q: "special tests?", context: { lastTopic: "Anterior Cruciate Ligament (ACL) Injury" }, anyTop2: ["/msk-special-tests", "/msk-injuries/acl-injury"] },
+  // Requests that stand on their own must not be hijacked by the previous topic.
+  { q: "help me prepare for my viva", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/daily-challenge"], any: ["/learn/review"], freshTopic: true, chip: /Exam prep: Adhesive Capsulitis/ },
+  { q: "book a home visit", context: { lastTopic: "Anterior Cruciate Ligament (ACL) Injury" }, top: ["/home-visit"], freshTopic: true },
+  { q: "viva ki tayyari kaise karun", context: { lastTopic: "Adhesive Capsulitis" }, lang: "ur", top: ["/daily-challenge"], freshTopic: true },
+  { q: "viva questions on it", context: { lastTopic: "Adhesive Capsulitis" }, any: ["/msk-injuries/adhesive-capsulitis", "/treatment-plans/adhesive-capsulitis"] },
+  { q: "step by step?", context: { lastTopic: "Convex–Concave Rule" }, any: ["/learn/convex-concave-rule"] },
+  { q: "Adhesive Capsulitis viva", anyTop2: ["/msk-injuries/adhesive-capsulitis", "/treatment-plans/adhesive-capsulitis", "/learn/review", "/daily-challenge"], any: ["/msk-injuries/adhesive-capsulitis", "/treatment-plans/adhesive-capsulitis"] },
 ];
 
 /** Returns a list of failure messages for one case result. */
@@ -89,5 +96,7 @@ export function judge(c, result) {
   if (c.anyTop2 && !hrefs.slice(0, 2).some((h) => c.anyTop2.includes(h))) problems.push(`top-2 expected one of ${c.anyTop2.join(" | ")}, got ${hrefs.slice(0, 2).join(", ")}`);
   if (c.any && !c.any.some((h) => hrefs.includes(h))) problems.push(`results should include one of ${c.any.join(" | ")}, got ${hrefs.join(", ")}`);
   if (c.none && c.none.some((h) => hrefs.includes(h))) problems.push(`results must not include ${c.none.join(" | ")}`);
+  if (c.freshTopic && /^(Continuing with|\*\*.*\*\* ke baare mein aage)/.test(result.message || "")) problems.push("previous topic should not be merged into a standalone request");
+  if (c.chip && !(result.suggestions || []).some((s) => c.chip.test(s.label))) problems.push(`expected a suggestion matching ${c.chip}, got ${(result.suggestions || []).map((s) => s.label).join(" | ")}`);
   return problems;
 }

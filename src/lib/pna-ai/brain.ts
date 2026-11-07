@@ -111,6 +111,8 @@ type Understanding = {
   navigation: string[];
   firstPerson: boolean;
   usedContext: boolean;
+  /** Previous topic not merged because the question stood on its own; offered as a chip instead. */
+  setAsideTopic?: string;
 };
 
 type Intent = "define" | "compare" | "learn" | "treat" | "assess" | "technique" | "exam" | "patient" | "policy";
@@ -148,6 +150,7 @@ const INTENT_WORDS = new Set([
   "cure", "protocol", "plan", "prepare", "preparation", "revision", "revise", "viva", "exam", "osce", "mcq", "question",
 ]);
 
+const followUpPronouns = /\b(it|its|this|that|these|them|iska|iski|iske|iss|is ka|is ki|uska|uski|uske|us ka|us ki)\b/;
 const followUpWords = /\b(it|its|this|that|these|them|iska|iski|iske|iss|is ka|is ki|uska|uski|uske|us ka|us ki|and|aur|also|what about|how about|then)\b/;
 
 function understand(raw: string, context: BrainContext | undefined, vocabulary: Map<string, number>): Understanding {
@@ -163,9 +166,18 @@ function understand(raw: string, context: BrainContext | undefined, vocabulary: 
   let compact = translated.split(" ").filter((word) => !STOP_WORDS.has(word)).join(" ");
 
   // Short follow-ups ("how to treat it?") inherit the previous topic.
+  // Requests that stand on their own ("help me prepare for my viva", "book a home visit")
+  // keep their meaning unless they point back with "it / this / iska".
   let usedContext = false;
+  let setAsideTopic: string | undefined;
   const compactTokens = compact.split(" ").filter(Boolean);
-  if (context?.lastTopic && compactTokens.length <= 4 && (followUpWords.test(normalized) || compactTokens.length <= 2)) {
+  const examRule = intentRules.find(([intent]) => intent === "exam")?.[1];
+  const standalone =
+    !followUpPronouns.test(normalized) &&
+    (Boolean(examRule?.test(normalized)) || navigationRules.some((rule) => rule.href !== "/learn" && rule.re.test(normalized)));
+  if (context?.lastTopic && standalone) {
+    setAsideTopic = context.lastTopic;
+  } else if (context?.lastTopic && compactTokens.length <= 4 && (followUpWords.test(normalized) || compactTokens.length <= 2)) {
     const topicTokens = tokenize(context.lastTopic);
     const alreadyAbout = topicTokens.some((token) => compactTokens.includes(token));
     if (!alreadyAbout) {
@@ -212,7 +224,7 @@ function understand(raw: string, context: BrainContext | undefined, vocabulary: 
   for (const rule of navigationRules) if (rule.re.test(normalized) && !navigation.includes(rule.href)) navigation.push(rule.href);
   if (intents.has("exam") && !navigation.includes("/daily-challenge")) navigation.push("/daily-challenge");
 
-  return { normalized, lang, concept: normalize(concept), tokens, phrases, intents, navigation, firstPerson, usedContext };
+  return { normalized, lang, concept: normalize(concept), tokens, phrases, intents, navigation, firstPerson, usedContext, setAsideTopic };
 }
 
 /* ---------------- index & search ---------------- */
@@ -590,7 +602,9 @@ export function think(
     message,
     safety: null,
     resources: picked.map(toResult),
-    suggestions: composed.suggestions,
+    suggestions: examLine && u.setAsideTopic
+      ? [{ label: u.lang === "ur" ? `${u.setAsideTopic} ki exam tayyari` : `Exam prep: ${u.setAsideTopic}`, query: `${u.setAsideTopic} viva` }, ...composed.suggestions].slice(0, 3)
+      : composed.suggestions,
     topic: top ? shortTopic(top.resource.title) : undefined,
     confidence: top ? confidence : "high",
     candidates: ranked.slice(0, 8).map((item) => item.doc.resource),
