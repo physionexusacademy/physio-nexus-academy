@@ -150,58 +150,8 @@ export const whatsappLink = (message?: string) => {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 };
 
-export const mainNav = [
-  { label: "Home", href: "/" },
-  { label: "PNA Teacher", href: "/learn" },
-  { label: "Learn", href: "/knowledge-hub" },
-  { label: "Daily Challenge", href: "/daily-challenge" },
-  { label: "Case Lab", href: "/case-lab" },
-  { label: "Workshops", href: "/workshops" },
-  { label: "Resources", href: "/resources" },
-  { label: "Patient Care", href: "/patient-services" },
-  { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
-  { label: "Clinical Arena", href: "/clinical-arena" },
-  { label: "Clinical Registry", href: "/clinical-registry" },
-  { label: "Manual Therapy", href: "/manual-therapy" },
-  { label: "Health Calculators", href: "/health-calculators/bmi" },
-  { label: "About PNA", href: "/about" },
-  { label: "Contact", href: "/contact" },
-  { label: "Verify Certificate", href: "/verify" },
-];
-
+/** Navigation lives in src/lib/academy-map.ts (the campus wings). */
 export const footerLinks = {
-  academy: [
-    { label: "About PNA", href: "/about" },
-    { label: "Founder", href: "/founder" },
-    { label: "Faculty", href: "/faculty" },
-    { label: "Gallery", href: "/gallery" },
-    { label: "Updates", href: "/updates" },
-    { label: "Reviews & Feedback", href: "/reviews" },
-    { label: "Contact", href: "/contact" },
-  ],
-  students: [
-    { label: "PNA Teacher · Step-by-step lessons", href: "/learn" },
-    { label: "Knowledge Hub", href: "/knowledge-hub" },
-    { label: "Manual Therapy Mastery", href: "/manual-therapy" },
-    { label: "MSK Injury & Rehabilitation Hub", href: "/msk-injuries" },
-    { label: "Treatment Plans", href: "/treatment-plans" },
-    { label: "Clinical Case Lab", href: "/case-lab" },
-    { label: "Daily Clinical Challenge", href: "/daily-challenge" },
-    { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries" },
-    { label: "Weekly Clinical Quiz", href: "/clinical-quiz" },
-    { label: "Workshops", href: "/workshops" },
-    { label: "Training Archive", href: "/training" },
-    { label: "Courses / Learning", href: "/courses" },
-    { label: "Books & Resources", href: "/resources" },
-    { label: "Research Support", href: "/research" },
-    { label: "Health Calculators · BMI", href: "/health-calculators/bmi" },
-  ],
-  patients: [
-    { label: "Patient Services", href: "/patient-services" },
-    { label: "Book Appointment", href: "/appointment" },
-    { label: "Request Home Visit", href: "/home-visit" },
-    { label: "FAQ", href: "/faq" },
-  ],
   legal: [
     { label: "Privacy Policy", href: "/legal/privacy" },
     { label: "Terms of Use", href: "/legal/terms" },

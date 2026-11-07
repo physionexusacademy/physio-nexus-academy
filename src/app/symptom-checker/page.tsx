@@ -8,7 +8,7 @@ import {
   Sparkles,
   Stethoscope,
 } from "lucide-react";
-import { SymptomCheckerClient } from "./SymptomCheckerClient";
+import { SymptomCheckerClient } from "./SymptomCheckerLoader";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {

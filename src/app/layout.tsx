@@ -1,14 +1,25 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import localFont from "next/font/local";
 import "./globals.css";
+import "./nexus.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { BackToTop } from "@/components/BackToTop";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { PhysioNexusAI } from "@/components/PhysioNexusAI";
 import { siteConfig } from "@/lib/site-config";
+import { atlasPublished } from "@/lib/clinical-visual-atlas";
+
+/** Sora — the academy display face for headings (self-hosted, OFL). */
+const display = localFont({
+  src: "./fonts/sora-latin-wght.woff2",
+  variable: "--font-display",
+  weight: "100 800",
+  display: "swap",
+  fallback: ["Segoe UI", "system-ui", "sans-serif"],
+});
 
 const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
 
@@ -252,12 +263,12 @@ export const viewport = {
   initialScale: 1,
   minimumScale: 1,
   userScalable: true,
-  themeColor: "#102A43",
+  themeColor: "#030a17",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="overflow-x-clip">
+    <html lang="en" className={`overflow-x-clip ${display.variable}`}>
       <body className="flex min-h-screen w-full max-w-full flex-col overflow-x-clip pb-16 lg:pb-0">
         <script
           type="application/ld+json"
@@ -272,12 +283,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <PwaRuntime />
-        <Header />
+        <Header atlasPublished={atlasPublished} />
         <main id="main-content" className="flex-1">
           {children}
         </main>
         <Footer />
-        <BackToTop />
         <WhatsAppButton />
         <PhysioNexusAI />
         <MobilePortalNav />

@@ -7,7 +7,7 @@ import {
   PATIENT_DIALOGUE_VARIANTS_PER_CASE,
 } from "../src/lib/clinical-arena-patient-dialogue.ts";
 
-const page=readFileSync("src/app/clinical-arena/page.tsx","utf8");
+const page=readFileSync("src/app/clinical-arena/ClinicalArenaClient.tsx","utf8");
 const regular=expandedCases.filter(c=>!c.safety);
 const urgent=expandedCases.filter(c=>c.safety);
 const unique=new Set();

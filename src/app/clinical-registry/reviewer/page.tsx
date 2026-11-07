@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClinicalRegistrySecureClient } from "../ClinicalRegistrySecureClient";
+import { ClinicalRegistrySecureClient } from "../SecureClientLoader";
 
 export const dynamic = "force-dynamic";
 

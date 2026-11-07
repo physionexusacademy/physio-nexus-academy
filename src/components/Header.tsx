@@ -1,364 +1,299 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import {
-  Menu,
-  X,
-  Laugh,
-  Calendar,
-  Home,
-  ClipboardList,
-  Trophy,
-  ChevronDown,
-  BookOpen,
-  FileBadge2,
-  Hand,
-  Info,
-  HeartPulse,
-  FlaskConical,
-  GraduationCap,
-} from "lucide-react";
-import { mainNav, siteConfig } from "@/lib/site-config";
-import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { ArrowRight, CalendarDays, ChevronDown, Flame, Home, Menu, Search, Trophy, X, Zap } from "lucide-react";
+import { visibleWings, wingForPath, type AcademyWing } from "@/lib/academy-map";
+import { getUnifiedProgress } from "@/lib/unified-progress";
 import { InstallApp } from "@/components/InstallApp";
+import { AcademyIcon } from "@/components/nexus/AcademyIcon";
+import { CommandPalette } from "@/components/nexus/CommandPalette";
 
-/** Primary desktop links — kept short so the bar feels calm, not crowded. */
-const PRIMARY_HREFS = new Set([
-  "/learn",
-  "/daily-challenge",
-  "/case-lab",
-  "/workshops",
-  "/knowledge-hub",
-  "/health-calculators/bmi",
-]);
+/** Opens the command palette from anywhere (e.g. the homepage search). */
+export const OPEN_SEARCH_EVENT = "pna:open-search";
 
-export function Header() {
-  const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-
+function useStudentPass() {
+  const [pass, setPass] = useState<{ xp: number; streak: number } | null>(null);
   useEffect(() => {
-    const handleTouchStart = (event: TouchEvent) => {
-      const target = event.target as HTMLElement | null;
-
-      // Let horizontally scrollable areas handle their own swipe.
-      // This prevents the mobile menu from opening while scrolling tables.
-      if (target?.closest(".overflow-x-auto, [data-horizontal-scroll]")) {
-        touchStart.current = null;
-        return;
-      }
-      if (
-        event.touches.length !== 1 ||
-        (window.visualViewport?.scale ?? 1) > 1.05
-      ) {
-        touchStart.current = null;
-        return;
-      }
-
-      const touch = event.touches[0];
-      touchStart.current = {
-        x: touch.clientX,
-        y: touch.clientY,
-      };
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && open) setOpen(false);
-    };
-
-    const handleTouchEnd = (event: TouchEvent) => {
-      if (!touchStart.current || event.changedTouches.length !== 1) return;
-
-      const touch = event.changedTouches[0];
-
-      const dx = touch.clientX - touchStart.current.x;
-      const dy = touch.clientY - touchStart.current.y;
-
-      touchStart.current = null;
-
-      // Ignore short or mostly vertical swipes
-      if (Math.abs(dx) < 70 || Math.abs(dx) <= Math.abs(dy) * 1.25) {
-        return;
-      }
-
-      // Right → Left = OPEN
-      if (dx < 0 && !open) {
-        setOpen(true);
-      }
-
-      // Left → Right = CLOSE
-      if (dx > 0 && open) {
-        setOpen(false);
+    const read = () => {
+      try {
+        const progress = getUnifiedProgress();
+        setPass({ xp: progress.totalXP, streak: progress.currentStreak });
+      } catch {
+        setPass({ xp: 0, streak: 0 });
       }
     };
-
-    window.addEventListener("touchstart", handleTouchStart, {
-      passive: true,
-    });
-
-    window.addEventListener("touchend", handleTouchEnd, {
-      passive: true,
-    });
-    window.addEventListener("keydown", handleKeyDown);
-
+    read();
+    window.addEventListener("pna-unified-progress-updated", read);
+    window.addEventListener("storage", read);
     return () => {
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchend", handleTouchEnd);
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("pna-unified-progress-updated", read);
+      window.removeEventListener("storage", read);
+    };
+  }, []);
+  return pass;
+}
+
+export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) {
+  const pathname = usePathname() ?? "/";
+  const wings = visibleWings(atlasPublished);
+  const activeWing = wingForPath(pathname);
+  const [open, setOpen] = useState(false);
+  const [openWing, setOpenWing] = useState<AcademyWing["id"] | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const pass = useStudentPass();
+  const headerRef = useRef<HTMLElement>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const hoverTimer = useRef<number | null>(null);
+
+  const closeAll = useCallback(() => {
+    setOpen(false);
+    setOpenWing(null);
+  }, []);
+
+  // Close menus whenever the page changes.
+  useEffect(() => closeAll(), [pathname, closeAll]);
+
+  // Keyboard: Ctrl/⌘+K or "/" opens search; Escape closes menus.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const typing = !!target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+      if ((event.key === "k" || event.key === "K") && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setSearchOpen(true);
+      } else if (event.key === "/" && !typing) {
+        event.preventDefault();
+        setSearchOpen(true);
+      } else if (event.key === "Escape") {
+        closeAll();
+      }
+    };
+    const onOpenSearch = () => setSearchOpen(true);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener(OPEN_SEARCH_EVENT, onOpenSearch);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener(OPEN_SEARCH_EVENT, onOpenSearch);
+    };
+  }, [closeAll]);
+
+  // Click outside closes the mega menu.
+  useEffect(() => {
+    if (!openWing) return;
+    const onDown = (event: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) setOpenWing(null);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [openWing]);
+
+  // Swipe right→left opens the mobile menu, left→right closes it.
+  useEffect(() => {
+    const onStart = (event: TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest(".overflow-x-auto, [data-horizontal-scroll]") || event.touches.length !== 1 || (window.visualViewport?.scale ?? 1) > 1.05) {
+        touchStart.current = null;
+        return;
+      }
+      touchStart.current = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    };
+    const onEnd = (event: TouchEvent) => {
+      if (!touchStart.current || event.changedTouches.length !== 1) return;
+      const dx = event.changedTouches[0].clientX - touchStart.current.x;
+      const dy = event.changedTouches[0].clientY - touchStart.current.y;
+      touchStart.current = null;
+      if (Math.abs(dx) < 70 || Math.abs(dx) <= Math.abs(dy) * 1.25) return;
+      if (dx < 0 && !open) setOpen(true);
+      if (dx > 0 && open) setOpen(false);
+    };
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchend", onEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchend", onEnd);
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    // Floating buttons and the dock step aside while the menu is open.
+    document.body.dataset.nxMenu = "open";
+    return () => {
+      document.body.style.overflow = overflow;
+      delete document.body.dataset.nxMenu;
+    };
+  }, [open]);
+
+  const hoverOpen = (id: AcademyWing["id"]) => {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => setOpenWing(id), 120);
+  };
+  const hoverCancel = () => {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+  };
+
+  const megaWing = wings.find((wing) => wing.id === openWing) ?? null;
+  const isCurrent = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/"));
+
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 border-b border-grey-200 bg-white/95 backdrop-blur-sm",
-        pathname === "/" && "pna-home-header",
-      )}
-    >
-      <div className="container-content flex h-20 items-center justify-between gap-3">
-        <a
-          href="/"
-          className="flex min-w-0 items-center gap-3"
-          onClick={() => setOpen(false)}
-        >
-          <Image
-            src="/images/pna-logo.png"
-            alt={`${siteConfig.academyName} logo`}
-            width={44}
-            height={44}
-            className="h-11 w-11 flex-none object-contain"
-            priority
-          />
-          <div className="flex min-w-0 flex-col">
-            <span className="font-heading truncate text-lg font-semibold leading-tight text-navy-800 sm:text-xl">
-              Physio Nexus Academy
-            </span>
-            <span className="hidden text-[10px] font-semibold uppercase tracking-wide text-teal-600 lg:block">
-              Approved CPD Provider · #791052
-            </span>
-          </div>
+    <header ref={headerRef} className="nx-bar" onMouseLeave={() => { hoverCancel(); setOpenWing(null); }}>
+      <div className="container-content nx-bar-inner">
+        <a href="/" className="nx-brand" onClick={closeAll} aria-label="Physio Nexus Academy — home">
+          <Image src="/images/pna-logo.png" alt="Physio Nexus Academy logo" width={40} height={40} className="nx-brand-logo" priority />
+          <span className="min-w-0">
+            <span className="nx-brand-name">Physio Nexus Academy</span>
+            <span className="nx-brand-sub">CPD Provider · #791052</span>
+          </span>
         </a>
 
-        {/* Desktop nav — fewer primary links, clearer hierarchy */}
-        <nav
-          className="hidden items-center gap-1 xl:flex"
-          aria-label="Main navigation"
-        >
-          {mainNav.filter(
-              (item) =>
-                item.href !== "/" &&
-                item.href !== "/resources" &&
-                item.href !== "/verify" &&
-                PRIMARY_HREFS.has(item.href),
-            ).map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                aria-current={pathname === item.href ? "page" : undefined}
-                className={cn(
-                  "rounded-xl px-3 py-2 text-sm font-semibold transition-colors",
-                  item.href === "/daily-challenge" &&
-                    "inline-flex items-center gap-1.5 rounded-full bg-teal-700 px-3.5 py-2 font-bold text-white shadow-sm hover:bg-teal-800 hover:text-white",
-                  pathname === item.href
-                    ? item.href === "/daily-challenge"
-                      ? "bg-teal-900 text-white"
-                      : "bg-teal-50 text-teal-700"
-                    : item.href === "/daily-challenge"
-                      ? ""
-                      : "text-navy-700 hover:bg-teal-50 hover:text-teal-800",
-                )}
-              >
-                {item.href === "/daily-challenge" && (
-                  <Trophy className="h-4 w-4" aria-hidden="true" />
-                )}
-                {item.href === "/learn" && (
-                  <GraduationCap className="mr-1 inline h-4 w-4 text-teal-700" aria-hidden="true" />
-                )}
-                {item.label === "Learn" ? "Knowledge Hub" : item.label}
-              </a>
-            ))}
-          <details className="group relative">
-            <summary className="flex cursor-pointer list-none items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold text-navy-700 transition hover:bg-teal-50 hover:text-teal-800">
-              More{" "}
-              <ChevronDown
-                className="h-4 w-4 transition group-open:rotate-180"
-                aria-hidden="true"
-              />
-            </summary>
-            <div className="absolute right-0 top-full z-[90] mt-2 w-64 rounded-2xl border border-[#dbeae6] bg-white p-2 shadow-[0_18px_44px_-25px_rgba(15,74,80,.35)]">
-              {[
-                {
-                  label: "Patient Care",
-                  href: "/patient-services",
-                  icon: HeartPulse,
-                },
-                {
-                  label: "Clinical Arena",
-                  href: "/clinical-arena",
-                  icon: FlaskConical,
-                },
-                {
-                  label: "Clinical Registry",
-                  href: "/clinical-registry",
-                  icon: ClipboardList,
-                },
-                {
-                  label: "Stupid Intern Diaries",
-                  href: "/stupid-intern-diaries",
-                  icon: Laugh,
-                },
-                {
-                  label: "Books & Resources",
-                  href: "/resources",
-                  icon: BookOpen,
-                },
-                {
-                  label: "Manual Therapy",
-                  href: "/manual-therapy",
-                  icon: Hand,
-                },
-                {
-                  label: "Verify Certificate",
-                  href: "/verify",
-                  icon: FileBadge2,
-                },
-                { label: "About PNA", href: "/about", icon: Info },
-                { label: "Contact", href: "/contact", icon: Info },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-navy-700 hover:bg-teal-50 hover:text-teal-800"
-                  >
-                    <Icon className="h-4 w-4 text-teal-700" aria-hidden="true" />
-                    {item.label}
-                  </a>
-                );
-              })}
-            </div>
-          </details>
-        </nav>
-
-        <div className="hidden items-center gap-2 xl:flex">
-          <InstallApp />
-          <Button href="/appointment" variant="outline" size="md">
-            <Calendar className="h-4 w-4" /> Book
-          </Button>
-          <Button href="/home-visit" variant="primary" size="md">
-            <Home className="h-4 w-4" /> Home Visit
-          </Button>
-        </div>
-
-        {/* Mobile toggle */}
+        {/* Mobile menu toggle — first expandable control in the header (kept for automation), shown last. */}
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md p-2 text-navy-800 xl:hidden"
+          className="nx-menu-btn order-last"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
+          aria-controls="nx-mobile-drawer"
+          onClick={() => setOpen((value) => !value)}
         >
-          {open ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+          {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
         </button>
+
+        <nav className="nx-wings" aria-label="Main navigation">
+          {wings.map((wing) => (
+            <button
+              key={wing.id}
+              type="button"
+              className="nx-wing-btn"
+              aria-expanded={openWing === wing.id}
+              aria-controls="nx-mega"
+              data-active={activeWing === wing.id}
+              onClick={() => setOpenWing((value) => (value === wing.id ? null : wing.id))}
+              onMouseEnter={() => hoverOpen(wing.id)}
+            >
+              {wing.label}
+              <ChevronDown className="nx-chevron" aria-hidden="true" />
+            </button>
+          ))}
+        </nav>
+
+        <div className="nx-bar-actions">
+          <button type="button" className="nx-search-btn" onClick={() => setSearchOpen(true)} aria-label="Search the academy (Ctrl K)" aria-haspopup="dialog">
+            <Search className="h-4 w-4" aria-hidden="true" />
+            <span className="nx-search-label">Search academy</span>
+            <kbd>Ctrl K</kbd>
+          </button>
+          <a href="/daily-challenge" className="nx-pill-challenge">
+            <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
+          </a>
+          <a href="/learn" className="nx-pass" aria-label={pass && pass.xp > 0 ? `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak` : "Get your student pass — start PNA Teacher"}>
+            <span className="nx-pass-orb">{pass && pass.xp > 0 ? <Zap className="h-3.5 w-3.5" aria-hidden="true" /> : "PNA"}</span>
+            {pass && pass.xp > 0 ? (
+              <span className="flex items-center gap-2">
+                {pass.xp} XP
+                {pass.streak > 0 ? (
+                  <span className="inline-flex items-center gap-0.5 text-[var(--nx-amber)]">
+                    <Flame className="h-3.5 w-3.5" aria-hidden="true" />
+                    {pass.streak}
+                  </span>
+                ) : null}
+              </span>
+            ) : (
+              <span>Student pass</span>
+            )}
+          </a>
+        </div>
       </div>
 
+      {megaWing ? (
+        <div id="nx-mega" className="nx-mega" onMouseEnter={hoverCancel}>
+          <div className="container-content nx-mega-grid">
+            <div className="nx-mega-intro">
+              <p className="nx-kicker"><span className="nx-live" /> {megaWing.label} wing</p>
+              <p className="nx-title mt-3 text-2xl text-white">{megaWing.tagline}</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--nx-mute)]">{megaWing.intro}</p>
+              {megaWing.id === "academy" ? (
+                <div className="mt-4">
+                  <InstallApp />
+                </div>
+              ) : null}
+            </div>
+            <div className="nx-mega-links">
+              {megaWing.places.map((place) => (
+                <a key={place.href} href={place.href} className="nx-mega-link" aria-current={isCurrent(place.href) ? "page" : undefined} onClick={closeAll}>
+                  <span className="nx-mega-icon"><AcademyIcon name={place.icon} className="h-[18px] w-[18px]" /></span>
+                  <span className="min-w-0">
+                    <strong>{place.label}</strong>
+                    <span className="nx-desc">{place.description}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {/* Mobile drawer */}
-      <div
-        aria-hidden={!open}
-        inert={!open}
-        className={cn(
-          "absolute left-0 right-0 top-full z-[60] h-[calc(100dvh-5rem)] bg-white transition-transform duration-300 xl:hidden",
-          open
-            ? "visible translate-x-0"
-            : "invisible pointer-events-none translate-x-full",
-        )}
-      >
-        <nav
-          className="flex h-full flex-col gap-1 overflow-y-auto p-5"
-          aria-label="Mobile navigation"
-        >
-          <a
-            href="https://thecpdregister.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mb-3 rounded-xl border border-grey-200 bg-grey-50 px-4 py-3"
+      <div id="nx-mobile-drawer" className="nx-drawer" data-open={open} aria-hidden={!open} inert={!open}>
+        <nav className="container-content pb-32 pt-5" aria-label="Mobile navigation">
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setSearchOpen(true);
+            }}
+            className="flex w-full items-center gap-3 rounded-2xl border border-[var(--nx-line-strong)] bg-white/5 px-4 py-3.5 text-left text-sm text-[var(--nx-mute)]"
           >
-            <p className="text-xs font-bold uppercase tracking-wide text-teal-600">
-              Approved CPD Provider
-            </p>
-            <p className="mt-1 text-xs font-semibold text-navy-800">
-              The CPD Group · #791052
-            </p>
-          </a>
-          <div className="px-3 py-2">
+            <Search className="h-5 w-5 text-[var(--nx-aqua)]" aria-hidden="true" />
+            Search lessons, cases, services…
+          </button>
+
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--nx-line)] bg-white/5 px-4 py-3">
+            <a href="https://thecpdregister.com" target="_blank" rel="noopener noreferrer" className="min-w-0" tabIndex={open ? 0 : -1}>
+              <p className="nx-kicker">Approved CPD Provider</p>
+              <p className="mt-1.5 text-xs font-semibold text-[var(--nx-mute)]">The CPD Group · #791052</p>
+            </a>
             <InstallApp />
           </div>
 
-          <p className="px-3 pt-2 text-xs font-bold uppercase tracking-widest text-teal-600">
-            Start here
-          </p>
-          {mainNav.filter((item) => PRIMARY_HREFS.has(item.href)).map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                tabIndex={open ? 0 : -1}
-                aria-current={pathname === item.href ? "page" : undefined}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  "rounded-md px-3 py-3 text-base font-medium text-navy-800 hover:bg-navy-50",
-                  item.href === "/daily-challenge" &&
-                    "bg-teal-50 font-bold text-teal-800",
-                )}
-              >
-                {item.label === "Learn" ? "Knowledge Hub" : item.label}
-              </a>
-            ))}
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <a href="/daily-challenge" className="nx-pill-challenge !flex justify-center" onClick={closeAll}>
+              <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
+            </a>
+            <a href="/learn" className="nx-btn nx-btn-ghost !min-h-[40px] !text-[0.85rem]" onClick={closeAll}>
+              Student pass <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </div>
 
-          <p className="mt-3 px-3 pt-2 text-xs font-bold uppercase tracking-widest text-teal-600">
-            More
-          </p>
-          {mainNav.filter(
-              (item) => item.href !== "/" && !PRIMARY_HREFS.has(item.href),
-            ).map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                tabIndex={open ? 0 : -1}
-                aria-current={pathname === item.href ? "page" : undefined}
-                onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-base font-medium text-navy-800 hover:bg-navy-50"
-              >
-                {item.label}
-              </a>
-            ))}
+          {wings.map((wing) => (
+            <section key={wing.id} className="nx-drawer-wing" aria-label={`${wing.label} wing`}>
+              <p className="nx-kicker">{wing.label} · <span className="normal-case tracking-normal text-[var(--nx-dim)]">{wing.tagline}</span></p>
+              <div className="nx-drawer-grid">
+                {wing.places.map((place) => (
+                  <a key={place.href} href={place.href} className="nx-drawer-link" aria-current={isCurrent(place.href) ? "page" : undefined} tabIndex={open ? 0 : -1} onClick={closeAll}>
+                    <AcademyIcon name={place.icon} />
+                    <span>{place.label}</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
 
-          <div className="mt-4 flex flex-col gap-3 px-3">
-            <Button
-              href="/appointment"
-              variant="secondary"
-              size="lg"
-              tabIndex={open ? 0 : -1}
-              className="w-full"
-            >
-              Book Appointment
-            </Button>
-            <Button
-              href="/home-visit"
-              variant="primary"
-              size="lg"
-              tabIndex={open ? 0 : -1}
-              className="w-full"
-            >
-              Request Home Visit
-            </Button>
+          <div className="mt-6 grid gap-2 sm:grid-cols-2">
+            <a href="/appointment" className="nx-btn nx-btn-primary" tabIndex={open ? 0 : -1} onClick={closeAll}>
+              <CalendarDays className="h-4 w-4" aria-hidden="true" /> Book Appointment
+            </a>
+            <a href="/home-visit" className="nx-btn nx-btn-ghost" tabIndex={open ? 0 : -1} onClick={closeAll}>
+              <Home className="h-4 w-4" aria-hidden="true" /> Request Home Visit
+            </a>
           </div>
         </nav>
       </div>
+
+      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} atlasPublished={atlasPublished} />
     </header>
   );
 }

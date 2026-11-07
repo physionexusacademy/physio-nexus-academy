@@ -4,7 +4,7 @@ import {
   regionOfClinicalCase, clinicalRegions, ALL_CLINICAL_REGIONS
 } from "../src/lib/clinical-arena-regions.ts";
 
-const page=readFileSync("src/app/clinical-arena/page.tsx","utf8");
+const page=readFileSync("src/app/clinical-arena/ClinicalArenaClient.tsx","utf8");
 const expanded=readFileSync("src/lib/clinical-arena-expanded.ts","utf8");
 const base=page.split("const cases: Case[] = [")[1]?.split("...expandedCases")[0]||"";
 const authoredIds=[...base.matchAll(/(?:\{|,)["']?id["']?:["']([^"']+)["']/g)].map(match=>match[1]);

@@ -1,0 +1,872 @@
+/* ==========================================================================
+   PNA NEXUS — the academy design system
+   Dark "night-sky" shell (header, heroes, lobby, footer) with glass panels and
+   teal → aqua → violet light, around calm light reading surfaces.
+   CSS only, no images, no libraries. Respects prefers-reduced-motion.
+   ========================================================================== */
+
+:root {
+  --nx-space: #030a17;
+  --nx-deep: #051226;
+  --nx-night: #0a1f3d;
+  --nx-ink: #eaf6ff;
+  --nx-mute: #a9bfd6;
+  --nx-dim: #7690ad;
+  --nx-teal: #01828b;
+  --nx-aqua: #2ee6d6;
+  --nx-cyan: #3cc8ff;
+  --nx-violet: #8f7cff;
+  --nx-amber: #ffc65c;
+  --nx-rose: #ff7aa2;
+  --nx-line: rgba(150, 205, 255, 0.14);
+  --nx-line-strong: rgba(150, 225, 255, 0.28);
+  --nx-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.03));
+  --nx-grad: linear-gradient(110deg, #2ee6d6 0%, #3cc8ff 48%, #a08dff 100%);
+  --nx-grad-btn: linear-gradient(110deg, #0db3aa 0%, #1a9ee6 62%, #6f6cff 125%);
+  --nx-shadow: 0 24px 70px -32px rgba(0, 0, 0, 0.75);
+  --nx-header-h: 68px;
+}
+
+/* ---------- light reading surfaces: a soft aurora at the top of every page ---------- */
+body {
+  background: #f4f8fc;
+}
+#main-content {
+  position: relative;
+  isolation: isolate;
+}
+#main-content::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 560px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(640px 280px at 12% 0%, rgba(46, 230, 214, 0.16), transparent 70%),
+    radial-gradient(560px 260px at 88% 0%, rgba(143, 124, 255, 0.13), transparent 70%),
+    linear-gradient(180deg, rgba(220, 240, 255, 0.55), rgba(244, 248, 252, 0));
+}
+::selection {
+  background: rgba(46, 230, 214, 0.35);
+  color: #021b2b;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
+
+/* Interactive light cards get a soft "powered-on" glow */
+a.rounded-2xl.border:hover,
+a.rounded-3xl.border:hover {
+  border-color: rgba(1, 130, 139, 0.45);
+  box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.25), 0 18px 40px -22px rgba(1, 90, 110, 0.45);
+}
+
+/* ---------- night-sky surfaces ---------- */
+.nx-sky {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--nx-ink);
+  background:
+    radial-gradient(1100px 560px at 12% -12%, rgba(46, 230, 214, 0.2), transparent 62%),
+    radial-gradient(900px 520px at 92% -6%, rgba(143, 124, 255, 0.24), transparent 62%),
+    radial-gradient(900px 600px at 50% 125%, rgba(60, 200, 255, 0.14), transparent 62%),
+    linear-gradient(180deg, #051329 0%, #030a17 100%);
+}
+.nx-sky h1, .nx-sky h2, .nx-sky h3, .nx-sky h4 {
+  color: #fff;
+}
+/* perspective grid that fades out — the "campus floor" */
+.nx-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(150, 205, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(150, 205, 255, 0.075) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 25%, transparent 75%);
+}
+/* faint star field */
+.nx-stars::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1px 1px at 72% 12%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 38% 68%, rgba(173, 255, 247, 0.6), transparent 60%),
+    radial-gradient(1px 1px at 86% 54%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 22% 84%, rgba(200, 190, 255, 0.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 58% 36%, rgba(255, 255, 255, 0.45), transparent 60%);
+  background-size: 640px 420px;
+}
+
+/* ---------- type ---------- */
+.nx-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--nx-aqua);
+}
+.nx-kicker-light {
+  color: #01727a;
+}
+.nx-live {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--nx-aqua);
+  box-shadow: 0 0 0 0 rgba(46, 230, 214, 0.6);
+  animation: nx-pulse 2.2s ease-out infinite;
+}
+@keyframes nx-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(46, 230, 214, 0.55); }
+  70% { box-shadow: 0 0 0 9px rgba(46, 230, 214, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(46, 230, 214, 0); }
+}
+.nx-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+.nx-gradient-text {
+  background: var(--nx-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.nx-lead {
+  color: var(--nx-mute);
+  line-height: 1.75;
+}
+
+/* ---------- glass panels ---------- */
+.nx-glass {
+  position: relative;
+  background: var(--nx-glass);
+  border: 1px solid var(--nx-line);
+  border-radius: 22px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), var(--nx-shadow);
+}
+a.nx-glass,
+button.nx-glass {
+  transition: transform 0.25s var(--pna-ease), border-color 0.25s var(--pna-ease), box-shadow 0.25s var(--pna-ease), background 0.25s var(--pna-ease);
+}
+a.nx-glass:hover,
+button.nx-glass:hover {
+  transform: translateY(-3px);
+  border-color: var(--nx-line-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 0 1px rgba(46, 230, 214, 0.18), 0 28px 60px -30px rgba(46, 230, 214, 0.45);
+}
+.nx-icon-tile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: #04121f;
+  background: var(--nx-grad);
+  box-shadow: 0 10px 26px -12px rgba(46, 230, 214, 0.8);
+}
+.nx-icon-tile-ghost {
+  color: var(--nx-aqua);
+  background: rgba(46, 230, 214, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(46, 230, 214, 0.25);
+}
+
+/* ---------- buttons ---------- */
+.nx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.925rem;
+  white-space: nowrap;
+  transition: transform 0.18s var(--pna-ease), box-shadow 0.25s var(--pna-ease), background 0.2s var(--pna-ease), border-color 0.2s var(--pna-ease);
+}
+.nx-btn:active {
+  transform: scale(0.97);
+}
+.nx-btn-primary {
+  color: #fff;
+  background: var(--nx-grad-btn);
+  box-shadow: 0 12px 30px -12px rgba(26, 158, 230, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.nx-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px -14px rgba(46, 230, 214, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.nx-btn-ghost {
+  color: var(--nx-ink);
+  border: 1px solid var(--nx-line-strong);
+  background: rgba(255, 255, 255, 0.05);
+}
+.nx-btn-ghost:hover {
+  border-color: rgba(46, 230, 214, 0.55);
+  background: rgba(46, 230, 214, 0.08);
+}
+.nx-btn-light {
+  color: #04334a;
+  border: 1px solid rgba(1, 130, 139, 0.28);
+  background: #fff;
+}
+.nx-btn-light:hover {
+  border-color: rgba(1, 130, 139, 0.6);
+  box-shadow: 0 10px 26px -16px rgba(1, 90, 110, 0.5);
+}
+.nx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--nx-ink);
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   Header — the "Nexus bar"
+   ========================================================================== */
+.nx-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  color: var(--nx-ink);
+  background: rgba(3, 10, 23, 0.82);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  border-bottom: 1px solid var(--nx-line);
+}
+.nx-bar::after {
+  /* a slow beam of light along the bottom edge */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(46, 230, 214, 0.9), rgba(143, 124, 255, 0.9), transparent);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: nx-beam 9s linear infinite;
+  opacity: 0.8;
+}
+@keyframes nx-beam {
+  from { background-position: -60% 0; }
+  to { background-position: 160% 0; }
+}
+.nx-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: var(--nx-header-h);
+}
+.nx-brand {
+  display: flex;
+  flex-shrink: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 0.7rem;
+}
+.nx-brand-logo {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 12px;
+  background: #fff;
+  padding: 3px;
+  object-fit: contain;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 24px -4px rgba(46, 230, 214, 0.55);
+}
+.nx-brand-name {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nx-brand-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nx-aqua);
+}
+.nx-wings {
+  display: none;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: 0.75rem;
+}
+.nx-wing-btn {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 40px;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: #cfe2f5;
+}
+.nx-wing-btn:hover,
+.nx-wing-btn[aria-expanded="true"],
+.nx-wing-btn[data-active="true"] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+.nx-wing-btn[data-active="true"] {
+  box-shadow: inset 0 0 0 1px rgba(46, 230, 214, 0.35);
+}
+.nx-wing-btn svg.nx-chevron {
+  width: 15px;
+  height: 15px;
+  opacity: 0.7;
+  transition: transform 0.2s var(--pna-ease);
+}
+.nx-wing-btn[aria-expanded="true"] svg.nx-chevron {
+  transform: rotate(180deg);
+}
+.nx-bar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nx-search-btn {
+  display: inline-flex;
+  flex: none;
+  white-space: nowrap;
+  align-items: center;
+  gap: 0.6rem;
+  height: 40px;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  color: #b9cee3;
+  font-size: 0.85rem;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+.nx-search-btn:hover {
+  color: #fff;
+  border-color: rgba(46, 230, 214, 0.5);
+}
+.nx-search-btn kbd {
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #d6e8f8;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--nx-line);
+}
+.nx-search-label,
+.nx-search-btn kbd {
+  display: none;
+}
+.nx-pill-challenge {
+  display: none;
+  flex: none;
+  white-space: nowrap;
+  align-items: center;
+  gap: 0.45rem;
+  height: 40px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #04121f;
+  background: linear-gradient(110deg, #ffd36e, #ffb347);
+  box-shadow: 0 0 22px -6px rgba(255, 190, 80, 0.8);
+}
+.nx-pill-challenge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px -4px rgba(255, 190, 80, 0.95);
+}
+.nx-pass {
+  display: none;
+  flex: none;
+  white-space: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 0.8rem 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #dff6ff;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+.nx-pass:hover {
+  border-color: rgba(46, 230, 214, 0.5);
+}
+.nx-pass-orb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  color: #04121f;
+  font-size: 11px;
+  font-weight: 900;
+  background: var(--nx-grad);
+}
+.nx-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: #fff;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.05);
+}
+.nx-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: #d8eaf8;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+@media (min-width: 640px) {
+  .nx-pass { display: inline-flex; }
+}
+@media (min-width: 1180px) {
+  .nx-brand { flex-shrink: 0; }
+  .nx-wings { display: flex; }
+  .nx-menu-btn,
+  .nx-icon-btn-mobile { display: none; }
+  .nx-pill-challenge { display: inline-flex; }
+  .nx-search-btn kbd { display: inline; }
+}
+@media (min-width: 1180px) and (max-width: 1360px) {
+  .nx-brand-sub { display: none; }
+  .nx-wing-btn { padding: 0 0.65rem; }
+}
+@media (min-width: 1440px) {
+  .nx-search-label { display: inline; }
+}
+
+/* mega menu */
+.nx-mega {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 80;
+  padding: 1.1rem 0 1.4rem;
+  color: var(--nx-ink);
+  background: #040d1e;
+  border-bottom: 1px solid var(--nx-line);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8);
+  animation: nx-drop 0.22s var(--pna-ease-out) both;
+}
+@keyframes nx-drop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+.nx-mega-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.5rem;
+}
+.nx-mega-intro {
+  padding: 1.25rem;
+  border-radius: 20px;
+  border: 1px solid var(--nx-line);
+  background:
+    radial-gradient(320px 200px at 0% 0%, rgba(46, 230, 214, 0.18), transparent 70%),
+    radial-gradient(320px 200px at 100% 100%, rgba(143, 124, 255, 0.18), transparent 70%),
+    rgba(255, 255, 255, 0.03);
+}
+.nx-mega-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+.nx-mega-link {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+}
+.nx-mega-link:hover,
+.nx-mega-link:focus-visible {
+  border-color: var(--nx-line);
+  background: rgba(255, 255, 255, 0.05);
+}
+.nx-mega-link[aria-current="page"] {
+  border-color: rgba(46, 230, 214, 0.35);
+  background: rgba(46, 230, 214, 0.07);
+}
+.nx-mega-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  color: var(--nx-aqua);
+  background: rgba(46, 230, 214, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(46, 230, 214, 0.22);
+}
+.nx-mega-link strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #fff;
+}
+.nx-mega-link span.nx-desc {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--nx-dim);
+}
+
+/* mobile drawer */
+/* Anchored under the header: a blurred (backdrop-filter) header would trap a
+   position:fixed child inside its own 68px box. */
+.nx-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: calc(100dvh - var(--nx-header-h));
+  z-index: 60;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--nx-ink);
+  background:
+    radial-gradient(500px 300px at 0% 0%, rgba(46, 230, 214, 0.14), transparent 70%),
+    radial-gradient(500px 300px at 100% 30%, rgba(143, 124, 255, 0.14), transparent 70%),
+    #030a17;
+  transition: transform 0.32s var(--pna-ease-out), visibility 0.32s;
+}
+.nx-drawer[data-open="false"] {
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(100%);
+}
+.nx-drawer[data-open="true"] {
+  visibility: visible;
+  transform: none;
+}
+.nx-drawer-wing {
+  margin-top: 1.25rem;
+}
+.nx-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+.nx-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 52px;
+  padding: 0.55rem 0.7rem;
+  border-radius: 14px;
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.2;
+  color: #e7f3ff;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+.nx-drawer-link[aria-current="page"] {
+  border-color: rgba(46, 230, 214, 0.5);
+  background: rgba(46, 230, 214, 0.1);
+}
+.nx-drawer-link svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--nx-aqua);
+}
+@media (min-width: 1180px) {
+  .nx-drawer { display: none; }
+}
+body[data-nx-menu="open"] .pna-mobile-dock,
+body[data-nx-menu="open"] a[aria-label="Chat with Physio Nexus Academy on WhatsApp"],
+body[data-nx-menu="open"] button[aria-label="Open Physio Nexus AI"] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Command palette
+   ========================================================================== */
+.nx-cmdk-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh 1rem 1rem;
+  background: rgba(2, 8, 20, 0.62);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: nx-fade 0.15s ease-out both;
+}
+@keyframes nx-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.nx-cmdk {
+  width: min(680px, 100%);
+  max-height: min(70vh, 640px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--nx-ink);
+  border-radius: 24px;
+  border: 1px solid var(--nx-line-strong);
+  background:
+    radial-gradient(420px 220px at 0% 0%, rgba(46, 230, 214, 0.14), transparent 70%),
+    radial-gradient(420px 220px at 100% 0%, rgba(143, 124, 255, 0.16), transparent 70%),
+    rgba(5, 16, 35, 0.98);
+  box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.08), 0 40px 120px -30px rgba(0, 0, 0, 0.9);
+  animation: nx-drop 0.2s var(--pna-ease-out) both;
+}
+.nx-cmdk-input {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--nx-line);
+}
+.nx-cmdk-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.05rem;
+}
+.nx-cmdk-input input::placeholder {
+  color: var(--nx-dim);
+}
+.nx-cmdk-list {
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+.nx-cmdk-group {
+  padding: 0.6rem 0.75rem 0.3rem;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--nx-dim);
+}
+.nx-cmdk-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  text-align: left;
+  color: #e4f1ff;
+}
+.nx-cmdk-item[data-active="true"] {
+  background: rgba(46, 230, 214, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(46, 230, 214, 0.3);
+}
+.nx-cmdk-item small {
+  display: block;
+  color: var(--nx-dim);
+  font-size: 0.76rem;
+}
+.nx-cmdk-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  font-size: 11px;
+  color: var(--nx-dim);
+  border-top: 1px solid var(--nx-line);
+}
+
+/* ==========================================================================
+   Hub heroes (shared by section landing pages)
+   ========================================================================== */
+.nx-hero {
+  border-radius: 0 0 32px 32px;
+}
+.nx-hero-inner {
+  position: relative;
+  padding: 3.25rem 0 3rem;
+}
+@media (min-width: 768px) {
+  .nx-hero-inner { padding: 4.5rem 0 4rem; }
+}
+.nx-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--nx-dim);
+}
+.nx-crumbs a:hover {
+  color: #fff;
+}
+.nx-stat {
+  min-width: 120px;
+  padding: 0.85rem 1rem;
+  border-radius: 18px;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+.nx-stat strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: #fff;
+}
+.nx-stat span {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.75rem;
+  color: var(--nx-mute);
+}
+
+/* loaders */
+.nx-loader-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(1, 130, 139, 0.2);
+  background: #fff;
+  box-shadow: 0 20px 50px -35px rgba(1, 70, 90, 0.5);
+}
+.nx-loader-orb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 3px solid rgba(1, 130, 139, 0.2);
+  border-top-color: #0db3aa;
+  animation: nx-spin 0.9s linear infinite;
+}
+@keyframes nx-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Footer — campus directory
+   ========================================================================== */
+.nx-footer {
+  margin-top: 0;
+  border-radius: 32px 32px 0 0;
+}
+.nx-footer a {
+  color: #c4d6e8;
+}
+.nx-footer a:hover {
+  color: #fff;
+}
+.nx-footer-title {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nx-aqua);
+}
+
+/* ==========================================================================
+   Mobile dock — glass capsule
+   ========================================================================== */
+.pna-mobile-dock {
+  background: rgba(4, 13, 30, 0.9) !important;
+  border: 1px solid var(--nx-line-strong) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(46, 230, 214, 0.06) !important;
+}
+.pna-mobile-dock-item {
+  color: #a9bfd6 !important;
+}
+.pna-mobile-dock-item.is-active {
+  color: #fff !important;
+  background: rgba(46, 230, 214, 0.12) !important;
+  border-color: rgba(46, 230, 214, 0.4) !important;
+}
+.pna-mobile-dock-item.is-active::before {
+  background: var(--nx-grad) !important;
+}
+.pna-mobile-dock-item.is-active .pna-mobile-dock-icon {
+  color: var(--nx-aqua);
+}
+
+/* ==========================================================================
+   Motion safety
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .nx-live,
+  .nx-bar::after,
+  .nx-loader-orb,
+  .nx-orbit,
+  .nx-float {
+    animation: none !important;
+  }
+  .nx-mega,
+  .nx-cmdk,
+  .nx-cmdk-backdrop {
+    animation: none !important;
+  }
+}

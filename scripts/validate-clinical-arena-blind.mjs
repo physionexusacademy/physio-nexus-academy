@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const read = (path) => readFileSync(path, "utf8");
-const page = read("src/app/clinical-arena/page.tsx");
+const page = read("src/app/clinical-arena/ClinicalArenaClient.tsx");
 const expanded = read("src/lib/clinical-arena-expanded.ts");
 
 for (const text of [

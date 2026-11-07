@@ -12,10 +12,10 @@ export function MeetPnaTeacher() {
 
   return (
     <section className="container-content py-6 sm:py-8" aria-labelledby="meet-pna-teacher-title" data-pna-home-teacher="v1">
-      <div className="overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-cyan-50/60 shadow-sm">
+      <div className="overflow-hidden rounded-[2rem] border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-indigo-50/60 shadow-[0_30px_70px_-50px_rgba(10,60,90,0.6)]">
         <div className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-teal-700 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
+            <p className="inline-flex items-center gap-2 rounded-full bg-[#0a1f3d] px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#2ee6d6]">
               <GraduationCap className="h-3.5 w-3.5" aria-hidden="true" /> New · Free
             </p>
             <h2 id="meet-pna-teacher-title" className="mt-3 text-2xl font-bold leading-tight tracking-tight text-navy-800 sm:text-4xl">
@@ -38,10 +38,10 @@ export function MeetPnaTeacher() {
               </li>
             </ul>
             <div className="mt-5 flex flex-wrap gap-3">
-              <a href="/learn" className="inline-flex items-center gap-2 rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800">
+              <a href="/learn" className="nx-btn nx-btn-primary">
                 Start learning with PNA Teacher <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
-              <a href="/learn#pna-teacher-paths" className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-5 py-3 text-sm font-bold text-teal-800 transition hover:bg-teal-50">
+              <a href="/learn#pna-teacher-paths" className="nx-btn nx-btn-light">
                 See learning paths
               </a>
             </div>

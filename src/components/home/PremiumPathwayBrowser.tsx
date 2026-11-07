@@ -35,7 +35,6 @@ const featureVisuals: Record<string, { file: string; width: number }> = {
   "/treatment-plans": { file: "treatment-plans", width: 384 },
   "/resources": { file: "books-resources", width: 384 },
   "/daily-challenge": { file: "daily-challenge", width: 384 },
-  "/clinical-quiz": { file: "weekly-quiz", width: 384 },
   "/case-lab": { file: "clinical-case-lab", width: 384 },
   "/clinical-arena": { file: "clinical-arena", width: 384 },
   "/workshops": { file: "workshops-cpd", width: 384 },
@@ -80,7 +79,6 @@ const groups: Group[] = [
       { title: "Treatment Plans", description: "Condition-based assessment and exercise progression.", href: "/treatment-plans", icon: "clipboard" },
       { title: "Books & Resources", description: "Practical physiotherapy books, PDFs and study materials.", href: "/resources", icon: "book" },
       { title: "Daily Clinical Challenge", description: "Practice with five clinical questions every day.", href: "/daily-challenge", icon: "trophy" },
-      { title: "Weekly Clinical Quiz", description: "Timed clinical questions and weekly rankings.", href: "/clinical-quiz", icon: "trophy" },
       { title: "Clinical Case Lab", description: "Reason through realistic patient scenarios.", href: "/case-lab", icon: "clipboard" },
     ],
   },
@@ -96,7 +94,6 @@ const groups: Group[] = [
       { title: "Clinical Challenge Arena", description: "Take a history, consider differentials and plan care.", href: "/clinical-arena", icon: "brain" },
       { title: "Clinical Case Lab", description: "Work through symptoms and clinical reasoning step by step.", href: "/case-lab", icon: "clipboard" },
       { title: "Daily Clinical Challenge", description: "Five questions daily, points and public leaderboards.", href: "/daily-challenge", icon: "trophy" },
-      { title: "Weekly Clinical Quiz", description: "Timed clinical questions and weekly rankings.", href: "/clinical-quiz", icon: "trophy" },
     ],
   },
   {
@@ -162,9 +159,9 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
       <div className="container-content">
         <div className="pna-sig-header">
           <div>
-            <span className="pna-sig-overline">FOUR PATHWAYS · ONE ACADEMY</span>
-            <h2 id="pna-sig-heading">Where do you want to begin?</h2>
-            <p>Choose your path. We’ll show you exactly what matters most for you.</p>
+            <span className="pna-sig-overline"><span className="nx-live" /> Four entrances · one academy</span>
+            <h2 id="pna-sig-heading">Choose your entrance.</h2>
+            <p>Pick who you are today — we’ll open the doors that matter most for you.</p>
           </div>
           <span className="pna-sig-header-aside"><ShieldCheck size={17} aria-hidden="true"/> Learn · Practice · Grow · Care</span>
         </div>

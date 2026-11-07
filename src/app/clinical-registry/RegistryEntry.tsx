@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { ClinicalRegistrySecureClient } from "./ClinicalRegistrySecureClient";
+import { ClinicalRegistrySecureClient } from "./SecureClientLoader";
 
 export function RegistryEntry({ publicLibrary }: { publicLibrary: ReactNode }) {
   const [authCallback, setAuthCallback] = useState(false);

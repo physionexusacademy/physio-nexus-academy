@@ -32,7 +32,6 @@ import {
   getManualTherapy3DAssetPublicId,
   cloudinary3DEnabled,
 } from "@/lib/manual-therapy-3d-assets";
-import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { regionalClinicalStories } from "@/lib/manual-therapy-regional-stories";
 import { RegionalAttentionReset } from "@/components/manual-therapy/AttentionReset";
 import { RegionalLearningLab } from "@/components/manual-therapy/RegionalLearningLab";
@@ -259,7 +258,6 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
   const subTechniques = clinicalStory
     ? []
     : getRegionalSubTechniques(item.techniqueSlug, item.region);
-  const techniqueVisuals = getManualTherapyVisuals(item.slug);
 
   return (
     <div className="container-content section-padding pb-20">
@@ -307,15 +305,6 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
             <ShieldCheck className="h-4 w-4" />
             Clinical re-test built in
           </span>
-          {techniqueVisuals.length ? (
-            <a
-              href={"/visual-lab/manual-therapy/" + item.slug}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-bold text-violet-800"
-            >
-              See optional technique visuals
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          ) : null}
         </div>
       </section>
 

@@ -16,6 +16,14 @@ const nextConfig = {
         destination: '/manual-therapy/:slug',
         permanent: true,
       },
+      // Retired sections (2026-11): keep old links and bookmarks working.
+      { source: '/courses', destination: '/learn', permanent: true },
+      { source: '/clinical-quiz', destination: '/daily-challenge', permanent: true },
+      { source: '/gallery', destination: '/workshops', permanent: true },
+      { source: '/updates', destination: '/workshops', permanent: true },
+      { source: '/visual-lab', destination: '/clinical-visual-atlas', permanent: true },
+      { source: '/visual-lab/manual-therapy', destination: '/manual-therapy', permanent: true },
+      { source: '/visual-lab/manual-therapy/:slug', destination: '/manual-therapy/regions/:slug', permanent: true },
       {
         source: '/homepage',
         destination: '/',
@@ -92,6 +100,7 @@ const nextConfig = {
 module.exports = nextConfig;
 
 // OpenNext's dev-binding bridge is for local development, not CI/production builds.
-if (process.env.NODE_ENV === 'development') {
+// Set PNA_SKIP_CF_DEV=1 to run `next dev` without Cloudflare bindings (e.g. offline UI work).
+if (process.env.NODE_ENV === 'development' && process.env.PNA_SKIP_CF_DEV !== '1') {
   import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
 }

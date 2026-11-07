@@ -92,9 +92,9 @@ export default async function WorkshopsPage() {
 
       {!workshops?.length && (
         <p className="mt-10 rounded-xl border border-grey-200 bg-grey-50 p-8 text-center text-navy-400">
-          No workshops are published yet — check back soon, or follow our{" "}
-          <a href="/updates" className="text-teal-600 hover:underline">
-            updates page
+          No workshops are published yet — check back soon, or follow us on{" "}
+          <a href="https://www.instagram.com/physionexusacademy/" target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">
+            Instagram
           </a>{" "}
           for announcements.
         </p>

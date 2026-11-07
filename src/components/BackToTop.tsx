@@ -1,21 +1,16 @@
 "use client";
 
+import { ArrowUp } from "lucide-react";
+
 export function BackToTop() {
   return (
-    <div className="border-t border-grey-200 bg-white px-4 py-5 text-center">
-      <button
-        type="button"
-        onClick={() =>
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          })
-        }
-        className="inline-flex items-center gap-2 rounded-lg bg-navy-800 px-5 py-3 text-sm font-semibold text-white transition hover:bg-navy-700"
-        aria-label="Back to top"
-      >
-        ↑ Back to Top
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="inline-flex items-center gap-1.5 rounded-full border border-[var(--nx-line)] px-3 py-1.5 font-semibold text-[#c4d6e8] hover:border-[var(--nx-aqua)] hover:text-white"
+      aria-label="Back to top"
+    >
+      <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" /> Back to top
+    </button>
   );
 }

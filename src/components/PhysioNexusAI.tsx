@@ -108,6 +108,18 @@ export function PhysioNexusAI() {
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
+  // The command palette (Ctrl/⌘+K) can hand a question straight to the AI.
+  const sendQueryRef = useRef<(value: string) => Promise<void>>(async () => {});
+  useEffect(() => {
+    const onAsk = (event: Event) => {
+      const question = (event as CustomEvent<unknown>).detail;
+      setOpen(true);
+      if (typeof question === "string" && question.trim()) void sendQueryRef.current(question);
+    };
+    window.addEventListener("pna-ai:ask", onAsk);
+    return () => window.removeEventListener("pna-ai:ask", onAsk);
+  }, []);
+
   async function sendQuery(value: string) {
     const clean = value.trim();
     if (!clean || loading) return;
@@ -167,6 +179,7 @@ export function PhysioNexusAI() {
       setLoading(false);
     }
   }
+  sendQueryRef.current = sendQuery;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

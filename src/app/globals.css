@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-heading: "Cambria", Georgia, "Times New Roman", serif;
-  --font-body: "Calibri", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-display), "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
   --pna-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --pna-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --pna-duration: 0.28s;

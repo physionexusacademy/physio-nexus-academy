@@ -5,8 +5,10 @@ on:
     branches: [cloudflare-deploy]
     paths:
       - "src/app/page.tsx"
-      - "src/app/premium-vision.css"
-      - "src/app/pna-signature-v2.css"
+      - "src/app/home-lobby.css"
+      - "src/app/nexus.css"
+      - "src/components/Header.tsx"
+      - "src/components/nexus/**"
       - "public/images/pna-founder-hero.avif"
       - "scripts/validate-premium-homepage.mjs"
       - "scripts/validate-daily-challenge.mjs"
@@ -38,7 +40,7 @@ jobs:
           npx tsc --noEmit > pna-typescript-check.log 2>&1
           status=$?
           set -e
-          if grep -E '^src/app/page\.tsx\(|^src/components/home/(PremiumHomeHero|PnaPathwayArtwork|PremiumPathwayBrowser)\.tsx\(' pna-typescript-check.log; then
+          if grep -E '^src/app/page\.tsx\(|^src/components/home/(LobbyHero|LobbySearch|StudentPass|MeetPnaTeacher|PnaPathwayArtwork|PremiumPathwayBrowser)\.tsx\(' pna-typescript-check.log; then
             echo "Errors detected in redesigned homepage."
             exit 1
           fi

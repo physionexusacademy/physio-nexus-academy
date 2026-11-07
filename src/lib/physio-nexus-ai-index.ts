@@ -181,15 +181,6 @@ const browseResources: PnaLearningResource[] = [
     keywords: "daily quiz daily challenge MCQ test questions practice exam score leaderboard",
   },
   {
-    id: "quiz:weekly-clinical",
-    title: "Weekly Clinical Quiz",
-    href: "/clinical-quiz",
-    category: "Quiz and clinical practice",
-    summary: "Open the weekly clinical quiz with timed questions and top-scorer information.",
-    level: "Clinical practice",
-    keywords: "weekly quiz clinical quiz test MCQ questions timer score winners",
-  },
-  {
     id: "service:patient-services",
     title: "Patient Services",
     href: "/patient-services",
@@ -242,15 +233,6 @@ const browseResources: PnaLearningResource[] = [
     summary: "Explore faculty and contributors listed by Physio Nexus Academy.",
     level: "Information",
     keywords: "faculty trainers teachers instructors team educators",
-  },
-  {
-    id: "browse:updates",
-    title: "PNA Updates",
-    href: "/updates",
-    category: "News and updates",
-    summary: "Browse updates and announcements from Physio Nexus Academy.",
-    level: "Information",
-    keywords: "updates announcements news latest events",
   },
   {
     id: "browse:reviews",
@@ -316,15 +298,6 @@ const browseResources: PnaLearningResource[] = [
     keywords: "founder Dr Sajjad Raza founder profile about leadership director owner biography",
   },
   {
-    id: "browse:gallery",
-    title: "PNA Gallery",
-    href: "/gallery",
-    category: "Photos and events",
-    summary: "Browse photographs and visual highlights from PNA activities and events.",
-    level: "Information",
-    keywords: "gallery photos pictures images workshop event moments album",
-  },
-  {
     id: "browse:certificate-verification",
     title: "Certificate Verification",
     href: "/verify",
@@ -332,15 +305,6 @@ const browseResources: PnaLearningResource[] = [
     summary: "Open the certificate verification page to check a PNA certificate using the website's verification process.",
     level: "Verification",
     keywords: "certificate verify verification validate certificate number ID check credential authenticity workshop certificate",
-  },
-  {
-    id: "browse:visual-lab",
-    title: "Clinical Visual Lab",
-    href: "/visual-lab",
-    category: "Visual learning",
-    summary: "Explore visual learning resources and clinical technique illustrations.",
-    level: "Visual learning",
-    keywords: "visual lab clinical visuals images illustrations diagram technique demonstration manual therapy",
   },
   {
     id: "browse:clinical-arena",
@@ -404,15 +368,6 @@ const browseResources: PnaLearningResource[] = [
     summary: "Read the website disclaimer, including the limits of online educational information.",
     level: "Policy",
     keywords: "disclaimer medical clinical advice diagnosis limitation warning terms",
-  },
-  {
-    id: "browse:courses",
-    title: "Courses",
-    href: "/courses",
-    category: "Structured learning",
-    summary: "Browse the course section on Physio Nexus Academy.",
-    level: "All levels",
-    keywords: "course curriculum learning program",
   },
 ];
 

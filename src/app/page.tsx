@@ -1,49 +1,18 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import {
-  ArrowRight,
-  Activity,
-  BookOpen,
-  BrainCircuit,
-  CalendarDays,
-  FileBadge2,
-  FlaskConical,
-  HeartPulse,
-  Home,
-  Hand,
-  ClipboardList,
-  LibraryBig,
-  MapPin,
-  Quote,
-  ShieldCheck,
-  Stethoscope,
-  Users,
-  Trophy,
-  Flame,
-  Sparkles,
-  Timer,
-  Medal,
-  Eye,
-  Laugh,
-} from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/lib/site-config";
+import { ArrowRight, BookMarked, BookOpen, CalendarDays, Flame, Laugh, LibraryBig, MapPin, Medal, Quote, Sparkles, Timer, Trophy } from "lucide-react";
 import { createPublicClient } from "@/lib/supabase/public";
 import { knowledgeArticles } from "@/lib/knowledge-content";
+import { mskConditionIndex } from "@/lib/msk-injury-index";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard";
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
-import "./daily-challenge/daily-challenge.css";
-import "./home-premium.css";
-import "./pna-hero.css";
-import { PremiumHomeHero } from "@/components/home/PremiumHomeHero";
+import { LobbyHero } from "@/components/home/LobbyHero";
+import { StudentPass } from "@/components/home/StudentPass";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { MeetPnaTeacher } from "@/components/home/MeetPnaTeacher";
-import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
-import { ReviewQueueCard } from "@/components/learning/ReviewQueueCard";
 import { getLatestEpisode, stupidInternEpisodes } from "@/lib/stupid-intern-diaries";
-import "./premium-vision.css";
-import "./pna-signature-v2.css";
+import "./daily-challenge/daily-challenge.css";
+import "./home-lobby.css";
 
 export const metadata: Metadata = {
   title: {
@@ -110,8 +79,7 @@ export default async function HomePage() {
     month: "2-digit",
     day: "2-digit",
   }).formatToParts(new Date());
-  const datePart = (type: string) =>
-    dateParts.find((part) => part.type === type)?.value ?? "";
+  const datePart = (type: string) => dateParts.find((part) => part.type === type)?.value ?? "";
   const todayInPakistan = `${datePart("year")}-${datePart("month")}-${datePart("day")}`;
 
   const [{ data: workshopRows }, { data: testimonialRows }] = await Promise.all([
@@ -132,192 +100,154 @@ export default async function HomePage() {
 
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
-  const latestArticles = knowledgeArticles
-    .filter((article) => article.level === "Advanced" || article.updatedAt)
+  const latestArticles = [...knowledgeArticles]
+    .sort((a, b) => (b.updatedAt ?? b.publishedAt).localeCompare(a.updatedAt ?? a.publishedAt))
     .slice(0, 3);
+  const latestEpisode = getLatestEpisode();
 
   return (
     <>
-      <PremiumHomeHero />
+      <LobbyHero atlasPublished={atlasPublished} conditionCount={mskConditionIndex.length} />
 
-      <MeetPnaTeacher />
-
-      <section className="container-content py-4 sm:py-5" aria-label="Featured tools">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <a
-            href="/clinical-registry"
-            className="group flex items-center gap-3 rounded-2xl border border-teal-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-teal-700 text-white">
-              <ClipboardList className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-base font-bold text-navy-800">Clinical Registry</h2>
-              <p className="text-xs leading-5 text-slate-600">Verified documentation & case review workspace</p>
-            </div>
-            <ArrowRight className="h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
-          </a>
-          <a
-            href="/health-calculators/bmi"
-            className="group flex items-center gap-3 rounded-2xl border border-teal-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-teal-700 text-white">
-              <Activity className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-base font-bold text-navy-800">BMI Calculator</h2>
-              <p className="text-xs leading-5 text-slate-600">Quick BMI check with age-aware notes</p>
-            </div>
-            <ArrowRight className="h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
-          </a>
-        </div>
-      </section>
+      <StudentPass />
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
-      {(() => {
-        const latestEpisode = getLatestEpisode();
-        return (
-          <section className="container-content py-5 sm:py-6" aria-labelledby="stupid-intern-feature-title">
-            <div className="relative overflow-hidden rounded-2xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-slate-50 p-4 shadow-sm sm:p-5">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-start gap-4">
-                  <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white shadow-sm">
-                    <Laugh className="h-7 w-7" aria-hidden="true" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
-                        Latest daily episode
-                      </p>
-                      <span className="rounded-full bg-teal-700 px-3 py-1 text-[11px] font-bold text-white">
-                        EP {String(latestEpisode.id).padStart(2, "0")}
-                      </span>
-                    </div>
-                    <h2 id="stupid-intern-feature-title" className="mt-2 text-2xl font-bold tracking-tight text-navy-800 sm:text-3xl">
-                      Stupid Intern Diaries
-                    </h2>
-                    <h3 className="mt-1 text-lg font-bold text-teal-800 sm:text-xl">
-                      {latestEpisode.title}
-                    </h3>
-                    <p className="mt-1 text-xs font-semibold text-slate-500">{latestEpisode.field}</p>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-                      Funny clinic moments, questionable intern decisions, and the clinical lessons you should actually remember.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-3 sm:flex-col sm:items-stretch">
-                  <a href={`/stupid-intern-diaries#ep-${latestEpisode.id}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800">
-                    Read EP {String(latestEpisode.id).padStart(2, "0")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                  <a href="/stupid-intern-diaries" className="inline-flex items-center justify-center gap-2 rounded-full border border-teal-200 bg-white px-5 py-3 text-sm font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-50">
-                    All {stupidInternEpisodes.length} episodes <BookOpen className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
+      <section data-pna-home-flagship="daily-clinical-challenge-v2" className="nx-sky nx-grid lobby-arena" aria-labelledby="pna-daily-flagship-title">
+        <div className="container-content lobby-arena-grid">
+          <div>
+            <p className="nx-kicker">
+              <Flame className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Daily Clinical Challenge <span className="nx-live" />
+            </p>
+            <h2 id="pna-daily-flagship-title" className="nx-title mt-4 text-4xl text-white sm:text-5xl">
+              Five questions.<br /> <span className="nx-gradient-text">One focused challenge.</span>
+            </h2>
+            <p className="nx-lead mt-4 max-w-xl">
+              Five timed questions every day. Score points, climb the leaderboard and learn from every explanation — open to every learner.
+            </p>
+            <div className="lobby-arena-stats" aria-label="Daily challenge format">
+              <div className="nx-stat"><Sparkles className="mb-2 h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /><strong>05</strong><span>questions daily</span></div>
+              <div className="nx-stat"><Timer className="mb-2 h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /><strong>30s</strong><span>per question</span></div>
+              <div className="nx-stat"><Trophy className="mb-2 h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /><strong>100</strong><span>maximum points</span></div>
             </div>
-          </section>
-        );
-      })()}
-
-      <section
-        data-pna-home-flagship="daily-clinical-challenge-v2"
-        className="dc-flagship-shell"
-        aria-labelledby="pna-daily-flagship-title"
-      >
-        <div className="container-content dc-flagship-container">
-          <div className="dc-flagship-stage">
-            <div className="dc-flagship-copy">
-              <div className="dc-flagship-eyebrow">
-                <Flame className="h-4 w-4" aria-hidden="true" /> DAILY CLINICAL
-                CHALLENGE <span className="dc-flagship-eyebrow-dot" />
-              </div>
-              <h2 id="pna-daily-flagship-title" className="dc-flagship-heading">
-                Five questions.
-                <br />
-                One focused <span>challenge.</span>
-              </h2>
-              <p className="dc-flagship-description">
-                Five timed questions daily. Score points, climb the leaderboard, and learn from the explanations.
-              </p>
-              <div className="dc-flagship-stats" aria-label="Daily challenge format">
-                <div className="dc-flagship-stat">
-                  <span className="dc-flagship-stat-icon">
-                    <Sparkles className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <strong>05</strong>
-                    <span>questions daily</span>
-                  </div>
-                </div>
-                <div className="dc-flagship-stat">
-                  <span className="dc-flagship-stat-icon">
-                    <Timer className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <strong>30s</strong>
-                    <span>per question</span>
-                  </div>
-                </div>
-                <div className="dc-flagship-stat">
-                  <span className="dc-flagship-stat-icon">
-                    <Trophy className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <strong>100</strong>
-                    <span>maximum points</span>
-                  </div>
-                </div>
-              </div>
-              <div className="dc-flagship-actions">
-                <a href="/daily-challenge#play-daily" className="dc-flagship-play">
-                  <span className="dc-flagship-play-icon">
-                    <ArrowRight className="h-5 w-5" />
-                  </span>
-                  Take Today's Challenge
-                  <ArrowRight className="h-4 w-4 dc-flagship-end-arrow" aria-hidden="true" />
-                </a>
-                <a href="/daily-challenge#hall-of-fame" className="dc-flagship-hall">
-                  <Medal className="h-4 w-4" /> Hall of Fame <ArrowRight className="h-4 w-4" />
-                </a>
-              </div>
-              <DailyChallengeCountdown />
-            </div>
-            <div className="dc-flagship-ranking">
-              <div className="dc-flagship-ranking-heading">
-                <span className="dc-flagship-ranking-live">
-                  <span /> TODAY'S LEADERBOARD
-                </span>
-                <span className="dc-flagship-ranking-subtitle">Open to every learner</span>
-              </div>
-              <DailyLeaderboard compact title="Today's Top 5" />
-              <a href="/daily-challenge#full-leaderboard" className="dc-flagship-ranking-more">
-                Explore all scores, monthly leaders and yearly champions <ArrowRight className="h-4 w-4" />
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <a href="/daily-challenge#play-daily" className="nx-btn nx-btn-primary">
+                Take today&apos;s challenge <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a href="/daily-challenge#hall-of-fame" className="nx-btn nx-btn-ghost">
+                <Medal className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Hall of Fame
               </a>
             </div>
+            <div className="lobby-countdown">
+              <DailyChallengeCountdown />
+            </div>
+          </div>
+          <div className="lobby-scoreboard">
+            <div className="flex items-center justify-between gap-3 px-1 pb-3">
+              <span className="nx-kicker"><span className="nx-live" /> Today&apos;s leaderboard</span>
+              <span className="text-xs font-semibold text-[var(--nx-dim)]">Resets at midnight PKT</span>
+            </div>
+            <DailyLeaderboard compact title="Today's Top 5" />
+            <a href="/daily-challenge#full-leaderboard" className="mt-3 inline-flex items-center gap-2 px-1 text-sm font-semibold text-[var(--nx-aqua)] hover:text-white">
+              All scores, monthly leaders and yearly champions <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
           </div>
         </div>
       </section>
 
-      {testimonials && testimonials.length > 0 && (
-        <section className="container-content py-10 sm:py-12" aria-labelledby="home-testimonials-title">
-          <div className="mb-6 text-center sm:mb-8">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-700">Trusted by learners</p>
-            <h2 id="home-testimonials-title" className="mt-2 font-serif text-2xl font-bold text-navy-800 sm:text-3xl">
-              What physiotherapists & students say
-            </h2>
+      <MeetPnaTeacher />
+
+      <section className="container-content lobby-news" aria-labelledby="campus-news-title">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="nx-kicker nx-kicker-light"><span className="nx-live" /> Campus news</p>
+            <h2 id="campus-news-title" className="nx-title mt-3 text-3xl text-navy-800 sm:text-4xl">Fresh on campus today</h2>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <a href="/knowledge-hub" className="nx-btn nx-btn-light !min-h-[40px] !text-[0.85rem]">
+            Explore the Knowledge Hub <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+
+        <div className="lobby-news-grid">
+          <a href={`/stupid-intern-diaries#ep-${latestEpisode.id}`} className="lobby-news-card lobby-news-episode rounded-3xl border">
+            <span className="lobby-news-tag"><Laugh className="h-4 w-4" aria-hidden="true" /> Stupid Intern Diaries · EP {String(latestEpisode.id).padStart(2, "0")}</span>
+            <strong className="lobby-news-title">{latestEpisode.title}</strong>
+            <span className="lobby-news-text">{latestEpisode.field} — funny clinic moments, questionable intern decisions and the lesson you should actually remember.</span>
+            <span className="lobby-news-more">Read the episode · {stupidInternEpisodes.length} episodes <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+          </a>
+
+          <div className="lobby-news-card rounded-3xl border">
+            <span className="lobby-news-tag"><CalendarDays className="h-4 w-4" aria-hidden="true" /> Workshops &amp; CPD</span>
+            {featuredWorkshops ? (
+              <ul className="mt-3 space-y-3">
+                {featuredWorkshops.map((workshop) => (
+                  <li key={workshop.id}>
+                    <a href={`/workshops/${workshop.slug}`} className="group block rounded-2xl border border-slate-200 bg-white p-3 hover:border-teal-300">
+                      <strong className="block text-sm font-bold text-navy-800 group-hover:text-teal-800">{workshop.title}</strong>
+                      <span className="mt-1 flex flex-wrap items-center gap-x-3 text-xs text-slate-500">
+                        {workshop.start_date ? <span>{new Date(workshop.start_date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span> : null}
+                        {workshop.city ? <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" aria-hidden="true" />{workshop.city}</span> : null}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <>
+                <strong className="lobby-news-title">Hands-on training that transfers to the clinic</strong>
+                <span className="lobby-news-text">Practical CPD workshops in Karachi and Hyderabad with verifiable certificates.</span>
+              </>
+            )}
+            <a href="/workshops" className="lobby-news-more">See all workshops <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+          </div>
+
+          <div className="lobby-news-card rounded-3xl border">
+            <span className="lobby-news-tag"><LibraryBig className="h-4 w-4" aria-hidden="true" /> New clinical guides</span>
+            <ul className="mt-3 space-y-2.5">
+              {latestArticles.map((article) => (
+                <li key={article.slug}>
+                  <a href={`/knowledge-hub/${article.slug}`} className="group flex items-start gap-3 rounded-2xl p-2 hover:bg-teal-50/70">
+                    <BookOpen className="mt-0.5 h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
+                    <span className="min-w-0">
+                      <strong className="block text-sm font-bold leading-snug text-navy-800 group-hover:text-teal-800">{article.title}</strong>
+                      <span className="text-xs text-slate-500">{article.specialty} · {article.readTime}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-content pb-12" data-pna-home-feature="clinical-registry-v1" aria-labelledby="home-registry-title">
+        <div className="nx-sky nx-grid lobby-registry">
+          <div className="min-w-0">
+            <p className="nx-kicker"><BookMarked className="h-4 w-4" aria-hidden="true" /> PNA Clinical Registry</p>
+            <h2 id="home-registry-title" className="nx-title mt-3 text-2xl text-white sm:text-3xl">Real cases, reviewed and de-identified.</h2>
+            <p className="nx-lead mt-2 max-w-2xl text-sm sm:text-base">
+              Learn from clinicians&apos; documented assessments, decisions and outcomes — and, if you are a verified physiotherapist, submit your own cases through a secure, consent-first workspace.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a href="/clinical-registry" className="nx-btn nx-btn-primary">
+              Explore Registry <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+            <a href="/clinical-registry/therapist" className="nx-btn nx-btn-ghost">Therapist portal</a>
+          </div>
+        </div>
+      </section>
+
+      {testimonials ? (
+        <section className="container-content pb-12" aria-labelledby="home-testimonials-title">
+          <p className="nx-kicker nx-kicker-light">Trusted by learners</p>
+          <h2 id="home-testimonials-title" className="nx-title mt-3 text-3xl text-navy-800">What physiotherapists &amp; students say</h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {testimonials.map((t) => (
-              <figure
-                key={t.id}
-                className="flex h-full flex-col rounded-2xl border border-teal-100 bg-gradient-to-br from-white to-teal-50/40 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-              >
+              <figure key={t.id} className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                 <Quote className="h-5 w-5 text-teal-600" aria-hidden="true" />
-                <blockquote className="mt-3 flex-1 text-sm leading-7 text-slate-700">
-                  “{t.content}”
-                </blockquote>
-                <figcaption className="mt-4 border-t border-teal-100 pt-3">
+                <blockquote className="mt-3 flex-1 text-sm leading-7 text-slate-700">“{t.content}”</blockquote>
+                <figcaption className="mt-4 border-t border-slate-100 pt-3">
                   <p className="text-sm font-bold text-navy-800">{t.name}</p>
                   {t.role ? <p className="text-xs font-medium text-slate-500">{t.role}</p> : null}
                 </figcaption>
@@ -325,53 +255,7 @@ export default async function HomePage() {
             ))}
           </div>
         </section>
-      )}
-
-      <div className="container-content py-4 sm:py-5">
-        <ReviewQueueCard />
-      </div>
-
-      <UnifiedProgressCard />
-
-      <div className="pna-home-lower">
-        <section className="border-y border-grey-200 bg-white py-6">
-          <div className="container-content flex flex-col items-center justify-between gap-5 sm:flex-row">
-            <div className="flex items-center gap-4">
-              <Image
-                src="/cpd-approved-provider.png"
-                alt="The CPD Group Approved Provider"
-                width={220}
-                height={80}
-                className="h-auto w-36 object-contain sm:w-44"
-              />
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-teal-600">
-                  Approved CPD Provider
-                </p>
-                <p className="mt-1 font-semibold text-navy-800">
-                  Officially approved · The CPD Group · #791052
-                </p>
-                <p className="mt-1 text-sm text-navy-500">
-                  Certificates you can verify. Learning you can trust.
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-3 sm:justify-end">
-              <a
-                href="https://thecpdregister.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-semibold text-teal-600 hover:text-teal-700"
-              >
-                Verify Provider →
-              </a>
-              <a href="/verify" className="text-sm font-semibold text-teal-600 hover:text-teal-700">
-                Verify PNA Certificate →
-              </a>
-            </div>
-          </div>
-        </section>
-      </div>
+      ) : null}
     </>
   );
 }

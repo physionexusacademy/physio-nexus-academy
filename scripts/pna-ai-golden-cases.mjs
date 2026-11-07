@@ -72,7 +72,7 @@ export const goldenCases = [
   { q: "verify my certificate", top: ["/verify"] },
   { q: "workshop fees", any: ["/workshops", "/contact"] },
   { q: "privacy policy", top: ["/legal/privacy"] },
-  { q: "weekly quiz", any: ["/clinical-quiz"] },
+  { q: "weekly quiz", any: ["/daily-challenge"] },
   // --- Follow-up memory
   { q: "how to treat it", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/treatment-plans/adhesive-capsulitis"], none: ["/knowledge-hub/intention-to-treat-per-protocol-analysis-2026"] },
   { q: "special tests?", context: { lastTopic: "Anterior Cruciate Ligament (ACL) Injury" }, anyTop2: ["/msk-special-tests", "/msk-injuries/acl-injury"] },
