@@ -6,5 +6,15 @@
 import type { SkillDefinition } from "./types.ts";
 import { mmtSkill } from "./content/mmt.ts";
 import { goniometrySkill } from "./content/goniometry.ts";
+import { dermatomesSkill, myotomesSkill, reflexesSkill } from "./content/neuro-levels.ts";
+import { peripheralNervesSkill, toneCoordinationSkill } from "./content/neuro-nerves.ts";
 
-export const skillDefinitions: SkillDefinition[] = [mmtSkill, goniometrySkill];
+export const skillDefinitions: SkillDefinition[] = [
+  mmtSkill,
+  goniometrySkill,
+  dermatomesSkill,
+  myotomesSkill,
+  reflexesSkill,
+  peripheralNervesSkill,
+  toneCoordinationSkill,
+];

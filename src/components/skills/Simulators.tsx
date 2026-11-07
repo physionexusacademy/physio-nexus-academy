@@ -330,10 +330,16 @@ export function GradeSim({ data, mode, level }: { data: SkillData; mode: "mmt" |
     if (mode === "reflex") {
       const item = pick(reflexItems);
       const grade = pick(reflexGrades);
-      return { grade: grade.grade, text: `${item.title} (${field(item, "Root")}): you tap ${field(item, "Tap")}. ${grade.text}`, explain: grade.explain };
+      const tap = field(item, "Tap").replace(/\.+$/, "");
+      return {
+        grade: grade.grade,
+        setup: `${item.title} · root ${field(item, "Root")} · tap: ${tap.charAt(0).toLowerCase()}${tap.slice(1)}`,
+        text: grade.text,
+        explain: grade.explain,
+      };
     }
     const grade = pick(masGrades);
-    return { grade: grade.grade, text: `${masSpeed} — testing the ${pick(masMuscles)}. ${grade.text}`, explain: grade.explain };
+    return { grade: grade.grade, setup: `${masSpeed} — testing the ${pick(masMuscles)}.`, text: grade.text, explain: grade.explain };
   }, [mode, mmtItems, reflexItems, fine]);
   const [round, setRound] = useState<GradeCase>(() => build());
   const [answer, setAnswer] = useState<string | null>(null);
@@ -401,6 +407,8 @@ export function GradeSim({ data, mode, level }: { data: SkillData; mode: "mmt" |
 /* Body map: find and name the key sensory points                       */
 /* ------------------------------------------------------------------ */
 
+const pointInfo = (item: SkillAtlasItem) => item.fields.find((candidate) => /sensory|zone|landmark|where/i.test(candidate.label))?.value ?? "";
+
 export function BodyMapSim({ data }: { data: SkillData }) {
   const points = useMemo(() => data.atlas.filter((item) => item.point), [data]);
   const [mode, setMode] = useState<"find" | "name">("find");
@@ -435,7 +443,7 @@ export function BodyMapSim({ data }: { data: SkillData }) {
       : [{ id: "q", view: point.view, x: point.x, y: point.y, tone: named === null ? "active" : named === target.title ? "correct" : "wrong", label: named !== null ? target.title : undefined }];
 
   return (
-    <SimShell title="Key sensory point trainer" hint="Find mode: tap where you would test. Name mode: say which level the highlighted point tests." onNext={next}>
+    <SimShell title="Body map trainer" hint="Find mode: tap where you would test. Name mode: identify the highlighted point." onNext={next}>
       <div className="mb-3 inline-flex rounded-full border border-slate-200 p-1">
         {(["find", "name"] as const).map((value) => (
           <button
@@ -452,7 +460,7 @@ export function BodyMapSim({ data }: { data: SkillData }) {
           </button>
         ))}
       </div>
-      <div className="grid items-start gap-4 sm:grid-cols-[minmax(0,240px)_minmax(0,1fr)]">
+      <div className="grid items-start gap-4 sm:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
         <BodyChart
           view={point.view}
           markers={markers}
@@ -470,18 +478,18 @@ export function BodyMapSim({ data }: { data: SkillData }) {
           {mode === "find" ? (
             <>
               <p className="text-[15px] leading-7 text-slate-700">
-                Tap the key sensory point for <strong className="text-navy-800">{target.title}</strong> on the {point.view} view.
+                Tap the point for <strong className="text-navy-800">{target.title}</strong> on the {point.view} view.
               </p>
               {tap ? (
                 <Feedback ok={hit}>
-                  {hit ? "Correct spot. " : "Not quite — the green point shows the key sensory point. "}
-                  {field(target, "Key sensory point")}
+                  {hit ? "Correct spot. " : "Not quite — the green point shows where to test. "}
+                  {pointInfo(target)}
                 </Feedback>
               ) : null}
             </>
           ) : (
             <>
-              <p className="text-[15px] leading-7 text-slate-700">Which level does the highlighted key sensory point test?</p>
+              <p className="text-[15px] leading-7 text-slate-700">Which one is the highlighted point?</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {options.map((option) => (
                   <button
@@ -501,7 +509,7 @@ export function BodyMapSim({ data }: { data: SkillData }) {
                   </button>
                 ))}
               </div>
-              {named !== null ? <Feedback ok={named === target.title}>{target.title}: {field(target, "Key sensory point")}</Feedback> : null}
+              {named !== null ? <Feedback ok={named === target.title}>{target.title}: {pointInfo(target)}</Feedback> : null}
             </>
           )}
         </div>

@@ -1,7 +1,7 @@
 [
  {
   "slug": "manual-muscle-testing",
-  "version": 4277097782,
+  "version": 2073617568,
   "title": "Manual Muscle Testing (MMT)",
   "short": "MMT",
   "phase": "measure",
@@ -78,7 +78,7 @@
  },
  {
   "slug": "goniometry",
-  "version": 3008086185,
+  "version": 3581871963,
   "title": "Goniometry",
   "short": "Goniometry",
   "phase": "measure",
@@ -144,6 +144,232 @@
    "Norkin & White — Measurement of Joint Motion: A Guide to Goniometry (5th ed.)",
    "American Academy of Orthopaedic Surgeons (AAOS) — Joint Motion: Method of Measuring and Recording",
    "Morrey et al. — functional elbow range"
+  ]
+ },
+ {
+  "slug": "dermatomes",
+  "version": 583851800,
+  "title": "Dermatomes & Sensory Testing",
+  "short": "Dermatomes",
+  "phase": "neuro",
+  "icon": "dermatomes",
+  "summary": "Find every key sensory point from C2 to S4–S5, test light touch and pinprick properly, and read sensory patterns — root, nerve, polyneuropathy or cord.",
+  "ur": "Har dermatome ka key sensory point dhoondna, light touch aur pinprick sahi tareeqe se test karna, aur sensory pattern se lesion samajhna.",
+  "atlasLabel": "Key sensory point atlas",
+  "counts": {
+   "concepts": 9,
+   "atlas": 22,
+   "questions": 73,
+   "cards": 44,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "C2",
+   "C3",
+   "C4",
+   "C5",
+   "C6",
+   "C7",
+   "C8",
+   "T1",
+   "T2",
+   "T4",
+   "T6",
+   "T10",
+   "T12",
+   "L1",
+   "L2",
+   "L3",
+   "L4",
+   "L5",
+   "S1",
+   "S2",
+   "S3",
+   "S4–S5"
+  ],
+  "goals": {
+   "beginner": "Point to every key sensory point from C2 to S4–S5.",
+   "intermediate": "Test light touch and pinprick correctly and score them.",
+   "advanced": "Tell root, nerve, polyneuropathy and cord patterns apart.",
+   "expert": "Find the sensory level, recognise red flags and pass OSCE stations."
+  },
+  "sources": [
+   "ASIA — International Standards for Neurological Classification of Spinal Cord Injury (ISNCSCI, 2019 revision)",
+   "Magee — Orthopedic Physical Assessment (7th ed.)"
+  ]
+ },
+ {
+  "slug": "myotomes",
+  "version": 4196182050,
+  "title": "Myotomes & Key Muscles",
+  "short": "Myotomes",
+  "phase": "neuro",
+  "icon": "myotomes",
+  "summary": "Screen every root from C1 to S2 with one movement each, know the ISNCSCI key muscles, and combine myotome, dermatome and reflex to name the level.",
+  "ur": "Har root (C1 se S2) ki ek movement test karna, ISNCSCI key muscles yaad rakhna aur dermatome + reflex ke saath level pehchaanna.",
+  "atlasLabel": "Myotome atlas",
+  "counts": {
+   "concepts": 9,
+   "atlas": 14,
+   "questions": 78,
+   "cards": 56,
+   "stations": 2
+  },
+  "atlasTitles": [
+   "C1–C2",
+   "C3",
+   "C4",
+   "C5",
+   "C6",
+   "C7",
+   "C8",
+   "T1",
+   "L2",
+   "L3",
+   "L4",
+   "L5",
+   "S1",
+   "S2"
+  ],
+  "goals": {
+   "beginner": "Name the movement for every myotome from C1 to S2.",
+   "intermediate": "Test each myotome correctly and know the ISNCSCI key muscles.",
+   "advanced": "Combine myotome, dermatome and reflex to localise a root.",
+   "expert": "Separate root, nerve and cord lesions; classify spinal cord injury."
+  },
+  "sources": [
+   "ASIA — ISNCSCI (2019 revision)",
+   "Magee — Orthopedic Physical Assessment (7th ed.)"
+  ]
+ },
+ {
+  "slug": "reflexes",
+  "version": 1109951040,
+  "title": "Reflexes & UMN Signs",
+  "short": "Reflexes",
+  "phase": "neuro",
+  "icon": "reflexes",
+  "summary": "Elicit and grade every deep tendon reflex, use reinforcement, and recognise upper-motor-neuron signs — Babinski, Hoffmann, clonus and jaw jerk.",
+  "ur": "Har tendon reflex sahi nikaalna aur 0 se 4+ grade karna, aur UMN signs (Babinski, Hoffmann, clonus) pehchaanna.",
+  "atlasLabel": "Reflex atlas",
+  "counts": {
+   "concepts": 9,
+   "atlas": 11,
+   "questions": 73,
+   "cards": 50,
+   "stations": 2
+  },
+  "atlasTitles": [
+   "Biceps reflex",
+   "Brachioradialis reflex",
+   "Triceps reflex",
+   "Patellar (knee) reflex",
+   "Medial hamstring reflex",
+   "Achilles (ankle) reflex",
+   "Plantar response (Babinski sign)",
+   "Hoffmann sign",
+   "Ankle clonus",
+   "Jaw jerk",
+   "Superficial abdominal reflexes"
+  ],
+  "goals": {
+   "beginner": "Know each reflex, its root and the normal response.",
+   "intermediate": "Elicit reflexes reliably, with reinforcement, and grade 0–4+.",
+   "advanced": "Interpret reduced and brisk reflexes and UMN signs.",
+   "expert": "Localise lesions — root, cord, brainstem — from reflex patterns."
+  },
+  "sources": [
+   "NINDS Muscle Stretch Reflex Scale (0–4+)",
+   "Magee — Orthopedic Physical Assessment (7th ed.)",
+   "Lindsay, Bone & Fuller — Neurology and Neurosurgery Illustrated"
+  ]
+ },
+ {
+  "slug": "peripheral-nerves",
+  "version": 2157352748,
+  "title": "Peripheral Nerve Examination",
+  "short": "Peripheral nerves",
+  "phase": "neuro",
+  "icon": "nerves",
+  "summary": "Examine 15 key nerves — roots, muscles, sensory areas, quick tests and classic lesion signs — plus neurodynamic tests (ULNTs, SLR, slump, prone knee bend).",
+  "ur": "Har bari nerve ki roots, muscles, sensory area aur lesion sign — aur neurodynamic tests (ULNT, SLR, slump).",
+  "atlasLabel": "Nerve atlas",
+  "counts": {
+   "concepts": 8,
+   "atlas": 15,
+   "questions": 113,
+   "cards": 97,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "Axillary nerve",
+   "Musculocutaneous nerve",
+   "Radial nerve",
+   "Median nerve",
+   "Ulnar nerve",
+   "Long thoracic nerve",
+   "Spinal accessory nerve",
+   "Suprascapular nerve",
+   "Femoral nerve",
+   "Obturator nerve",
+   "Lateral femoral cutaneous nerve",
+   "Sciatic nerve",
+   "Common fibular (peroneal) nerve",
+   "Tibial nerve",
+   "Superior gluteal nerve"
+  ],
+  "goals": {
+   "beginner": "Know each nerve's roots and key muscles.",
+   "intermediate": "Test each nerve's motor and sensory function quickly.",
+   "advanced": "Recognise classic lesions and where they happen.",
+   "expert": "Tell nerve, root and plexus apart; perform neurodynamic tests."
+  },
+  "sources": [
+   "Aids to the Examination of the Peripheral Nervous System (Guarantors of Brain / MRC)",
+   "Butler — The Sensitive Nervous System",
+   "Magee — Orthopedic Physical Assessment (7th ed.)"
+  ]
+ },
+ {
+  "slug": "tone-coordination",
+  "version": 3745353950,
+  "title": "Tone & Coordination",
+  "short": "Tone & coordination",
+  "phase": "neuro",
+  "icon": "tone",
+  "summary": "Grade spasticity with the Modified Ashworth and Tardieu scales, tell spasticity from rigidity, and examine coordination and balance — finger-nose, heel-shin, Romberg and more.",
+  "ur": "Spasticity ko MAS aur Tardieu se grade karna, rigidity se farq karna, aur coordination tests sahi tareeqe se karna.",
+  "atlasLabel": "Tone & coordination atlas",
+  "counts": {
+   "concepts": 7,
+   "atlas": 11,
+   "questions": 65,
+   "cards": 44,
+   "stations": 2
+  },
+  "atlasTitles": [
+   "Modified Ashworth Scale",
+   "Modified Tardieu Scale",
+   "Clonus",
+   "Lead-pipe rigidity",
+   "Cogwheel rigidity",
+   "Finger-to-nose test",
+   "Rapid alternating movements",
+   "Heel-to-shin test",
+   "Romberg test",
+   "Tandem gait",
+   "Pronator drift"
+  ],
+  "goals": {
+   "beginner": "Know what tone is and what each coordination test checks.",
+   "intermediate": "Perform MAS, Tardieu and coordination tests correctly.",
+   "advanced": "Separate spasticity, rigidity, cerebellar and sensory ataxia.",
+   "expert": "Use findings to guide treatment and pass neuro OSCE stations."
+  },
+  "sources": [
+   "Bohannon & Smith (1987) — Modified Ashworth Scale",
+   "Boyd & Graham (1999) — Modified Tardieu Scale",
+   "O'Sullivan, Schmitz & Fulk — Physical Rehabilitation (7th ed.)"
   ]
  }
 ]

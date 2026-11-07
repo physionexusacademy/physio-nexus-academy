@@ -32,6 +32,31 @@ function seededShuffle<T>(items: T[], seed: string): T[] {
 
 const fill = (template: string, title: string) => template.replace(/\{title\}/g, title);
 
+/** Sort key for "ordinal" options (spinal levels, grades, numbers, AIS letters); null otherwise. */
+function ordinalKey(option: string): number | null {
+  const text = option.trim();
+  const level = /^([CTLS])(\d+)$/.exec(text);
+  if (level) return "CTLS".indexOf(level[1]) * 100 + Number(level[2]);
+  if (/^[A-E]$/.test(text)) return text.charCodeAt(0);
+  const grade = /^(\d+(?:\.\d+)?)([+−-]?)$/.exec(text);
+  if (grade) return Number(grade[1]) + (grade[2] === "+" ? 0.3 : grade[2] ? -0.3 : 0);
+  return null;
+}
+
+/**
+ * Authors write the correct option first; the build re-orders options so the
+ * answer position is unpredictable. Ordinal options are sorted (C5 before C6,
+ * grade 0 before 5) because a shuffled scale is harder to read, not harder to know.
+ */
+function arrangeOptions(question: SkillQuestion): SkillQuestion {
+  const correct = question.options[question.answer];
+  const keys = question.options.map(ordinalKey);
+  const options = keys.every((key) => key !== null)
+    ? [...question.options].sort((left, right) => (ordinalKey(left) ?? 0) - (ordinalKey(right) ?? 0))
+    : seededShuffle(question.options, question.id + ":arrange");
+  return { ...question, options, answer: options.indexOf(correct) };
+}
+
 /**
  * Builds questions and flashcards from every atlas field marked `quiz`.
  * Wrong options come from the same field of other items (same group first),
@@ -70,7 +95,7 @@ export function compileSkill(skill: SkillDefinition): SkillData {
     }
   }
 
-  const questions = [...skill.questions, ...generatedQuestions];
+  const questions = [...skill.questions.map(arrangeOptions), ...generatedQuestions];
   const cards = [...(skill.cards ?? []), ...generatedCards];
   const data: SkillData = { ...skill, questions, cards, version: 0 };
   data.version = hash(JSON.stringify(data));

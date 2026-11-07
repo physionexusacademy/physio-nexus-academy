@@ -601,8 +601,11 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
 function buildTest(data: SkillData, level: SkillLevelId): SkillQuestion[] {
   const current = shuffled(data.questions.filter((question) => question.level === level));
   const earlier = shuffled(data.questions.filter((question) => levelRank(question.level) < levelRank(level)));
-  const test = [...current.slice(0, 9), ...earlier.slice(0, 3)];
-  if (test.length < 12) test.push(...current.slice(9, 9 + (12 - test.length)));
+  // 9 from this level + 3 revision questions; top up from either pool so a test is always 12 long.
+  const fromCurrent = current.slice(0, 9);
+  const fromEarlier = earlier.slice(0, 12 - fromCurrent.length);
+  const test = [...fromCurrent, ...fromEarlier];
+  if (test.length < 12) test.push(...current.slice(fromCurrent.length, fromCurrent.length + 12 - test.length));
   return shuffled(test).slice(0, 12);
 }
 
