@@ -17,7 +17,9 @@
     "validate:clinical-registry": "node scripts/validate-clinical-registry-integration.mjs",
     "validate:teacher": "node --experimental-strip-types scripts/validate-pna-teacher.ts",
     "build:teacher-data": "node --experimental-strip-types scripts/build-teacher-data.ts",
-    "validate:ai": "node scripts/validate-pna-ai.mjs"
+    "validate:ai": "node scripts/validate-pna-ai.mjs",
+    "build:skills-data": "node --experimental-strip-types scripts/build-skills-data.ts",
+    "validate:skills": "node --experimental-strip-types scripts/validate-skills.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
