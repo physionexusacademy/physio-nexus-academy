@@ -81,7 +81,7 @@ function Select<T extends string>({ value, onChange, options, label }: { value: 
               {options.filter((o) => o.group === g).map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
             </optgroup>
           ) : (
-            options.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)
+            options.filter((o) => !o.group).map((o) => <option key={o.id} value={o.id}>{o.label}</option>)
           ),
         )}
       </select>
