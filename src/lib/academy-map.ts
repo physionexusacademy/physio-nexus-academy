@@ -57,7 +57,7 @@ export const academyWings: AcademyWing[] = [
       { label: "Clinical Arena", href: "/clinical-arena", description: "History → diagnosis → treatment", icon: "arena", keywords: "cases game reasoning differential" },
       { label: "Case Lab", href: "/case-lab", description: "Real reports, reasoning step by step", icon: "cases", keywords: "case studies reports" },
       { label: "Flashcard Review", href: "/learn/review", description: "Spaced repetition for every lesson", icon: "cards", keywords: "flashcards revision srs viva" },
-      { label: "Case Library", href: "/clinical-registry", description: "Reviewed, de-identified case reports", icon: "registry", keywords: "registry clinical case library submit case" },
+      { label: "Clinical Registry", href: "/clinical-registry", description: "Reviewed, de-identified case library", icon: "registry", keywords: "registry clinical case library submit case therapist portal" },
       { label: "Stupid Intern Diaries", href: "/stupid-intern-diaries", description: "Funny mistakes, serious lessons", icon: "laugh", keywords: "intern episodes funny stories" },
     ],
   },
