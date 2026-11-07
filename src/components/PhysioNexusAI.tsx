@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Bot, ExternalLink, LoaderCircle, Send, Sparkles, X } from "lucide-react";
+import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
+import { ArrowRight, Bot, ExternalLink, LoaderCircle, Phone, Send, ShieldAlert, Sparkles, X } from "lucide-react";
 
 type Resource = {
   id: string;
@@ -10,20 +10,82 @@ type Resource = {
   category: string;
   summary: string;
   level?: string;
+  kind?: string;
+  why?: string;
 };
+
+type Suggestion = { label: string; query?: string; href?: string };
+type Safety = { level: "emergency" | "urgent" | "crisis"; kind: string; title: string; text: string };
 
 type Message = {
   id: number;
   role: "assistant" | "user";
   text: string;
   resources?: Resource[];
+  suggestions?: Suggestion[];
+  safety?: Safety | null;
+  topic?: string;
 };
 
 const starterTopics = [
-  "Learn myofascial release",
-  "Find a neck pain treatment plan",
-  "Practise clinical reasoning",
+  "Explain the convex–concave rule",
+  "Kamar dard ka ilaj kaise hota hai?",
+  "Help me prepare for my viva",
+  "Book a home visit",
 ];
+
+const kindTone: Record<string, string> = {
+  lesson: "bg-teal-100 text-teal-800",
+  path: "bg-teal-100 text-teal-800",
+  condition: "bg-sky-100 text-sky-800",
+  plan: "bg-emerald-100 text-emerald-800",
+  technique: "bg-violet-100 text-violet-800",
+  regional: "bg-violet-100 text-violet-800",
+  tests: "bg-amber-100 text-amber-800",
+  practice: "bg-amber-100 text-amber-800",
+  service: "bg-rose-100 text-rose-800",
+};
+
+/** Renders **bold**, line breaks and "• " bullets from the navigator. No HTML is injected. */
+function AnswerText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split("\n").map((line, lineIndex) => {
+        const bullet = line.startsWith("• ");
+        const content = bullet ? line.slice(2) : line;
+        const parts = content.split("**").map((part, partIndex) =>
+          partIndex % 2 === 1 ? (
+            <strong key={partIndex} className="font-semibold text-[#041E3F]">
+              {part}
+            </strong>
+          ) : (
+            <Fragment key={partIndex}>{part}</Fragment>
+          ),
+        );
+        return (
+          <p key={lineIndex} className={bullet ? "mt-1 flex gap-1.5 pl-1" : lineIndex ? "mt-1.5" : undefined}>
+            {bullet ? <span className="text-teal-700" aria-hidden="true">•</span> : null}
+            <span>{parts}</span>
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
+function readProfile(): { stage?: string; goal?: string } | undefined {
+  try {
+    const raw = window.localStorage.getItem("pna-teacher-profile-v1");
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw) as { stage?: unknown; goal?: unknown };
+    return {
+      stage: typeof parsed.stage === "string" ? parsed.stage : undefined,
+      goal: typeof parsed.goal === "string" ? parsed.goal : undefined,
+    };
+  } catch {
+    return undefined;
+  }
+}
 
 export function PhysioNexusAI() {
   const [open, setOpen] = useState(false);
@@ -36,23 +98,22 @@ export function PhysioNexusAI() {
     {
       id: 1,
       role: "assistant",
-      text: "Hi! I’m Physio Nexus AI. Tell me what you want to learn, and I’ll guide you to the right PNA resources.",
+      text: "Hi! I'm **Physio Nexus AI**. Ask me anything about physiotherapy — in English or Roman Urdu. I'll give you a short answer from PNA's own reviewed content, then take you to the best lesson, guide or service.",
     },
   ]);
 
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
-
-    container.scrollTo({
-      top: container.scrollHeight,
-      behavior: "smooth",
-    });
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
   async function sendQuery(value: string) {
     const clean = value.trim();
     if (!clean || loading) return;
+
+    const lastAssistant = [...messages].reverse().find((message) => message.role === "assistant" && message.topic);
+    const lastUser = [...messages].reverse().find((message) => message.role === "user");
 
     setQuery("");
     setLoading(true);
@@ -65,22 +126,32 @@ export function PhysioNexusAI() {
       const response = await fetch("/api/physio-nexus-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: clean }),
+        body: JSON.stringify({
+          query: clean,
+          context: { lastTopic: lastAssistant?.topic, lastQuery: lastUser?.text },
+          profile: readProfile(),
+        }),
       });
-      const result = await response.json() as {
+      const result = (await response.json()) as {
         message?: string;
         resources?: Resource[];
+        suggestions?: Suggestion[];
+        safety?: Safety | null;
+        topic?: string;
         error?: string;
       };
 
-      if (!response.ok) throw new Error(result.error || "I couldn’t complete that search. Please try again.");
+      if (!response.ok) throw new Error(result.error || "I couldn't complete that search. Please try again.");
       setMessages((current) => [
         ...current,
         {
           id: assistantMessageId,
           role: "assistant",
-          text: result.message || "Here are some useful PNA resources to explore.",
+          text: result.message ?? "",
           resources: Array.isArray(result.resources) ? result.resources : [],
+          suggestions: Array.isArray(result.suggestions) ? result.suggestions : [],
+          safety: result.safety ?? null,
+          topic: result.topic,
         },
       ]);
     } catch (error) {
@@ -102,13 +173,16 @@ export function PhysioNexusAI() {
     void sendQuery(query);
   }
 
+  const lastMessageId = messages[messages.length - 1]?.id;
+
   return (
     <>
       {open && (
         <section
           aria-label="Physio Nexus AI learning navigator"
-          className="fixed bottom-40 right-3 z-[90] flex w-[min(24rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:bottom-40 sm:right-5 lg:bottom-40"
-          style={{ height: "min(70dvh, 42rem)" }}
+          className="fixed bottom-40 right-3 z-[90] flex w-[min(25rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:bottom-40 sm:right-5 lg:bottom-40"
+          style={{ height: "min(72dvh, 44rem)" }}
+          data-pna-ai="v2"
         >
           <header className="flex items-center justify-between gap-3 bg-gradient-to-r from-[#041E3F] to-[#01828B] px-4 py-3 text-white">
             <div className="flex min-w-0 items-center gap-3">
@@ -117,7 +191,7 @@ export function PhysioNexusAI() {
               </span>
               <div className="min-w-0">
                 <p className="font-semibold leading-tight">Physio Nexus AI</p>
-                <p className="mt-1 text-xs text-white/80">Your PNA learning navigator</p>
+                <p className="mt-1 text-xs text-white/80">Your PNA guide · English & Roman Urdu</p>
               </div>
             </div>
             <button
@@ -133,15 +207,39 @@ export function PhysioNexusAI() {
           <div ref={messagesContainerRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain bg-slate-50 p-3" aria-live="polite" aria-relevant="additions text">
             {messages.map((message) => (
               <div key={message.id} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
-                <div className={message.role === "user"
-                  ? "max-w-[88%] rounded-2xl rounded-br-md bg-[#041E3F] px-3 py-2.5 text-sm leading-relaxed text-white"
-                  : "max-w-[95%] rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3 py-2.5 text-sm leading-relaxed text-slate-700 shadow-sm"}>
-                  <p>{message.text}</p>
+                <div
+                  className={
+                    message.role === "user"
+                      ? "max-w-[88%] rounded-2xl rounded-br-md bg-[#041E3F] px-3 py-2.5 text-sm leading-relaxed text-white"
+                      : "w-full max-w-[96%] rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3 py-2.5 text-sm leading-relaxed text-slate-700 shadow-sm"
+                  }
+                >
+                  {message.safety ? (
+                    <div className="mb-2 rounded-xl border border-red-200 bg-red-50 p-3 text-red-900" role="alert">
+                      <p className="flex items-center gap-1.5 text-sm font-bold">
+                        <ShieldAlert className="h-4 w-4 shrink-0" aria-hidden="true" /> {message.safety.title}
+                      </p>
+                      <div className="mt-1.5 text-[13px] leading-relaxed">
+                        <AnswerText text={message.safety.text} />
+                      </div>
+                      <div className="mt-2.5 flex flex-wrap gap-2">
+                        <a href="tel:1122" className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-700">
+                          <Phone className="h-3.5 w-3.5" aria-hidden="true" /> Call 1122
+                        </a>
+                        <a href="tel:115" className="inline-flex items-center gap-1.5 rounded-full border border-red-300 bg-white px-3 py-1.5 text-xs font-bold text-red-800 hover:bg-red-100">
+                          <Phone className="h-3.5 w-3.5" aria-hidden="true" /> Call Edhi 115
+                        </a>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {message.role === "user" ? <p>{message.text}</p> : message.text ? <AnswerText text={message.text} /> : null}
+
                   {message.resources && message.resources.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {message.resources.map((resource, index) => (
                         <a
-                          key={resource.id}
+                          key={resource.id + index}
                           href={resource.href}
                           className="group block rounded-xl border border-slate-200 bg-white p-3 text-slate-800 transition hover:border-teal-400 hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
                         >
@@ -151,13 +249,48 @@ export function PhysioNexusAI() {
                             </span>
                             <span className="min-w-0 flex-1">
                               <span className="block text-sm font-semibold leading-snug">{resource.title}</span>
-                              <span className="mt-1 block text-xs text-teal-800">{resource.category}{resource.level ? ` · ${resource.level}` : ""}</span>
-                              <span className="mt-1.5 block text-xs leading-relaxed text-slate-600">{resource.summary}</span>
+                              {resource.why ? (
+                                <span className={"mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold " + (kindTone[resource.kind ?? ""] ?? "bg-slate-100 text-slate-700")}>
+                                  {resource.why}
+                                </span>
+                              ) : (
+                                <span className="mt-1 block text-xs text-teal-800">
+                                  {resource.category}
+                                  {resource.level ? ` · ${resource.level}` : ""}
+                                </span>
+                              )}
+                              <span className="mt-1.5 line-clamp-2 block text-xs leading-relaxed text-slate-600">{resource.summary}</span>
                             </span>
                             <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-slate-400 group-hover:text-teal-700" aria-hidden="true" />
                           </span>
                         </a>
                       ))}
+                    </div>
+                  )}
+
+                  {message.id === lastMessageId && message.suggestions && message.suggestions.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5" aria-label="Suggested next questions">
+                      {message.suggestions.map((suggestion) =>
+                        suggestion.href ? (
+                          <a
+                            key={suggestion.label}
+                            href={suggestion.href}
+                            className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-800 transition hover:bg-teal-100"
+                          >
+                            {suggestion.label} <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                          </a>
+                        ) : (
+                          <button
+                            key={suggestion.label}
+                            type="button"
+                            onClick={() => void sendQuery(suggestion.query ?? suggestion.label)}
+                            disabled={loading}
+                            className="rounded-full border border-teal-200 bg-white px-2.5 py-1 text-left text-xs font-semibold text-teal-800 transition hover:bg-teal-50 disabled:opacity-50"
+                          >
+                            {suggestion.label}
+                          </button>
+                        ),
+                      )}
                     </div>
                   )}
                 </div>
@@ -166,7 +299,7 @@ export function PhysioNexusAI() {
             {loading && (
               <div className="flex items-center gap-2 px-2 py-1 text-xs text-slate-500">
                 <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Finding the right PNA resources…
+                Thinking…
               </div>
             )}
           </div>
@@ -188,27 +321,29 @@ export function PhysioNexusAI() {
           )}
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-slate-200 bg-white p-3">
-            <label htmlFor="pna-ai-query" className="sr-only">What would you like to learn?</label>
+            <label htmlFor="pna-ai-query" className="sr-only">
+              Ask Physio Nexus AI
+            </label>
             <input
               id="pna-ai-query"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               maxLength={240}
-              placeholder="What would you like to learn?"
+              placeholder="Ask anything — English or Roman Urdu"
               autoComplete="off"
               className="min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/15"
             />
             <button
               type="submit"
               disabled={loading || query.trim().length < 2}
-              aria-label="Find learning resources"
+              aria-label="Ask Physio Nexus AI"
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#01828B] text-white transition hover:bg-[#006c73] disabled:cursor-not-allowed disabled:opacity-45"
             >
               {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
           </form>
           <p className="bg-white px-3 pb-3 text-[10px] leading-relaxed text-slate-500">
-            Use learning topics only; do not enter patient-identifiable details. This resource finder does not replace clinical assessment. Messages are not saved to your PNA account.
+            Answers come from PNA&apos;s educational content and do not replace a clinical assessment. Don&apos;t enter names or other identifying details. Messages are not saved.
           </p>
         </section>
       )}

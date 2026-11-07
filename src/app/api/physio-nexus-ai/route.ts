@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { searchPnaResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
+import { pnaLearningResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
+import { think, type BrainContext, type BrainProfile } from "@/lib/pna-ai/brain";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -124,67 +125,59 @@ export async function POST(request: Request) {
     return json({ error: "Please enter a learning topic." }, 400);
   }
 
-  const query = typeof payload === "object" && payload !== null && "query" in payload
-    ? (payload as { query?: unknown }).query
-    : undefined;
+  const body = (typeof payload === "object" && payload !== null ? payload : {}) as {
+    query?: unknown;
+    context?: { lastTopic?: unknown; lastQuery?: unknown };
+    profile?: { stage?: unknown; goal?: unknown };
+  };
+  const query = body.query;
 
   if (typeof query !== "string" || query.trim().length < 2 || query.trim().length > 240) {
     return json({ error: "Please enter a topic using 2–240 characters." }, 400);
   }
 
+  const cleanText = (value: unknown, max: number) =>
+    typeof value === "string" ? value.replace(/[\u0000-\u001f]/g, " ").trim().slice(0, max) : undefined;
+  const context: BrainContext = {
+    lastTopic: cleanText(body.context?.lastTopic, 120),
+    lastQuery: cleanText(body.context?.lastQuery, 240),
+  };
+  const stages = new Set(["year1-2", "year3-4", "final-intern", "graduate"]);
+  const goals = new Set(["understand", "exams", "clinic", "manual"]);
+  const profile: BrainProfile = {
+    stage: typeof body.profile?.stage === "string" && stages.has(body.profile.stage) ? body.profile.stage : undefined,
+    goal: typeof body.profile?.goal === "string" && goals.has(body.profile.goal) ? body.profile.goal : undefined,
+  };
+
   const normalizedQuery = query.trim().toLowerCase().replace(/\s+/g, " ");
-  const cached = responseCache.get(normalizedQuery);
+  const cacheKey = [normalizedQuery, context.lastTopic ?? "", profile.stage ?? "", profile.goal ?? ""].join("|");
+  const cached = responseCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return json(cached.body);
 
-  const ranked = searchPnaResources(query, 8);
-  if (ranked.length === 0 || ranked[0].score < 2) {
-    const body = {
-      message: "I couldn't find a close match in the current PNA learning library. Try a more specific topic, or browse these sections.",
-      resources: [
-        { id: "service:appointment", title: "Request an Appointment or Online Consultation", href: "/appointment", category: "Patient services", summary: "Open the appointment request form. The PNA team confirms availability." },
-        { id: "service:home-visit", title: "Request a Physiotherapy Home Visit", href: "/home-visit", category: "Patient services", summary: "Open the home-visit request form for Karachi or Hyderabad, subject to confirmation." },
-        { id: "quiz:daily", title: "Daily Clinical Challenge", href: "/daily-challenge", category: "Quiz and clinical practice", summary: "Open the daily five-question challenge and leaderboard." },
-        { id: "quiz:weekly", title: "Weekly Clinical Quiz", href: "/clinical-quiz", category: "Quiz and clinical practice", summary: "Open the weekly timed clinical quiz." },
-        { id: "browse:knowledge", title: "Knowledge Hub", href: "/knowledge-hub", category: "Learning articles", summary: "Browse structured physiotherapy learning articles." },
-        { id: "browse:manual", title: "Manual Therapy", href: "/manual-therapy", category: "Techniques", summary: "Explore manual therapy approaches and techniques." },
-        { id: "browse:msk", title: "MSK Injuries", href: "/msk-injuries", category: "Conditions", summary: "Explore musculoskeletal conditions and clinical guidance." },
-        { id: "browse:cases", title: "Clinical Case Lab", href: "/case-lab", category: "Published case reports", summary: "Read published clinical case reports with original-paper links, reported outcomes and clinical lessons." },
-        { id: "browse:resources", title: "Books & Learning Resources", href: "/resources", category: "Books and PDFs", summary: "Browse the learning resources currently available from PNA." },
-        { id: "browse:workshops", title: "Workshops & Practical Training", href: "/workshops", category: "Hands-on learning", summary: "Explore workshops and practical training opportunities." },
-        { id: "browse:contact", title: "Contact PNA", href: "/contact", category: "Contact and support", summary: "Find contact options for questions and support." },
-        { id: "tool:symptom-checker", title: "Symptom Checker", href: "/symptom-checker", category: "Website tool", summary: "Open the website symptom tool; it does not provide a diagnosis." },
-      ],
-      source: "local-search",
-    };
-    rememberResponse(normalizedQuery, body);
-    return json(body);
+  let result = think(query, pnaLearningResources, { context, profile });
+  let source = result.safety ? "safety" : "pna-brain";
+
+  // Unclear question: ask the AI re-ranker to nominate the best existing resources.
+  if (!result.safety && result.confidence === "low" && result.candidates.length > 1) {
+    const preferred = await aiRank(query, result.candidates);
+    if (preferred.length) {
+      result = think(query, pnaLearningResources, { context, profile, prefer: preferred });
+      source = "pna-brain+ai";
+    }
   }
 
-  const topScore = ranked[0].score;
-  const secondScore = ranked[1]?.score ?? 0;
-  const clearLocalMatch = topScore >= 14 && topScore - secondScore >= 4;
-  let selectedIds: string[] = [];
-
-  if (!clearLocalMatch && ranked.length > 1) {
-    selectedIds = await aiRank(query, ranked.map((item) => item.resource));
-  }
-
-  const byId = new Map(ranked.map((item) => [item.resource.id, item.resource]));
-  const selected = selectedIds.map((id) => byId.get(id)).filter((item): item is PnaLearningResource => Boolean(item));
-  const resources = (selected.length ? selected : ranked.slice(0, 3).map((item) => item.resource)).map((item) => ({
-    id: item.id,
-    title: item.title,
-    href: item.href,
-    category: item.category,
-    summary: item.summary,
-    level: item.level,
-  }));
-
-  const body = {
-    message: "Here are the most relevant resources on Physio Nexus Academy. Start with the first one, then continue in order.",
-    resources,
-    source: selected.length ? "ai-ranked" : "local-search",
+  const responseBody = {
+    message: result.message,
+    lang: result.lang,
+    safety: result.safety
+      ? { level: result.safety.level, kind: result.safety.kind, title: result.safety.title[result.lang], text: result.safety.text[result.lang] }
+      : null,
+    resources: result.resources,
+    suggestions: result.suggestions,
+    topic: result.topic,
+    source,
   };
-  rememberResponse(normalizedQuery, body);
-  return json(body);
+  // Safety answers are never cached, so wording fixes reach people immediately.
+  if (!result.safety) rememberResponse(cacheKey, responseBody);
+  return json(responseBody);
 }

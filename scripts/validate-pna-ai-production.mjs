@@ -16,6 +16,27 @@ const cases = [
     expectedHref: "/daily-challenge",
     label: "daily quiz navigation",
   },
+  {
+    query: "kamar mein dard",
+    expectedHref: "/msk-injuries/non-specific-low-back-pain",
+    label: "Roman Urdu understanding",
+  },
+  {
+    query: "maitlnd grades",
+    expectedHref: "/learn/maitland-grades",
+    label: "typo correction",
+  },
+  {
+    query: "what are the signs of cauda equina syndrome",
+    expectedHref: "/learn/red-flags-screening",
+    expectedSafety: null,
+    label: "academic red-flag question is taught, not alarmed",
+  },
+  {
+    query: "numbness between legs and cant pass urine",
+    expectedSafety: "cauda-equina",
+    label: "emergency warning signs get urgent-care guidance",
+  },
 ];
 
 for (const testCase of cases) {
@@ -41,7 +62,11 @@ for (const testCase of cases) {
     throw new Error(`PNA AI response did not include a resources array for ${testCase.label}.`);
   }
 
-  if (!body.resources.some((resource) => resource?.href === testCase.expectedHref)) {
+  if ("expectedSafety" in testCase && (body.safety?.kind ?? null) !== testCase.expectedSafety) {
+    throw new Error(`PNA AI ${testCase.label}: expected safety ${testCase.expectedSafety}, got ${body.safety?.kind ?? null}`);
+  }
+
+  if (testCase.expectedHref && !body.resources.some((resource) => resource?.href === testCase.expectedHref)) {
     const returnedLinks = body.resources.map((resource) => resource?.href).filter(Boolean).join(", ") || "(none)";
     throw new Error(`PNA AI missed ${testCase.label}; expected ${testCase.expectedHref}, got: ${returnedLinks}`);
   }

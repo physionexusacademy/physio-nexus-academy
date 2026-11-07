@@ -19,6 +19,11 @@ export type PnaLearningResource = {
   summary: string;
   level?: string;
   keywords: string;
+  /** PNA Teacher lessons: authored key points and Roman Urdu hook/goal for answers. */
+  points?: string[];
+  hookUr?: string;
+  goalUr?: string;
+  minutes?: number;
 };
 
 const knowledgeResources: PnaLearningResource[] = allKnowledgeArticles.map((item) => ({
@@ -80,6 +85,10 @@ const teacherResources: PnaLearningResource[] = [
     summary: `${lesson.hook.en} ${lesson.goal.en}`,
     level: lesson.level,
     keywords: `${lesson.keywords} step by step lesson explained simply Roman Urdu interactive`,
+    points: lesson.summaryEn,
+    hookUr: lesson.hook.ur,
+    goalUr: lesson.goal.ur,
+    minutes: lesson.minutes,
   })),
   ...teacherPaths.map((path) => ({
     id: `teacher-path:${path.slug}`,
@@ -413,88 +422,3 @@ for (const resource of [...teacherResources, ...knowledgeResources, ...specialty
 }
 
 export const pnaLearningResources = Array.from(uniqueResources.values());
-
-const stopWords = new Set([
-  "a", "an", "and", "are", "at", "be", "by", "can", "do", "for", "from", "how",
-  "i", "in", "is", "it", "learn", "me", "my", "of", "on", "or", "please", "show",
-  "start", "the", "to", "want", "what", "where", "with", "would",
-]);
-
-const synonymMap: Record<string, string[]> = {
-  mfr: ["myofascial", "release", "soft tissue"],
-  "myofascial release": ["mfr", "fascia", "soft tissue"],
-  scs: ["strain", "counterstrain", "positional release"],
-  "strain counterstrain": ["scs", "positional release", "osteopathic"],
-  "dry needling": ["needling", "trigger point"],
-  "neck": ["cervical"],
-  "low back": ["lumbar", "low-back"],
-  "back pain": ["lumbar", "spine"],
-  "knee": ["patellofemoral", "acl", "meniscus"],
-  "shoulder": ["rotator cuff", "glenohumeral"],
-  "stroke": ["neurological", "neurorehabilitation", "hemiplegia"],
-  "research": ["evidence", "systematic review", "randomized controlled trial"],
-  "treatment plan": ["rehabilitation", "exercise", "assessment"],
-  "home visit": ["home-visit", "house call", "at home", "physiotherapy"],
-  "appointment": ["booking", "consultation", "schedule"],
-  "book": ["booking", "appointment", "home visit", "resources"],
-  "quiz": ["daily challenge", "clinical quiz", "MCQ", "test"],
-  "contact": ["support", "message", "help"],
-  "symptom checker": ["symptoms", "patient services"],
-  "founder": ["about", "profile", "leadership"],
-  "gallery": ["photos", "pictures", "images", "events"],
-  "certificate": ["verify", "verification", "credential"],
-  "verify": ["certificate", "verification", "credential"],
-  "visual lab": ["visuals", "illustrations", "diagrams", "images"],
-  "clinical arena": ["clinical practice", "interactive", "cases"],
-  "karachi": ["location", "services", "home visit"],
-  "hyderabad": ["location", "services", "home visit"],
-  "privacy policy": ["privacy", "data"],
-  "refund policy": ["refund", "cancellation", "payment"],
-  "terms and conditions": ["terms", "rules", "agreement"],
-  "disclaimer": ["clinical disclaimer", "medical advice", "limitations"],
-};
-
-export function expandPnaQuery(query: string): string[] {
-  const normalized = query.toLowerCase().replace(/[^a-z0-9+\s-]/g, " ").replace(/\s+/g, " ").trim();
-  const expanded = new Set(normalized.split(" ").filter((token) => token.length > 1 && !stopWords.has(token)));
-  for (const [phrase, synonyms] of Object.entries(synonymMap)) {
-    if (normalized.includes(phrase)) {
-      for (const synonym of synonyms) {
-        for (const token of synonym.split(" ")) if (token.length > 1) expanded.add(token);
-      }
-    }
-  }
-  return Array.from(expanded);
-}
-
-export function searchPnaResources(query: string, limit = 8) {
-  const tokens = expandPnaQuery(query);
-  if (tokens.length === 0) return [];
-
-  const normalizedQuery = query.toLowerCase().trim();
-  return pnaLearningResources
-    .map((resource) => {
-      const title = resource.title.toLowerCase();
-      const slug = resource.href.toLowerCase();
-      const haystack = resource.keywords.toLowerCase();
-      let score = 0;
-
-      if (title === normalizedQuery) score += 18;
-      if (title.includes(normalizedQuery) && normalizedQuery.length > 3) score += 10;
-
-      for (const token of tokens) {
-        if (title.includes(token)) score += 5;
-        if (slug.includes(token)) score += 4;
-        if (haystack.includes(token)) score += 1;
-      }
-
-      const uniqueTokens = new Set(tokens);
-      const matchedTitleTokens = Array.from(uniqueTokens).filter((token) => title.includes(token)).length;
-      if (uniqueTokens.size > 0) score += Math.round((matchedTitleTokens / uniqueTokens.size) * 5);
-
-      return { resource, score };
-    })
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score || a.resource.title.localeCompare(b.resource.title))
-    .slice(0, limit);
-}

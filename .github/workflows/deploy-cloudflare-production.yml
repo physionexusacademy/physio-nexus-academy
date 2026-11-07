@@ -106,6 +106,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:teacher
 
+      - name: Validate Physio Nexus AI answers, Roman Urdu understanding and emergency safety
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:ai
+
       - name: Build and deploy to Cloudflare
         if: steps.auth.outputs.ready == 'true'
         env:
