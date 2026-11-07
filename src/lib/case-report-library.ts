@@ -1824,3 +1824,12 @@ export const publishedCaseReports: PublishedCaseReport[] = [
 }
 ].sort((a,b)=>b.year-a.year);
 export function getPublishedCaseReport(slug:string){return publishedCaseReports.find(item=>item.slug===slug);}
+/**
+ * Some papers appear twice under different slugs. Search engines should index one page per
+ * paper: the first report (in library order) with the same source is the canonical one.
+ */
+const sourceKey=(r:PublishedCaseReport)=>(r.doi||r.sourceUrl).trim().toLowerCase();
+const canonicalBySource=new Map<string,string>();
+for(const r of publishedCaseReports){const key=sourceKey(r);if(!canonicalBySource.has(key))canonicalBySource.set(key,r.slug);}
+export function canonicalCaseReportSlug(slug:string){const r=getPublishedCaseReport(slug);return r?canonicalBySource.get(sourceKey(r))??slug:slug;}
+export const canonicalCaseReports=publishedCaseReports.filter((r,i,all)=>canonicalCaseReportSlug(r.slug)===r.slug&&all.findIndex(x=>x.slug===r.slug)===i);

@@ -2,7 +2,7 @@ import type {Metadata} from "next";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {ArrowLeft,ExternalLink,BookOpen,CheckCircle2,AlertTriangle} from "lucide-react";
-import {getPublishedCaseReport,publishedCaseReports} from "@/lib/case-report-library";
+import {canonicalCaseReportSlug,getPublishedCaseReport,publishedCaseReports} from "@/lib/case-report-library";
 import {EvidenceBadge} from "@/components/clinical/EvidenceBadge";
 import {SaveForReviewButton} from "@/components/learning/SaveForReviewButton";
 import "../../case-lab.css";
@@ -17,11 +17,12 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
   title:report.title+" | PNA Research Case Library",
   description:report.caseSummary,
   keywords: [report.specialty, "physiotherapy case report", "rehabilitation case study", "clinical lessons", "Physio Nexus Academy"],
-  alternates:{canonical:base+"/case-lab/research/"+report.slug},
+  // A paper listed twice points search engines at one page.
+  alternates:{canonical:base+"/case-lab/research/"+canonicalCaseReportSlug(report.slug)},
   openGraph:{
    title:report.title,
    description:report.caseSummary,
-   url:base+"/case-lab/research/"+report.slug,
+   url:base+"/case-lab/research/"+canonicalCaseReportSlug(report.slug),
    type:"article",
    siteName: "Physio Nexus Academy",
    locale: "en_PK",

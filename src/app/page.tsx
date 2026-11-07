@@ -67,8 +67,9 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-static";
-export const revalidate = 300;
+// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
+// are served from a read-only cache that never refreshes).
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const supabase = createPublicClient();

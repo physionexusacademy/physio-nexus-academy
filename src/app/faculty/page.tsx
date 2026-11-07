@@ -4,7 +4,7 @@ import { ArrowRight, GraduationCap, UserRound } from "lucide-react";
 import { facultyMembers } from "@/lib/faculty";
 
 export const metadata: Metadata = {
-  title: "Faculty | Physio Nexus Academy",
+  title: "Faculty — Physiotherapy Educators",
   description:
     "Meet the Physio Nexus Academy faculty and clinical training team supporting practical physiotherapy education, workshops and rehabilitation learning.",
   alternates: {

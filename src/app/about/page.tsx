@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "About Physio Nexus Academy | Founder, Mission & Vision",
+  title: "About Us — Founder, Mission & Vision",
   description:
     "Learn about Physio Nexus Academy — founded and led by Dr. Sajjad Raza PT. Discover our purpose, vision, mission and practical physiotherapy education model serving students, professionals and patients across Pakistan.",
   keywords: [
@@ -35,7 +35,9 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const revalidate = 60;
+// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
+// are served from a read-only cache that never refreshes).
+export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const supabase = await createClient();

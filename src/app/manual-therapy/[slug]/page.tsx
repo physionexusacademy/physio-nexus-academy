@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const worldLesson = worldManualApproaches.find((item) => item.slug === slug);
 
   if (worldLesson) return {
-    title: worldLesson.title + " | Physio Nexus Academy",
+    title: worldLesson.title, // the layout template adds " | Physio Nexus Academy"
     description: worldLesson.summary,
     keywords: [worldLesson.title, "manual therapy", "physiotherapy", "clinical techniques", "Physio Nexus Academy"],
     alternates: { canonical: "https://physionexusacademy.com/manual-therapy/" + slug },

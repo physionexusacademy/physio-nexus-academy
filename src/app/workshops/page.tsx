@@ -39,8 +39,9 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const dynamic = "force-static";
-export const revalidate = 300; // refresh public workshop data at most every 5 minutes
+// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
+// are served from a read-only cache that never refreshes).
+export const dynamic = "force-dynamic";
 
 export default async function WorkshopsPage() {
   const dateParts = new Intl.DateTimeFormat("en", {

@@ -24,7 +24,7 @@ import { WorkshopAssessmentClient } from "./WorkshopAssessmentClient";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Workshop Participant Portal | Physio Nexus Academy",
+  title: "Workshop Participant Portal",
   description:
     "Secure participant portal for registered Physio Nexus Academy workshop attendees.",
   robots: {

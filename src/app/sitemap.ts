@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { trainingHistory } from "@/lib/training-history";
 import { knowledgeSpecialties } from "@/lib/knowledge-content";
 import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
-import { clinicalCases } from "@/lib/all-clinical-cases";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { regionalManualApplications } from "@/lib/manual-therapy-regional";
@@ -12,7 +11,7 @@ import { mskConditions } from "@/lib/msk-injury-hub";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
-import { publishedCaseReports } from "@/lib/case-report-library";
+import { canonicalCaseReports } from "@/lib/case-report-library";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
@@ -115,14 +114,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.78,
   }));
 
-  const caseRoutes: MetadataRoute.Sitemap = clinicalCases.map((item) => ({
-    url: `${base}/case-lab/${encodeURIComponent(item.slug)}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
+  // Legacy /case-lab/<slug> pages permanently redirect to /case-lab, so they are not listed.
 
   // Published evidence-based research case reports (new Case Lab content)
-  const researchCaseRoutes: MetadataRoute.Sitemap = publishedCaseReports.map((report) => ({
+  const researchCaseRoutes: MetadataRoute.Sitemap = canonicalCaseReports.map((report) => ({
     url: `${base}/case-lab/research/${encodeURIComponent(report.slug)}`,
     changeFrequency: "monthly" as const,
     priority: 0.86,
@@ -199,7 +194,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...trainingRoutes,
     ...knowledgeRoutes,
     ...specialtyRoutes,
-    ...caseRoutes,
     ...researchCaseRoutes,
     ...manualTherapyRoutes,
     ...regionalManualRoutes,

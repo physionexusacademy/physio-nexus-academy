@@ -5,7 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { WORKSHOP_PORTAL_SLUG } from "@/lib/workshop-portal";
 import { RegistrationForm } from "./RegistrationForm";
 
-export const revalidate = 60;
+// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
+// are served from a read-only cache that never refreshes).
+export const dynamic = "force-dynamic";
 
 const siteUrl = "https://physionexusacademy.com";
 
@@ -53,7 +55,8 @@ export async function generateMetadata({
       : `${siteUrl}/images/pna-logo.png`;
 
   return {
-    title,
+    // The layout template adds " | Physio Nexus Academy"; social cards keep the full title.
+    title: workshop.title,
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {

@@ -5,7 +5,7 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { ContactForm } from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact Physio Nexus Academy | Karachi & Hyderabad",
+  title: "Contact Us — Physiotherapy in Karachi & Hyderabad",
   description:
     "Contact Physio Nexus Academy for physiotherapy workshops, patient appointments, home visits and general enquiries in Karachi, Hyderabad and across Pakistan.",
   alternates: {

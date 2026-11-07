@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
+// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
+// are served from a read-only cache that never refreshes).
+export const dynamic = "force-dynamic";
 
 const fallbackGroups = [
   { group: "Workshops & Students", items: [

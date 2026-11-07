@@ -1,9 +1,14 @@
-// default open-next.config.ts file created by @opennextjs/cloudflare
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-// import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
+import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache";
 
+/**
+ * Prebuilt (static) pages are served straight from Workers static assets instead of being
+ * rendered again on every request. Large content pages (manual therapy, MSK injuries, case
+ * reports, atlas) used to exceed the Workers CPU limit when rendered per request and fail
+ * with Cloudflare error 1102. The cache is read-only: pages that read live Supabase data
+ * are marked `dynamic = "force-dynamic"` and still render on every request.
+ */
 export default defineCloudflareConfig({
-	// For best results consider enabling R2 caching
-	// See https://opennext.js.org/cloudflare/caching for more details
-	// incrementalCache: r2IncrementalCache
+	incrementalCache: staticAssetsIncrementalCache,
+	enableCacheInterception: true,
 });

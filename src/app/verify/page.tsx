@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CertificateVerificationForm } from "./CertificateVerificationForm";
 
 export const metadata: Metadata = {
-  title: "Verify Physio Nexus Academy Certificate",
+  title: "Verify a Workshop Certificate",
   description:
     "Verify a Physio Nexus Academy workshop or training certificate using the exact Certificate ID printed on the credential.",
   alternates: {

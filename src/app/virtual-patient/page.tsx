@@ -4,7 +4,7 @@ import { VirtualPatientLoader } from "@/components/virtual-patient/VirtualPatien
 import "./virtual-patient.css";
 
 export const metadata: Metadata = {
-  title: "Virtual Patient — Examine a 3D Patient | Physio Nexus Academy",
+  title: "Virtual Patient — Examine a 3D Physiotherapy Patient",
   description:
     "Examine a realistic 3D patient: take a history, position him, measure range with a goniometer, test muscles, reflexes and sensation, palpate landmarks and run special tests — then make your diagnosis and get an OSCE-style score.",
   alternates: { canonical: "https://physionexusacademy.com/virtual-patient" },

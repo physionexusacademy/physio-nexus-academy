@@ -26,7 +26,9 @@ function categoryHeading(category: TrainingCategory) {
   return "Clinical Camps";
 }
 
-export const revalidate = 60;
+// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
+// are served from a read-only cache that never refreshes).
+export const dynamic = "force-dynamic";
 
 export default async function TrainingArchivePage() {
   const supabase = await createClient();
