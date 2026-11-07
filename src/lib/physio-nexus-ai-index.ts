@@ -187,6 +187,16 @@ const browseResources: PnaLearningResource[] = [
     keywords: "home visit home-visit house call at home physiotherapy home treatment book booking request Karachi Hyderabad area address appointment",
   },
   {
+    id: "browse:virtual-patient",
+    title: "Virtual Patient — 3D examination practice",
+    href: "/virtual-patient",
+    category: "Practice",
+    summary: "Examine a realistic 3D patient with a hidden diagnosis: take a history, position him, measure range, test muscles, reflexes and sensation, palpate and run special tests — then diagnose and get an OSCE-style score.",
+    level: "Clinical practice",
+    keywords: "virtual patient 3d patient simulator simulated patient examine examination osce station case history taking goniometer mmt reflexes sensation palpation special tests diagnosis",
+    tags: "virtual patient 3d simulator simulated osce examine",
+  },
+  {
     id: "quiz:daily-challenge",
     title: "Daily Clinical Challenge",
     href: "/daily-challenge",

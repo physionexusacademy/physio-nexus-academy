@@ -110,6 +110,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:skills
 
+      - name: Validate Virtual Patient cases, anatomy mapping, scoring and model
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:virtual-patient
+
       - name: Validate Physio Nexus AI answers, Roman Urdu understanding and emergency safety
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:ai
@@ -273,6 +277,8 @@ jobs:
           check_url "https://physionexusacademy.com/skills" "Clinical Skills Lab"
           check_url "https://physionexusacademy.com/skills/goniometry" 'data-pna-skill-page="goniometry"'
           check_url "https://physionexusacademy.com/skills-data/manual-muscle-testing.json" '"slug":"manual-muscle-testing"'
+          check_url "https://physionexusacademy.com/virtual-patient" 'data-pna-virtual-patient'
+          check_url "https://physionexusacademy.com/virtual-patient/patient.glb" 'glTF'
 
           # Exercise the read-only PNA AI resource navigator. These requests do not submit forms or create records.
           node scripts/validate-pna-ai-production.mjs

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowRight, BookOpenCheck, ClipboardCheck, Dumbbell, Layers, Trophy } from "lucide-react";
+import { ArrowRight, BookOpenCheck, ClipboardCheck, Dumbbell, Layers, PersonStanding, Trophy } from "lucide-react";
 import { NexusHero } from "@/components/nexus/NexusHero";
 import { SkillIcon } from "@/components/skills/SkillIcon";
 import { SkillProgressBadge } from "@/components/skills/SkillProgressBadge";
@@ -62,6 +62,17 @@ export default function SkillsHubPage() {
             );
           })}
         </ol>
+
+        <a href="/virtual-patient" className="mt-8 flex flex-wrap items-center gap-4 rounded-3xl bg-[#0a1f3d] p-5 text-white shadow-[0_30px_70px_-45px_rgba(5,20,45,0.9)] sm:p-6" data-pna-skills-vp-link>
+          <span className="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-white/10">
+            <PersonStanding className="h-6 w-6 text-[#2ee6d6]" aria-hidden="true" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <strong className="block text-lg">Ready for a real patient? Try the Virtual Patient</strong>
+            <span className="text-sm text-[#a9bfd6]">Put every skill together on a 3D patient with a hidden diagnosis — history, examination, diagnosis and an OSCE score.</span>
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2ee6d6]">Enter the exam room <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+        </a>
 
         {skillPhases.map((phase) => {
           const skills = skillIndex.filter((skill) => skill.phase === phase.id);

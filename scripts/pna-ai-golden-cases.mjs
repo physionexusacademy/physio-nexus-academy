@@ -87,6 +87,8 @@ export const goldenCases = [
   { q: "dermatomes", anyTop2: ["/skills/dermatomes", "/learn/dermatomes-myotomes-reflexes"], any: ["/skills/dermatomes"] },
   { q: "osce practice", any: ["/skills"] },
   { q: "clinical skills", top: ["/skills"] },
+  { q: "virtual patient", top: ["/virtual-patient"] },
+  { q: "I want to examine a 3d patient", any: ["/virtual-patient"] },
   // --- Follow-up memory
   { q: "how to treat it", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/treatment-plans/adhesive-capsulitis"], none: ["/knowledge-hub/intention-to-treat-per-protocol-analysis-2026"] },
   { q: "special tests?", context: { lastTopic: "Anterior Cruciate Ligament (ACL) Injury" }, anyTop2: ["/msk-special-tests", "/msk-injuries/acl-injury"] },

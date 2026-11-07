@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
   ClipboardList, Eye, FileBadge2, FlaskConical, GraduationCap, Hand, HeartPulse,
-  Home, LibraryBig, Ruler, ShieldCheck, Stethoscope, Trophy, Users
+  Home, LibraryBig, PersonStanding, Ruler, ShieldCheck, Stethoscope, Trophy, Users
 } from "lucide-react";
 import { PnaPathwayArtwork } from "./PnaPathwayArtwork";
 
@@ -12,7 +12,7 @@ const icons = {
   library: LibraryBig, eye: Eye, hand: Hand, clipboard: ClipboardList,
   book: BookOpen, brain: BrainCircuit, trophy: Trophy, calendar: CalendarDays,
   research: FlaskConical, people: Users, care: HeartPulse, shield: ShieldCheck,
-  symptoms: Stethoscope, home: Home, certificate: FileBadge2, teacher: GraduationCap, skills: Ruler,
+  symptoms: Stethoscope, home: Home, certificate: FileBadge2, teacher: GraduationCap, skills: Ruler, patient: PersonStanding,
 } as const;
 
 type IconKey = keyof typeof icons;
@@ -74,6 +74,7 @@ const groups: Group[] = [
     links: [
       { title: "PNA Teacher", description: "Hard concepts explained step by step — with checks, visuals and Roman Urdu.", href: "/learn", icon: "teacher", featured: true },
       { title: "Clinical Skills Lab", description: "MMT, goniometry, neuro exam and more — beginner to expert, with OSCE practice.", href: "/skills", icon: "skills" },
+      { title: "Virtual Patient", description: "Examine a realistic 3D patient, make the diagnosis and get an OSCE score.", href: "/virtual-patient", icon: "patient" },
       { title: "Knowledge Hub", description: "Study MSK, neuro, cardio, pediatrics, sports and more.", href: "/knowledge-hub", icon: "library" },
       { title: "Clinical Visual Atlas", description: "See clinical anatomy, pathology and rehabilitation visuals.", href: "/clinical-visual-atlas", icon: "eye" },
       { title: "Manual Therapy Mastery", description: "Approaches, hand placement, dosage, safety and reasoning.", href: "/manual-therapy", icon: "hand" },
@@ -92,6 +93,7 @@ const groups: Group[] = [
       { title: "Manual Therapy Mastery", description: "Explore techniques, application, dosage and safety.", href: "/manual-therapy", icon: "hand", featured: true },
       { title: "Treatment Plans", description: "Assessment, management and rehabilitation progression.", href: "/treatment-plans", icon: "clipboard" },
       { title: "Clinical Skills Lab", description: "Sharpen assessment skills — MMT, ROM, neuro exam, balance and outcome measures.", href: "/skills", icon: "skills" },
+      { title: "Virtual Patient", description: "Work up 3D patients with hidden diagnoses — red flags included.", href: "/virtual-patient", icon: "patient" },
       { title: "Knowledge Hub", description: "Evidence-informed specialty articles and clinical updates.", href: "/knowledge-hub", icon: "library" },
       { title: "Clinical Challenge Arena", description: "Take a history, consider differentials and plan care.", href: "/clinical-arena", icon: "brain" },
       { title: "Clinical Case Lab", description: "Work through symptoms and clinical reasoning step by step.", href: "/case-lab", icon: "clipboard" },

@@ -21,6 +21,7 @@ const routes = [
   "",
   "/learn",
   "/skills",
+  "/virtual-patient",
   "/about",
   "/founder",
   "/faculty",
@@ -58,7 +59,7 @@ function getRoutePriority(route: string): number {
   if (route === "") return 1;
   if (route === "/home-visit" || route === "/appointment") return 0.9;
   if (route === "/case-lab" || route === "/stupid-intern-diaries") return 0.88;
-  if (route === "/learn" || route === "/skills") return 0.95;
+  if (route === "/learn" || route === "/skills" || route === "/virtual-patient") return 0.95;
   return 0.7;
 }
 

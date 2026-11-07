@@ -2,7 +2,7 @@ import {
   Activity, Archive, BadgeCheck, BookMarked, BookOpen, BrainCircuit, CalendarDays, ClipboardList, Eye,
   FlaskConical, GraduationCap, Hand, HeartPulse, Home, Info, Laugh, Layers, LibraryBig, Mail, MapPin,
   MessageCircleQuestion, Microscope, Presentation, Sparkles, Star, Stethoscope, Trophy, UserRound, Users,
-  Bone, Ruler, Target, type LucideIcon,
+  Bone, PersonStanding, Ruler, Target, type LucideIcon,
 } from "lucide-react";
 import type { AcademyIcon as IconKey } from "@/lib/academy-map";
 
@@ -39,6 +39,7 @@ const icons: Record<IconKey, LucideIcon> = {
   contact: Mail,
   lesson: Sparkles,
   skills: Ruler,
+  patient: PersonStanding,
 };
 
 export function AcademyIcon({ name, className }: { name: IconKey; className?: string }) {

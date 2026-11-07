@@ -9,7 +9,7 @@ export type AcademyIcon =
   | "trophy" | "arena" | "cases" | "cards" | "registry" | "laugh"
   | "care" | "calendar" | "home" | "symptoms" | "calculator" | "pin"
   | "workshop" | "archive" | "research" | "people" | "founder" | "info" | "certificate" | "star" | "faq" | "contact"
-  | "lesson" | "skills";
+  | "lesson" | "skills" | "patient";
 
 export type AcademyPlace = {
   label: string;
@@ -54,6 +54,7 @@ export const academyWings: AcademyWing[] = [
     intro: "Daily questions, patient cases and spaced review — so knowledge turns into confident decisions.",
     places: [
       { label: "Clinical Skills Lab", href: "/skills", description: "MMT, goniometry, neuro exam & more — beginner to expert", icon: "skills", keywords: "skills lab practical osce mmt manual muscle testing goniometry rom dermatomes myotomes reflexes nerves tone spasticity ashworth muscle length vitals blood pressure posture balance berg tug palpation landmarks measurement" },
+      { label: "Virtual Patient", href: "/virtual-patient", description: "Examine a 3D patient, diagnose, get an OSCE score", icon: "patient", keywords: "virtual patient 3d patient simulator simulation osce examine examination case history goniometer mmt reflexes sensation palpation special tests" },
       { label: "Daily Challenge", href: "/daily-challenge", description: "5 timed questions + leaderboard", icon: "trophy", keywords: "quiz mcq daily weekly leaderboard exam test" },
       { label: "Clinical Arena", href: "/clinical-arena", description: "History → diagnosis → treatment", icon: "arena", keywords: "cases game reasoning differential" },
       { label: "Case Lab", href: "/case-lab", description: "Real reports, reasoning step by step", icon: "cases", keywords: "case studies reports" },
