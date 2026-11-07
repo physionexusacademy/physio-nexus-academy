@@ -16,3 +16,6 @@ npm-debug.log*
 !.dev.vars.example
 
 !.env.example
+
+# local QA output (verify-pathway-production)
+/artifacts/
