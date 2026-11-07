@@ -269,6 +269,10 @@ Object.defineProperty(globalThis, "window", {
       getItem: (key: string) => store.get(key) ?? null,
       setItem: (key: string, value: string) => void store.set(key, value),
       removeItem: (key: string) => void store.delete(key),
+      get length() {
+        return store.size;
+      },
+      key: (index: number) => [...store.keys()][index] ?? null,
     },
     dispatchEvent: () => true,
   },
@@ -329,6 +333,31 @@ assert.equal(progress.getTeacherProfile()?.name, "Ayesha", "names are trimmed");
 assert.equal(progress.getTeacherLang(), "ur", "language preference follows the profile");
 store.set("pna-teacher-profile-v1", JSON.stringify({ v: 1, stage: "hacker", goal: "exams" }));
 assert.equal(progress.getTeacherProfile(), null, "invalid stored profiles are ignored");
+
+/* Damaged saved data (older versions, manual edits) must never break PNA Teacher. */
+const goodCardId = "convex-concave-rule:ok";
+store.set("pna-teacher-deck-v1", JSON.stringify({
+  broken: null,
+  noDue: { lesson: "x", box: 0 },
+  badDate: { lesson: "x", box: 0, due: 20261107 },
+  list: [1, 2],
+  [goodCardId]: { lesson: "convex-concave-rule", box: 99, due: today, reviews: "3", lapses: -2 },
+}));
+assert.doesNotThrow(() => progress.getDueCardIds(), "damaged flashcards must not crash the due list");
+assert.deepEqual(Object.keys(progress.getDeck()), [goodCardId], "only well-formed flashcards are kept");
+assert.equal(progress.getDeck()[goodCardId].box, progress.REVIEW_INTERVALS.length - 1, "out-of-range boxes are clamped");
+assert.equal(progress.getDueCardIds().length, 1, "the valid card is still due");
+store.set("pna-teacher-deck-v1", "[1,2,3]");
+assert.deepEqual(progress.getDeck(), {}, "a deck saved as a list is ignored");
+store.set("pna-teacher-progress-v1", JSON.stringify({ v: 1, lessons: { a: null, b: { completedAt: today, firstTryCorrect: 2, checks: 3 }, c: "done" }, missions: { "p/s": today, bad: 5 } }));
+assert.deepEqual(Object.keys(progress.getTeacherProgress().lessons), ["b"], "damaged lesson records are skipped");
+assert.deepEqual(progress.getTeacherProgress().missions, { "p/s": today }, "damaged mission records are skipped");
+store.set("pna-teacher-session-v1:convex-concave-rule", "{broken");
+store.set("pna-teacher-deck-v1", JSON.stringify({ broken: null, [goodCardId]: { lesson: "convex-concave-rule", box: 1, due: today, reviews: 1, lapses: 0 } }));
+progress.repairTeacherData();
+assert.deepEqual(Object.keys(JSON.parse(store.get("pna-teacher-deck-v1") ?? "{}")), [goodCardId], "repair rewrites the cleaned deck");
+assert.ok(!store.has("pna-teacher-session-v1:convex-concave-rule"), "repair clears half-finished lesson positions");
+assert.deepEqual(Object.keys(JSON.parse(store.get("pna-teacher-progress-v1") ?? "{}").lessons), ["b"], "repair keeps valid lessons");
 
 /* ---------- report ---------- */
 

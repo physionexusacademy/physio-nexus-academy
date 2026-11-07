@@ -271,6 +271,7 @@
 
 /* ---------- student pass ---------- */
 .lobby-pass-band {
+  scroll-margin-top: calc(var(--nx-header-h) + 8px);
   padding: 0 0 clamp(36px, 5vw, 64px);
   border-radius: 0 0 36px 36px;
   background: linear-gradient(180deg, #030a17 0%, #041127 100%);

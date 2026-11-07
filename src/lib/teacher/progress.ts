@@ -117,13 +117,32 @@ export function setTeacherLang(lang: TeacherLang) {
 
 /* ---------------- lessons & missions ---------------- */
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === "object" && !Array.isArray(value);
+const count = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0);
+
+/**
+ * Saved progress can come from older app versions or be damaged (manual edits,
+ * storage quirks). Every reader keeps only well-formed entries, so one bad
+ * record can never stop PNA Teacher from opening.
+ */
 export function getTeacherProgress(): TeacherProgress {
-  const parsed = readJson<Partial<TeacherProgress>>(PROGRESS_KEY);
-  return {
-    v: 1,
-    lessons: parsed?.lessons && typeof parsed.lessons === "object" ? parsed.lessons : {},
-    missions: parsed?.missions && typeof parsed.missions === "object" ? parsed.missions : {},
-  };
+  const parsed = readJson<unknown>(PROGRESS_KEY);
+  const lessons: TeacherProgress["lessons"] = {};
+  const missions: TeacherProgress["missions"] = {};
+  if (isRecord(parsed)) {
+    if (isRecord(parsed.lessons)) {
+      for (const [slug, record] of Object.entries(parsed.lessons)) {
+        if (!isRecord(record) || typeof record.completedAt !== "string") continue;
+        lessons[slug] = { completedAt: record.completedAt, firstTryCorrect: count(record.firstTryCorrect), checks: count(record.checks) };
+      }
+    }
+    if (isRecord(parsed.missions)) {
+      for (const [key, date] of Object.entries(parsed.missions)) if (typeof date === "string") missions[key] = date;
+    }
+  }
+  return { v: 1, lessons, missions };
 }
 
 export function lessonXp(firstTryCorrect: number): number {
@@ -205,8 +224,45 @@ export function clearLessonSession(slug: string) {
 /* ---------------- flashcards (Leitner-style spaced review) ---------------- */
 
 export function getDeck(): TeacherDeck {
-  const parsed = readJson<TeacherDeck>(DECK_KEY);
-  return parsed && typeof parsed === "object" ? parsed : {};
+  const parsed = readJson<unknown>(DECK_KEY);
+  const deck: TeacherDeck = {};
+  if (!isRecord(parsed)) return deck;
+  for (const [id, card] of Object.entries(parsed)) {
+    if (!isRecord(card) || typeof card.lesson !== "string" || typeof card.due !== "string" || !DATE_RE.test(card.due)) continue;
+    deck[id] = {
+      lesson: card.lesson,
+      box: Math.min(count(card.box), REVIEW_INTERVALS.length - 1),
+      due: card.due,
+      reviews: count(card.reviews),
+      lapses: count(card.lapses),
+    };
+  }
+  return deck;
+}
+
+/**
+ * Rewrites saved PNA Teacher data in its cleaned form and drops half-finished
+ * lesson positions. Valid lessons, missions, flashcards and the profile are kept.
+ */
+export function repairTeacherData() {
+  const store = storage();
+  if (!store) return;
+  try {
+    const profile = getTeacherProfile();
+    if (profile) writeJson(PROFILE_KEY, profile);
+    else store.removeItem(PROFILE_KEY);
+    writeJson(PROGRESS_KEY, getTeacherProgress());
+    writeJson(DECK_KEY, getDeck());
+    const lang = readJson<unknown>(LANG_KEY);
+    if (lang !== "en" && lang !== "ur") store.removeItem(LANG_KEY);
+    for (let index = store.length - 1; index >= 0; index -= 1) {
+      const key = store.key(index);
+      if (key?.startsWith(SESSION_PREFIX)) store.removeItem(key);
+    }
+  } catch {
+    /* storage blocked — nothing to repair */
+  }
+  notify();
 }
 
 function addCardsToDeck(lesson: string, ids: string[]): number {

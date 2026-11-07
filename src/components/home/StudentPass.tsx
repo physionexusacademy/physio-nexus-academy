@@ -107,7 +107,7 @@ export function StudentPass() {
   ];
 
   return (
-    <section className="nx-sky lobby-pass-band" aria-labelledby="student-pass-title">
+    <section id="student-pass" className="nx-sky lobby-pass-band" aria-labelledby="student-pass-title">
       <div className="container-content">
         <div className="nx-glass lobby-pass">
           <div className="lobby-pass-id">

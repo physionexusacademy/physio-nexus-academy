@@ -189,7 +189,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
           <a href="/daily-challenge" className="nx-pill-challenge">
             <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
           </a>
-          <a href="/learn" className="nx-pass" aria-label={pass && pass.xp > 0 ? `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak` : "Get your student pass — start PNA Teacher"}>
+          <a href="/#student-pass" className="nx-pass" aria-label={pass && pass.xp > 0 ? `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak` : "Open your free student pass"}>
             <span className="nx-pass-orb">{pass && pass.xp > 0 ? <Zap className="h-3.5 w-3.5" aria-hidden="true" /> : "PNA"}</span>
             {pass && pass.xp > 0 ? (
               <span className="flex items-center gap-2">
@@ -263,7 +263,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
             <a href="/daily-challenge" className="nx-pill-challenge !flex justify-center" onClick={closeAll}>
               <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
             </a>
-            <a href="/learn" className="nx-btn nx-btn-ghost !min-h-[40px] !text-[0.85rem]" onClick={closeAll}>
+            <a href="/#student-pass" className="nx-btn nx-btn-ghost !min-h-[40px] !text-[0.85rem]" onClick={closeAll}>
               Student pass <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </div>
