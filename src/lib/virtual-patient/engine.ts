@@ -173,6 +173,8 @@ export class ExamRoom {
   private restFromGeometry = new THREE.Matrix4();
   /** Height (CSS px) of the toolbar laid over the top of the view; framing keeps the patient below it. */
   viewInsetTop = 0;
+  /** Each framing cancels any camera move still in progress. */
+  private frameToken = 0;
 
   constructor(private container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
@@ -631,6 +633,7 @@ export class ExamRoom {
       ? new THREE.Vector3(this.position === "sidelying" && this.downSide === "right" ? -1.15 : 1.15, 0.85, 0.45).normalize()
       : new THREE.Vector3(0.55, 0.22, 1).normalize();
     const goal = target.clone().add(dir.multiplyScalar(size));
+    const token = ++this.frameToken;
     if (!animate) {
       this.camera.position.copy(goal);
       this.controls.target.copy(target);
@@ -641,6 +644,7 @@ export class ExamRoom {
     const startTarget = this.controls.target.clone();
     const start = performance.now();
     const step = (now: number) => {
+      if (token !== this.frameToken) return;
       const t = Math.min(1, (now - start) / 600);
       const e = 1 - Math.pow(1 - t, 3);
       this.camera.position.lerpVectors(startPos, goal, e);

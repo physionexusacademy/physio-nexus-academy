@@ -32,3 +32,12 @@
 @media (prefers-reduced-motion: reduce) {
   .vp-hammer, .vp-ping, .vp-push, .vp-bubble { animation: none; }
 }
+
+/* Phones: one scrollable row of position buttons over the 3D view (no scrollbar). */
+.vp-toolbar {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.vp-toolbar::-webkit-scrollbar {
+  display: none;
+}

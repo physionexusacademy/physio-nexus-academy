@@ -229,16 +229,16 @@ export function VirtualPatientApp() {
             </div>
           ) : null}
           {ready && stage !== "pick" ? (
-            <div ref={toolbarRef} className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-center gap-1.5 p-3">
+            <div ref={toolbarRef} className="vp-toolbar absolute inset-x-0 top-0 flex items-center gap-1.5 overflow-x-auto p-3 sm:pointer-events-none sm:flex-wrap sm:overflow-visible">
               {POSITIONS.map(({ id, label, icon: Icon }) => (
-                <button key={id} type="button" onClick={() => changePosition(id)} aria-pressed={position === id} className={"pointer-events-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold backdrop-blur " + (position === id ? "bg-[#2ee6d6] text-[#04263a]" : "bg-[#0a1f3d]/75 text-white hover:bg-[#0a1f3d]")}>
+                <button key={id} type="button" onClick={() => changePosition(id)} aria-pressed={position === id} className={"pointer-events-auto inline-flex flex-none items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold backdrop-blur " + (position === id ? "bg-[#2ee6d6] text-[#04263a]" : "bg-[#0a1f3d]/75 text-white hover:bg-[#0a1f3d]")}>
                   <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
                 </button>
               ))}
-              <button type="button" onClick={() => room?.frameCamera()} className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full bg-[#0a1f3d]/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">
+              <button type="button" onClick={() => room?.frameCamera()} className="pointer-events-auto inline-flex flex-none items-center gap-1.5 rounded-full bg-[#0a1f3d]/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">
                 <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> View
               </button>
-              <span className="pointer-events-auto ml-auto inline-flex items-center gap-1.5 rounded-full bg-[#0a1f3d]/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">
+              <span className="pointer-events-auto order-first inline-flex flex-none items-center gap-1.5 rounded-full bg-[#0a1f3d]/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur sm:order-none sm:ml-auto">
                 <Clock className="h-3.5 w-3.5 text-[#2ee6d6]" aria-hidden="true" />
                 {mode === "osce" && !practice ? `${Math.max(0, Math.floor(remaining / 60))}:${String(Math.max(0, remaining % 60)).padStart(2, "0")} left` : `${elapsedMin} min`}
               </span>
