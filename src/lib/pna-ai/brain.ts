@@ -22,6 +22,8 @@ export type BrainResource = {
   summary: string;
   level?: string;
   keywords: string;
+  /** Curated search names (e.g. a skill's test names) — weighted between title and body. */
+  tags?: string;
   /** Authored key points (PNA Teacher lessons). */
   points?: string[];
   /** Roman Urdu hook/goal (PNA Teacher lessons). */
@@ -33,7 +35,7 @@ export type BrainResource = {
 export type Lang = "en" | "ur";
 export type Kind =
   | "lesson" | "path" | "article" | "topic" | "technique" | "regional" | "condition" | "plan"
-  | "tests" | "atlas" | "case" | "practice" | "service" | "tool" | "policy" | "section";
+  | "tests" | "atlas" | "case" | "practice" | "skill" | "service" | "tool" | "policy" | "section";
 
 export type BrainContext = { lastTopic?: string; lastQuery?: string };
 export type BrainProfile = { stage?: string; goal?: string };
@@ -133,6 +135,7 @@ const navigationRules: { re: RegExp; href: string }[] = [
   { re: /\b(home visit|home visits|ghar par|ghar pe|ghar aa\w*|house call|at my home|at home physio\w*)\b/, href: "/home-visit" },
   { re: /\b(appointments?|booking|book (a|an|my|me)|consult\w*|session|checkup|check up|time lena|milna hai|dikhana hai)\b/, href: "/appointment" },
   { re: /\b(verify|verification|certificates?|sanad)\b/, href: "/verify" },
+  { re: /\b(skills? lab|clinical skills?|practical skills?|osce|practicals?)\b/, href: "/skills" },
   { re: /\b(workshops?|cpd|hands on|practical training|training session)\b/, href: "/workshops" },
   { re: /\b(contact|whatsapp|phone number|call you|email|address|location|rabta|kahan hai|where are you)\b/, href: "/contact" },
   { re: /\b(fee|fees|price|cost|charges|kitne paise|kharcha)\b/, href: "/contact" },
@@ -244,6 +247,7 @@ function kindOf(resource: BrainResource): Kind {
     case "atlas": return "atlas";
     case "case": return "case";
     case "quiz": case "study": return "practice";
+    case "skill": case "skills-hub": return "skill";
     case "teacher-hub": return "path";
     case "service": return "service";
     case "tool": return "tool";
@@ -252,7 +256,7 @@ function kindOf(resource: BrainResource): Kind {
   }
 }
 
-type Doc = { resource: BrainResource; kind: Kind; title: Set<string>; slug: Set<string>; body: Set<string>; titleNorm: string };
+type Doc = { resource: BrainResource; kind: Kind; title: Set<string>; slug: Set<string>; tags: Set<string>; body: Set<string>; titleNorm: string };
 type Index = { docs: Doc[]; df: Map<string, number>; byHref: Map<string, Doc> };
 
 const indexCache = new WeakMap<BrainResource[], Index>();
@@ -265,11 +269,12 @@ function buildIndex(resources: BrainResource[]): Index {
     kind: kindOf(resource),
     title: new Set(tokenize(resource.title)),
     slug: new Set(tokenize(resource.href.replace(/[/-]/g, " "))),
+    tags: new Set(tokenize(resource.tags ?? "")),
     body: new Set(tokenize(`${resource.keywords} ${resource.summary} ${resource.category}`)),
     titleNorm: ` ${normalize(resource.title)} `,
   }));
   const df = new Map<string, number>();
-  for (const doc of docs) for (const token of new Set([...doc.title, ...doc.slug, ...doc.body])) df.set(token, (df.get(token) ?? 0) + 1);
+  for (const doc of docs) for (const token of new Set([...doc.title, ...doc.slug, ...doc.tags, ...doc.body])) df.set(token, (df.get(token) ?? 0) + 1);
   const index = { docs, df, byHref: new Map(docs.map((doc) => [doc.resource.href, doc])) };
   indexCache.set(resources, index);
   return index;
@@ -309,8 +314,9 @@ function scoreDocs(index: Index, u: Understanding, profile?: BrainProfile) {
         let field = 0;
         if (doc.title.has(token)) field += 6;
         if (doc.slug.has(token)) field += 2;
+        if (doc.tags.has(token)) field += 4;
         if (doc.body.has(token)) field += 1;
-        if (field && weight === 1 && doc.title.has(token)) titleHits += 1;
+        if (field && weight === 1 && (doc.title.has(token) || doc.tags.has(token))) titleHits += 1;
         score += weight * idf * field;
       }
       for (const phrase of u.phrases) if (doc.titleNorm.includes(` ${phrase} `)) score += 14;
@@ -352,6 +358,7 @@ const whyText: Record<Kind, { en: string; ur: string }> = {
   atlas: { en: "Visual anatomy & pathology", ur: "Visual anatomy aur pathology" },
   case: { en: "Real case to reason through", ur: "Asli case par reasoning" },
   practice: { en: "Practise & test yourself", ur: "Practice aur khud ko test karein" },
+  skill: { en: "Practical skill: learn, practise, test — beginner to expert", ur: "Practical skill: seekhein, practice, test — beginner se expert" },
   service: { en: "PNA patient service", ur: "PNA patient service" },
   tool: { en: "Website tool (not a diagnosis)", ur: "Website tool (diagnosis nahi)" },
   policy: { en: "Policy", ur: "Policy" },
@@ -366,6 +373,7 @@ const navigationCatalog: Record<string, BrainResource> = {
   "/contact": { id: "browse:contact", title: "Contact PNA", href: "/contact", category: "Contact and support", summary: "Phone, WhatsApp, email and address for questions, fees and support.", keywords: "" },
   "/learn/review": { id: "study:flashcards", title: "My Flashcards (spaced review)", href: "/learn/review", category: "PNA Teacher", summary: "Review the flashcards from your PNA Teacher lessons at the right time.", keywords: "" },
   "/daily-challenge": { id: "quiz:daily-challenge", title: "Daily Clinical Challenge", href: "/daily-challenge", category: "Quiz and clinical practice", summary: "Five timed clinical questions every day, with explanations and a leaderboard.", keywords: "" },
+  "/skills": { id: "skills-hub:skills", title: "Clinical Skills Lab", href: "/skills", category: "Clinical Skills Lab", summary: "MMT, goniometry, dermatomes, myotomes, reflexes, nerves, tone, muscle length, vitals, posture, balance, measurements and palpation — beginner to expert, with simulators, flashcards, level tests and OSCE stations.", keywords: "" },
   "/learn": { id: "teacher-hub:learn", title: "PNA Teacher — step-by-step lessons", href: "/learn", category: "PNA Teacher", summary: "Hard concepts and all 35 manual therapy techniques taught as a conversation, with checks and flashcards.", keywords: "" },
   "/symptom-checker": { id: "tool:symptom-checker", title: "Symptom Checker", href: "/symptom-checker", category: "Website tool", summary: "Screen symptom patterns and safety warnings. It does not provide a diagnosis.", keywords: "" },
   "/resources": { id: "browse:resources", title: "Books & Learning Resources", href: "/resources", category: "Books and PDFs", summary: "Books, PDFs and study material available from PNA.", keywords: "" },
@@ -380,6 +388,7 @@ const navigationLabels: Record<string, { en: string; ur: string }> = {
   "/learn/review": { en: "review your flashcards", ur: "apne flashcards review karne" },
   "/daily-challenge": { en: "practise with today's questions", ur: "aaj ke sawalon se practice karne" },
   "/learn": { en: "learn step by step with PNA Teacher", ur: "PNA Teacher ke saath qadam ba qadam seekhne" },
+  "/skills": { en: "practise clinical skills (MMT, goniometry, neuro exam and more)", ur: "clinical skills (MMT, goniometry, neuro exam waghera) ki practice karne" },
   "/symptom-checker": { en: "screen your symptoms safely", ur: "symptoms ko safely screen karne" },
   "/resources": { en: "find books and study material", ur: "books aur study material dhoondne" },
 };
@@ -443,6 +452,17 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
     suggestions.push(
       { label: ur ? "Mujhe quiz karein" : "Quiz me", href: "/daily-challenge" },
       { label: ur ? "Mere flashcards" : "My flashcards", href: "/learn/review" },
+    );
+  } else if (top.kind === "skill") {
+    lines.push(`**${name}** — ${firstSentences(r.summary, 1)}`);
+    lines.push(
+      ur
+        ? "Skills Lab mein 4 levels hain (Beginner → Expert): Learn, Atlas, Practise (simulator), Flashcards, Level test (80% pass) aur OSCE stations."
+        : "The Skills Lab teaches it in 4 levels (Beginner → Expert): Learn, Atlas, Practise (simulator), Flashcards, a Level test (80% to pass) and OSCE stations.",
+    );
+    suggestions.push(
+      { label: ur ? "Level test shuru karein" : "Start the level test", href: `${r.href}?tab=test` },
+      { label: ur ? "Saari clinical skills" : "All clinical skills", href: "/skills" },
     );
   } else if (top.kind === "condition" || top.kind === "plan") {
     lines.push(`**${name}**: ${firstSentences(r.summary, 2)}`);
@@ -559,7 +579,7 @@ export function think(
   if (u.intents.has("exam")) navHrefs = [...new Set([...navHrefs, "/daily-challenge", "/learn/review", "/learn"])];
   if (u.intents.has("patient") && !navHrefs.includes("/appointment") && !navHrefs.includes("/home-visit")) navHrefs.push("/appointment");
   const navDocs = navHrefs
-    .map((href) => index.byHref.get(href) ?? (navigationCatalog[href] ? { resource: navigationCatalog[href], kind: kindOf(navigationCatalog[href]), title: new Set<string>(), slug: new Set<string>(), body: new Set<string>(), titleNorm: "" } : undefined))
+    .map((href) => index.byHref.get(href) ?? (navigationCatalog[href] ? { resource: navigationCatalog[href], kind: kindOf(navigationCatalog[href]), title: new Set<string>(), slug: new Set<string>(), tags: new Set<string>(), body: new Set<string>(), titleNorm: "" } : undefined))
     .filter((doc): doc is Doc => Boolean(doc))
     .slice(0, u.intents.has("exam") ? 3 : 2);
 

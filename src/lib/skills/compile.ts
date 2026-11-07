@@ -30,7 +30,17 @@ function seededShuffle<T>(items: T[], seed: string): T[] {
   return copy;
 }
 
+/** Ends a fragment with exactly one full stop (values may or may not already have one). */
+const sentence = (text: string) => (/[.!?]$/.test(text.trim()) ? text.trim() : text.trim() + ".");
+
 const fill = (template: string, title: string) => template.replace(/\{title\}/g, title);
+
+/** A distractor that equals, contains or sits inside the right answer would be partly correct. */
+function overlaps(candidate: string, correct: string): boolean {
+  const a = candidate.toLowerCase().trim();
+  const b = correct.toLowerCase().trim();
+  return a === b || a.includes(b) || b.includes(a);
+}
 
 /** Sort key for "ordinal" options (spinal levels, grades, numbers, AIS letters); null otherwise. */
 function ordinalKey(option: string): number | null {
@@ -68,10 +78,11 @@ export function compileSkill(skill: SkillDefinition): SkillData {
 
   for (const item of skill.atlas) {
     for (const field of item.fields) {
-      if (!field.quiz) continue;
+      if (!field.quiz && !field.cardOnly) continue;
       const id = `${skill.slug}:${item.id}:${slugPart(field.label)}`;
       const stem = field.ask ? fill(field.ask, item.title) : `${item.title} — ${field.label}?`;
       generatedCards.push({ id, level: field.level, front: stem, back: field.value });
+      if (!field.quiz) continue;
 
       const sameLabel = (other: typeof item) => other.fields.find((candidate) => candidate.label === field.label)?.value;
       const pool = [
@@ -79,7 +90,7 @@ export function compileSkill(skill: SkillDefinition): SkillData {
         ...skill.atlas.filter((other) => other.id !== item.id && other.group !== item.group),
       ]
         .map(sameLabel)
-        .filter((value): value is string => Boolean(value) && value !== field.value);
+        .filter((value): value is string => typeof value === "string" && value.length > 0 && !overlaps(value, field.value));
       const distractors = [...new Set(pool)].slice(0, 12);
       const chosen = seededShuffle(distractors, id).slice(0, 3);
       if (chosen.length < 3) continue;
@@ -90,7 +101,7 @@ export function compileSkill(skill: SkillDefinition): SkillData {
         prompt: stem,
         options,
         answer: options.indexOf(field.value),
-        explain: `${item.title}: ${field.label.toLowerCase()} — ${field.value}.${item.tip ? " " + item.tip : ""}`,
+        explain: `${item.title}: ${field.label.toLowerCase()} — ${sentence(field.value)}${item.tip ? " " + item.tip : ""}`,
       });
     }
   }
@@ -121,6 +132,8 @@ export function indexEntry(data: SkillData): SkillIndexEntry {
       stations: data.stations.length,
     },
     atlasTitles: data.atlas.map((item) => item.title),
+    topics: data.concepts.map((concept) => concept.title),
+    keywords: data.keywords ?? "",
     goals: data.goals,
     sources: data.sources.map((source) => source.title),
   };

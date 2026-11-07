@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Check, Flame, GraduationCap, Layers, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Check, Flame, GraduationCap, Layers, Ruler, Trophy, Zap } from "lucide-react";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
 import { getDeck, getDueCardIds, getTeacherProfile, getTeacherProgress, TEACHER_EVENT } from "@/lib/teacher/progress";
 import { getDueReviews } from "@/lib/clinical-review-queue";
+import { SKILLS_EVENT, dueSkillCards, getSkillsDeck, getSkillsProgress, passedLevelCount } from "@/lib/skills/progress";
 
 const levels = [
   { name: "New Student", min: 0 },
@@ -22,6 +23,10 @@ type PassState = {
   lessons: number;
   dueCards: number;
   dueCases: number;
+  skillLevels: number;
+  dueSkillCards: number;
+  /** Skill whose flashcards are most overdue — the review step deep-links there. */
+  dueSkill: string | null;
   lessonToday: boolean;
   challengeToday: boolean;
   reviewToday: boolean;
@@ -42,6 +47,17 @@ function readPass(): PassState {
   } catch {
     dueCases = 0;
   }
+  let skillLevels = 0;
+  let skillDue: string[] = [];
+  let dueSkill: string | null = null;
+  try {
+    const deck = getSkillsDeck();
+    skillLevels = passedLevelCount(getSkillsProgress());
+    skillDue = dueSkillCards(deck);
+    dueSkill = skillDue.length ? deck[skillDue[0]]?.skill ?? null : null;
+  } catch {
+    skillLevels = 0;
+  }
   return {
     name: profile?.name?.trim() || null,
     xp: progress.totalXP,
@@ -50,6 +66,9 @@ function readPass(): PassState {
     lessons: Object.keys(teacher.lessons).length,
     dueCards: getDueCardIds(getDeck()).length,
     dueCases,
+    skillLevels,
+    dueSkillCards: skillDue.length,
+    dueSkill,
     lessonToday: Object.values(teacher.lessons).some((lesson) => lesson.completedAt === today),
     challengeToday: progress.eventIds.includes("daily-challenge:daily:" + today),
     reviewToday: progress.eventIds.includes("pna-teacher:review:" + today),
@@ -69,7 +88,7 @@ export function StudentPass() {
 
   useEffect(() => {
     refresh();
-    const events = ["pna-unified-progress-updated", "storage", TEACHER_EVENT, "pna-review-queue-updated", "pna-daily-score-saved"];
+    const events = ["pna-unified-progress-updated", "storage", TEACHER_EVENT, SKILLS_EVENT, "pna-review-queue-updated", "pna-daily-score-saved"];
     events.forEach((name) => window.addEventListener(name, refresh));
     return () => events.forEach((name) => window.removeEventListener(name, refresh));
   }, [refresh]);
@@ -79,7 +98,10 @@ export function StudentPass() {
   const next = levels.find((level) => level.min > xp);
   const percent = next ? Math.round(((xp - current.min) / (next.min - current.min)) * 100) : 100;
   const isNew = !pass || (pass.xp === 0 && pass.lessons === 0);
-  const due = (pass?.dueCards ?? 0) + (pass?.dueCases ?? 0);
+  const lessonDue = (pass?.dueCards ?? 0) + (pass?.dueCases ?? 0);
+  const due = lessonDue + (pass?.dueSkillCards ?? 0);
+  // Lesson cards first; if only Skills Lab cards are due, go straight to that skill's flashcards.
+  const reviewHref = lessonDue === 0 && pass?.dueSkill ? `/skills/${pass.dueSkill}?tab=flashcards` : "/learn/review";
   const done = [pass?.lessonToday, pass?.challengeToday, pass?.reviewToday || (pass !== null && due === 0 && !isNew)].filter(Boolean).length;
 
   const mission = [
@@ -98,7 +120,7 @@ export function StudentPass() {
       done: Boolean(pass?.challengeToday),
     },
     {
-      href: "/learn/review",
+      href: reviewHref,
       icon: Layers,
       title: due > 0 ? `Review ${due} due item${due === 1 ? "" : "s"}` : "Review your flashcards",
       detail: due > 0 ? "Spaced repetition locks it in" : isNew ? "Cards appear after your first lesson" : "Nothing due — you're on top of it",
@@ -145,6 +167,18 @@ export function StudentPass() {
                 <span key={index} data-on={active} title={active ? "Active" : "Not active"} />
               ))}
             </div>
+            <a href="/skills" className="lobby-pass-skills">
+              <Ruler className="h-4 w-4 flex-none text-[var(--nx-aqua)]" aria-hidden="true" />
+              <span className="min-w-0 flex-1">
+                <strong>Clinical Skills Lab</strong>
+                <small>
+                  {pass?.skillLevels
+                    ? `${pass.skillLevels} skill level${pass.skillLevels === 1 ? "" : "s"} passed${pass.dueSkillCards ? ` · ${pass.dueSkillCards} card${pass.dueSkillCards === 1 ? "" : "s"} due` : ""}`
+                    : "MMT, goniometry, neuro exam & more — start at Beginner"}
+                </small>
+              </span>
+              <ArrowRight className="h-4 w-4 flex-none text-[var(--nx-dim)]" aria-hidden="true" />
+            </a>
           </div>
 
           <div className="lobby-mission">

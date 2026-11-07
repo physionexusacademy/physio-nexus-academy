@@ -9,7 +9,7 @@ export type AcademyIcon =
   | "trophy" | "arena" | "cases" | "cards" | "registry" | "laugh"
   | "care" | "calendar" | "home" | "symptoms" | "calculator" | "pin"
   | "workshop" | "archive" | "research" | "people" | "founder" | "info" | "certificate" | "star" | "faq" | "contact"
-  | "lesson";
+  | "lesson" | "skills";
 
 export type AcademyPlace = {
   label: string;
@@ -53,6 +53,7 @@ export const academyWings: AcademyWing[] = [
     tagline: "Train your clinical brain",
     intro: "Daily questions, patient cases and spaced review — so knowledge turns into confident decisions.",
     places: [
+      { label: "Clinical Skills Lab", href: "/skills", description: "MMT, goniometry, neuro exam & more — beginner to expert", icon: "skills", keywords: "skills lab practical osce mmt manual muscle testing goniometry rom dermatomes myotomes reflexes nerves tone spasticity ashworth muscle length vitals blood pressure posture balance berg tug palpation landmarks measurement" },
       { label: "Daily Challenge", href: "/daily-challenge", description: "5 timed questions + leaderboard", icon: "trophy", keywords: "quiz mcq daily weekly leaderboard exam test" },
       { label: "Clinical Arena", href: "/clinical-arena", description: "History → diagnosis → treatment", icon: "arena", keywords: "cases game reasoning differential" },
       { label: "Case Lab", href: "/case-lab", description: "Real reports, reasoning step by step", icon: "cases", keywords: "case studies reports" },
@@ -106,6 +107,23 @@ export const popularLessons: AcademyPlace[] = [
   { label: "Exercise Dosage (FITT & RPE)", href: "/learn/exercise-dosage", description: "PNA Teacher lesson", icon: "lesson", keywords: "fitt rpe sets reps dosage" },
 ];
 
+/** Each Skills Lab skill, so search and the command palette can jump straight to it. */
+export const skillPlaces: AcademyPlace[] = [
+  { label: "Manual Muscle Testing (MMT)", href: "/skills/manual-muscle-testing", description: "Skills Lab · grades 0–5, 46 tests", icon: "skills", keywords: "mmt muscle strength grading oxford daniels kendall" },
+  { label: "Goniometry", href: "/skills/goniometry", description: "Skills Lab · ROM measurement", icon: "skills", keywords: "rom range of motion goniometer measurement joint angle" },
+  { label: "Dermatomes & Sensory Testing", href: "/skills/dermatomes", description: "Skills Lab · key sensory points", icon: "skills", keywords: "dermatome sensation light touch pinprick asia isncsci" },
+  { label: "Myotomes", href: "/skills/myotomes", description: "Skills Lab · root motor testing", icon: "skills", keywords: "myotome root weakness key muscles asia" },
+  { label: "Reflexes & UMN Signs", href: "/skills/reflexes", description: "Skills Lab · DTRs, Babinski, Hoffmann", icon: "skills", keywords: "reflex deep tendon babinski hoffmann clonus umn lmn" },
+  { label: "Peripheral Nerve Examination", href: "/skills/peripheral-nerves", description: "Skills Lab · nerves & neurodynamics", icon: "skills", keywords: "peripheral nerve median ulnar radial fibular sciatic ulnt slr slump" },
+  { label: "Tone & Coordination", href: "/skills/tone-coordination", description: "Skills Lab · MAS, Tardieu, cerebellar", icon: "skills", keywords: "tone spasticity rigidity ashworth tardieu coordination cerebellar ataxia" },
+  { label: "Muscle Length Testing", href: "/skills/muscle-length", description: "Skills Lab · Thomas, Ober, SLR", icon: "skills", keywords: "muscle length tightness flexibility thomas ober ely slr hamstring" },
+  { label: "Vital Signs & Exercise Monitoring", href: "/skills/vital-signs", description: "Skills Lab · BP, HR, SpO₂, RPE", icon: "skills", keywords: "vitals vital signs blood pressure heart rate pulse spo2 rpe borg karvonen" },
+  { label: "Posture Assessment", href: "/skills/posture", description: "Skills Lab · plumb line & deviations", icon: "skills", keywords: "posture plumb line kyphosis lordosis scoliosis flat foot" },
+  { label: "Balance & Functional Tests", href: "/skills/balance-function", description: "Skills Lab · Berg, TUG, gait speed", icon: "skills", keywords: "balance berg tug falls gait speed 6mwt dgi fga sit to stand" },
+  { label: "Limb & Body Measurements", href: "/skills/limb-measurements", description: "Skills Lab · leg length, girth, Schober", icon: "skills", keywords: "leg length girth circumference swelling oedema schober chest expansion grip" },
+  { label: "Surface Anatomy & Palpation", href: "/skills/palpation", description: "Skills Lab · landmarks & pulses", icon: "skills", keywords: "palpation surface anatomy landmarks bony pulses ottawa" },
+];
+
 export function visibleWings(atlasPublished: boolean): AcademyWing[] {
   return academyWings.map((wing) => ({
     ...wing,
@@ -139,6 +157,7 @@ export function searchAcademy(query: string, atlasPublished = true, limit = 8): 
   const all: AcademySearchHit[] = [
     ...visibleWings(atlasPublished).flatMap((wing) => wing.places.map((place) => ({ ...place, wing: wing.label }))),
     ...popularLessons.map((place) => ({ ...place, wing: "Lesson" })),
+    ...skillPlaces.map((place) => ({ ...place, wing: "Skills Lab" })),
   ];
   if (!words.length) return [];
   return all

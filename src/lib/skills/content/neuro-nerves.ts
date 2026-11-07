@@ -56,6 +56,7 @@ export const peripheralNervesSkill: SkillDefinition = {
   slug: "peripheral-nerves",
   title: "Peripheral Nerve Examination",
   short: "Peripheral nerves",
+  keywords: "peripheral nerve nerves median ulnar radial axillary fibular peroneal sciatic tibial femoral nerve injury ulnt slr slump neurodynamic",
   phase: "neuro",
   icon: "nerves",
   summary: "Examine 15 key nerves — roots, muscles, sensory areas, quick tests and classic lesion signs — plus neurodynamic tests (ULNTs, SLR, slump, prone knee bend).",
@@ -175,6 +176,10 @@ export const peripheralNervesSkill: SkillDefinition = {
     { id: "nrv-e2", level: "expert", prompt: "A neurodynamic test is positive when…", options: ["It reproduces symptoms, differs from the other side and changes with structural differentiation", "It is painful", "It feels tight", "The range is less than 90°"], answer: 0, explain: "Stretch discomfort alone is not a positive test." },
     { id: "nrv-e3", level: "expert", case: "Numb index fingertip and weak APB, but FPL and pronator teres are strong.", prompt: "Lesion site?", options: ["Median nerve at the wrist (carpal tunnel)", "High median nerve at the elbow", "C6 root", "Anterior interosseous nerve"], answer: 0, explain: "Branches above the wrist are spared." },
     { id: "nrv-e4", level: "expert", case: "SLR reproduces buttock and calf pain at 40°; adding ankle dorsiflexion worsens it; releasing hip flexion slightly eases it.", prompt: "Interpretation?", options: ["Positive neurodynamic test — sciatic nerve/L5–S1 root sensitivity", "Hamstring tightness only", "Hip osteoarthritis", "Negative test"], answer: 0, explain: "Symptom reproduction with structural differentiation (ankle DF) supports neural involvement." },
+    { id: "nrv-e5", level: "expert", case: "Weak shoulder abduction, elbow flexion and external rotation; numb lateral arm and forearm after a motorbike fall onto the shoulder.", prompt: "Most likely lesion?", options: ["Upper trunk of the brachial plexus (C5–C6, Erb's)", "Axillary nerve only", "Radial nerve at the spiral groove", "C8–T1 lower trunk"], answer: 0, explain: "Several C5–C6 nerves (axillary, suprascapular, musculocutaneous) together = upper trunk." },
+    { id: "nrv-e6", level: "expert", case: "Wrist drop, but triceps strength and the triceps reflex are normal; numb dorsal first web space.", prompt: "Where is the radial nerve injured?", options: ["Spiral groove of the humerus — below the triceps branches", "Axilla — above the triceps branches", "Posterior interosseous nerve only (no sensory loss)", "C7 root"], answer: 0, explain: "Triceps spared + sensory loss = spiral groove; PIN lesions have no sensory loss." },
+    { id: "nrv-e7", level: "expert", case: "Claw hand of the ring and little fingers with weak finger abduction, but normal sensation and strong FDP to the little finger.", prompt: "Lesion site?", options: ["Deep (motor) branch of the ulnar nerve at Guyon's canal", "Ulnar nerve at the elbow", "C8 root", "Median nerve"], answer: 0, explain: "Sensory sparing and strong ulnar FDP place it distally — the deep motor branch at the wrist." },
+    { id: "nrv-e8", level: "expert", case: "Tingling in the thumb and index finger at night; positive Phalen's and Tinel's at the wrist; normal neck movements and reflexes.", prompt: "Best next step?", options: ["Treat as carpal tunnel syndrome (night splint, education) and refer for nerve conduction if severe or persistent", "Cervical traction for C6 radiculopathy", "Ulnar nerve gliding", "Immediate surgery for everyone"], answer: 0, explain: "Classic median nerve compression at the wrist; conservative care first unless wasting or severe." },
   ],
   stations: [
     {
@@ -240,6 +245,7 @@ export const toneCoordinationSkill: SkillDefinition = {
   slug: "tone-coordination",
   title: "Tone & Coordination",
   short: "Tone & coordination",
+  keywords: "tone spasticity grading grade rigidity hypotonia modified ashworth scale mas tardieu coordination cerebellar ataxia finger nose heel shin dysdiadochokinesia",
   phase: "neuro",
   icon: "tone",
   summary: "Grade spasticity with the Modified Ashworth and Tardieu scales, tell spasticity from rigidity, and examine coordination and balance — finger-nose, heel-shin, Romberg and more.",

@@ -1,7 +1,7 @@
 [
  {
   "slug": "manual-muscle-testing",
-  "version": 2073617568,
+  "version": 3324481596,
   "title": "Manual Muscle Testing (MMT)",
   "short": "MMT",
   "phase": "measure",
@@ -64,6 +64,26 @@
    "Foot eversion",
    "Great toe extension"
   ],
+  "topics": [
+   "What manual muscle testing measures",
+   "The 0–5 scale (Oxford / MRC)",
+   "Gravity decides grade 3",
+   "Make test vs break test",
+   "The universal 8-step sequence",
+   "When not to resist",
+   "Stabilise the proximal segment",
+   "Resistance: where, which way, how fast",
+   "Group tests by position",
+   "Document like a professional",
+   "Plus and minus grades",
+   "Catching substitutions",
+   "Grades 2, 1 and 0 in practice",
+   "How reliable is MMT?",
+   "Read the pattern of weakness",
+   "When MMT is the wrong tool",
+   "MMT inside the ISNCSCI exam"
+  ],
+  "keywords": "mmt manual muscle test testing strength grading oxford scale kendall daniels worthingham muscle power taqat",
   "goals": {
    "beginner": "Know what each grade means and why gravity decides grade 3.",
    "intermediate": "Test any muscle with the right position, stabilisation and resistance.",
@@ -78,7 +98,7 @@
  },
  {
   "slug": "goniometry",
-  "version": 3581871963,
+  "version": 659953510,
   "title": "Goniometry",
   "short": "Goniometry",
   "phase": "measure",
@@ -89,7 +109,7 @@
   "counts": {
    "concepts": 15,
    "atlas": 39,
-   "questions": 341,
+   "questions": 338,
    "cards": 312,
    "stations": 4
   },
@@ -134,6 +154,24 @@
    "Lumbar flexion — modified-modified Schober",
    "TMJ mouth opening"
   ],
+  "topics": [
+   "What goniometry measures",
+   "Know your goniometer",
+   "The 0–180 system",
+   "Six steps for every measurement",
+   "Normal values are a guide",
+   "Arms matter more than the axis",
+   "Reading the scale correctly",
+   "Stabilise to stop false range",
+   "Recording hypomobility and hypermobility",
+   "End-feel: what stops the movement",
+   "Capsular patterns",
+   "Two-joint muscles change the reading",
+   "How accurate is a goniometer?",
+   "Interpreting a limitation",
+   "Tracking meaningful change"
+  ],
+  "keywords": "goniometer goniometry rom range of motion joint angle measurement aaom aaos end feel naapna",
   "goals": {
    "beginner": "Know the goniometer, the 0–180 system and normal ranges.",
    "intermediate": "Place the axis and arms correctly for every major joint.",
@@ -148,7 +186,7 @@
  },
  {
   "slug": "dermatomes",
-  "version": 583851800,
+  "version": 2145670546,
   "title": "Dermatomes & Sensory Testing",
   "short": "Dermatomes",
   "phase": "neuro",
@@ -187,6 +225,18 @@
    "S3",
    "S4–S5"
   ],
+  "topics": [
+   "What is a dermatome?",
+   "Key sensory points",
+   "Memory tricks that stick",
+   "Testing light touch and pinprick",
+   "Which pathway are you testing?",
+   "Read the pattern",
+   "ISNCSCI sensory scoring",
+   "Never skip S3–S5",
+   "Overlap, variation and diabetes screening"
+  ],
+  "keywords": "dermatome dermatomes sensation sensory testing light touch pinprick key sensory points asia isncsci",
   "goals": {
    "beginner": "Point to every key sensory point from C2 to S4–S5.",
    "intermediate": "Test light touch and pinprick correctly and score them.",
@@ -200,7 +250,7 @@
  },
  {
   "slug": "myotomes",
-  "version": 4196182050,
+  "version": 4179769601,
   "title": "Myotomes & Key Muscles",
   "short": "Myotomes",
   "phase": "neuro",
@@ -231,6 +281,18 @@
    "S1",
    "S2"
   ],
+  "topics": [
+   "What is a myotome?",
+   "The screen in one table",
+   "How to screen",
+   "ISNCSCI key muscles",
+   "Pitfalls",
+   "Localise with the triad",
+   "Which disc hits which root?",
+   "Root or peripheral nerve?",
+   "ASIA Impairment Scale (AIS)"
+  ],
+  "keywords": "myotome myotomes root motor testing key muscles asia isncsci",
   "goals": {
    "beginner": "Name the movement for every myotome from C1 to S2.",
    "intermediate": "Test each myotome correctly and know the ISNCSCI key muscles.",
@@ -244,7 +306,7 @@
  },
  {
   "slug": "reflexes",
-  "version": 1109951040,
+  "version": 801709335,
   "title": "Reflexes & UMN Signs",
   "short": "Reflexes",
   "phase": "neuro",
@@ -255,7 +317,7 @@
   "counts": {
    "concepts": 9,
    "atlas": 11,
-   "questions": 73,
+   "questions": 70,
    "cards": 50,
    "stations": 2
   },
@@ -272,6 +334,18 @@
    "Jaw jerk",
    "Superficial abdominal reflexes"
   ],
+  "topics": [
+   "The reflex arc in one breath",
+   "Six reflexes, six levels",
+   "Grading 0 to 4+",
+   "Technique that works",
+   "Upper motor neuron signs",
+   "Interpreting reflexes",
+   "Inverted reflexes",
+   "Localise with reflexes",
+   "Pitfalls"
+  ],
+  "keywords": "reflex reflexes deep tendon reflex dtr jerk hammer babinski plantar hoffmann clonus umn lmn",
   "goals": {
    "beginner": "Know each reflex, its root and the normal response.",
    "intermediate": "Elicit reflexes reliably, with reinforcement, and grade 0–4+.",
@@ -286,7 +360,7 @@
  },
  {
   "slug": "peripheral-nerves",
-  "version": 2157352748,
+  "version": 3881872346,
   "title": "Peripheral Nerve Examination",
   "short": "Peripheral nerves",
   "phase": "neuro",
@@ -297,7 +371,7 @@
   "counts": {
    "concepts": 8,
    "atlas": 15,
-   "questions": 113,
+   "questions": 117,
    "cards": 97,
    "stations": 3
   },
@@ -318,6 +392,17 @@
    "Tibial nerve",
    "Superior gluteal nerve"
   ],
+  "topics": [
+   "Nerve or root?",
+   "The hand's three nerves in 30 seconds",
+   "Test the autonomous zones",
+   "Brachial plexus patterns",
+   "Classic lesion signs",
+   "The ulnar paradox",
+   "Neurodynamic tests",
+   "Separating nerve, root and plexus"
+  ],
+  "keywords": "peripheral nerve nerves median ulnar radial axillary fibular peroneal sciatic tibial femoral nerve injury ulnt slr slump neurodynamic",
   "goals": {
    "beginner": "Know each nerve's roots and key muscles.",
    "intermediate": "Test each nerve's motor and sensory function quickly.",
@@ -332,7 +417,7 @@
  },
  {
   "slug": "tone-coordination",
-  "version": 3745353950,
+  "version": 144083603,
   "title": "Tone & Coordination",
   "short": "Tone & coordination",
   "phase": "neuro",
@@ -360,6 +445,16 @@
    "Tandem gait",
    "Pronator drift"
   ],
+  "topics": [
+   "What is muscle tone?",
+   "Spasticity vs rigidity",
+   "Modified Ashworth Scale — method",
+   "Coordination tests",
+   "Cerebellar signs (DANISH)",
+   "What Romberg really tests",
+   "From findings to treatment"
+  ],
+  "keywords": "tone spasticity grading grade rigidity hypotonia modified ashworth scale mas tardieu coordination cerebellar ataxia finger nose heel shin dysdiadochokinesia",
   "goals": {
    "beginner": "Know what tone is and what each coordination test checks.",
    "intermediate": "Perform MAS, Tardieu and coordination tests correctly.",
@@ -370,6 +465,364 @@
    "Bohannon & Smith (1987) — Modified Ashworth Scale",
    "Boyd & Graham (1999) — Modified Tardieu Scale",
    "O'Sullivan, Schmitz & Fulk — Physical Rehabilitation (7th ed.)"
+  ]
+ },
+ {
+  "slug": "muscle-length",
+  "version": 2497619489,
+  "title": "Muscle Length Testing",
+  "short": "Muscle length",
+  "phase": "patient",
+  "icon": "length",
+  "summary": "Test 14 key muscles for length — Thomas, Ely, Ober, SLR, 90/90, calf, adductors, pectorals, lats and neck — with correct stabilisation, normal values and how to tell muscle from joint or nerve.",
+  "ur": "14 ahem muscles ki length test karna — Thomas, Ely, Ober, SLR, 90/90, calf, pectorals aur neck — sahi stabilisation aur normal values ke saath.",
+  "atlasLabel": "Length test atlas",
+  "counts": {
+   "concepts": 9,
+   "atlas": 14,
+   "questions": 106,
+   "cards": 84,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "Modified Thomas test",
+   "Ely's test (prone knee bend)",
+   "Ober test",
+   "Passive straight-leg raise (hamstring length)",
+   "90/90 active knee extension (popliteal angle)",
+   "Gastrocnemius length",
+   "Soleus length",
+   "Hip adductor length",
+   "Piriformis length",
+   "Pectoralis major length",
+   "Pectoralis minor length",
+   "Latissimus dorsi length",
+   "Upper trapezius length",
+   "Levator scapulae length"
+  ],
+  "topics": [
+   "What a muscle length test is",
+   "One-joint vs two-joint muscles",
+   "Where to stop",
+   "Stabilise the proximal attachment",
+   "The weight-bearing lunge (knee-to-wall) test",
+   "Muscle, joint or nerve?",
+   "End-feel tells the story",
+   "Tight, guarded or hypermobile?",
+   "From finding to treatment"
+  ],
+  "keywords": "muscle length tightness tight muscles flexibility stretch thomas ober ely slr popliteal angle gastrocnemius soleus lunge",
+  "goals": {
+   "beginner": "Know which test checks which muscle and how the patient lies.",
+   "intermediate": "Perform each test with the right stabilisation and know the normal result.",
+   "advanced": "Spot compensations and read a positive test correctly.",
+   "expert": "Tell muscle from joint or nerve, and turn findings into treatment."
+  },
+  "sources": [
+   "Kendall et al. — Muscles: Testing and Function with Posture and Pain (5th ed.)",
+   "Magee — Orthopedic Physical Assessment (7th ed.)",
+   "Norkin & White — Measurement of Joint Motion (5th ed.)",
+   "Bennell et al. (1998) — weight-bearing lunge test reliability"
+  ]
+ },
+ {
+  "slug": "vital-signs",
+  "version": 1615340913,
+  "title": "Vital Signs & Exercise Monitoring",
+  "short": "Vital signs",
+  "phase": "patient",
+  "icon": "vitals",
+  "summary": "Measure pulse, blood pressure, breathing, SpO₂ and temperature properly — then use RPE, the talk test, pain monitoring and safety limits to dose and stop exercise safely.",
+  "ur": "Pulse, BP, saans, SpO₂ aur temperature sahi tareeqe se lena — phir RPE, talk test aur safety limits se exercise ko safe rakhna.",
+  "atlasLabel": "Vitals atlas",
+  "counts": {
+   "concepts": 8,
+   "atlas": 13,
+   "questions": 83,
+   "cards": 61,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "Heart rate (pulse)",
+   "Blood pressure",
+   "Respiratory rate",
+   "Oxygen saturation (SpO₂)",
+   "Body temperature",
+   "Rating of perceived exertion (Borg 6–20)",
+   "Breathlessness — modified Borg (CR10)",
+   "Talk test",
+   "Pain (Numeric Rating Scale)",
+   "Orthostatic (postural) hypotension check",
+   "Blood glucose (diabetes)",
+   "Ankle–brachial pressure index (ABPI)",
+   "Capillary refill time"
+  ],
+  "topics": [
+   "Why physios measure vitals",
+   "Normal adult values at rest",
+   "Blood pressure, step by step",
+   "Three ways to set intensity",
+   "Abnormal responses to exercise",
+   "Medicines that change the numbers",
+   "Stop exercise immediately if…",
+   "Ward and ICU: early mobilisation"
+  ],
+  "keywords": "vitals vital signs bp blood pressure heart rate pulse respiratory rate spo2 oxygen saturation temperature rpe borg karvonen talk test exercise monitoring news2",
+  "goals": {
+   "beginner": "Know the normal adult values and why we measure them.",
+   "intermediate": "Measure every vital sign correctly and monitor exercise intensity.",
+   "advanced": "Spot measurement errors and abnormal responses to exercise.",
+   "expert": "Decide when to start, adjust or stop exercise — in clinic, ward and ICU."
+  },
+  "sources": [
+   "ACSM's Guidelines for Exercise Testing and Prescription (11th ed.)",
+   "Royal College of Physicians — National Early Warning Score (NEWS2)",
+   "ATS (2002) statement — six-minute walk test",
+   "Silbernagel et al. (2007) — pain-monitoring model"
+  ]
+ },
+ {
+  "slug": "posture",
+  "version": 1878594189,
+  "title": "Posture Assessment",
+  "short": "Posture",
+  "phase": "patient",
+  "icon": "posture",
+  "summary": "Assess standing posture against the plumb line, recognise 13 common deviations — from forward head to flat foot — and link each to likely short and weak muscles, measures and correction.",
+  "ur": "Plumb line ke saath posture dekhna, 13 aam deviations pehchanna — aur har ek ke short/weak muscles, measurement aur correction samajhna.",
+  "atlasLabel": "Posture atlas",
+  "counts": {
+   "concepts": 8,
+   "atlas": 13,
+   "questions": 54,
+   "cards": 65,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "Forward head posture",
+   "Rounded shoulders (protracted scapulae)",
+   "Thoracic hyperkyphosis",
+   "Kypho-lordotic posture",
+   "Sway-back posture",
+   "Flat-back posture",
+   "Scoliosis",
+   "Lateral pelvic tilt",
+   "Genu valgum (knock knees)",
+   "Genu varum (bow legs)",
+   "Genu recurvatum",
+   "Pes planus (flat foot)",
+   "Pes cavus (high arch)"
+  ],
+  "topics": [
+   "Ideal alignment: the plumb line",
+   "Setting up a posture assessment",
+   "Janda's crossed syndromes",
+   "Kendall's four spinal postures",
+   "Measure, don't just look",
+   "Structural or functional?",
+   "Posture and pain: keep perspective",
+   "Postures that need referral"
+  ],
+  "keywords": "posture assessment plumb line forward head kyphosis lordosis sway back flat back scoliosis upper crossed lower crossed knock knees bow legs flat foot",
+  "goals": {
+   "beginner": "Know ideal alignment and recognise each deviation.",
+   "intermediate": "Name the muscles that tend to be short or long in each posture.",
+   "advanced": "Measure posture objectively and separate structural from functional problems.",
+   "expert": "Decide when posture matters for the patient's problem — and when to refer."
+  },
+  "sources": [
+   "Kendall et al. — Muscles: Testing and Function with Posture and Pain (5th ed.)",
+   "Magee — Orthopedic Physical Assessment (7th ed.), Assessment of Posture",
+   "Page, Frank & Lardner — Assessment and Treatment of Muscle Imbalance: The Janda Approach",
+   "Redmond et al. (2006) — Foot Posture Index"
+  ]
+ },
+ {
+  "slug": "balance-function",
+  "version": 3966533585,
+  "title": "Balance & Functional Tests",
+  "short": "Balance & function",
+  "phase": "patient",
+  "icon": "balance",
+  "summary": "Run 16 standard balance and function tests — Berg, TUG, 5xSTS, gait speed, 6MWT, DGI/FGA, Mini-BESTest and more — with exact protocols, scoring, fall-risk cut-offs and clinical reasoning.",
+  "ur": "16 balance aur function tests — Berg, TUG, gait speed, 6MWT, DGI/FGA — sahi protocol, scoring aur fall-risk cut-offs ke saath.",
+  "atlasLabel": "Outcome measure atlas",
+  "counts": {
+   "concepts": 9,
+   "atlas": 16,
+   "questions": 77,
+   "cards": 80,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "Berg Balance Scale",
+   "Timed Up and Go (TUG)",
+   "Five Times Sit-to-Stand (5xSTS)",
+   "30-Second Chair Stand",
+   "Functional Reach Test",
+   "Single-leg stance test",
+   "Romberg test",
+   "10-Metre Walk Test (gait speed)",
+   "Six-Minute Walk Test (6MWT)",
+   "Dynamic Gait Index (DGI)",
+   "Functional Gait Assessment (FGA)",
+   "Mini-BESTest",
+   "Four Square Step Test (FSST)",
+   "Tinetti Performance-Oriented Mobility Assessment (POMA)",
+   "Activities-specific Balance Confidence (ABC) scale",
+   "Modified CTSIB (sensory organisation)"
+  ],
+  "topics": [
+   "Balance needs three senses and a brain",
+   "Why falls matter",
+   "The 4-stage balance test (STEADI)",
+   "Make results trustworthy",
+   "Choose the right test",
+   "Cut-off, MDC and MCID",
+   "Ceiling and floor effects",
+   "From score to system",
+   "A falls-prevention plan"
+  ],
+  "keywords": "balance falls fall risk berg bbs tug timed up and go sit to stand 5xsts gait speed 10 metre walk 6mwt six minute walk dgi fga mini bestest romberg outcome measures",
+  "goals": {
+   "beginner": "Know what each test measures and why falls matter.",
+   "intermediate": "Perform and score every test to its standard protocol.",
+   "advanced": "Interpret cut-offs, change scores and ceiling effects.",
+   "expert": "Choose the right battery, find the failing system and plan falls prevention."
+  },
+  "sources": [
+   "Shirley Ryan AbilityLab — Rehabilitation Measures Database",
+   "CDC STEADI — Stopping Elderly Accidents, Deaths & Injuries toolkit",
+   "ATS (2002) statement — six-minute walk test",
+   "O'Sullivan, Schmitz & Fulk — Physical Rehabilitation (7th ed.)"
+  ]
+ },
+ {
+  "slug": "limb-measurements",
+  "version": 1765252201,
+  "title": "Limb & Body Measurements",
+  "short": "Limb measurements",
+  "phase": "patient",
+  "icon": "measures",
+  "summary": "Measure leg length (true, apparent, Galeazzi, blocks), girth and swelling, lymphoedema, chest expansion, Schober, grip strength, BMI/waist, navicular drop and Q-angle — reliably and with the right cut-offs.",
+  "ur": "Leg length, girth aur swelling, lymphoedema, chest expansion, Schober, grip strength aur BMI — sahi landmarks aur cut-offs ke saath naapna.",
+  "atlasLabel": "Measurement atlas",
+  "counts": {
+   "concepts": 8,
+   "atlas": 17,
+   "questions": 91,
+   "cards": 85,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "True leg length",
+   "Apparent leg length",
+   "Galeazzi (Allis) test",
+   "Standing block method",
+   "Thigh circumference",
+   "Knee circumference (effusion)",
+   "Calf circumference",
+   "Figure-of-eight ankle measure",
+   "Arm circumference (lymphoedema)",
+   "Upper-limb length",
+   "Chest expansion",
+   "Modified Schober test",
+   "Occiput-to-wall distance",
+   "BMI and waist circumference",
+   "Grip strength (hand dynamometer)",
+   "Navicular drop",
+   "Q-angle"
+  ],
+  "topics": [
+   "Why measure instead of eyeballing?",
+   "Tape-measure rules",
+   "True vs apparent leg length",
+   "Measuring swelling",
+   "What difference matters?",
+   "Reliability: same tester, same method",
+   "Measurements that change management today",
+   "From number to plan"
+  ],
+  "keywords": "limb measurement leg length discrepancy true apparent girth circumference swelling oedema edema lymphoedema schober chest expansion grip strength dynamometer bmi waist q angle navicular drop tape measure",
+  "goals": {
+   "beginner": "Know what each measurement is for and its landmarks.",
+   "intermediate": "Measure accurately and reproducibly, both sides.",
+   "advanced": "Know what difference is meaningful and avoid common errors.",
+   "expert": "Turn a measurement into a clinical decision — including red flags."
+  },
+  "sources": [
+   "Magee — Orthopedic Physical Assessment (7th ed.)",
+   "Petersen et al. (1999) — figure-of-eight ankle measurement reliability",
+   "Cruz-Jentoft et al. (2019) — EWGSOP2 sarcopenia consensus",
+   "WHO Expert Consultation (2004) — BMI cut-offs for Asian populations"
+  ]
+ },
+ {
+  "slug": "palpation",
+  "version": 3047569614,
+  "title": "Surface Anatomy & Palpation",
+  "short": "Palpation",
+  "phase": "patient",
+  "icon": "palpation",
+  "summary": "Find 25 key bony landmarks and pulses on the body map — how to palpate each, the spinal level it marks, what lies nearby and why it matters clinically.",
+  "ur": "25 ahem bony landmarks aur pulses dhoondna — kaise palpate karna hai, kaunsa spinal level batata hai aur clinically kyun zaroori hai.",
+  "atlasLabel": "Landmark atlas",
+  "counts": {
+   "concepts": 8,
+   "atlas": 26,
+   "questions": 152,
+   "cards": 130,
+   "stations": 3
+  },
+  "atlasTitles": [
+   "Suprasternal (jugular) notch",
+   "Sternal angle (angle of Louis)",
+   "Xiphoid process",
+   "Acromioclavicular (AC) joint",
+   "Coracoid process",
+   "Medial epicondyle",
+   "Lateral epicondyle",
+   "Radial styloid",
+   "Olecranon",
+   "C7 spinous process",
+   "Spine of the scapula (root)",
+   "Inferior angle of the scapula",
+   "Iliac crest (highest point)",
+   "Posterior superior iliac spine (PSIS)",
+   "Anterior superior iliac spine (ASIS)",
+   "Femoral pulse (mid-inguinal point)",
+   "Greater trochanter",
+   "Ischial tuberosity",
+   "Patella",
+   "Tibial tuberosity",
+   "Popliteal fossa (popliteal pulse)",
+   "Head of the fibula",
+   "Medial malleolus",
+   "Lateral malleolus",
+   "Dorsalis pedis pulse",
+   "Calcaneus and Achilles insertion"
+  ],
+  "topics": [
+   "How to palpate",
+   "Landmarks that mark spinal levels",
+   "Palpate layer by layer",
+   "Peripheral pulses",
+   "What tenderness means",
+   "Palpation is less precise than we think",
+   "Ottawa rules: palpation that decides X-rays",
+   "Findings to act on"
+  ],
+  "keywords": "palpation surface anatomy surface marking bony landmarks pulses spinal levels ottawa rules",
+  "goals": {
+   "beginner": "Find every landmark on the body map.",
+   "intermediate": "Palpate each one correctly and know the level it marks.",
+   "advanced": "Know the structures nearby and the clinical meaning of tenderness.",
+   "expert": "Use palpation in clinical reasoning — and recognise red flags."
+  },
+  "sources": [
+   "Field — Anatomy: Palpation and Surface Markings (5th ed.)",
+   "Tixa — Atlas of Palpatory Anatomy",
+   "Stiell et al. — Ottawa ankle and knee rules"
   ]
  }
 ]

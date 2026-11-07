@@ -15,10 +15,12 @@ import { getAllCitySlugs } from "@/lib/locations";
 import { publishedCaseReports } from "@/lib/case-report-library";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
+import { skillIndex } from "@/lib/skills/catalog";
 
 const routes = [
   "",
   "/learn",
+  "/skills",
   "/about",
   "/founder",
   "/faculty",
@@ -56,7 +58,7 @@ function getRoutePriority(route: string): number {
   if (route === "") return 1;
   if (route === "/home-visit" || route === "/appointment") return 0.9;
   if (route === "/case-lab" || route === "/stupid-intern-diaries") return 0.88;
-  if (route === "/learn") return 0.95;
+  if (route === "/learn" || route === "/skills") return 0.95;
   return 0.7;
 }
 
@@ -180,6 +182,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${base}/learn/paths/${encodeURIComponent(path.slug)}`,
       changeFrequency: "monthly" as const,
       priority: 0.88,
+    })),
+    ...skillIndex.map((skill) => ({
+      url: `${base}/skills/${encodeURIComponent(skill.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
     })),
   ];
 

@@ -770,6 +770,7 @@ export const mmtSkill: SkillDefinition = {
   slug: "manual-muscle-testing",
   title: "Manual Muscle Testing (MMT)",
   short: "MMT",
+  keywords: "mmt manual muscle test testing strength grading oxford scale kendall daniels worthingham muscle power taqat",
   phase: "measure",
   icon: "mmt",
   summary: "Grade strength from 0 to 5 like an expert: positions, stabilisation, resistance, gravity-minimised testing and substitutions for 46 muscle tests.",

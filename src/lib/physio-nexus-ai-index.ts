@@ -10,6 +10,7 @@ import { treatmentPlans } from "@/lib/treatment-plans";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
+import { skillIndex } from "@/lib/skills/catalog";
 
 export type PnaLearningResource = {
   id: string;
@@ -24,6 +25,8 @@ export type PnaLearningResource = {
   hookUr?: string;
   goalUr?: string;
   minutes?: number;
+  /** Curated search names, weighted above body text (Skills Lab). */
+  tags?: string;
 };
 
 const knowledgeResources: PnaLearningResource[] = allKnowledgeArticles.map((item) => ({
@@ -100,6 +103,18 @@ const teacherResources: PnaLearningResource[] = [
     keywords: [path.title, path.slug, path.audience, "learning path course step by step", ...path.outcomes.map((outcome) => outcome.en)].join(" "),
   })),
 ];
+
+const skillResources: PnaLearningResource[] = skillIndex.map((skill) => ({
+  id: `skill:${skill.slug}`,
+  title: `${skill.title} — Clinical Skills Lab`,
+  href: `/skills/${encodeURIComponent(skill.slug)}`,
+  category: "Clinical Skills Lab",
+  summary: skill.summary,
+  level: "Beginner to Expert",
+  keywords: [skill.title, skill.short, skill.slug.replace(/-/g, " "), skill.keywords, skill.atlasLabel, ...skill.atlasTitles, ...skill.topics, "clinical skills lab practical skill practice osce flashcards level test how to perform"].join(" "),
+  points: [skill.goals.beginner, skill.goals.intermediate, skill.goals.expert],
+  tags: skill.keywords,
+}));
 
 const mskResources: PnaLearningResource[] = mskConditions.map((item) => ({
   id: `msk:${item.slug}`,
@@ -372,7 +387,7 @@ const browseResources: PnaLearningResource[] = [
 ];
 
 const uniqueResources = new Map<string, PnaLearningResource>();
-for (const resource of [...teacherResources, ...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
+for (const resource of [...teacherResources, ...skillResources, ...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
   if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
 }
 

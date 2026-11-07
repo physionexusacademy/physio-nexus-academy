@@ -106,6 +106,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:teacher
 
+      - name: Validate Clinical Skills Lab content, generated data and wiring
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:skills
+
       - name: Validate Physio Nexus AI answers, Roman Urdu understanding and emergency safety
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:ai
@@ -266,6 +270,9 @@ jobs:
           check_url "https://physionexusacademy.com/manual-therapy/strain-counterstrain" 'data-pna-reading="clinical-story-v3"'
           check_url "https://physionexusacademy.com/manual-therapy/mulligan-snags-nags" 'data-pna-reading="clinical-story-v3"'
           check_url "https://physionexusacademy.com/manual-therapy/regions/by-region/cervical" 'data-pna-region-overviews="v1"'
+          check_url "https://physionexusacademy.com/skills" "Clinical Skills Lab"
+          check_url "https://physionexusacademy.com/skills/goniometry" 'data-pna-skill-page="goniometry"'
+          check_url "https://physionexusacademy.com/skills-data/manual-muscle-testing.json" '"slug":"manual-muscle-testing"'
 
           # Exercise the read-only PNA AI resource navigator. These requests do not submit forms or create records.
           node scripts/validate-pna-ai-production.mjs

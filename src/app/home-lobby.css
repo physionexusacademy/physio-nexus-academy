@@ -335,6 +335,31 @@
   background: var(--nx-amber);
   box-shadow: 0 0 10px rgba(255, 198, 92, 0.6);
 }
+.lobby-pass-skills {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 14px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 16px;
+  border: 1px solid var(--nx-line);
+  background: rgba(46, 230, 214, 0.05);
+  transition: border-color 0.2s var(--pna-ease), background 0.2s var(--pna-ease);
+}
+.lobby-pass-skills:hover {
+  border-color: rgba(46, 230, 214, 0.45);
+  background: rgba(46, 230, 214, 0.09);
+}
+.lobby-pass-skills strong {
+  display: block;
+  font-size: 0.86rem;
+  color: #fff;
+}
+.lobby-pass-skills small {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--nx-mute);
+}
 .lobby-mission-step {
   display: flex;
   align-items: center;

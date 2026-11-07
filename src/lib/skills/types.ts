@@ -47,6 +47,8 @@ export type SkillField = {
   level: SkillLevelId;
   /** Turn this field into multiple-choice questions and flashcards. */
   quiz?: boolean;
+  /** Flashcard only — for answers that overlap between items and would make unfair MCQs. */
+  cardOnly?: boolean;
   /** Custom question stem, e.g. "Where is the axis placed for {title}?" */
   ask?: string;
 };
@@ -120,6 +122,8 @@ export type SkillDefinition = {
   stations: SkillStation[];
   simulators: SkillSimulator[];
   related?: { label: string; href: string }[];
+  /** Extra words people search with (abbreviations, Roman Urdu, tool names). */
+  keywords?: string;
 };
 
 /** Compiled skill as served to the browser. */
@@ -138,6 +142,9 @@ export type SkillIndexEntry = {
   atlasLabel: string;
   counts: { concepts: number; atlas: number; questions: number; cards: number; stations: number };
   atlasTitles: string[];
+  /** Concept (Learn tab) titles — used by search and the AI navigator. */
+  topics: string[];
+  keywords: string;
   goals: Record<SkillLevelId, string>;
   sources: string[];
 };

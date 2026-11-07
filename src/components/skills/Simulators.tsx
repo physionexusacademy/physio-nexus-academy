@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Check, Minus, Plus, RefreshCw, X } from "lucide-react";
-import type { JointDemoSpec, SkillAtlasItem, SkillData, SkillLevelId } from "@/lib/skills/types";
+import type { BodyPoint, JointDemoSpec, SkillAtlasItem, SkillData, SkillLevelId } from "@/lib/skills/types";
 import { levelRank } from "@/lib/skills/types";
 import { recordDrillAnswer } from "@/lib/skills/progress";
 import { BodyChart, type ChartMarker } from "./BodyChart";
@@ -407,6 +407,18 @@ export function GradeSim({ data, mode, level }: { data: SkillData; mode: "mmt" |
 /* Body map: find and name the key sensory points                       */
 /* ------------------------------------------------------------------ */
 
+/** Distance from a tap to a point on either side of the body — students examine both sides. */
+const sideDistance = (tap: { x: number; y: number }, point: BodyPoint) =>
+  Math.min(Math.hypot(tap.x - point.x, tap.y - point.y), Math.hypot(tap.x - (200 - point.x), tap.y - point.y));
+
+/** Correct when the tap is near the target and no other landmark on that view is closer. */
+function isHit(tap: { x: number; y: number }, target: SkillAtlasItem, all: SkillAtlasItem[]) {
+  const point = target.point!;
+  const distance = sideDistance(tap, point);
+  if (distance > 24) return false;
+  return all.every((item) => item.id === target.id || item.point!.view !== point.view || sideDistance(tap, item.point!) >= distance - 0.5);
+}
+
 const pointInfo = (item: SkillAtlasItem) => item.fields.find((candidate) => /sensory|zone|landmark|where/i.test(candidate.label))?.value ?? "";
 
 export function BodyMapSim({ data }: { data: SkillData }) {
@@ -429,8 +441,7 @@ export function BodyMapSim({ data }: { data: SkillData }) {
     setOptions(shuffleOptions(points, fresh));
   };
   const point = target.point!;
-  const distance = tap ? Math.hypot(tap.x - point.x, tap.y - point.y) : Infinity;
-  const hit = distance <= 22;
+  const hit = tap ? isHit(tap, target, points) : false;
 
   const markers: ChartMarker[] =
     mode === "find"
@@ -468,7 +479,7 @@ export function BodyMapSim({ data }: { data: SkillData }) {
             mode === "find" && !tap
               ? (value) => {
                   setTap(value);
-                  recordDrillAnswer(Math.hypot(value.x - point.x, value.y - point.y) <= 22);
+                  recordDrillAnswer(isHit(value, target, points));
                 }
               : undefined
           }
