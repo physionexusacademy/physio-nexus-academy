@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import Image from "next/image";
 import { CalendarDays, MapPin, ArrowRight, Camera } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -55,7 +56,15 @@ export default async function TrainingArchivePage() {
   };
 
   return (
-    <div className="container-content section-padding">
+    <>
+    <NexusHero
+      kicker="Academy wing · Training archive"
+      title={<>Past workshops &amp; <span className="nx-gradient-text">clinical training</span></>}
+      lead={<>A documented portfolio of physiotherapy workshops, internship programs and clinical initiatives led by Dr. Sajjad Raza PT — the Physio Nexus Academy professional training record.</>}
+      crumbs={[{ label: "Academy", href: "/about" }, { label: "Training Archive" }]}
+      actions={<><a href="/workshops" className="nx-btn nx-btn-primary">Upcoming workshops</a><a href="/verify" className="nx-btn nx-btn-ghost">Verify a certificate</a></>}
+    />
+    <div className="container-content section-padding !pt-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -63,19 +72,6 @@ export default async function TrainingArchivePage() {
         }}
       />
 
-      <div className="max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-          Training Archive
-        </p>
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-          Past Workshops &amp; Clinical Training
-        </h1>
-        <p className="mt-4 text-navy-600">
-          A documented portfolio of physiotherapy workshops, internship programs
-          and clinical initiatives led by Dr. Sajjad Raza PT and presented as
-          part of the Physio Nexus Academy professional training record.
-        </p>
-      </div>
 
       {galleryPhotos && galleryPhotos.length > 0 && (
         <section className="mt-12 overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-white via-cyan-50/40 to-white p-5 shadow-sm sm:p-8" aria-labelledby="training-moments-title">
@@ -170,5 +166,6 @@ export default async function TrainingArchivePage() {
         })}
       </div>
     </div>
+    </>
   );
 }

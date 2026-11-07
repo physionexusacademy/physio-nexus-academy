@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import {
   Activity,
   ArrowRight,
@@ -45,16 +46,26 @@ const categoryIcons: Record<string, typeof Activity> = {
 
 export default function MSKInjuryHubPage() {
   return (
-    <div className="container-content section-padding">
-      <header className="mb-6">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">PNA MSK Clinical Library</p>
-        <h1 className="mt-2 text-2xl font-bold leading-tight text-navy-900 sm:text-3xl">
-          MSK Clinical Injury & Rehabilitation
-        </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-navy-600">
-          Browse condition-specific assessment and evidence-informed rehabilitation guides by body region.
-        </p>
-      </header>
+    <>
+    <NexusHero
+      kicker="Learn wing · MSK clinical library"
+      title={<>MSK injury &amp; <span className="nx-gradient-text">rehabilitation</span></>}
+      lead="Condition-by-condition guides: how it presents, how to assess it, red flags, and evidence-informed rehab stages — organised by body region."
+      crumbs={[{ label: "Learn", href: "/learn" }, { label: "MSK Injury Hub" }]}
+      actions={
+        <>
+          <a href="#msk-regions" className="nx-btn nx-btn-primary">Browse by region</a>
+          <a href="/msk-special-tests" className="nx-btn nx-btn-ghost">Special tests library</a>
+          <a href="/symptom-checker" className="nx-btn nx-btn-ghost">Symptom checker</a>
+        </>
+      }
+      stats={[
+        { value: mskConditionIndex.length, label: "conditions" },
+        { value: mskRegions.length, label: "body regions" },
+        { value: mskSpecialTests.length, label: "special tests" },
+      ]}
+    />
+    <div className="container-content section-padding !pt-10">
 
       <section className="mt-7 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-teal-200 bg-white p-5 shadow-sm sm:p-6" aria-label="Explore MSK special tests">
         <div className="max-w-2xl">
@@ -65,7 +76,7 @@ export default function MSKInjuryHubPage() {
         <a href="/msk-special-tests" className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800">Explore Special Tests <ArrowRight className="h-4 w-4"/></a>
       </section>
 
-      <section className="mt-12">
+      <section id="msk-regions" className="mt-12 scroll-mt-24">
         <div>
           <p className="text-sm font-bold uppercase tracking-widest text-orange-700">Browse by Region</p>
           <h2 className="mt-1 text-2xl font-bold text-navy-800 sm:text-3xl">Whole-body clinical library</h2>
@@ -117,6 +128,6 @@ export default function MSKInjuryHubPage() {
         </p>
       </section>
     </div>
+    </>
   );
 }
-

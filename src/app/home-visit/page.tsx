@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import { Building2, Home, MessageCircle, ShieldCheck, MapPin } from "lucide-react";
 import { HomeVisitForm } from "./HomeVisitForm";
 
@@ -162,7 +163,15 @@ export default function HomeVisitPage() {
   };
 
   return (
-    <div className="container-content section-padding max-w-3xl">
+    <>
+    <NexusHero
+      kicker="Clinic wing · Home physiotherapy"
+      title={<>Physiotherapy at <span className="nx-gradient-text">your home</span></>}
+      lead={<>Request a <strong className="text-white">physiotherapy home visit</strong> by sharing your city, area, preferred date &amp; time and essential patient details. Requests are accepted from across Pakistan — with especially strong pathways across Sindh — and availability is confirmed before any visit is finalised.</>}
+      crumbs={[{ label: "Clinic", href: "/patient-services" }, { label: "Home Visit" }]}
+      actions={<><a href="#home-visit-form" className="nx-btn nx-btn-primary">Fill the request form</a><a href="/appointment" className="nx-btn nx-btn-ghost">Clinic appointment instead</a></>}
+    />
+    <div className="container-content section-padding !pt-10 max-w-3xl">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -176,21 +185,6 @@ export default function HomeVisitPage() {
         }}
       />
 
-      <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-          Patient Services · Pakistan · Sindh Focus
-        </p>
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-          Physiotherapy Home Visit Service in Pakistan
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-navy-600">
-          Request a <strong>physiotherapy home visit</strong> or{" "}
-          <strong>home physiotherapy service</strong> by sharing your city, area,
-          preferred date & time, and essential patient details. We accept
-          requests from across Pakistan — with especially strong pathways across
-          Sindh — and confirm service availability before any visit is finalized.
-        </p>
-      </div>
 
       {/* Prominent WhatsApp CTA */}
       <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -298,7 +292,9 @@ export default function HomeVisitPage() {
             WhatsApp us instead
           </a>
         </div>
-        <HomeVisitForm />
+        <div id="home-visit-form" className="scroll-mt-24">
+          <HomeVisitForm />
+        </div>
       </div>
 
       <div className="mt-6 flex items-start gap-3 rounded-xl border border-grey-200 bg-white p-4 text-sm text-navy-500">
@@ -330,5 +326,6 @@ export default function HomeVisitPage() {
         <p className="mt-3 text-xs text-navy-500">0348 900 9028 · Available for home visit queries</p>
       </div>
     </div>
+    </>
   );
 }

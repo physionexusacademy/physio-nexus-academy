@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import { Button } from "@/components/ui/Button";
 
 const siteUrl = "https://physionexusacademy.com";
@@ -70,7 +71,14 @@ export default function ResearchPage() {
   };
 
   return (
-    <div className="container-content section-padding max-w-5xl">
+    <>
+    <NexusHero
+      kicker="Academy wing · Research & academic support"
+      title={<>Physiotherapy research &amp; <span className="nx-gradient-text">academic guidance</span></>}
+      lead={<>Structured research mentoring for students and professionals who want to understand the research process, strengthen academic reasoning and make better evidence-informed decisions. The focus is guidance and learning — not doing assessed academic work on a learner&apos;s behalf.</>}
+      crumbs={[{ label: "Academy", href: "/about" }, { label: "Research Support" }]}
+    />
+    <div className="container-content section-padding !pt-10 max-w-5xl">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -78,19 +86,6 @@ export default function ResearchPage() {
         }}
       />
 
-      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-        Research &amp; Academic Support
-      </p>
-      <h1 className="mt-2 max-w-4xl text-3xl font-bold sm:text-4xl">
-        Physiotherapy Research &amp; Academic Guidance
-      </h1>
-
-      <p className="mt-4 max-w-3xl text-base leading-7 text-navy-600">
-        Physio Nexus Academy provides structured research mentoring for physiotherapy
-        students and professionals who want to understand the research process, strengthen
-        their academic reasoning and make better evidence-informed decisions. The focus is
-        guidance and learning — not doing assessed academic work on a learner&apos;s behalf.
-      </p>
 
       <section className="mt-10">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">
@@ -184,5 +179,6 @@ export default function ResearchPage() {
         Request Research Guidance
       </Button>
     </div>
+    </>
   );
 }

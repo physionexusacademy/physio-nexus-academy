@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import {
   Activity,
   ArrowRight,
@@ -92,41 +93,21 @@ export default function KnowledgeHubPage() {
     .slice(0, 4);
 
   return (
-    <div className="container-content section-padding">
-      <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 via-teal-700 to-navy-800 p-7 text-white shadow-xl sm:p-10">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-100">
-          PNA Physiotherapy Library
-        </p>
-        <h1 className="mt-3 max-w-4xl text-3xl font-bold leading-tight text-white sm:text-5xl">
-          Study by specialty. Go deeper by level. Apply it in cases.
-        </h1>
-        <p className="mt-5 max-w-3xl text-base leading-7 text-cyan-50 sm:text-lg">
-          A structured physiotherapy learning portal for students and
-          professionals — from core concepts to advanced clinical reasoning,
-          evidence sources and case-based learning.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <a
-            href="#specialties"
-            className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-navy-800 shadow-sm transition hover:-translate-y-0.5"
-          >
-            Browse Specialties
-          </a>
-          <a
-            href="/case-lab"
-            className="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
-          >
-            Open Clinical Case Lab
-          </a>
-          <a
-            href="/daily-challenge"
-            className="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
-          >
-            Daily Challenge & Champions
-          </a>
-        </div>
-      </div>
-
+    <>
+    <NexusHero
+      kicker="Learn wing · PNA physiotherapy library"
+      title={<>Study by specialty. Go deeper by level. <span className="nx-gradient-text">Apply it in cases.</span></>}
+      lead="A structured physiotherapy library for students and professionals — from core concepts to advanced clinical reasoning, evidence sources and case-based learning."
+      crumbs={[{ label: "Learn", href: "/learn" }, { label: "Knowledge Hub" }]}
+      actions={
+        <>
+          <a href="#specialties" className="nx-btn nx-btn-primary">Browse specialties</a>
+          <a href="/case-lab" className="nx-btn nx-btn-ghost">Open Clinical Case Lab</a>
+          <a href="/daily-challenge" className="nx-btn nx-btn-ghost">Daily Challenge &amp; Champions</a>
+        </>
+      }
+    />
+    <div className="container-content section-padding !pt-10">
       <section className="mt-10">
         <div className="grid gap-5 md:grid-cols-3">
           <a
@@ -379,5 +360,6 @@ export default function KnowledgeHubPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

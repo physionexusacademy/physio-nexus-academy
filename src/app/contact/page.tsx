@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import { MessageCircle, Mail, MapPin, Star } from "lucide-react";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { ContactForm } from "./ContactForm";
@@ -28,17 +29,20 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="container-content section-padding">
+    <>
+    <NexusHero
+      kicker="Academy wing · Contact"
+      title={<>Get in <span className="nx-gradient-text">touch</span></>}
+      lead={<>Questions about workshops, resources or appointments? Message us on WhatsApp, email, or use the form below.</>}
+      crumbs={[{ label: "Academy", href: "/about" }, { label: "Contact" }]}
+    />
+    <div className="container-content section-padding !pt-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(contactJsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-        Contact
-      </p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Get in Touch</h1>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
         <div>
@@ -97,5 +101,6 @@ export default function ContactPage() {
         <ContactForm />
       </div>
     </div>
+    </>
   );
 }

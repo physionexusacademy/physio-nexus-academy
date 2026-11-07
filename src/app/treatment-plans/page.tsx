@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import {
   Activity,
   ArrowRight,
@@ -49,33 +50,20 @@ export const metadata: Metadata = {
 
 export default function TreatmentPlansPage() {
   return (
-    <div className="container-content section-padding">
-      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-teal-700 to-navy-900 p-7 text-white shadow-xl sm:p-10">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-100">
-          PNA Clinical Pathways
-        </p>
-        <h1 className="mt-3 max-w-4xl text-3xl font-bold leading-tight text-white sm:text-5xl">
-          Condition-Based Physiotherapy Treatment Plans
-        </h1>
-        <p className="mt-5 max-w-3xl text-base leading-7 text-emerald-50 sm:text-lg">
-          Start with assessment and red flags, then build a complete management
-          pathway: outcome measures, modalities, manual therapy, exercise
-          prescription, home program, progression and escalation criteria.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
-          <span className="rounded-full bg-white/10 px-4 py-2">
-            {treatmentPlans.length} detailed clinical pathways
-          </span>
-          <span className="rounded-full bg-white/10 px-4 py-2">
-            {treatmentPlanCategories.length} clinical categories
-          </span>
-          <span className="rounded-full bg-white/10 px-4 py-2">
-            Active-care first approach
-          </span>
-        </div>
-      </section>
-
-      <section className="mt-8 grid gap-4 md:grid-cols-4">
+    <>
+    <NexusHero
+      kicker="Learn wing · PNA clinical pathways"
+      title={<>Condition-based <span className="nx-gradient-text">treatment plans</span></>}
+      lead="Start with assessment and red flags, then build a complete management pathway: outcome measures, modalities, manual therapy, exercise prescription, home program, progression and escalation criteria."
+      crumbs={[{ label: "Learn", href: "/learn" }, { label: "Treatment Plans" }]}
+      stats={[
+        { value: treatmentPlans.length, label: "detailed clinical pathways" },
+        { value: treatmentPlanCategories.length, label: "clinical categories" },
+        { value: "Active", label: "care-first approach" },
+      ]}
+    />
+    <div className="container-content section-padding !pt-10">
+      <section className="grid gap-4 md:grid-cols-4">
         {[
           {
             icon: Stethoscope,
@@ -179,5 +167,6 @@ export default function TreatmentPlansPage() {
         </p>
       </section>
     </div>
+    </>
   );
 }

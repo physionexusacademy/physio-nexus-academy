@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import {
   AlertTriangle,
   Building2,
@@ -154,7 +155,15 @@ export default function AppointmentPage() {
   };
 
   return (
-    <div className="container-content section-padding max-w-3xl">
+    <>
+    <NexusHero
+      kicker="Clinic wing · Appointments across Pakistan"
+      title={<>Book a physiotherapy <span className="nx-gradient-text">appointment</span></>}
+      lead={<>Request an <strong className="text-white">in-person</strong> or <strong className="text-white">online physiotherapy consultation</strong>. Choose your preferred date and time, share essential details, and our team will contact you to confirm availability.</>}
+      crumbs={[{ label: "Clinic", href: "/patient-services" }, { label: "Book Appointment" }]}
+      actions={<><a href="#appointment-form" className="nx-btn nx-btn-primary">Fill the request form</a><a href="/home-visit" className="nx-btn nx-btn-ghost">Need a home visit?</a></>}
+    />
+    <div className="container-content section-padding !pt-10 max-w-3xl">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -168,19 +177,6 @@ export default function AppointmentPage() {
         }}
       />
 
-      <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-          Patient Services · Pakistan
-        </p>
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-          Book Physiotherapy Appointment in Pakistan
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-navy-600">
-          Request an <strong>in-person</strong> or <strong>online physiotherapy consultation</strong>.
-          Choose your preferred date and time, share essential details, and our team will contact
-          you to confirm availability. Requests are accepted from across Pakistan.
-        </p>
-      </div>
 
       {/* Prominent WhatsApp CTA */}
       <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -302,7 +298,9 @@ export default function AppointmentPage() {
             WhatsApp us instead
           </a>
         </div>
-        <AppointmentForm />
+        <div id="appointment-form" className="scroll-mt-24">
+          <AppointmentForm />
+        </div>
       </div>
 
       <div className="mt-6 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -339,5 +337,6 @@ export default function AppointmentPage() {
         <p className="mt-3 text-xs text-navy-500">0348 900 9028 · Available for appointment queries</p>
       </div>
     </div>
+    </>
   );
 }

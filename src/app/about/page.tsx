@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
@@ -52,13 +53,15 @@ export default async function AboutPage() {
   };
 
   return (
-    <div className="container-content section-padding max-w-3xl">
-      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-        About PNA
-      </p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-        Our Story &amp; Purpose
-      </h1>
+    <>
+    <NexusHero
+      kicker="Academy wing · About PNA"
+      title={<>Our story &amp; <span className="nx-gradient-text">purpose</span></>}
+      lead={<>Built to bridge the gap between physiotherapy theory and real clinical practice — for students, professionals and patients in Pakistan.</>}
+      crumbs={[{ label: "Academy", href: "/about" }, { label: "About PNA" }]}
+      actions={<><a href="/founder" className="nx-btn nx-btn-primary">Meet the founder</a><a href="/faculty" className="nx-btn nx-btn-ghost">Our faculty</a></>}
+    />
+    <div className="container-content section-padding !pt-10 max-w-3xl">
 
       <p className="mt-6 text-navy-600">
         Physio Nexus Academy was established in {siteConfig.established} to
@@ -120,5 +123,6 @@ export default async function AboutPage() {
         {siteConfig.founder.name} ({siteConfig.founder.credentialsShort}).
       </p>
     </div>
+    </>
   );
 }

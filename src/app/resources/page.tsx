@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import {
   BadgeCheck,
   BookOpen,
@@ -90,7 +91,15 @@ export default async function ResourcesPage() {
   };
 
   return (
-    <div className="container-content section-padding">
+    <>
+    <NexusHero
+      kicker="Learn wing · Books & resources"
+      title={<>Learning resource <span className="nx-gradient-text">library</span></>}
+      lead={<>Physiotherapy books, review notes, manuals and educational PDFs that support students and professionals with practical, evidence-informed learning.</>}
+      crumbs={[{ label: "Learn", href: "/learn" }, { label: "Books & Resources" }]}
+      actions={<><a href="#order-book" className="nx-btn nx-btn-primary">Order a book</a><a href="/learn" className="nx-btn nx-btn-ghost">Free lessons</a></>}
+    />
+    <div className="container-content section-padding !pt-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -104,16 +113,6 @@ export default async function ResourcesPage() {
         }}
       />
 
-      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">
-        Books & Resources
-      </p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-        Learning Resource Library
-      </h1>
-      <p className="mt-4 max-w-2xl text-navy-600">
-        Explore physiotherapy books, review notes, manuals and educational PDFs
-        designed to support students and professionals with practical, evidence-informed learning.
-      </p>
 
       <section className="mt-10 overflow-hidden rounded-3xl border border-grey-200 bg-gradient-to-br from-navy-900 via-navy-800 to-teal-900 text-white shadow-xl">
         <div className="grid lg:grid-cols-[0.8fr_1.2fr]">
@@ -241,5 +240,6 @@ export default async function ResourcesPage() {
         })}
       </div>
     </div>
+    </>
   );
 }

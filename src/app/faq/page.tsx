@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -47,10 +48,15 @@ export default async function FaqPage() {
   };
 
   return (
-    <div className="container-content section-padding max-w-2xl">
+    <>
+    <NexusHero
+      kicker="Academy wing · Help"
+      title={<>Frequently asked <span className="nx-gradient-text">questions</span></>}
+      lead={<>Quick answers about learning with PNA, workshops, certificates and patient services. Still stuck? Press Ctrl K and ask Physio Nexus AI.</>}
+      crumbs={[{ label: "Academy", href: "/about" }, { label: "FAQ" }]}
+    />
+    <div className="container-content section-padding !pt-10 max-w-2xl">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
-      <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">FAQ</p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Frequently Asked Questions</h1>
       <div className="mt-8 space-y-8">
         {groups.map((group) => (
           <div key={group.group}>
@@ -67,5 +73,6 @@ export default async function FaqPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }

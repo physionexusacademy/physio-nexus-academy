@@ -745,10 +745,11 @@ body[data-nx-menu="open"] button[aria-label="Open Physio Nexus AI"] {
 }
 .nx-hero-inner {
   position: relative;
-  padding: 3.25rem 0 3rem;
+  padding-top: 3.25rem;
+  padding-bottom: 3rem;
 }
 @media (min-width: 768px) {
-  .nx-hero-inner { padding: 4.5rem 0 4rem; }
+  .nx-hero-inner { padding-top: 4.5rem; padding-bottom: 4rem; }
 }
 .nx-crumbs {
   display: flex;
@@ -869,4 +870,11 @@ body[data-nx-menu="open"] button[aria-label="Open Physio Nexus AI"] {
   .nx-cmdk-backdrop {
     animation: none !important;
   }
+}
+
+/* Section headings share the academy display face; story prose keeps its serif. */
+h1.font-serif,
+h2.font-serif {
+  font-family: var(--font-heading);
+  letter-spacing: -0.03em;
 }
