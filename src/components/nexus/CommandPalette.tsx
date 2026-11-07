@@ -96,6 +96,7 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
           <Search className="h-5 w-5 flex-none text-[var(--nx-aqua)]" aria-hidden="true" />
           <input
             ref={inputRef}
+            autoFocus
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search lessons, cases, services… or ask a question"

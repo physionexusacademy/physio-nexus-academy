@@ -48,7 +48,7 @@ export default function MSKInjuryHubPage() {
   return (
     <>
     <NexusHero
-      kicker="Learn wing · MSK clinical library"
+      kicker="Learn wing · PNA MSK Clinical Library"
       title={<>MSK injury &amp; <span className="nx-gradient-text">rehabilitation</span></>}
       lead="Condition-by-condition guides: how it presents, how to assess it, red flags, and evidence-informed rehab stages — organised by body region."
       crumbs={[{ label: "Learn", href: "/learn" }, { label: "MSK Injury Hub" }]}

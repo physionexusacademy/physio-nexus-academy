@@ -995,7 +995,8 @@
   }
 }
 @media (max-width: 380px) {
-  .pna-vision-pathway { min-height: 250px; padding: 12px 10px 100px; }
+  /* photo max height = 157 × 498/754 ≈ 104px; keep the copy above it */
+  .pna-vision-pathway { min-height: 250px; padding: 12px 10px 106px; }
   .pna-vision-pathway strong { font-size: 0.95rem; }
 }
 @media (max-width: 560px) {
