@@ -18,10 +18,11 @@ import { classifySurface, type SurfaceInfo } from "./anatomy";
 
 export type Side = "left" | "right";
 export type PatientPosition = "standing" | "supine" | "prone" | "sitting" | "sidelying";
-export type JointId = "shoulder" | "elbow" | "wrist" | "hip" | "knee" | "ankle" | "toe";
+export type JointId = "shoulder" | "elbow" | "wrist" | "hand" | "hip" | "knee" | "ankle" | "toe";
 /**
  * Degrees. flex: flexion(+)/extension(−) — for the ankle dorsiflexion(+), for the great toe extension(+);
  * abd: abduction(+)/adduction(−) — for the wrist radial deviation(+); rot: internal rotation(+) — for the ankle inversion(+).
+ * hand: flex = grip (0–100 %), abd = thumb flexion (0–100 %).
  */
 export type JointAngles = { flex?: number; abd?: number; rot?: number };
 export type Pose = Partial<Record<`${JointId}.${Side}`, JointAngles>> & {
@@ -94,11 +95,35 @@ function alignments(side: Side) {
 }
 const ALIGN = { left: alignments("left"), right: alignments("right") };
 
+/** Finger bones and the rest-pose axis each one flexes about (towards the palm). */
+function fingerAxes(side: Side) {
+  const s = sideKey(side);
+  const wrist = head(`wrist.${s}`);
+  const handDir = head(`finger3-1.${s}`).clone().sub(wrist).normalize();
+  const curl = V(restBone.get(`finger3-3.${s}`)!.tail).sub(head(`finger3-1.${s}`));
+  const palmar = curl.sub(handDir.clone().multiplyScalar(curl.dot(handDir))).normalize();
+  const out: { name: string; axis: THREE.Vector3; max: number; thumb: boolean }[] = [];
+  for (let f = 1; f <= 5; f++) {
+    for (let k = 1; k <= 3; k++) {
+      const name = `finger${f}-${k}.${s}`;
+      const b = restBone.get(name);
+      if (!b) continue;
+      const dir = V(b.tail).sub(V(b.head)).normalize();
+      const axis = new THREE.Vector3().crossVectors(dir, palmar).normalize();
+      out.push({ name, axis, max: f === 1 ? 35 : [0, 75, 90, 55][k], thumb: f === 1 });
+    }
+  }
+  return out;
+}
+const FINGERS = { left: fingerAxes("left"), right: fingerAxes("right") };
+
 /* ------------------------------------------------------------------ */
 /* Exam room                                                          */
 /* ------------------------------------------------------------------ */
 
 export type PickResult = SurfaceInfo & {
+  /** Bone that carries this skin point (markers attach to it). */
+  bone: string;
   point: THREE.Vector3;
   normal: THREE.Vector3;
   landmark: { id: string; side: Side | "mid"; distance: number } | null;
@@ -115,10 +140,14 @@ export class ExamRoom {
   private skinned: THREE.SkinnedMesh | null = null;
   private bones = new Map<string, THREE.Bone>();
   private pose: Pose = {};
+  /** The posture that defines the current position (e.g. hips and knees bent in sitting). */
+  private basePose: Pose = {};
   private target: Pose = {};
   private from: Pose = {};
   private tween: { start: number; duration: number } | null = null;
   private position: PatientPosition = "standing";
+  /** In side-lying, the side the patient lies on. */
+  downSide: Side = "left";
   private listeners = new Set<Listener>();
   private needsRender = true;
   private frame = 0;
@@ -299,9 +328,12 @@ export class ExamRoom {
     return this.position;
   }
 
-  /** Moves to a pose (merged over the current target), smoothly unless `animate` is false. */
+  /**
+   * Moves to a pose, smoothly unless `animate` is false. `replace` starts again from the
+   * position's base posture; otherwise the pose is merged over the current target.
+   */
   setPose(pose: Pose, { animate = true, replace = false, duration = 650 }: { animate?: boolean; replace?: boolean; duration?: number } = {}) {
-    const next: Pose = replace ? structuredClone(pose) : { ...structuredClone(this.target), ...structuredClone(pose) };
+    const next: Pose = replace ? { ...structuredClone(this.basePose), ...structuredClone(pose) } : { ...structuredClone(this.target), ...structuredClone(pose) };
     this.from = structuredClone(this.pose);
     this.target = next;
     if (!animate) {
@@ -413,6 +445,18 @@ export class ExamRoom {
       targets.set(`toe1-1.${s}`, foot.clone().multiply(q(X, -(toe.flex ?? 0))));
     }
 
+    // Fingers: local curls about each bone's own flexion axis.
+    const locals = new Map<string, THREE.Quaternion>();
+    for (const side of ["left", "right"] as Side[]) {
+      const hand = this.pose[`hand.${side}`] ?? {};
+      const grip = Math.max(0, Math.min(100, hand.flex ?? 0)) / 100;
+      const thumb = Math.max(0, Math.min(100, hand.abd ?? 0)) / 100;
+      for (const finger of FINGERS[side]) {
+        const amount = finger.thumb ? Math.max(thumb, grip * 0.6) : grip;
+        if (amount > 0) locals.set(finger.name, q(finger.axis, finger.max * amount));
+      }
+    }
+
     // Convert skeleton-space orientations into local quaternions, parents first.
     const world = new Map<string, THREE.Quaternion>();
     for (const b of RIG.bones) {
@@ -421,6 +465,7 @@ export class ExamRoom {
       const parentWorld = b.parent ? world.get(b.parent) ?? new THREE.Quaternion() : new THREE.Quaternion();
       const wanted = targets.get(b.name);
       if (wanted) bone.quaternion.copy(parentWorld.clone().invert().multiply(wanted));
+      else if (locals.has(b.name)) bone.quaternion.copy(locals.get(b.name)!);
       else bone.quaternion.identity();
       world.set(b.name, parentWorld.clone().multiply(bone.quaternion));
     }
@@ -432,8 +477,9 @@ export class ExamRoom {
   /* ---------------- patient positions ---------------- */
 
   /** Places the patient: standing beside the plinth, or on it (supine, prone, sitting, side-lying). */
-  setPosition(position: PatientPosition, animate = true) {
+  setPosition(position: PatientPosition, animate = true, options: { down?: Side } = {}) {
     this.position = position;
+    if (options.down) this.downSide = options.down;
     const base: Pose = {};
     const root = this.patientRoot;
     root.rotation.set(0, 0, 0);
@@ -445,16 +491,25 @@ export class ExamRoom {
       });
     }
     if (position === "sidelying") {
-      // Lying on the left side: lower leg slightly bent for stability, top (right) leg free for testing.
-      Object.assign(base, { "hip.left": { flex: 30 }, "knee.left": { flex: 45 }, "hip.right": { flex: 10 }, "knee.right": { flex: 10 }, "shoulder.left": { flex: 80 }, "elbow.left": { flex: 70 }, "shoulder.right": { flex: 10 } });
+      // Lower leg bent for stability, top leg free for testing.
+      const down = this.downSide;
+      const up: Side = down === "left" ? "right" : "left";
+      Object.assign(base, {
+        [`hip.${down}`]: { flex: 30 }, [`knee.${down}`]: { flex: 45 }, [`hip.${up}`]: { flex: 10 }, [`knee.${up}`]: { flex: 10 },
+        [`shoulder.${down}`]: { flex: 80 }, [`elbow.${down}`]: { flex: 70 }, [`shoulder.${up}`]: { flex: 10 },
+      });
     }
+    this.basePose = base;
     this.setPose(base, { animate: false, replace: true });
     // Orientation bases: where the patient's left (x), head (y) and face (z) point.
     const basis = (x: number[], y: number[], z: number[]) =>
       root.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(V(x), V(y), V(z)));
     if (position === "supine") basis([1, 0, 0], [0, 0, -1], [0, 1, 0]); // head on the pillow, face up
     if (position === "prone") basis([-1, 0, 0], [0, 0, -1], [0, -1, 0]); // face down
-    if (position === "sidelying") basis([0, -1, 0], [0, 0, -1], [1, 0, 0]); // lying on the left side, facing the examiner
+    if (position === "sidelying") {
+      if (this.downSide === "left") basis([0, -1, 0], [0, 0, -1], [1, 0, 0]); // on the left side, facing the examiner (+x)
+      else basis([0, 1, 0], [0, 0, -1], [-1, 0, 0]); // on the right side, facing away
+    }
     if (position === "sitting") basis([0, 0, -1], [0, 1, 0], [1, 0, 0]); // sitting over the long side, facing the examiner
     this.placeOnSupport();
     this.frameCamera(animate);
@@ -503,7 +558,9 @@ export class ExamRoom {
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.camera.aspect);
     const size = distance ?? Math.max(1.2, (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 0.95);
     const lying = this.position === "supine" || this.position === "prone" || this.position === "sidelying";
-    const dir = lying ? new THREE.Vector3(1.15, 0.85, 0.45).normalize() : new THREE.Vector3(0.55, 0.22, 1).normalize();
+    const dir = lying
+      ? new THREE.Vector3(this.position === "sidelying" && this.downSide === "right" ? -1.15 : 1.15, 0.85, 0.45).normalize()
+      : new THREE.Vector3(0.55, 0.22, 1).normalize();
     const goal = centre.clone().add(dir.multiplyScalar(size));
     if (!animate) {
       this.camera.position.copy(goal);
@@ -609,7 +666,68 @@ export class ExamRoom {
       }
     }
     const normal = (hit.normal ?? new THREE.Vector3(0, 1, 0)).clone().transformDirection(mesh.matrixWorld);
-    return { ...info, point: hit.point.clone(), normal, landmark };
+    return { ...info, bone: boneName, point: hit.point.clone(), normal, landmark };
+  }
+
+  /* ---------------- tool props: markers, tape ---------------- */
+
+  /** A small coloured dot stuck to the skin (it follows the body as he moves). */
+  addMarker(pick: PickResult, color: string) {
+    const bone = this.bones.get(pick.bone) ?? this.bones.get(sanitize(pick.bone));
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.011, 14, 10), new THREE.MeshBasicMaterial({ color }));
+    dot.name = "marker";
+    const offset = pick.point.clone().add(pick.normal.clone().multiplyScalar(0.004));
+    if (bone) {
+      bone.add(dot);
+      dot.position.copy(bone.worldToLocal(offset));
+    } else {
+      this.extras.add(dot);
+      dot.position.copy(offset);
+    }
+    this.markers.push(dot);
+    this.invalidate();
+  }
+  clearMarkers() {
+    this.markers.forEach((m) => m.removeFromParent());
+    this.markers = [];
+    this.invalidate();
+  }
+  private markers: THREE.Object3D[] = [];
+
+  /** A tape measure between two points, or wrapped round a limb. */
+  showTape(from: THREE.Vector3, to: THREE.Vector3) {
+    this.clearTape();
+    const length = from.distanceTo(to);
+    const tape = new THREE.Mesh(new THREE.BoxGeometry(0.012, length, 0.002), new THREE.MeshStandardMaterial({ color: "#f5c542", roughness: 0.5 }));
+    tape.position.copy(from).add(to).multiplyScalar(0.5);
+    tape.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
+    tape.name = "tape";
+    this.extras.add(tape);
+    this.invalidate();
+  }
+  showRing(centre: THREE.Vector3, axis: THREE.Vector3, radius: number) {
+    this.clearTape();
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.004, 8, 48), new THREE.MeshStandardMaterial({ color: "#f5c542", roughness: 0.5 }));
+    ring.position.copy(centre);
+    ring.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis.clone().normalize());
+    ring.name = "tape";
+    this.extras.add(ring);
+    this.invalidate();
+  }
+  clearTape() {
+    this.extras.children.filter((c) => c.name === "tape").forEach((c) => c.removeFromParent());
+    this.invalidate();
+  }
+
+  /** Bone head position by rig name, with ".L"/".R" chosen by side when given. */
+  boneWorld(name: string, side?: Side) {
+    return this.jointWorld(side && !/\.[LR]$/.test(name) && !/^(spine|neck|head|root)/.test(name) ? `${name}.${sideKey(side)}` : name);
+  }
+  /** Top of the head, for the patient's speech bubble. */
+  headWorld() {
+    const head = this.jointWorld("head");
+    const tip = this.bone("head") ? new THREE.Vector3(...restBone.get("head")!.tail).sub(V(restBone.get("head")!.head)).applyQuaternion(this.bone("head")!.getWorldQuaternion(new THREE.Quaternion())) : new THREE.Vector3(0, 0.2, 0);
+    return head.add(tip);
   }
 }
 

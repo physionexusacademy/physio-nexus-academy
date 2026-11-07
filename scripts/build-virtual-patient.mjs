@@ -402,6 +402,7 @@ const landmarkDefs = [
   ["suprasternal-notch", () => extreme([0, neckBase[1] - 0.03, neckBase[2]], [0, -0.15, 1], 0.05), false],
   ["sternal-angle", () => extreme([0, neckBase[1] - 0.075, neckBase[2]], [0, 0, 1], 0.045), false],
   ["xiphoid", () => extreme([0, neckBase[1] - 0.21, neckBase[2]], [0, 0, 1], 0.05), false],
+  ["umbilicus", () => extreme([0, hip[1] + 0.1, hip[2]], [0, 0, 1], 0.05), false],
   ["ac-joint", () => extreme(T("clavicle.L"), [0.25, 1, 0], 0.045), true],
   ["coracoid", () => extreme(sub(T("clavicle.L"), [0.025, 0.035, 0]), [0, 0, 1], 0.035), true],
   ["medial-epicondyle", () => extreme(elbow, scale(lateralArm, -1), 0.05), true],

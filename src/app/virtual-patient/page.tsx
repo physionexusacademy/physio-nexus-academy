@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { NexusHero } from "@/components/nexus/NexusHero";
 import { VirtualPatientLoader } from "@/components/virtual-patient/VirtualPatientLoader";
+import "./virtual-patient.css";
 
 export const metadata: Metadata = {
   title: "Virtual Patient — Examine a 3D Patient | Physio Nexus Academy",

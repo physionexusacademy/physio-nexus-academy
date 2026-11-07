@@ -170,8 +170,10 @@ export function classifySurface(point: number[], boneName: string): SurfaceInfo 
     const sole = p[1] < ankle[1] - 0.045 && v[1] < -0.05;
     if (v[2] < -0.02) return result("Heel", "S1", sole ? "tibial" : "sural");
     if (sole) return result("Sole", "S1", "tibial");
-    const medial = p[0] < ankle[0] - 0.03;
-    const lateral = p[0] > ankle[0] + 0.035;
+    // Malleoli sit ~3 cm either side of the ankle centre; the forefoot borders lie further out.
+    const hind = v[2] < 0.05;
+    const medial = p[0] < ankle[0] - (hind ? 0.02 : 0.036);
+    const lateral = p[0] > ankle[0] + (hind ? 0.028 : 0.05);
     if (medial) return result(v[2] < 0.05 ? "Medial ankle" : "Inner border of the foot", "L4", "saphenous");
     if (lateral) return result(v[2] < 0.05 ? "Lateral ankle" : "Outer border of the foot", "S1", "sural");
     const firstWeb = p[0] < ankle[0] && v[2] > 0.11;
