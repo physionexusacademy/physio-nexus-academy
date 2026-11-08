@@ -2,25 +2,12 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { lazyZodResolver } from "@/lib/validation/lazy-zod-resolver";
+import type { FormValues } from "./RegistrationForm.schema";
 import { Button } from "@/components/ui/Button";
 import { registerForWorkshop } from "../actions";
 
-const schema = z.object({
-  fullName: z.string().min(2, "Please enter your full name"),
-  email: z.string().email("Please enter a valid email"),
-  phone: z.string().min(7, "Please enter a valid phone number"),
-  professionalStatus: z.enum(["Student", "Graduate", "Physiotherapist", "Other"]),
-  institute: z.string().optional(),
-  city: z.string().min(2, "Please enter your city"),
-  groupRegistration: z.boolean().optional(),
-  consent: z.literal(true, {
-    error: "Consent is required to register",
-  }),
-});
-
-type FormValues = z.infer<typeof schema>;
+const validation = lazyZodResolver<FormValues>(() => import("./RegistrationForm.schema"));
 
 export function RegistrationForm({ workshopId }: { workshopId: string }) {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -32,7 +19,7 @@ export function RegistrationForm({ workshopId }: { workshopId: string }) {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: validation,
     defaultValues: { professionalStatus: "Student" },
   });
 
@@ -72,7 +59,7 @@ export function RegistrationForm({ workshopId }: { workshopId: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+    <form onFocusCapture={validation.preload} onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
       <div>
         <input {...register("fullName")} placeholder="Full name" aria-label="Full name" aria-invalid={!!errors.fullName} className="input" />
         {errors.fullName && <p className="mt-1 text-xs text-red-600">{errors.fullName.message}</p>}

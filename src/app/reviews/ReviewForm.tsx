@@ -3,25 +3,12 @@
 import { useState } from "react";
 import { Check, Copy, ExternalLink, Star } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { lazyZodResolver } from "@/lib/validation/lazy-zod-resolver";
+import type { FormValues } from "./ReviewForm.schema";
 import { Button } from "@/components/ui/Button";
 import { submitReview } from "./actions";
 
-const schema = z.object({
-  name: z.string().trim().min(2, "Please enter your name").max(80, "Name is too long"),
-  email: z
-    .string()
-    .trim()
-    .refine((value) => value === "" || z.string().email().safeParse(value).success, {
-      message: "Please enter a valid email",
-    }),
-  rating: z.number().int().min(1, "Please select a star rating").max(5),
-  feedback: z.string().trim().max(1500, "Please keep feedback under 1500 characters"),
-  website: z.string().max(0).optional(),
-});
-
-type FormValues = z.infer<typeof schema>;
+const validation = lazyZodResolver<FormValues>(() => import("./ReviewForm.schema"));
 
 export function ReviewForm({ googleReviewUrl }: { googleReviewUrl: string }) {
   const [sent, setSent] = useState(false);
@@ -37,7 +24,7 @@ export function ReviewForm({ googleReviewUrl }: { googleReviewUrl: string }) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: validation,
     defaultValues: {
       name: "",
       email: "",
@@ -158,7 +145,7 @@ export function ReviewForm({ googleReviewUrl }: { googleReviewUrl: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+    <form onFocusCapture={validation.preload} onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div>
         <label htmlFor="review-name" className="label">
           Your name

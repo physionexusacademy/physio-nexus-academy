@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { lazyZodResolver } from "@/lib/validation/lazy-zod-resolver";
+import type { FormValues } from "./AppointmentForm.schema";
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,23 +18,8 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { submitAppointment } from "./actions";
 
-const schema = z.object({
-  fullName: z.string().min(2, "Please enter your full name"),
-  age: z.string().optional(),
-  gender: z.string().optional(),
-  phone: z.string().min(7, "Please enter a valid phone / WhatsApp number"),
-  email: z.string().email("Please enter a valid email").optional().or(z.literal("")),
-  city: z.string().min(2, "Please enter your city / area"),
-  reason: z.string().min(5, "Please briefly describe the reason for consultation"),
-  preferredDate: z.string().min(1, "Please select a preferred date"),
-  preferredTime: z.string().min(1, "Please select a preferred time slot"),
-  appointmentType: z.enum(["in-person", "online"]),
-  consent: z.literal(true, {
-    error: "Consent is required to submit this request",
-  }),
-});
+const validation = lazyZodResolver<FormValues>(() => import("./AppointmentForm.schema"));
 
-type FormValues = z.infer<typeof schema>;
 type Step = 1 | 2;
 
 const timeSlots = [
@@ -57,7 +42,7 @@ export function AppointmentForm() {
     watch,
     trigger,
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: validation,
     defaultValues: {
       appointmentType: "in-person",
       preferredTime: "",
@@ -130,7 +115,7 @@ export function AppointmentForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+    <form onFocusCapture={validation.preload} onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
       <div className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="mb-7 flex items-center gap-3">
           {[1, 2].map((item) => (

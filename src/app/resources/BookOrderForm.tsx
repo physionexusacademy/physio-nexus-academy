@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { lazyZodResolver } from "@/lib/validation/lazy-zod-resolver";
+import type { FormValues } from "./BookOrderForm.schema";
 import { CheckCircle2, MessageCircle, PackageCheck, ShoppingCart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { submitBookOrder } from "./order-actions";
+
+const validation = lazyZodResolver<FormValues>(() => import("./BookOrderForm.schema"));
 
 export interface OrderableBook {
   id: string;
@@ -16,27 +18,13 @@ export interface OrderableBook {
   deliveryEstimate: string;
 }
 
-const schema = z.object({
-  bookId: z.string().min(1, "Please choose a book"),
-  fullName: z.string().min(2, "Please enter your full name"),
-  phone: z.string().min(7, "Please enter a valid phone / WhatsApp number"),
-  email: z.string().email("Please enter a valid email").optional().or(z.literal("")),
-  city: z.string().min(2, "Please enter your city"),
-  deliveryAddress: z.string().min(10, "Please enter your complete delivery address"),
-  quantity: z.number().int().min(1).max(5),
-  customerNotes: z.string().max(500, "Please keep notes under 500 characters").optional(),
-  consent: z.literal(true, { error: "Please confirm your order details" }),
-});
-
-type FormValues = z.infer<typeof schema>;
-
 export function BookOrderForm({ books, defaultBookId }: { books: OrderableBook[]; defaultBookId: string }) {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const [confirmedTotal, setConfirmedTotal] = useState<number>(0);
   const [confirmedBook, setConfirmedBook] = useState<OrderableBook | null>(null);
   const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: validation,
     defaultValues: { bookId: defaultBookId, quantity: 1, email: "", customerNotes: "" },
   });
   const quantity = watch("quantity") || 1;
@@ -78,7 +66,7 @@ export function BookOrderForm({ books, defaultBookId }: { books: OrderableBook[]
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+    <form onFocusCapture={validation.preload} onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="flex items-start gap-3">
           <span className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-teal-50 text-teal-700"><ShoppingCart className="h-5 w-5" /></span>

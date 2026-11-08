@@ -3,12 +3,13 @@ import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 import "./nexus.css";
+import "./motion.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
-import { PhysioNexusAI } from "@/components/PhysioNexusAI";
+import { PhysioNexusAILauncher } from "@/components/PhysioNexusAILauncher";
 import { siteConfig } from "@/lib/site-config";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
@@ -254,9 +255,10 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "PNA", statusBarStyle: "default" },
+  // Small, correctly sized icons (the full logo PNG is 541 KB and was fetched as the tab icon on every first visit).
   icons: {
-    icon: "/images/pna-logo.png",
-    apple: "/images/pna-logo.png",
+    icon: [{ url: "/icons/pna-48.png", sizes: "48x48", type: "image/png" }, { url: "/icons/pna-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/icons/pna-180.png", sizes: "180x180", type: "image/png" }],
   },
   other: {
     "geo.region": "PK-SD",
@@ -295,9 +297,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <WhatsAppButton />
-        <PhysioNexusAI />
+        <PhysioNexusAILauncher />
         <MobilePortalNav />
-        <Script id="google-analytics" strategy="afterInteractive">
+        {/* Instant page opens: the browser fetches a page as soon as its link is touched or
+            hovered (Chrome, Edge, Android). Never for APIs, admin, the registry or portals. */}
+        <script
+          type="speculationrules"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              prefetch: [
+                {
+                  where: {
+                    and: [
+                      { href_matches: "/*" },
+                      { not: { href_matches: "/api/*" } },
+                      { not: { href_matches: "/admin" } },
+                      { not: { href_matches: "/admin/*" } },
+                      { not: { href_matches: "/clinical-registry*" } },
+                      { not: { href_matches: "/workshops/*/portal*" } },
+                      { not: { selector_matches: "[download], [target=_blank], [rel~=nofollow]" } },
+                    ],
+                  },
+                  eagerness: "moderate",
+                },
+              ],
+            }),
+          }}
+        />
+        {/* Analytics loads once the page is idle, so it never competes with the first interaction. */}
+        <Script id="google-analytics" strategy="lazyOnload">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){window.dataLayer.push(arguments);}
 gtag('js', new Date());

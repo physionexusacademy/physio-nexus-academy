@@ -79,9 +79,8 @@
   }
 }
 
-#main-content {
-  animation: pna-fade-up 0.45s var(--pna-ease-out) both;
-}
+/* (The page itself is no longer faded in: it hid all content at first paint and delayed
+   the main content on busy phones. Page changes animate with view transitions — motion.css.) */
 
 /* Interactive elements feel snappier site-wide */
 a,

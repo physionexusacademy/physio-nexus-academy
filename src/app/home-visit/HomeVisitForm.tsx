@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { lazyZodResolver } from "@/lib/validation/lazy-zod-resolver";
+import type { FormValues } from "./HomeVisitForm.schema";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,24 +16,8 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { submitHomeVisit } from "./actions";
 
-const schema = z.object({
-  fullName: z.string().min(2, "Please enter your full name"),
-  phone: z.string().min(7, "Please enter a valid phone / WhatsApp number"),
-  email: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
-  city: z.string().min(2, "Please enter your city"),
-  area: z.string().min(2, "Please enter your area / neighborhood"),
-  address: z.string().min(5, "Please enter the full visit address"),
-  preferredDate: z.string().min(1, "Please select a preferred date"),
-  preferredTime: z.string().min(1, "Please select a preferred time"),
-  mobilitySummary: z.string().min(3, "Please briefly describe the condition"),
-  accessibilityNotes: z.string().optional(),
-  specialInstructions: z.string().optional(),
-  consent: z.literal(true, {
-    error: "Consent is required to submit this request",
-  }),
-});
+const validation = lazyZodResolver<FormValues>(() => import("./HomeVisitForm.schema"));
 
-type FormValues = z.infer<typeof schema>;
 type Step = 1 | 2;
 
 const timeSlots = [
@@ -56,7 +40,7 @@ export function HomeVisitForm() {
     watch,
     trigger,
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: validation,
     defaultValues: { preferredTime: "" },
   });
 
@@ -117,7 +101,7 @@ export function HomeVisitForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+    <form onFocusCapture={validation.preload} onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
       <div className="rounded-2xl border border-grey-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="mb-7 flex items-center gap-3">
           {[1, 2].map((item) => (

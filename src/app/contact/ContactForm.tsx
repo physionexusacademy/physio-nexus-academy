@@ -2,19 +2,13 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { lazyZodResolver } from "@/lib/validation/lazy-zod-resolver";
+import type { FormValues } from "./ContactForm.schema";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { submitContactMessage } from "./actions";
 
-const schema = z.object({
-  name: z.string().min(2, "Please enter your name"),
-  email: z.string().email("Please enter a valid email"),
-  message: z.string().min(10, "Please write a short message"),
-});
-
-type FormValues = z.infer<typeof schema>;
+const validation = lazyZodResolver<FormValues>(() => import("./ContactForm.schema"));
 
 export function ContactForm() {
   const [sent, setSent] = useState(false);
@@ -24,7 +18,7 @@ export function ContactForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormValues>({ resolver: validation });
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -49,7 +43,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+    <form onFocusCapture={validation.preload} onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
       <Field label="Name" error={errors.name?.message}>
         <input {...register("name")} className="input" />
       </Field>

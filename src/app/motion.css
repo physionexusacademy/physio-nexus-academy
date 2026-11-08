@@ -1,0 +1,192 @@
+/* ==========================================================================
+   Motion & smoothness layer (loaded after nexus.css)
+
+   Rules of thumb used here:
+   - Only transform and opacity are animated (the GPU composites them; nothing
+     is repainted per frame).
+   - No live backdrop blur on phones/tablets: blurring what scrolls under a
+     sticky header or the dock costs a full-screen blur pass every frame.
+   - Long pages render their far-below sections only when scrolled near.
+   - Everything decorative stops for "reduce motion".
+   ========================================================================== */
+
+/* ---------- "live" dots: pulse with a scaled ring instead of a repainted box-shadow ---------- */
+.nx-live {
+  box-shadow: none;
+  animation: none;
+}
+.nx-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(46, 230, 214, 0.5);
+  animation: nx-live-ring 2.2s ease-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes nx-live-ring {
+  0% { transform: scale(1); opacity: 0.75; }
+  70%, 100% { transform: scale(3.1); opacity: 0; }
+}
+
+/* ---------- header light beam: slide a short line (transform) instead of moving a background ---------- */
+.nx-bar::after {
+  right: auto;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(46, 230, 214, 0.9), rgba(143, 124, 255, 0.9), transparent);
+  background-size: 100% 100%;
+  animation: nx-beam-slide 9s linear infinite;
+  will-change: transform;
+}
+@keyframes nx-beam-slide {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(240%); }
+}
+
+/* ---------- phones & tablets: solid surfaces instead of live blur ---------- */
+@media (max-width: 1023px), (pointer: coarse) {
+  .nx-bar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(3, 10, 23, 0.97);
+  }
+  .pna-mobile-dock {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: rgba(4, 13, 30, 0.97) !important;
+  }
+  .nx-glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .lobby-search {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.09);
+  }
+  /* Slow decorative rotations and floats only cost battery on a phone. */
+  .lobby-orbit-a,
+  .lobby-orbit-b,
+  .lobby-founder-chip {
+    animation: none;
+  }
+}
+
+/* ---------- long pages: render far-below sections only when they come near ---------- */
+/* (Full-width bands only: content-visibility also clips paint at the box edge.) */
+.lobby-pass-band,
+.pna-sig-explore,
+.lobby-arena,
+.nx-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* ---------- press feedback (feels like a native app) ---------- */
+a,
+button,
+summary,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.nx-btn,
+.home-dir-tile,
+.home-dir-patient-btn,
+.home-book,
+.pna-mobile-dock-item,
+a.nx-glass,
+button.nx-glass,
+.d3-btn {
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, color 0.2s ease;
+}
+.nx-btn:active,
+.home-dir-tile:active,
+.home-dir-patient-btn:active,
+.home-book:active,
+.pna-mobile-dock-item:active,
+a.nx-glass:active,
+button.nx-glass:active,
+.d3-btn:active {
+  transform: scale(0.97);
+}
+
+/* ---------- smooth page-to-page transitions (Chrome, Edge, Safari 18.2+) ---------- */
+@view-transition {
+  navigation: auto;
+}
+/* The header and the dock stay put while the page underneath changes. */
+.nx-bar {
+  view-transition-name: nx-header;
+}
+.pna-mobile-dock {
+  view-transition-name: nx-dock;
+}
+::view-transition-old(root) {
+  animation: nx-page-out 0.16s cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(root) {
+  animation: nx-page-in 0.28s cubic-bezier(0, 0, 0.2, 1) both;
+}
+@keyframes nx-page-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes nx-page-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+/* ---------- sections and cards glide in as they scroll into view ----------
+   Scroll-driven (no JavaScript, runs on the compositor). Content already on screen
+   when the page opens is shown at once; browsers without support simply show it. */
+@supports (animation-timeline: view()) {
+  .home-dir-tile,
+  .home-dir-patient-btn,
+  .home-book,
+  .lobby-news-card,
+  .lobby-news-episode,
+  .nx-glass,
+  [data-nx-reveal] {
+    /* "backwards": once in view the animation lets go, so hover lifts still work;
+       finishes within 170 px of scrolling however tall the card is. */
+    animation: nx-reveal linear backwards;
+    animation-timeline: view();
+    animation-range: entry 0px entry 170px;
+  }
+}
+/* Individual translate/scale properties combine with any transform a card already has. */
+@keyframes nx-reveal {
+  from { opacity: 0; translate: 0 22px; scale: 0.985; }
+  to { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+/* ---------- reduce motion: no movement, instant page changes ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .nx-live::after,
+  .nx-bar::after {
+    animation: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(*) {
+    animation: none !important;
+  }
+  .home-dir-tile,
+  .home-dir-patient-btn,
+  .home-book,
+  .lobby-news-card,
+  .lobby-news-episode,
+  .nx-glass,
+  [data-nx-reveal] {
+    animation: none !important;
+  }
+  .nx-btn:active,
+  .home-dir-tile:active,
+  .home-dir-patient-btn:active,
+  .home-book:active,
+  .pna-mobile-dock-item:active,
+  a.nx-glass:active,
+  button.nx-glass:active,
+  .d3-btn:active {
+    transform: none;
+  }
+}

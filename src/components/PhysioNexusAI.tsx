@@ -87,8 +87,9 @@ function readProfile(): { stage?: string; goal?: string } | undefined {
   }
 }
 
-export function PhysioNexusAI() {
-  const [open, setOpen] = useState(false);
+/** The full chat widget. Loaded on first use by PhysioNexusAILauncher (it opens straight away). */
+export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initialOpen?: boolean; initialQuestion?: string } = {}) {
+  const [open, setOpen] = useState(initialOpen);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [nextId, setNextId] = useState(2);
@@ -118,6 +119,12 @@ export function PhysioNexusAI() {
     };
     window.addEventListener("pna-ai:ask", onAsk);
     return () => window.removeEventListener("pna-ai:ask", onAsk);
+  }, []);
+
+  // A question asked before the widget had loaded (from search or the command palette).
+  useEffect(() => {
+    if (initialQuestion?.trim()) void sendQueryRef.current(initialQuestion);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function sendQuery(value: string) {
