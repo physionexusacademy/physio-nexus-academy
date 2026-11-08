@@ -3,6 +3,7 @@ import { NexusHero } from "@/components/nexus/NexusHero";
 import {
   BadgeCheck,
   BookOpen,
+  CheckCircle2,
   Download,
   ExternalLink,
   Lock,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import { createPublicClient } from "@/lib/supabase/public";
 import { BookOrderForm } from "./BookOrderForm";
+import { BOOKS, DEFAULT_BOOK_ID, formatPkr, getBook } from "@/lib/books";
 
 export const metadata: Metadata = {
   title: "Physiotherapy Books & Resources",
@@ -32,10 +34,13 @@ const accessIcon: Record<string, typeof Download> = {
   "Future paid resource": Lock,
 };
 
-const BOOK_TITLE = "Clinical Myofascial Therapy";
-const BOOK_SUBTITLE = "Illustrated Clinical Edition";
-
-export default async function ResourcesPage() {
+export default async function ResourcesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ book?: string }>;
+}) {
+  const { book: requestedBook } = await searchParams;
+  const defaultBookId = getBook(requestedBook)?.id ?? DEFAULT_BOOK_ID;
   const supabase = createPublicClient();
   const { data: resources } = await supabase
     .from("resources")
@@ -66,17 +71,16 @@ export default async function ResourcesPage() {
     },
   };
 
-  const bookJsonLd = {
+  const booksJsonLd = BOOKS.map((book) => ({
     "@context": "https://schema.org",
     "@type": "Book",
-    name: `${BOOK_TITLE} — ${BOOK_SUBTITLE}`,
+    name: `${book.title} — ${book.subtitle}`,
     author: {
       "@type": "Person",
-      name: "Dr. Sajjad Raza PT",
+      name: book.author,
     },
-    bookEdition: "First Edition 2026",
-    image:
-      "https://physionexusacademy.com/images/clinical-myofascial-therapy-cover.svg",
+    bookEdition: book.edition,
+    image: `https://physionexusacademy.com${book.cover.src}`,
     publisher: {
       "@type": "Organization",
       name: "Physio Nexus Academy",
@@ -85,11 +89,11 @@ export default async function ResourcesPage() {
     offers: {
       "@type": "Offer",
       priceCurrency: "PKR",
-      price: "2000",
+      price: String(book.price),
       availability: "https://schema.org/InStock",
-      url: "https://physionexusacademy.com/resources#order-book",
+      url: `https://physionexusacademy.com/resources?book=${book.id}#order-book`,
     },
-  };
+  }));
 
   return (
     <>
@@ -110,87 +114,108 @@ export default async function ResourcesPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(bookJsonLd).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(booksJsonLd).replace(/</g, "\\u003c"),
         }}
       />
 
 
-      <section className="mt-10 overflow-hidden rounded-3xl border border-grey-200 bg-gradient-to-br from-navy-900 via-navy-800 to-teal-900 text-white shadow-xl">
-        <div className="grid lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="relative flex items-center justify-center bg-black/10 p-6 sm:p-10">
-            <div className="relative w-full max-w-[360px] overflow-hidden rounded-xl border border-white/15 shadow-2xl">
-              <img
-                src="/images/clinical-myofascial-therapy-cover.svg"
-                alt="Clinical Myofascial Therapy — Illustrated Clinical Edition book cover"
-                width={512}
-                height={768}
-                className="h-auto w-full"
-                loading="eager"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200">
-                First Edition 2026
-              </span>
-              <span className="rounded-full border border-teal-200/30 bg-teal-200/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-100">
-                Illustrated Clinical Edition
-              </span>
-            </div>
-
-            <h2 className="mt-5 font-heading text-3xl font-bold leading-tight sm:text-4xl">
-              Clinical Myofascial Therapy
-            </h2>
-            <p className="mt-2 text-lg font-medium text-amber-200">
-              Illustrated Clinical Edition
-            </p>
-            <p className="mt-3 text-sm text-grey-200">by Dr. Sajjad Raza PT</p>
-
-            <p className="mt-6 max-w-2xl leading-7 text-grey-100">
-              A clinically focused physiotherapy book connecting fascia science, assessment,
-              clinical reasoning, treatment principles and real-world application with an
-              illustrated learning approach.
-            </p>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
-                <BadgeCheck className="h-5 w-5 flex-none text-amber-300" />
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-grey-300">Book price</p>
-                  <p className="text-xl font-bold text-white">PKR 2,000</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
-                <Truck className="h-5 w-5 flex-none text-teal-200" />
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-grey-300">Expected delivery</p>
-                  <p className="text-xl font-bold text-white">3–4 days</p>
-                </div>
+      {BOOKS.map((book, index) => (
+        <section
+          key={book.id}
+          id={`book-${book.id}`}
+          className="mt-10 scroll-mt-28 overflow-hidden rounded-3xl border border-grey-200 bg-gradient-to-br from-navy-900 via-navy-800 to-teal-900 text-white shadow-xl"
+        >
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="relative flex items-center justify-center bg-black/10 p-6 sm:p-10">
+              <div className="relative w-full max-w-[360px] overflow-hidden rounded-xl border border-white/15 shadow-2xl">
+                <img
+                  src={book.cover.src}
+                  alt={book.cover.alt}
+                  width={book.cover.width}
+                  height={book.cover.height}
+                  className="h-auto w-full"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
               </div>
             </div>
 
-            <a
-              href="#order-book"
-              className="mt-7 inline-flex w-fit items-center gap-2 rounded-lg bg-amber-300 px-6 py-3.5 text-sm font-bold text-navy-900 transition hover:bg-amber-200"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Order Now — PKR 2,000
-            </a>
+            <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
+              <div className="flex flex-wrap gap-2">
+                {book.badges.map((badge, badgeIndex) => (
+                  <span
+                    key={badge}
+                    className={
+                      badgeIndex === 0
+                        ? "rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200"
+                        : "rounded-full border border-teal-200/30 bg-teal-200/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-100"
+                    }
+                  >
+                    {badge}
+                  </span>
+                ))}
+              </div>
+
+              <h2 className="mt-5 font-heading text-3xl font-bold leading-tight sm:text-4xl">
+                {book.title}
+              </h2>
+              <p className="mt-2 text-lg font-medium text-amber-200">{book.subtitle}</p>
+              <p className="mt-3 text-sm text-grey-200">by {book.author}</p>
+
+              <p className="mt-6 max-w-2xl leading-7 text-grey-100">{book.description}</p>
+
+              {book.highlights.length > 0 && (
+                <ul className="mt-5 grid gap-2 text-sm text-grey-100 sm:grid-cols-2">
+                  {book.highlights.map((highlight) => (
+                    <li key={highlight} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-teal-200" />
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+                  <BadgeCheck className="h-5 w-5 flex-none text-amber-300" />
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-grey-300">Book price</p>
+                    <p className="text-xl font-bold text-white">{formatPkr(book.price)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+                  <Truck className="h-5 w-5 flex-none text-teal-200" />
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-grey-300">Expected delivery</p>
+                    <p className="text-xl font-bold text-white">{book.deliveryEstimate}</p>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href={`?book=${book.id}#order-book`}
+                className="mt-7 inline-flex w-fit items-center gap-2 rounded-lg bg-amber-300 px-6 py-3.5 text-sm font-bold text-navy-900 transition hover:bg-amber-200"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Order Now — {formatPkr(book.price)}
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
       <section id="order-book" className="scroll-mt-28 pt-10">
         <div className="mb-5">
           <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Book Order</p>
           <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">Place your order</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-500">
-            Enter your delivery details below. Your order will receive a unique Order ID and our team will be notified immediately.
+            Choose your book and enter your delivery details below. Your order will receive a unique Order ID and our team will be notified immediately.
           </p>
         </div>
-        <BookOrderForm />
+        <BookOrderForm
+          key={defaultBookId}
+          defaultBookId={defaultBookId}
+          books={BOOKS.map(({ id, title, price, deliveryEstimate }) => ({ id, title, price, deliveryEstimate }))}
+        />
       </section>
 
       <div className="mt-14 border-t border-grey-200 pt-10">

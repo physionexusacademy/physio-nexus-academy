@@ -34,7 +34,7 @@ export default async function AdminBookOrdersPage() {
         <div>
           <h1 className="text-2xl font-bold text-navy-800">Book Orders</h1>
           <p className="mt-1 text-sm text-navy-400">
-            Manage customer orders for Clinical Myofascial Therapy.
+            Manage customer book orders.
           </p>
         </div>
         <div className="rounded-xl border border-grey-200 bg-white px-4 py-3 text-right">
