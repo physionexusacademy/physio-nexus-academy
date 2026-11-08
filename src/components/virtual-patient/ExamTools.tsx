@@ -36,7 +36,8 @@ const LANDMARK_GROUPS: { group: string; ids: string[] }[] = [
   { group: "Elbow and wrist", ids: ["lateral-epicondyle", "common-extensor-origin", "medial-epicondyle", "olecranon", "radial-styloid"] },
   { group: "Pelvis and hip", ids: ["iliac-crest", "asis", "psis", "greater-trochanter", "ischial-tuberosity", "femoral-pulse"] },
   { group: "Knee", ids: ["patella", "tibial-tuberosity", "medial-joint-line", "lateral-joint-line", "popliteal-fossa", "fibular-head"] },
-  { group: "Ankle and foot", ids: ["lateral-malleolus", "atfl", "medial-malleolus", "calcaneus", "dorsalis-pedis"] },
+  { group: "Lower leg", ids: ["calf-belly", "achilles-tendon"] },
+  { group: "Ankle and foot", ids: ["lateral-malleolus", "atfl", "medial-malleolus", "calcaneus", "plantar-fascia-origin", "dorsalis-pedis"] },
 ];
 const MIDLINE = new Set(["c7", "suprasternal-notch", "sternal-angle", "xiphoid", "umbilicus"]);
 

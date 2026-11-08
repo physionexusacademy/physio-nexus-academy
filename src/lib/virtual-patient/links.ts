@@ -3,7 +3,7 @@
  * from cases.ts so server pages can link to cases without bundling the case data
  * (validate:virtual-patient checks every id here exists).
  */
-export const VP_CASE_COUNT = 12;
+export const VP_CASE_COUNT = 22;
 
 export type VpCaseLink = { id: string; title: string; why: string };
 
@@ -20,22 +20,32 @@ const C = {
   ankle: { id: "ankle-sprain", title: "Twisted ankle", why: "Ottawa rules palpation and the anterior drawer" },
   stroke: { id: "stroke", title: "Weak one side", why: "tone, UMN signs and posture after stroke" },
   myelopathy: { id: "myelopathy", title: "Clumsy hands, unsteady walking", why: "brisk reflexes, Hoffmann's sign and Romberg" },
+  radial: { id: "radial-nerve-palsy", title: "Woke up with a dropped wrist", why: "radial nerve versus C7: triceps, brachioradialis and the first web space" },
+  ulnar: { id: "ulnar-neuropathy-elbow", title: "Numb little finger, weak grip", why: "ulnar nerve versus C8: Froment's sign and the medial forearm" },
+  diabetic: { id: "diabetic-neuropathy", title: "Numb feet and falls at night", why: "stocking sensory loss, absent ankle jerks and Romberg" },
+  gbs: { id: "guillain-barre", title: "Weakness climbing up both legs", why: "areflexia, ascending weakness and the breathing red flag" },
+  stenosis: { id: "lumbar-stenosis", title: "Legs give out after 200 metres", why: "neurogenic versus vascular claudication and foot pulses" },
+  achilles: { id: "achilles-rupture", title: "'Kicked' in the calf at badminton", why: "Thompson's test and the palpable gap" },
+  dvt: { id: "dvt-post-op", title: "Swollen calf after knee surgery", why: "calf girth, Wells criteria and when to stop" },
+  elbow: { id: "lateral-elbow", title: "Carpenter with elbow pain", why: "contractile testing, Cozen's test and tendon loading" },
+  heel: { id: "plantar-heel-pain", title: "First-step heel pain", why: "medial heel palpation, windlass test and calf length" },
+  hip: { id: "hip-oa", title: "Groin pain and stiff hip", why: "the hip capsular pattern and FABER" },
 } satisfies Record<string, VpCaseLink>;
 
 export const SKILL_CASES: Record<string, VpCaseLink[]> = {
-  "manual-muscle-testing": [C.cuff, C.l5, C.stroke],
-  goniometry: [C.frozen, C.oa, C.cuff],
-  dermatomes: [C.l5, C.c6, C.cauda],
-  myotomes: [C.l5, C.c6, C.fibular],
-  reflexes: [C.myelopathy, C.stroke, C.l5],
-  "peripheral-nerves": [C.cts, C.fibular, C.c6],
-  "tone-coordination": [C.stroke, C.myelopathy],
-  "muscle-length": [{ ...C.l5, why: "telling a tight hamstring from nerve tension in the SLR" }],
-  "vital-signs": [C.oa, C.stroke],
-  posture: [C.stroke, C.myelopathy, C.frozen],
-  "balance-function": [C.myelopathy, C.stroke],
-  "limb-measurements": [C.acl, C.oa],
-  palpation: [C.ankle, C.oa, C.cuff],
+  "manual-muscle-testing": [C.cuff, C.radial, C.hip, C.l5],
+  goniometry: [C.frozen, C.hip, C.oa],
+  dermatomes: [C.l5, C.c6, C.diabetic, C.cauda],
+  myotomes: [C.l5, C.c6, C.radial, C.fibular],
+  reflexes: [C.myelopathy, C.gbs, C.stroke, C.diabetic],
+  "peripheral-nerves": [C.cts, C.ulnar, C.radial, C.fibular],
+  "tone-coordination": [C.stroke, C.myelopathy, C.gbs],
+  "muscle-length": [{ ...C.l5, why: "telling a tight hamstring from nerve tension in the SLR" }, { ...C.heel, why: "calf length and dorsiflexion in heel pain" }],
+  "vital-signs": [C.gbs, C.dvt, C.oa, C.stroke],
+  posture: [C.stroke, C.stenosis, C.frozen],
+  "balance-function": [C.diabetic, C.myelopathy, C.stroke],
+  "limb-measurements": [C.dvt, C.acl, C.oa],
+  palpation: [C.ankle, C.elbow, C.heel, C.achilles],
 };
 
 export const vpCaseHref = (id: string) => `/virtual-patient?case=${encodeURIComponent(id)}`;

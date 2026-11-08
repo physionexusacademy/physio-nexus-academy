@@ -162,7 +162,8 @@ export const REFLEX_AMPLITUDE: Record<ReflexGrade, number> = { "0": 0, "1+": 0.2
 
 export type SpecialTestId =
   | "slr" | "slump" | "spurling" | "phalen" | "tinel-wrist" | "empty-can" | "hawkins" | "drop-arm"
-  | "lachman" | "anterior-drawer-knee" | "mcmurray" | "valgus-stress" | "ankle-anterior-drawer" | "talar-tilt" | "romberg";
+  | "lachman" | "anterior-drawer-knee" | "mcmurray" | "valgus-stress" | "ankle-anterior-drawer" | "talar-tilt" | "romberg"
+  | "thompson" | "cozen" | "windlass" | "faber" | "froment";
 
 export type SpecialTestDef = {
   id: SpecialTestId;
@@ -191,6 +192,11 @@ export const SPECIAL_TESTS: SpecialTestDef[] = [
   { id: "ankle-anterior-drawer", label: "Anterior drawer (ankle)", purpose: "ATFL integrity", position: "supine", sequence: (s) => [{ [k("knee", s)]: { flex: 30 }, [k("hip", s)]: { flex: 15 }, [k("ankle", s)]: { flex: -15 } }], negative: "No excess forward glide of the talus. Negative." },
   { id: "talar-tilt", label: "Talar tilt test", purpose: "Calcaneofibular ligament", position: "supine", sequence: (s) => [{ [k("ankle", s)]: { flex: 0, rot: 25 } }], negative: "Equal to the other side. Negative." },
   { id: "romberg", label: "Romberg test", purpose: "Proprioception (dorsal columns)", position: "standing", bilateral: false, sequence: () => [{}], negative: "Steady with eyes closed for 30 seconds. Negative." },
+  { id: "thompson", label: "Thompson (calf squeeze) test", purpose: "Achilles tendon rupture", position: "prone", sequence: (s) => [{ [k("knee", s)]: { flex: 0 }, [k("ankle", s)]: { flex: 0 } }, { [k("knee", s)]: { flex: 0 }, [k("ankle", s)]: { flex: -20 } }], negative: "Squeezing the calf makes the foot point down (plantarflex). Negative." },
+  { id: "cozen", label: "Cozen's test", purpose: "Lateral elbow tendinopathy (common extensor origin)", position: "sitting", sequence: (s) => [{ [k("elbow", s)]: { flex: 90 }, [k("wrist", s)]: { flex: -30 }, [k("hand", s)]: { flex: 90 } }], negative: "Holds the wrist up against resistance with no elbow pain. Negative." },
+  { id: "windlass", label: "Windlass test", purpose: "Plantar fasciopathy (plantar heel pain)", position: "standing", sequence: (s) => [{ [k("toe", s)]: { flex: 45 } }], negative: "Lifting the big toe stretches the arch but does not reproduce heel pain. Negative." },
+  { id: "faber", label: "FABER (Patrick's) test", purpose: "Hip joint (or sacroiliac) pain", position: "supine", sequence: (s) => [{ [k("hip", s)]: { flex: 50, abd: 15, rot: -20 }, [k("knee", s)]: { flex: 100 } }, { [k("hip", s)]: { flex: 45, abd: 45, rot: -40 }, [k("knee", s)]: { flex: 100 } }], negative: "Knee drops close to the couch, no groin or buttock pain. Negative." },
+  { id: "froment", label: "Froment's sign", purpose: "Ulnar nerve (adductor pollicis weakness)", position: "sitting", sequence: (s) => [{ [k("elbow", s)]: { flex: 85 }, [k("hand", s)]: { flex: 10, abd: 20 } }, { [k("elbow", s)]: { flex: 85 }, [k("hand", s)]: { flex: 10, abd: 35 } }], negative: "Holds the paper with a straight thumb as you pull. Negative." },
 ];
 export const specialTest = (id: SpecialTestId) => SPECIAL_TESTS.find((t) => t.id === id)!;
 
@@ -246,7 +252,8 @@ export type CaseFindings = {
   painOnResistance?: Partial<Record<SideKey<MuscleTestId>, string>>;
   reflexes?: Partial<Record<SideKey<"biceps" | "brachioradialis" | "triceps" | "patellar" | "achilles">, ReflexGrade>>;
   signs?: Partial<Record<SideKey<"babinski" | "hoffmann" | "clonus">, boolean>>;
-  sensation?: { sides: Side[]; dermatomes?: Dermatome[]; nerves?: CutaneousNerve[]; change: SensoryChange }[];
+  /** `regions` match surface regions by prefix (e.g. "Back of the hand" also matches its thumb/little-finger sides) — for stocking/glove patterns. */
+  sensation?: { sides: Side[]; dermatomes?: Dermatome[]; nerves?: CutaneousNerve[]; regions?: string[]; change: SensoryChange }[];
   tender?: { side: Side | "both"; landmarks?: string[]; regions?: string[]; text: string }[];
   special?: Partial<Record<SideKey<SpecialTestId> | SpecialTestId, { positive: boolean; text: string }>>;
   tape?: Partial<Record<SideKey<TapeId>, number>>; // cm added to the healthy value
@@ -273,6 +280,7 @@ export function sensationFor(findings: CaseFindings, surface: SurfaceInfo): Sens
     if (!rule.sides.includes(surface.side)) continue;
     if (surface.dermatome && rule.dermatomes?.includes(surface.dermatome)) return rule.change;
     if (surface.nerve && rule.nerves?.includes(surface.nerve)) return rule.change;
+    if (rule.regions?.some((region) => surface.region.startsWith(region))) return rule.change;
   }
   return "normal";
 }

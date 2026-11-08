@@ -116,6 +116,8 @@ for (const c of [...CASES, PRACTICE_CASE]) {
   for (const rule of f.sensation ?? []) {
     for (const d of rule.dermatomes ?? []) if (!DERMATOMES.has(d)) fail(at("sensation"), `unknown dermatome ${d}`);
     for (const n of rule.nerves ?? []) if (!NERVES.has(n)) fail(at("sensation"), `unknown nerve ${n}`);
+    for (const r of rule.regions ?? []) if (typeof r !== "string" || !r.trim()) fail(at("sensation"), "empty region");
+    if (!rule.dermatomes?.length && !rule.nerves?.length && !rule.regions?.length) fail(at("sensation"), "rule needs dermatomes, nerves or regions");
   }
   for (const rule of f.tender ?? []) for (const l of rule.landmarks ?? []) if (!LANDMARKS.has(l)) fail(at("tender"), `unknown landmark ${l}`);
   if (c.id === "practice") continue;
@@ -190,6 +192,26 @@ expect(exam.specialFor(byId["fibular-palsy"].findings, "slr", "right").positive 
 expect(exam.sensationFor(byId["carpal-tunnel"].findings, surface("right", "C6", "radial")) === "normal", "carpal-tunnel", "the back of the hand (radial nerve) must be spared");
 expect(exam.signFor(byId["stroke"].findings, "babinski", "left") === true, "stroke", "stroke needs an upgoing plantar on the weak side");
 expect(exam.signFor(byId["myelopathy"].findings, "hoffmann", "right") === true, "myelopathy", "myelopathy needs Hoffmann's sign");
+// Second case set
+const radial = byId["radial-nerve-palsy"].findings;
+expect(exam.strengthFor(radial, "wrist-ext", "right") <= 1 && exam.strengthFor(radial, "elbow-ext", "right") === 5, "radial-nerve-palsy", "wrist drop must spare the triceps");
+expect(exam.reflexFor(radial, "triceps", "right") === "2+", "radial-nerve-palsy", "triceps reflex must be normal in a spiral-groove palsy");
+const ulnar = byId["ulnar-neuropathy-elbow"].findings;
+expect(exam.sensationFor(ulnar, { side: "left", dermatome: "C8", nerve: "medial-antebrachial", region: "Medial (ulnar) forearm", covered: false }) === "normal", "ulnar-neuropathy-elbow", "medial forearm must be spared (not C8 root)");
+expect(exam.sensationFor(ulnar, surface("left", "C8", "ulnar")) === "reduced", "ulnar-neuropathy-elbow", "ulnar territory must be reduced");
+const dn = byId["diabetic-neuropathy"].findings;
+expect(exam.sensationFor(dn, { side: "right", dermatome: "S1", nerve: "tibial", region: "Sole", covered: false }) === "reduced", "diabetic-neuropathy", "sole must be reduced (stocking)");
+expect(exam.sensationFor(dn, { side: "right", dermatome: "L3", nerve: "femoral", region: "Front of the thigh", covered: false }) === "normal", "diabetic-neuropathy", "thigh must be normal (length-dependent)");
+expect(exam.reflexFor(dn, "achilles", "left") === "0", "diabetic-neuropathy", "ankle jerks must be absent");
+const gbs = byId["guillain-barre"].findings;
+expect(["biceps", "patellar", "achilles"].every((r) => exam.reflexFor(gbs, r, "left") === "0" && exam.reflexFor(gbs, r, "right") === "0"), "guillain-barre", "GBS must be areflexic");
+expect(!exam.signFor(gbs, "babinski", "left"), "guillain-barre", "GBS must have no Babinski sign");
+expect(exam.specialFor(byId["achilles-rupture"].findings, "thompson", "right").positive && !exam.specialFor(byId["achilles-rupture"].findings, "thompson", "left").positive, "achilles-rupture", "Thompson positive only on the ruptured side");
+expect(exam.tapeFor(byId["dvt-post-op"].findings, "calf-girth", "right") - exam.tapeFor(byId["dvt-post-op"].findings, "calf-girth", "left") > 3, "dvt-post-op", "calf difference must exceed 3 cm (Wells)");
+expect(!exam.specialFor(byId["lumbar-stenosis"].findings, "slr", "left").positive, "lumbar-stenosis", "SLR negative in stenosis");
+const hip = byId["hip-oa"].findings;
+expect(exam.romFor(hip, "hip-ir", "right").active < exam.romFor(hip, "hip-er", "right").active, "hip-oa", "hip IR must be the most limited (capsular pattern)");
+for (const c of CASES.filter((x) => x.key.redFlag)) expect(c.questions.plan.answer === 0 || c.questions.plan.options.length >= 3, c.id, "red-flag case needs a clear referral plan");
 const fs1 = exam.romFor(byId["frozen-shoulder"].findings, "shoulder-er", "left");
 expect(fs1.passive < 45, "frozen-shoulder", "frozen shoulder must lose passive external rotation");
 const rc = exam.romFor(byId["rotator-cuff-tear"].findings, "shoulder-abduction", "right");

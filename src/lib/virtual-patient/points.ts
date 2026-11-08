@@ -65,6 +65,9 @@ export const SOFT_SITES: SoftSite[] = [
   { id: "subacromial", name: "Just below the acromion (supraspinatus insertion)", probe: probe(lerp(shoulder, elbow, 0.08), mix([armLateral, 1], [FRONT, 0.35]), 0.035) },
   { id: "bicipital-groove", name: "Bicipital groove", probe: probe(lerp(shoulder, elbow, 0.14), mix([FRONT, 1], [armLateral, 0.25]), 0.03) },
   { id: "common-extensor-origin", name: "Common extensor origin (tennis elbow)", probe: probe(lerp(elbow, wrist, 0.1), mix([armLateral, 1], [FRONT, 0.25]), 0.03) },
+  { id: "achilles-tendon", name: "Achilles tendon (2–6 cm above the heel)", probe: probe(add(ankle, [0, 0.035, -0.01]), BACK, 0.02) },
+  { id: "plantar-fascia-origin", name: "Plantar fascia origin (medial heel)", probe: probe(add(ankle, [-0.004, -0.04, -0.03]), mix([DOWN, 1], [MEDIAL, 0.35]), 0.025) },
+  { id: "calf-belly", name: "Calf (medial gastrocnemius)", probe: probe(lerp(knee, ankle, 0.3), mix([BACK, 1], [MEDIAL, 0.35]), 0.035) },
 ];
 export const SOFT_SITE_IDS = SOFT_SITES.map((s) => s.id);
 

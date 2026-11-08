@@ -5,6 +5,7 @@
 import type { PatientPosition } from "./engine";
 import type { CaseFindings, HistoryId, MotionId, MuscleTestId, ReflexId, SpecialTestId, TapeId } from "./exam";
 import type { CutaneousNerve, Dermatome } from "./anatomy";
+import { MORE_CASES } from "./cases-more";
 
 export type ExamKey =
   | `rom:${MotionId}` | `mmt:${MuscleTestId}` | `reflex:${ReflexId}` | `special:${SpecialTestId}`
@@ -490,6 +491,7 @@ export const CASES: VirtualCase[] = [
     },
     teaching: ["Hand clumsiness + gait change in an older adult: test Hoffmann and Babinski.", "Bilateral 'carpal tunnel' plus UMN signs = think cord.", "Never manipulate a myelopathic neck."],
   },
+  ...MORE_CASES,
 ];
 
 export const caseById = (id: string) => CASES.find((c) => c.id === id);
