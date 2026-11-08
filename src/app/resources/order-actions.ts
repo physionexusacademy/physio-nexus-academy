@@ -2,14 +2,13 @@
 
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { DEFAULT_BOOK_ID, getBook } from "@/lib/books";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
-const BOOK_TITLE = "Clinical Myofascial Therapy — Illustrated Clinical Edition";
-const UNIT_PRICE = 2000;
-const DELIVERY_ESTIMATE = "3–4 days";
 
 const schema = z.object({
+  bookId: z.string().trim().max(80).optional(),
   fullName: z.string().trim().min(2).max(100),
   phone: z.string().trim().min(7).max(30),
   email: z.string().trim().email().optional().or(z.literal("")),
@@ -49,6 +48,7 @@ async function sendEmail({ to, subject, text, replyTo }: {
 }
 
 export async function submitBookOrder(values: {
+  bookId?: string;
   fullName: string;
   phone: string;
   email?: string;
@@ -61,14 +61,20 @@ export async function submitBookOrder(values: {
   if (!parsed.success) throw new Error("Please check your order details and try again.");
 
   const order = parsed.data;
-  const totalAmount = UNIT_PRICE * order.quantity;
+  // Price and title always come from the server-side catalogue, never from the browser.
+  const book = getBook(order.bookId ?? DEFAULT_BOOK_ID);
+  if (!book) throw new Error("Please choose a book and try again.");
+  const bookTitle = book.orderTitle;
+  const unitPrice = book.price;
+  const deliveryEstimate = book.deliveryEstimate;
+  const totalAmount = unitPrice * order.quantity;
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("book_orders")
     .insert({
-      book_title: BOOK_TITLE,
-      unit_price: UNIT_PRICE,
+      book_title: bookTitle,
+      unit_price: unitPrice,
       quantity: order.quantity,
       total_amount: totalAmount,
       full_name: order.fullName,
@@ -76,7 +82,7 @@ export async function submitBookOrder(values: {
       email: order.email || null,
       city: order.city,
       delivery_address: order.deliveryAddress,
-      delivery_estimate: DELIVERY_ESTIMATE,
+      delivery_estimate: deliveryEstimate,
       customer_notes: order.customerNotes || null,
     })
     .select("reference_id")
@@ -90,11 +96,11 @@ export async function submitBookOrder(values: {
   const adminText = `New Book Order – Physio Nexus Academy
 
 Order ID: ${referenceId}
-Book: ${BOOK_TITLE}
-Unit Price: PKR ${UNIT_PRICE.toLocaleString("en-PK")}
+Book: ${bookTitle}
+Unit Price: PKR ${unitPrice.toLocaleString("en-PK")}
 Quantity: ${order.quantity}
 Total: PKR ${total}
-Expected Delivery: ${DELIVERY_ESTIMATE}
+Expected Delivery: ${deliveryEstimate}
 
 Customer: ${order.fullName}
 Phone / WhatsApp: ${order.phone}
@@ -126,10 +132,10 @@ Thank you for ordering from Physio Nexus Academy.
 We have successfully received your book order.
 
 Order ID: ${referenceId}
-Book: ${BOOK_TITLE}
+Book: ${bookTitle}
 Quantity: ${order.quantity}
 Total: PKR ${total}
-Expected Delivery: ${DELIVERY_ESTIMATE}
+Expected Delivery: ${deliveryEstimate}
 
 Our team will contact you if any additional delivery confirmation is required.
 Please keep your Order ID for future communication.
@@ -147,5 +153,5 @@ physionexusacademy.com`;
   }
 
   await Promise.allSettled(tasks);
-  return { referenceId, totalAmount, deliveryEstimate: DELIVERY_ESTIMATE };
+  return { referenceId, totalAmount, deliveryEstimate: deliveryEstimate };
 }
