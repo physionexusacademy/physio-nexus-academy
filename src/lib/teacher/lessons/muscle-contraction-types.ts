@@ -1,0 +1,171 @@
+import type { TeacherLesson } from "../types.ts";
+
+export const muscleContractionTypes: TeacherLesson = {
+  slug: "muscle-contraction-types",
+  title: "Muscle Contraction — Concentric, Eccentric, Isometric & Length–Tension",
+  hook: {
+    en: "Why is walking downstairs harder on the knees than walking up? Master the three contraction types and the two curves that explain muscle strength.",
+    ur: "Seerhiyan utarna knees ke liye charhne se zyada mushkil kyun hai? Teen contraction types aur woh do curves seekhein jo muscle strength samjhate hain.",
+  },
+  area: "Movement Science",
+  level: "Foundation",
+  bestFor: "1st–2nd year",
+  minutes: 11,
+  goal: {
+    en: "By the end, you'll name the contraction type in any movement, explain the length–tension and force–velocity relationships and use them to choose exercises.",
+    ur: "End tak aap kisi bhi movement mein contraction type pehchan sakenge, length–tension aur force–velocity relationships samjha sakenge aur inhi se exercises choose kar sakenge.",
+  },
+  beats: [
+    {
+      type: "say",
+      text: {
+        en: "A muscle can produce force in three ways:\n**Concentric** — the muscle shortens while producing force (lifting).\n**Eccentric** — the muscle lengthens while producing force (lowering, braking).\n**Isometric** — force with no change in length (holding).",
+        ur: "Muscle teen tareeqon se force bana sakti hai:\n**Concentric** — muscle force banate hue chhoti hoti hai (uthana).\n**Eccentric** — muscle force banate hue lambi hoti hai (neeche lana, brake lagana).\n**Isometric** — length badle baghair force (pakar kar rakhna).",
+      },
+      simpler: {
+        en: "Lift = concentric, lower slowly = eccentric, hold still = isometric.",
+        ur: "Uthana = concentric, aahista neeche lana = eccentric, rok kar rakhna = isometric.",
+      },
+    },
+    {
+      type: "analogy",
+      text: {
+        en: "Think of a rope and a bucket of water in a well. Pulling the bucket up is concentric. Letting it down slowly — rope sliding through your hands while you still grip — is eccentric. Holding it halfway is isometric. The same hands, three very different jobs.",
+        ur: "Kunwein mein rassi aur paani ki balti sochein. Balti upar khenchna concentric hai. Usay aahista neeche jane dena — rassi haathon se phisal rahi ho aur aap pakre hue hon — eccentric hai. Beech mein rok kar rakhna isometric hai. Wohi haath, teen bilkul mukhtalif kaam.",
+      },
+    },
+    {
+      type: "sort",
+      prompt: {
+        en: "Quadriceps during each task — shortening (concentric) or lengthening (eccentric)?",
+        ur: "Har kaam mein quadriceps — chhota hona (concentric) ya lamba hona (eccentric)?",
+      },
+      categories: [
+        { en: "Concentric", ur: "Concentric" },
+        { en: "Eccentric", ur: "Eccentric" },
+      ],
+      items: [
+        { text: { en: "Standing up from a chair", ur: "Kursi se uthna" }, answer: 0, why: { en: "Knee extends against gravity — quads shorten.", ur: "Gravity ke khilaf knee extend hoti hai — quads chhote hote hain." } },
+        { text: { en: "Sitting down slowly", ur: "Aahista baithna" }, answer: 1, why: { en: "Knee bends under control — quads lengthen while braking.", ur: "Control ke saath knee murti hai — quads brake lagate hue lambe hote hain." } },
+        { text: { en: "Walking downstairs", ur: "Seerhiyan utarna" }, answer: 1, why: { en: "The stance knee bends under body weight — eccentric quads.", ur: "Stance knee jism ke wazan ke neeche murti hai — eccentric quads." } },
+        { text: { en: "Climbing stairs", ur: "Seerhiyan charhna" }, answer: 0, why: { en: "The leading knee straightens to lift you — concentric.", ur: "Aage wali knee seedhi ho kar aap ko uthati hai — concentric." } },
+        { text: { en: "Landing from a jump", ur: "Jump ke baad zameen par aana" }, answer: 1, why: { en: "Quads absorb the landing as the knee bends — eccentric.", ur: "Knee murte hue quads landing absorb karte hain — eccentric." } },
+      ],
+    },
+    {
+      type: "mistake",
+      text: {
+        en: "The classic exam trap: when you lower a dumbbell during a biceps curl, the **elbow flexors** (biceps) are working eccentrically — not the triceps. Gravity extends the elbow; the flexors brake it. Always ask: which muscle is controlling the movement against gravity or load?",
+        ur: "Exam ka classic jaal: biceps curl mein dumbbell neeche laate waqt **elbow flexors** (biceps) eccentric kaam kar rahe hote hain — triceps nahi. Gravity elbow ko extend karti hai; flexors brake lagate hain. Hamesha poochein: gravity ya load ke khilaf movement ko kaun si muscle control kar rahi hai?",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "During the lowering phase of a push-up, the triceps and pectoralis major are working…",
+        ur: "Push-up ke neeche jane wale phase mein triceps aur pectoralis major kaam kar rahe hain…",
+      },
+      options: [
+        { text: { en: "Concentrically", ur: "Concentrically" }, feedback: { en: "They shorten on the way up, not down.", ur: "Woh upar jate waqt chhote hote hain, neeche jate waqt nahi." } },
+        { text: { en: "Eccentrically", ur: "Eccentrically" }, correct: true, feedback: { en: "Yes — they lengthen under load to control the descent.", ur: "Haan — neeche aane ko control karne ke liye load ke neeche lambe hote hain." } },
+        { text: { en: "They are switched off; gravity does it", ur: "Woh band hain; gravity kar rahi hai" }, feedback: { en: "If they switched off you'd fall on your face!", ur: "Agar woh band ho jayein to aap munh ke bal girenge!" } },
+      ],
+    },
+    {
+      type: "say",
+      text: {
+        en: "**Force–velocity relationship:** the faster a muscle shortens, the less force it can make. Isometric (zero velocity) is stronger than concentric — and **eccentric is the strongest of all**, often well above the maximal isometric force. Eccentric work also costs less energy for the same force, but causes more delayed-onset muscle soreness (DOMS) when unfamiliar.",
+        ur: "**Force–velocity relationship:** muscle jitni tezi se chhoti hoti hai, utni kam force banati hai. Isometric (zero velocity) concentric se zyada strong hai — aur **eccentric sab se zyada strong**, aksar maximal isometric force se bhi kaafi upar. Eccentric kaam usi force ke liye kam energy leta hai, lekin naya ho to delayed-onset muscle soreness (DOMS) zyada karta hai.",
+      },
+    },
+    {
+      type: "memory",
+      text: {
+        en: "Strength order: **E > I > C** — \"Every Injury Counts\": Eccentric > Isometric > Concentric.",
+        ur: "Strength ki tarteeb: **E > I > C** — \"Every Injury Counts\": Eccentric > Isometric > Concentric.",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "**Length–tension relationship:** a muscle makes its greatest active force near its resting, mid-range length, where actin and myosin overlap best. Very short (overlapping too much) or very long (too little overlap), active force falls. Passive tension from stretched connective tissue rises as the muscle lengthens.",
+        ur: "**Length–tension relationship:** muscle sab se zyada active force apni resting, mid-range length ke qareeb banati hai, jahan actin aur myosin ka overlap behtareen hota hai. Bohat chhoti (overlap zyada) ya bohat lambi (overlap kam) ho to active force gir jati hai. Lambi hone par stretched connective tissue ki passive tension barhti hai.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "Why is it hard to make a strong fist with your wrist fully flexed?",
+        ur: "Wrist poori flex ho to mazboot muthi banana mushkil kyun hai?",
+      },
+      options: [
+        { text: { en: "The finger flexors are too short to make much force — active insufficiency", ur: "Finger flexors itne chhote hain ke zyada force nahi bana sakte — active insufficiency" }, correct: true, feedback: { en: "Exactly — the length–tension curve in action. The two-joint finger flexors are shortened over both wrist and fingers.", ur: "Bilkul — length–tension curve ka amal. Two-joint finger flexors wrist aur ungliyon dono par chhote ho chuke hain." } },
+        { text: { en: "The wrist extensors are too weak", ur: "Wrist extensors bohat kamzor hain" }, feedback: { en: "The extensors are being stretched, not asked to grip.", ur: "Extensors stretch ho rahe hain, unhein grip nahi karna." } },
+        { text: { en: "Nerves are compressed at the wrist", ur: "Wrist par nerves dab gayi hain" }, feedback: { en: "This happens in everyone, instantly — it's mechanics, not nerve compression.", ur: "Yeh har kisi ke saath foran hota hai — yeh mechanics hai, nerve compression nahi." } },
+      ],
+    },
+    {
+      type: "clinic",
+      text: {
+        en: "Using this in rehab:\n**Isometrics** — early after injury or in irritable tendons; safe, joint-friendly, can reduce pain short-term.\n**Concentric/eccentric (isotonic)** — the core of strength rehab.\n**Eccentric emphasis** — hamstring injury prevention (e.g. Nordic hamstring curls), tendinopathy loading, control on stairs and landing.\n**Test strength in mid-range** and compare sides at the same joint angle.",
+        ur: "Rehab mein istemal:\n**Isometrics** — injury ke shuru mein ya irritable tendons mein; safe, joint-friendly, thori dair ke liye dard kam kar sakte hain.\n**Concentric/eccentric (isotonic)** — strength rehab ka markaz.\n**Eccentric emphasis** — hamstring injury prevention (maslan Nordic hamstring curls), tendinopathy loading, seerhiyon aur landing par control.\n**Strength mid-range mein test karein** aur dono sides ko same joint angle par compare karein.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "A sprinter's hamstring is most often injured in late swing, as the knee extends rapidly. What is the hamstring doing then?",
+        ur: "Sprinter ka hamstring aksar late swing mein injure hota hai, jab knee tezi se extend hoti hai. Us waqt hamstring kya kar raha hota hai?",
+      },
+      options: [
+        { text: { en: "Contracting concentrically to bend the knee", ur: "Knee morne ke liye concentric contraction" }, feedback: { en: "In late swing the knee is extending — the hamstring is lengthening, not shortening.", ur: "Late swing mein knee extend ho rahi hai — hamstring lamba ho raha hai, chhota nahi." } },
+        { text: { en: "Contracting eccentrically to brake the swinging leg", ur: "Jhoolti taang ko brake karne ke liye eccentric contraction" }, correct: true, feedback: { en: "Yes — high-force eccentric braking at long length. That's why eccentric training like the Nordic curl helps prevention.", ur: "Haan — lambi length par high-force eccentric braking. Isi liye Nordic curl jaisi eccentric training prevention mein madad karti hai." } },
+        { text: { en: "Completely relaxed", ur: "Bilkul relaxed" }, feedback: { en: "If it were relaxed, the knee would snap straight uncontrolled.", ur: "Agar relaxed ho to knee be-qaboo jhatke se seedhi ho jaye." } },
+      ],
+    },
+    {
+      type: "evidence",
+      text: {
+        en: "Research highlights: the length–tension curve comes from classic single-fibre experiments (Gordon, Huxley & Julian, 1966); the force–velocity curve from Hill (1938). In sport, eccentric hamstring programmes such as the Nordic curl have been shown to reduce hamstring injury rates in football.",
+        ur: "Research ki khaas baatein: length–tension curve classic single-fibre experiments (Gordon, Huxley & Julian, 1966) se aaya; force–velocity curve Hill (1938) se. Sport mein Nordic curl jaise eccentric hamstring programmes ne football mein hamstring injury rates kam kiye hain.",
+      },
+    },
+    {
+      type: "reveal",
+      question: {
+        en: "Your knee OA patient finds stairs down harder than stairs up. Explain why, and one exercise you would add.",
+        ur: "Aap ke knee OA patient ko seerhiyan utarna charhne se zyada mushkil lagta hai. Wajah samjhayein aur ek exercise batayein.",
+      },
+      answer: {
+        en: "Going down, the quadriceps must work eccentrically to brake body weight as the knee bends, with high joint loading and a control demand. Add slow, controlled eccentric work: e.g. step-downs from a low step (lowering over 3 seconds), progressing step height as control and pain allow.",
+        ur: "Neeche jate waqt knee murti hai aur quadriceps ko jism ke wazan ko brake karne ke liye eccentric kaam karna parta hai — joint loading bhi zyada, control ki demand bhi. Aahista, controlled eccentric kaam add karein: maslan neechi step se step-downs (3 second mein neeche aana), control aur dard ke mutabiq step ki unchai barhayein.",
+      },
+    },
+  ],
+  summary: [
+    { en: "Concentric = shortening, eccentric = lengthening under load (braking), isometric = no length change.", ur: "Concentric = chhota hona, eccentric = load ke neeche lamba hona (brake), isometric = length mein tabdeeli nahi." },
+    { en: "Force–velocity: eccentric > isometric > concentric; faster shortening = less force.", ur: "Force–velocity: eccentric > isometric > concentric; tez chhota hona = kam force." },
+    { en: "Length–tension: active force peaks near mid-range; very short or long muscles are weaker.", ur: "Length–tension: active force mid-range ke qareeb sab se zyada; bohat chhoti ya lambi muscle kamzor." },
+  ],
+  flashcards: [
+    { id: "mc-1", front: { en: "Define an eccentric contraction.", ur: "Eccentric contraction ki tareef?" }, back: { en: "The muscle lengthens while producing force — it controls (brakes) a movement.", ur: "Muscle force banate hue lambi hoti hai — movement ko control (brake) karti hai." } },
+    { id: "mc-2", front: { en: "Lowering a dumbbell in a curl: which muscle, which contraction?", ur: "Curl mein dumbbell neeche lana: kaun si muscle, kaun sa contraction?" }, back: { en: "Elbow flexors (biceps), eccentric.", ur: "Elbow flexors (biceps), eccentric." } },
+    { id: "mc-3", front: { en: "Order of maximal force by contraction type?", ur: "Contraction type ke hisaab se maximal force ki tarteeb?" }, back: { en: "Eccentric > isometric > concentric.", ur: "Eccentric > isometric > concentric." } },
+    { id: "mc-4", front: { en: "Where on the length–tension curve is active force greatest?", ur: "Length–tension curve par active force kahan sab se zyada?" }, back: { en: "Near resting (mid-range) length, with optimal actin–myosin overlap.", ur: "Resting (mid-range) length ke qareeb, behtareen actin–myosin overlap par." } },
+    { id: "mc-5", front: { en: "When is the sprinting hamstring most at risk, and how?", ur: "Sprint mein hamstring kab sab se zyada risk mein hota hai, aur kaise?" }, back: { en: "Late swing — high-force eccentric braking at long length.", ur: "Late swing — lambi length par high-force eccentric braking." } },
+  ],
+  goDeeper: [
+    { title: "Active & Passive Insufficiency", href: "/learn/active-passive-insufficiency", note: { en: "Length–tension applied to two-joint muscles.", ur: "Two-joint muscles par length–tension ka istemal." } },
+    { title: "Manual Muscle Testing — Skills Lab", href: "/skills/manual-muscle-testing", note: { en: "Test strength at the right joint angle.", ur: "Sahi joint angle par strength test karein." } },
+    { title: "Hamstring Strain", href: "/msk-injuries/hamstring-strain", note: { en: "Eccentric loading in a real injury.", ur: "Asli injury mein eccentric loading." } },
+  ],
+  sources: [
+    { citation: "Neumann DA. Kinesiology of the Musculoskeletal System: Foundations for Rehabilitation. 3rd ed. Elsevier; 2017." },
+    {
+      citation: "Gordon AM, Huxley AF, Julian FJ. The variation in isometric tension with sarcomere length in vertebrate muscle fibres. J Physiol. 1966;184(1):170–192.",
+      pubmedQuery: "Gordon Huxley Julian variation in isometric tension with sarcomere length vertebrate muscle fibres",
+    },
+    { citation: "Hill AV. The heat of shortening and the dynamic constants of muscle. Proc R Soc Lond B. 1938;126(843):136–195." },
+    { citation: "Lieber RL. Skeletal Muscle Structure, Function, and Plasticity. 3rd ed. Lippincott Williams & Wilkins; 2010." },
+  ],
+};

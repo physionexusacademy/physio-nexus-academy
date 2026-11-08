@@ -1,0 +1,197 @@
+import type { TeacherLesson } from "../types.ts";
+
+export const tendinopathyLoadManagement: TeacherLesson = {
+  slug: "tendinopathy-load-management",
+  title: "Tendinopathy & Load Management — Why Rest Fails and Loading Works",
+  hook: {
+    en: "Tendons get better with the right load, not with rest or endless ultrasound. Learn the continuum model, the pain-monitoring rule and how to progress a tendon programme.",
+    ur: "Tendons sahi load se theek hote hain, rest ya be-hisaab ultrasound se nahi. Continuum model, pain-monitoring rule aur tendon programme progress karna seekhein.",
+  },
+  area: "Tissue Healing",
+  level: "Clinical",
+  bestFor: "3rd year onwards",
+  minutes: 13,
+  goal: {
+    en: "By the end, you'll explain tendinopathy to a patient, set safe loading using pain monitoring and build a staged programme from isometrics to return to sport.",
+    ur: "End tak aap patient ko tendinopathy samjha sakenge, pain monitoring se safe loading tay kar sakenge aur isometrics se return to sport tak staged programme bana sakenge.",
+  },
+  beats: [
+    {
+      type: "say",
+      text: {
+        en: "**Tendinopathy** is pain and impaired function in a tendon related to mechanical loading — common at the Achilles, patellar tendon, lateral elbow, rotator cuff and gluteal tendons. It is usually **not** an inflammatory '-itis', which is why anti-inflammatory rest so often fails.",
+        ur: "**Tendinopathy** tendon mein dard aur function ki kami hai jo mechanical loading se judi hai — Achilles, patellar tendon, lateral elbow, rotator cuff aur gluteal tendons par aam hai. Yeh aam tor par inflammatory '-itis' **nahi** hoti, isi liye anti-inflammatory rest aksar fail ho jata hai.",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "**The continuum model** (Cook & Purdam): \n**Reactive** — a sudden overload (e.g. new training) causes a short-term thickening response.\n**Dysrepair** — repeated overload, matrix becomes disorganised.\n**Degenerative** — areas of structural change; can coexist with healthy tendon.\nPain doesn't map neatly onto structure — many people with 'degenerative' scans have no pain.",
+        ur: "**Continuum model** (Cook & Purdam):\n**Reactive** — achanak overload (maslan nayi training) se thori dair ka mota hone wala response.\n**Dysrepair** — baar baar overload, matrix be-tarteeb ho jata hai.\n**Degenerative** — structural tabdeeli ke hisse; healthy tendon ke saath bhi ho sakte hain.\nDard structure se seedha match nahi karta — 'degenerative' scan wale bohat se log bina dard ke hote hain.",
+      },
+      simpler: {
+        en: "Too much, too soon irritates a tendon. It needs the right amount of load to rebuild — not zero.",
+        ur: "Bohat zyada, bohat jaldi tendon ko irritate karta hai. Dobara banne ke liye usay sahi miqdaar mein load chahiye — zero nahi.",
+      },
+    },
+    {
+      type: "analogy",
+      text: {
+        en: "A tendon is like a savings account. Every training session is a withdrawal, recovery is a deposit. Tendinopathy is an overdrawn account. Stopping all spending (rest) doesn't earn interest — careful, regular deposits of the right load rebuild the balance.",
+        ur: "Tendon savings account ki tarah hai. Har training session withdrawal hai, recovery deposit. Tendinopathy overdrawn account hai. Sara kharcha band karna (rest) munafa nahi deta — sahi load ke ehtiyat bhare, baqaida deposits balance dobara banate hain.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "A runner with Achilles tendinopathy asks if complete rest for 6 weeks will fix it. Best answer?",
+        ur: "Achilles tendinopathy wala runner poochta hai ke 6 hafte mukammal rest se theek ho jayega? Behtareen jawab?",
+      },
+      options: [
+        { text: { en: "Yes — rest lets the inflammation settle", ur: "Haan — rest se inflammation theek hogi" }, feedback: { en: "Tendinopathy is mainly not inflammatory; rest reduces pain short-term but deconditions the tendon, so pain often returns with running.", ur: "Tendinopathy zyada tar inflammatory nahi; rest se thori dair dard kam hota hai lekin tendon kamzor hota hai, to running par dard aksar wapas aata hai." } },
+        { text: { en: "No — we'll adjust your load and start a progressive tendon-loading programme", ur: "Nahi — hum load adjust karenge aur progressive tendon-loading programme shuru karenge" }, correct: true, feedback: { en: "Yes — modify aggravating loads (e.g. hills, speed work) and build tendon capacity with progressive loading.", ur: "Haan — bharkane wale loads badlein (maslan hills, speed work) aur progressive loading se tendon ki capacity banayein." } },
+        { text: { en: "Only surgery works for tendons", ur: "Tendons ke liye sirf surgery kaam karti hai" }, feedback: { en: "Most tendinopathies improve with well-dosed exercise; surgery is rarely first-line.", ur: "Zyada tar tendinopathies sahi dose wali exercise se behtar hoti hain; surgery shayad hi pehla qadam ho." } },
+      ],
+    },
+    {
+      type: "say",
+      text: {
+        en: "**The pain-monitoring model** (Silbernagel): activity and exercise are allowed if\n• pain during exercise stays at or below about **5/10**,\n• pain after exercise settles by the **next morning**, and\n• pain and stiffness do **not** increase from week to week.\nIf any rule is broken, reduce the load — don't stop everything.",
+        ur: "**Pain-monitoring model** (Silbernagel): activity aur exercise ki ijazat hai agar\n• exercise ke dauraan dard taqreeban **5/10** ya kam rahe,\n• exercise ke baad ka dard **agli subah** tak settle ho jaye, aur\n• dard aur stiffness hafta ba hafta **na** barhein.\nAgar koi rule toote to load kam karein — sab kuch band na karein.",
+      },
+    },
+    {
+      type: "memory",
+      text: {
+        en: "**5 – Morning – Week**: under 5/10 during, settled by next morning, not worse week to week.",
+        ur: "**5 – Subah – Hafta**: dauraan 5/10 se kam, agli subah tak settle, hafta ba hafta badtar nahi.",
+      },
+    },
+    {
+      type: "steps",
+      title: { en: "A staged tendon-loading programme", ur: "Staged tendon-loading programme" },
+      steps: [
+        { title: "1. Isometrics (pain relief)", detail: "e.g. 5 × 30–45 s holds at a moderate–heavy effort, several times a day when pain is high. Evidence for immediate pain relief is mixed, but it keeps the tendon loaded." },
+        { title: "2. Isotonic strength", detail: "Heavy slow resistance: 3–4 sets, ~3 s up and 3 s down, progressing from about 15RM towards 6RM, 3 times a week, over at least 12 weeks." },
+        { title: "3. Energy storage", detail: "Faster, spring-like loads: skipping, hopping, bounding, plyometrics — progress volume before speed." },
+        { title: "4. Return to sport", detail: "Graded return to running, jumping or throwing, monitoring the 24-hour response and the weekly trend." },
+      ],
+      ur: "1. Isometrics (dard mein aaram) — maslan 5 × 30–45 s holds, darmiyani–bhari effort par, jab dard zyada ho to din mein kai dafa. Fori pain relief ka evidence mila-jula hai, lekin tendon load hota rehta hai.\n2. Isotonic strength — Heavy slow resistance: 3–4 sets, ~3 s upar aur 3 s neeche, taqreeban 15RM se 6RM ki taraf, hafte mein 3 dafa, kam az kam 12 hafte.\n3. Energy storage — Tez, spring jaise loads: rassi koodna, hopping, bounding, plyometrics — speed se pehle volume barhayein.\n4. Return to sport — Running, jumping ya throwing par graded wapsi, 24-hour response aur hafte ka trend monitor karte hue.",
+    },
+    {
+      type: "check",
+      question: {
+        en: "After heavy slow calf raises, your patient's Achilles pain was 3/10 during, settled overnight, and morning stiffness is less than last week. What next?",
+        ur: "Heavy slow calf raises ke baad patient ka Achilles dard dauraan 3/10 tha, raat bhar mein settle hua, aur morning stiffness pichle hafte se kam hai. Agla qadam?",
+      },
+      options: [
+        { text: { en: "Reduce the load — any pain is bad", ur: "Load kam karein — har dard bura hai" }, feedback: { en: "Pain within the monitoring rules is acceptable during tendon rehab.", ur: "Monitoring rules ke andar dard tendon rehab mein qabil-e-qubool hai." } },
+        { text: { en: "Progress — e.g. add load or move towards single-leg work", ur: "Progress karein — maslan load barhayein ya single-leg work ki taraf jayein" }, correct: true, feedback: { en: "Yes — all three rules are met and the trend is improving, so progress one variable.", ur: "Haan — teeno rules poore hain aur trend behtar ho raha hai, to ek variable progress karein." } },
+        { text: { en: "Stop exercise and use ultrasound instead", ur: "Exercise band karein aur ultrasound lagayein" }, feedback: { en: "Passive modalities don't build tendon capacity.", ur: "Passive modalities tendon ki capacity nahi banati." } },
+      ],
+    },
+    {
+      type: "clinic",
+      text: {
+        en: "Education is treatment: explain that the tendon is not 'torn' or 'worn out', that some pain during rehab is safe, and that recovery takes **12 weeks or more**. Find and modify the loads that flare it — for the Achilles: hills, speed work and sudden mileage jumps; for the patellar tendon: jumping and deep squats; for the lateral elbow: gripping with the wrist flexed.",
+        ur: "Education khud treatment hai: samjhayein ke tendon 'phata' ya 'ghisa' hua nahi, rehab ke dauraan kuch dard safe hai, aur recovery mein **12 hafte ya zyada** lagte hain. Bharkane wale loads dhoondein aur badlein — Achilles ke liye: charhai, speed work aur mileage mein achanak izafa; patellar tendon ke liye: jumping aur gehre squats; lateral elbow ke liye: wrist mur kar grip karna.",
+      },
+    },
+    {
+      type: "evidence",
+      text: {
+        en: "What the research supports: progressive loading (eccentric or heavy slow resistance) is the core treatment for Achilles and patellar tendinopathy, with similar results but better adherence for heavy slow resistance (Beyer 2015). Continuing sport within the pain-monitoring model didn't worsen outcomes (Silbernagel 2007). For lateral elbow pain, a corticosteroid injection gave short-term relief but worse 1-year outcomes and more recurrence than placebo (Coombes 2013).",
+        ur: "Research kya kehti hai: progressive loading (eccentric ya heavy slow resistance) Achilles aur patellar tendinopathy ka buniyadi ilaaj hai; dono ke nataij milte julte hain lekin heavy slow resistance par adherence behtar hai (Beyer 2015). Pain-monitoring model ke andar sport jaari rakhne se nataij badtar nahi hue (Silbernagel 2007). Lateral elbow pain mein corticosteroid injection ne thori dair aaram diya lekin 1 saal par nataij badtar aur recurrence zyada tha placebo ke muqable mein (Coombes 2013).",
+      },
+    },
+    {
+      type: "sort",
+      prompt: {
+        en: "For an irritable patellar tendon early in rehab — keep or modify for now?",
+        ur: "Rehab ke shuru mein irritable patellar tendon ke liye — abhi rakhein ya badlein?",
+      },
+      categories: [
+        { en: "Good starting load", ur: "Acha shuruati load" },
+        { en: "Modify or delay", ur: "Badlein ya baad mein" },
+      ],
+      items: [
+        { text: { en: "Isometric wall sit or leg-extension holds", ur: "Isometric wall sit ya leg-extension holds" }, answer: 0, why: { en: "Controlled load with minimal energy storage.", ur: "Kam energy storage ke saath controlled load." } },
+        { text: { en: "Repeated box jumps", ur: "Baar baar box jumps" }, answer: 1, why: { en: "High energy-storage load — later stage.", ur: "High energy-storage load — baad ka stage." } },
+        { text: { en: "Slow leg press within the pain rules", ur: "Pain rules ke andar aahista leg press" }, answer: 0, why: { en: "Isotonic strength with controlled tempo.", ur: "Controlled tempo ke saath isotonic strength." } },
+        { text: { en: "Deep jumping lunges", ur: "Gehre jumping lunges" }, answer: 1, why: { en: "Fast, deep knee flexion under load flares the patellar tendon.", ur: "Load ke saath tez, gehra knee flexion patellar tendon ko bharkata hai." } },
+      ],
+    },
+    {
+      type: "safety",
+      text: {
+        en: "Refer when it's not simple tendinopathy: a sudden 'kick in the calf' sensation with weakness (possible **Achilles rupture** — test with Thompson's squeeze test), a red, hot, swollen tendon with fever (infection or inflammatory disease), tendon pain after **fluoroquinolone antibiotics**, or bilateral tendon pain with other joint symptoms (screen for inflammatory arthritis).",
+        ur: "Refer karein jab yeh simple tendinopathy na ho: calf mein achanak 'laat lagne' jaisa ehsaas aur kamzori (mumkin **Achilles rupture** — Thompson squeeze test karein), laal, garam, sooja tendon aur bukhar (infection ya inflammatory disease), **fluoroquinolone antibiotics** ke baad tendon pain, ya doosre joints ke symptoms ke saath dono taraf tendon pain (inflammatory arthritis screen karein).",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "Which patient should you NOT treat as simple tendinopathy?",
+        ur: "Kis patient ko simple tendinopathy samajh kar treat NAHI karna chahiye?",
+      },
+      options: [
+        { text: { en: "Gradual Achilles pain after increasing weekly mileage", ur: "Weekly mileage barhane ke baad aahista Achilles pain" }, feedback: { en: "That's the classic load-related story.", ur: "Yeh classic load se juda kahani hai." } },
+        { text: { en: "Sudden calf 'pop' while playing, now can't push off; Thompson's test shows no plantarflexion", ur: "Khelte waqt calf mein achanak 'pop', ab push off nahi kar sakta; Thompson test mein plantarflexion nahi" }, correct: true, feedback: { en: "Likely Achilles rupture — urgent orthopaedic referral, not a loading programme.", ur: "Shayad Achilles rupture — urgent orthopaedic referral, loading programme nahi." } },
+        { text: { en: "Lateral elbow pain after a week of painting", ur: "Ek hafta painting ke baad lateral elbow pain" }, feedback: { en: "Typical overload of the common extensor tendon.", ur: "Common extensor tendon ka typical overload." } },
+      ],
+    },
+    {
+      type: "mistake",
+      text: {
+        en: "Common mistakes: prescribing complete rest; stopping the programme at the first twinge instead of using the pain rules; progressing too fast once pain eases (tendons adapt slowly — think months); relying on passive treatments; and stretching an irritable insertional Achilles tendon into dorsiflexion, which compresses it.",
+        ur: "Aam ghaltiyan: mukammal rest likhna; pain rules ke bajaye pehli tees par programme rok dena; dard kam hote hi bohat tez progress karna (tendons aahista adapt karte hain — mahinon ka sochein); passive treatments par bharosa; aur irritable insertional Achilles tendon ko dorsiflexion mein stretch karna, jo usay dabata hai.",
+      },
+    },
+    {
+      type: "reveal",
+      question: {
+        en: "Write the first-visit advice for a 40-year-old with 3 months of lateral elbow pain who uses a mouse and lifts kettles all day.",
+        ur: "3 mahine se lateral elbow pain wale 40 saal ke patient ke liye pehle visit ka mashwara likhein jo saara din mouse chalata aur ketli uthata hai.",
+      },
+      answer: {
+        en: "Explain: an overloaded tendon, not damage; recovery takes 12+ weeks; safe to use the arm within the pain rules. Modify load: lift with the palm up, keep the wrist neutral, take micro-breaks from the mouse. Start loading: isometric wrist extension holds, then slow wrist extensor strengthening, progressing with the 24-hour response. Avoid relying on injections, which help short-term but worsen long-term outcomes.",
+        ur: "Samjhayein: tendon overload hai, nuqsaan nahi; recovery mein 12+ hafte; pain rules ke andar haath istemal karna safe hai. Load badlein: hatheli upar kar ke uthayein, wrist neutral rakhein, mouse se chhote breaks lein. Loading shuru karein: isometric wrist extension holds, phir aahista wrist extensor strengthening, 24-hour response ke mutabiq progress. Injections par bharosa na karein — thori dair madad, lekin long-term nataij badtar.",
+      },
+    },
+  ],
+  summary: [
+    { en: "Tendinopathy is a load-related problem (reactive → dysrepair → degenerative), not mainly inflammation — rest alone deconditions the tendon.", ur: "Tendinopathy load se juda masla hai (reactive → dysrepair → degenerative), zyada tar inflammation nahi — sirf rest tendon ko kamzor karta hai." },
+    { en: "Pain-monitoring rules: ≤5/10 during, settled by next morning, not worse week to week.", ur: "Pain-monitoring rules: dauraan ≤5/10, agli subah tak settle, hafta ba hafta badtar nahi." },
+    { en: "Progress isometrics → heavy slow resistance → energy storage → return to sport over 12+ weeks; refer suspected rupture or infection.", ur: "Isometrics → heavy slow resistance → energy storage → return to sport, 12+ hafte mein; mumkin rupture ya infection refer karein." },
+  ],
+  flashcards: [
+    { id: "td-1", front: { en: "Three stages of the tendinopathy continuum?", ur: "Tendinopathy continuum ke teen stages?" }, back: { en: "Reactive, tendon dysrepair, degenerative (Cook & Purdam).", ur: "Reactive, tendon dysrepair, degenerative (Cook & Purdam)." } },
+    { id: "td-2", front: { en: "The pain-monitoring model rules?", ur: "Pain-monitoring model ke rules?" }, back: { en: "Pain ≤5/10 during, settled by next morning, not increasing week to week.", ur: "Dauraan dard ≤5/10, agli subah tak settle, hafta ba hafta na barhe." } },
+    { id: "td-3", front: { en: "Heavy slow resistance — typical dose?", ur: "Heavy slow resistance — aam dose?" }, back: { en: "3–4 sets, ~3 s up/3 s down, progressing ~15RM → 6RM, 3×/week for 12+ weeks.", ur: "3–4 sets, ~3 s upar/3 s neeche, ~15RM → 6RM, hafte mein 3 dafa, 12+ hafte." } },
+    { id: "td-4", front: { en: "Long-term effect of corticosteroid injection for lateral elbow tendinopathy?", ur: "Lateral elbow tendinopathy mein corticosteroid injection ka long-term asar?" }, back: { en: "Short-term relief but worse 1-year outcomes and more recurrence (Coombes 2013).", ur: "Thori dair aaram lekin 1 saal par badtar nataij aur zyada recurrence (Coombes 2013)." } },
+    { id: "td-5", front: { en: "Which test screens for Achilles rupture?", ur: "Achilles rupture ke liye kaun sa test?" }, back: { en: "Thompson (calf squeeze) test — no plantarflexion = positive.", ur: "Thompson (calf squeeze) test — plantarflexion na ho = positive." } },
+  ],
+  goDeeper: [
+    { title: "Achilles Tendinopathy", href: "/msk-injuries/achilles-tendinopathy", note: { en: "A full loading programme for the most common tendon problem.", ur: "Sab se aam tendon masle ka mukammal loading programme." } },
+    { title: "Patellar Tendinopathy", href: "/msk-injuries/patellar-tendinopathy", note: { en: "Jumper's knee — load management in jumping athletes.", ur: "Jumper's knee — jumping athletes mein load management." } },
+    { title: "Lateral elbow tendinopathy — treatment plan", href: "/treatment-plans/lateral-elbow-tendinopathy", note: { en: "Grip-friendly loading and education.", ur: "Grip-friendly loading aur education." } },
+  ],
+  sources: [
+    {
+      citation: "Cook JL, Purdam CR. Is tendon pathology a continuum? A pathology model to explain the clinical presentation of load-induced tendinopathy. Br J Sports Med. 2009;43(6):409–416.",
+      pubmedQuery: "Cook Purdam is tendon pathology a continuum load-induced tendinopathy",
+    },
+    {
+      citation: "Silbernagel KG, Thomeé R, Eriksson BI, Karlsson J. Continued sports activity, using a pain-monitoring model, during rehabilitation in patients with Achilles tendinopathy: a randomized controlled study. Am J Sports Med. 2007;35(6):897–906.",
+      pubmedQuery: "Silbernagel continued sports activity pain-monitoring model Achilles tendinopathy randomized",
+    },
+    {
+      citation: "Beyer R, Kongsgaard M, Hougs Kjær B, et al. Heavy slow resistance versus eccentric training as treatment for Achilles tendinopathy: a randomized controlled trial. Am J Sports Med. 2015;43(7):1704–1711.",
+      pubmedQuery: "Beyer heavy slow resistance versus eccentric training Achilles tendinopathy randomized",
+    },
+    {
+      citation: "Coombes BK, Bisset L, Brooks P, Khan A, Vicenzino B. Effect of corticosteroid injection, physiotherapy, or both on clinical outcomes in patients with unilateral lateral epicondylalgia: a randomized controlled trial. JAMA. 2013;309(5):461–469.",
+      pubmedQuery: "Coombes corticosteroid injection physiotherapy lateral epicondylalgia randomized JAMA 2013",
+    },
+  ],
+};

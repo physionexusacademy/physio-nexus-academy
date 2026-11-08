@@ -281,6 +281,127 @@ export const teacherPaths: TeacherPath[] = [
       },
     ],
   },
+  {
+    slug: "assessment-mastery",
+    title: "Assessment Mastery",
+    tagline: {
+      en: "Take a history like an expert, read what your hands feel and examine safely — then prove it on a 3D patient.",
+      ur: "Expert ki tarah history lein, jo haath mehsoos karein usay parhein aur safely examine karein — phir 3D patient par sabit karein.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Rate Severity, Irritability and Nature and plan the examination from them", ur: "Severity, Irritability aur Nature rate kar ke unhi se examination plan karna" },
+      { en: "Identify end-feels, capsular patterns and contractile vs inert lesions", ur: "End-feels, capsular patterns aur contractile vs inert lesions pehchanna" },
+      { en: "Screen for red flags and read neurological findings", ur: "Red flags screen karna aur neurological findings parhna" },
+      { en: "Complete a full OSCE-style examination on the Virtual Patient", ur: "Virtual Patient par mukammal OSCE-style examination karna" },
+    ],
+    steps: [
+      { id: "am-1", kind: "lesson", lesson: "subjective-assessment-sin" },
+      { id: "am-2", kind: "lesson", lesson: "red-flags-screening" },
+      { id: "am-3", kind: "lesson", lesson: "end-feel-capsular-patterns" },
+      {
+        id: "am-4",
+        kind: "mission",
+        title: "Goniometry — Skills Lab",
+        href: "/skills/goniometry",
+        mission: {
+          en: "Pass the Beginner level test. Then measure shoulder external rotation on a friend and describe the end-feel you felt.",
+          ur: "Beginner level test pass karein. Phir kisi dost ka shoulder external rotation naapein aur jo end-feel mehsoos hua woh likhein.",
+        },
+        minutes: 15,
+      },
+      { id: "am-5", kind: "lesson", lesson: "dermatomes-myotomes-reflexes" },
+      { id: "am-6", kind: "lesson", lesson: "sensitivity-specificity" },
+      {
+        id: "am-7",
+        kind: "mission",
+        title: "Virtual Patient",
+        href: "/virtual-patient",
+        mission: {
+          en: "Examine any Intermediate patient in Guided mode: introduce yourself, rate SIN from the history, then score 80% or more.",
+          ur: "Guided mode mein koi bhi Intermediate patient examine karein: apna taaruf karayein, history se SIN rate karein, phir 80% ya zyada score karein.",
+        },
+        minutes: 15,
+      },
+    ],
+  },
+  {
+    slug: "rehab-science",
+    title: "Rehab Science & Exercise",
+    tagline: {
+      en: "The science behind every exercise you prescribe — muscles, levers, tendons, motor learning and balance.",
+      ur: "Har exercise ke peeche ki science jo aap likhte hain — muscles, levers, tendons, motor learning aur balance.",
+    },
+    audience: "2nd year onwards",
+    outcomes: [
+      { en: "Choose contraction types and lever lengths to grade any exercise", ur: "Kisi bhi exercise ko grade karne ke liye contraction types aur lever lengths chunna" },
+      { en: "Load a painful tendon safely with the pain-monitoring rules", ur: "Pain-monitoring rules ke saath dard wale tendon ko safely load karna" },
+      { en: "Design practice that builds lasting motor learning", ur: "Aisi practice design karna jo pakki motor learning banaye" },
+      { en: "Assess falls risk and prescribe balance training at an effective dose", ur: "Falls risk assess karna aur effective dose par balance training likhna" },
+    ],
+    steps: [
+      { id: "rs-1", kind: "lesson", lesson: "muscle-contraction-types" },
+      { id: "rs-2", kind: "lesson", lesson: "levers-torque" },
+      { id: "rs-3", kind: "lesson", lesson: "scapulohumeral-rhythm" },
+      { id: "rs-4", kind: "lesson", lesson: "tendinopathy-load-management" },
+      { id: "rs-5", kind: "lesson", lesson: "exercise-dosage" },
+      { id: "rs-6", kind: "lesson", lesson: "motor-learning-neuroplasticity" },
+      { id: "rs-7", kind: "lesson", lesson: "balance-falls-assessment" },
+      {
+        id: "rs-8",
+        kind: "mission",
+        title: "Balance & Functional Tests — Skills Lab",
+        href: "/skills/balance-function",
+        mission: {
+          en: "Work through the Intermediate level, then time a family member on the Timed Up and Go and interpret the result.",
+          ur: "Intermediate level mukammal karein, phir ghar ke kisi fard ka Timed Up and Go time karein aur nateeja samjhayein.",
+        },
+        minutes: 15,
+      },
+    ],
+  },
+  {
+    slug: "cardiorespiratory-electrotherapy",
+    title: "Cardiorespiratory & Electrotherapy Essentials",
+    tagline: {
+      en: "Clear airways, dose aerobic exercise and use electrotherapy honestly — the essentials every graduate needs.",
+      ur: "Airways saaf karna, aerobic exercise ki dose aur electrotherapy ka imaandar istemal — har graduate ke liye zaroori baatein.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Teach the ACBT cycle and recognise when to stop", ur: "ACBT cycle sikhana aur rokne ka waqt pehchanna" },
+      { en: "Monitor vital signs and dose aerobic exercise safely", ur: "Vital signs monitor karna aur aerobic exercise ki dose safely tay karna" },
+      { en: "Set TENS for a purpose and screen every patient for contraindications", ur: "Kisi maqsad ke liye TENS set karna aur har patient ko contraindications ke liye screen karna" },
+    ],
+    steps: [
+      { id: "ce-1", kind: "lesson", lesson: "airway-clearance-acbt" },
+      {
+        id: "ce-2",
+        kind: "mission",
+        title: "Vital Signs — Skills Lab",
+        href: "/skills/vital-signs",
+        mission: {
+          en: "Pass the Beginner level, then measure your own resting heart rate and breathing rate and compare them with the normal ranges.",
+          ur: "Beginner level pass karein, phir apni resting heart rate aur breathing rate naap kar normal ranges se compare karein.",
+        },
+        minutes: 12,
+      },
+      { id: "ce-3", kind: "lesson", lesson: "exercise-dosage" },
+      { id: "ce-4", kind: "lesson", lesson: "pain-science-basics" },
+      { id: "ce-5", kind: "lesson", lesson: "tens-ultrasound-evidence" },
+      {
+        id: "ce-6",
+        kind: "mission",
+        title: "COPD — Pulmonary Rehabilitation",
+        href: "/treatment-plans/copd-pulmonary-rehabilitation",
+        mission: {
+          en: "Read the plan and write one week of a COPD patient's programme: airway clearance, walking dose by RPE, and when you would stop.",
+          ur: "Plan parhein aur COPD patient ke programme ka ek hafta likhein: airway clearance, RPE se walking ki dose, aur aap kab rokenge.",
+        },
+        minutes: 12,
+      },
+    ],
+  },
 ];
 
 export function getTeacherPath(slug: string): TeacherPath | undefined {
@@ -295,7 +416,7 @@ const pathByStage: Record<TeacherStage, string> = {
 };
 
 const pathByGoal: Partial<Record<TeacherGoal, string>> = {
-  clinic: "knee-rehab-mastery",
+  clinic: "assessment-mastery",
   manual: "manual-therapy-starter",
 };
 

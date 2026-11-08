@@ -56,6 +56,68 @@
   ],
   "keywords": "Active & Passive Insufficiency — Feel It in Your Own Hand active-passive-insufficiency Movement Science Muscles are strongest at mid-length (length–tension relationship). Active insufficiency: a two-joint muscle is too short across both joints to produce full force. Passive insufficiency: a two-joint muscle is too stretched across both joints, limiting the opposite movement. Length–tension relationship in one line? Define active insufficiency. Define passive insufficiency. Why is a fist weak with the wrist fully flexed? How do you tell hamstring tightness from neural tension in an SLR?",
   "next": {
+   "slug": "muscle-contraction-types",
+   "title": "Muscle Contraction — Concentric, Eccentric, Isometric & Length–Tension",
+   "href": "/learn/muscle-contraction-types"
+  }
+ },
+ {
+  "href": "/learn/muscle-contraction-types",
+  "slug": "muscle-contraction-types",
+  "title": "Muscle Contraction — Concentric, Eccentric, Isometric & Length–Tension",
+  "hook": {
+   "en": "Why is walking downstairs harder on the knees than walking up? Master the three contraction types and the two curves that explain muscle strength.",
+   "ur": "Seerhiyan utarna knees ke liye charhne se zyada mushkil kyun hai? Teen contraction types aur woh do curves seekhein jo muscle strength samjhate hain."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "1st–2nd year",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name the contraction type in any movement, explain the length–tension and force–velocity relationships and use them to choose exercises.",
+   "ur": "End tak aap kisi bhi movement mein contraction type pehchan sakenge, length–tension aur force–velocity relationships samjha sakenge aur inhi se exercises choose kar sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Concentric = shortening, eccentric = lengthening under load (braking), isometric = no length change.",
+   "Force–velocity: eccentric > isometric > concentric; faster shortening = less force.",
+   "Length–tension: active force peaks near mid-range; very short or long muscles are weaker."
+  ],
+  "keywords": "Muscle Contraction — Concentric, Eccentric, Isometric & Length–Tension muscle-contraction-types Movement Science Concentric = shortening, eccentric = lengthening under load (braking), isometric = no length change. Force–velocity: eccentric > isometric > concentric; faster shortening = less force. Length–tension: active force peaks near mid-range; very short or long muscles are weaker. Define an eccentric contraction. Lowering a dumbbell in a curl: which muscle, which contraction? Order of maximal force by contraction type? Where on the length–tension curve is active force greatest? When is the sprinting hamstring most at risk, and how?",
+  "next": {
+   "slug": "levers-torque",
+   "title": "Levers, Torque & Moment Arms — Biomechanics You Actually Use",
+   "href": "/learn/levers-torque"
+  }
+ },
+ {
+  "href": "/learn/levers-torque",
+  "slug": "levers-torque",
+  "title": "Levers, Torque & Moment Arms — Biomechanics You Actually Use",
+  "hook": {
+   "en": "Why does an ankle weight make a straight-leg raise so much harder? Why does a cane belong in the opposite hand? It's all torque.",
+   "ur": "Ankle weight straight-leg raise ko itna mushkil kyun bana deta hai? Cane opposite haath mein kyun? Sab torque ka khel hai."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "1st–2nd year",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll classify the three lever types, calculate torque, and use moment arms to make exercises easier or harder and to protect joints.",
+   "ur": "End tak aap teen lever types classify kar sakenge, torque calculate kar sakenge, aur moment arms se exercises asaan ya mushkil bana sakenge aur joints ko bacha sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Torque = force × moment arm; moving a load further from the axis increases torque.",
+   "1st, 2nd, 3rd class levers have the fulcrum, load or effort in the middle; most body levers are 3rd class (speed and range over force).",
+   "Use moment arms to grade exercises, standardise MMT and protect joints — e.g. a cane in the opposite hand."
+  ],
+  "keywords": "Levers, Torque & Moment Arms — Biomechanics You Actually Use levers-torque Movement Science Torque = force × moment arm; moving a load further from the axis increases torque. 1st, 2nd, 3rd class levers have the fulcrum, load or effort in the middle; most body levers are 3rd class (speed and range over force). Use moment arms to grade exercises, standardise MMT and protect joints — e.g. a cane in the opposite hand. Formula for torque? What's in the middle in 1st, 2nd and 3rd class levers? Most common lever class in the body, and what it favours? Which hand for a cane in hip OA, and why? Name two ways to make a shoulder abduction exercise easier.",
+  "next": {
    "slug": "open-vs-closed-chain",
    "title": "Open vs Closed Kinetic Chain — The Foot Decides",
    "href": "/learn/open-vs-closed-chain"
@@ -86,6 +148,37 @@
    "Both are tools — choose by load, range and healing stage (e.g. after ACL reconstruction)."
   ],
   "keywords": "Open vs Closed Kinetic Chain — The Foot Decides open-vs-closed-chain Movement Science Look at the distal segment: free = open chain; fixed = closed chain. Closed chain = multi-joint and functional; open chain = isolates a muscle. Both are tools — choose by load, range and healing stage (e.g. after ACL reconstruction). Define an open kinetic chain exercise. Define a closed kinetic chain exercise. Main advantage of closed chain exercise? Open-chain knee extension after ACL reconstruction?",
+  "next": {
+   "slug": "scapulohumeral-rhythm",
+   "title": "Scapulohumeral Rhythm & Scapular Dyskinesis",
+   "href": "/learn/scapulohumeral-rhythm"
+  }
+ },
+ {
+  "href": "/learn/scapulohumeral-rhythm",
+  "slug": "scapulohumeral-rhythm",
+  "title": "Scapulohumeral Rhythm & Scapular Dyskinesis",
+  "hook": {
+   "en": "Lifting your arm overhead is a team effort of four joints. Learn the 2:1 rhythm, the force couples that drive it and what a 'winging' scapula really means.",
+   "ur": "Haath upar uthana chaar joints ki team ka kaam hai. 2:1 rhythm, isay chalane wale force couples aur 'winging' scapula ka asal matlab seekhein."
+  },
+  "area": "Movement Science",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 11,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll describe how the scapula and humerus share arm elevation, name the force couples involved and assess scapular movement sensibly in shoulder patients.",
+   "ur": "End tak aap bata sakenge ke arm elevation scapula aur humerus kaise share karte hain, involved force couples ka naam le sakenge aur shoulder patients mein scapular movement samajhdari se assess kar sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Arm elevation needs four joints; overall about 2:1 glenohumeral to scapular motion.",
+   "Trapezius–serratus and deltoid–cuff force couples rotate the scapula and keep the humeral head centred.",
+   "Dyskinesis is common even without pain — test whether correcting it changes symptoms; marked winging with weakness may be a nerve palsy."
+  ],
+  "keywords": "Scapulohumeral Rhythm & Scapular Dyskinesis scapulohumeral-rhythm Movement Science Arm elevation needs four joints; overall about 2:1 glenohumeral to scapular motion. Trapezius–serratus and deltoid–cuff force couples rotate the scapula and keep the humeral head centred. Dyskinesis is common even without pain — test whether correcting it changes symptoms; marked winging with weakness may be a nerve palsy. Classic scapulohumeral rhythm ratio? Three scapular motions during arm elevation? Muscles of the scapular upward rotation force couple? Medial winging on pushing — which nerve? What does the scapular assistance test do?",
   "next": {
    "slug": "gait-cycle",
    "title": "The Gait Cycle Made Easy",
@@ -149,6 +242,37 @@
   ],
   "keywords": "Tissue Healing Phases — What to Do and When tissue-healing-phases Tissue Healing Inflammation (days) → proliferation/repair (weeks) → remodelling (months). They overlap. Tissue adapts to load: protect early, then load progressively. Return to activity by criteria, not by pain alone — and screen red flags first. Name the three phases of soft-tissue healing. What happens in the proliferative phase? What happens in remodelling? What does PEACE & LOVE stand for? Is 'pain-free' enough to return to sport?",
   "next": {
+   "slug": "tendinopathy-load-management",
+   "title": "Tendinopathy & Load Management — Why Rest Fails and Loading Works",
+   "href": "/learn/tendinopathy-load-management"
+  }
+ },
+ {
+  "href": "/learn/tendinopathy-load-management",
+  "slug": "tendinopathy-load-management",
+  "title": "Tendinopathy & Load Management — Why Rest Fails and Loading Works",
+  "hook": {
+   "en": "Tendons get better with the right load, not with rest or endless ultrasound. Learn the continuum model, the pain-monitoring rule and how to progress a tendon programme.",
+   "ur": "Tendons sahi load se theek hote hain, rest ya be-hisaab ultrasound se nahi. Continuum model, pain-monitoring rule aur tendon programme progress karna seekhein."
+  },
+  "area": "Tissue Healing",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain tendinopathy to a patient, set safe loading using pain monitoring and build a staged programme from isometrics to return to sport.",
+   "ur": "End tak aap patient ko tendinopathy samjha sakenge, pain monitoring se safe loading tay kar sakenge aur isometrics se return to sport tak staged programme bana sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Tendinopathy is a load-related problem (reactive → dysrepair → degenerative), not mainly inflammation — rest alone deconditions the tendon.",
+   "Pain-monitoring rules: ≤5/10 during, settled by next morning, not worse week to week.",
+   "Progress isometrics → heavy slow resistance → energy storage → return to sport over 12+ weeks; refer suspected rupture or infection."
+  ],
+  "keywords": "Tendinopathy & Load Management — Why Rest Fails and Loading Works tendinopathy-load-management Tissue Healing Tendinopathy is a load-related problem (reactive → dysrepair → degenerative), not mainly inflammation — rest alone deconditions the tendon. Pain-monitoring rules: ≤5/10 during, settled by next morning, not worse week to week. Progress isometrics → heavy slow resistance → energy storage → return to sport over 12+ weeks; refer suspected rupture or infection. Three stages of the tendinopathy continuum? The pain-monitoring model rules? Heavy slow resistance — typical dose? Long-term effect of corticosteroid injection for lateral elbow tendinopathy? Which test screens for Achilles rupture?",
+  "next": {
    "slug": "exercise-dosage",
    "title": "Exercise Dosage — FITT, RPE & Reps in Reserve",
    "href": "/learn/exercise-dosage"
@@ -179,6 +303,68 @@
    "Progress one variable at a time and use next-day symptoms to guide the dose."
   ],
   "keywords": "Exercise Dosage — FITT, RPE & Reps in Reserve exercise-dosage Exercise Prescription Prescribe with FITT-VP: frequency, intensity, time, type, volume, progression. Measure intensity: RPE and the talk test for aerobic work; reps in reserve or %1RM for strength. Progress one variable at a time and use next-day symptoms to guide the dose. What does FITT-VP stand for? Moderate aerobic intensity on the Borg 6–20 scale and talk test? What is \"reps in reserve\" (RIR)? Typical novice strength dose? WHO 2020 aerobic activity for adults?",
+  "next": {
+   "slug": "subjective-assessment-sin",
+   "title": "Subjective Assessment — SIN, Irritability & the 24-Hour Pattern",
+   "href": "/learn/subjective-assessment-sin"
+  }
+ },
+ {
+  "href": "/learn/subjective-assessment-sin",
+  "slug": "subjective-assessment-sin",
+  "title": "Subjective Assessment — SIN, Irritability & the 24-Hour Pattern",
+  "hook": {
+   "en": "The history decides how hard you may examine. Learn to judge Severity, Irritability and Nature before you touch the patient.",
+   "ur": "History hi decide karti hai ke aap kitna examine kar sakte hain. Patient ko touch karne se pehle Severity, Irritability aur Nature judge karna seekhein."
+  },
+  "area": "Clinical Reasoning",
+  "level": "Clinical",
+  "bestFor": "3rd year, final year & interns",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll take a focused history, rate a patient's SIN and use it to plan a safe, efficient physical examination.",
+   "ur": "End tak aap focused history le sakenge, patient ka SIN rate kar sakenge aur usi se safe aur efficient physical examination plan kar sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Severity, Irritability and Nature (SIN) come from the history and set how vigorously you examine.",
+   "Irritability = how little activity provokes symptoms, how bad they get and how long they take to settle.",
+   "The 24-hour pattern and special questions reveal the nature — mechanical, inflammatory or serious."
+  ],
+  "keywords": "Subjective Assessment — SIN, Irritability & the 24-Hour Pattern subjective-assessment-sin Clinical Reasoning Severity, Irritability and Nature (SIN) come from the history and set how vigorously you examine. Irritability = how little activity provokes symptoms, how bad they get and how long they take to settle. The 24-hour pattern and special questions reveal the nature — mechanical, inflammatory or serious. What does SIN stand for? Three parts of irritability? Morning stiffness suggesting inflammatory pain? How do you examine a highly irritable patient? Name four special-question red flags.",
+  "next": {
+   "slug": "end-feel-capsular-patterns",
+   "title": "End-Feel, Capsular Patterns & Selective Tissue Tension",
+   "href": "/learn/end-feel-capsular-patterns"
+  }
+ },
+ {
+  "href": "/learn/end-feel-capsular-patterns",
+  "slug": "end-feel-capsular-patterns",
+  "title": "End-Feel, Capsular Patterns & Selective Tissue Tension",
+  "hook": {
+   "en": "What your hands feel at the end of range is a diagnosis in itself. Learn Cyriax's system for telling joint, muscle and serious problems apart.",
+   "ur": "Range ke end par hathon ko jo mehsoos hota hai woh khud ek diagnosis hai. Cyriax ka system seekhein jo joint, muscle aur serious problems ko alag karta hai."
+  },
+  "area": "Clinical Reasoning",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 13,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name normal and abnormal end-feels, recognise the common capsular patterns and read resisted tests to tell contractile from inert tissue.",
+   "ur": "End tak aap normal aur abnormal end-feels pehchan sakenge, aam capsular patterns jaan sakenge aur resisted tests se contractile aur inert tissue alag kar sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Normal end-feels are soft, firm or hard; early firm, spasm, boggy, springy and empty are abnormal — empty means stop and investigate.",
+   "A capsular pattern (e.g. shoulder ER > ABD > IR) points to a whole-joint problem such as capsulitis or arthritis.",
+   "Resisted isometric tests separate contractile from inert tissue: strong/weak × painful/painless."
+  ],
+  "keywords": "End-Feel, Capsular Patterns & Selective Tissue Tension end-feel-capsular-patterns Clinical Reasoning Normal end-feels are soft, firm or hard; early firm, spasm, boggy, springy and empty are abnormal — empty means stop and investigate. A capsular pattern (e.g. shoulder ER > ABD > IR) points to a whole-joint problem such as capsulitis or arthritis. Resisted isometric tests separate contractile from inert tissue: strong/weak × painful/painless. Three normal end-feels with an example each? What is an empty end-feel and why does it matter? Shoulder capsular pattern? Knee and hip capsular patterns? Resisted test weak & painless — think?",
   "next": {
    "slug": "maitland-grades",
    "title": "Maitland Grades I–V, Made Visual",
@@ -335,6 +521,68 @@
   ],
   "keywords": "UMN vs LMN Lesions — Never Confuse Them Again umn-vs-lmn Neurology UMN = brain/cord pathway; LMN = anterior horn cell → peripheral nerve → muscle. UMN = UP (tone, reflexes, Babinski). LMN = LOW (tone, reflexes, bulk). Spasticity is velocity-dependent; rigidity is not. Mixed signs → think bigger and refer. Where does the lower motor neuron start? Tone and reflexes in a UMN lesion? Tone, reflexes and bulk in an LMN lesion? Spasticity vs rigidity — the key difference? Floppy limb on day 1 after stroke — LMN lesion?",
   "next": {
+   "slug": "motor-learning-neuroplasticity",
+   "title": "Motor Learning & Neuroplasticity — How Patients Really Relearn Movement",
+   "href": "/learn/motor-learning-neuroplasticity"
+  }
+ },
+ {
+  "href": "/learn/motor-learning-neuroplasticity",
+  "slug": "motor-learning-neuroplasticity",
+  "title": "Motor Learning & Neuroplasticity — How Patients Really Relearn Movement",
+  "hook": {
+   "en": "A perfect session in the gym can still fail at home. Learn how practice, feedback and repetition turn into lasting skill — after stroke and beyond.",
+   "ur": "Gym mein perfect session bhi ghar par fail ho sakta hai. Seekhein ke practice, feedback aur repetition kaise pakki skill banti hain — stroke ke baad aur us se aage bhi."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll design practice that builds retention — choosing task-specific training, practice order, feedback and dose using the principles of neuroplasticity.",
+   "ur": "End tak aap aisi practice design kar sakenge jo retention banaye — neuroplasticity ke usoolon se task-specific training, practice ki tarteeb, feedback aur dose chun kar."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Judge learning by retention and transfer, not in-session performance; variable practice beats blocked practice for learning.",
+   "Use external-focus cues and faded, summary feedback; constant feedback creates dependence.",
+   "Neuroplasticity needs specific, repetitive, intense and meaningful practice — plan for far more repetitions than a typical session gives."
+  ],
+  "keywords": "Motor Learning & Neuroplasticity — How Patients Really Relearn Movement motor-learning-neuroplasticity Neurology Judge learning by retention and transfer, not in-session performance; variable practice beats blocked practice for learning. Use external-focus cues and faded, summary feedback; constant feedback creates dependence. Neuroplasticity needs specific, repetitive, intense and meaningful practice — plan for far more repetitions than a typical session gives. Performance vs learning? Three stages of motor learning? What is the contextual interference effect? KR vs KP feedback? Name five Kleim & Jones neuroplasticity principles.",
+  "next": {
+   "slug": "balance-falls-assessment",
+   "title": "Balance Systems & Falls Assessment — From Romberg to TUG",
+   "href": "/learn/balance-falls-assessment"
+  }
+ },
+ {
+  "href": "/learn/balance-falls-assessment",
+  "slug": "balance-falls-assessment",
+  "title": "Balance Systems & Falls Assessment — From Romberg to TUG",
+  "hook": {
+   "en": "One fall can end an older person's independence. Learn how balance works, how to find which system is failing and which tests and exercises really prevent falls.",
+   "ur": "Ek fall kisi buzurg ki khud-mukhtari khatam kar sakti hai. Seekhein ke balance kaise kaam karta hai, kaun sa system fail ho raha hai kaise pata karein, aur kaun se tests aur exercises waqai falls rokte hain."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain the three sensory systems of balance, interpret Romberg, TUG and Berg results and prescribe falls-prevention exercise at an effective dose.",
+   "ur": "End tak aap balance ke teen sensory systems samjha sakenge, Romberg, TUG aur Berg ke results parh sakenge aur falls-prevention exercise effective dose par likh sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Balance combines vision, vestibular and somatosensory input; a positive Romberg (worse with eyes closed) points to poor proprioception.",
+   "Use TUG, Berg, the 30-s chair stand and the 4-stage balance test within a multifactorial falls assessment.",
+   "Falls prevention works with progressive balance and strength training at about 3+ hours a week, continued long-term."
+  ],
+  "keywords": "Balance Systems & Falls Assessment — From Romberg to TUG balance-falls-assessment Neurology Balance combines vision, vestibular and somatosensory input; a positive Romberg (worse with eyes closed) points to poor proprioception. Use TUG, Berg, the 30-s chair stand and the 4-stage balance test within a multifactorial falls assessment. Falls prevention works with progressive balance and strength training at about 3+ hours a week, continued long-term. Three sensory systems for balance? What does a positive Romberg test mean? Common TUG cut-off for higher falls risk in older adults? Berg Balance Scale maximum and common risk cut-off? Effective falls-prevention exercise dose?",
+  "next": {
    "slug": "pain-science-basics",
    "title": "Pain Science Basics — Why Hurt ≠ Harm",
    "href": "/learn/pain-science-basics"
@@ -365,6 +613,68 @@
    "Validate, reassure ('hurt ≠ harm'), screen red flags and pair education with graded activity."
   ],
   "keywords": "Pain Science Basics — Why Hurt ≠ Harm pain-science-basics Pain Science Pain is always real, but it isn't a direct measure of tissue damage. Nociception is a signal; pain is the brain's protective output, shaped by many factors. Validate, reassure ('hurt ≠ harm'), screen red flags and pair education with graded activity. IASP (2020) definition of pain? Nociception vs pain? What does the 'nail through the boot' case show? A simple, evidence-informed phrase for patients?",
+  "next": {
+   "slug": "tens-ultrasound-evidence",
+   "title": "TENS & Therapeutic Ultrasound — Parameters, Safety & What the Evidence Really Says",
+   "href": "/learn/tens-ultrasound-evidence"
+  }
+ },
+ {
+  "href": "/learn/tens-ultrasound-evidence",
+  "slug": "tens-ultrasound-evidence",
+  "title": "TENS & Therapeutic Ultrasound — Parameters, Safety & What the Evidence Really Says",
+  "hook": {
+   "en": "Electrotherapy is everywhere in clinics — but what does it actually do? Learn to use TENS well, apply ultrasound safely and explain honestly why exercise must stay at the centre.",
+   "ur": "Electrotherapy har clinic mein hai — lekin asal mein karti kya hai? TENS ko sahi istemal karna, ultrasound safely lagana aur imaandari se samjhana seekhein ke exercise markaz mein kyun rehni chahiye."
+  },
+  "area": "Electrotherapy",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll set TENS parameters for a purpose, screen every patient for contraindications, and place electrotherapy correctly as an adjunct to active treatment.",
+   "ur": "End tak aap kisi maqsad ke liye TENS parameters set kar sakenge, har patient ko contraindications ke liye screen kar sakenge, aur electrotherapy ko active treatment ke madadgar ke tor par sahi jagah rakh sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "TENS relieves pain mainly while it's on (gate control; low frequency may release endogenous opioids) — set a strong but comfortable intensity.",
+   "Therapeutic ultrasound has little good evidence for most MSK problems; it must never replace exercise and education.",
+   "Screen every patient for contraindications (pacemakers, pregnancy, malignancy, poor sensation, carotid sinus…) before use."
+  ],
+  "keywords": "TENS & Therapeutic Ultrasound — Parameters, Safety & What the Evidence Really Says tens-ultrasound-evidence Electrotherapy TENS relieves pain mainly while it's on (gate control; low frequency may release endogenous opioids) — set a strong but comfortable intensity. Therapeutic ultrasound has little good evidence for most MSK problems; it must never replace exercise and education. Screen every patient for contraindications (pacemakers, pregnancy, malignancy, poor sensation, carotid sinus…) before use. Conventional TENS parameters? Acupuncture-like TENS parameters and proposed mechanism? What did the meta-TENS review conclude? Four TENS contraindications? Ultrasound: continuous vs pulsed, 1 vs 3 MHz?",
+  "next": {
+   "slug": "airway-clearance-acbt",
+   "title": "Airway Clearance — The Active Cycle of Breathing Technique (ACBT)",
+   "href": "/learn/airway-clearance-acbt"
+  }
+ },
+ {
+  "href": "/learn/airway-clearance-acbt",
+  "slug": "airway-clearance-acbt",
+  "title": "Airway Clearance — The Active Cycle of Breathing Technique (ACBT)",
+  "hook": {
+   "en": "Sputum stuck in the lungs means infections, breathlessness and hospital visits. Learn the ACBT cycle, the perfect 'huff' and when chest physiotherapy must stop.",
+   "ur": "Phephron mein phansi balgham ka matlab infections, saans phoolna aur hospital ke chakkar. ACBT cycle, perfect 'huff' aur yeh seekhein ke chest physiotherapy kab rokni hai."
+  },
+  "area": "Cardiorespiratory",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll teach a patient the full ACBT cycle, adapt positioning safely and recognise red flags during airway clearance.",
+   "ur": "End tak aap patient ko mukammal ACBT cycle sikha sakenge, positioning ko safely adapt kar sakenge aur airway clearance ke dauraan red flags pehchan sakenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "ACBT = breathing control, thoracic expansion (with holds), breathing control, then huffs; cough only when sputum is high.",
+   "Dose 10–30 min until clear, once or twice daily; adapt positions — avoid head-down tilts in reflux, breathlessness, heart failure and after surgery.",
+   "Stop for frank haemoptysis, suspected pneumothorax, falling SpO₂ or a deteriorating patient, and escalate."
+  ],
+  "keywords": "Airway Clearance — The Active Cycle of Breathing Technique (ACBT) airway-clearance-acbt Cardiorespiratory ACBT = breathing control, thoracic expansion (with holds), breathing control, then huffs; cough only when sputum is high. Dose 10–30 min until clear, once or twice daily; adapt positions — avoid head-down tilts in reflux, breathlessness, heart failure and after surgery. Stop for frank haemoptysis, suspected pneumothorax, falling SpO₂ or a deteriorating patient, and escalate. Four components of ACBT? Low-volume vs high-volume huff? Why add a breath hold to thoracic expansion? When to stop airway clearance immediately? Typical ACBT session length?",
   "next": null
  },
  {

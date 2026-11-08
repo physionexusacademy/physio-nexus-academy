@@ -16,6 +16,8 @@ const areaTone: Record<string, string> = {
   "Tissue Healing": "bg-emerald-100 text-emerald-800",
   "Pain Science": "bg-rose-100 text-rose-800",
   "Exercise Prescription": "bg-lime-100 text-lime-800",
+  Electrotherapy: "bg-orange-100 text-orange-800",
+  Cardiorespiratory: "bg-cyan-100 text-cyan-800",
 };
 
 const manualGroups: { area: TeacherLessonCard["area"]; title: string; blurb: string }[] = [

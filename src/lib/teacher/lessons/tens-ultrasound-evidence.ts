@@ -1,0 +1,188 @@
+import type { TeacherLesson } from "../types.ts";
+
+export const tensUltrasoundEvidence: TeacherLesson = {
+  slug: "tens-ultrasound-evidence",
+  title: "TENS & Therapeutic Ultrasound — Parameters, Safety & What the Evidence Really Says",
+  hook: {
+    en: "Electrotherapy is everywhere in clinics — but what does it actually do? Learn to use TENS well, apply ultrasound safely and explain honestly why exercise must stay at the centre.",
+    ur: "Electrotherapy har clinic mein hai — lekin asal mein karti kya hai? TENS ko sahi istemal karna, ultrasound safely lagana aur imaandari se samjhana seekhein ke exercise markaz mein kyun rehni chahiye.",
+  },
+  area: "Electrotherapy",
+  level: "Clinical",
+  bestFor: "3rd year onwards",
+  minutes: 12,
+  goal: {
+    en: "By the end, you'll set TENS parameters for a purpose, screen every patient for contraindications, and place electrotherapy correctly as an adjunct to active treatment.",
+    ur: "End tak aap kisi maqsad ke liye TENS parameters set kar sakenge, har patient ko contraindications ke liye screen kar sakenge, aur electrotherapy ko active treatment ke madadgar ke tor par sahi jagah rakh sakenge.",
+  },
+  beats: [
+    {
+      type: "say",
+      text: {
+        en: "**TENS** (transcutaneous electrical nerve stimulation) sends small pulses through skin electrodes. Its main job is **pain relief while it is switched on** and shortly after. It does not heal tissue, strengthen muscle or fix posture.",
+        ur: "**TENS** (transcutaneous electrical nerve stimulation) skin par lage electrodes se chhote pulses bhejta hai. Is ka asal kaam **on hone ke dauraan** aur thori dair baad **dard mein aaram** hai. Yeh tissue heal nahi karta, muscle strong nahi karta, posture theek nahi karta.",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "**How it works — gate control** (Melzack & Wall, 1965): stimulating large **Aβ** touch fibres activates inhibitory interneurons in the dorsal horn, 'closing the gate' on nociceptive input. Low-frequency, stronger TENS may also trigger the release of **endogenous opioids**.",
+        ur: "**Kaise kaam karta hai — gate control** (Melzack & Wall, 1965): bare **Aβ** touch fibres ko stimulate karne se dorsal horn mein inhibitory interneurons active hote hain, jo nociceptive input par 'gate band' kar dete hain. Low-frequency, zyada strong TENS **endogenous opioids** ka ikhraj bhi karwa sakta hai.",
+      },
+      simpler: {
+        en: "Rubbing a bumped elbow helps because touch signals compete with pain signals. TENS is electric 'rubbing'.",
+        ur: "Takrai hui elbow ko malne se aaram is liye milta hai ke touch ke signals dard ke signals se muqabla karte hain. TENS bijli wala 'malna' hai.",
+      },
+    },
+    {
+      type: "compare",
+      title: { en: "Two common TENS settings", ur: "TENS ki do aam settings" },
+      headers: [
+        { en: "Mode", ur: "Mode" },
+        { en: "Typical parameters", ur: "Aam parameters" },
+        { en: "What the patient feels", ur: "Patient ko kya mehsoos hota hai" },
+      ],
+      rows: [
+        [
+          { en: "Conventional (high frequency)", ur: "Conventional (high frequency)" },
+          { en: "~50–120 Hz, short pulse (~50–100 µs), strong but comfortable intensity", ur: "~50–120 Hz, chhota pulse (~50–100 µs), strong lekin aaramdeh intensity" },
+          { en: "Strong, non-painful tingling; no muscle twitch", ur: "Strong, be-dard jhanjhanahat; muscle twitch nahi" },
+        ],
+        [
+          { en: "Acupuncture-like (low frequency)", ur: "Acupuncture-like (low frequency)" },
+          { en: "~2–4 Hz, longer pulse, higher intensity", ur: "~2–4 Hz, lamba pulse, zyada intensity" },
+          { en: "Visible, tolerable muscle twitches", ur: "Nazar aane wali, bardasht ke qabil muscle twitches" },
+        ],
+        [
+          { en: "Dose", ur: "Dose" },
+          { en: "Use during painful activities; increase intensity as the sensation fades (habituation)", ur: "Dard wale kaamon ke dauraan istemal; ehsaas kam ho to intensity barhayein (habituation)" },
+          { en: "'Strong but comfortable' is the target", ur: "Target 'strong lekin aaramdeh' hai" },
+        ],
+      ],
+    },
+    {
+      type: "check",
+      question: {
+        en: "Your patient feels only a faint tingle from conventional TENS after 15 minutes. What should you do?",
+        ur: "Patient ko conventional TENS se 15 minute baad sirf halki jhanjhanahat mehsoos ho rahi hai. Kya karna chahiye?",
+      },
+      options: [
+        { text: { en: "Leave it — a faint tingle is enough", ur: "Chhor dein — halki jhanjhanahat kaafi hai" }, feedback: { en: "Too-low intensity is a common reason TENS 'doesn't work'.", ur: "Bohat kam intensity TENS ke 'kaam na karne' ki aam wajah hai." } },
+        { text: { en: "Turn the intensity up to strong but comfortable again", ur: "Intensity dobara strong lekin aaramdeh tak barhayein" }, correct: true, feedback: { en: "Yes — nerves habituate, so adjust intensity to keep a strong, non-painful sensation.", ur: "Haan — nerves aadi ho jati hain, is liye strong, be-dard ehsaas ke liye intensity adjust karein." } },
+        { text: { en: "Switch it off — TENS has failed", ur: "Band kar dein — TENS fail ho gaya" }, feedback: { en: "Adjust the dose before deciding it doesn't help.", ur: "Faisla karne se pehle dose adjust karein." } },
+      ],
+    },
+    {
+      type: "evidence",
+      text: {
+        en: "The largest review (meta-TENS, 381 trials) found **moderate-certainty evidence that pain is lower during or immediately after TENS** than with placebo, for many acute and chronic pain conditions. The effect is mainly while it's used — so TENS works best as a **self-management tool** that helps patients move and exercise, not as a cure.",
+        ur: "Sab se bara review (meta-TENS, 381 trials) ne **moderate-certainty evidence paaya ke TENS ke dauraan ya foran baad dard placebo se kam** hota hai, bohat si acute aur chronic pain conditions mein. Asar zyada tar istemal ke dauraan hota hai — is liye TENS behtareen tor par **self-management tool** hai jo patients ko hilne aur exercise karne mein madad deta hai, ilaaj nahi.",
+      },
+    },
+    {
+      type: "say",
+      text: {
+        en: "**Therapeutic ultrasound** uses high-frequency sound (usually 1 or 3 MHz). **Continuous** mode heats tissue (1 MHz deeper, 3 MHz more superficial); **pulsed** mode aims at non-thermal effects. It has been used for tendon, ligament and soft-tissue problems for decades.",
+        ur: "**Therapeutic ultrasound** high-frequency awaaz istemal karta hai (aam tor par 1 ya 3 MHz). **Continuous** mode tissue ko garam karta hai (1 MHz gehra, 3 MHz upar upar); **pulsed** mode non-thermal asraat ke liye hai. Dahaiyon se tendon, ligament aur soft-tissue maslon mein istemal hota aa raha hai.",
+      },
+    },
+    {
+      type: "evidence",
+      text: {
+        en: "Reviews have found **little good evidence** that therapeutic ultrasound improves pain or function more than placebo for most musculoskeletal conditions (e.g. Robertson & Baker 2001; Cochrane reviews in knee/hip OA found only low-quality evidence). Many trials are small and of low quality. If you use it, it must not replace education and exercise.",
+        ur: "Reviews ko is ka **kam acha evidence** mila ke therapeutic ultrasound zyada tar musculoskeletal conditions mein placebo se zyada dard ya function behtar karta hai (maslan Robertson & Baker 2001; knee/hip OA par Cochrane reviews mein sirf low-quality evidence). Bohat se trials chhote aur kamzor maiyaar ke hain. Agar istemal karein to yeh education aur exercise ki jagah na le.",
+      },
+    },
+    {
+      type: "safety",
+      text: {
+        en: "**Screen before every electrotherapy treatment.**\nTENS — avoid: demand-type pacemaker or implanted electrical devices (unless cleared by the cardiologist), over the anterior neck/carotid sinus, over the eyes, over the pregnant uterus (labour TENS on the back is the exception), broken or numb skin, and patients who can't understand or report sensations. Caution with epilepsy (not on head/neck).\nUltrasound — avoid: over malignancy, pregnant uterus, eyes, gonads, active infection or DVT, and over open growth plates; caution over metal implants and areas of poor sensation.",
+        ur: "**Har electrotherapy treatment se pehle screen karein.**\nTENS — na lagayein: demand-type pacemaker ya implanted electrical devices (jab tak cardiologist ijazat na de), anterior neck/carotid sinus par, aankhon par, pregnant uterus par (labour TENS kamar par isthna hai), kati phati ya sunn skin par, aur un patients par jo sensations samajh ya bata na sakein. Epilepsy mein ehtiyat (sir/gardan par nahi).\nUltrasound — na lagayein: malignancy par, pregnant uterus, aankhein, gonads, active infection ya DVT, aur khuli growth plates par; metal implants aur kam sensation wale hisson par ehtiyat.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "Which patient should NOT receive TENS over the stated area?",
+        ur: "Kis patient ko bataye gaye hisse par TENS NAHI lagana chahiye?",
+      },
+      options: [
+        { text: { en: "Chronic low back pain, electrodes on the lower back", ur: "Chronic low back pain, electrodes kamar ke neeche hisse par" }, feedback: { en: "A common, appropriate use if screening is clear.", ur: "Screening theek ho to aam aur munasib istemal." } },
+        { text: { en: "A patient with a demand pacemaker, electrodes on the chest", ur: "Demand pacemaker wala patient, electrodes chest par" }, correct: true, feedback: { en: "Yes — risk of interference with the pacemaker. Avoid unless specifically cleared by cardiology.", ur: "Haan — pacemaker mein mudakhlat ka khatra. Cardiology ki khaas ijazat ke baghair na lagayein." } },
+        { text: { en: "Knee OA, electrodes around the knee", ur: "Knee OA, electrodes knee ke gird" }, feedback: { en: "Appropriate if sensation and skin are normal.", ur: "Sensation aur skin normal hon to munasib." } },
+      ],
+    },
+    {
+      type: "analogy",
+      text: {
+        en: "Electrotherapy is like painkillers for a broken-down car: it can make the noise quieter for a while so you can drive to the garage. The repair — strength, movement, confidence — still has to happen.",
+        ur: "Electrotherapy kharab gaari ke liye painkiller jaisi hai: thori dair shor kam kar deti hai taake aap garage tak gaari le ja sakein. Marammat — strength, movement, confidence — phir bhi karni parti hai.",
+      },
+    },
+    {
+      type: "clinic",
+      text: {
+        en: "Using it well: set a goal ('reduce pain so you can do your walking programme'); teach patients to use their own TENS unit at home during painful activities; time-limit passive treatment in your sessions; and measure the outcome — if function isn't improving, change the plan. Explain this honestly: patients in many clinics expect 'machines', but they deserve to know what will make them better.",
+        ur: "Sahi istemal: goal tay karein ('dard kam karna taake aap walking programme kar sakein'); patients ko sikhayein ke dard wale kaamon mein ghar par apna TENS unit istemal karein; sessions mein passive treatment ka waqt mehdood rakhein; aur nateeja naapein — agar function behtar nahi ho raha to plan badlein. Imaandari se samjhayein: bohat se clinics mein patients 'machines' ki tawaqqo rakhte hain, lekin unhein haq hai ke jaanein kya cheez unhein behtar karegi.",
+      },
+    },
+    {
+      type: "check",
+      question: {
+        en: "A patient with knee OA has had 10 sessions of ultrasound and hot packs with no change. What's the best next step?",
+        ur: "Knee OA ke patient ke 10 sessions ultrasound aur hot packs ke ho chuke, koi farq nahi. Behtareen agla qadam?",
+      },
+      options: [
+        { text: { en: "Ten more sessions at a higher dose", ur: "Zyada dose par das aur sessions" }, feedback: { en: "More of an ineffective treatment won't help.", ur: "Be-asar ilaaj ka zyada istemal madad nahi karega." } },
+        { text: { en: "Education plus progressive strengthening and activity, with TENS only if it helps them exercise", ur: "Education aur progressive strengthening aur activity, TENS sirf agar exercise mein madad kare" }, correct: true, feedback: { en: "Yes — exercise and education are first-line for knee OA; modalities are optional adjuncts.", ur: "Haan — knee OA mein exercise aur education pehla qadam hain; modalities ikhtiyari madadgar hain." } },
+        { text: { en: "Refer immediately for knee replacement", ur: "Foran knee replacement ke liye refer karein" }, feedback: { en: "First-line conservative care (exercise) hasn't been tried yet.", ur: "Pehle darje ka conservative ilaaj (exercise) abhi try hi nahi hua." } },
+      ],
+    },
+    {
+      type: "mistake",
+      text: {
+        en: "Common mistakes: TENS intensity too low; the same 'machine package' for every patient; skipping the contraindication screen; using electrotherapy to fill session time instead of active treatment; and promising patients that a machine will 'heal' them.",
+        ur: "Aam ghaltiyan: TENS intensity bohat kam; har patient ke liye wohi 'machine package'; contraindication screen chhor dena; active treatment ke bajaye session ka waqt bharne ke liye electrotherapy; aur patients se waada karna ke machine unhein 'heal' kar degi.",
+      },
+    },
+    {
+      type: "memory",
+      text: {
+        en: "**TENS: Strong, Comfortable, While Moving.** Ultrasound: weak evidence — never instead of exercise. Always screen first.",
+        ur: "**TENS: Strong, Comfortable, While Moving.** Ultrasound: kamzor evidence — exercise ki jagah kabhi nahi. Hamesha pehle screen karein.",
+      },
+    },
+  ],
+  summary: [
+    { en: "TENS relieves pain mainly while it's on (gate control; low frequency may release endogenous opioids) — set a strong but comfortable intensity.", ur: "TENS zyada tar on hone ke dauraan dard kam karta hai (gate control; low frequency endogenous opioids nikal sakti hai) — strong lekin aaramdeh intensity rakhein." },
+    { en: "Therapeutic ultrasound has little good evidence for most MSK problems; it must never replace exercise and education.", ur: "Therapeutic ultrasound ka zyada tar MSK maslon mein acha evidence kam hai; yeh kabhi exercise aur education ki jagah na le." },
+    { en: "Screen every patient for contraindications (pacemakers, pregnancy, malignancy, poor sensation, carotid sinus…) before use.", ur: "Istemal se pehle har patient ko contraindications ke liye screen karein (pacemakers, pregnancy, malignancy, kam sensation, carotid sinus…)." },
+  ],
+  flashcards: [
+    { id: "tu-1", front: { en: "Conventional TENS parameters?", ur: "Conventional TENS parameters?" }, back: { en: "~50–120 Hz, short pulse width, strong but comfortable, no muscle twitch.", ur: "~50–120 Hz, chhoti pulse width, strong lekin aaramdeh, muscle twitch nahi." } },
+    { id: "tu-2", front: { en: "Acupuncture-like TENS parameters and proposed mechanism?", ur: "Acupuncture-like TENS parameters aur mechanism?" }, back: { en: "~2–4 Hz, higher intensity with visible twitches; may release endogenous opioids.", ur: "~2–4 Hz, zyada intensity aur nazar aane wali twitches; endogenous opioids nikal sakte hain." } },
+    { id: "tu-3", front: { en: "What did the meta-TENS review conclude?", ur: "Meta-TENS review ka nateeja?" }, back: { en: "Moderate-certainty evidence that pain is lower during or immediately after TENS than placebo.", ur: "Moderate-certainty evidence ke TENS ke dauraan ya foran baad dard placebo se kam hota hai." } },
+    { id: "tu-4", front: { en: "Four TENS contraindications?", ur: "TENS ke chaar contraindications?" }, back: { en: "Any four: demand pacemaker/implanted device, anterior neck/carotid sinus, over pregnant uterus, over eyes, broken or insensate skin, unable to understand.", ur: "Koi chaar: demand pacemaker/implanted device, anterior neck/carotid sinus, pregnant uterus par, aankhon par, kati ya sunn skin, samajh na sakne wala patient." } },
+    { id: "tu-5", front: { en: "Ultrasound: continuous vs pulsed, 1 vs 3 MHz?", ur: "Ultrasound: continuous vs pulsed, 1 vs 3 MHz?" }, back: { en: "Continuous = thermal, pulsed = non-thermal; 1 MHz deeper, 3 MHz superficial.", ur: "Continuous = thermal, pulsed = non-thermal; 1 MHz gehra, 3 MHz upar upar." } },
+  ],
+  goDeeper: [
+    { title: "Pain Science Basics", href: "/learn/pain-science-basics", note: { en: "Why modulating pain signals can change pain.", ur: "Pain signals badalne se dard kyun badal sakta hai." } },
+    { title: "Knee Osteoarthritis — treatment plan", href: "/treatment-plans/knee-osteoarthritis", note: { en: "Where electrotherapy fits next to exercise.", ur: "Exercise ke saath electrotherapy ki jagah." } },
+    { title: "Pain neuroscience education", href: "/knowledge-hub/pain-neuroscience-education-multimodal-rehab", note: { en: "Explaining pain honestly to patients.", ur: "Patients ko imaandari se dard samjhana." } },
+  ],
+  sources: [
+    {
+      citation: "Johnson MI, Paley CA, Jones G, Mulvey MR, Wittkopf PG. Efficacy and safety of transcutaneous electrical nerve stimulation (TENS) for acute and chronic pain in adults: a systematic review and meta-analysis of 381 studies (the meta-TENS study). BMJ Open. 2022;12(2):e051073.",
+      pubmedQuery: "meta-TENS study efficacy and safety of transcutaneous electrical nerve stimulation 381 studies",
+    },
+    {
+      citation: "Melzack R, Wall PD. Pain mechanisms: a new theory. Science. 1965;150(3699):971–979.",
+      pubmedQuery: "Melzack Wall pain mechanisms a new theory",
+    },
+    {
+      citation: "Robertson VJ, Baker KG. A review of therapeutic ultrasound: effectiveness studies. Phys Ther. 2001;81(7):1339–1350.",
+      pubmedQuery: "Robertson Baker review of therapeutic ultrasound effectiveness studies",
+    },
+    { citation: "Watson T, Nussbaum EL, eds. Electrophysical Agents: Evidence-Based Practice. 13th ed. Elsevier; 2020." },
+  ],
+};

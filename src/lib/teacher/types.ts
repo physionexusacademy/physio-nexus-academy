@@ -110,7 +110,9 @@ export type TeacherArea =
   | "Clinical Reasoning"
   | "Neurology"
   | "Tissue Healing"
-  | "Pain Science";
+  | "Pain Science"
+  | "Electrotherapy"
+  | "Cardiorespiratory";
 
 export type TeacherLesson = {
   slug: string;
