@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, BadgeCheck, Languages, Trophy } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookMarked, Calculator, Languages, Trophy } from "lucide-react";
 import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
 import { LobbySearch } from "./LobbySearch";
 
@@ -41,6 +41,12 @@ export function LobbyHero({ atlasPublished, conditionCount }: { atlasPublished: 
             </a>
             <a href="/daily-challenge" className="nx-btn nx-btn-ghost">
               <Trophy className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Today&apos;s challenge
+            </a>
+            <a href="/health-calculators/bmi" className="nx-btn nx-btn-ghost">
+              <Calculator className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /> BMI Calculator
+            </a>
+            <a href="/clinical-registry" className="nx-btn nx-btn-ghost">
+              <BookMarked className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /> Clinical Registry
             </a>
             <a href="/patient-services" className="lobby-patient-link">
               I&apos;m a patient <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
