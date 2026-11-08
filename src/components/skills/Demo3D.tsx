@@ -18,13 +18,23 @@ const Demo3DPlayer = dynamic(() => import("./Demo3DPlayer"), {
   ),
 });
 
+/**
+ * Checked once per page and the test context is released at once: browsers allow only about
+ * 16 WebGL contexts, and a page with dozens of demos would otherwise make the browser drop the
+ * real 3D view (the patient vanishes while the goniometer overlay stays).
+ */
+let webglSupport: boolean | null = null;
 function webgl() {
+  if (webglSupport !== null) return webglSupport;
   try {
     const canvas = document.createElement("canvas");
-    return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+    const context = (canvas.getContext("webgl2") || canvas.getContext("webgl")) as WebGLRenderingContext | null;
+    webglSupport = Boolean(context);
+    context?.getExtension("WEBGL_lose_context")?.loseContext();
   } catch {
-    return false;
+    webglSupport = false;
   }
+  return webglSupport;
 }
 
 export function Demo3D({ demoKey, title, say, fallback }: { demoKey: string; title: string; say?: string; fallback?: ReactNode }) {

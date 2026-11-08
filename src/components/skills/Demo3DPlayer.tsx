@@ -16,20 +16,43 @@ const other = (side: Side): Side => (side === "left" ? "right" : "left");
 
 /* ---------------- one shared exam room ---------------- */
 
-type Owner = { lost: () => void; isVisible: () => boolean };
-const shared: { room: ExamRoom | null; ready: Promise<ExamRoom> | null; owner: Owner | null; progress: number; listeners: Set<(p: number) => void>; idle: number } = {
+type Owner = {
+  /** Another demo took the 3D view. */
+  lost: () => void;
+  /** The browser dropped the 3D view: load it again. */
+  reload: () => void;
+  isVisible: () => boolean;
+  hasRoom: () => boolean;
+  activate: () => void;
+};
+const shared: { room: ExamRoom | null; ready: Promise<ExamRoom> | null; owner: Owner | null; progress: number; listeners: Set<(p: number) => void>; idle: number; losses: number; claimedAt: number } = {
   room: null,
   ready: null,
   owner: null,
   progress: 0,
   listeners: new Set(),
   idle: 0,
+  losses: 0,
+  claimedAt: 0,
 };
+/** Every mounted demo, so the 3D view can move to the one in sight. */
+const players = new Set<Owner>();
+
+/** Gives the 3D view to a demo that is on screen but showing its still picture. */
+function handOff(from: Owner) {
+  for (const player of players) {
+    if (player !== from && player.isVisible() && !player.hasRoom()) {
+      player.activate();
+      return;
+    }
+  }
+}
 
 function claimRoom(container: HTMLElement, owner: Owner): Promise<ExamRoom> {
   window.clearTimeout(shared.idle);
   if (shared.owner && shared.owner !== owner) shared.owner.lost();
   shared.owner = owner;
+  shared.claimedAt = performance.now();
   if (!shared.room) {
     const room = new ExamRoom(container);
     // Inside a scrolling page: no wheel zoom or panning, and touch scrolls the page until "Turn" is on.
@@ -37,6 +60,22 @@ function claimRoom(container: HTMLElement, owner: Owner): Promise<ExamRoom> {
     room.controls.enablePan = false;
     room.controls.enabled = false;
     room.renderer.domElement.style.touchAction = "pan-y";
+    // If the browser drops the GPU context (memory pressure, too many contexts), rebuild the view.
+    room.renderer.domElement.addEventListener("webglcontextlost", (event) => {
+      event.preventDefault();
+      if (shared.room !== room) return;
+      shared.losses += 1;
+      const owner = shared.owner;
+      shared.room = null;
+      shared.ready = null;
+      shared.owner = null;
+      try {
+        room.dispose();
+      } catch {
+        // The context is already gone.
+      }
+      owner?.reload();
+    });
     shared.room = room;
     shared.ready = room
       .load(MODEL_URL, (p) => {
@@ -59,6 +98,8 @@ function claimRoom(container: HTMLElement, owner: Owner): Promise<ExamRoom> {
 function releaseRoom(owner: Owner) {
   if (shared.owner !== owner) return;
   shared.owner = null;
+  handOff(owner);
+  if (shared.owner) return;
   // Free the GPU a while after the last demo closes (the next one would reload the model).
   shared.idle = window.setTimeout(() => {
     if (shared.owner || !shared.room) return;
@@ -262,14 +303,25 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
   const visible = useRef(false);
   const baseRef = useRef<THREE.Vector3 | null>(null);
   const framing = useRef<ReturnType<typeof frameFor> | null>(null);
-  const ownerRef = useRef<Owner>({ lost: () => undefined, isVisible: () => visible.current });
+  /** True once the shared patient has been posed for this demo (so a still picture shows this test). */
+  const posed = useRef(false);
+  const ownerRef = useRef<Owner>({ lost: () => undefined, reload: () => undefined, activate: () => undefined, isVisible: () => visible.current, hasRoom: () => roomRef.current !== null });
 
-  // The owner object stays the same; what "lost" does is updated below.
+  // The owner object stays the same; what its callbacks do is updated below.
   ownerRef.current.lost = () => {
     const room = roomRef.current;
-    if (room) setPoster(snapshot(room));
+    if (room && posed.current) setPoster(snapshot(room));
+    posed.current = false;
     roomRef.current = null;
     setStatus("parked");
+  };
+  ownerRef.current.reload = () => {
+    posed.current = false;
+    roomRef.current = null;
+    setPoster(null);
+    // Rebuild once or twice; if the device keeps dropping 3D, use the simple diagram.
+    if (shared.losses > 2) onFail();
+    else ownerRef.current.activate();
   };
 
   const activate = useCallback(() => {
@@ -284,7 +336,6 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
         if (shared.owner !== ownerRef.current) return;
         roomRef.current = room;
         if (process.env.NODE_ENV !== "production") (window as unknown as { __pnaDemoRoom?: ExamRoom }).__pnaDemoRoom = room;
-        setPoster(null);
         setStatus("active");
       })
       .catch(() => {
@@ -292,6 +343,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
         onFail();
       });
   }, [spec, onFail]);
+  ownerRef.current.activate = activate;
 
   // Start when the demo first scrolls into view (and pause the animation while it is off-screen).
   useEffect(() => {
@@ -300,15 +352,23 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
     const observer = new IntersectionObserver(
       ([entry]) => {
         visible.current = entry.isIntersecting;
-        // Take over the 3D view when this demo comes into sight and the current one is out of sight.
-        if (entry.isIntersecting && !roomRef.current && (!shared.owner || !shared.owner.isVisible())) activate();
+        // The demo that has just come into sight (opened or scrolled to) takes the 3D view; the
+        // previous one keeps a still picture. When the demo holding the view scrolls away, pass it
+        // to one that is still on screen.
+        // (Two demos side by side can come into sight together: the one that took the view a moment ago keeps it.)
+        const owner = shared.owner;
+        const justClaimed = owner && owner !== ownerRef.current && owner.isVisible() && performance.now() - shared.claimedAt < 700;
+        if (entry.isIntersecting && !roomRef.current && !justClaimed) activate();
+        else if (!entry.isIntersecting && shared.owner === ownerRef.current) handOff(ownerRef.current);
       },
       { threshold: 0.35 },
     );
     observer.observe(host);
     const owner = ownerRef.current;
+    players.add(owner);
     return () => {
       observer.disconnect();
+      players.delete(owner);
       releaseRoom(owner);
     };
   }, [activate]);
@@ -332,7 +392,8 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
     baseRef.current = room.patientRoot.position.clone();
     framing.current = frameFor(room, spec, side);
     room.setPose(spec.move(side, spec.range[0]), { animate: false, replace: true });
-    room.frameCamera(true, framing.current.centre, framing.current.distance, framing.current.dir);
+    room.frameCamera(false, framing.current.centre, framing.current.distance, framing.current.dir);
+    posed.current = true;
     clock.current = { start: performance.now(), pausedAt: 0 };
   }, [status, spec, side]);
 
