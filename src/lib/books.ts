@@ -1,7 +1,10 @@
 // Single source of truth for printed books sold on /resources.
 // Prices live here (server-trusted) so the order form can never set its own price.
 
-export type BookId = "clinical-myofascial-therapy" | "physiotherapy-clinical-mastery";
+export type BookId =
+  | "clinical-myofascial-therapy"
+  | "physiotherapy-clinical-mastery"
+  | "secrets-of-physiotherapy";
 
 export interface BookListing {
   id: BookId;
@@ -43,6 +46,31 @@ export const BOOKS: BookListing[] = [
       "Special tests taught step by step: position, action, findings and next step",
       "Red-flag safety panels with clear urgency and action",
       "Clinical cases and reasoning questions with explained answers",
+    ],
+  },
+  {
+    id: "secrets-of-physiotherapy",
+    title: "The Secrets of Physiotherapy",
+    subtitle: "The Clinical Insights, Scientific Principles and Practical Skills That Transform Physiotherapy Practice",
+    orderTitle: "The Secrets of Physiotherapy",
+    author: "Dr. Sajjad Raza PT",
+    edition: "First Edition 2026",
+    price: 3000,
+    deliveryEstimate: "3–4 days",
+    cover: {
+      src: "/images/books/secrets-of-physiotherapy-cover.webp",
+      width: 640,
+      height: 962,
+      alt: "The Secrets of Physiotherapy by Dr. Sajjad Raza PT — book cover",
+    },
+    badges: ["New · First Edition 2026", "12 Parts · 280+ pages"],
+    description:
+      "The overlooked, misunderstood and underused ideas that decide clinical outcomes — how pain really works, how expert clinicians reason, how to dose load, how people learn movement, and the conditions, modalities and diagnostic traps the profession most often gets wrong. Written the way it is taught: sitting beside you in the clinic.",
+    highlights: [
+      "Pain science explained so you can teach it to patients",
+      "Clinical reasoning, test accuracy and red-flag thinking",
+      "Overlooked muscles and conditions commonly treated the wrong way",
+      "Hidden errors in modalities, manual techniques and diagnosis",
     ],
   },
   {
