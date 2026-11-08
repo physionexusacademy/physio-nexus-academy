@@ -10,6 +10,7 @@ import { serializeSkillsData } from "../src/lib/skills/build-data.ts";
 import { compileSkill } from "../src/lib/skills/compile.ts";
 import { skillDefinitions } from "../src/lib/skills/registry.ts";
 import { SKILL_LEVELS, type SkillData, type SkillDefinition, type SkillLevelId } from "../src/lib/skills/types.ts";
+import { DEMO3D, DEMO3D_2D_ONLY } from "../src/lib/skills/demo3d.ts";
 
 const root = process.cwd();
 const failures: string[] = [];
@@ -213,6 +214,74 @@ for (const slug of slugs) {
   if (!sitemapCoversSkills && !sitemap.includes(`/skills/${slug}`)) fail("sitemap", `missing /skills/${slug}`);
 }
 
+/* 3D demonstrations on the Virtual Patient ----------------------------------------- */
+{
+  const rig = JSON.parse(fs.readFileSync(path.join(root, "src/lib/virtual-patient/generated/rig.json"), "utf8")) as { bones: { name: string }[]; landmarks: Record<string, unknown> };
+  const bones = new Set(rig.bones.map((bone) => bone.name));
+  const softSites = [...fs.readFileSync(path.join(root, "src/lib/virtual-patient/points.ts"), "utf8").matchAll(/\{ id: "([a-z-]+)", name:/g)].map((m) => m[1]);
+  const landmarks = new Set([...Object.keys(rig.landmarks), ...softSites]);
+  const DIRECTIONS = new Set(["up", "down", "front", "back", "head", "feet", "lat", "med"]);
+  const JOINTS = new Set(["shoulder", "elbow", "wrist", "hand", "fingers", "thumb", "hip", "knee", "ankle", "toe"]);
+  const POSITIONS = new Set(["standing", "supine", "prone", "sitting", "sidelying"]);
+  const pointError = (spec: string, allowDirection: boolean): string | null => {
+    if (spec.startsWith("^")) return allowDirection && DIRECTIONS.has(spec.slice(1)) ? null : `bad reference line ${spec}`;
+    const [pair, weight] = spec.split("*");
+    if (weight !== undefined && !(Number(weight) >= 0 && Number(weight) <= 1)) return `bad weight in ${spec}`;
+    const parts = pair.split("+");
+    if (parts.length > 2) return `too many points in ${spec}`;
+    for (const part of parts) {
+      const [name, flag] = part.replace(/>$/, "").split(":");
+      if (flag !== undefined && flag !== "o" && flag !== "m") return `bad side flag in ${spec}`;
+      if (name.startsWith("@")) {
+        if (!landmarks.has(name.slice(1))) return `unknown landmark ${name}`;
+      } else if (!bones.has(name) && !bones.has(`${name}.L`)) return `unknown bone ${name}`;
+    }
+    return null;
+  };
+  const bySlug = new Map(skillDefinitions.map((skill) => [skill.slug, skill]));
+  for (const [key, spec] of Object.entries(DEMO3D)) {
+    const at = `demo3d ${key}`;
+    const [slug, ref] = key.split("/");
+    const skill = bySlug.get(slug);
+    if (!skill) fail(at, "unknown skill");
+    else if (ref.startsWith("concept:") ? !skill.concepts.some((c) => c.id === ref.slice(8)) : !skill.atlas.some((item) => item.id === ref)) fail(at, "no such atlas item or concept");
+    if (!POSITIONS.has(spec.position)) fail(at, `unknown position ${spec.position}`);
+    if (!spec.range.every(Number.isFinite) || spec.range[0] === spec.range[1]) fail(at, "range must be two different numbers");
+    if (!(spec.zoom > 0.15 && spec.zoom < 4)) fail(at, "zoom out of range");
+    if (spec.view.every((v) => v === 0)) fail(at, "view direction is zero");
+    if (spec.kind === "rom" && !spec.gonio) fail(at, "a goniometry demo needs a goniometer");
+    const points: [string, boolean][] = [[spec.focus, false], ...(spec.push ? [[spec.push, false] as [string, boolean]] : []), ...(spec.stab ? [[spec.stab, false] as [string, boolean]] : []), ...(spec.planted ? [[spec.planted, false] as [string, boolean]] : [])];
+    if (spec.gonio) points.push([spec.gonio.axis, false], [spec.gonio.fixed, true], [spec.gonio.moving, true]);
+    for (const [point, allowDirection] of points) {
+      const error = pointError(point, allowDirection);
+      if (error) fail(at, error);
+    }
+    for (const side of ["left", "right"] as const) {
+      for (const a of [spec.range[0], (spec.range[0] + spec.range[1]) / 2, spec.range[1]]) {
+        for (const [poseKey, angles] of Object.entries(spec.move(side, a))) {
+          const [joint, poseSide] = poseKey.split(".");
+          const valid = poseKey === "neck" || poseKey === "trunk" || (JOINTS.has(joint) && (poseSide === "left" || poseSide === "right"));
+          if (!valid) fail(at, `unknown pose key ${poseKey}`);
+          for (const value of Object.values(angles ?? {})) if (!Number.isFinite(value) || Math.abs(value as number) > 200) fail(at, `${poseKey} angle out of range at ${a}`);
+        }
+      }
+    }
+  }
+  // Every 2D diagram in these skills has a 3D demonstration, unless it is listed as 2D-only.
+  const only2d = new Set(DEMO3D_2D_ONLY);
+  for (const key of only2d) {
+    const [slug, id] = key.split("/");
+    if (!bySlug.get(slug)?.atlas.some((item) => item.id === id)) fail(`demo3d 2D-only ${key}`, "no such atlas item");
+    if (DEMO3D[key]) fail(`demo3d 2D-only ${key}`, "also has a 3D demo");
+  }
+  for (const slug of ["goniometry", "manual-muscle-testing", "muscle-length"]) {
+    for (const item of bySlug.get(slug)?.atlas ?? []) {
+      const key = `${slug}/${item.id}`;
+      if (item.demo && !DEMO3D[key] && !only2d.has(key)) fail(`demo3d ${key}`, "has a 2D diagram but no 3D demonstration (add one or list it in DEMO3D_2D_ONLY)");
+    }
+  }
+}
+
 if (failures.length) {
   console.error(`Skills Lab validation failed (${failures.length}):`);
   for (const message of failures) console.error("  ✗ " + message);
@@ -220,4 +289,4 @@ if (failures.length) {
 }
 const compiled = skillDefinitions.map(compileSkill);
 const totals = compiled.reduce((sum, skill) => ({ q: sum.q + skill.questions.length, c: sum.c + skill.cards.length, a: sum.a + skill.atlas.length }), { q: 0, c: 0, a: 0 });
-console.log(`Skills Lab OK — ${compiled.length} skills, ${totals.a} atlas items, ${totals.q} questions, ${totals.c} flashcards.`);
+console.log(`Skills Lab OK — ${compiled.length} skills, ${totals.a} atlas items, ${totals.q} questions, ${totals.c} flashcards, ${Object.keys(DEMO3D).length} 3D demonstrations.`);

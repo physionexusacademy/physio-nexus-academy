@@ -19,11 +19,14 @@ import { SOFT_SITES, mirrorProbe, type SkinProbe } from "./points";
 
 export type Side = "left" | "right";
 export type PatientPosition = "standing" | "supine" | "prone" | "sitting" | "sidelying";
-export type JointId = "shoulder" | "elbow" | "wrist" | "hand" | "hip" | "knee" | "ankle" | "toe";
+export type JointId = "shoulder" | "elbow" | "wrist" | "hand" | "fingers" | "thumb" | "hip" | "knee" | "ankle" | "toe";
 /**
  * Degrees. flex: flexion(+)/extension(−) — for the ankle dorsiflexion(+), for the great toe extension(+);
- * abd: abduction(+)/adduction(−) — for the wrist radial deviation(+); rot: internal rotation(+) — for the ankle inversion(+).
+ * abd: abduction(+)/adduction(−) — for the wrist radial deviation(+); rot: internal rotation(+) — for the ankle inversion(+);
+ * elbow rot: forearm rotation.
  * hand: flex = grip (0–100 %), abd = thumb flexion (0–100 %).
+ * fingers (index to little, degrees, added to the grip): flex = MCP, abd = PIP, rot = DIP flexion.
+ * thumb (degrees): flex = MCP flexion, abd = CMC palmar abduction, rot = IP flexion.
  */
 export type JointAngles = { flex?: number; abd?: number; rot?: number };
 export type Pose = Partial<Record<`${JointId}.${Side}`, JointAngles>> & {
@@ -105,7 +108,10 @@ function fingerAxes(side: Side) {
   const handDir = head(`finger3-1.${s}`).clone().sub(wrist).normalize();
   const curl = V(restBone.get(`finger3-3.${s}`)!.tail).sub(head(`finger3-1.${s}`));
   const palmar = curl.sub(handDir.clone().multiplyScalar(curl.dot(handDir))).normalize();
-  const out: { name: string; axis: THREE.Vector3; max: number; thumb: boolean }[] = [];
+  // Thumb flexion bends the tip across the palm, towards the little finger.
+  const ulnar = head(`finger5-1.${s}`).clone().sub(head(`finger2-1.${s}`)).normalize();
+  const across = ulnar.clone().add(palmar.clone().multiplyScalar(0.6)).normalize();
+  const out: { name: string; axis: THREE.Vector3; flexAxis: THREE.Vector3; max: number; thumb: boolean; finger: number; segment: number }[] = [];
   for (let f = 1; f <= 5; f++) {
     for (let k = 1; k <= 3; k++) {
       const name = `finger${f}-${k}.${s}`;
@@ -113,7 +119,8 @@ function fingerAxes(side: Side) {
       if (!b) continue;
       const dir = V(b.tail).sub(V(b.head)).normalize();
       const axis = new THREE.Vector3().crossVectors(dir, palmar).normalize();
-      out.push({ name, axis, max: f === 1 ? 35 : [0, 75, 90, 55][k], thumb: f === 1 });
+      const flexAxis = f === 1 ? new THREE.Vector3().crossVectors(dir, across).normalize() : axis;
+      out.push({ name, axis, flexAxis, max: f === 1 ? 35 : [0, 75, 90, 55][k], thumb: f === 1, finger: f, segment: k });
     }
   }
   return out;
@@ -328,6 +335,16 @@ export class ExamRoom {
   invalidate() {
     this.needsRender = true;
   }
+  /** Moves the view into another container (one loaded patient shared by many demos). */
+  attach(container: HTMLElement) {
+    if (container === this.container) return;
+    this.resizeObserver.unobserve(this.container);
+    this.container = container;
+    container.appendChild(this.renderer.domElement);
+    this.resizeObserver.observe(container);
+    this.resize();
+  }
+
   private resize() {
     const width = this.container.clientWidth || 1;
     const height = this.container.clientHeight || 1;
@@ -509,9 +526,18 @@ export class ExamRoom {
       const hand = this.pose[`hand.${side}`] ?? {};
       const grip = Math.max(0, Math.min(100, hand.flex ?? 0)) / 100;
       const thumb = Math.max(0, Math.min(100, hand.abd ?? 0)) / 100;
+      const digits = this.pose[`fingers.${side}`] ?? {};
+      const thumbJoints = this.pose[`thumb.${side}`] ?? {};
       for (const finger of FINGERS[side]) {
         const amount = finger.thumb ? Math.max(thumb, grip * 0.6) : grip;
-        if (amount > 0) locals.set(finger.name, q(finger.axis, finger.max * amount));
+        let local = amount > 0 ? q(finger.axis, finger.max * amount) : null;
+        // Single-joint movements (goniometry of the fingers and thumb).
+        const extra = finger.thumb
+          ? [0, 0, thumbJoints.flex ?? 0, thumbJoints.rot ?? 0][finger.segment]
+          : [0, digits.flex ?? 0, digits.abd ?? 0, digits.rot ?? 0][finger.segment];
+        if (extra) local = (local ?? new THREE.Quaternion()).multiply(q(finger.flexAxis, extra));
+        if (finger.thumb && finger.segment === 1 && thumbJoints.abd) local = (local ?? new THREE.Quaternion()).multiply(q(finger.axis, thumbJoints.abd));
+        if (local) locals.set(finger.name, local);
       }
     }
 
@@ -612,8 +638,8 @@ export class ExamRoom {
     return this.skinned.boundingBox!.clone().applyMatrix4(this.skinned.matrixWorld);
   }
 
-  /** Points the camera at the whole patient, or at a body part. */
-  frameCamera(animate = true, focus?: THREE.Vector3, distance?: number) {
+  /** Points the camera at the whole patient, or at a body part (optionally from a given direction). */
+  frameCamera(animate = true, focus?: THREE.Vector3, distance?: number, from?: THREE.Vector3) {
     const box = this.bodyBox();
     const lying = this.position === "supine" || this.position === "prone" || this.position === "sidelying";
     const height = this.container.clientHeight || 1;
@@ -629,7 +655,9 @@ export class ExamRoom {
     // Centre him in the free area: raise the aim point by half the toolbar height (in world units at that distance).
     const worldPerPixel = (2 * size * Math.tan(vfov / 2)) / height;
     const target = centre.clone().add(new THREE.Vector3(0, (this.viewInsetTop / 2) * worldPerPixel + (lying || focus ? 0 : 0.03), 0));
-    const dir = lying
+    const dir = from
+      ? from.clone().normalize()
+      : lying
       ? new THREE.Vector3(this.position === "sidelying" && this.downSide === "right" ? -1.15 : 1.15, 0.85, 0.45).normalize()
       : new THREE.Vector3(0.55, 0.22, 1).normalize();
     const goal = target.clone().add(dir.multiplyScalar(size));
@@ -901,6 +929,15 @@ export class ExamRoom {
   /** Bone head position by rig name, with ".L"/".R" chosen by side when given. */
   boneWorld(name: string, side?: Side) {
     return this.jointWorld(side && !/\.[LR]$/.test(name) && !/^(spine|neck|head|root)/.test(name) ? `${name}.${sideKey(side)}` : name);
+  }
+  /** Bone tail (the far end of the segment) in the current pose. */
+  boneEnd(name: string, side?: Side) {
+    const full = side && !/\.[LR]$/.test(name) && !/^(spine|neck|head|root|jaw)/.test(name) ? `${name}.${sideKey(side)}` : name;
+    const bone = this.bone(full);
+    const rest = restBone.get(full);
+    if (!bone || !rest) return this.jointWorld(full);
+    // Rest bones have identity rotation, so the rest head→tail vector turns with the bone (as in headWorld).
+    return this.jointWorld(full).add(V(rest.tail).sub(V(rest.head)).applyQuaternion(bone.getWorldQuaternion(new THREE.Quaternion())));
   }
   /** Top of the head, for the patient's speech bubble. */
   headWorld() {

@@ -1,7 +1,7 @@
 [
  {
   "slug": "manual-muscle-testing",
-  "version": 3886624186,
+  "version": 2138297882,
   "title": "Manual Muscle Testing (MMT)",
   "short": "MMT",
   "phase": "measure",
@@ -98,7 +98,7 @@
  },
  {
   "slug": "goniometry",
-  "version": 3673248859,
+  "version": 3947497303,
   "title": "Goniometry",
   "short": "Goniometry",
   "phase": "measure",
@@ -469,7 +469,7 @@
  },
  {
   "slug": "muscle-length",
-  "version": 1995482567,
+  "version": 3156346725,
   "title": "Muscle Length Testing",
   "short": "Muscle length",
   "phase": "patient",

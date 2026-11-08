@@ -61,6 +61,8 @@ export type SkillAtlasItem = {
   level: SkillLevelId;
   fields: SkillField[];
   demo?: JointDemoSpec;
+  /** Set by the build when the 3D Virtual Patient demonstrates this item (src/lib/skills/demo3d.ts). */
+  demo3d?: boolean;
   point?: BodyPoint;
   tip?: string;
 };
@@ -73,6 +75,7 @@ export type SkillConcept = {
   bullets?: string[];
   ur?: string;
   demo?: JointDemoSpec;
+  demo3d?: boolean;
   table?: { head: string[]; rows: string[][] };
 };
 

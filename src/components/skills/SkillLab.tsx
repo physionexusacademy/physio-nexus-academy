@@ -33,6 +33,7 @@ import {
   type SkillsProgress,
 } from "@/lib/skills/progress";
 import { BodyChart } from "./BodyChart";
+import { Demo3D } from "./Demo3D";
 import { JointDemo } from "./JointDemo";
 import { BodyMapSim, GoniometerSim, GradeSim, VitalsTool } from "./Simulators";
 
@@ -244,7 +245,11 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
                 </p>
               ) : null}
             </div>
-            {concept.demo ? <JointDemo spec={concept.demo} /> : null}
+            {concept.demo3d ? (
+              <Demo3D demoKey={`${data.slug}/concept:${concept.id}`} title={concept.title} fallback={concept.demo ? <JointDemo spec={concept.demo} /> : undefined} />
+            ) : concept.demo ? (
+              <JointDemo spec={concept.demo} />
+            ) : null}
           </div>
           {concept.table ? (
             <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200" data-horizontal-scroll>
@@ -339,7 +344,11 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
                 <ArrowRight className="mt-2 h-4 w-4 flex-none text-slate-400 transition group-open:rotate-90" aria-hidden="true" />
               </summary>
               <div className="mt-4 space-y-4">
-                {item.demo ? <JointDemo spec={item.demo} /> : null}
+                {item.demo3d ? (
+                  <Demo3D demoKey={`${data.slug}/${item.id}`} title={item.title} say={item.fields.find((field) => field.label === "Instruction")?.value} fallback={item.demo ? <JointDemo spec={item.demo} /> : undefined} />
+                ) : item.demo ? (
+                  <JointDemo spec={item.demo} />
+                ) : null}
                 {item.point ? (
                   <div className="mx-auto w-40">
                     <BodyChart view={item.point.view} markers={[{ id: item.id, ...item.point, tone: "active", label: item.title }]} />

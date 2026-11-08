@@ -270,3 +270,26 @@ select {
   #registry-report-print p,
   #registry-report-print li { color: #222 !important; }
 }
+
+/* Skills Lab 3D demonstrations (src/components/skills/Demo3DPlayer.tsx) */
+.d3-btn {
+  display: inline-flex;
+  height: 2.1rem;
+  width: 2.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgb(226 232 240);
+  color: rgb(51 65 85);
+  background: #fff;
+}
+.d3-btn:hover { border-color: rgb(94 234 212); color: rgb(15 118 110); }
+.d3-btn.d3-on { background: #0a1f3d; border-color: #0a1f3d; color: #fff; }
+.d3-push { animation: d3-push 1.1s ease-in-out infinite; }
+@keyframes d3-push {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .d3-push { animation: none; }
+}
