@@ -19,6 +19,9 @@ const header=read("src/components/Header.tsx");
 const palette=read("src/components/nexus/CommandPalette.tsx");
 const mobile=read("src/components/MobilePortalNav.tsx");
 const whatsapp=read("src/components/WhatsAppButton.tsx");
+const directory=read("src/components/home/HomeDirectory.tsx");
+const booksRow=read("src/components/home/HomeBooks.tsx");
+const bookIds=[...read("src/lib/books.ts").matchAll(/^\s+id: "([a-z0-9-]+)",/gm)].map(match=>match[1]);
 
 const portraitPath="public/images/pna-founder-hero-sharp-v2.avif";
 const portrait=fs.readFileSync(portraitPath);
@@ -60,7 +63,11 @@ const tests={
   whatsappStillAccessible:whatsapp.includes("Chat with Physio Nexus Academy on WhatsApp")&&lobbyCss.includes("bottom: calc(112px"),
   motionRespect:lobbyCss.includes("prefers-reduced-motion")&&nexusCss.includes("prefers-reduced-motion"),
   responsiveHero:lobbyCss.includes("max-width: 560px")&&lobbyCss.includes("max-width: 900px"),
-  featureSearchKept:search.includes('role="search"')&&search.includes("results.map(")
+  featureSearchKept:search.includes('role="search"')&&search.includes("results.map("),
+  // A plain-language directory straight after the hero: patients and learners find everything in one tap.
+  startHereDirectory:home.indexOf("<HomeDirectory />")>home.indexOf("<LobbyHero")&&home.indexOf("<HomeDirectory />")<home.indexOf("<StudentPass />")&&["/appointment","/home-visit","/symptom-checker","/learn","/skills","/virtual-patient","/workshops","/treatment-plans"].every(url=>directory.includes(`href: "${url}"`)),
+  // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
+  booksRowOnHome:home.includes("<HomeBooks />")&&booksRow.includes("BOOKS.map(")&&lobbyCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")&&bookIds.length>=3&&bookIds.every(id=>fs.existsSync(`public/images/books/thumbs/${id}.webp`))
 };
 for(const [name,okay] of Object.entries(tests)){
   assert(okay,"PNA homepage validation failed: "+name);
