@@ -1,5 +1,15 @@
+/**
+ * Crawlers that get page titles and meta tags in the <head> of the first HTML response
+ * (Next.js otherwise streams them for pages rendered on request). Next's default list plus
+ * Googlebot and the AI search crawlers, which do not wait for JavaScript.
+ */
+const DEFAULT_LIMITED_BOTS =
+  '[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight';
+const SEARCH_AND_AI_BOTS = 'Googlebot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-SearchBot|Claude-User|PerplexityBot|Perplexity-User|Amazonbot|CCBot';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  htmlLimitedBots: new RegExp(`${DEFAULT_LIMITED_BOTS}|${SEARCH_AND_AI_BOTS}`, 'i'),
   // A harmless build-time flag; the Preview password itself is a Worker secret.
   env: {
     PNA_PREVIEW_BUILD: process.env.PNA_PREVIEW_BUILD === 'true' ? 'true' : 'false',
