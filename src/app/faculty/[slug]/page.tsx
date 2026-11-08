@@ -28,11 +28,11 @@ export async function generateMetadata({
   const member = getFacultyMember(slug);
 
   if (!member) {
-    return { title: "Faculty | Physio Nexus Academy" };
+    return { title: "Faculty" };
   }
 
   return {
-    title: `${member.name} | Faculty | Physio Nexus Academy`,
+    title: `${member.name} — Physiotherapy Faculty`,
     description: `${member.name} — ${member.professionalTitle}. ${member.academyRole} at Physio Nexus Academy.`,
     alternates: {
       canonical: `https://physionexusacademy.com/faculty/${member.slug}`,
