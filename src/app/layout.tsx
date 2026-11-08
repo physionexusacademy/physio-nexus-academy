@@ -27,7 +27,8 @@ const siteJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": ["EducationalOrganization", "MedicalOrganization", "LocalBusiness"],
+      // "Physiotherapy" is schema.org's type for a physiotherapy practice (a MedicalBusiness).
+      "@type": ["EducationalOrganization", "Physiotherapy", "MedicalOrganization", "LocalBusiness"],
       "@id": "https://physionexusacademy.com/#organization",
       name: "Physio Nexus Academy",
       alternateName: ["PNA", "Physio Nexus Academy Pakistan"],
@@ -54,11 +55,6 @@ const siteJsonLd = {
         addressRegion: "Sindh",
         postalCode: "74400",
         addressCountry: "PK",
-      },
-      geo: {
-        "@type": "GeoCoordinates",
-        addressCountry: "PK",
-        addressLocality: "Karachi",
       },
       founder: {
         "@id": "https://physionexusacademy.com/founder#person",
@@ -105,6 +101,16 @@ const siteJsonLd = {
         "Strain Counterstrain",
       ],
       ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Physiotherapy services and education",
+        itemListElement: [
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Home physiotherapy visits", url: "https://physionexusacademy.com/home-visit" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Physiotherapy appointments and online consultations", url: "https://physionexusacademy.com/appointment" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Hands-on physiotherapy workshops and CPD courses", url: "https://physionexusacademy.com/workshops" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Manual therapy training", url: "https://physionexusacademy.com/manual-therapy" } },
+        ],
+      },
       priceRange: "$$",
       currenciesAccepted: "PKR",
       paymentAccepted: "Cash, Bank Transfer",

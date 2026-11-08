@@ -49,13 +49,18 @@ export function generateStaticParams() {
   ];
 }
 
+/** Search-friendly title: short technique names get what people look for ("how to apply", evidence). */
+function techniqueTitle(name: string) {
+  return name.length <= 30 ? `${name}: How to Apply, Indications & Evidence` : name;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
   const worldLesson = worldManualApproaches.find((item) => item.slug === slug);
 
   if (worldLesson) return {
-    title: worldLesson.title, // the layout template adds " | Physio Nexus Academy"
+    title: techniqueTitle(worldLesson.title), // the layout template adds " | Physio Nexus Academy"
     description: worldLesson.summary,
     keywords: [worldLesson.title, "manual therapy", "physiotherapy", "clinical techniques", "Physio Nexus Academy"],
     alternates: { canonical: "https://physionexusacademy.com/manual-therapy/" + slug },
@@ -72,7 +77,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const pageDescription = technique.summary;
 
   return {
-    title: pageTitle,
+    title: techniqueTitle(technique.name),
     description: pageDescription,
     keywords: [
       technique.name,

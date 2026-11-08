@@ -5,9 +5,9 @@ import { NexusHero } from "@/components/nexus/NexusHero";
 import { createPublicClient } from "@/lib/supabase/public";
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Workshops in Pakistan | Karachi & Hyderabad",
+  title: "Physiotherapy Workshops & Courses in Pakistan",
   description:
-    "Explore hands-on physiotherapy workshops from Physio Nexus Academy including manual therapy, clinical skills and CPD training in Karachi, Hyderabad and other cities across Pakistan.",
+    "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills — Karachi, Hyderabad and across Pakistan, with verifiable certificates.",
   keywords: [
     "physiotherapy workshops Pakistan",
     "physiotherapy workshops Karachi",

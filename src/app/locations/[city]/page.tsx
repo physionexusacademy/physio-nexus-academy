@@ -33,8 +33,9 @@ export async function generateMetadata({
   const city = getCityBySlug(slug);
   if (!city) return {};
 
-  const title = `Physiotherapy Home Visit in ${city.name} | Home Physiotherapy Service`;
-  const description = `Request physiotherapy home visit service in ${city.name}, ${city.province}. Book home physiotherapy through Physio Nexus Academy. Submit the form or contact us on WhatsApp for confirmation.`;
+  // People search "physiotherapist in <city>" far more than "physiotherapy home visit".
+  const title = `Physiotherapist in ${city.name} — Home Physiotherapy Visits`;
+  const description = `Book a physiotherapist home visit in ${city.name}, ${city.province}, through Physio Nexus Academy. Request on the form or WhatsApp and we confirm your visit.`;
   const pageUrl = `${siteUrl}/locations/${city.slug}`;
 
   return {

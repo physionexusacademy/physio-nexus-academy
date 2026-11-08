@@ -20,9 +20,9 @@ const whatsappUrl =
   );
 
 export const metadata: Metadata = {
-  title: "Book Physiotherapy Appointment in Pakistan | Online & In-Person Consultation",
+  title: "Book a Physiotherapy Appointment — Online or In-Person",
   description:
-    "Request a physiotherapy appointment or consultation across Pakistan. Book in-person or online physiotherapy consultation in Karachi, Hyderabad, Lahore, Islamabad and other cities. Fill the form or contact us on WhatsApp for confirmation.",
+    "Book a physiotherapy appointment or online consultation in Karachi, Hyderabad, Lahore, Islamabad and other cities. Request on the form or WhatsApp.",
   keywords: [
     "physiotherapy appointment",
     "physiotherapy consultation",

@@ -7,9 +7,9 @@ const siteUrl = "https://physionexusacademy.com";
 const pageUrl = `${siteUrl}/locations/hyderabad`;
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Home Visits & Workshops in Hyderabad",
+  title: "Physiotherapist in Hyderabad — Home Visits & Workshops",
   description:
-    "Physio Nexus Academy provides physiotherapy home-visit requests and scheduled hands-on physiotherapy workshops in Hyderabad, Sindh.",
+    "Physiotherapist home visits and hands-on physiotherapy workshops in Hyderabad, Sindh, from Physio Nexus Academy. Book on the form or WhatsApp.",
   alternates: {
     canonical: pageUrl,
   },

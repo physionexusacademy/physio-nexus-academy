@@ -16,11 +16,10 @@ import "./home-lobby.css";
 
 export const metadata: Metadata = {
   title: {
-    absolute:
-      "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning in Pakistan",
+    absolute: "Physio Nexus Academy — Physiotherapy Courses, Workshops & Home Visits",
   },
   description:
-    "Learn evidence-based physiotherapy with practical MSK and manual therapy guides, clinical case labs, daily challenges, quizzes and hands-on workshops from Physio Nexus Academy in Pakistan. Founded by Dr. Sajjad Raza PT.",
+    "Physiotherapy courses, hands-on manual therapy workshops and home physiotherapy in Pakistan, plus free clinical learning by Dr. Sajjad Raza PT.",
   keywords: [
     "Physio Nexus Academy",
     "physiotherapy education in Pakistan",

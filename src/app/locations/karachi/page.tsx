@@ -7,9 +7,9 @@ const siteUrl = "https://physionexusacademy.com";
 const pageUrl = `${siteUrl}/locations/karachi`;
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Home Visits & Workshops in Karachi",
+  title: "Physiotherapist in Karachi — Home Visits & Workshops",
   description:
-    "Physio Nexus Academy provides physiotherapy home-visit requests, appointment support and hands-on physiotherapy workshops in Karachi, Pakistan.",
+    "Physiotherapist home visits, appointments and hands-on physiotherapy workshops in Karachi from Physio Nexus Academy, Saddar. Book on the form or WhatsApp.",
   alternates: {
     canonical: pageUrl,
   },

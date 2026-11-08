@@ -92,9 +92,9 @@ const libraryFamilies = libraryFamilyOrder.filter((name) =>
 );
 
 export const metadata: Metadata = {
-  title: "World Manual Therapy Encyclopedia | Techniques & Clinical Guide",
+  title: "Manual Therapy Techniques — 35+ Guides for Physiotherapists",
   description:
-    "Explore 35+ manual therapy techniques with clinical reasoning, hand placement, dosage, safety and evidence-informed learning for physiotherapy students and professionals in Pakistan.",
+    "Learn 35+ manual therapy techniques — Maitland, Mulligan, MET, myofascial release and more — with hand placement, dosage, safety and evidence.",
   keywords: [
     "manual therapy techniques",
     "manual therapy physiotherapy",

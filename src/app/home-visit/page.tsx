@@ -11,9 +11,9 @@ const whatsappUrl =
   );
 
 export const metadata: Metadata = {
-  title: "Physiotherapy Home Visit Service in Pakistan | Book Home Physiotherapy",
+  title: "Home Physiotherapy — Physiotherapist Home Visits in Pakistan",
   description:
-    "Request physiotherapy home visit service across Pakistan. Strong coverage in Sindh (Karachi, Hyderabad, Sukkur, Larkana, Nawabshah, Mirpurkhas and more) plus Lahore, Islamabad and other cities. Fill the form or contact us on WhatsApp.",
+    "Book home physiotherapy in Karachi, Hyderabad, Lahore, Islamabad and across Sindh. A physiotherapist visits you at home — request on the form or WhatsApp.",
   keywords: [
     "physiotherapy home visit",
     "physiotherapy home service",
