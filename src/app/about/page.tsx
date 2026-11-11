@@ -3,36 +3,60 @@ import { NexusHero } from "@/components/nexus/NexusHero";
 import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site-config";
 
+const url = "https://physionexusacademy.com/about";
+
 export const metadata: Metadata = {
-  title: "About Us — Founder, Mission & Vision",
+  title: {
+    absolute:
+      "About Physio Nexus Academy — Founder Dr. Sajjad Raza PT, Mission & Vision | Pakistan",
+  },
   description:
-    "Learn about Physio Nexus Academy — founded and led by Dr. Sajjad Raza PT. Discover our purpose, vision, mission and practical physiotherapy education model serving students, professionals and patients across Pakistan.",
+    "About Physio Nexus Academy — founded and led by Dr. Sajjad Raza PT. Practical physiotherapy education, clinical workshops and patient services for students, professionals and patients across Pakistan.",
   keywords: [
     "about Physio Nexus Academy",
     "Dr Sajjad Raza PT",
     "physiotherapy academy Pakistan",
-    "physiotherapy education Karachi",
+    "physiotherapy education Pakistan",
     "PNA mission vision",
+    "practical physiotherapy education",
   ],
   openGraph: {
-    title: "About Physio Nexus Academy | Founder & Mission",
+    title: "About Physio Nexus Academy | Founder, Mission & Vision",
     description:
-      "Physio Nexus Academy was established to bridge the gap between physiotherapy theory and real clinical practice under the leadership of Dr. Sajjad Raza PT.",
-    url: "https://physionexusacademy.com/about",
+      "Physio Nexus Academy bridges physiotherapy theory and real clinical practice under the leadership of Dr. Sajjad Raza PT — serving learners across Pakistan.",
+    url,
     siteName: "Physio Nexus Academy",
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "About Physio Nexus Academy",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "About Physio Nexus Academy",
     description:
-      "Purpose, vision and mission of Physio Nexus Academy — practical physiotherapy education in Pakistan.",
+      "Purpose, vision and mission of Physio Nexus Academy — practical physiotherapy education across Pakistan.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
-    canonical: "https://physionexusacademy.com/about",
+    canonical: url,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 // Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
@@ -54,12 +78,24 @@ export default async function AboutPage() {
     mission: section?.content?.mission ?? siteConfig.mission.mission,
   };
 
+  const aboutJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About Physio Nexus Academy",
+    url,
+    description: metadata.description,
+    mainEntity: {
+      "@id": "https://physionexusacademy.com/#organization",
+    },
+  };
+
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd).replace(/</g, "\\u003c") }} />
     <NexusHero
       kicker="Academy wing · About PNA"
-      title={<>Our story &amp; <span className="nx-gradient-text">purpose</span></>}
-      lead={<>Built to bridge the gap between physiotherapy theory and real clinical practice — for students, professionals and patients in Pakistan.</>}
+      title={<>Our story & <span className="nx-gradient-text">purpose</span></>}
+      lead={<>Built to bridge the gap between physiotherapy theory and real clinical practice — for students, professionals and patients across Pakistan.</>}
       crumbs={[{ label: "Academy", href: "/about" }, { label: "About PNA" }]}
       actions={<><a href="/founder" className="nx-btn nx-btn-primary">Meet the founder</a><a href="/faculty" className="nx-btn nx-btn-ghost">Our faculty</a></>}
     />
@@ -73,7 +109,7 @@ export default async function AboutPage() {
 
       <section className="mt-8 rounded-xl border border-grey-200 bg-grey-50 p-6">
         <p className="text-xs font-semibold uppercase tracking-wider text-teal-600">
-          Founder &amp; Leadership
+          Founder & Leadership
         </p>
         <h2 className="mt-2 text-xl font-bold text-navy-800">
           Founded and led by {siteConfig.founder.name}
