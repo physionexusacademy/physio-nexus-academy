@@ -91,10 +91,15 @@ const libraryFamilies = libraryFamilyOrder.filter((name) =>
   libraryItems.some((item) => item.family === name),
 );
 
+const url = "https://physionexusacademy.com/manual-therapy";
+
 export const metadata: Metadata = {
-  title: "Manual Therapy Techniques — 35+ Guides for Physiotherapists",
+  title: {
+    absolute:
+      "Manual Therapy Encyclopedia — 35+ Techniques for Physiotherapists | Maitland, Mulligan, MET & More",
+  },
   description:
-    "Learn 35+ manual therapy techniques — Maitland, Mulligan, MET, myofascial release and more — with hand placement, dosage, safety and evidence.",
+    "Learn 35+ manual therapy techniques used in physiotherapy: Maitland, Mulligan, Kaltenborn, MET, myofascial release, strain-counterstrain and more — with setup, hand placement, dosage, safety and clinical reasoning. Free learning for students and clinicians in Pakistan.",
   keywords: [
     "manual therapy techniques",
     "manual therapy physiotherapy",
@@ -103,6 +108,7 @@ export const metadata: Metadata = {
     "myofascial release",
     "strain counterstrain",
     "Kaltenborn mobilization",
+    "muscle energy technique",
     "physiotherapy clinical skills",
     "manual therapy training Pakistan",
     "World Manual Therapy Encyclopedia",
@@ -110,30 +116,63 @@ export const metadata: Metadata = {
   openGraph: {
     title: "World Manual Therapy Encyclopedia | Physio Nexus Academy",
     description:
-      "Trusted approaches, memorable clinical stories and deeper learning for manual therapy techniques used in physiotherapy practice.",
-    url: "https://physionexusacademy.com/manual-therapy",
+      "Trusted approaches, clinical stories and deeper learning for manual therapy techniques used in physiotherapy practice.",
+    url,
     siteName: "Physio Nexus Academy",
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Manual Therapy Encyclopedia",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "World Manual Therapy Encyclopedia | Physio Nexus Academy",
     description:
       "Clinical guide to major manual therapy systems for physiotherapy students and professionals.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
-    canonical: "https://physionexusacademy.com/manual-therapy",
+    canonical: url,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function ManualTherapyPage() {
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "World Manual Therapy Encyclopedia",
+    description: metadata.description,
+    url,
+    numberOfItems: libraryItems.length,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+  };
+
   return (
     <div
       className="container-content section-padding"
       data-pna-manual-theme="editorial-anatomy-luxe"
     >
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
       <a
         href="/learn#manual-therapy"
         data-pna-manual-teacher-banner="v1"
