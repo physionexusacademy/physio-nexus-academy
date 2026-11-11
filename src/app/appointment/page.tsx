@@ -20,30 +20,32 @@ const whatsappUrl =
   );
 
 export const metadata: Metadata = {
-  title: "Book a Physiotherapy Appointment — Online or In-Person",
+  title: {
+    absolute:
+      "Book Physiotherapy Appointment Online or In-Person Across Pakistan",
+  },
   description:
-    "Book a physiotherapy appointment or online consultation in Karachi, Hyderabad, Lahore, Islamabad and other cities. Request on the form or WhatsApp.",
+    "Book a physiotherapy appointment or online consultation from anywhere in Pakistan. In-person or remote options. Submit the form or WhatsApp — availability confirmed before the appointment is finalised.",
   keywords: [
-    "physiotherapy appointment",
-    "physiotherapy consultation",
     "book physiotherapy appointment Pakistan",
-    "physiotherapy appointment Karachi",
-    "physiotherapy appointment Hyderabad",
-    "physiotherapy appointment Lahore",
-    "physiotherapy appointment Islamabad",
+    "physiotherapy consultation Pakistan",
     "online physiotherapy consultation",
     "in-person physiotherapy appointment",
-    "physiotherapy clinic appointment",
+    "physiotherapy appointment near me",
     "book physiotherapist Pakistan",
+    "physiotherapy clinic appointment",
+    "physiotherapy appointment Karachi",
+    "physiotherapy appointment Lahore",
+    "physiotherapy appointment Islamabad",
     "Physio Nexus Academy appointment",
   ],
   alternates: {
     canonical: `${siteUrl}/appointment`,
   },
   openGraph: {
-    title: "Book Physiotherapy Appointment in Pakistan | Physio Nexus Academy",
+    title: "Book Physiotherapy Appointment Across Pakistan | Physio Nexus Academy",
     description:
-      "Request in-person or online physiotherapy consultation. Available pathway for patients across Pakistan. Confirm via form or WhatsApp.",
+      "Request in-person or online physiotherapy consultation from anywhere in Pakistan. Form + WhatsApp confirmation.",
     url: `${siteUrl}/appointment`,
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -59,9 +61,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Book Physiotherapy Appointment in Pakistan",
+    title: "Book Physiotherapy Appointment Across Pakistan",
     description:
-      "In-person or online physiotherapy consultation. Form + WhatsApp confirmation available.",
+      "In-person or online physiotherapy consultation. Available pathway for patients nationwide.",
     images: [`${siteUrl}/images/founder-dr-sajjad.jpg`],
   },
   robots: {
@@ -90,6 +92,9 @@ const majorCities = [
   "Multan",
   "Peshawar",
   "Quetta",
+  "Sialkot",
+  "Gujranwala",
+  "Bahawalpur",
 ];
 
 export default function AppointmentPage() {
@@ -119,7 +124,6 @@ export default function AppointmentPage() {
     },
     areaServed: [
       { "@type": "Country", name: "Pakistan" },
-      { "@type": "AdministrativeArea", name: "Sindh" },
       ...majorCities.map((city) => ({ "@type": "City", name: city })),
     ],
     availableChannel: {
@@ -159,7 +163,7 @@ export default function AppointmentPage() {
     <NexusHero
       kicker="Clinic wing · Appointments across Pakistan"
       title={<>Book a physiotherapy <span className="nx-gradient-text">appointment</span></>}
-      lead={<>Request an <strong className="text-white">in-person</strong> or <strong className="text-white">online physiotherapy consultation</strong>. Choose your preferred date and time, share essential details, and our team will contact you to confirm availability.</>}
+      lead={<>Request an <strong className="text-white">in-person</strong> or <strong className="text-white">online physiotherapy consultation</strong> from anywhere in Pakistan. Choose your preferred date and time, share essential details, and our team will contact you to confirm availability.</>}
       crumbs={[{ label: "Clinic", href: "/patient-services" }, { label: "Book Appointment" }]}
       actions={<><a href="#appointment-form" className="nx-btn nx-btn-primary">Fill the request form</a><a href="/home-visit" className="nx-btn nx-btn-ghost">Need a home visit?</a></>}
     />
@@ -246,8 +250,8 @@ export default function AppointmentPage() {
           <Building2 className="h-6 w-6 text-teal-600" />
           <h3 className="mt-3 font-semibold text-navy-800">In-person consultation</h3>
           <p className="mt-2 text-sm leading-6 text-navy-600">
-            Meet the physiotherapy team in person for assessment and guidance. Strongest pathways
-            currently in Karachi and Hyderabad; other cities subject to confirmation.
+            Meet the physiotherapy team in person for assessment and guidance. Availability depends on
+            location and schedule — confirmed after you submit a request.
           </p>
         </div>
         <div className="rounded-2xl border border-teal-100 bg-white p-5">
@@ -255,7 +259,7 @@ export default function AppointmentPage() {
           <h3 className="mt-3 font-semibold text-navy-800">Online consultation</h3>
           <p className="mt-2 text-sm leading-6 text-navy-600">
             Request a remote physiotherapy consultation when available. Useful for guidance,
-            follow-up discussion and patients outside immediate clinic areas.
+            follow-up discussion and patients outside immediate clinic areas — available nationwide.
           </p>
         </div>
       </section>
@@ -268,13 +272,11 @@ export default function AppointmentPage() {
               Physiotherapy appointments across Pakistan
             </h2>
             <p className="mt-2 text-sm leading-6 text-navy-600">
-              You can request an appointment from any city in Pakistan. In-person options are
-              strongest in <strong>Karachi</strong> and <strong>Hyderabad</strong>. Online
-              consultation requests are evaluated based on availability.
+              You can request an appointment from any city in Pakistan. Online consultations expand
+              access nationwide. In-person options are confirmed based on location and availability.
             </p>
             <p className="mt-3 text-sm leading-6 text-navy-600">
-              Common request cities include: {majorCities.join(", ")} and other areas across
-              Sindh and Pakistan.
+              Common request cities include: {majorCities.join(", ")} and other areas across Pakistan.
             </p>
             <p className="mt-3 text-sm font-medium text-navy-700">
               Prefer a quick conversation? Message us on WhatsApp for faster guidance.
