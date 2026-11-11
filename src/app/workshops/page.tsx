@@ -4,39 +4,64 @@ import { Button } from "@/components/ui/Button";
 import { NexusHero } from "@/components/nexus/NexusHero";
 import { createPublicClient } from "@/lib/supabase/public";
 
+const url = "https://physionexusacademy.com/workshops";
+
 export const metadata: Metadata = {
-  title: "Physiotherapy Workshops & Courses in Pakistan",
+  title: {
+    absolute:
+      "Physiotherapy Workshops & CPD Courses Across Pakistan | Hands-on Manual Therapy Training",
+  },
   description:
-    "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills — Karachi, Hyderabad and across Pakistan, with verifiable certificates.",
+    "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills across Pakistan. Verifiable certificates. Training scheduled in multiple cities with strong pathways in Sindh and nationwide requests.",
   keywords: [
     "physiotherapy workshops Pakistan",
+    "CPD physiotherapy Pakistan",
+    "manual therapy workshops Pakistan",
+    "physiotherapy training Pakistan",
+    "clinical skills workshops",
+    "hands-on physiotherapy training",
     "physiotherapy workshops Karachi",
     "physiotherapy workshops Hyderabad",
-    "manual therapy workshops",
-    "physiotherapy training Karachi",
-    "clinical skills workshops",
-    "CPD physiotherapy Pakistan",
-    "hands-on physiotherapy training",
+    "physiotherapy workshops Lahore",
+    "Physio Nexus Academy workshops",
   ],
   openGraph: {
-    title: "Physiotherapy Workshops in Pakistan | Physio Nexus Academy",
+    title: "Physiotherapy Workshops & CPD Across Pakistan | Physio Nexus Academy",
     description:
-      "Practical physiotherapy workshops and clinical skills training in Karachi, Hyderabad and other Pakistani cities.",
-    url: "https://physionexusacademy.com/workshops",
+      "Practical physiotherapy workshops and clinical skills training for students and professionals across Pakistan.",
+    url,
     siteName: "Physio Nexus Academy",
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Physiotherapy Workshops — Physio Nexus Academy",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Physiotherapy Workshops in Pakistan | Physio Nexus Academy",
+    title: "Physiotherapy Workshops & CPD Across Pakistan",
     description:
       "Hands-on clinical skills and CPD workshops for physiotherapy students and professionals.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
-    canonical: "https://physionexusacademy.com/workshops",
+    canonical: url,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 // Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
@@ -61,12 +86,30 @@ export default async function WorkshopsPage() {
     .eq("status", "published")
     .order("start_date", { ascending: true, nullsFirst: false });
 
+  const eventJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Physiotherapy Workshops & CPD",
+    description: metadata.description,
+    url,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+    about: {
+      "@type": "Thing",
+      name: "Physiotherapy continuing professional development",
+    },
+  };
+
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd).replace(/</g, "\\u003c") }} />
     <NexusHero
-      kicker="Academy wing · Hands-on CPD"
+      kicker="Academy wing · Hands-on CPD across Pakistan"
       title={<>Clinical skill <span className="nx-gradient-text">workshops</span></>}
-      lead={<>Hands-on physiotherapy workshops that connect theory with real clinical application — in <a href="/locations/karachi" className="font-semibold text-white underline decoration-[var(--nx-aqua)] underline-offset-4">Karachi</a>, <a href="/locations/hyderabad" className="font-semibold text-white underline decoration-[var(--nx-aqua)] underline-offset-4">Hyderabad</a> and other cities where PNA schedules training.</>}
+      lead={<>Hands-on physiotherapy workshops that connect theory with real clinical application — scheduled across Pakistan, with strong pathways in Sindh and training announced for multiple cities.</>}
       crumbs={[{ label: "Academy", href: "/about" }, { label: "Workshops & CPD" }]}
       actions={
         <>
@@ -179,7 +222,7 @@ export default async function WorkshopsPage() {
           Professional Portfolio
         </p>
         <h2 className="mt-2 text-2xl font-bold text-navy-800">
-          Past Workshops &amp; Clinical Training
+          Past Workshops & Clinical Training
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-navy-600">
           Explore documented workshops, internship programs and clinical training
