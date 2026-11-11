@@ -14,19 +14,61 @@ import { mskSpecialTests } from "@/lib/msk-special-tests";
 export const dynamic = "force-static";
 export const revalidate = false;
 
+const url = "https://physionexusacademy.com/msk-injuries";
+
 export const metadata: Metadata = {
-  title: "MSK Clinical Injury & Rehabilitation Hub",
+  title: {
+    absolute:
+      "MSK Injury & Rehabilitation Hub — Sprains, Strains, Tendinopathy & Clinical Guides",
+  },
   description:
-    "Whole-body musculoskeletal injury and condition library with diagnostic tests, exact test performance, positive signs, differential diagnosis and phased physiotherapy rehabilitation.",
-  keywords: ["MSK physiotherapy", "musculoskeletal injuries", "physiotherapy rehabilitation", "orthopaedic special tests", "differential diagnosis physiotherapy", "sports injury rehabilitation"],
+    "Whole-body musculoskeletal injury and condition library for physiotherapy students and clinicians: diagnostic tests, positive signs, differential diagnosis and phased rehabilitation. Free clinical guides from Physio Nexus Academy.",
+  keywords: [
+    "MSK physiotherapy",
+    "musculoskeletal injuries",
+    "physiotherapy rehabilitation",
+    "orthopaedic special tests",
+    "differential diagnosis physiotherapy",
+    "sports injury rehabilitation",
+    "sprain strain physiotherapy",
+    "tendinopathy rehabilitation",
+    "MSK clinical guides Pakistan",
+  ],
   openGraph: {
     title: "MSK Injury & Rehabilitation Hub | Physio Nexus Academy",
-    description: "Explore musculoskeletal conditions, examination tests, differential screening and phased physiotherapy rehabilitation.",
-    url: "https://physionexusacademy.com/msk-injuries",
+    description:
+      "Explore musculoskeletal conditions, examination tests, differential screening and phased physiotherapy rehabilitation.",
+    url,
     siteName: "Physio Nexus Academy",
     type: "website",
+    locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "MSK Injury Hub",
+      },
+    ],
   },
-  alternates: { canonical: "https://physionexusacademy.com/msk-injuries" },
+  twitter: {
+    card: "summary_large_image",
+    title: "MSK Injury & Rehabilitation Hub",
+    description:
+      "Condition-by-condition MSK guides with assessment and phased rehab for physiotherapy learners.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  alternates: { canonical: url },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const categoryIcons: Record<string, typeof Activity> = {
@@ -45,11 +87,26 @@ const categoryIcons: Record<string, typeof Activity> = {
 };
 
 export default function MSKInjuryHubPage() {
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "MSK Injury & Rehabilitation Hub",
+    description: metadata.description,
+    url,
+    numberOfItems: mskConditionIndex.length,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+  };
+
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
     <NexusHero
       kicker="Learn wing · PNA MSK Clinical Library"
-      title={<>MSK injury &amp; <span className="nx-gradient-text">rehabilitation</span></>}
+      title={<>MSK injury & <span className="nx-gradient-text">rehabilitation</span></>}
       lead="Condition-by-condition guides: how it presents, how to assess it, red flags, and evidence-informed rehab stages — organised by body region."
       crumbs={[{ label: "Learn", href: "/learn" }, { label: "MSK Injury Hub" }]}
       actions={
