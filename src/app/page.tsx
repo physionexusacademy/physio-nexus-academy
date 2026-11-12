@@ -19,32 +19,27 @@ import "./home-lobby.css";
 export const metadata: Metadata = {
   title: {
     absolute:
-      "Physio Nexus Academy | Physiotherapy Education, Manual Therapy Workshops & Clinical Learning in Pakistan",
+      "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning in Pakistan",
   },
   description:
-    "Pakistan’s practical physiotherapy academy: evidence-based clinical learning, MSK & manual therapy resources, respiratory & cardiopulmonary content, case labs, daily challenges, hands-on CPD workshops and home physiotherapy services by Dr. Sajjad Raza PT.",
+    "Physio Nexus Academy — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Knowledge Hub, manual therapy, treatment plans, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
   keywords: [
     "Physio Nexus Academy",
+    "PNA physiotherapy",
     "physiotherapy education Pakistan",
-    "physiotherapy workshops Karachi",
-    "physiotherapy workshops Hyderabad",
+    "physiotherapy workshops Pakistan",
     "manual therapy training Pakistan",
     "MSK physiotherapy",
-    "respiratory physiotherapy",
-    "cardiopulmonary physiotherapy",
-    "physiotherapy clinical cases",
-    "CPD physiotherapy Pakistan",
+    "physiotherapy clinical skills",
     "physiotherapy students Pakistan",
-    "home physiotherapy Karachi",
+    "CPD physiotherapy Pakistan",
+    "home physiotherapy Pakistan",
     "Dr Sajjad Raza PT",
-    "dry needling Pakistan",
-    "clinical skills physiotherapy",
   ],
   openGraph: {
-    title:
-      "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning in Pakistan",
+    title: "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning",
     description:
-      "Evidence-based physiotherapy learning, MSK & manual therapy, respiratory physiotherapy, clinical cases, quizzes and hands-on workshops for students and professionals across Pakistan.",
+      "Practical physiotherapy education, clinical resources, workshops and patient care — Physio Nexus Academy, Pakistan.",
     url: "https://physionexusacademy.com",
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -68,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Physio Nexus Academy | Physiotherapy Education & Workshops in Pakistan",
     description:
-      "Practical physiotherapy education, clinical resources, respiratory & MSK content, and hands-on workshops from Physio Nexus Academy.",
+      "Practical physiotherapy education, clinical resources and hands-on workshops from Physio Nexus Academy.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
@@ -125,8 +120,34 @@ export default async function HomePage() {
     .slice(0, 3);
   const latestEpisode = getLatestEpisode();
 
+  const siteSectionsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Physio Nexus Academy — Main sections",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "PNA Teacher", url: "https://physionexusacademy.com/learn" },
+      { "@type": "ListItem", position: 2, name: "Clinical Skills Lab", url: "https://physionexusacademy.com/skills" },
+      { "@type": "ListItem", position: 3, name: "Virtual Patient", url: "https://physionexusacademy.com/virtual-patient" },
+      { "@type": "ListItem", position: 4, name: "Knowledge Hub", url: "https://physionexusacademy.com/knowledge-hub" },
+      { "@type": "ListItem", position: 5, name: "Manual Therapy", url: "https://physionexusacademy.com/manual-therapy" },
+      { "@type": "ListItem", position: 6, name: "Treatment Plans", url: "https://physionexusacademy.com/treatment-plans" },
+      { "@type": "ListItem", position: 7, name: "Workshops & CPD", url: "https://physionexusacademy.com/workshops" },
+      { "@type": "ListItem", position: 8, name: "Books & Resources", url: "https://physionexusacademy.com/resources" },
+      { "@type": "ListItem", position: 9, name: "Home Visit", url: "https://physionexusacademy.com/home-visit" },
+      { "@type": "ListItem", position: 10, name: "Book Appointment", url: "https://physionexusacademy.com/appointment" },
+      { "@type": "ListItem", position: 11, name: "About", url: "https://physionexusacademy.com/about" },
+      { "@type": "ListItem", position: 12, name: "Contact", url: "https://physionexusacademy.com/contact" },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(siteSectionsJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <LobbyHero atlasPublished={atlasPublished} conditionCount={mskConditionIndex.length} />
 
       {/* Plain-language directory and the books, before anything else, so a new visitor finds their way at once. */}
@@ -220,7 +241,7 @@ export default async function HomePage() {
             ) : (
               <>
                 <strong className="lobby-news-title">Hands-on training that transfers to the clinic</strong>
-                <span className="lobby-news-text">Practical CPD workshops in Karachi and Hyderabad with verifiable certificates.</span>
+                <span className="lobby-news-text">Practical CPD workshops across Pakistan with verifiable certificates.</span>
               </>
             )}
             <a href="/workshops" className="lobby-news-more">See all workshops <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
