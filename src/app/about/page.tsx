@@ -1,1 +1,161 @@
-SEE_LOCAL
+import type { Metadata } from "next";
+import { NexusHero } from "@/components/nexus/NexusHero";
+import { createClient } from "@/lib/supabase/server";
+import { siteConfig } from "@/lib/site-config";
+
+const url = "https://physionexusacademy.com/about";
+
+export const metadata: Metadata = {
+  title: "About Us — Founder, Mission & Vision",
+  description:
+    "About Physio Nexus Academy — founded and led by Dr. Sajjad Raza PT. Practical physiotherapy education, clinical workshops and patient services for students, professionals and patients across Pakistan.",
+  keywords: [
+    "about Physio Nexus Academy",
+    "Dr Sajjad Raza PT",
+    "physiotherapy academy Pakistan",
+    "physiotherapy education Pakistan",
+    "PNA mission vision",
+    "practical physiotherapy education",
+  ],
+  openGraph: {
+    title: "About Physio Nexus Academy | Founder, Mission & Vision",
+    description:
+      "Physio Nexus Academy bridges physiotherapy theory and real clinical practice under the leadership of Dr. Sajjad Raza PT — serving learners across Pakistan.",
+    url,
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "About Physio Nexus Academy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Physio Nexus Academy",
+    description:
+      "Purpose, vision and mission of Physio Nexus Academy — practical physiotherapy education across Pakistan.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  alternates: {
+    canonical: url,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function AboutPage() {
+  const supabase = await createClient();
+  const { data: section } = await supabase
+    .from("editable_page_sections")
+    .select("content")
+    .eq("page", "about")
+    .eq("section_key", "mission")
+    .maybeSingle();
+
+  const content = {
+    purpose: section?.content?.purpose ?? siteConfig.mission.purpose,
+    vision: section?.content?.vision ?? siteConfig.mission.vision,
+    mission: section?.content?.mission ?? siteConfig.mission.mission,
+  };
+
+  const aboutJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About Physio Nexus Academy",
+    url,
+    description: metadata.description,
+    mainEntity: {
+      "@id": "https://physionexusacademy.com/#organization",
+    },
+  };
+
+  return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd).replace(/</g, "\\u003c") }} />
+    <NexusHero
+      kicker="Academy wing · About PNA"
+      title={<>Our story & <span className="nx-gradient-text">purpose</span></>}
+      lead={<>Built to bridge the gap between physiotherapy theory and real clinical practice — for students, professionals and patients across Pakistan.</>}
+      crumbs={[{ label: "Academy", href: "/about" }, { label: "About PNA" }]}
+      actions={<><a href="/founder" className="nx-btn nx-btn-primary">Meet the founder</a><a href="/faculty" className="nx-btn nx-btn-ghost">Our faculty</a></>}
+    />
+    <div className="container-content section-padding !pt-10 max-w-3xl">
+
+      <p className="mt-6 text-navy-600">
+        Physio Nexus Academy was established in {siteConfig.established} to
+        bridge the gap between physiotherapy theory and real clinical practice.{" "}
+        {siteConfig.operatingModel}
+      </p>
+
+      <section className="mt-8 rounded-xl border border-grey-200 bg-grey-50 p-6">
+        <p className="text-xs font-semibold uppercase tracking-wider text-teal-600">
+          Founder & Leadership
+        </p>
+        <h2 className="mt-2 text-xl font-bold text-navy-800">
+          Founded and led by {siteConfig.founder.name}
+        </h2>
+        <p className="mt-3 text-navy-600">
+          {siteConfig.founder.name} is the Founder and Main Instructor of Physio
+          Nexus Academy, leading its physiotherapy education, hands-on clinical
+          workshops and professional learning initiatives.
+        </p>
+        <a
+          href="/founder"
+          className="mt-4 inline-flex text-sm font-semibold text-teal-600 hover:text-teal-700"
+        >
+          View the founder profile →
+        </a>
+      </section>
+
+      <h2 className="mt-10 text-xl font-bold">Purpose</h2>
+      <p className="mt-3 text-navy-600">{content.purpose}</p>
+
+      <h2 className="mt-8 text-xl font-bold">Vision</h2>
+      <p className="mt-3 text-navy-600">{content.vision}</p>
+
+      <h2 className="mt-8 text-xl font-bold">Mission</h2>
+      <p className="mt-3 text-navy-600">{content.mission}</p>
+
+      <h2 className="mt-8 text-xl font-bold">Our Values</h2>
+      <ul className="mt-3 list-disc space-y-2 pl-5 text-navy-600">
+        <li>Evidence-informed, practical physiotherapy education.</li>
+        <li>
+          Honest, responsible communication — no guaranteed outcomes or invented
+          claims.
+        </li>
+        <li>
+          Accessible learning for students, graduates and practising
+          professionals.
+        </li>
+        <li>
+          A respectful, patient-centered approach to appointments and home
+          visits.
+        </li>
+      </ul>
+
+      <h2 className="mt-8 text-xl font-bold">Why Physio Nexus Academy</h2>
+      <p className="mt-3 text-navy-600">
+        PNA combines structured workshops, learning resources and research
+        guidance with a direct patient-service pathway — connecting scientific
+        knowledge with real clinical skills under the direction of{" "}
+        {siteConfig.founder.name} ({siteConfig.founder.credentialsShort}).
+      </p>
+    </div>
+    </>
+  );
+}
