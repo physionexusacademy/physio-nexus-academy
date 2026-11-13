@@ -954,6 +954,192 @@
    "A positive screen tells you which system to examine next; sudden onset with headache, speech or weakness changes needs urgent referral."
   ],
   "keywords": "Romberg, Tandem Gait and Pronator Drift — Three Fast Neuro Screens romberg-tandem-pronator-drift Skills · Neuro Exam Romberg tests proprioception (vision removed), tandem gait tests the cerebellum, pronator drift tests the corticospinal tract. Keep the patient safe (close, wall, gait belt) and call Romberg positive only if steady with eyes open and unsteady with eyes closed. A positive screen tells you which system to examine next; sudden onset with headache, speech or weakness changes needs urgent referral. When is Romberg's test positive? What does pronator drift show? Which test is the most sensitive bedside test of mild cerebellar disease? Why test with eyes closed?",
+  "next": {
+   "slug": "radiculopathy-myelopathy-neuropathy",
+   "title": "Root, Cord or Nerve? Localising a Neurological Lesion",
+   "href": "/learn/radiculopathy-myelopathy-neuropathy"
+  }
+ },
+ {
+  "href": "/learn/radiculopathy-myelopathy-neuropathy",
+  "slug": "radiculopathy-myelopathy-neuropathy",
+  "title": "Root, Cord or Nerve? Localising a Neurological Lesion",
+  "hook": {
+   "en": "Numb hands and weak legs can come from a root, the spinal cord or the peripheral nerves — and the treatments, and the urgency, are completely different. Learn the pattern that tells them apart.",
+   "ur": "Sunn haath aur kamzor taangein root, spinal cord ya peripheral nerves se aa sakti hain — aur ilaaj aur urgency bilkul mukhtalif hain. Woh pattern seekhein jo inhein alag karta hai."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll tell radiculopathy, myelopathy and peripheral neuropathy apart using reflexes, tone, sensory pattern and weakness, and decide who needs urgent referral.",
+   "ur": "End tak aap reflexes, tone, sensory pattern aur kamzori se radiculopathy, myelopathy aur peripheral neuropathy ko alag karenge, aur tay karenge ke kise urgent refer karna hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Ask three questions: what do reflexes and tone do, what shape is the sensory loss, which muscles are weak.",
+   "Root = reduced reflex, one dermatome and myotome; cord = brisk reflexes, clumsy hands, gait change; nerve = nerve territory or glove-and-stocking with reduced reflexes.",
+   "Combine findings, never trust one test, and refer the same day for cord signs, sphincter change, saddle numbness or progressive weakness."
+  ],
+  "keywords": "Root, Cord or Nerve? Localising a Neurological Lesion radiculopathy-myelopathy-neuropathy Skills · Neuro Exam Ask three questions: what do reflexes and tone do, what shape is the sensory loss, which muscles are weak. Root = reduced reflex, one dermatome and myotome; cord = brisk reflexes, clumsy hands, gait change; nerve = nerve territory or glove-and-stocking with reduced reflexes. Combine findings, never trust one test, and refer the same day for cord signs, sphincter change, saddle numbness or progressive weakness. Three questions to localise a neurological lesion? What finding pattern suggests cervical myelopathy? Why do ankle jerks go first in polyneuropathy? What is an inverted supinator sign?",
+  "next": {
+   "slug": "goniometry-foundations",
+   "title": "Goniometry Foundations — Axis, Arms, Scale and the Six Steps",
+   "href": "/learn/goniometry-foundations"
+  }
+ },
+ {
+  "href": "/learn/goniometry-foundations",
+  "slug": "goniometry-foundations",
+  "title": "Goniometry Foundations — Axis, Arms, Scale and the Six Steps",
+  "hook": {
+   "en": "A goniometer is only as accurate as the person holding it. Learn the six steps, why the arms matter more than the axis and how to read a scale without fooling yourself.",
+   "ur": "Goniometer utna hi sahi hota hai jitna usay pakarne wala. Chhe steps, arms axis se zyada kyun ahem hain aur scale ko bina khud ko dhoka diye parhna seekhein."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll set up any goniometric measurement in six steps, align the arms on bony landmarks, read the correct scale and record the result like a professional.",
+   "ur": "End tak aap kisi bhi goniometric measurement ko chhe steps mein setup karenge, arms ko bony landmarks par align karenge, sahi scale parhenge aur result professional tareeqay se likhenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Six steps for every measurement: position, stabilise, landmarks, align, move and measure, record.",
+   "Arms aligned on bony landmarks matter more than the axis; read the right scale straight on and record the change, not the dial number.",
+   "Stabilise to prevent substitution, accept about 5° error, and record the full arc, the position and any pain."
+  ],
+  "keywords": "Goniometry Foundations — Axis, Arms, Scale and the Six Steps goniometry-foundations Skills · Measurement Six steps for every measurement: position, stabilise, landmarks, align, move and measure, record. Arms aligned on bony landmarks matter more than the axis; read the right scale straight on and record the change, not the dial number. Stabilise to prevent substitution, accept about 5° error, and record the full arc, the position and any pain. What are the six steps of goniometry? Where does the stationary arm point? How large is acceptable measurement error? How do you record hip abduction when the dial starts at 90°?",
+  "next": {
+   "slug": "goniometry-upper-limb",
+   "title": "Goniometry of the Shoulder, Elbow and Wrist — Landmarks That Work",
+   "href": "/learn/goniometry-upper-limb"
+  }
+ },
+ {
+  "href": "/learn/goniometry-upper-limb",
+  "slug": "goniometry-upper-limb",
+  "title": "Goniometry of the Shoulder, Elbow and Wrist — Landmarks That Work",
+  "hook": {
+   "en": "Shoulder range is the hardest to measure well because the scapula, the trunk and the humerus all join in. Learn the landmarks and the tricks that make upper-limb readings repeatable.",
+   "ur": "Shoulder ki range achi tarah naapna sab se mushkil hai kyunke scapula, trunk aur humerus sab shamil hotay hain. Landmarks aur woh tricks seekhein jo upper-limb readings ko repeatable banate hain."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll place the goniometer for shoulder flexion, abduction and rotation, elbow flexion and wrist extension, name the normal ranges and the common substitutions.",
+   "ur": "End tak aap shoulder flexion, abduction aur rotation, elbow flexion aur wrist extension ke liye goniometer rakhenge, normal ranges aur aam substitutions batayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Use palpable landmarks: greater tubercle, acromion, lateral epicondyle, ulnar styloid, triquetrum; AAOS normal ranges flexion and abduction 0–180°, extension 0–60°, external rotation 0–90°, elbow flexion 0–150°.",
+   "Control substitutions: knees bent for the back, palm up for abduction, towel under the humerus for the elbow, relaxed fingers for the wrist.",
+   "Compare active with passive and read the order of loss: external rotation first is capsular; active less than passive is weakness or pain."
+  ],
+  "keywords": "Goniometry of the Shoulder, Elbow and Wrist — Landmarks That Work goniometry-upper-limb Skills · Measurement Use palpable landmarks: greater tubercle, acromion, lateral epicondyle, ulnar styloid, triquetrum; AAOS normal ranges flexion and abduction 0–180°, extension 0–60°, external rotation 0–90°, elbow flexion 0–150°. Control substitutions: knees bent for the back, palm up for abduction, towel under the humerus for the elbow, relaxed fingers for the wrist. Compare active with passive and read the order of loss: external rotation first is capsular; active less than passive is weakness or pain. Normal shoulder flexion, extension and abduction? Where is the axis for elbow flexion? Capsular pattern of the glenohumeral joint? Why keep the fingers relaxed for wrist extension?",
+  "next": {
+   "slug": "goniometry-lower-limb",
+   "title": "Goniometry of the Hip, Knee and Ankle — Positions That Make It Fair",
+   "href": "/learn/goniometry-lower-limb"
+  }
+ },
+ {
+  "href": "/learn/goniometry-lower-limb",
+  "slug": "goniometry-lower-limb",
+  "title": "Goniometry of the Hip, Knee and Ankle — Positions That Make It Fair",
+  "hook": {
+   "en": "Hip range hides in the pelvis, knee range hides in the hip and ankle range hides in the knee. Learn the positions that stop two-joint muscles and pelvic tilt from fooling your goniometer.",
+   "ur": "Hip ki range pelvis mein, knee ki range hip mein aur ankle ki range knee mein chhup jati hai. Woh positions seekhein jo do-joint muscles aur pelvic tilt ko aap ke goniometer ko dhoka dene se rokti hain."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll set up hip flexion and abduction, knee flexion and ankle dorsiflexion correctly, name the normal ranges and explain why the knee must be bent for dorsiflexion.",
+   "ur": "End tak aap hip flexion aur abduction, knee flexion aur ankle dorsiflexion sahi setup karenge, normal ranges batayenge aur samjhayenge ke dorsiflexion ke liye knee mora hua kyun hona chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Keep two-joint muscles slack when you measure joint range: bend the knee for hip flexion and for ankle dorsiflexion.",
+   "Normal (AAOS): hip flexion 120°, abduction 45°, knee flexion 135°, ankle dorsiflexion 20°; record the change when the dial starts at 90°.",
+   "Compare knee-bent and knee-straight dorsiflexion to tell a joint problem from a calf-muscle problem and treat accordingly."
+  ],
+  "keywords": "Goniometry of the Hip, Knee and Ankle — Positions That Make It Fair goniometry-lower-limb Skills · Measurement Keep two-joint muscles slack when you measure joint range: bend the knee for hip flexion and for ankle dorsiflexion. Normal (AAOS): hip flexion 120°, abduction 45°, knee flexion 135°, ankle dorsiflexion 20°; record the change when the dial starts at 90°. Compare knee-bent and knee-straight dorsiflexion to tell a joint problem from a calf-muscle problem and treat accordingly. Normal hip flexion, abduction, knee flexion and ankle dorsiflexion? Why bend the knee to measure dorsiflexion? Where is the axis for hip abduction? What error inflates hip flexion?",
+  "next": {
+   "slug": "mmt-grading-0-to-5",
+   "title": "Manual Muscle Testing — The 0 to 5 Scale Without Guesswork",
+   "href": "/learn/mmt-grading-0-to-5"
+  }
+ },
+ {
+  "href": "/learn/mmt-grading-0-to-5",
+  "slug": "mmt-grading-0-to-5",
+  "title": "Manual Muscle Testing — The 0 to 5 Scale Without Guesswork",
+  "hook": {
+   "en": "Grade 3 is the line between a muscle that can lift the limb and one that cannot. Learn the scale, the gravity-decides rule and how to resist without guessing.",
+   "ur": "Grade 3 us muscle ke beech ki line hai jo limb ko utha sakta hai aur jo nahi utha sakta. Scale, gravity-decides ka qaida aur bina andaza lagaye resist karna seekhein."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll grade strength 0–5 for any muscle, choose the correct gravity position, give resistance at the right place and time, and record the result clearly.",
+   "ur": "End tak aap kisi bhi muscle ki taqat 0–5 grade karenge, sahi gravity position chunenge, sahi jagah aur sahi waqt par resistance denge aur result saaf likhenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "0 none, 1 flicker, 2 full range gravity-eliminated, 3 full range against gravity, 4 against moderate resistance, 5 against maximal resistance.",
+   "Use the 8 steps: explain, position, stabilise, show, test grade 3 then resist slowly at the distal end, grade and compare, document.",
+   "MMT is reliable for 0–3 but weak between 4 and 5; use dynamometry or functional tests for strong patients and do not use MMT in spasticity."
+  ],
+  "keywords": "Manual Muscle Testing — The 0 to 5 Scale Without Guesswork mmt-grading-0-to-5 Skills · Measurement 0 none, 1 flicker, 2 full range gravity-eliminated, 3 full range against gravity, 4 against moderate resistance, 5 against maximal resistance. Use the 8 steps: explain, position, stabilise, show, test grade 3 then resist slowly at the distal end, grade and compare, document. MMT is reliable for 0–3 but weak between 4 and 5; use dynamometry or functional tests for strong patients and do not use MMT in spasticity. Define MMT grades 2 and 3. Where do you apply resistance? What is the weak spot of MMT? When is MMT the wrong tool?",
+  "next": {
+   "slug": "mmt-upper-limb-substitutions",
+   "title": "MMT of the Shoulder Girdle and Arm — Catching the Cheats",
+   "href": "/learn/mmt-upper-limb-substitutions"
+  }
+ },
+ {
+  "href": "/learn/mmt-upper-limb-substitutions",
+  "slug": "mmt-upper-limb-substitutions",
+  "title": "MMT of the Shoulder Girdle and Arm — Catching the Cheats",
+  "hook": {
+   "en": "A weak muscle always borrows help from a stronger neighbour. Learn to spot the shrug, the lean and the swing so a \"4/5\" really means a 4/5 in the muscle you meant to test.",
+   "ur": "Kamzor muscle hamesha mazboot padosi se madad leta hai. Shrug, lean aur swing pehchanna seekhein taake “4/5” ka matlab wohi muscle ho jisay aap test karna chahte the."
+  },
+  "area": "Skills · Measurement",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll test the serratus anterior, trapezius, rhomboids, deltoid and elbow flexors and extensors correctly and name the substitution for each.",
+   "ur": "End tak aap serratus anterior, trapezius, rhomboids, deltoid aur elbow flexors aur extensors sahi test karenge aur har ek ki substitution batayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Every movement has helpers; watch the whole body and use the standard position that blocks the cheat.",
+   "Classic cheats: shrug for shoulder lift, trunk lean, wrist flexors for elbow flexion, tenodesis in the hand, winging for serratus anterior.",
+   "Watch the scapula, retest in the same position and use a dynamometer for strong muscles; refer for sudden weakness, severe pain or vascular signs."
+  ],
+  "keywords": "MMT of the Shoulder Girdle and Arm — Catching the Cheats mmt-upper-limb-substitutions Skills · Measurement Every movement has helpers; watch the whole body and use the standard position that blocks the cheat. Classic cheats: shrug for shoulder lift, trunk lean, wrist flexors for elbow flexion, tenodesis in the hand, winging for serratus anterior. Watch the scapula, retest in the same position and use a dynamometer for strong muscles; refer for sudden weakness, severe pain or vascular signs. What does scapular winging with wall push-up suggest? Which muscle substitutes by shrugging in shoulder abduction? What is tenodesis? Why is a 5/5 not always normal?",
   "next": null
  },
  {

@@ -130,7 +130,7 @@ const achillesScene = tendonReflex({
   position: "sitting",
   tendon: "@achilles-tendon",
   pose: (s, u, c) => P(s, { ankle: { flex: 10 - 20 * response({ ...c, u }) } }),
-  frame: { focus: "foot", zoom: 0.9, view: [-0.5, 0.15, -0.9], around: ["lowerleg01", "toe3-1"] },
+  frame: { focus: "foot", zoom: 1.1, view: [1, 0.05, 0.3], around: ["lowerleg01", "toe3-1"] },
   where: "the Achilles tendon, with the foot gently held in slight dorsiflexion",
   response: "the ankle plantarflexes",
 });
