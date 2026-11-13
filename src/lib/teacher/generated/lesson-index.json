@@ -1450,6 +1450,192 @@
    "The Ottawa ankle and foot rules (malleolar and 5th metatarsal/navicular bone tenderness, 4 steps) are highly sensitive and avoid unnecessary X-rays."
   ],
   "keywords": "Palpation of the Hip, Knee and Ankle — Pulses, Landmarks and the Ottawa Rules palpation-lower-limb-ottawa-rules Skills · Posture & Palpation Landmarks from the ASIS to the malleoli map the leg; the ASISs should be level and the lateral malleolus is lower than the medial. Check pulses (femoral, popliteal, dorsalis pedis, posterior tibial) in context; the dorsalis pedis is absent in about 10% of healthy people. The Ottawa ankle and foot rules (malleolar and 5th metatarsal/navicular bone tenderness, 4 steps) are highly sensitive and avoid unnecessary X-rays. What are the Ottawa ankle rule triggers for X-ray? What are the foot series landmarks? How common is an absent dorsalis pedis pulse? Why is the fibular head important to palpate?",
+  "next": {
+   "slug": "pulse-blood-pressure-respiration",
+   "title": "Pulse, Blood Pressure and Respiratory Rate — Getting Them Right Every Time",
+   "href": "/learn/pulse-blood-pressure-respiration"
+  }
+ },
+ {
+  "href": "/learn/pulse-blood-pressure-respiration",
+  "slug": "pulse-blood-pressure-respiration",
+  "title": "Pulse, Blood Pressure and Respiratory Rate — Getting Them Right Every Time",
+  "hook": {
+   "en": "Most wrong blood pressures are wrong because of the set-up, not the patient. Learn how to take a pulse, a blood pressure and a respiratory rate so well that a colleague gets the same numbers.",
+   "ur": "Zyada tar ghalat blood pressure setup ki wajah se ghalat hotay hain, patient ki wajah se nahi. Pulse, blood pressure aur respiratory rate itni achi tarah lena seekhein ke colleague ko wohi numbers milen."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll take a radial pulse, a manual blood pressure and a respiratory rate correctly, know the normal adult values and spot the usual errors.",
+   "ur": "End tak aap radial pulse, manual blood pressure aur respiratory rate sahi lenge, normal adult values jaanenge aur aam ghaltiyan pehchanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Normal resting adult: pulse 60–100, BP about 120/80, respiratory rate 12–20.",
+   "Good technique wins: fingertips not thumb, rested and supported patient, right cuff, slow deflation, count respiration without telling the patient.",
+   "Record numbers with context, repeat odd readings and stop and escalate for abnormal values with symptoms."
+  ],
+  "keywords": "Pulse, Blood Pressure and Respiratory Rate — Getting Them Right Every Time pulse-blood-pressure-respiration Skills · Vitals & Monitoring Normal resting adult: pulse 60–100, BP about 120/80, respiratory rate 12–20. Good technique wins: fingertips not thumb, rested and supported patient, right cuff, slow deflation, count respiration without telling the patient. Record numbers with context, repeat odd readings and stop and escalate for abnormal values with symptoms. Normal adult resting pulse, BP and respiratory rate? How fast should you deflate the cuff? How big should the cuff bladder be? Why count respiration without telling the patient?",
+  "next": {
+   "slug": "oximetry-temperature-capillary-refill",
+   "title": "SpO₂, Temperature and Capillary Refill — Reading the Small Numbers Safely",
+   "href": "/learn/oximetry-temperature-capillary-refill"
+  }
+ },
+ {
+  "href": "/learn/oximetry-temperature-capillary-refill",
+  "slug": "oximetry-temperature-capillary-refill",
+  "title": "SpO₂, Temperature and Capillary Refill — Reading the Small Numbers Safely",
+  "hook": {
+   "en": "A clip on the finger, a probe in the ear and a press on the nail bed can warn you about low oxygen, infection and poor circulation. Learn the correct technique and the traps that make these numbers lie.",
+   "ur": "Ungli par clip, kaan mein probe aur nail bed par dabao kam oxygen, infection aur kharab circulation se khabardar kar sakte hain. Sahi technique aur woh jaal seekhein jin se yeh numbers jhoot bolte hain."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll use a pulse oximeter, a thermometer and capillary refill correctly, know the normal values and the stop rules for exercise.",
+   "ur": "End tak aap pulse oximeter, thermometer aur capillary refill sahi use karenge, normal values aur exercise ke stop rules jaanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "SpO₂ 95–100 % is normal; tell a nurse below 92 % and stop exercise below about 88–90 % (or the prescribed target).",
+   "Temperature 36.1–37.2 °C (fever from 38 °C), always record the route; capillary refill should be under 2 seconds.",
+   "Never trust a number over the patient: warm hands, remove nail varnish, wait for a steady waveform and recheck odd readings."
+  ],
+  "keywords": "SpO₂, Temperature and Capillary Refill — Reading the Small Numbers Safely oximetry-temperature-capillary-refill Skills · Vitals & Monitoring SpO₂ 95–100 % is normal; tell a nurse below 92 % and stop exercise below about 88–90 % (or the prescribed target). Temperature 36.1–37.2 °C (fever from 38 °C), always record the route; capillary refill should be under 2 seconds. Never trust a number over the patient: warm hands, remove nail varnish, wait for a steady waveform and recheck odd readings. When do you stop exercise based on SpO₂? Normal capillary refill time? Normal body temperature range and fever threshold? Two things that give a falsely low oximeter reading?",
+  "next": {
+   "slug": "exercise-intensity-borg-talk-test",
+   "title": "Exercise Intensity — Borg RPE, Breathlessness Scale, Talk Test and Heart-Rate Reserve",
+   "href": "/learn/exercise-intensity-borg-talk-test"
+  }
+ },
+ {
+  "href": "/learn/exercise-intensity-borg-talk-test",
+  "slug": "exercise-intensity-borg-talk-test",
+  "title": "Exercise Intensity — Borg RPE, Breathlessness Scale, Talk Test and Heart-Rate Reserve",
+  "hook": {
+   "en": "Heart rate lies when a patient takes beta-blockers; your ears and the patient's words do not. Learn four ways to set and check intensity and when each one is the right tool.",
+   "ur": "Beta-blockers lene wale patient mein heart rate jhoot bolti hai; aap ke kaan aur patient ke alfaaz nahi. Intensity set aur check karne ke chaar tareeqay aur har ek kab sahi tool hai seekhein."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll use the Borg RPE (6–20), the CR10 breathlessness scale, the talk test and the Karvonen heart-rate reserve method to prescribe and monitor intensity safely.",
+   "ur": "End tak aap Borg RPE (6–20), CR10 breathlessness scale, talk test aur Karvonen heart-rate reserve method se intensity mehfooz tareeqay se prescribe aur monitor karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Intensity can be set with RPE (aim for 11–14), breathlessness (CR10), the talk test (talk, not sing) or heart-rate reserve.",
+   "Do not trust heart rate on beta-blockers or with AF; 220 − age is only a rough guide with ±10–12 error.",
+   "Teach the scale before exercise, check each session and stop for symptoms regardless of the numbers."
+  ],
+  "keywords": "Exercise Intensity — Borg RPE, Breathlessness Scale, Talk Test and Heart-Rate Reserve exercise-intensity-borg-talk-test Skills · Vitals & Monitoring Intensity can be set with RPE (aim for 11–14), breathlessness (CR10), the talk test (talk, not sing) or heart-rate reserve. Do not trust heart rate on beta-blockers or with AF; 220 − age is only a rough guide with ±10–12 error. Teach the scale before exercise, check each session and stop for symptoms regardless of the numbers. Borg RPE target for most patients? Karvonen formula? What does the talk test say about moderate intensity? When should you stop for breathlessness on CR10?",
+  "next": {
+   "slug": "orthostatic-hypotension-screen",
+   "title": "Orthostatic Hypotension — Screening Before You Stand a Patient Up",
+   "href": "/learn/orthostatic-hypotension-screen"
+  }
+ },
+ {
+  "href": "/learn/orthostatic-hypotension-screen",
+  "slug": "orthostatic-hypotension-screen",
+  "title": "Orthostatic Hypotension — Screening Before You Stand a Patient Up",
+  "hook": {
+   "en": "A patient who feels dizzy the moment they stand is not \"just weak\". Learn the lying-to-standing blood pressure test, what a positive result means and how to get someone upright safely.",
+   "ur": "Jo patient khare hote hi chakkar mehsoos kare woh “sirf kamzor” nahi hota. Lete se khare hone ka blood pressure test, positive result ka matlab aur kisi ko mehfooz tareeqay se khara karna seekhein."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform the orthostatic blood pressure test, apply the diagnostic criteria, recognise common causes and manage early mobilisation safely.",
+   "ur": "End tak aap orthostatic blood pressure test karenge, diagnostic criteria lagayenge, aam wajahein pehchanenge aur early mobilisation mehfooz tareeqay se manage karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "A fall of at least 20 mmHg systolic or 10 mmHg diastolic within 3 minutes of standing (or symptoms) is orthostatic hypotension.",
+   "Rest first, stand with support, measure at 1 and 3 minutes and read the pulse response to guess the cause.",
+   "Mobilise in stages, teach counter-manoeuvres, review medicines and call for help if the patient faints or the pressure falls below 90 systolic."
+  ],
+  "keywords": "Orthostatic Hypotension — Screening Before You Stand a Patient Up orthostatic-hypotension-screen Skills · Vitals & Monitoring A fall of at least 20 mmHg systolic or 10 mmHg diastolic within 3 minutes of standing (or symptoms) is orthostatic hypotension. Rest first, stand with support, measure at 1 and 3 minutes and read the pulse response to guess the cause. Mobilise in stages, teach counter-manoeuvres, review medicines and call for help if the patient faints or the pressure falls below 90 systolic. Diagnostic criteria for orthostatic hypotension? When do you measure after standing? A flat heart-rate response to a big pressure fall suggests? Two safe-standing strategies?",
+  "next": {
+   "slug": "abpi-and-glucose-exercise-safety",
+   "title": "ABPI and Blood Glucose — Two Checks That Make Exercise Safer",
+   "href": "/learn/abpi-and-glucose-exercise-safety"
+  }
+ },
+ {
+  "href": "/learn/abpi-and-glucose-exercise-safety",
+  "slug": "abpi-and-glucose-exercise-safety",
+  "title": "ABPI and Blood Glucose — Two Checks That Make Exercise Safer",
+  "hook": {
+   "en": "A patient with leg pain on walking and a patient with diabetes starting a new programme both need a number before exercise. Learn how to measure the ankle-brachial pressure index and read a finger-prick glucose.",
+   "ur": "Chalte hue taang ke dard wale patient aur nayi programme shuru karne wale diabetic patient dono ko exercise se pehle ek number chahiye. Ankle-brachial pressure index naapna aur finger-prick glucose parhna seekhein."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll measure and calculate an ABPI, interpret it, take a capillary glucose correctly and know the glucose limits for starting exercise.",
+   "ur": "End tak aap ABPI naapenge aur calculate karenge, usay interpret karenge, capillary glucose sahi lenge aur exercise shuru karne ke glucose limits jaanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "ABPI = ankle systolic ÷ higher arm systolic: 1.0–1.3 normal, below 0.9 arterial disease, above 1.3 stiff vessels (unreliable).",
+   "Finger-prick glucose for exercise: below 4 mmol/L treat first, 5.6–13.9 acceptable, above about 15 mmol/L check ketones and do not start if unwell.",
+   "Claudication with a low ABPI benefits from supervised walking; rest pain, tissue loss or a cold foot is an emergency."
+  ],
+  "keywords": "ABPI and Blood Glucose — Two Checks That Make Exercise Safer abpi-and-glucose-exercise-safety Skills · Vitals & Monitoring ABPI = ankle systolic ÷ higher arm systolic: 1.0–1.3 normal, below 0.9 arterial disease, above 1.3 stiff vessels (unreliable). Finger-prick glucose for exercise: below 4 mmol/L treat first, 5.6–13.9 acceptable, above about 15 mmol/L check ketones and do not start if unwell. Claudication with a low ABPI benefits from supervised walking; rest pain, tissue loss or a cold foot is an emergency. How is the ABPI calculated and what are the cut-offs? Where do you prick for a glucose reading? Safe glucose range to start exercise? Best exercise for claudication?",
+  "next": {
+   "slug": "exercise-stop-signs-and-ward-mobilisation",
+   "title": "When to Stop — Exercise Stop Signs and Early Mobilisation on the Ward and ICU",
+   "href": "/learn/exercise-stop-signs-and-ward-mobilisation"
+  }
+ },
+ {
+  "href": "/learn/exercise-stop-signs-and-ward-mobilisation",
+  "slug": "exercise-stop-signs-and-ward-mobilisation",
+  "title": "When to Stop — Exercise Stop Signs and Early Mobilisation on the Ward and ICU",
+  "hook": {
+   "en": "Symptoms beat numbers, and the hospital bed has its own rules. Learn the stop signs that end any session and the traffic-light criteria many units use before standing an unwell patient.",
+   "ur": "Symptoms numbers se upar hain, aur hospital bed ke apne qaide hain. Woh stop signs seekhein jo har session rok dete hain aur traffic-light criteria jo bohat si units bimar patient ko khara karne se pehle use karti hain."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll list the stop-exercise signs, use a traffic-light check before mobilising, recognise deterioration with a track-and-trigger score and know when to hand over.",
+   "ur": "End tak aap stop-exercise signs ginwayenge, mobilise karne se pehle traffic-light check use karenge, track-and-trigger score se bigarti halat pehchanenge aur jaanenge ke kab hand over karna hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Stop for chest pain, dizziness, pallor, severe breathlessness, falling systolic pressure, SpO₂ below about 88–90 % or when the patient asks.",
+   "Before mobilising a ward or ICU patient use traffic-light criteria, the trend, the notes and the team's orders, and use NEWS2 to spot deterioration.",
+   "Mobilise early, in stages and documented; a stop is useful information, so record it and hand over."
+  ],
+  "keywords": "When to Stop — Exercise Stop Signs and Early Mobilisation on the Ward and ICU exercise-stop-signs-and-ward-mobilisation Skills · Vitals & Monitoring Stop for chest pain, dizziness, pallor, severe breathlessness, falling systolic pressure, SpO₂ below about 88–90 % or when the patient asks. Before mobilising a ward or ICU patient use traffic-light criteria, the trend, the notes and the team's orders, and use NEWS2 to spot deterioration. Mobilise early, in stages and documented; a stop is useful information, so record it and hand over. List four stop signs for exercise. Typical safe ranges for mobilising on ICU? What does NEWS2 combine? What should you record after a session that stopped early?",
   "next": null
  },
  {

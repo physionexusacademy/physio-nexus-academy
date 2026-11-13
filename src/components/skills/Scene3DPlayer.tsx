@@ -38,7 +38,7 @@ type Pt2 = { x: number; y: number; visible: boolean };
 function Tag({ x, y, text: full, tone = "cyan", w, h, anchor = "start" }: { x: number; y: number; text: string; tone?: Tone; w: number; h: number; anchor?: "start" | "end" | "middle" }) {
   // Long labels are shortened so the tag always fits on screen (shorter still on a phone).
   const per = 7.1;
-  const maxChars = Math.max(14, Math.min(w < 520 ? 24 : 80, Math.floor((w * 0.72 - 16) / per)));
+  const maxChars = Math.max(14, Math.min(w < 520 ? 24 : 46, Math.floor((w * 0.72 - 16) / per)));
   const text = full.length > maxChars ? `${full.slice(0, maxChars - 1)}…` : full;
   const width = Math.max(34, text.length * per + 16);
   let left = anchor === "end" ? x - width : anchor === "middle" ? x - width / 2 : x;
