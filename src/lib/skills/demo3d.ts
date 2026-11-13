@@ -10,7 +10,8 @@
  *   "@lateral-epicondyle", "@asis:o", "@xiphoid:m"   palpation landmarks (":m" = midline)
  *   "^up" "^down" "^front" "^back" "^head" "^feet" "^lat" "^med"   a reference line from the goniometer axis
  */
-import type { JointAngles, JointId, PatientPosition, Pose, Side } from "../virtual-patient/engine.ts";
+import type { JointAngles, PatientPosition, Pose, Side } from "../virtual-patient/engine.ts";
+import { P, toward, type Parts } from "../virtual-patient/parts.ts";
 
 export type Demo3DKind = "rom" | "mmt" | "length";
 
@@ -41,25 +42,6 @@ export type Demo3DSpec = {
   view: [number, number, number];
 };
 
-type PartKey = JointId | `${JointId}:o` | "neck" | "trunk";
-type Parts = Partial<Record<PartKey, JointAngles>>;
-
-/** Pose from parts named for the tested side ("hip"), the other side ("hip:o"), neck and trunk. */
-function P(s: Side, parts: Parts): Pose {
-  const o: Side = s === "left" ? "right" : "left";
-  const out: Pose = {};
-  for (const [key, angles] of Object.entries(parts)) {
-    if (!angles) continue;
-    if (key === "neck" || key === "trunk") out[key] = angles;
-    else {
-      const [joint, flag] = key.split(":");
-      out[`${joint}.${flag ? o : s}` as `${JointId}.${Side}`] = angles;
-    }
-  }
-  return out;
-}
-/** +1 when moving towards the patient's right (neck/trunk side-flexion and rotation). */
-const toward = (s: Side) => (s === "right" ? 1 : -1);
 /** Forearm rotation (elbow rot) for full supination; pronation is the opposite sign. */
 const SUP = 90;
 const PRO = -90;

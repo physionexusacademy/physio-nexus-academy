@@ -1,0 +1,118 @@
+/* PNA RehabVerse — premium digital-clinic look: white and glass surfaces, navy, teal, light grey. */
+.rv-root {
+  --rv-navy: #0a1f3d;
+  --rv-teal: #0db3aa;
+  --rv-line: rgba(10, 31, 61, 0.1);
+  background:
+    radial-gradient(900px 420px at 100% -10%, rgba(13, 179, 170, 0.1), transparent 70%),
+    radial-gradient(800px 380px at -10% 0%, rgba(10, 31, 61, 0.06), transparent 70%),
+    #f4f8fb;
+  min-height: 60vh;
+}
+.rv-glass {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--rv-line);
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 44px -34px rgba(10, 40, 70, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.rv-h {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0b7a7a;
+}
+.rv-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: #eef3f8;
+  padding: 0.18rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #3a4b5f;
+}
+.rv-chip-teal { background: #d9f5f2; color: #0a6f6a; }
+.rv-chip-amber { background: #fef3c7; color: #8a5a00; }
+.rv-chip-rose { background: #ffe4e6; color: #a1121f; }
+.rv-chip-navy { background: #0a1f3d; color: #fff; }
+.rv-pill {
+  border-radius: 9999px;
+  border: 1px solid #d3dde7;
+  background: #fff;
+  padding: 0.38rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #41546a;
+  transition: background-color 0.18s, color 0.18s, border-color 0.18s, transform 0.14s;
+}
+.rv-pill:hover { border-color: #0db3aa; color: #0a6f6a; }
+.rv-pill:active { transform: scale(0.97); }
+.rv-pill-on { background: #0a1f3d; border-color: #0a1f3d; color: #fff; }
+.rv-pill-on:hover { color: #fff; }
+.rv-card {
+  display: block;
+  border-radius: 1.1rem;
+  border: 1px solid var(--rv-line);
+  background: #fff;
+  padding: 0.75rem 0.9rem;
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, border-color 0.2s;
+}
+.rv-card:hover { border-color: #0db3aa; box-shadow: 0 14px 30px -24px rgba(13, 120, 130, 0.7); }
+.rv-card:active { transform: scale(0.985); }
+.rv-card-on { border-color: #0db3aa; box-shadow: 0 0 0 2px rgba(13, 179, 170, 0.25); }
+.rv-btn {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.55rem 1.3rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+  transition: transform 0.14s, box-shadow 0.2s, background-color 0.2s;
+}
+.rv-btn:active { transform: scale(0.97); }
+.rv-btn-primary { background: linear-gradient(135deg, #0a1f3d, #0f5a73 60%, #0db3aa); color: #fff; box-shadow: 0 14px 30px -18px rgba(10, 60, 90, 0.9); }
+.rv-btn-primary:hover { box-shadow: 0 18px 36px -16px rgba(10, 60, 90, 0.95); }
+.rv-btn-ghost { background: #fff; border: 1px solid #cdd9e4; color: #0a1f3d; }
+.rv-btn-danger { background: #fff1f2; border: 1px solid #fecdd3; color: #a1121f; }
+.rv-btn[disabled] { opacity: 0.55; pointer-events: none; }
+.rv-input {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 0.9rem;
+  border: 1px solid #c8d4df;
+  background: #fff;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.95rem;
+  color: #0a1f3d;
+}
+.rv-input:focus { outline: 2px solid rgba(13, 179, 170, 0.55); outline-offset: 1px; border-color: #0db3aa; }
+.rv-label { display: block; margin-bottom: 0.3rem; font-size: 0.82rem; font-weight: 700; color: #243b53; }
+.rv-hint { margin-top: 0.25rem; font-size: 0.78rem; color: #64748b; }
+.rv-error { margin-top: 0.3rem; font-size: 0.82rem; font-weight: 600; color: #b42318; }
+.rv-nprs { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 0.25rem; }
+.rv-nprs button {
+  min-height: 42px;
+  border-radius: 0.7rem;
+  border: 1px solid #cdd9e4;
+  background: #fff;
+  font-weight: 800;
+  color: #243b53;
+  transition: transform 0.12s, background-color 0.15s;
+}
+.rv-nprs button:active { transform: scale(0.94); }
+.rv-nprs button[aria-pressed="true"] { color: #fff; border-color: transparent; }
+@media (max-width: 480px) {
+  .rv-nprs { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+.rv-fade-up { animation: rv-fade-up 0.38s cubic-bezier(0, 0, 0.2, 1) both; }
+@keyframes rv-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rv-fade-up { animation: none; }
+}

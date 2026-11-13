@@ -153,5 +153,16 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/clinical-registry", "/clinical-registry/:path*"],
+  // RehabVerse patient pages need the sign-in session refreshed on every request; its public
+  // pages (home, library) are left out so they stay fast.
+  matcher: [
+    "/admin/:path*",
+    "/clinical-registry",
+    "/clinical-registry/:path*",
+    "/rehabverse/me/:path*",
+    "/rehabverse/me",
+    "/rehabverse/start",
+    "/rehabverse/login",
+    "/rehabverse/register",
+  ],
 };

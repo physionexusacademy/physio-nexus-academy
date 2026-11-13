@@ -314,6 +314,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       { not: { href_matches: "/admin" } },
                       { not: { href_matches: "/admin/*" } },
                       { not: { href_matches: "/clinical-registry*" } },
+                      { not: { href_matches: "/rehabverse/me*" } },
+                      { not: { href_matches: "/rehabverse/start" } },
                       { not: { href_matches: "/workshops/*/portal*" } },
                       { not: { selector_matches: "[download], [target=_blank], [rel~=nofollow]" } },
                     ],

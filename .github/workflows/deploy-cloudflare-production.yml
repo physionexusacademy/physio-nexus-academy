@@ -114,6 +114,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:virtual-patient
 
+      - name: Validate RehabVerse exercise library (clinical fields, English + Roman Urdu, references, 3D motion)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-library
+
+      - name: Validate RehabVerse database (RLS, roles, unlock rules, audit trail)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-db
+
       - name: Validate Physio Nexus AI answers, Roman Urdu understanding and emergency safety
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:ai

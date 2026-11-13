@@ -14,6 +14,7 @@ import {
   Settings,
   FileBadge2,
   LogOut,
+  HeartPulse,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -25,6 +26,7 @@ const navItems = [
   { label: "Book Orders", href: "/admin/book-orders", icon: ShoppingBag },
   { label: "Appointments", href: "/admin/appointments", icon: Stethoscope },
   { label: "Home Visits", href: "/admin/home-visits", icon: HomeIcon },
+  { label: "RehabVerse", href: "/admin/rehabverse", icon: HeartPulse },
   { label: "Training Photos", href: "/admin/gallery", icon: Images },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
   { label: "FAQs", href: "/admin/faqs", icon: HelpCircle },

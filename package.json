@@ -23,6 +23,7 @@
     "validate:virtual-patient": "node scripts/validate-virtual-patient.mjs",
     "build:virtual-patient": "node scripts/build-virtual-patient.mjs",
     "validate:rehabverse-db": "node scripts/validate-rehabverse-db.mjs",
+    "validate:rehabverse-library": "node --experimental-strip-types scripts/validate-rehabverse-library.ts",
     "rehabverse:backend": "REHAB_DEV_SQL=1 node scripts/rehabverse-local/server.mjs"
   },
   "dependencies": {

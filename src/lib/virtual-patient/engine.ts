@@ -32,6 +32,8 @@ export type JointAngles = { flex?: number; abd?: number; rot?: number };
 export type Pose = Partial<Record<`${JointId}.${Side}`, JointAngles>> & {
   neck?: JointAngles; // flex: flexion, abd: side-flexion to the right(+), rot: rotation to the right(+)
   trunk?: JointAngles;
+  /** The head on the neck (upper cervical): same axes as neck. Lets a chin tuck retract the head without tilting the gaze. */
+  head?: JointAngles;
 };
 
 type Anchor = { p: number[]; b: string[]; w: number[] };
@@ -44,6 +46,15 @@ const RIG = rig as RigData;
 const DEG = Math.PI / 180;
 const V = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
 const sanitize = (name: string) => THREE.PropertyBinding.sanitizeNodeName(name);
+export type Outfit = "none" | "scrubs" | "sport";
+export type FaceState = { jaw: number; smile: number; blink: number; brow: number };
+/** Facial bones moved by each expression: [bone, offset in metres at full strength, which control]. */
+const FACE_RIG: [string, [number, number, number], keyof FaceState][] = [
+  ["risorius03.L", [0.004, 0.006, 0.001], "smile"],
+  ["risorius03.R", [-0.004, 0.006, 0.001], "smile"],
+  ["risorius02.L", [0.003, 0.004, 0], "smile"],
+  ["risorius02.R", [-0.003, 0.004, 0], "smile"],
+];
 const sideKey = (side: Side) => (side === "left" ? "L" : "R");
 const sideSign = (side: Side) => (side === "left" ? 1 : -1);
 
@@ -389,6 +400,7 @@ export class ExamRoom {
     });
     if (this.scene.environment) textures.add(this.scene.environment);
     textures.forEach((texture) => texture.dispose());
+    this.outfitMeshes.forEach((mesh) => (mesh.material as THREE.Material).dispose());
     this.skinned?.skeleton.dispose();
     this.renderer.dispose();
     this.renderer.domElement.remove();
@@ -485,6 +497,10 @@ export class ExamRoom {
       neckWorld = neckWorld.clone().multiply(neckQ(0.25));
       targets.set(name, neckWorld.clone());
     });
+    const headOnNeck = this.pose.head;
+    if (headOnNeck && (headOnNeck.flex || headOnNeck.abd || headOnNeck.rot)) {
+      targets.set("head", neckWorld.clone().multiply(q(X, headOnNeck.flex ?? 0)).multiply(q(Z, headOnNeck.abd ?? 0)).multiply(q(Y, -(headOnNeck.rot ?? 0))));
+    }
 
     for (const side of ["left", "right"] as Side[]) {
       const s = sideKey(side);
@@ -553,9 +569,161 @@ export class ExamRoom {
       else bone.quaternion.identity();
       world.set(b.name, parentWorld.clone().multiply(bone.quaternion));
     }
+    this.applyFace();
     this.patientRoot.updateMatrixWorld(true);
     this.boundsDirty = true;
     this.invalidate();
+  }
+
+  /* ---------------- face (talking guide) ---------------- */
+
+  private face: FaceState = { jaw: 0, smile: 0, blink: 0, brow: 0 };
+  private faceRest = new Map<string, THREE.Vector3>();
+
+  /** Mouth, smile, eyelids and brows, each 0–1. Cheap: only moves a few facial bones. */
+  setFace(next: Partial<FaceState>) {
+    let changed = false;
+    for (const key of Object.keys(next) as (keyof FaceState)[]) {
+      const value = Math.max(0, Math.min(1, next[key] ?? 0));
+      if (Math.abs(this.face[key] - value) > 0.002) {
+        this.face[key] = value;
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.applyFace();
+      this.patientRoot.updateMatrixWorld(true);
+      this.invalidate();
+    }
+  }
+
+  private applyFace() {
+    if (!this.bones.size) return;
+    const { jaw, smile, blink, brow } = this.face;
+    const jawBone = this.bone("jaw");
+    if (jawBone) jawBone.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), jaw * 0.36);
+    for (const [name, delta, key] of FACE_RIG) {
+      const bone = this.bone(name);
+      if (!bone) continue;
+      let rest = this.faceRest.get(name);
+      if (!rest) {
+        rest = bone.position.clone();
+        this.faceRest.set(name, rest);
+      }
+      const amount = this.face[key];
+      bone.position.set(rest.x + delta[0] * amount, rest.y + delta[1] * amount, rest.z + delta[2] * amount);
+    }
+    void blink;
+    void brow;
+    void smile;
+  }
+
+  /* ---------------- clothing ---------------- */
+
+  private outfitMeshes: THREE.SkinnedMesh[] = [];
+  private clothMasks = false;
+  private geometryScale = 1;
+
+  /**
+   * Dresses the model: a thin cloth shell (skinned to the same skeleton, offset along the normals)
+   * over the regions a shirt and trousers/shorts cover. "scrubs" = clinician's top and long trousers;
+   * "sport" = t-shirt and knee-length shorts. Pure runtime geometry — no extra download.
+   */
+  setOutfit(kind: Outfit, colours?: { top?: string; bottom?: string }) {
+    for (const mesh of this.outfitMeshes) {
+      mesh.removeFromParent();
+      (mesh.material as THREE.Material).dispose();
+    }
+    this.outfitMeshes = [];
+    if (kind === "none" || !this.skinned) {
+      this.invalidate();
+      return;
+    }
+    const skin = this.skinned;
+    const geometry = skin.geometry;
+    if (!this.clothMasks) this.buildClothMasks(kind);
+    else if (this.maskKind !== kind) this.buildClothMasks(kind);
+    const palette = kind === "scrubs"
+      ? { top: colours?.top ?? "#0e8f95", bottom: colours?.bottom ?? "#16304d" }
+      : { top: colours?.top ?? "#e9f1f7", bottom: colours?.bottom ?? "#1b3a5c" };
+    const make = (kindId: number, colour: string, offsetMetres: number) => {
+      const material = new THREE.MeshStandardMaterial({ color: colour, roughness: 0.9, metalness: 0 });
+      material.onBeforeCompile = (shader) => {
+        shader.uniforms.uOffset = { value: offsetMetres / this.geometryScale };
+        shader.uniforms.uKind = { value: kindId };
+        shader.vertexShader = shader.vertexShader
+          .replace("#include <common>", "#include <common>\nattribute float clothShirt;\nattribute float clothPants;\nuniform float uOffset;\nuniform float uKind;\nvarying float vCloth;")
+          .replace("#include <skinning_vertex>", "#include <skinning_vertex>\ntransformed += normalize(objectNormal) * uOffset;\nvCloth = uKind < 1.5 ? clothShirt : clothPants;");
+        shader.fragmentShader = shader.fragmentShader
+          .replace("#include <common>", "#include <common>\nvarying float vCloth;")
+          .replace("void main() {", "void main() {\n  if (vCloth < 0.5) discard;");
+      };
+      material.customProgramCacheKey = () => `cloth-${kindId}`;
+      const mesh = new THREE.SkinnedMesh(geometry, material);
+      mesh.bind(skin.skeleton, skin.bindMatrix);
+      mesh.position.copy(skin.position);
+      mesh.quaternion.copy(skin.quaternion);
+      mesh.scale.copy(skin.scale);
+      mesh.frustumCulled = false;
+      mesh.name = kindId === 1 ? "outfit-top" : "outfit-bottom";
+      skin.parent?.add(mesh);
+      this.outfitMeshes.push(mesh);
+    };
+    make(2, palette.bottom, 0.0042);
+    make(1, palette.top, 0.0066);
+    this.invalidate();
+  }
+
+  private maskKind: Outfit = "none";
+
+  private buildClothMasks(kind: Outfit) {
+    const skin = this.skinned!;
+    const geometry = skin.geometry;
+    const bind = this.bindPositionsOf()!;
+    const count = geometry.getAttribute("position").count;
+    const names = skin.skeleton.bones.map((b) => b.name);
+    const shirt = new Float32Array(count);
+    const pants = new Float32Array(count);
+    const shoulder = new THREE.Vector3(...(RIG.bones.find((b) => b.name === "upperarm01.L")!.head as [number, number, number]));
+    const elbow = new THREE.Vector3(...(RIG.bones.find((b) => b.name === "lowerarm01.L")!.head as [number, number, number]));
+    const armAxis = elbow.clone().sub(shoulder);
+    const armLength = armAxis.length();
+    armAxis.normalize();
+    const sleeve = kind === "scrubs" ? 0.5 : 0.42;
+    const hem = 0.855; // shirt hem, a little below the hip joint
+    const waist = 1.0;
+    const ankleHem = 0.085;
+    const shortsHem = 0.6;
+    const v = new THREE.Vector3();
+    for (let i = 0; i < count; i++) {
+      v.set(bind[i * 3], bind[i * 3 + 1], bind[i * 3 + 2]);
+      const joint = this.skinOf(i)[0]?.joint ?? 0;
+      const name = names[joint] ?? "";
+      const arm = /^upperarm/.test(name);
+      const torso = /^(spine|breast|clavicle|shoulder01|root|pelvis)/.test(name);
+      if (torso && v.y >= hem && v.y <= 1.47) shirt[i] = 1;
+      if (arm) {
+        const along = v.clone().sub(new THREE.Vector3(Math.abs(shoulder.x), shoulder.y, shoulder.z).setX(Math.sign(v.x || 1) * Math.abs(shoulder.x))).dot(new THREE.Vector3(Math.sign(v.x || 1) * armAxis.x, armAxis.y, armAxis.z)) / armLength;
+        if (along <= sleeve) shirt[i] = 1;
+      }
+      const leg = /^(upperleg|lowerleg)/.test(name);
+      const hip = /^(root|pelvis)/.test(name) && v.y < waist;
+      const lowest = kind === "scrubs" ? ankleHem : shortsHem;
+      if ((leg || hip) && v.y >= lowest && v.y <= waist + 0.02) pants[i] = 1;
+    }
+    geometry.setAttribute("clothShirt", new THREE.BufferAttribute(shirt, 1));
+    geometry.setAttribute("clothPants", new THREE.BufferAttribute(pants, 1));
+    // Metres per geometry unit (the mesh is stored quantised).
+    const position = geometry.getAttribute("position");
+    let best = 0;
+    for (const j of [Math.floor(count / 3), Math.floor(count / 2), count - 1, Math.floor(count / 5)]) {
+      const g = new THREE.Vector3().fromBufferAttribute(position, 0).sub(new THREE.Vector3().fromBufferAttribute(position, j)).length();
+      const m = new THREE.Vector3(bind[0], bind[1], bind[2]).sub(new THREE.Vector3(bind[j * 3], bind[j * 3 + 1], bind[j * 3 + 2])).length();
+      if (g > 1e-6 && m / g > best) best = m / g;
+    }
+    this.geometryScale = best || 1;
+    this.clothMasks = true;
+    this.maskKind = kind;
   }
 
   /* ---------------- patient positions ---------------- */
@@ -630,6 +798,11 @@ export class ExamRoom {
     root.updateMatrixWorld(true);
     this.boundsDirty = true;
     this.invalidate();
+  }
+
+  /** World-space bounds of the body in the current pose. */
+  bounds() {
+    return this.bodyBox();
   }
 
   private bodyBox() {
