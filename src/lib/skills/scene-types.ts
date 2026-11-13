@@ -43,13 +43,13 @@ export type Hud =
   | { t: "bar"; label: string; value: (c: Ctx) => number; min: number; max: number; unit?: string; marks?: { at: number; label: string }[]; goodFrom?: number; goodTo?: number; when?: When; at?: "tl" | "tr" | "bl" | "br" }
   | { t: "wave"; kind: "ecg" | "pulse" | "resp" | "spo2"; bpm: Fn<number>; label?: string; when?: When; at?: "tl" | "tr" | "bl" | "br" }
   | { t: "scale"; label: string; min: number; max: number; step?: number; value: (c: Ctx) => number; words?: Record<number, string>; when?: When; at?: "tl" | "tr" | "bl" | "br" }
-  | { t: "timer"; label: string; seconds: (c: Ctx) => number; target?: number; when?: When; at?: "tl" | "tr" | "bl" | "br" }
+  | { t: "timer"; label: string; seconds: (c: Ctx) => number; target?: number; /** `target` is a time to reach (longer is better), not a cut-off. */ reach?: boolean; when?: When; at?: "tl" | "tr" | "bl" | "br" }
   | { t: "curve"; label: string; resist: (a: number, c: Ctx) => number; angle: (c: Ctx) => number; when?: When; at?: "tl" | "tr" | "bl" | "br" };
 
 export type SceneOption = { id: string; label: string; choices: { id: string; label: string }[]; initial?: string };
 
 /** Simple 3D props placed in the room (chair, wall, foam pad, cones, a walkway, a dynamometer). */
-export type Prop = { kind: "chair" | "wall" | "foam" | "cones" | "walkway" | "block"; at?: [number, number, number]; size?: number };
+export type Prop = { kind: "chair" | "wall" | "foam" | "cones" | "walkway" | "block" | "cane"; at?: [number, number, number]; size?: number; /** Turn about the vertical axis, in degrees. */ rot?: number };
 
 export type Scene = {
   /** Theme and header label only. */

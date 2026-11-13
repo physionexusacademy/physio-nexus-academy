@@ -56,6 +56,11 @@ export function addProps(room: ExamRoom, props: Prop[] | undefined, origin: { x:
         cone.position.set(0, 0.1, dz);
         group.add(cone);
       }
+    } else if (prop.kind === "cane") {
+      const cane = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.9 * size, 12), std("#ffb02e", { roughness: 0.45, emissive: "#ff9d00", emissiveIntensity: 0.25 }));
+      cane.rotation.x = Math.PI / 2;
+      cane.position.set(0, 0.02, 0);
+      group.add(cane);
     } else if (prop.kind === "walkway") {
       const half = 1.6 * size;
       const strip = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.006, half * 2), new THREE.MeshBasicMaterial({ color: "#2ee6d6", transparent: true, opacity: 0.28 }));
@@ -68,6 +73,7 @@ export function addProps(room: ExamRoom, props: Prop[] | undefined, origin: { x:
       }
     }
     group.position.set(origin.x + x, y, origin.z + z);
+    if (prop.rot) group.rotation.y = (prop.rot * Math.PI) / 180;
     room.extras.add(group);
   }
   room.invalidate();

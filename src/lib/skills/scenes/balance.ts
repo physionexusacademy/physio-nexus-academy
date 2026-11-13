@@ -29,7 +29,7 @@ const stsScene = (title: string, reps: number, seconds: number, target: number, 
   beats,
   hud: [
     { t: "stat", label: "Stand-ups", value: (c) => `${Math.min(reps, Math.floor(clamp01((c.u - 0.06) / 0.88) * reps + 0.5))} / ${reps}`, tone: "cyan" },
-    { t: "timer", label: "Time", seconds: (c) => clamp01((c.u - 0.06) / 0.88) * seconds, target, when: [0.04, 1] },
+    { t: "timer", label: "Time", seconds: (c) => clamp01((c.u - 0.06) / 0.88) * seconds, target: seconds === 30 ? undefined : target, when: [0.04, 1] },
   ],
 });
 
@@ -81,7 +81,7 @@ const singleLegStance: Scene = {
     { to: 0.86, text: "Lift one foot a few centimetres off the floor without touching the other leg; start the stopwatch when the foot leaves the floor", chip: "Stand on one leg" },
     { to: 1, text: "Stop if the lifted foot touches down, the stance foot moves or the arms uncross. Over 10 s (eyes open) is expected for ages under 60; under 5 s predicts falls", chip: "Interpret" },
   ],
-  hud: [{ t: "timer", label: "On one leg", seconds: (c) => clamp01((c.u - 0.18) / 0.68) * 30, target: 10, when: [0.18, 0.9] }],
+  hud: [{ t: "timer", label: "On one leg", seconds: (c) => clamp01((c.u - 0.18) / 0.68) * 30, target: 10, reach: true, when: [0.18, 0.9] }],
 };
 
 /* ---------------- walking ---------------- */
@@ -265,7 +265,7 @@ const fsstPos = (u: number) => {
 const fsst: Scene = {
   ...base,
   title: "Four Square Step Test (FSST)",
-  props: [{ kind: "walkway", at: [-0.2, 0, 0.2], size: 0.35 }],
+  props: [{ kind: "cane", at: [-SQ / 2, 0, SQ / 2], size: 1 }, { kind: "cane", at: [-SQ / 2, 0, SQ / 2], size: 1, rot: 90 }],
   loopMs: 16000,
   frame: { focus: "spine03", zoom: 4.2, view: [0.6, 0.35, 0.8], around: ["foot"] },
   root: (s, u) => { const p = fsstPos(u); return { dx: p.x, dz: p.z }; },

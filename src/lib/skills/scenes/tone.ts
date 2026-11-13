@@ -253,7 +253,7 @@ export const rombergScene: Scene = {
   title: "Romberg test",
   position: "standing",
   loopMs: 12000,
-  frame: { focus: "spine03", zoom: 2.6, view: [0.3, 0.1, 1], around: ["foot", "foot:o", "@nose"] },
+  frame: { focus: "spine03", zoom: 3.4, view: [0.3, 0.1, 1], around: ["foot", "foot:o", "@nose"] },
   pose: (s, u, c) => {
     const k = swayDeg(u, c);
     const step = (c.opt.eyes ?? "closed") === "positive" && u > 0.82 ? ramp(u, 0.82, 0.88) : 0;

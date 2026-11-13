@@ -88,9 +88,10 @@ function ScaleBar({ h, c }: { h: Extract<Hud, { t: "scale" }>; c: Ctx }) {
 
 function Timer({ h, c }: { h: Extract<Hud, { t: "timer" }>; c: Ctx }) {
   const s = h.seconds(c);
-  const over = h.target !== undefined && s > h.target;
+  const over = h.target !== undefined && !h.reach && s > h.target;
+  const reached = h.target !== undefined && Boolean(h.reach) && s >= h.target;
   return (
-    <div className="s3-card"><div className="s3-card-head"><span>{h.label}</span><strong style={{ color: over ? TONE.red : TONE.cyan, fontVariantNumeric: "tabular-nums" }}>{s.toFixed(1)}<small> s</small></strong></div>{h.target !== undefined ? <p className="mt-0.5 text-[10px] font-semibold text-cyan-100/70">cut-off {h.target} s</p> : null}</div>
+    <div className="s3-card"><div className="s3-card-head"><span>{h.label}</span><strong style={{ color: over ? TONE.red : reached ? TONE.green : TONE.cyan, fontVariantNumeric: "tabular-nums" }}>{s.toFixed(1)}<small> s</small></strong></div>{h.target !== undefined ? <p className="mt-0.5 text-[10px] font-semibold text-cyan-100/70">{h.reach ? `aim for ${h.target} s or more` : `cut-off ${h.target} s`}</p> : null}</div>
   );
 }
 

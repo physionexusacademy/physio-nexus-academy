@@ -1140,6 +1140,130 @@
    "Watch the scapula, retest in the same position and use a dynamometer for strong muscles; refer for sudden weakness, severe pain or vascular signs."
   ],
   "keywords": "MMT of the Shoulder Girdle and Arm — Catching the Cheats mmt-upper-limb-substitutions Skills · Measurement Every movement has helpers; watch the whole body and use the standard position that blocks the cheat. Classic cheats: shrug for shoulder lift, trunk lean, wrist flexors for elbow flexion, tenodesis in the hand, winging for serratus anterior. Watch the scapula, retest in the same position and use a dynamometer for strong muscles; refer for sudden weakness, severe pain or vascular signs. What does scapular winging with wall push-up suggest? Which muscle substitutes by shrugging in shoulder abduction? What is tenodesis? Why is a 5/5 not always normal?",
+  "next": {
+   "slug": "mmt-lower-limb-gluteals",
+   "title": "MMT of the Hip, Knee and Ankle — Gluteals, Quadriceps and the Calf",
+   "href": "/learn/mmt-lower-limb-gluteals"
+  }
+ },
+ {
+  "href": "/learn/mmt-lower-limb-gluteals",
+  "slug": "mmt-lower-limb-gluteals",
+  "title": "MMT of the Hip, Knee and Ankle — Gluteals, Quadriceps and the Calf",
+  "hook": {
+   "en": "The legs are the strongest muscles in the body, so the standard hands-on test often says \"5/5\" when real strength is missing. Learn the correct positions, the Trendelenburg link and why the calf is tested by heel raises.",
+   "ur": "Taangein jism ke sab se mazboot muscles hain, is liye standard hands-on test aksar “5/5” kehta hai jab asal taqat kam hoti hai. Sahi positions, Trendelenburg ka link aur calf heel raises se kyun test hota hai seekhein."
+  },
+  "area": "Skills · Measurement",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll test gluteus medius, gluteus maximus, quadriceps and the calf with correct positions and resistance, name the substitution for each and use functional tests for the big muscles.",
+   "ur": "End tak aap gluteus medius, gluteus maximus, quadriceps aur calf ko sahi position aur resistance se test karenge, har ek ki substitution batayenge aur bare muscles ke liye functional tests use karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Gluteus medius (side-lying, slightly extended), gluteus maximus (prone, knee bent), quadriceps (sitting, no knee lock) have standard positions and classic cheats (TFL, back arch, leaning back).",
+   "Test the calf with single-leg heel raises, not hands; use dynamometry or 30-second chair stand when \"5/5\" is not enough.",
+   "Trendelenburg drops the pelvis on the side opposite the weak stance-side gluteus medius; refer sudden weakness, groin pain, cauda equina signs and a swollen calf."
+  ],
+  "keywords": "MMT of the Hip, Knee and Ankle — Gluteals, Quadriceps and the Calf mmt-lower-limb-gluteals Skills · Measurement Gluteus medius (side-lying, slightly extended), gluteus maximus (prone, knee bent), quadriceps (sitting, no knee lock) have standard positions and classic cheats (TFL, back arch, leaning back). Test the calf with single-leg heel raises, not hands; use dynamometry or 30-second chair stand when \"5/5\" is not enough. Trendelenburg drops the pelvis on the side opposite the weak stance-side gluteus medius; refer sudden weakness, groin pain, cauda equina signs and a swollen calf. Nerve supply of gluteus medius, gluteus maximus, quadriceps and calf? How is the calf tested? What substitution in hip abduction makes the leg drift forward? Which side drops in Trendelenburg?",
+  "next": {
+   "slug": "muscle-length-testing",
+   "title": "Muscle Length Testing — Thomas, Ely, Ober, Straight-Leg Raise and the Calf",
+   "href": "/learn/muscle-length-testing"
+  }
+ },
+ {
+  "href": "/learn/muscle-length-testing",
+  "slug": "muscle-length-testing",
+  "title": "Muscle Length Testing — Thomas, Ely, Ober, Straight-Leg Raise and the Calf",
+  "hook": {
+   "en": "\"Tight hamstrings\" is the most over-used diagnosis in physiotherapy. Learn to test muscle length so carefully that you know which muscle is short, which compensation is hiding it and when stretching is the wrong answer.",
+   "ur": "“Tight hamstrings” physiotherapy ki sab se zyada istemal hone wali tashkhees hai. Muscle length itni ehtiyat se test karna seekhein ke aap ko pata ho kaun sa muscle chhota hai, kaun si compensation usay chhupa rahi hai aur stretching kab ghalat jawab hai."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform the modified Thomas, Ely, Ober, passive straight-leg raise and gastrocnemius–soleus tests, name the normal finding and the compensation for each, and decide when stretching is justified.",
+   "ur": "End tak aap modified Thomas, Ely, Ober, passive straight-leg raise aur gastrocnemius–soleus tests karenge, har ek ki normal finding aur compensation batayenge, aur tay karenge ke stretching kab durust hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Move passively to the first firm resistance or compensation; two-joint muscles need both joints in position, one-joint muscles need only one.",
+   "Know the four tests: Thomas (hip flexors), Ely (rectus femoris), Ober (TFL/ITB), passive SLR (hamstrings), and the calf with the knee straight or bent.",
+   "Stretch only if the short muscle matters; separate muscle from nerve with structural differentiation; screen for hypermobility first."
+  ],
+  "keywords": "Muscle Length Testing — Thomas, Ely, Ober, Straight-Leg Raise and the Calf muscle-length-testing Skills · Measurement Move passively to the first firm resistance or compensation; two-joint muscles need both joints in position, one-joint muscles need only one. Know the four tests: Thomas (hip flexors), Ely (rectus femoris), Ober (TFL/ITB), passive SLR (hamstrings), and the calf with the knee straight or bent. Stretch only if the short muscle matters; separate muscle from nerve with structural differentiation; screen for hypermobility first. What does the modified Thomas test assess? Positive Ely test? Normal passive SLR? How do you separate gastrocnemius from soleus tightness?",
+  "next": {
+   "slug": "limb-length-and-girth",
+   "title": "Limb Length and Girth — True, Apparent and Functional Leg Length, Swelling and Wasting",
+   "href": "/learn/limb-length-and-girth"
+  }
+ },
+ {
+  "href": "/learn/limb-length-and-girth",
+  "slug": "limb-length-and-girth",
+  "title": "Limb Length and Girth — True, Apparent and Functional Leg Length, Swelling and Wasting",
+  "hook": {
+   "en": "A centimetre decides whether a leg is truly short, whether the pelvis is tilted or whether the knee is swollen. Learn tape-measure rules that make every number repeatable.",
+   "ur": "Ek centimetre tay karta hai ke taang waqai chhoti hai, pelvis tilt hai ya knee sooja hua hai. Tape-measure ke woh usool seekhein jo har number ko repeatable banate hain."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll measure true and apparent leg length, thigh, knee and calf girth and figure-of-eight ankle swelling, and tell structural from functional discrepancy.",
+   "ur": "End tak aap true aur apparent leg length, thigh, knee aur calf girth aur figure-of-eight ankle swelling naapenge, aur structural ko functional discrepancy se alag karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Five tape habits: mark landmarks, match both sides, tape flat and snug, average two readings, record position and landmarks.",
+   "True length (ASIS → medial malleolus) shows structural shortening; apparent length adds pelvic tilt; Galeazzi finds femur versus tibia.",
+   "Girth and swelling numbers (thigh, knee, calf, ankle, arm) change management; a calf over 2–3 cm bigger or rapid swelling needs urgent assessment."
+  ],
+  "keywords": "Limb Length and Girth — True, Apparent and Functional Leg Length, Swelling and Wasting limb-length-and-girth Skills · Measurement Five tape habits: mark landmarks, match both sides, tape flat and snug, average two readings, record position and landmarks. True length (ASIS → medial malleolus) shows structural shortening; apparent length adds pelvic tilt; Galeazzi finds femur versus tibia. Girth and swelling numbers (thigh, knee, calf, ankle, arm) change management; a calf over 2–3 cm bigger or rapid swelling needs urgent assessment. Starting and ending landmarks of true leg length? Equal true length but unequal apparent length means? Where do you measure thigh girth? What does a Galeazzi test with one lower knee show?",
+  "next": {
+   "slug": "spinal-and-general-measures",
+   "title": "Spinal Mobility and General Measures — Schober, Chest Expansion, Occiput-Wall, Grip and BMI",
+   "href": "/learn/spinal-and-general-measures"
+  }
+ },
+ {
+  "href": "/learn/spinal-and-general-measures",
+  "slug": "spinal-and-general-measures",
+  "title": "Spinal Mobility and General Measures — Schober, Chest Expansion, Occiput-Wall, Grip and BMI",
+  "hook": {
+   "en": "A tape measure can track spinal stiffness, lung expansion and sarcopenia better than the eye. Learn the five simple measures that every clinic should have.",
+   "ur": "Tape measure rindi spine ki sakhti, phephron ke phailao aur sarcopenia ko aankh se behtar track kar sakti hai. Woh paanch aasan measures seekhein jo har clinic mein hone chahiye."
+  },
+  "area": "Skills · Measurement",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform the modified Schober, chest expansion and occiput-to-wall tests, grip strength and BMI/waist measurement and say what each result means.",
+   "ur": "End tak aap modified Schober, chest expansion aur occiput-to-wall tests, grip strength aur BMI/waist measurement karenge aur batayenge ke har result ka kya matlab hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Modified Schober (15 → at least 20 cm), chest expansion (at least 2.5 cm) and occiput-wall (0 cm) track spinal and chest stiffness.",
+   "Grip under 27 kg (men) or 16 kg (women) screens for sarcopenia; BMI and waist circumference guide risk and exercise planning.",
+   "Standardise every measure (landmarks by palpation, same posture and device) and refer inflammatory or fragile-spine patterns instead of manipulating."
+  ],
+  "keywords": "Spinal Mobility and General Measures — Schober, Chest Expansion, Occiput-Wall, Grip and BMI spinal-and-general-measures Skills · Measurement Modified Schober (15 → at least 20 cm), chest expansion (at least 2.5 cm) and occiput-wall (0 cm) track spinal and chest stiffness. Grip under 27 kg (men) or 16 kg (women) screens for sarcopenia; BMI and waist circumference guide risk and exercise planning. Standardise every measure (landmarks by palpation, same posture and device) and refer inflammatory or fragile-spine patterns instead of manipulating. Normal modified Schober result? Normal chest expansion and where is it measured? Low grip strength cut-offs (EWGSOP2)? What is the normal occiput-to-wall distance?",
   "next": null
  },
  {

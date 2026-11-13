@@ -298,7 +298,7 @@ for (const slug of slugs) {
   const NEW_SKILLS = ["dermatomes", "myotomes", "reflexes", "peripheral-nerves", "tone-coordination", "vital-signs", "posture", "balance-function", "limb-measurements", "palpation"];
   const DERMATOMES = new Set(["C2", "C3", "C4", "C5", "C6", "C7", "C8", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12", "L1", "L2", "L3", "L4", "L5", "S1", "S2"]);
   const NERVES = new Set(["trigeminal", "axillary", "radial", "musculocutaneous", "median", "ulnar", "medial-antebrachial", "lateral-femoral-cutaneous", "femoral", "obturator", "saphenous", "superficial-fibular", "deep-fibular", "sural", "tibial", "posterior-femoral-cutaneous"]);
-  const PROPS = new Set(["chair", "wall", "foam", "cones", "walkway", "block"]);
+  const PROPS = new Set(["chair", "wall", "foam", "cones", "walkway", "block", "cane"]);
   for (const id of DERMATOME_KEY_IDS) if (!keyIds.has(id)) fail("scenes", `dermatome key point ${id} is not in virtual-patient/points.ts`);
   for (const [key, scene] of Object.entries(SCENES)) {
     const at = `scene ${key}`;
