@@ -11,31 +11,57 @@ const url = "https://physionexusacademy.com/learn";
 export const metadata: Metadata = {
   title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy",
   description:
-    "A conversational physiotherapy teacher for DPT students: step-by-step lessons on the convex–concave rule, Maitland grades, sensitivity & specificity, UMN vs LMN, tissue healing and pain science — with analogies, interactive visuals, checks, flashcards and Roman Urdu.",
+    "Free conversational physiotherapy teacher for DPT students across Pakistan. Learn convex–concave rule, Maitland grades, sensitivity & specificity, UMN vs LMN, tissue healing, pain science and manual therapy concepts with analogies, interactive visuals, checks, flashcards and Roman Urdu.",
   keywords: [
-    "physiotherapy lessons",
+    "PNA Teacher",
+    "physiotherapy teacher",
+    "hard physiotherapy concepts explained",
     "DPT students Pakistan",
     "convex concave rule explained",
     "Maitland grades explained",
-    "SnNout SpPin",
+    "sensitivity specificity physiotherapy",
     "UMN vs LMN",
     "tissue healing phases physiotherapy",
     "pain science for physiotherapists",
     "Roman Urdu physiotherapy",
+    "physiotherapy lessons Pakistan",
+    "clinical concepts physiotherapy",
+    "free physiotherapy education Pakistan",
   ],
   alternates: { canonical: url },
   openGraph: {
-    title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy",
-    description: "Step-by-step, conversational physiotherapy lessons with analogies, interactive visuals, quick checks, flashcards and Roman Urdu.",
+    title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy | Physio Nexus Academy",
+    description:
+      "Step-by-step conversational physiotherapy lessons with analogies, interactive visuals, quick checks, flashcards and Roman Urdu. Built for DPT students across Pakistan.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "PNA Teacher — Physiotherapy concepts explained simply",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy",
-    description: "Conversational physiotherapy lessons for DPT students, in English and Roman Urdu.",
+    description:
+      "Conversational physiotherapy lessons for DPT students across Pakistan — English + Roman Urdu.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -56,6 +82,16 @@ export default function LearnPage() {
     description: metadata.description,
     url,
     isPartOf: { "@type": "WebSite", name: "Physio Nexus Academy", url: "https://physionexusacademy.com" },
+    about: {
+      "@type": "Thing",
+      name: "Physiotherapy education",
+    },
+    audience: {
+      "@type": "EducationalAudience",
+      educationalRole: "student",
+    },
+    inLanguage: ["en", "ur-Latn"],
+    isAccessibleForFree: true,
     hasPart: conceptLessonMetas.map((lesson) => ({
       "@type": "LearningResource",
       name: lesson.title,
@@ -69,9 +105,19 @@ export default function LearnPage() {
     })),
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://physionexusacademy.com" },
+      { "@type": "ListItem", position: 2, name: "PNA Teacher", item: url },
+    ],
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <div className="container-content pb-16 pt-8 sm:pt-12" data-pna-teacher-hub="v1">
         <header className="mx-auto max-w-3xl text-center">
           <div className="flex justify-center">
@@ -82,7 +128,7 @@ export default function LearnPage() {
             Hard concepts. <span className="text-teal-700">Explained like a great teacher would.</span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            I talk you through physiotherapy step by step — with stories, analogies, interactive visuals and quick checks — in English or Roman Urdu. Tell me where you are, and I&apos;ll plan the route.
+            I talk you through physiotherapy step by step — with stories, analogies, interactive visuals and quick checks — in English or Roman Urdu. Tell me where you are, and I'll plan the route.
           </p>
         </header>
 
@@ -134,7 +180,7 @@ export default function LearnPage() {
             ))}
           </ul>
           <p className="mt-6 text-xs leading-5 text-slate-500">
-            PNA Teacher is educational. It doesn&apos;t replace clinical supervision, individual patient assessment or your university&apos;s curriculum.
+            PNA Teacher is educational. It doesn't replace clinical supervision, individual patient assessment or your university's curriculum.
           </p>
         </section>
       </div>

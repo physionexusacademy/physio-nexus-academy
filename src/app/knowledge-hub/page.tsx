@@ -21,14 +21,21 @@ import {
 } from "@/lib/knowledge-content";
 import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 
+const url = "https://physionexusacademy.com/knowledge-hub";
+
 export const metadata: Metadata = {
-  title: "Physiotherapy Knowledge Hub for Students & Clinicians",
+  title: {
+    absolute:
+      "Physiotherapy Knowledge Hub — MSK, Neuro, Respiratory & Clinical Learning for Students in Pakistan",
+  },
   description:
-    "Study physiotherapy by specialty with evidence-informed MSK, neurological, cardiopulmonary and rehabilitation guides, clinical cases, quizzes and practical learning resources for students and clinicians in Pakistan.",
+    "Structured physiotherapy knowledge hub for DPT students and clinicians across Pakistan: MSK, neurological, cardiopulmonary/respiratory, pediatrics, sports, pain science and rehabilitation guides with clinical cases and evidence sources.",
   keywords: [
     "physiotherapy knowledge hub",
     "physiotherapy study resources Pakistan",
     "MSK physiotherapy learning",
+    "respiratory physiotherapy",
+    "cardiopulmonary physiotherapy",
     "clinical reasoning physiotherapy",
     "physiotherapy students Pakistan",
     "evidence-informed physiotherapy",
@@ -39,22 +46,40 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Physiotherapy Knowledge Hub | Physio Nexus Academy",
     description:
-      "Structured physiotherapy learning portal — study by specialty, level and clinical application with MSK, neuro, cardio and rehabilitation resources.",
-    url: "https://physionexusacademy.com/knowledge-hub",
+      "Study physiotherapy by specialty — MSK, neuro, respiratory, rehab and more. Evidence-informed guides for students and clinicians in Pakistan.",
+    url,
     siteName: "Physio Nexus Academy",
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Physiotherapy Knowledge Hub — Physio Nexus Academy",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Physiotherapy Knowledge Hub | Physio Nexus Academy",
     description:
-      "Evidence-informed physiotherapy learning resources for students and clinicians in Pakistan.",
+      "Evidence-informed physiotherapy learning resources for students and clinicians across Pakistan.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
-    canonical: "https://physionexusacademy.com/knowledge-hub",
+    canonical: url,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const specialtyIcons: Record<KnowledgeSpecialty, typeof Stethoscope> = {
@@ -92,8 +117,37 @@ export default function KnowledgeHubPage() {
     )
     .slice(0, 4);
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Physiotherapy Knowledge Hub",
+    description: metadata.description,
+    url,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+    numberOfItems: allKnowledgeArticles.length,
+    about: knowledgeSpecialties.map((s) => ({
+      "@type": "MedicalSpecialty",
+      name: s.name,
+    })),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://physionexusacademy.com" },
+      { "@type": "ListItem", position: 2, name: "Knowledge Hub", item: url },
+    ],
+  };
+
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
     <NexusHero
       kicker="Learn wing · PNA physiotherapy library"
       title={<>Study by specialty. Go deeper by level. <span className="nx-gradient-text">Apply it in cases.</span></>}
@@ -103,7 +157,7 @@ export default function KnowledgeHubPage() {
         <>
           <a href="#specialties" className="nx-btn nx-btn-primary">Browse specialties</a>
           <a href="/case-lab" className="nx-btn nx-btn-ghost">Open Clinical Case Lab</a>
-          <a href="/daily-challenge" className="nx-btn nx-btn-ghost">Daily Challenge &amp; Champions</a>
+          <a href="/daily-challenge" className="nx-btn nx-btn-ghost">Daily Challenge & Champions</a>
         </>
       }
     />

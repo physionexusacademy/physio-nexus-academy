@@ -2,12 +2,58 @@ import type { Metadata } from "next";
 import { NexusHero } from "@/components/nexus/NexusHero";
 import { createClient } from "@/lib/supabase/server";
 
+const url = "https://physionexusacademy.com/faq";
+
 export const metadata: Metadata = {
-  title: "Physiotherapy Workshops & Services FAQ",
+  title: {
+    absolute:
+      "FAQ — Physiotherapy Workshops, Appointments, Home Visits & Learning | Physio Nexus Academy",
+  },
   description:
-    "Frequently asked questions about Physio Nexus Academy physiotherapy workshops, CPD development, appointments, home visits and learning resources in Pakistan.",
+    "Frequently asked questions about Physio Nexus Academy: physiotherapy workshops, CPD, appointments, home visits, books, certificates and learning resources across Pakistan.",
+  keywords: [
+    "physiotherapy FAQ Pakistan",
+    "physiotherapy workshop FAQ",
+    "home physiotherapy FAQ",
+    "physiotherapy appointment FAQ",
+    "Physio Nexus Academy FAQ",
+    "CPD physiotherapy questions",
+  ],
   alternates: {
-    canonical: "https://physionexusacademy.com/faq",
+    canonical: url,
+  },
+  openGraph: {
+    title: "FAQ | Physio Nexus Academy",
+    description:
+      "Answers about workshops, certificates, appointments, home visits and learning resources.",
+    url,
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "FAQ — Physio Nexus Academy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FAQ | Physio Nexus Academy",
+    description:
+      "Quick answers about learning, workshops and patient services at Physio Nexus Academy.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -54,7 +100,7 @@ export default async function FaqPage() {
     <NexusHero
       kicker="Academy wing · Help"
       title={<>Frequently asked <span className="nx-gradient-text">questions</span></>}
-      lead={<>Quick answers about learning with PNA, workshops, certificates and patient services. Still stuck? Press Ctrl K and ask Physio Nexus AI.</>}
+      lead={<>Quick answers about learning with PNA, workshops, certificates and patient services across Pakistan. Still stuck? Press Ctrl K and ask Physio Nexus AI.</>}
       crumbs={[{ label: "Academy", href: "/about" }, { label: "FAQ" }]}
     />
     <div className="container-content section-padding !pt-10 max-w-2xl">

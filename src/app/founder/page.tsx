@@ -6,41 +6,66 @@ import { siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
 import { trainingHistory } from "@/lib/training-history";
 
+const siteUrl = "https://physionexusacademy.com";
+const founderUrl = `${siteUrl}/founder`;
+
 export const metadata: Metadata = {
-  title: "Dr. Sajjad Raza PT — Physiotherapist, Clinical Educator & Founder",
+  title: {
+    absolute:
+      "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy | Physiotherapist & Clinical Educator Pakistan",
+  },
   description:
-    "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy in Pakistan.",
-  keywords: ["Dr Sajjad Raza PT", "Physio Nexus Academy founder", "physiotherapy educator Pakistan", "physiotherapy clinical workshops"],
+    "Official profile of Dr. Sajjad Raza PT — physiotherapist, clinical educator and Founder of Physio Nexus Academy. Manual therapy, clinical workshops and practical physiotherapy education across Pakistan.",
+  keywords: [
+    "Dr Sajjad Raza PT",
+    "Physio Nexus Academy founder",
+    "physiotherapy educator Pakistan",
+    "physiotherapy clinical workshops",
+    "manual therapy instructor Pakistan",
+    "physiotherapist Karachi Hyderabad",
+  ],
   alternates: {
-    canonical: "https://physionexusacademy.com/founder",
+    canonical: founderUrl,
   },
   openGraph: {
     title: "Dr. Sajjad Raza PT — Physiotherapist, Clinical Educator & Founder",
     description:
       "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
-    url: "https://physionexusacademy.com/founder",
+    url: founderUrl,
     type: "profile",
+    siteName: "Physio Nexus Academy",
+    locale: "en_PK",
     images: [
       {
         url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
         alt: "Dr. Sajjad Raza PT",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dr. Sajjad Raza PT",
+    title: "Dr. Sajjad Raza PT — Founder, Physio Nexus Academy",
     description:
       "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
 // Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
 // are served from a read-only cache that never refreshes).
 export const dynamic = "force-dynamic";
-
-const siteUrl = "https://physionexusacademy.com";
 
 export default async function FounderPage() {
   const supabase = await createClient();
@@ -89,7 +114,6 @@ export default async function FounderPage() {
     )
     .slice(0, 4);
 
-  const founderUrl = `${siteUrl}/founder`;
   const founderImage =
     typeof founder.photo === "string" && founder.photo.startsWith("http")
       ? founder.photo
@@ -176,7 +200,7 @@ export default async function FounderPage() {
             />
           </div>
           <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-teal-600">
-            Physiotherapy Instructor &amp; Clinical Educator
+            Physiotherapy Instructor & Clinical Educator
           </p>
           <h1 className="mt-2 font-heading text-2xl font-bold text-navy-800">
             {founder.name}
@@ -200,7 +224,7 @@ export default async function FounderPage() {
 
           <section className="mt-10">
             <h2 className="text-xl font-bold text-navy-800">
-              Physiotherapy Teaching &amp; Clinical Education
+              Physiotherapy Teaching & Clinical Education
             </h2>
             <p className="mt-3 text-navy-600">
               Through Physio Nexus Academy, {founder.name} supports physiotherapy students and
@@ -217,7 +241,7 @@ export default async function FounderPage() {
                   Training Experience
                 </p>
                 <h2 className="mt-1 text-xl font-bold text-navy-800">
-                  Selected Workshops &amp; Clinical Training
+                  Selected Workshops & Clinical Training
                 </h2>
               </div>
               <Button href="/training" variant="outline" size="md">
@@ -246,7 +270,7 @@ export default async function FounderPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="text-xl font-bold text-navy-800">Qualifications &amp; Certifications</h2>
+            <h2 className="text-xl font-bold text-navy-800">Qualifications & Certifications</h2>
             <p className="mt-2 text-sm text-navy-500">
               Credentials are grouped by type. Issuer, year or verification links appear only when confirmed details are available.
             </p>

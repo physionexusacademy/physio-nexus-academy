@@ -18,33 +18,39 @@ import "./home-lobby.css";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Physio Nexus Academy — Physiotherapy Courses, Workshops & Home Visits",
+    absolute:
+      "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning in Pakistan",
   },
   description:
-    "Physiotherapy courses, hands-on manual therapy workshops and home physiotherapy in Pakistan, plus free clinical learning by Dr. Sajjad Raza PT.",
+    "Physio Nexus Academy — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Knowledge Hub, manual therapy, treatment plans, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
   keywords: [
     "Physio Nexus Academy",
-    "physiotherapy education in Pakistan",
-    "physiotherapy workshops in Pakistan",
-    "physiotherapy workshops Karachi",
-    "physiotherapy workshops Hyderabad",
-    "MSK physiotherapy resources",
-    "manual therapy learning",
-    "physiotherapy clinical case studies",
+    "PNA physiotherapy",
+    "physiotherapy education Pakistan",
+    "physiotherapy workshops Pakistan",
+    "manual therapy training Pakistan",
+    "MSK physiotherapy",
+    "physiotherapy clinical skills",
     "physiotherapy students Pakistan",
     "CPD physiotherapy Pakistan",
+    "home physiotherapy Pakistan",
     "Dr Sajjad Raza PT",
   ],
   openGraph: {
-    title:
-      "Physio Nexus Academy | Physiotherapy Education & Workshops in Pakistan",
+    title: "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning",
     description:
-      "Practical physiotherapy education, MSK and manual therapy learning, clinical cases, quizzes and hands-on workshops for students and professionals in Pakistan.",
+      "Practical physiotherapy education, clinical resources, workshops and patient care — Physio Nexus Academy, Pakistan.",
     url: "https://physionexusacademy.com",
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
     type: "website",
     images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy",
+      },
       {
         url: "https://physionexusacademy.com/images/pna-logo.png",
         width: 512,
@@ -55,9 +61,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Physio Nexus Academy | Physiotherapy Education & Workshops",
+    title: "Physio Nexus Academy | Physiotherapy Education & Workshops in Pakistan",
     description:
-      "Evidence-based physiotherapy learning, clinical resources and hands-on workshops in Pakistan.",
+      "Practical physiotherapy education, clinical resources and hands-on workshops from Physio Nexus Academy.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
     canonical: "https://physionexusacademy.com",
@@ -65,6 +72,12 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -107,8 +120,34 @@ export default async function HomePage() {
     .slice(0, 3);
   const latestEpisode = getLatestEpisode();
 
+  const siteSectionsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Physio Nexus Academy — Main sections",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "PNA Teacher", url: "https://physionexusacademy.com/learn" },
+      { "@type": "ListItem", position: 2, name: "Clinical Skills Lab", url: "https://physionexusacademy.com/skills" },
+      { "@type": "ListItem", position: 3, name: "Virtual Patient", url: "https://physionexusacademy.com/virtual-patient" },
+      { "@type": "ListItem", position: 4, name: "Knowledge Hub", url: "https://physionexusacademy.com/knowledge-hub" },
+      { "@type": "ListItem", position: 5, name: "Manual Therapy", url: "https://physionexusacademy.com/manual-therapy" },
+      { "@type": "ListItem", position: 6, name: "Treatment Plans", url: "https://physionexusacademy.com/treatment-plans" },
+      { "@type": "ListItem", position: 7, name: "Workshops & CPD", url: "https://physionexusacademy.com/workshops" },
+      { "@type": "ListItem", position: 8, name: "Books & Resources", url: "https://physionexusacademy.com/resources" },
+      { "@type": "ListItem", position: 9, name: "Home Visit", url: "https://physionexusacademy.com/home-visit" },
+      { "@type": "ListItem", position: 10, name: "Book Appointment", url: "https://physionexusacademy.com/appointment" },
+      { "@type": "ListItem", position: 11, name: "About", url: "https://physionexusacademy.com/about" },
+      { "@type": "ListItem", position: 12, name: "Contact", url: "https://physionexusacademy.com/contact" },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(siteSectionsJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <LobbyHero atlasPublished={atlasPublished} conditionCount={mskConditionIndex.length} />
 
       {/* Plain-language directory and the books, before anything else, so a new visitor finds their way at once. */}
@@ -139,7 +178,7 @@ export default async function HomePage() {
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a href="/daily-challenge#play-daily" className="nx-btn nx-btn-primary">
-                Take today&apos;s challenge <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                Take today's challenge <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a href="/daily-challenge#hall-of-fame" className="nx-btn nx-btn-ghost">
                 <Medal className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Hall of Fame
@@ -151,7 +190,7 @@ export default async function HomePage() {
           </div>
           <div className="lobby-scoreboard">
             <div className="flex items-center justify-between gap-3 px-1 pb-3">
-              <span className="nx-kicker"><span className="nx-live" /> Today&apos;s leaderboard</span>
+              <span className="nx-kicker"><span className="nx-live" /> Today's leaderboard</span>
               <span className="text-xs font-semibold text-[var(--nx-dim)]">Resets at midnight PKT</span>
             </div>
             <DailyLeaderboard compact title="Today's Top 5" />
@@ -184,7 +223,7 @@ export default async function HomePage() {
           </a>
 
           <div className="lobby-news-card rounded-3xl border">
-            <span className="lobby-news-tag"><CalendarDays className="h-4 w-4" aria-hidden="true" /> Workshops &amp; CPD</span>
+            <span className="lobby-news-tag"><CalendarDays className="h-4 w-4" aria-hidden="true" /> Workshops & CPD</span>
             {featuredWorkshops ? (
               <ul className="mt-3 space-y-3">
                 {featuredWorkshops.map((workshop) => (
@@ -202,7 +241,7 @@ export default async function HomePage() {
             ) : (
               <>
                 <strong className="lobby-news-title">Hands-on training that transfers to the clinic</strong>
-                <span className="lobby-news-text">Practical CPD workshops in Karachi and Hyderabad with verifiable certificates.</span>
+                <span className="lobby-news-text">Practical CPD workshops across Pakistan with verifiable certificates.</span>
               </>
             )}
             <a href="/workshops" className="lobby-news-more">See all workshops <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
@@ -233,7 +272,7 @@ export default async function HomePage() {
             <p className="nx-kicker"><BookMarked className="h-4 w-4" aria-hidden="true" /> PNA Clinical Registry</p>
             <h2 id="home-registry-title" className="nx-title mt-3 text-2xl text-white sm:text-3xl">Real cases, reviewed and de-identified.</h2>
             <p className="nx-lead mt-2 max-w-2xl text-sm sm:text-base">
-              Learn from clinicians&apos; documented assessments, decisions and outcomes — and, if you are a verified physiotherapist, submit your own cases through a secure, consent-first workspace.
+              Learn from clinicians' documented assessments, decisions and outcomes — and, if you are a verified physiotherapist, submit your own cases through a secure, consent-first workspace.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -248,7 +287,7 @@ export default async function HomePage() {
       {testimonials ? (
         <section className="container-content pb-12" aria-labelledby="home-testimonials-title">
           <p className="nx-kicker nx-kicker-light">Trusted by learners</p>
-          <h2 id="home-testimonials-title" className="nx-title mt-3 text-3xl text-navy-800">What physiotherapists &amp; students say</h2>
+          <h2 id="home-testimonials-title" className="nx-title mt-3 text-3xl text-navy-800">What physiotherapists & students say</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {testimonials.map((t) => (
               <figure key={t.id} className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">

@@ -14,10 +14,15 @@ import {
   treatmentPlans,
 } from "@/lib/treatment-plans";
 
+const url = "https://physionexusacademy.com/treatment-plans";
+
 export const metadata: Metadata = {
-  title: "Condition-Based Physiotherapy Treatment Plans",
+  title: {
+    absolute:
+      "Condition-Based Physiotherapy Treatment Plans — Assessment, Exercise & Progression",
+  },
   description:
-    "Evidence-informed physiotherapy treatment plans covering assessment, red flags, modalities, manual therapy, exercise prescription, progression and referral criteria for common MSK and clinical conditions.",
+    "Evidence-informed physiotherapy treatment plans for common MSK and clinical conditions: assessment, red flags, modalities, manual therapy, exercise prescription, home program, progression and referral criteria. For students and clinicians in Pakistan.",
   keywords: [
     "physiotherapy treatment plans",
     "rehabilitation protocols",
@@ -26,31 +31,65 @@ export const metadata: Metadata = {
     "clinical pathways physiotherapy",
     "condition based physiotherapy",
     "physiotherapy management plans Pakistan",
+    "physiotherapy progression protocols",
   ],
   openGraph: {
     title: "Physiotherapy Treatment Plans | Physio Nexus Academy",
     description:
-      "Condition-based physiotherapy pathways covering assessment, red flags, exercise progression, self-management and referral criteria.",
-    url: "https://physionexusacademy.com/treatment-plans",
+      "Condition-based physiotherapy pathways: assessment, red flags, exercise progression, self-management and referral criteria.",
+    url,
     siteName: "Physio Nexus Academy",
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Physiotherapy Treatment Plans",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Physiotherapy Treatment Plans | Physio Nexus Academy",
     description:
       "Structured clinical pathways for assessment, treatment and progression in physiotherapy practice.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
-    canonical: "https://physionexusacademy.com/treatment-plans",
+    canonical: url,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function TreatmentPlansPage() {
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Physiotherapy Treatment Plans",
+    description: metadata.description,
+    url,
+    numberOfItems: treatmentPlans.length,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Physio Nexus Academy",
+      url: "https://physionexusacademy.com",
+    },
+  };
+
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
     <NexusHero
       kicker="Learn wing · PNA clinical pathways"
       title={<>Condition-based <span className="nx-gradient-text">treatment plans</span></>}

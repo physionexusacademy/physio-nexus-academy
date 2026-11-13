@@ -19,27 +19,77 @@ export function generateStaticParams() {
   return allKnowledgeArticles.map((article) => ({ slug: article.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const article = getAllKnowledgeArticle(slug);
   if (!article) return {};
+
   const url = siteUrl + "/knowledge-hub/" + article.slug;
+  const title = article.title;
+  const description =
+    article.excerpt.length > 155
+      ? article.excerpt.slice(0, 152).trim() + "…"
+      : article.excerpt;
+
   return {
-    title: article.title,
-    description: article.excerpt,
+    title,
+    description,
+    keywords: [
+      article.specialty,
+      article.category,
+      "physiotherapy",
+      "physiotherapy education",
+      "clinical physiotherapy",
+      "Physio Nexus Academy",
+      ...(article.level ? [article.level + " physiotherapy"] : []),
+    ],
     alternates: { canonical: url },
     openGraph: {
-      title: article.title,
-      description: article.excerpt,
+      title,
+      description,
       url,
       type: "article",
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt ?? article.publishedAt,
+      siteName: "Physio Nexus Academy",
+      locale: "en_PK",
+      images: [
+        {
+          url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
 
-export default async function KnowledgeArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function KnowledgeArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const article = getAllKnowledgeArticle(slug);
   if (!article) notFound();
@@ -47,6 +97,7 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
   const level = article.level ?? "Clinical";
   const romanUrduLearning = understandThisPageContent[article.slug];
   const url = siteUrl + "/knowledge-hub/" + article.slug;
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -55,41 +106,127 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
     datePublished: article.publishedAt,
     dateModified: article.updatedAt ?? article.publishedAt,
     url,
-    author: { "@type": "Organization", name: "Physio Nexus Academy", url: siteUrl },
+    mainEntityOfPage: url,
+    author: {
+      "@type": "Organization",
+      name: "Physio Nexus Academy",
+      url: siteUrl,
+    },
     publisher: {
       "@type": "EducationalOrganization",
       "@id": "https://physionexusacademy.com/#organization",
       name: "Physio Nexus Academy",
       url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: "https://physionexusacademy.com/images/pna-logo.png",
+      },
     },
+    about: {
+      "@type": "MedicalSpecialty",
+      name: article.specialty,
+    },
+    educationalLevel: level,
+    inLanguage: "en",
+    isAccessibleForFree: true,
   };
 
-  const levelTone = level === "Advanced"
-    ? "bg-violet-100 text-violet-800"
-    : level === "Foundation"
-      ? "bg-emerald-100 text-emerald-800"
-      : "bg-amber-100 text-amber-800";
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Knowledge Hub",
+        item: siteUrl + "/knowledge-hub",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: article.specialty,
+        item: siteUrl + "/knowledge-hub/specialty/" + (article.specialty === "Cardiopulmonary" ? "cardio" : article.specialty.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")),
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: article.title,
+        item: url,
+      },
+    ],
+  };
+
+  const levelTone =
+    level === "Advanced"
+      ? "bg-violet-100 text-violet-800"
+      : level === "Foundation"
+        ? "bg-emerald-100 text-emerald-800"
+        : "bg-amber-100 text-amber-800";
 
   return (
     <article className="container-content section-padding min-w-0 w-full max-w-full break-words [overflow-wrap:anywhere]">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c") }} />
-      <a href="/knowledge-hub" className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      <a
+        href="/knowledge-hub"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to Knowledge Hub
       </a>
 
       <header className="mx-auto mt-7 min-w-0 w-full max-w-4xl rounded-3xl border border-grey-200 bg-gradient-to-br from-white via-cyan-50 to-indigo-50 p-5 shadow-sm sm:p-9">
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-800">{article.specialty}</span>
-          <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-navy-600">{article.category}</span>
+          <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-800">
+            {article.specialty}
+          </span>
+          <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-navy-600">
+            {article.category}
+          </span>
           <span className={"rounded-full px-3 py-1 text-xs font-bold " + levelTone}>{level} Level</span>
-          <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-navy-500">{article.audience}</span>
+          <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-navy-500">
+            {article.audience}
+          </span>
         </div>
-        <h1 className="mt-5 break-words text-2xl font-bold leading-tight text-navy-800 sm:text-4xl [overflow-wrap:anywhere]">{article.title}</h1>
+        <h1 className="mt-5 break-words text-2xl font-bold leading-tight text-navy-800 sm:text-4xl [overflow-wrap:anywhere]">
+          {article.title}
+        </h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-navy-600">{article.excerpt}</p>
         <div className="mt-6 flex flex-wrap gap-5 border-t border-grey-200 pt-5 text-xs text-navy-400">
-          <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{new Date(article.publishedAt).toLocaleDateString("en-PK", { day: "numeric", month: "long", year: "numeric" })}</span>
-          <span className="inline-flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{article.readTime}</span>
-          {article.references?.length ? <span className="inline-flex items-center gap-1.5 font-semibold text-teal-700"><BookOpenCheck className="h-4 w-4" />Evidence sources included</span> : null}
+          <span className="inline-flex items-center gap-1.5">
+            <CalendarDays className="h-4 w-4" />
+            {new Date(article.publishedAt).toLocaleDateString("en-PK", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Clock3 className="h-4 w-4" />
+            {article.readTime}
+          </span>
+          {article.references?.length ? (
+            <span className="inline-flex items-center gap-1.5 font-semibold text-teal-700">
+              <BookOpenCheck className="h-4 w-4" />
+              Evidence sources included
+            </span>
+          ) : null}
         </div>
       </header>
 
@@ -98,29 +235,74 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
       <div className="mx-auto mt-8 min-w-0 w-full max-w-4xl break-words rounded-3xl border border-slate-200 bg-white p-5 shadow-sm [overflow-wrap:anywhere] sm:mt-9 sm:p-9">
         {article.learningObjectives?.length ? (
           <section className="mb-9 rounded-3xl border border-amber-100 bg-amber-50 p-6">
-            <div className="flex items-center gap-3"><Target className="h-6 w-6 text-amber-700" /><h2 className="text-2xl font-semibold text-navy-800">What You Should Be Able to Explain After Reading</h2></div>
+            <div className="flex items-center gap-3">
+              <Target className="h-6 w-6 text-amber-700" />
+              <h2 className="text-2xl font-semibold text-navy-800">
+                What You Should Be Able to Explain After Reading
+              </h2>
+            </div>
             <ul className="mt-4 space-y-3">
-              {article.learningObjectives.map((objective) => <li key={objective} className="flex gap-3 text-navy-700"><GraduationCap className="mt-0.5 h-5 w-5 flex-none text-amber-700" /><span className="leading-7">{objective}</span></li>)}
+              {article.learningObjectives.map((objective) => (
+                <li key={objective} className="flex gap-3 text-navy-700">
+                  <GraduationCap className="mt-0.5 h-5 w-5 flex-none text-amber-700" />
+                  <span className="leading-7">{objective}</span>
+                </li>
+              ))}
             </ul>
           </section>
         ) : null}
 
         {article.sections.map((section) => (
-          <section key={section.heading} className="mb-8 min-w-0 break-words border-b border-slate-100 pb-7 last:border-b-0 last:pb-0 [overflow-wrap:anywhere]">
-            <h2 className="break-words text-xl font-semibold leading-snug text-navy-800 sm:text-2xl [overflow-wrap:anywhere]">{section.heading}</h2>
-            {section.paragraphs?.map((paragraph) => <p key={paragraph} className="mt-4 break-words text-[15px] leading-8 text-navy-600 [overflow-wrap:anywhere]">{paragraph}</p>)}
-            {section.bullets?.length ? <ul className="mt-4 space-y-2 pl-5 text-navy-600 [overflow-wrap:anywhere]">{section.bullets.map((bullet) => <li key={bullet} className="list-disc break-words leading-7 [overflow-wrap:anywhere]">{bullet}</li>)}</ul> : null}
+          <section
+            key={section.heading}
+            className="mb-8 min-w-0 break-words border-b border-slate-100 pb-7 last:border-b-0 last:pb-0 [overflow-wrap:anywhere]"
+          >
+            <h2 className="break-words text-xl font-semibold leading-snug text-navy-800 sm:text-2xl [overflow-wrap:anywhere]">
+              {section.heading}
+            </h2>
+            {section.paragraphs?.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="mt-4 break-words text-[15px] leading-8 text-navy-600 [overflow-wrap:anywhere]"
+              >
+                {paragraph}
+              </p>
+            ))}
+            {section.bullets?.length ? (
+              <ul className="mt-4 space-y-2 pl-5 text-navy-600 [overflow-wrap:anywhere]">
+                {section.bullets.map((bullet) => (
+                  <li key={bullet} className="list-disc break-words leading-7 [overflow-wrap:anywhere]">
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </section>
         ))}
 
         {article.references?.length ? (
           <section className="mt-10 rounded-3xl border border-grey-200 bg-grey-50 p-6">
             <h2 className="text-xl font-bold text-navy-800">Evidence & Further Reading</h2>
-            <p className="mt-2 text-sm leading-6 text-navy-500">These sources are provided so learners can trace the clinical recommendations and read the original guidance.</p>
+            <p className="mt-2 text-sm leading-6 text-navy-500">
+              These sources are provided so learners can trace the clinical recommendations and read the
+              original guidance.
+            </p>
             <div className="mt-4 space-y-3">
               {article.references.map((reference) => (
-                <a key={reference.url} href={reference.url} target="_blank" rel="noopener noreferrer" className="flex items-start justify-between gap-3 rounded-2xl bg-white p-4 text-sm shadow-sm transition hover:shadow-md">
-                  <div><p className="font-semibold text-navy-800">{reference.title}</p><p className="mt-1 text-navy-500">{reference.organization}{reference.year ? " · " + reference.year : ""}</p></div>
+                <a
+                  key={reference.url}
+                  href={reference.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start justify-between gap-3 rounded-2xl bg-white p-4 text-sm shadow-sm transition hover:shadow-md"
+                >
+                  <div>
+                    <p className="font-semibold text-navy-800">{reference.title}</p>
+                    <p className="mt-1 text-navy-500">
+                      {reference.organization}
+                      {reference.year ? " · " + reference.year : ""}
+                    </p>
+                  </div>
                   <ExternalLink className="mt-1 h-4 w-4 flex-none text-teal-600" />
                 </a>
               ))}
@@ -130,7 +312,11 @@ export default async function KnowledgeArticlePage({ params }: { params: Promise
 
         <aside className="mt-10 rounded-2xl border border-grey-200 bg-white p-6 shadow-sm">
           <p className="font-semibold text-navy-800">Educational note</p>
-          <p className="mt-2 text-sm leading-6 text-navy-500">This article is for education and does not replace an individual clinical assessment. Symptoms, precautions and treatment choices should be considered in the context of the person&apos;s full history, examination, local pathways and professional scope of practice.</p>
+          <p className="mt-2 text-sm leading-6 text-navy-500">
+            This article is for education and does not replace an individual clinical assessment. Symptoms,
+            precautions and treatment choices should be considered in the context of the person's full
+            history, examination, local pathways and professional scope of practice.
+          </p>
         </aside>
       </div>
     </article>

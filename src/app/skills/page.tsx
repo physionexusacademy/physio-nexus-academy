@@ -5,11 +5,60 @@ import { SkillIcon } from "@/components/skills/SkillIcon";
 import { SkillProgressBadge } from "@/components/skills/SkillProgressBadge";
 import { skillIndex, skillPhases } from "@/lib/skills/catalog";
 
+const url = "https://physionexusacademy.com/skills";
+
 export const metadata: Metadata = {
-  title: "Clinical Skills Lab — MMT, Goniometry & Neuro Exam Practice",
+  title: "Clinical Skills Lab — MMT, Goniometry & OSCE Practice",
   description:
-    "Master the clinical skills every DPT student must know — manual muscle testing, goniometry, dermatomes, myotomes, reflexes and more — from beginner to expert with demonstrations, simulators, flashcards, level tests and OSCE stations.",
-  alternates: { canonical: "https://physionexusacademy.com/skills" },
+    "Master clinical skills every DPT student in Pakistan needs: Manual Muscle Testing (MMT), goniometry, dermatomes, myotomes, reflexes, vital signs and more. Beginner to expert with demonstrations, simulators, flashcards, level tests and OSCE stations.",
+  keywords: [
+    "clinical skills lab physiotherapy",
+    "MMT practice",
+    "manual muscle testing physiotherapy",
+    "goniometry practice",
+    "neuro exam physiotherapy",
+    "OSCE physiotherapy practice",
+    "dermatomes myotomes",
+    "physiotherapy clinical skills Pakistan",
+    "DPT clinical skills",
+    "physiotherapy OSCE stations",
+    "clinical skills for physiotherapy students",
+  ],
+  alternates: { canonical: url },
+  openGraph: {
+    title: "Clinical Skills Lab — MMT, Goniometry & OSCE Practice | Physio Nexus Academy",
+    description:
+      "Hands-on clinical skills training for physiotherapy students: MMT, goniometry, neuro exam, flashcards and OSCE stations. Progress from beginner to expert.",
+    url,
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Clinical Skills Lab — Physio Nexus Academy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Clinical Skills Lab — MMT, Goniometry & OSCE Practice",
+    description:
+      "Master physiotherapy clinical skills with simulators, flashcards and OSCE stations. Built for DPT students across Pakistan.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function SkillsHubPage() {
@@ -25,8 +74,38 @@ export default function SkillsHubPage() {
     { icon: ClipboardCheck, title: "OSCE ready", text: "Timed stations with examiner checklists — practise with a partner." },
   ];
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Clinical Skills Lab",
+    description: metadata.description,
+    url,
+    isPartOf: { "@type": "WebSite", name: "Physio Nexus Academy", url: "https://physionexusacademy.com" },
+    about: { "@type": "Thing", name: "Physiotherapy clinical skills" },
+    isAccessibleForFree: true,
+    hasPart: skillIndex.map((skill) => ({
+      "@type": "LearningResource",
+      name: skill.title,
+      description: skill.summary,
+      url: `https://physionexusacademy.com/skills/${skill.slug}`,
+      learningResourceType: "Clinical skill module",
+      isAccessibleForFree: true,
+    })),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://physionexusacademy.com" },
+      { "@type": "ListItem", position: 2, name: "Clinical Skills Lab", item: url },
+    ],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <NexusHero
         kicker="Practise wing · Clinical Skills Lab"
         title={<>Clinical skills, <span className="nx-gradient-text">beginner to expert.</span></>}

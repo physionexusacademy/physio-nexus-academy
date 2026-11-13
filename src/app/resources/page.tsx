@@ -14,12 +14,65 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { BookOrderForm } from "./BookOrderForm";
 import { BOOKS, DEFAULT_BOOK_ID, formatPkr, getBook } from "@/lib/books";
 
+const url = "https://physionexusacademy.com/resources";
+
 export const metadata: Metadata = {
-  title: "Physiotherapy Books & Resources",
+  title: {
+    absolute:
+      "Buy Physiotherapy Books Online in Pakistan | Clinical Mastery, Myofascial Therapy & Study Resources",
+  },
   description:
-    "Explore physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy for students and professionals.",
+    "Order physiotherapy books and learning resources from Physio Nexus Academy. Clinical mastery guides, myofascial therapy manuals and study materials delivered across Pakistan. Free educational PDFs also available.",
+  keywords: [
+    "physiotherapy books Pakistan",
+    "buy physiotherapy books online",
+    "physiotherapy books Karachi",
+    "physiotherapy books Lahore",
+    "physiotherapy books Islamabad",
+    "clinical mastery physiotherapy book",
+    "myofascial release book",
+    "physiotherapy study material Pakistan",
+    "DPT books Pakistan",
+    "physiotherapy textbooks Pakistan",
+    "Physio Nexus Academy books",
+    "order physiotherapy books",
+  ],
   alternates: {
-    canonical: "https://physionexusacademy.com/resources",
+    canonical: url,
+  },
+  openGraph: {
+    title: "Physiotherapy Books & Resources for Sale | Physio Nexus Academy",
+    description:
+      "Order evidence-informed physiotherapy books and learning resources. Delivery across Pakistan. Free educational materials also available.",
+    url,
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+    images: [
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Physiotherapy Books — Physio Nexus Academy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Buy Physiotherapy Books Online in Pakistan",
+    description:
+      "Clinical mastery guides, myofascial therapy manuals and study resources. Delivery across Pakistan.",
+    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -57,10 +110,10 @@ export default async function ResourcesPage({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": "https://physionexusacademy.com/resources#collection",
-    url: "https://physionexusacademy.com/resources",
+    url,
     name: "Physiotherapy Learning Resource Library",
     description:
-      "Physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy.",
+      "Physiotherapy books, review notes, manuals and educational resources from Physio Nexus Academy — available for students and professionals across Pakistan.",
     mainEntity: {
       "@type": "ItemList",
       itemListElement: visibleResources.map((resource, index) => ({
@@ -92,15 +145,35 @@ export default async function ResourcesPage({
       price: String(book.price),
       availability: "https://schema.org/InStock",
       url: `https://physionexusacademy.com/resources?book=${book.id}#order-book`,
+      areaServed: {
+        "@type": "Country",
+        name: "Pakistan",
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "PK",
+        },
+      },
     },
   }));
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://physionexusacademy.com" },
+      { "@type": "ListItem", position: 2, name: "Books & Resources", item: url },
+    ],
+  };
 
   return (
     <>
     <NexusHero
       kicker="Learn wing · Books & resources"
       title={<>Learning resource <span className="nx-gradient-text">library</span></>}
-      lead={<>Physiotherapy books, review notes, manuals and educational PDFs that support students and professionals with practical, evidence-informed learning.</>}
+      lead={<>Physiotherapy books, review notes, manuals and educational PDFs that support students and professionals with practical, evidence-informed learning — order online with delivery across Pakistan.</>}
       crumbs={[{ label: "Learn", href: "/learn" }, { label: "Books & Resources" }]}
       actions={<><a href="#order-book" className="nx-btn nx-btn-primary">Order a book</a><a href="/learn" className="nx-btn nx-btn-ghost">Free lessons</a></>}
     />
@@ -115,6 +188,12 @@ export default async function ResourcesPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(booksJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -208,7 +287,7 @@ export default async function ResourcesPage({
           <p className="text-sm font-semibold uppercase tracking-wide text-teal-600">Book Order</p>
           <h2 className="mt-2 text-2xl font-bold text-navy-800 sm:text-3xl">Place your order</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-500">
-            Choose your book and enter your delivery details below. Your order will receive a unique Order ID and our team will be notified immediately.
+            Choose your book and enter your delivery details below. Delivery is available across Pakistan. Your order will receive a unique Order ID and our team will be notified immediately.
           </p>
         </div>
         <BookOrderForm
