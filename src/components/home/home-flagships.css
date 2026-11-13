@@ -1,0 +1,170 @@
+/* Homepage — the three flagship learning cards (PNA Teacher, Skills Lab, Virtual Patient): dark, glowing, animated.
+   Every demo is decorative and built from plain markup; the resting state (no animation) shows the finished picture. */
+@property --a { syntax: "<integer>"; inherits: true; initial-value: 120; }
+
+.hx { background: radial-gradient(120% 90% at 0% 0%, #0c3358 0%, #071a33 55%, #050f22 100%); border-color: rgba(46, 230, 214, .28); box-shadow: 0 30px 70px -40px rgba(8, 40, 90, .9), inset 0 0 0 1px rgba(255, 255, 255, .03); color: #eaf6ff; position: relative; }
+.hx::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(120, 200, 255, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 200, 255, .07) 1px, transparent 1px); background-size: 26px 26px; mask-image: radial-gradient(90% 70% at 50% 0%, #000 30%, transparent 100%); }
+.hx::after { content: ""; position: absolute; width: 220px; height: 220px; right: -70px; top: -80px; border-radius: 50%; background: radial-gradient(circle, rgba(46, 230, 214, .35), transparent 70%); filter: blur(8px); pointer-events: none; }
+.hx-skills::after { background: radial-gradient(circle, rgba(143, 124, 255, .42), transparent 70%); }
+.hx-vp::after { background: radial-gradient(circle, rgba(60, 200, 255, .38), transparent 70%); }
+.hx:hover { border-color: rgba(46, 230, 214, .7); box-shadow: 0 34px 80px -38px rgba(46, 230, 214, .55); }
+.hx-link { position: relative; z-index: 1; display: flex; flex-direction: column; width: 100%; color: inherit; text-decoration: none; }
+.hx-link:focus-visible { outline: 3px solid #2ee6d6; outline-offset: -3px; border-radius: 22px; }
+
+.hx-stage { position: relative; margin: 14px 14px 0; height: 218px; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02)); border: 1px solid rgba(150, 225, 255, .22); backdrop-filter: blur(4px); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+.hx-body { display: flex; flex-direction: column; flex: 1; padding: 16px 20px 20px; }
+.hx-badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 12px; font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #2ee6d6; background: rgba(46, 230, 214, .12); border: 1px solid rgba(46, 230, 214, .35); }
+.hx-skills .hx-badge { color: #b3a8ff; background: rgba(143, 124, 255, .14); border-color: rgba(143, 124, 255, .4); }
+.hx-vp .hx-badge { color: #7fd8ff; background: rgba(60, 200, 255, .13); border-color: rgba(60, 200, 255, .4); }
+.hx-body h3 { margin: 10px 0 0; font-size: 1.45rem; line-height: 1.2; font-weight: 800; color: #fff; letter-spacing: -.01em; }
+.hx-tag { margin: 6px 0 0; font-size: .98rem; line-height: 1.5; font-weight: 600; background: linear-gradient(100deg, #2ee6d6, #3cc8ff 55%, #a08dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hx-ticks { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 6px; }
+.hx-ticks li { position: relative; padding-left: 22px; font-size: .88rem; line-height: 1.45; color: #c4d6e8; }
+.hx-ticks li::before { content: ""; position: absolute; left: 2px; top: .38em; width: 11px; height: 6px; border-left: 2px solid #2ee6d6; border-bottom: 2px solid #2ee6d6; transform: rotate(-45deg); }
+.hx-meta { margin-top: 12px; font-size: .75rem; font-weight: 700; letter-spacing: .04em; color: #7690ad; }
+.hx-go { margin-top: auto; padding-top: 14px; display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; font-weight: 800; color: #2ee6d6; }
+.hx-go svg { transition: transform .2s ease; }
+.hx:hover .hx-go svg { transform: translateX(4px); }
+
+/* ---------- PNA Teacher: a lesson conversation ---------- */
+.hx-bar { display: flex; justify-content: space-between; align-items: center; }
+.hx-dots { display: inline-flex; gap: 4px; }
+.hx-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, .25); }
+.hx-lang { display: inline-flex; border-radius: 999px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .15); padding: 2px; font-size: .64rem; font-weight: 800; }
+.hx-lang b { border-radius: 999px; padding: 2px 9px; color: #9db4cc; font-weight: 800; }
+.hx-lang-ur { background: #2ee6d6; color: #03202a !important; }
+.hx-bubble { margin: 0; border-radius: 12px; padding: 7px 10px; font-size: .76rem; line-height: 1.4; color: #eaf6ff; background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .14); position: relative; }
+.hx-bubble em { display: block; font-style: normal; font-size: .6rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #2ee6d6; margin-bottom: 2px; }
+.hx-t-ans { background: rgba(46, 230, 214, .14); border-color: rgba(46, 230, 214, .45); }
+.hx-xp { position: absolute; right: 8px; top: 6px; border-radius: 999px; padding: 1px 8px; font-size: .62rem; font-weight: 800; background: #ffc65c; color: #3a2600; }
+.hx-opts { display: flex; gap: 8px; }
+.hx-opts span { flex: 1; text-align: center; border-radius: 10px; padding: 5px 8px; font-size: .74rem; font-weight: 700; color: #cfe3f5; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .16); }
+.hx-opts .hx-t-pick { background: #2ee6d6; color: #03202a; border-color: #2ee6d6; box-shadow: 0 0 18px rgba(46, 230, 214, .55); }
+
+/* ---------- Skills Lab: a goniometer measuring a joint ---------- */
+.hx-gonio { width: 100%; height: 112px; flex: none; --a: 120; overflow: visible; }
+.hx-gonio line, .hx-gonio circle { fill: none; }
+.hx-ticks-ring line { stroke: rgba(150, 205, 255, .45); stroke-width: 1.2; }
+.hx-arm-fixed { stroke: rgba(255, 255, 255, .55); stroke-width: 3; stroke-linecap: round; }
+.hx-arm-move { transform-box: view-box; transform-origin: 70px 110px; transform: rotate(calc(var(--a) * -1deg)); }
+.hx-arm-move line { stroke: url(#hxg); stroke-width: 4; stroke-linecap: round; }
+.hx-arm-move circle { fill: #8f7cff; stroke: #fff; stroke-width: 1.5; }
+.hx-pivot { fill: #fff !important; stroke: #2ee6d6; stroke-width: 2; }
+.hx-arc { stroke: #2ee6d6; stroke-width: 5; stroke-linecap: round; stroke-dasharray: calc(var(--a) * 0.593px) 400px; transform-box: view-box; transform-origin: 70px 110px; transform: scaleY(-1); filter: drop-shadow(0 0 6px rgba(46, 230, 214, .8)); }
+.hx-readout { position: absolute; right: 14px; top: 14px; text-align: right; display: grid; gap: 1px; --a: 120; }
+.hx-readout span { font-size: .62rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #9db4cc; }
+.hx-deg { font-size: 1.9rem; line-height: 1; font-weight: 800; color: #fff; text-shadow: 0 0 16px rgba(143, 124, 255, .9); font-variant-numeric: tabular-nums; }
+.hx-deg::after { counter-reset: hxa var(--a); content: counter(hxa) "°"; }
+.hx-levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: auto; }
+.hx-levels span { text-align: center; border-radius: 8px; padding: 4px 2px; font-size: .6rem; font-weight: 800; color: #9db4cc; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .13); }
+.hx-levels span.on { background: linear-gradient(110deg, #2ee6d6, #8f7cff); color: #04162e; border-color: transparent; }
+
+/* ---------- Virtual Patient: a hologram being examined ---------- */
+.hx-body-svg { position: absolute; left: 50%; top: 4px; width: 118px; height: 148px; transform: translateX(-50%); overflow: visible; }
+.hx-human circle, .hx-human path { fill: rgba(60, 200, 255, .1); stroke: #3cc8ff; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 5px rgba(60, 200, 255, .7)); }
+.hx-human path:last-child { fill: none; }
+.hx-hot { fill: #ff7aa2; }
+.hx-hot-ring { fill: none; stroke: #ff7aa2; stroke-width: 1.5; transform-box: fill-box; transform-origin: center; }
+.hx-scan { position: absolute; left: 8%; right: 8%; top: 22%; height: 2px; background: linear-gradient(90deg, transparent, #2ee6d6, transparent); box-shadow: 0 0 14px 2px rgba(46, 230, 214, .7); }
+.hx-chip { position: absolute; border-radius: 999px; padding: 3px 9px; font-size: .64rem; font-weight: 800; color: #eaf6ff; background: rgba(5, 20, 40, .82); border: 1px solid rgba(60, 200, 255, .5); white-space: nowrap; }
+.hx-chip-a { left: 10px; top: 20px; }
+.hx-chip-b { right: 10px; top: 58px; }
+.hx-chip-c { left: 12px; top: 96px; color: #ffd1de; border-color: rgba(255, 122, 162, .7); background: rgba(70, 10, 30, .75); }
+.hx-vsteps { position: absolute; left: 10px; right: 10px; bottom: 10px; display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; }
+.hx-vsteps span { border-radius: 999px; padding: 3px 9px; font-size: .62rem; font-weight: 800; color: #cfe3f5; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .15); }
+.hx-vsteps .score { background: #2ee6d6; color: #03202a; border-color: #2ee6d6; }
+
+/* ---------- motion (only when the visitor allows it) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hx-t-q { animation: hxIn 12s ease-out infinite; }
+  .hx-opts { animation: hxIn2 12s ease-out infinite; }
+  .hx-t-pick { animation: hxPick 12s ease-out infinite; }
+  .hx-t-ans { animation: hxIn4 12s ease-out infinite; }
+  .hx-xp { animation: hxPop 12s ease-out infinite; }
+  .hx-lang-ur { animation: hxLang 12s ease-out infinite; }
+  .hx-lang-en { animation: hxLangEn 12s ease-out infinite; }
+  .hx-gonio, .hx-readout { animation: hxSweep 7s ease-in-out infinite; }
+  .hx-scan { animation: hxScan 4.2s ease-in-out infinite alternate; }
+  .hx-hot-ring { animation: hxPulse 1.8s ease-out infinite; }
+  .hx-chip-a { animation: hxChip 9s ease-out infinite; }
+  .hx-chip-b { animation: hxChip 9s ease-out 2s infinite; }
+  .hx-chip-c { animation: hxChip 9s ease-out 4s infinite; }
+  .hx-vsteps .score { animation: hxScore 9s ease-out infinite; }
+}
+@keyframes hxIn { 0%, 2% { opacity: 0; transform: translateY(8px); } 8%, 94% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes hxIn2 { 0%, 14% { opacity: 0; } 20%, 94% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes hxPick { 0%, 32% { background: rgba(255, 255, 255, .07); color: #cfe3f5; box-shadow: none; border-color: rgba(255, 255, 255, .16); } 38%, 94% { background: #2ee6d6; color: #03202a; border-color: #2ee6d6; box-shadow: 0 0 18px rgba(46, 230, 214, .55); } 100% { background: rgba(255, 255, 255, .07); } }
+@keyframes hxIn4 { 0%, 42% { opacity: 0; transform: translateY(8px); } 50%, 94% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes hxPop { 0%, 54% { opacity: 0; transform: scale(.6); } 60%, 94% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+@keyframes hxLang { 0%, 40% { background: transparent; color: #9db4cc; } 46%, 94% { background: #2ee6d6; color: #03202a; } 100% { background: transparent; color: #9db4cc; } }
+@keyframes hxLangEn { 0%, 40% { background: #2ee6d6; color: #03202a; } 46%, 94% { background: transparent; color: #9db4cc; } 100% { background: #2ee6d6; color: #03202a; } }
+@keyframes hxSweep { 0%, 8% { --a: 0; } 50%, 62% { --a: 120; } 100% { --a: 0; } }
+@keyframes hxScan { from { top: 8%; } to { top: 90%; } }
+@keyframes hxPulse { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(3.2); opacity: 0; } }
+@keyframes hxChip { 0%, 8% { opacity: 0; transform: translateY(6px); } 16%, 78% { opacity: 1; transform: none; } 90%, 100% { opacity: 0; } }
+@keyframes hxScore { 0%, 60% { opacity: .35; transform: scale(.92); } 70%, 90% { opacity: 1; transform: scale(1); box-shadow: 0 0 14px rgba(46, 230, 214, .8); } 100% { opacity: .35; } }
+.hx-lang-en { background: transparent; color: #9db4cc; }
+.hx-lang-ur { background: #2ee6d6; }
+
+@media (max-width: 760px) {
+  .hx-stage { height: 214px; margin: 12px 12px 0; }
+  .hx-body { padding: 14px 16px 18px; }
+  .hx-body h3 { font-size: 1.28rem; }
+}
+
+/* ---------- Daily Clinical Challenge: one slim, smart band ---------- */
+.hdc { padding: 8px 0 18px; }
+.hdc-card { border-radius: 26px; padding: 16px 22px; display: grid; grid-template-columns: minmax(0, 1.5fr) auto auto; align-items: center; gap: 14px 22px; position: relative; overflow: hidden; }
+.hdc-lead { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.hdc-flame { display: grid; place-items: center; width: 50px; height: 50px; flex: none; border-radius: 16px; color: #ffc65c; background: rgba(255, 198, 92, .12); border: 1px solid rgba(255, 198, 92, .4); box-shadow: 0 0 22px rgba(255, 198, 92, .25); }
+.hdc-kicker { margin: 0; display: flex; align-items: center; gap: 8px; font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #2ee6d6; }
+.hdc-lead h2 { margin: 2px 0 0; font-size: 1.35rem; line-height: 1.2; font-weight: 800; color: #fff; letter-spacing: -.01em; }
+.hdc-facts { margin: 3px 0 0; font-size: .82rem; color: #a9bfd6; }
+.hdc-time .dc-flagship-countdown { margin: 0; }
+.hdc-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.hdc-actions .nx-btn { min-height: 44px; }
+.hdc-board { grid-column: 1 / -1; border-top: 1px solid rgba(150, 205, 255, .16); padding-top: 10px; }
+.hdc-board > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; font-weight: 700; color: #cfe3f5; border-radius: 10px; padding: 4px 6px; }
+.hdc-board > summary::-webkit-details-marker { display: none; }
+.hdc-board > summary:focus-visible { outline: 2px solid #2ee6d6; outline-offset: 2px; }
+.hdc-chev { transition: transform .2s ease; }
+.hdc-board[open] .hdc-chev { transform: rotate(180deg); }
+.hdc-board-body { margin-top: 10px; max-width: 640px; }
+.hdc-board-link { margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; font-weight: 700; color: #2ee6d6; }
+.hdc-board-link:hover { color: #fff; }
+@media (max-width: 1000px) { .hdc-card { grid-template-columns: 1fr; padding: 16px; } .hdc-time { order: 3; } .hdc-actions { order: 4; } .hdc-board { order: 5; } }
+@media (max-width: 560px) { .hdc-lead h2 { font-size: 1.12rem; } .hdc-actions .nx-btn { flex: 1; justify-content: center; } }
+
+/* ---------- Student Pass: one button, opens to its features ---------- */
+.lobby-pass-bar { padding: 0 0 18px; }
+.lobby-pass-toggle { width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; border-radius: 20px; padding: 12px 16px; color: #0b2a4a; background: linear-gradient(110deg, #effaf9 0%, #eef2ff 100%); border: 1px solid #bfe6e3; box-shadow: 0 16px 36px -32px rgba(1, 130, 139, .8); transition: border-color .2s ease, transform .2s ease; }
+.lobby-pass-toggle:hover { border-color: #0db3aa; transform: translateY(-1px); }
+.lobby-pass-toggle:focus-visible { outline: 3px solid #0db3aa; outline-offset: 2px; }
+.lobby-pass-toggle-icon { display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 13px; color: #fff; background: linear-gradient(135deg, #0db3aa, #6f6cff); box-shadow: 0 8px 18px -8px rgba(13, 179, 170, .9); }
+.lobby-pass-toggle-copy { min-width: 0; flex: 1; display: grid; }
+.lobby-pass-toggle-copy strong { font-size: 1rem; font-weight: 800; }
+.lobby-pass-toggle-copy small { font-size: .8rem; color: #475569; }
+.lobby-pass-toggle-state { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 14px; font-size: .8rem; font-weight: 800; color: #046c73; background: #fff; border: 1px solid #bfe6e3; flex: none; }
+.lobby-pass-chev { transition: transform .2s ease; }
+.lobby-pass-toggle[aria-expanded="true"] .lobby-pass-chev { transform: rotate(180deg); }
+.lobby-pass-panel { margin-top: 12px; border-radius: 26px; padding: 0 !important; overflow: hidden; }
+.lobby-pass-panel .container-content { padding-left: 0; padding-right: 0; }
+.lobby-pass-panel .lobby-pass { border-radius: 26px; }
+
+/* ---------- Clinical Registry card inside the "I'm a Physiotherapist" pathway ---------- */
+.pna-reg { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; margin: 0 0 14px; border-radius: 22px; padding: 18px 20px; color: #eaf6ff; background: radial-gradient(120% 140% at 0% 0%, #0c3358 0%, #071a33 60%, #050f22 100%); border: 1px solid rgba(46, 230, 214, .35); box-shadow: 0 24px 50px -34px rgba(8, 40, 90, .9); position: relative; overflow: hidden; }
+.pna-reg::after { content: ""; position: absolute; right: -50px; top: -60px; width: 190px; height: 190px; border-radius: 50%; background: radial-gradient(circle, rgba(143, 124, 255, .4), transparent 70%); pointer-events: none; }
+.pna-reg-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 18px; color: #2ee6d6; background: rgba(46, 230, 214, .12); border: 1px solid rgba(46, 230, 214, .4); box-shadow: 0 0 24px rgba(46, 230, 214, .3); }
+.pna-reg-copy { min-width: 0; position: relative; z-index: 1; }
+.pna-reg-kicker { margin: 0 !important; font-size: .66rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #2ee6d6 !important; }
+.pna-reg-copy > strong { display: block; margin-top: 2px; font-size: 1.25rem; font-weight: 800; color: #fff; }
+.pna-reg-copy > p:not(.pna-reg-kicker) { margin: 4px 0 0; font-size: .9rem; line-height: 1.55; color: #b9cde1; }
+.pna-reg-points { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.pna-reg-points li { position: relative; padding-left: 16px; font-size: .78rem; font-weight: 600; color: #cfe3f5; }
+.pna-reg-points li::before { content: ""; position: absolute; left: 0; top: .5em; width: 8px; height: 8px; border-radius: 50%; background: #2ee6d6; box-shadow: 0 0 8px #2ee6d6; }
+.pna-reg-cta { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1; }
+@media (max-width: 900px) { .pna-reg { grid-template-columns: 1fr; padding: 16px; } .pna-reg-icon { width: 46px; height: 46px; } .pna-reg-cta { flex-direction: row; flex-wrap: wrap; } }
+
+/* the hero no longer has a stats strip: give its buttons room to breathe */
+.nx-sky.lobby-hero { padding-bottom: clamp(36px, 5vw, 64px); }

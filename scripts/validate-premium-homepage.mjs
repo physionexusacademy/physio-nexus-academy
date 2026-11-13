@@ -41,7 +41,7 @@ const zones=[
 ];
 const tests={
   academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<HomeNeedHelp />")&&home.includes("<HomeFeatures />")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
-  lobbyOrder:home.indexOf("<LobbyHero")<home.indexOf("<HomeNeedHelp />")&&home.indexOf("<HomeNeedHelp />")<home.indexOf("<HomeFeatures />")&&home.indexOf("<HomeFeatures />")<home.indexOf("<HomeBooks />")&&home.indexOf("<HomeBooks />")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')&&home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf("<PremiumPathwayBrowser")&&home.indexOf("<PremiumPathwayBrowser")<home.indexOf("<StudentPass />"),
+  lobbyOrder:home.indexOf("<LobbyHero")<home.indexOf("<HomeNeedHelp />")&&home.indexOf("<HomeNeedHelp />")<home.indexOf("<HomeFeatures />")&&home.indexOf("<HomeFeatures />")<home.indexOf("<HomeBooks />")&&home.indexOf("<HomeBooks />")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')&&home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf("<StudentPass />")&&home.indexOf("<StudentPass />")<home.indexOf("<PremiumPathwayBrowser"),
   noDuplicatedFeatureWall:!home.includes("portalActions.map")&&!home.includes("portalGroups.map")&&!home.includes("pna-home-zones"),
   allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
   retiredWeeklyQuizGone:!hrefs.includes("/clinical-quiz")&&!home.includes("/clinical-quiz"),
@@ -54,10 +54,10 @@ const tests={
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
   originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),
   maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),
-  existingProfessionalLearning:home.includes("const supabase = createPublicClient()")&&home.includes('.from("workshops")')&&home.includes("conditionCatalog")&&home.includes("featuredWorkshops = workshopRows?.length ? workshopRows : null")&&home.includes("featuredWorkshops.map("),
+  existingProfessionalLearning:home.includes("const supabase = createPublicClient()")&&home.includes('.from("testimonials")')&&home.includes("<HomeBooks />"),
   premiumChallengeKept:home.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&(home.includes("<DailyChallengeCountdown/>")||home.includes("<DailyChallengeCountdown />"))&&challengeCss.includes(".dc-flagship-countdown"),
   patientRoutesUnchanged:browser.includes('href: "/symptom-checker"')&&browser.includes('href: "/appointment"')&&browser.includes('href: "/home-visit"'),
-  existingCpdIdentityRetained:hero.includes("Approved CPD Provider")&&hero.includes("791052"),
+  existingCpdIdentityRetained:header.includes("CPD Provider · #791052")&&!hero.includes("lobby-stats"),
   studentPassIsPrivate:pass.includes("saved privately on this device")&&!pass.includes("fetch("),
   mobileNavPreserved:header.includes('aria-label="Mobile navigation"')&&header.includes("<InstallApp />")&&mobile.includes('label: "Challenge"'),
   commandPaletteEverywhere:header.includes("<CommandPalette")&&palette.includes('aria-modal="true"')&&palette.includes("pna-ai:ask"),
@@ -70,6 +70,8 @@ const tests={
   // The seven highlighted features, one card each, each one link away.
   sevenFlagshipFeatures:["/learn","/skills","/virtual-patient","/rehabverse/register","/manual-therapy","/daily-challenge","#books"].every(url=>features.includes(`href="${url}`))&&features.includes('data-pna-home-feature="rehabverse-v1"')&&features.includes("Guided rehab at home")&&features.includes("Create your account")&&features.includes("I already have an account"),
   // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
+  // The page stays short: no stats strip in the hero, no news block, the Registry sits in the physiotherapist pathway, Student Pass is one button.
+  calmerHome:!hero.includes("lobby-stats")&&!home.includes("lobby-news")&&!home.includes("clinical-registry-v1")&&browser.includes('data-pna-home-feature="clinical-registry-v1"')&&pass.includes("aria-expanded={open}")&&home.includes('className="hdc-board"'),
   booksRowOnHome:home.includes("<HomeBooks />")&&booksRow.includes("BOOKS.map(")&&lobbyCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")&&bookIds.length>=3&&bookIds.every(id=>fs.existsSync(`public/images/books/thumbs/${id}.webp`))
 };
 for(const [name,okay] of Object.entries(tests)){

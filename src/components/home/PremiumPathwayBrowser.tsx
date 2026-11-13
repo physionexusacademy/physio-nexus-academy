@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
   ClipboardList, Eye, FileBadge2, FlaskConical, GraduationCap, Hand, HeartPulse,
-  Home, LibraryBig, PersonStanding, Ruler, ShieldCheck, Stethoscope, Trophy, Users
-} from "lucide-react";
+  Home, LibraryBig, PersonStanding, Ruler, ShieldCheck, Stethoscope, Trophy, Users, BookMarked } from "lucide-react";
 import { PnaPathwayArtwork } from "./PnaPathwayArtwork";
 
 const icons = {
@@ -207,6 +206,25 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
             </div>
             <PnaPathwayArtwork kind={active.id} className="pna-sig-detail-art" />
           </div>
+          {active.id === "practice" ? (
+            <div className="pna-reg" data-pna-home-feature="clinical-registry-v1">
+              <span className="pna-reg-icon" aria-hidden="true"><BookMarked size={28} /></span>
+              <div className="pna-reg-copy">
+                <p className="pna-reg-kicker">For physiotherapists</p>
+                <strong>PNA Clinical Registry</strong>
+                <p>Learn from real cases — reviewed and de-identified — and, as a verified physiotherapist, share your own through a secure, consent-first workspace.</p>
+                <ul className="pna-reg-points">
+                  <li>Public case library — open to read, no login</li>
+                  <li>Verified therapist portal to submit cases</li>
+                  <li>Consent-first, de-identified, reviewed</li>
+                </ul>
+              </div>
+              <div className="pna-reg-cta">
+                <a href="/clinical-registry" className="nx-btn nx-btn-primary">Explore Registry <ArrowRight size={16} aria-hidden="true" /></a>
+                <a href="/clinical-registry/therapist" className="nx-btn nx-btn-ghost">Therapist portal</a>
+              </div>
+            </div>
+          ) : null}
           <div className="pna-sig-detail-grid">
             {active.links.filter(link => showAtlas || link.href !== "/clinical-visual-atlas").map(link => {
               const Icon = icons[link.icon];

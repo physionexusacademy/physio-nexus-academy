@@ -46,13 +46,16 @@ const evidenceRequestMigration = read(evidenceRequestMigrationPath);
 const reportInsertGuardMigration = read(reportInsertGuardMigrationPath);
 const independentOperatorMigration = read(independentOperatorMigrationPath);
 
+const pathways = read("src/components/home/PremiumPathwayBrowser.tsx");
 assert(
-  "Homepage prominently links to the Clinical Registry",
-  home.includes('data-pna-home-feature="clinical-registry-v1"') &&
-    home.includes("PNA Clinical Registry") &&
-    home.includes('href="/clinical-registry"') &&
-    home.includes("Explore Registry"),
-  "The homepage must expose a responsive, accessible Registry feature and direct route link."
+  "Homepage links to the Clinical Registry inside the 'I'm a Physiotherapist' pathway",
+  pathways.includes('data-pna-home-feature="clinical-registry-v1"') &&
+    pathways.includes("PNA Clinical Registry") &&
+    pathways.includes('href="/clinical-registry"') &&
+    pathways.includes('href="/clinical-registry/therapist"') &&
+    pathways.includes("Explore Registry") &&
+    pathways.includes('active.id === "practice"'),
+  "The physiotherapist pathway must expose the Registry card with a direct route link."
 );
 
 assert(

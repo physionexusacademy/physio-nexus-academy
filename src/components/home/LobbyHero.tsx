@@ -1,21 +1,13 @@
 import Image from "next/image";
 import { ArrowRight, BadgeCheck, Languages } from "lucide-react";
-import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
 import { LobbySearch } from "./LobbySearch";
 
 /**
  * The academy lobby: the first thing a visitor sees. Dark night-sky campus,
  * the founder's approved portrait in a holographic frame, an "ask anything"
- * bar and live numbers from the academy's own content.
+ * bar. (The CPD approval lives in the site header.)
  */
-export function LobbyHero({ atlasPublished, conditionCount }: { atlasPublished: boolean; conditionCount: number }) {
-  const stats = [
-    { value: lessonIndex.length, label: "step-by-step lessons" },
-    { value: manualLessonMetas.length, label: "manual therapy techniques" },
-    { value: conditionCount, label: "conditions with treatment plans" },
-    { value: "5", label: "daily challenge questions" },
-  ];
-
+export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
   return (
     <section className="nx-sky nx-grid nx-stars lobby-hero" aria-labelledby="lobby-title">
       <div className="lobby-orbit lobby-orbit-a" aria-hidden="true" />
@@ -75,26 +67,6 @@ export function LobbyHero({ atlasPublished, conditionCount }: { atlasPublished: 
         </div>
       </div>
 
-      <div className="container-content">
-        <dl className="lobby-stats">
-          {stats.map((stat) => (
-            <div key={stat.label} className="nx-stat">
-              <dt className="sr-only">{stat.label}</dt>
-              <dd>
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
-              </dd>
-            </div>
-          ))}
-          <div className="nx-stat lobby-cpd">
-            <dt className="sr-only">Accreditation</dt>
-            <dd>
-              <strong className="nx-gradient-text">CPD</strong>
-              <span>Approved CPD Provider · #791052</span>
-            </dd>
-          </div>
-        </dl>
-      </div>
     </section>
   );
 }

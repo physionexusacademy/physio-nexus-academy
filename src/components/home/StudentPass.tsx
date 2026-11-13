@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Check, Flame, GraduationCap, Layers, PersonStanding, Ruler, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Flame, GraduationCap, Layers, PersonStanding, Ruler, Trophy, Zap } from "lucide-react";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
 import { getDeck, getDueCardIds, getTeacherProfile, getTeacherProgress, TEACHER_EVENT } from "@/lib/teacher/progress";
 import { getDueReviews } from "@/lib/clinical-review-queue";
@@ -94,6 +94,7 @@ function readPass(): PassState {
 /** A personal console on the lobby: level, streak, and today's three-step mission. */
 export function StudentPass() {
   const [pass, setPass] = useState<PassState | null>(null);
+  const [open, setOpen] = useState(false);
   const refresh = useCallback(() => {
     try {
       setPass(readPass());
@@ -145,8 +146,28 @@ export function StudentPass() {
   ];
 
   return (
-    <section id="student-pass" className="nx-sky lobby-pass-band" aria-labelledby="student-pass-title">
+    <section id="student-pass" className="lobby-pass-bar" aria-labelledby="student-pass-toggle">
       <div className="container-content">
+        <button
+          type="button"
+          className="lobby-pass-toggle"
+          aria-expanded={open}
+          aria-controls="student-pass-panel"
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span className="lobby-pass-toggle-icon" aria-hidden="true"><Zap className="h-5 w-5" /></span>
+          <span className="lobby-pass-toggle-copy">
+            <strong id="student-pass-toggle">Student Pass</strong>
+            <small>
+              {isNew
+                ? "Free · no sign-up · XP, streak and flashcards"
+                : `${current.name} · ${xp} XP · ${pass?.streak ?? 0}-day streak${due > 0 ? ` · ${due} to review` : ""}`}
+            </small>
+          </span>
+          <span className="lobby-pass-toggle-state">{open ? "Close" : "Open"} <ChevronDown className="lobby-pass-chev h-4 w-4" aria-hidden="true" /></span>
+        </button>
+        {open ? (
+        <div id="student-pass-panel" className="nx-sky lobby-pass-band lobby-pass-panel">
         <div className="nx-glass lobby-pass">
           <div className="lobby-pass-id">
             <p className="nx-kicker"><Zap className="h-3.5 w-3.5" aria-hidden="true" /> Student pass</p>
@@ -236,6 +257,8 @@ export function StudentPass() {
             </ol>
           </div>
         </div>
+        </div>
+        ) : null}
       </div>
     </section>
   );
