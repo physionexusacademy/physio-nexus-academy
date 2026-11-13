@@ -9,7 +9,7 @@ shows which chunks carry a Supabase client).
 - **Server-rendered client components pull their imports into the worker.** A client component is still rendered on the
   server, so everything it imports statically ends up in the worker bundle. The Supabase browser client
   (`@/lib/supabase/client` → `@supabase/ssr` + `supabase-js`) is ~220 KB raw / **~85 KiB gzip**. The first version of the
-  student-account screens imported it directly and the worker grew by ~90 KiB.
+  student-account screens imported it directly and the worker grew by ~90 KiB (2760 → 2850 KiB). Loading them client-only brought it back to 2763 KiB: the whole account feature now costs ~3 KiB of worker.
 - **Fix: client-only screens.** Load anything that talks to Supabase (or is large and private) with
   `next/dynamic(..., { ssr: false })`, as the RehabVerse `*Loader.tsx` files and `AccountApp` / `StudentSync` do. The code then
   ships as a browser chunk (static asset, not counted) and never enters the worker. Do not `import()` it from a module that is
