@@ -29,8 +29,8 @@ const founderJpg=fs.readFileSync("public/images/founder-dr-sajjad.jpg");
 const jpgSize=(()=>{for(let i=2;i<founderJpg.length;){if(founderJpg[i]!==0xff)break;const m=founderJpg[i+1];const len=founderJpg.readUInt16BE(i+2);if(m>=0xc0&&m<=0xc3)return{h:founderJpg.readUInt16BE(i+5),w:founderJpg.readUInt16BE(i+7)};i+=2+len;}return null;})();
 const hrefs=[...browser.matchAll(/href:\s*"(\/[a-z0-9/-]+)"/g)].map(match=>match[1]);
 const mandatoryPaths=[
-  "/learn","/knowledge-hub","/clinical-visual-atlas","/manual-therapy","/treatment-plans",
-  "/resources","/clinical-arena","/case-lab","/daily-challenge",
+  "/learn","/conditions","/clinical-visual-atlas","/manual-therapy",
+  "/resources","/case-lab","/daily-challenge",
   "/workshops","/research","/training","/faculty","/symptom-checker",
   "/patient-services","/verify","/appointment","/home-visit"
 ];
@@ -53,7 +53,7 @@ const tests={
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
   originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),
   maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),
-  existingProfessionalLearning:home.includes("const supabase = createPublicClient()")&&home.includes('.from("workshops")')&&home.includes("knowledgeArticles")&&home.includes("featuredWorkshops = workshopRows?.length ? workshopRows : null")&&home.includes("featuredWorkshops.map("),
+  existingProfessionalLearning:home.includes("const supabase = createPublicClient()")&&home.includes('.from("workshops")')&&home.includes("conditionCatalog")&&home.includes("featuredWorkshops = workshopRows?.length ? workshopRows : null")&&home.includes("featuredWorkshops.map("),
   premiumChallengeKept:home.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&(home.includes("<DailyChallengeCountdown/>")||home.includes("<DailyChallengeCountdown />"))&&challengeCss.includes(".dc-flagship-countdown"),
   patientRoutesUnchanged:browser.includes('href: "/symptom-checker"')&&browser.includes('href: "/appointment"')&&browser.includes('href: "/home-visit"'),
   existingCpdIdentityRetained:hero.includes("Approved CPD Provider")&&hero.includes("791052"),
@@ -65,7 +65,7 @@ const tests={
   responsiveHero:lobbyCss.includes("max-width: 560px")&&lobbyCss.includes("max-width: 900px"),
   featureSearchKept:search.includes('role="search"')&&search.includes("results.map("),
   // A plain-language directory straight after the hero: patients and learners find everything in one tap.
-  startHereDirectory:home.indexOf("<HomeDirectory />")>home.indexOf("<LobbyHero")&&home.indexOf("<HomeDirectory />")<home.indexOf("<StudentPass />")&&["/appointment","/home-visit","/symptom-checker","/learn","/skills","/virtual-patient","/workshops","/treatment-plans"].every(url=>directory.includes(`href: "${url}"`)),
+  startHereDirectory:home.indexOf("<HomeDirectory />")>home.indexOf("<LobbyHero")&&home.indexOf("<HomeDirectory />")<home.indexOf("<StudentPass />")&&["/appointment","/home-visit","/symptom-checker","/learn","/skills","/virtual-patient","/workshops","/conditions"].every(url=>directory.includes(`href: "${url}"`)),
   // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
   booksRowOnHome:home.includes("<HomeBooks />")&&booksRow.includes("BOOKS.map(")&&lobbyCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")&&bookIds.length>=3&&bookIds.every(id=>fs.existsSync(`public/images/books/thumbs/${id}.webp`))
 };

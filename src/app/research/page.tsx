@@ -148,13 +148,13 @@ export default function ResearchPage() {
 
       <section className="mt-10 grid gap-4 sm:grid-cols-2">
         <a
-          href="/knowledge-hub/specialty/research"
+          href="/learn"
           className="rounded-2xl border border-grey-200 p-5 transition hover:border-teal-200 hover:shadow-md"
         >
-          <p className="text-sm font-bold text-teal-700">Research &amp; Evidence Library</p>
+          <p className="text-sm font-bold text-teal-700">Research &amp; Evidence Lessons</p>
           <p className="mt-2 text-sm leading-6 text-navy-600">
-            Study critical appraisal, outcome measures, research reporting and evidence
-            interpretation in the Knowledge Hub.
+            Study critical appraisal, sensitivity and specificity, outcome measures and evidence
+            interpretation in PNA Teacher.
           </p>
         </a>
         <a

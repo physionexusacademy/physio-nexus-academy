@@ -167,8 +167,7 @@ export const tensUltrasoundEvidence: TeacherLesson = {
   ],
   goDeeper: [
     { title: "Pain Science Basics", href: "/learn/pain-science-basics", note: { en: "Why modulating pain signals can change pain.", ur: "Pain signals badalne se dard kyun badal sakta hai." } },
-    { title: "Knee Osteoarthritis — treatment plan", href: "/treatment-plans/knee-osteoarthritis", note: { en: "Where electrotherapy fits next to exercise.", ur: "Exercise ke saath electrotherapy ki jagah." } },
-    { title: "Pain neuroscience education", href: "/knowledge-hub/pain-neuroscience-education-multimodal-rehab", note: { en: "Explaining pain honestly to patients.", ur: "Patients ko imaandari se dard samjhana." } },
+    { title: "Knee Osteoarthritis — treatment plan", href: "/conditions/knee-osteoarthritis#clinical", note: { en: "Where electrotherapy fits next to exercise.", ur: "Exercise ke saath electrotherapy ki jagah." } },
   ],
   sources: [
     {

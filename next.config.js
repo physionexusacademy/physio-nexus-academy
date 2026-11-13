@@ -29,6 +29,17 @@ const nextConfig = {
       // Retired sections (2026-11): keep old links and bookmarks working.
       { source: '/courses', destination: '/learn', permanent: true },
       { source: '/clinical-quiz', destination: '/daily-challenge', permanent: true },
+      // Conditions & Treatment Guide (2026-11): MSK injuries + treatment plans merged; Knowledge Hub articles and the Clinical Arena retired.
+      { source: '/treatment-plans/nonspecific-low-back-pain', destination: '/conditions/non-specific-low-back-pain', permanent: true },
+      { source: '/treatment-plans/rotator-cuff-related-shoulder-pain', destination: '/conditions/rotator-cuff-tendinopathy', permanent: true },
+      { source: '/treatment-plans/lateral-elbow-tendinopathy', destination: '/conditions/lateral-epicondylalgia', permanent: true },
+      { source: '/treatment-plans/:slug', destination: '/conditions/:slug', permanent: true },
+      { source: '/treatment-plans', destination: '/conditions', permanent: true },
+      { source: '/msk-injuries/:slug', destination: '/conditions/:slug', permanent: true },
+      { source: '/msk-injuries', destination: '/conditions', permanent: true },
+      { source: '/knowledge-hub/:path*', destination: '/conditions', permanent: true },
+      { source: '/knowledge-hub', destination: '/conditions', permanent: true },
+      { source: '/clinical-arena', destination: '/case-lab', permanent: true },
       { source: '/gallery', destination: '/workshops', permanent: true },
       { source: '/updates', destination: '/workshops', permanent: true },
       { source: '/visual-lab', destination: '/clinical-visual-atlas', permanent: true },

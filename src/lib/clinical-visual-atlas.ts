@@ -85,8 +85,8 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
       "anterior-shoulder-instability",
     ],
     relatedLinks: [
-      { label: "Rotator cuff tendinopathy guide", href: "/msk-injuries/rotator-cuff-tendinopathy" },
-      { label: "Full-thickness rotator cuff tear guide", href: "/msk-injuries/rotator-cuff-full-thickness-tear" },
+      { label: "Rotator cuff tendinopathy guide", href: "/conditions/rotator-cuff-tendinopathy" },
+      { label: "Full-thickness rotator cuff tear guide", href: "/conditions/rotator-cuff-full-thickness-tear" },
     ],
   },
   {
@@ -110,8 +110,8 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
       "rotator-cuff-full-thickness-tear",
     ],
     relatedLinks: [
-      { label: "Rotator cuff tendinopathy guide", href: "/msk-injuries/rotator-cuff-tendinopathy" },
-      { label: "Full-thickness rotator cuff tear guide", href: "/msk-injuries/rotator-cuff-full-thickness-tear" },
+      { label: "Rotator cuff tendinopathy guide", href: "/conditions/rotator-cuff-tendinopathy" },
+      { label: "Full-thickness rotator cuff tear guide", href: "/conditions/rotator-cuff-full-thickness-tear" },
     ],
   },
   {
@@ -132,7 +132,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["rotator-cuff-full-thickness-tear"],
     relatedLinks: [
-      { label: "Full-thickness rotator cuff tear guide", href: "/msk-injuries/rotator-cuff-full-thickness-tear" },
+      { label: "Full-thickness rotator cuff tear guide", href: "/conditions/rotator-cuff-full-thickness-tear" },
     ],
   },
   {
@@ -153,7 +153,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["rotator-cuff-tendinopathy"],
     relatedLinks: [
-      { label: "Rotator cuff tendinopathy / subacromial pain guide", href: "/msk-injuries/rotator-cuff-tendinopathy" },
+      { label: "Rotator cuff tendinopathy / subacromial pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
     ],
   },
   {
@@ -174,7 +174,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["anterior-shoulder-instability"],
     relatedLinks: [
-      { label: "Anterior Shoulder Instability guide", href: "/msk-injuries/anterior-shoulder-instability" },
+      { label: "Anterior Shoulder Instability guide", href: "/conditions/anterior-shoulder-instability" },
     ],
   },
   {
@@ -195,7 +195,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["cervical-radiculopathy"],
     relatedLinks: [
-      { label: "Cervical Radiculopathy guide", href: "/msk-injuries/cervical-radiculopathy" },
+      { label: "Cervical Radiculopathy guide", href: "/conditions/cervical-radiculopathy" },
     ],
   },
   {
@@ -215,7 +215,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${ankleFootBase}/lateral-ankle-sprain`,
     assetReady: true,
     conditionSlugs: ["lateral-ankle-sprain"],
-    relatedLinks: [{ label: "Lateral Ankle Sprain guide", href: "/msk-injuries/lateral-ankle-sprain" }],
+    relatedLinks: [{ label: "Lateral Ankle Sprain guide", href: "/conditions/lateral-ankle-sprain" }],
   },
   {
     slug: "achilles-tendon-rupture",
@@ -234,7 +234,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${ankleFootBase}/achilles-tendon-rupture`,
     assetReady: true,
     conditionSlugs: ["achilles-tendon-rupture"],
-    relatedLinks: [{ label: "Achilles Tendon Rupture guide", href: "/msk-injuries/achilles-tendon-rupture" }],
+    relatedLinks: [{ label: "Achilles Tendon Rupture guide", href: "/conditions/achilles-tendon-rupture" }],
   },
   {
     slug: "hamstring-strain",
@@ -253,7 +253,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${thighBase}/hamstring-strain`,
     assetReady: true,
     conditionSlugs: ["hamstring-strain"],
-    relatedLinks: [{ label: "Hamstring Strain guide", href: "/msk-injuries/hamstring-strain" }],
+    relatedLinks: [{ label: "Hamstring Strain guide", href: "/conditions/hamstring-strain" }],
   },
   {
     slug: "femoroacetabular-impingement-syndrome",
@@ -272,7 +272,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${hipGroinBase}/fais`,
     assetReady: true,
     conditionSlugs: ["femoroacetabular-impingement-syndrome"],
-    relatedLinks: [{ label: "FAIS guide", href: "/msk-injuries/femoroacetabular-impingement-syndrome" }],
+    relatedLinks: [{ label: "FAIS guide", href: "/conditions/femoroacetabular-impingement-syndrome" }],
   },
   {
     slug: "hip-osteoarthritis",
@@ -291,7 +291,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${hipGroinBase}/hip-osteoarthritis`,
     assetReady: true,
     conditionSlugs: ["hip-osteoarthritis"],
-    relatedLinks: [{ label: "Hip Osteoarthritis guide", href: "/msk-injuries/hip-osteoarthritis" }],
+    relatedLinks: [{ label: "Hip Osteoarthritis guide", href: "/conditions/hip-osteoarthritis" }],
   },
   {
     slug: "carpal-tunnel-syndrome",
@@ -310,7 +310,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${wristHandBase}/carpal-tunnel-syndrome`,
     assetReady: true,
     conditionSlugs: ["carpal-tunnel-syndrome"],
-    relatedLinks: [{ label: "Carpal Tunnel Syndrome guide", href: "/msk-injuries/carpal-tunnel-syndrome" }],
+    relatedLinks: [{ label: "Carpal Tunnel Syndrome guide", href: "/conditions/carpal-tunnel-syndrome" }],
   },
   {
     slug: "lateral-epicondylalgia",
@@ -329,7 +329,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${elbowForearmBase}/lateral-epicondylalgia`,
     assetReady: true,
     conditionSlugs: ["lateral-epicondylalgia"],
-    relatedLinks: [{ label: "Lateral Epicondylalgia guide", href: "/msk-injuries/lateral-epicondylalgia" }],
+    relatedLinks: [{ label: "Lateral Epicondylalgia guide", href: "/conditions/lateral-epicondylalgia" }],
   },
   {
     slug: "cervical-disc-herniation-radiculopathy",
@@ -350,7 +350,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["cervical-radiculopathy"],
     relatedLinks: [
-      { label: "Cervical Radiculopathy guide", href: "/msk-injuries/cervical-radiculopathy" },
+      { label: "Cervical Radiculopathy guide", href: "/conditions/cervical-radiculopathy" },
       { label: "Manual Therapy Mastery", href: "/manual-therapy" },
     ],
   },
@@ -372,8 +372,8 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     crop: {"x":0,"y":0,"width":384,"height":512},
     assetReady: true,
     relatedLinks: [
-      { label: "Knee MSK conditions", href: "/msk-injuries" },
-      { label: "Knee treatment plans", href: "/treatment-plans" },
+      { label: "Knee MSK conditions", href: "/conditions" },
+      { label: "Knee treatment plans", href: "/conditions" },
     ],
   },
   {
@@ -394,8 +394,8 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["knee-osteoarthritis"],
     relatedLinks: [
-      { label: "Open Knee OA clinical guide", href: "/msk-injuries/knee-osteoarthritis" },
-      { label: "Open Knee OA treatment plan", href: "/treatment-plans" },
+      { label: "Open Knee OA clinical guide", href: "/conditions/knee-osteoarthritis" },
+      { label: "Open Knee OA treatment plan", href: "/conditions" },
     ],
   },
   {
@@ -417,7 +417,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["acl-injury"],
     relatedLinks: [
-      { label: "ACL clinical guide", href: "/msk-injuries/acl-injury" },
+      { label: "ACL clinical guide", href: "/conditions/acl-injury" },
       { label: "Manual Therapy Mastery", href: "/manual-therapy" },
     ],
   },
@@ -439,7 +439,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     crop: {"x":0,"y":512,"width":384,"height":512},
     assetReady: true,
     conditionSlugs: ["acl-injury"],
-    relatedLinks: [{ label: "ACL Injury guide", href: "/msk-injuries/acl-injury" }],
+    relatedLinks: [{ label: "ACL Injury guide", href: "/conditions/acl-injury" }],
   },
   {
     slug: "acl-injury-mechanism",
@@ -458,7 +458,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${kneeBase}/thumbs/acl-injury-mechanism.webp`,
     assetReady: false,
     conditionSlugs: ["acl-injury"],
-    relatedLinks: [{ label: "ACL Injury guide", href: "/msk-injuries/acl-injury" }],
+    relatedLinks: [{ label: "ACL Injury guide", href: "/conditions/acl-injury" }],
   },
   {
     slug: "meniscus-anatomy",
@@ -478,7 +478,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     crop: {"x":1152,"y":0,"width":384,"height":512},
     assetReady: true,
     conditionSlugs: ["meniscal-injury"],
-    relatedLinks: [{ label: "Meniscal Injury guide", href: "/msk-injuries/meniscal-injury" }],
+    relatedLinks: [{ label: "Meniscal Injury guide", href: "/conditions/meniscal-injury" }],
   },
   {
     slug: "meniscus-tear",
@@ -498,7 +498,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     crop: {"x":384,"y":512,"width":384,"height":512},
     assetReady: true,
     conditionSlugs: ["meniscal-injury"],
-    relatedLinks: [{ label: "Meniscal Injury guide", href: "/msk-injuries/meniscal-injury" }],
+    relatedLinks: [{ label: "Meniscal Injury guide", href: "/conditions/meniscal-injury" }],
   },
   {
     slug: "patellofemoral-pain",
@@ -516,7 +516,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/patellofemoral-pain`,
     thumbnailPath: `${kneeBase}/patellofemoral-pain`,
     assetReady: true,
-    relatedLinks: [{ label: "MSK Injury Hub", href: "/msk-injuries" }],
+    relatedLinks: [{ label: "MSK Injury Hub", href: "/conditions" }],
   },
   {
     slug: "lachman-test",
@@ -535,7 +535,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${kneeBase}/thumbs/lachman-test.webp`,
     assetReady: false,
     conditionSlugs: ["acl-injury"],
-    relatedLinks: [{ label: "ACL testing guide", href: "/msk-injuries/acl-injury" }],
+    relatedLinks: [{ label: "ACL testing guide", href: "/conditions/acl-injury" }],
   },
   {
     slug: "mcmurray-test",
@@ -554,7 +554,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${kneeBase}/thumbs/mcmurray-test.webp`,
     assetReady: false,
     conditionSlugs: ["meniscal-injury"],
-    relatedLinks: [{ label: "Meniscal testing guide", href: "/msk-injuries/meniscal-injury" }],
+    relatedLinks: [{ label: "Meniscal testing guide", href: "/conditions/meniscal-injury" }],
   },
   {
     slug: "knee-range-of-motion",
@@ -572,7 +572,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${kneeBase}/knee-range-of-motion.webp`,
     thumbnailPath: `${kneeBase}/thumbs/knee-range-of-motion.webp`,
     assetReady: false,
-    relatedLinks: [{ label: "Knee clinical library", href: "/msk-injuries" }],
+    relatedLinks: [{ label: "Knee clinical library", href: "/conditions" }],
   },
   {
     slug: "knee-rehabilitation-overview",
@@ -591,7 +591,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${kneeBase}/thumbs/knee-rehabilitation-overview.webp`,
     assetReady: false,
     relatedLinks: [
-      { label: "Treatment Plans", href: "/treatment-plans" },
+      { label: "Treatment Plans", href: "/conditions" },
       { label: "Clinical Case Lab", href: "/case-lab" },
     ],
   },
@@ -602,7 +602,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Neck_Anatomy.svg/960px-Neck_Anatomy.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["mechanical-neck-pain","whiplash-associated-disorder"],
-    relatedLinks: [{ label: "Mechanical Neck Pain", href: "/msk-injuries/mechanical-neck-pain" }, { label: "Whiplash-Associated Disorder", href: "/msk-injuries/whiplash-associated-disorder" }],
+    relatedLinks: [{ label: "Mechanical Neck Pain", href: "/conditions/mechanical-neck-pain" }, { label: "Whiplash-Associated Disorder", href: "/conditions/whiplash-associated-disorder" }],
   },
   {
     slug: "lumbar-spine-reference", title: "Healthy Spine Reference", shortTitle: "Spine Anatomy",
@@ -611,7 +611,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Healthy_spine.svg/960px-Healthy_spine.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["non-specific-low-back-pain","lumbar-radiculopathy","thoracic-spine-pain"],
-    relatedLinks: [{ label: "Non-Specific Low Back Pain", href: "/msk-injuries/non-specific-low-back-pain" }, { label: "Lumbar Radiculopathy", href: "/msk-injuries/lumbar-radiculopathy" }, { label: "Thoracic Spine Pain", href: "/msk-injuries/thoracic-spine-pain" }],
+    relatedLinks: [{ label: "Non-Specific Low Back Pain", href: "/conditions/non-specific-low-back-pain" }, { label: "Lumbar Radiculopathy", href: "/conditions/lumbar-radiculopathy" }, { label: "Thoracic Spine Pain", href: "/conditions/thoracic-spine-pain" }],
   },
   {
     slug: "shoulder-anatomy-reference", title: "Shoulder Anatomy Reference", shortTitle: "Shoulder Anatomy",
@@ -620,7 +620,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Shoulder_anatomy.svg/960px-Shoulder_anatomy.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["adhesive-capsulitis","acromioclavicular-joint-injury","long-head-biceps-tendinopathy"],
-    relatedLinks: [{ label: "Adhesive Capsulitis", href: "/msk-injuries/adhesive-capsulitis" }, { label: "AC Joint Injury", href: "/msk-injuries/acromioclavicular-joint-injury" }, { label: "Long-Head Biceps Tendinopathy", href: "/msk-injuries/long-head-biceps-tendinopathy" }],
+    relatedLinks: [{ label: "Adhesive Capsulitis", href: "/conditions/adhesive-capsulitis" }, { label: "AC Joint Injury", href: "/conditions/acromioclavicular-joint-injury" }, { label: "Long-Head Biceps Tendinopathy", href: "/conditions/long-head-biceps-tendinopathy" }],
   },
   {
     slug: "elbow-anatomy-reference", title: "Elbow Anatomy Reference", shortTitle: "Elbow Anatomy",
@@ -629,7 +629,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Medial_epicondylitis.svg/960px-Medial_epicondylitis.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["medial-epicondylalgia"],
-    relatedLinks: [{ label: "Medial Epicondylalgia", href: "/msk-injuries/medial-epicondylalgia" }],
+    relatedLinks: [{ label: "Medial Epicondylalgia", href: "/conditions/medial-epicondylalgia" }],
   },
   {
     slug: "wrist-hand-reference", title: "Wrist and Hand Reference", shortTitle: "Wrist / Hand",
@@ -638,7 +638,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Wrist_pain.svg/960px-Wrist_pain.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["de-quervain-tenosynovitis","trigger-finger"],
-    relatedLinks: [{ label: "De Quervain Tenosynovitis", href: "/msk-injuries/de-quervain-tenosynovitis" }, { label: "Trigger Finger", href: "/msk-injuries/trigger-finger" }],
+    relatedLinks: [{ label: "De Quervain Tenosynovitis", href: "/conditions/de-quervain-tenosynovitis" }, { label: "Trigger Finger", href: "/conditions/trigger-finger" }],
   },
   {
     slug: "hip-groin-reference", title: "Hip and Groin Reference", shortTitle: "Hip / Groin",
@@ -647,7 +647,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Hip_and_groin_pain.svg/960px-Hip_and_groin_pain.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["greater-trochanteric-pain-syndrome","gluteal-tendinopathy","adductor-related-groin-pain"],
-    relatedLinks: [{ label: "Greater Trochanteric Pain Syndrome", href: "/msk-injuries/greater-trochanteric-pain-syndrome" }, { label: "Gluteal Tendinopathy", href: "/msk-injuries/gluteal-tendinopathy" }, { label: "Adductor-Related Groin Pain", href: "/msk-injuries/adductor-related-groin-pain" }],
+    relatedLinks: [{ label: "Greater Trochanteric Pain Syndrome", href: "/conditions/greater-trochanteric-pain-syndrome" }, { label: "Gluteal Tendinopathy", href: "/conditions/gluteal-tendinopathy" }, { label: "Adductor-Related Groin Pain", href: "/conditions/adductor-related-groin-pain" }],
   },
   {
     slug: "knee-anatomy-reference", title: "Knee Anatomy Reference", shortTitle: "Knee Anatomy",
@@ -656,7 +656,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Knee_injuries.svg/960px-Knee_injuries.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["patellofemoral-pain","patellar-tendinopathy","pcl-injury","mcl-injury"],
-    relatedLinks: [{ label: "Patellofemoral Pain", href: "/msk-injuries/patellofemoral-pain" }, { label: "Patellar Tendinopathy", href: "/msk-injuries/patellar-tendinopathy" }, { label: "PCL Injury", href: "/msk-injuries/pcl-injury" }, { label: "MCL Injury", href: "/msk-injuries/mcl-injury" }],
+    relatedLinks: [{ label: "Patellofemoral Pain", href: "/conditions/patellofemoral-pain" }, { label: "Patellar Tendinopathy", href: "/conditions/patellar-tendinopathy" }, { label: "PCL Injury", href: "/conditions/pcl-injury" }, { label: "MCL Injury", href: "/conditions/mcl-injury" }],
   },
   {
     slug: "plantar-foot-reference", title: "Plantar Foot Reference", shortTitle: "Plantar Fascia",
@@ -665,7 +665,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Plantar_fascia.svg/960px-Plantar_fascia.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["plantar-heel-pain","posterior-tibial-tendon-dysfunction"],
-    relatedLinks: [{ label: "Plantar Heel Pain", href: "/msk-injuries/plantar-heel-pain" }, { label: "Posterior Tibial Tendon Dysfunction", href: "/msk-injuries/posterior-tibial-tendon-dysfunction" }],
+    relatedLinks: [{ label: "Plantar Heel Pain", href: "/conditions/plantar-heel-pain" }, { label: "Posterior Tibial Tendon Dysfunction", href: "/conditions/posterior-tibial-tendon-dysfunction" }],
   },
   {
     slug: "achilles-reference", title: "Achilles Tendon Reference", shortTitle: "Achilles Tendon",
@@ -674,7 +674,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Achilles_tendonitis.svg/960px-Achilles_tendonitis.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["achilles-tendinopathy"],
-    relatedLinks: [{ label: "Achilles Tendinopathy", href: "/msk-injuries/achilles-tendinopathy" }],
+    relatedLinks: [{ label: "Achilles Tendinopathy", href: "/conditions/achilles-tendinopathy" }],
   },
   {
     slug: "shin-reference", title: "Shin Region Reference", shortTitle: "Shin Region",
@@ -683,7 +683,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Shin_splints.svg/960px-Shin_splints.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["tibial-stress-injury"],
-    relatedLinks: [{ label: "Tibial Stress Injury", href: "/msk-injuries/tibial-stress-injury" }],
+    relatedLinks: [{ label: "Tibial Stress Injury", href: "/conditions/tibial-stress-injury" }],
   }
 ];
 

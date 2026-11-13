@@ -176,9 +176,8 @@ export const motorLearningNeuroplasticity: TeacherLesson = {
     { id: "ml-5", front: { en: "Name five Kleim & Jones neuroplasticity principles.", ur: "Kleim & Jones ke paanch neuroplasticity usool?" }, back: { en: "Any five: use it or lose it, use it and improve it, specificity, repetition, intensity, time, salience, age, transference, interference.", ur: "Koi paanch: use it or lose it, use it and improve it, specificity, repetition, intensity, time, salience, age, transference, interference." } },
   ],
   goDeeper: [
-    { title: "Motor learning in neurorehabilitation", href: "/knowledge-hub/motor-learning-neurorehabilitation-practice-feedback", note: { en: "Practice and feedback in more depth.", ur: "Practice aur feedback mazeed tafseel se." } },
-    { title: "Stroke rehabilitation — treatment plan", href: "/treatment-plans/stroke-rehabilitation", note: { en: "Putting task-specific practice into a full plan.", ur: "Task-specific practice ko mukammal plan mein dalna." } },
-    { title: "Stroke upper-limb recovery", href: "/knowledge-hub/stroke-upper-limb-recovery-task-specific-training", note: { en: "High-repetition arm training in practice.", ur: "Practice mein high-repetition arm training." } },
+    { title: "Stroke rehabilitation — treatment plan", href: "/conditions/stroke-rehabilitation#clinical", note: { en: "Putting task-specific practice into a full plan.", ur: "Task-specific practice ko mukammal plan mein dalna." } },
+    { title: "Exercise Dosage (FITT)", href: "/learn/exercise-dosage", note: { en: "Turn high-repetition practice into a dose you can write down.", ur: "High-repetition practice ko aisi dose mein badlein jo likhi ja sake." } },
   ],
   sources: [
     { citation: "Schmidt RA, Lee TD, Winstein CJ, Wulf G, Zelaznik HN. Motor Control and Learning: A Behavioral Emphasis. 6th ed. Human Kinetics; 2019." },

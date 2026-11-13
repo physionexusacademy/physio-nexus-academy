@@ -170,8 +170,8 @@ export const gaitCycle: TeacherLesson = {
     { id: "gc-5", front: { en: "What is double support?", ur: "Double support kya hai?" }, back: { en: "When both feet are on the ground — at the start and end of stance; it disappears in running.", ur: "Jab dono feet zameen par hon — stance ke shuru aur end par; daurne mein khatam." } },
   ],
   goDeeper: [
-    { title: "Stroke Rehabilitation", href: "/treatment-plans/stroke-rehabilitation", note: { en: "Gait deviations after stroke and how to train them.", ur: "Stroke ke baad gait deviations aur un ki training." } },
-    { title: "ACL Reconstruction Rehabilitation", href: "/treatment-plans/acl-reconstruction-rehabilitation", note: { en: "Restoring normal loading response.", ur: "Normal loading response wapas lana." } },
+    { title: "Stroke Rehabilitation", href: "/conditions/stroke-rehabilitation#clinical", note: { en: "Gait deviations after stroke and how to train them.", ur: "Stroke ke baad gait deviations aur un ki training." } },
+    { title: "ACL Reconstruction Rehabilitation", href: "/conditions/acl-reconstruction-rehabilitation#clinical", note: { en: "Restoring normal loading response.", ur: "Normal loading response wapas lana." } },
     { title: "UMN vs LMN Lesions", href: "/learn/umn-vs-lmn", note: { en: "Why foot drop has different causes.", ur: "Foot drop ki wajahein alag kyun hoti hain." } },
   ],
   sources: [

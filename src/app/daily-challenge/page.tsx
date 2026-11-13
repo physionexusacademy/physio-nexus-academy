@@ -71,7 +71,7 @@ export default function DailyChallengePage(){
   />
   <div className="container-content py-7 sm:py-10">
    <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
-    <Link href="/knowledge-hub" className="inline-flex items-center gap-1 text-teal-800 hover:underline"><ArrowLeft className="h-4 w-4"/> Knowledge Hub</Link>
+    <Link href="/learn" className="inline-flex items-center gap-1 text-teal-800 hover:underline"><ArrowLeft className="h-4 w-4"/> Learn</Link>
     <span aria-hidden="true">/</span><span>Daily Clinical Challenge</span>
    </nav>
    <header className="dc-hero mt-6 p-5 sm:p-7">
@@ -97,7 +97,7 @@ export default function DailyChallengePage(){
    <p className="dc-footnote mt-6 text-center">
     One attempt per day · Answers scored on the server · Learning activity only (not certification) · PKT timezone
     {" · "}
-    <Link href="/knowledge-hub" className="font-semibold text-teal-800 hover:underline">Knowledge Hub <ArrowRight className="inline h-3.5 w-3.5"/></Link>
+    <Link href="/conditions" className="font-semibold text-teal-800 hover:underline">Conditions &amp; Treatment <ArrowRight className="inline h-3.5 w-3.5"/></Link>
    </p>
   </div>
  </main>;

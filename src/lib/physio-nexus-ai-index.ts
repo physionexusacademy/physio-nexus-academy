@@ -1,12 +1,11 @@
-import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
-import { knowledgeSpecialties } from "@/lib/knowledge-content";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { regionalManualApplications } from "@/lib/manual-therapy-regional";
 import { mskSpecialTests } from "@/lib/msk-special-tests";
 import { clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
-import { mskConditions } from "@/lib/msk-injury-hub";
-import { treatmentPlans } from "@/lib/treatment-plans";
+import { conditionCatalog } from "@/lib/conditions/catalog";
+import { areaLabel, typeLabel } from "@/lib/conditions/taxonomy";
+import conditionKeywords from "@/lib/conditions/generated/keywords.json";
 import { clinicalCases } from "@/lib/all-clinical-cases";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
@@ -28,26 +27,6 @@ export type PnaLearningResource = {
   /** Curated search names, weighted above body text (Skills Lab). */
   tags?: string;
 };
-
-const knowledgeResources: PnaLearningResource[] = allKnowledgeArticles.map((item) => ({
-  id: `knowledge:${item.slug}`,
-  title: item.title,
-  href: `/knowledge-hub/${encodeURIComponent(item.slug)}`,
-  category: item.specialty,
-  summary: item.excerpt,
-  level: item.level ?? "Clinical",
-  keywords: [item.title, item.slug, item.specialty, item.category, item.audience, item.level, ...(item.learningObjectives ?? [])].filter(Boolean).join(" "),
-}));
-
-const specialtyResources: PnaLearningResource[] = knowledgeSpecialties.map((item) => ({
-  id: `specialty:${item.slug}`,
-  title: `${item.name} Learning Resources`,
-  href: `/knowledge-hub/specialty/${encodeURIComponent(item.slug)}`,
-  category: "Knowledge Hub",
-  summary: item.description,
-  level: "Foundation to Advanced",
-  keywords: [item.name, item.slug, item.description].join(" "),
-}));
 
 const manualResources: PnaLearningResource[] = [
   ...manualTherapyTechniques.map((item) => ({
@@ -116,24 +95,28 @@ const skillResources: PnaLearningResource[] = skillIndex.map((skill) => ({
   tags: skill.keywords,
 }));
 
-const mskResources: PnaLearningResource[] = mskConditions.map((item) => ({
+// One guide per condition. The assistant offers it twice: as the condition guide (quick level) and as the
+// treatment plan (clinical level), so "what is it" and "how do I treat it" each lead to the right tab.
+const mskResources: PnaLearningResource[] = conditionCatalog.map((item) => ({
   id: `msk:${item.slug}`,
   title: item.name,
-  href: `/msk-injuries/${encodeURIComponent(item.slug)}`,
-  category: `MSK condition · ${item.region}`,
+  href: `/conditions/${encodeURIComponent(item.slug)}#quick`,
+  category: `Condition · ${areaLabel(item.area)}`,
   summary: item.summary,
   level: "Clinical",
-  keywords: [item.name, item.slug, item.region, item.category, item.summary, ...item.symptoms, ...item.differentials].join(" "),
+  keywords: [item.summary, (conditionKeywords as Record<string, string>)[item.slug] ?? ""].join(" "),
+  tags: item.aka,
 }));
 
-const treatmentResources: PnaLearningResource[] = treatmentPlans.map((item) => ({
+const treatmentResources: PnaLearningResource[] = conditionCatalog.map((item) => ({
   id: `plan:${item.slug}`,
   title: `${item.name} — Treatment Plan`,
-  href: `/treatment-plans/${encodeURIComponent(item.slug)}`,
-  category: item.category,
-  summary: item.summary,
+  href: `/conditions/${encodeURIComponent(item.slug)}#clinical`,
+  category: `${typeLabel(item.type)} · ${areaLabel(item.area)}`,
+  summary: `${item.stages}-stage plan with exercise doses and rules for when to progress. ${item.summary}`,
   level: "Clinical",
-  keywords: [item.name, item.slug, item.category, item.summary, ...item.assessment, ...item.exercises].join(" "),
+  keywords: [(conditionKeywords as Record<string, string>)[item.slug] ?? "", "treatment plan rehabilitation exercises management physiotherapy"].join(" "),
+  tags: item.aka,
 }));
 
 const assessmentResources: PnaLearningResource[] = [
@@ -332,15 +315,6 @@ const browseResources: PnaLearningResource[] = [
     keywords: "certificate verify verification validate certificate number ID check credential authenticity workshop certificate",
   },
   {
-    id: "browse:clinical-arena",
-    title: "Clinical Arena",
-    href: "/clinical-arena",
-    category: "Clinical practice",
-    summary: "Open the Clinical Arena for interactive clinical practice available on the PNA website.",
-    level: "Clinical practice",
-    keywords: "clinical arena interactive practice challenge cases game clinical reasoning practice",
-  },
-  {
     id: "browse:karachi-location",
     title: "PNA Karachi Location",
     href: "/locations/karachi",
@@ -397,7 +371,7 @@ const browseResources: PnaLearningResource[] = [
 ];
 
 const uniqueResources = new Map<string, PnaLearningResource>();
-for (const resource of [...teacherResources, ...skillResources, ...knowledgeResources, ...specialtyResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
+for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
   if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
 }
 

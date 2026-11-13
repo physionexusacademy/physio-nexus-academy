@@ -172,9 +172,9 @@ export const tendinopathyLoadManagement: TeacherLesson = {
     { id: "td-5", front: { en: "Which test screens for Achilles rupture?", ur: "Achilles rupture ke liye kaun sa test?" }, back: { en: "Thompson (calf squeeze) test — no plantarflexion = positive.", ur: "Thompson (calf squeeze) test — plantarflexion na ho = positive." } },
   ],
   goDeeper: [
-    { title: "Achilles Tendinopathy", href: "/msk-injuries/achilles-tendinopathy", note: { en: "A full loading programme for the most common tendon problem.", ur: "Sab se aam tendon masle ka mukammal loading programme." } },
-    { title: "Patellar Tendinopathy", href: "/msk-injuries/patellar-tendinopathy", note: { en: "Jumper's knee — load management in jumping athletes.", ur: "Jumper's knee — jumping athletes mein load management." } },
-    { title: "Lateral elbow tendinopathy — treatment plan", href: "/treatment-plans/lateral-elbow-tendinopathy", note: { en: "Grip-friendly loading and education.", ur: "Grip-friendly loading aur education." } },
+    { title: "Achilles Tendinopathy", href: "/conditions/achilles-tendinopathy", note: { en: "A full loading programme for the most common tendon problem.", ur: "Sab se aam tendon masle ka mukammal loading programme." } },
+    { title: "Patellar Tendinopathy", href: "/conditions/patellar-tendinopathy", note: { en: "Jumper's knee — load management in jumping athletes.", ur: "Jumper's knee — jumping athletes mein load management." } },
+    { title: "Lateral elbow tendinopathy — treatment plan", href: "/conditions/lateral-epicondylalgia#clinical", note: { en: "Grip-friendly loading and education.", ur: "Grip-friendly loading aur education." } },
   ],
   sources: [
     {

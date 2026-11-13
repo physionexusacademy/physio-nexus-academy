@@ -11,7 +11,7 @@ Date: 2026-10-09
 - Server-only Supabase service role queries the restricted leaderboard function. Emails and attempt tokens are never returned by the public leaderboard API.
 - If a participant refreshes in the same browser tab, an active challenge can be resumed from sessionStorage without extending its server-side deadline.
 - Once a challenge closes, server submission returns score zero for expired attempts. Near-midnight starts are blocked if insufficient time remains for all five questions.
-- Homepage and Knowledge Hub link directly to Daily Challenge. The existing weekly quiz is unchanged.
+- The homepage links directly to Daily Challenge. The existing weekly quiz is unchanged.
 
 ## Required deploy and smoke checks
 CI: scripts/validate-daily-challenge.mjs; .github/workflows/deploy-cloudflare-production.yml tests /daily-challenge and /api/daily-challenge/leaderboard.

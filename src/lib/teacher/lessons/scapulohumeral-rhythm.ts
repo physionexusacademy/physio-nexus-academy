@@ -176,8 +176,8 @@ export const scapulohumeralRhythm: TeacherLesson = {
     { id: "shr-5", front: { en: "What does the scapular assistance test do?", ur: "Scapular assistance test kya karta hai?" }, back: { en: "Assists upward rotation/posterior tilt during elevation; less pain or more range suggests a scapular contribution.", ur: "Elevation ke dauraan upward rotation/posterior tilt mein madad; dard kam ya range zyada = scapula ka hissa." } },
   ],
   goDeeper: [
-    { title: "Rotator Cuff Tendinopathy", href: "/msk-injuries/rotator-cuff-tendinopathy", note: { en: "Where the rhythm and the force couples matter most.", ur: "Jahan rhythm aur force couples sab se zyada aham hain." } },
-    { title: "Rotator cuff–related shoulder pain — treatment plan", href: "/treatment-plans/rotator-cuff-related-shoulder-pain", note: { en: "Combining scapular and cuff loading.", ur: "Scapular aur cuff loading ko milana." } },
+    { title: "Rotator Cuff Tendinopathy", href: "/conditions/rotator-cuff-tendinopathy", note: { en: "Where the rhythm and the force couples matter most.", ur: "Jahan rhythm aur force couples sab se zyada aham hain." } },
+    { title: "Rotator cuff–related shoulder pain — treatment plan", href: "/conditions/rotator-cuff-tendinopathy#clinical", note: { en: "Combining scapular and cuff loading.", ur: "Scapular aur cuff loading ko milana." } },
     { title: "Shoulder anatomy reference", href: "/clinical-visual-atlas/shoulder-anatomy-reference", note: { en: "See the four joints and muscles in pictures.", ur: "Chaar joints aur muscles tasveeron mein dekhein." } },
   ],
   sources: [

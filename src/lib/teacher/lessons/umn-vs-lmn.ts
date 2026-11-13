@@ -281,17 +281,17 @@ export const umnVsLmn: TeacherLesson = {
   goDeeper: [
     {
       title: "Stroke Rehabilitation — treatment plan",
-      href: "/treatment-plans/stroke-rehabilitation",
+      href: "/conditions/stroke-rehabilitation#clinical",
       note: { en: "Turn UMN reasoning into a rehab plan.", ur: "UMN reasoning ko rehab plan mein badlein." },
     },
     {
       title: "Parkinson's Disease — treatment plan",
-      href: "/treatment-plans/parkinsons-disease",
+      href: "/conditions/parkinsons-disease#clinical",
       note: { en: "Where rigidity shows up in practice.", ur: "Practice mein rigidity kahan nazar aati hai." },
     },
     {
       title: "Spinal Cord Injury Rehabilitation",
-      href: "/treatment-plans/spinal-cord-injury-rehabilitation",
+      href: "/conditions/spinal-cord-injury-rehabilitation#clinical",
       note: { en: "UMN below the level, LMN at the level.", ur: "Level ke neeche UMN, level par LMN." },
     },
   ],

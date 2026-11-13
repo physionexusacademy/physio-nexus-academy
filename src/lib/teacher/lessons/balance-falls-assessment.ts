@@ -213,8 +213,7 @@ export const balanceFallsAssessment: TeacherLesson = {
   ],
   goDeeper: [
     { title: "Balance & Functional Tests — Skills Lab", href: "/skills/balance-function", note: { en: "Practise TUG, Berg and more step by step.", ur: "TUG, Berg aur mazeed qadam ba qadam practise karein." } },
-    { title: "Falls prevention in older adults", href: "/knowledge-hub/falls-prevention-balance-functional-exercise-older-adults", note: { en: "Programme design and dosing in detail.", ur: "Programme design aur dose tafseel se." } },
-    { title: "Vestibular / BPPV — treatment plan", href: "/treatment-plans/vestibular-bppv", note: { en: "When the vestibular leg of the stool fails.", ur: "Jab stool ki vestibular taang kamzor ho." } },
+    { title: "Vestibular / BPPV — treatment plan", href: "/conditions/vestibular-bppv#clinical", note: { en: "When the vestibular leg of the stool fails.", ur: "Jab stool ki vestibular taang kamzor ho." } },
   ],
   sources: [
     {

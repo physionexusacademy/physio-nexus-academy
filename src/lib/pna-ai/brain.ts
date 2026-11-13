@@ -269,7 +269,7 @@ function buildIndex(resources: BrainResource[]): Index {
     resource,
     kind: kindOf(resource),
     title: new Set(tokenize(resource.title)),
-    slug: new Set(tokenize(resource.href.replace(/[/-]/g, " "))),
+    slug: new Set(tokenize(resource.href.split("#")[0].replace(/[/-]/g, " "))),
     tags: new Set(tokenize(resource.tags ?? "")),
     body: new Set(tokenize(`${resource.keywords} ${resource.summary} ${resource.category}`)),
     titleNorm: ` ${normalize(resource.title)} `,

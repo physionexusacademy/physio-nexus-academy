@@ -233,8 +233,8 @@ export function CaseLabLibrary({cases,categories}:Props){
        <button type="button" className="cl-button cl-button-secondary" onClick={surprise}>
         Surprise patient <Sparkles className="h-4 w-4"/>
        </button>
-       <Link href="/clinical-arena" className="cl-button cl-button-secondary">
-        Clinical Arena <ArrowUpRight className="h-4 w-4"/>
+       <Link href="/virtual-patient" className="cl-button cl-button-secondary">
+        Virtual Patient <ArrowUpRight className="h-4 w-4"/>
        </Link>
       </div>
      </div>

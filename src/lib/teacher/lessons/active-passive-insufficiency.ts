@@ -287,18 +287,13 @@ export const activePassiveInsufficiency: TeacherLesson = {
   goDeeper: [
     {
       title: "Hamstring Strain",
-      href: "/msk-injuries/hamstring-strain",
+      href: "/conditions/hamstring-strain",
       note: { en: "Two-joint muscle injuries in real athletes.", ur: "Asli athletes mein two-joint muscle injuries." },
     },
     {
       title: "Neurodynamic Mobilization",
       href: "/manual-therapy/neurodynamic-mobilization",
       note: { en: "When the 'tight hamstring' is really the nerve.", ur: "Jab 'tight hamstring' asal mein nerve ho." },
-    },
-    {
-      title: "Progressive Overload in Rehabilitation",
-      href: "/knowledge-hub/progressive-overload-in-rehabilitation",
-      note: { en: "Use length–tension when you plan strength work.", ur: "Strength plan banate waqt length–tension use karein." },
     },
   ],
   sources: [

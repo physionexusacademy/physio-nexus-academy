@@ -1,13 +1,10 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { trainingHistory } from "@/lib/training-history";
-import { knowledgeSpecialties } from "@/lib/knowledge-content";
-import { allKnowledgeArticles } from "@/lib/all-knowledge-content";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { regionalManualApplications } from "@/lib/manual-therapy-regional";
-import { treatmentPlans } from "@/lib/treatment-plans";
-import { mskConditions } from "@/lib/msk-injury-hub";
+import { conditionCatalog } from "@/lib/conditions/catalog";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
@@ -30,16 +27,13 @@ const routes = [
   "/training",
   "/verify",
   "/resources",
-  "/knowledge-hub",
+  "/conditions",
   "/manual-therapy",
   "/manual-therapy/regions",
-  "/treatment-plans",
-  "/msk-injuries",
   "/msk-special-tests",
   "/case-lab",
   "/stupid-intern-diaries",
   "/daily-challenge",
-  "/clinical-arena",
   "/research",
   "/patient-services",
   "/symptom-checker",
@@ -103,19 +97,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const knowledgeRoutes: MetadataRoute.Sitemap = allKnowledgeArticles.map((article) => ({
-    url: `${base}/knowledge-hub/${encodeURIComponent(article.slug)}`,
-    lastModified: new Date(article.updatedAt ?? article.publishedAt),
-    changeFrequency: "monthly" as const,
-    priority: 0.75,
-  }));
-
-  const specialtyRoutes: MetadataRoute.Sitemap = knowledgeSpecialties.map((specialty) => ({
-    url: `${base}/knowledge-hub/specialty/${encodeURIComponent(specialty.slug)}`,
-    changeFrequency: "weekly" as const,
-    priority: 0.78,
-  }));
-
   // Legacy /case-lab/<slug> pages permanently redirect to /case-lab, so they are not listed.
 
   // Published evidence-based research case reports (new Case Lab content)
@@ -138,16 +119,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  const treatmentPlanRoutes: MetadataRoute.Sitemap = treatmentPlans.map((item) => ({
-    url: `${base}/treatment-plans/${encodeURIComponent(item.slug)}`,
+  const conditionRoutes: MetadataRoute.Sitemap = conditionCatalog.map((item) => ({
+    url: `${base}/conditions/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
-  const mskRoutes: MetadataRoute.Sitemap = mskConditions.map((item) => ({
-    url: `${base}/msk-injuries/${encodeURIComponent(item.slug)}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.82,
+    priority: 0.84,
   }));
 
   const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
@@ -194,13 +169,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...cityRoutes,
     ...workshopRoutes,
     ...trainingRoutes,
-    ...knowledgeRoutes,
-    ...specialtyRoutes,
+    ...conditionRoutes,
     ...researchCaseRoutes,
     ...manualTherapyRoutes,
     ...regionalManualRoutes,
-    ...treatmentPlanRoutes,
-    ...mskRoutes,
     ...facultyRoutes,
     ...atlasRoutes,
   ];

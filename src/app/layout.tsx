@@ -167,7 +167,7 @@ const siteJsonLd = {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: "https://physionexusacademy.com/knowledge-hub?q={search_term_string}",
+          urlTemplate: "https://physionexusacademy.com/conditions?q={search_term_string}",
         },
         "query-input": "required name=search_term_string",
       },

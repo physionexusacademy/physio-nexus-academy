@@ -198,9 +198,8 @@ export const exerciseDosage: TeacherLesson = {
     { id: "ed-5", front: { en: "WHO 2020 aerobic activity for adults?", ur: "WHO 2020 adults ke liye aerobic activity?" }, back: { en: "150–300 min/week moderate or 75–150 min vigorous (or a combination), plus strengthening 2+ days/week.", ur: "Hafte mein 150–300 min darmiyani ya 75–150 min shadeed (ya dono mila kar), saath 2+ din strengthening." } },
   ],
   goDeeper: [
-    { title: "Progressive Overload in Rehabilitation", href: "/knowledge-hub/progressive-overload-in-rehabilitation", note: { en: "The principle behind every progression.", ur: "Har progression ke peeche ka usool." } },
-    { title: "Knee Osteoarthritis — treatment plan", href: "/treatment-plans/knee-osteoarthritis", note: { en: "Apply FITT to a real condition.", ur: "FITT ko asli condition par apply karein." } },
-    { title: "COPD — Pulmonary Rehabilitation", href: "/treatment-plans/copd-pulmonary-rehabilitation", note: { en: "Dosing aerobic work with RPE and breathlessness.", ur: "RPE aur saans phoolne ke saath aerobic dose." } },
+    { title: "Knee Osteoarthritis — treatment plan", href: "/conditions/knee-osteoarthritis#clinical", note: { en: "Apply FITT to a real condition.", ur: "FITT ko asli condition par apply karein." } },
+    { title: "COPD — Pulmonary Rehabilitation", href: "/conditions/copd-pulmonary-rehabilitation#clinical", note: { en: "Dosing aerobic work with RPE and breathlessness.", ur: "RPE aur saans phoolne ke saath aerobic dose." } },
   ],
   sources: [
     { citation: "American College of Sports Medicine. ACSM's Guidelines for Exercise Testing and Prescription. 11th ed. Wolters Kluwer; 2021." },

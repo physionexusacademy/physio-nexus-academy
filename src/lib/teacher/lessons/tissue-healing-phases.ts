@@ -234,18 +234,13 @@ export const tissueHealingPhases: TeacherLesson = {
   goDeeper: [
     {
       title: "Lateral Ankle Sprain",
-      href: "/msk-injuries/lateral-ankle-sprain",
+      href: "/conditions/lateral-ankle-sprain",
       note: { en: "Apply the phases to the most common sports injury.", ur: "Sab se aam sports injury par phases apply karein." },
     },
     {
       title: "Hamstring Strain — treatment plan",
-      href: "/treatment-plans/hamstring-strain",
+      href: "/conditions/hamstring-strain#clinical",
       note: { en: "Criteria-based progression in action.", ur: "Criteria-based progression amal mein." },
-    },
-    {
-      title: "Return to Sport After Injury",
-      href: "/knowledge-hub/return-to-sport-after-injury",
-      note: { en: "The full return-to-sport decision.", ur: "Return-to-sport ka poora faisla." },
     },
   ],
   sources: [

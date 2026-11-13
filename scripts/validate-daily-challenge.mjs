@@ -15,7 +15,7 @@ const board=read("src/components/daily-challenge/DailyLeaderboard.tsx");
 const css=read("src/app/daily-challenge/daily-challenge.css");
 const home=read("src/app/page.tsx");
 const pathwayBrowser=read("src/components/home/PremiumPathwayBrowser.tsx");
-const hub=read("src/app/knowledge-hub/page.tsx");
+const hub=read("src/app/learn/page.tsx");
 const migration=read("supabase/migrations/20261009_pna_daily_challenge.sql");
 const nav=read("src/lib/academy-map.ts");
 const mobile=read("src/components/MobilePortalNav.tsx");
@@ -48,7 +48,7 @@ const tests={
   refreshSafeResume:quiz.includes("pna-daily-running-v1")&&quiz.includes("setDeadline(time)")&&quiz.includes("sessionStorage.removeItem"),
   premiumCss:css.includes(".dc-mission-mast")&&css.includes(".dc-table"),
   responsive:css.includes("@media(max-width:480px)"),
-  landingLinked:pathwayBrowser.includes('href: "/daily-challenge"')&&hub.includes('href="/daily-challenge"'),
+  landingLinked:pathwayBrowser.includes('href: "/daily-challenge"')&&hub.includes('href: "/daily-challenge"'),
   noIdentityOverclaim:quiz.includes("Email ownership is not verified"),
   noGeneratedFakeRanks:!board.includes("Demo Participant"),
   challengeMarker:quiz.includes('data-pna-daily-challenge="v1"'),
@@ -60,7 +60,7 @@ const tests={
   mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
   desktopChallengeHighlight:desktop.includes('className="nx-pill-challenge"') && read("src/app/nexus.css").includes(".nx-pill-challenge {"),
   midnightCounter:countdown.includes('timeZone: "Asia/Karachi"') && countdown.includes('Date.UTC('),
-  retainedKnowledgeSections:home.includes("<PremiumPathwayBrowser") && ["/knowledge-hub","/symptom-checker","/case-lab"].every(url=>pathwayBrowser.includes('href: "'+url+'"')),
+  retainedKnowledgeSections:home.includes("<PremiumPathwayBrowser") && ["/conditions","/symptom-checker","/case-lab"].every(url=>pathwayBrowser.includes('href: "'+url+'"')),
   themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)"),
   stableApiStart:quiz.includes('dailyRequest<StartResponse>("start"') && startEndpoint.includes('startDailyChallenge('),
   stableApiSubmit:quiz.includes('dailyRequest<Completed>("submit"') && submitEndpoint.includes('submitDailyChallenge('),

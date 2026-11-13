@@ -255,13 +255,8 @@ export const sensitivitySpecificity: TeacherLesson = {
     },
     {
       title: "ACL Injury",
-      href: "/msk-injuries/acl-injury",
+      href: "/conditions/acl-injury",
       note: { en: "See how a knee assessment combines tests.", ur: "Dekhein knee assessment mein tests kaise milaye jaate hain." },
-    },
-    {
-      title: "RCT vs Observational Study",
-      href: "/knowledge-hub/rct-vs-observational-study",
-      note: { en: "Keep building your evidence skills.", ur: "Apni evidence skills barhate rahein." },
     },
   ],
   sources: [

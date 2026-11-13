@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ArrowRight, BookMarked, BookOpen, CalendarDays, Flame, Laugh, LibraryBig, MapPin, Medal, Quote, Sparkles, Timer, Trophy } from "lucide-react";
 import { createPublicClient } from "@/lib/supabase/public";
-import { knowledgeArticles } from "@/lib/knowledge-content";
-import { mskConditionIndex } from "@/lib/msk-injury-index";
+import { conditionCatalog } from "@/lib/conditions/catalog";
+import { areaLabel } from "@/lib/conditions/taxonomy";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard";
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     absolute: "Physio Nexus Academy | Official Site — Physiotherapy Education & Workshops in Pakistan",
   },
   description:
-    "Official website of Physio Nexus Academy (PNA) — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Knowledge Hub, manual therapy, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
+    "Official website of Physio Nexus Academy (PNA) — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Conditions & Treatment Guide, manual therapy, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
   keywords: [
     "Physio Nexus Academy",
     "Physio Nexus Academy Pakistan",
@@ -112,9 +112,10 @@ export default async function HomePage() {
 
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
-  const latestArticles = [...knowledgeArticles]
-    .sort((a, b) => (b.updatedAt ?? b.publishedAt).localeCompare(a.updatedAt ?? a.publishedAt))
-    .slice(0, 3);
+  // Three popular starting points from the Conditions & Treatment Guide.
+  const popularConditions = ["non-specific-low-back-pain", "knee-osteoarthritis", "rotator-cuff-tendinopathy"]
+    .map((slug) => conditionCatalog.find((item) => item.slug === slug))
+    .filter((item): item is (typeof conditionCatalog)[number] => Boolean(item));
   const latestEpisode = getLatestEpisode();
 
   const brandHomeJsonLd = {
@@ -144,9 +145,9 @@ export default async function HomePage() {
           { "@type": "ListItem", position: 1, name: "PNA Teacher", url: "https://physionexusacademy.com/learn" },
           { "@type": "ListItem", position: 2, name: "Clinical Skills Lab", url: "https://physionexusacademy.com/skills" },
           { "@type": "ListItem", position: 3, name: "Virtual Patient", url: "https://physionexusacademy.com/virtual-patient" },
-          { "@type": "ListItem", position: 4, name: "Knowledge Hub", url: "https://physionexusacademy.com/knowledge-hub" },
+          { "@type": "ListItem", position: 4, name: "Conditions & Treatment Guide", url: "https://physionexusacademy.com/conditions" },
           { "@type": "ListItem", position: 5, name: "Manual Therapy", url: "https://physionexusacademy.com/manual-therapy" },
-          { "@type": "ListItem", position: 6, name: "Treatment Plans", url: "https://physionexusacademy.com/treatment-plans" },
+          { "@type": "ListItem", position: 6, name: "Case Lab", url: "https://physionexusacademy.com/case-lab" },
           { "@type": "ListItem", position: 7, name: "Workshops & CPD", url: "https://physionexusacademy.com/workshops" },
           { "@type": "ListItem", position: 8, name: "Books & Resources", url: "https://physionexusacademy.com/resources" },
           { "@type": "ListItem", position: 9, name: "Home Visit", url: "https://physionexusacademy.com/home-visit" },
@@ -166,7 +167,7 @@ export default async function HomePage() {
           __html: JSON.stringify(brandHomeJsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <LobbyHero atlasPublished={atlasPublished} conditionCount={mskConditionIndex.length} />
+      <LobbyHero atlasPublished={atlasPublished} conditionCount={conditionCatalog.length} />
 
       <HomeDirectory />
 
@@ -228,8 +229,8 @@ export default async function HomePage() {
             <p className="nx-kicker nx-kicker-light"><span className="nx-live" /> Campus news</p>
             <h2 id="campus-news-title" className="nx-title mt-3 text-3xl text-navy-800 sm:text-4xl">Fresh on campus today</h2>
           </div>
-          <a href="/knowledge-hub" className="nx-btn nx-btn-light !min-h-[40px] !text-[0.85rem]">
-            Explore the Knowledge Hub <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <a href="/conditions" className="nx-btn nx-btn-light !min-h-[40px] !text-[0.85rem]">
+            Explore conditions &amp; treatment plans <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
 
@@ -267,20 +268,21 @@ export default async function HomePage() {
           </div>
 
           <div className="lobby-news-card rounded-3xl border">
-            <span className="lobby-news-tag"><LibraryBig className="h-4 w-4" aria-hidden="true" /> New clinical guides</span>
+            <span className="lobby-news-tag"><LibraryBig className="h-4 w-4" aria-hidden="true" /> Conditions &amp; treatment plans</span>
             <ul className="mt-3 space-y-2.5">
-              {latestArticles.map((article) => (
-                <li key={article.slug}>
-                  <a href={`/knowledge-hub/${article.slug}`} className="group flex items-start gap-3 rounded-2xl p-2 hover:bg-teal-50/70">
+              {popularConditions.map((item) => (
+                <li key={item.slug}>
+                  <a href={`/conditions/${item.slug}`} className="group flex items-start gap-3 rounded-2xl p-2 hover:bg-teal-50/70">
                     <BookOpen className="mt-0.5 h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
                     <span className="min-w-0">
-                      <strong className="block text-sm font-bold leading-snug text-navy-800 group-hover:text-teal-800">{article.title}</strong>
-                      <span className="text-xs text-slate-500">{article.specialty} · {article.readTime}</span>
+                      <strong className="block text-sm font-bold leading-snug text-navy-800 group-hover:text-teal-800">{item.name}</strong>
+                      <span className="text-xs text-slate-500">{areaLabel(item.area)} · {item.stages}-stage plan</span>
                     </span>
                   </a>
                 </li>
               ))}
             </ul>
+            <a href="/conditions" className="lobby-news-more">All {conditionCatalog.length} conditions <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
           </div>
         </div>
       </section>

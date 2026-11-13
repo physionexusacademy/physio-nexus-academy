@@ -213,7 +213,6 @@ export const redFlagsScreening: TeacherLesson = {
     { id: "rf-5", front: { en: "Why look for clusters of red flags?", ur: "Red flags ke clusters kyun dekhein?" }, back: { en: "Single flags have poor accuracy on their own; combinations plus the story are more informative.", ur: "Akele flags ki accuracy weak hai; combinations aur kahani zyada maloomat dete hain." } },
   ],
   goDeeper: [
-    { title: "Sciatica red flags — when to seek care", href: "/knowledge-hub/sciatica-red-flags-when-to-seek-care", note: { en: "A patient-friendly version to share.", ur: "Patients ke saath share karne wala asaan version." } },
     { title: "MSK Symptom Checker", href: "/symptom-checker", note: { en: "See how PNA screens safety warnings.", ur: "Dekhein PNA safety warnings kaise screen karta hai." } },
     { title: "Pain Science Basics", href: "/learn/pain-science-basics", note: { en: "How to handle yellow flags well.", ur: "Yellow flags ko ache se kaise handle karein." } },
   ],

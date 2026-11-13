@@ -243,17 +243,17 @@ export const openVsClosedChain: TeacherLesson = {
   goDeeper: [
     {
       title: "ACL Reconstruction Rehabilitation",
-      href: "/treatment-plans/acl-reconstruction-rehabilitation",
+      href: "/conditions/acl-reconstruction-rehabilitation#clinical",
       note: { en: "See OKC and CKC placed into a real rehab timeline.", ur: "OKC aur CKC ko asli rehab timeline mein dekhein." },
     },
     {
       title: "ACL Injury",
-      href: "/msk-injuries/acl-injury",
+      href: "/conditions/acl-injury",
       note: { en: "Understand the injury behind the exercises.", ur: "Exercises ke peeche ki injury samjhein." },
     },
     {
       title: "Patellofemoral Pain",
-      href: "/treatment-plans/patellofemoral-pain",
+      href: "/conditions/patellofemoral-pain#clinical",
       note: { en: "Another knee where exercise choice matters.", ur: "Ek aur knee jahan exercise ka chunao ahem hai." },
     },
   ],

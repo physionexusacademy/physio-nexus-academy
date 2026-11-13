@@ -202,7 +202,6 @@ export const subjectiveAssessmentSin: TeacherLesson = {
   goDeeper: [
     { title: "Red Flag Screening", href: "/learn/red-flags-screening", note: { en: "The serious-pathology questions in depth.", ur: "Serious-pathology sawal tafseel se." } },
     { title: "Virtual Patient", href: "/virtual-patient", note: { en: "Practise history taking on a 3D patient and get scored.", ur: "3D patient par history lena practise karein aur score payein." } },
-    { title: "Sciatica red flags — when to seek care", href: "/knowledge-hub/sciatica-red-flags-when-to-seek-care", note: { en: "A real example of nature changing the plan.", ur: "Nature se plan badalne ki asli misaal." } },
   ],
   sources: [
     { citation: "Hengeveld E, Banks K, eds. Maitland's Vertebral Manipulation: Management of Neuromusculoskeletal Disorders. 8th ed. Churchill Livingstone; 2014." },

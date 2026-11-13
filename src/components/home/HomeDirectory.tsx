@@ -36,14 +36,12 @@ const learnerTiles = [
   { href: "/virtual-patient", label: "Virtual Patient", note: "Examine a 3D patient and get an OSCE score", icon: PersonStanding },
   { href: "/daily-challenge", label: "Daily Challenge", note: "5 questions a day and a leaderboard", icon: Trophy },
   { href: "/manual-therapy", label: "Manual Therapy", note: "35+ techniques with hand placement", icon: Hand },
-  { href: "/treatment-plans", label: "Treatment Plans", note: "Condition-by-condition rehab plans", icon: ClipboardList },
+  { href: "/conditions", label: "Conditions & Treatment", note: "Pick a condition, follow a staged rehab plan", icon: ClipboardList },
   { href: "/workshops", label: "Workshops & CPD", note: "Hands-on training with certificates", icon: CalendarDays },
   { href: "#books", label: "Books", note: "By Dr. Sajjad Raza PT — order online", icon: BookOpen },
 ];
 
 const moreLinks = [
-  { href: "/knowledge-hub", label: "Knowledge Hub" },
-  { href: "/msk-injuries", label: "MSK injuries" },
   { href: "/case-lab", label: "Case Lab" },
   { href: "/clinical-visual-atlas", label: "Visual Atlas" },
   { href: "/msk-special-tests", label: "Special tests" },

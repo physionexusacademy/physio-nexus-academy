@@ -145,11 +145,9 @@ export default function LearnPage() {
           <p className="mt-1 text-xl font-bold sm:text-2xl">Finished a lesson? Put it to work across PNA.</p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {[
-              { label: "Knowledge Hub articles", href: "/knowledge-hub" },
+              { label: "Conditions & Treatment Guide", href: "/conditions" },
               { label: "MSK Special Tests", href: "/msk-special-tests" },
               { label: "Clinical Case Lab", href: "/case-lab" },
-              { label: "Clinical Arena", href: "/clinical-arena" },
-              { label: "Treatment Plans", href: "/treatment-plans" },
               { label: "Daily Challenge", href: "/daily-challenge" },
             ].map((link) => (
               <li key={link.href}>

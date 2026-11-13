@@ -13,7 +13,7 @@ export function SaveForReviewButton({
   id: string;
   title: string;
   href: string;
-  source?: "case-lab" | "daily-challenge" | "stupid-intern" | "knowledge-hub";
+  source?: "case-lab" | "daily-challenge" | "stupid-intern";
 }) {
   const [saved, setSaved] = useState(false);
 

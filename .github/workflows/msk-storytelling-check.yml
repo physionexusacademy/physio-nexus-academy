@@ -7,7 +7,7 @@ on:
     paths:
       - "src/lib/msk-clinical-stories.ts"
       - "src/components/msk/**"
-      - "src/app/msk-injuries/**"
+      - "src/app/conditions/**"
       - "scripts/validate-msk-stories.mjs"
       - ".github/workflows/msk-storytelling-check.yml"
   pull_request:
@@ -16,7 +16,7 @@ on:
     paths:
       - "src/lib/msk-clinical-stories.ts"
       - "src/components/msk/**"
-      - "src/app/msk-injuries/**"
+      - "src/app/conditions/**"
       - "scripts/validate-msk-stories.mjs"
       - ".github/workflows/msk-storytelling-check.yml"
 
@@ -53,7 +53,7 @@ jobs:
           npx tsc --noEmit --pretty false > /tmp/pna-type-errors.txt 2>&1
           type_status=$?
           set -e
-          if grep -E '^src/(app/msk-injuries/|components/msk/|lib/msk-clinical-stories)' /tmp/pna-type-errors.txt; then
+          if grep -E '^src/(app/conditions/|components/msk/|lib/msk-clinical-stories)' /tmp/pna-type-errors.txt; then
             echo "::error::TypeScript reported errors in the new MSK storytelling files."
             exit 1
           fi

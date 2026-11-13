@@ -157,7 +157,7 @@ export const muscleContractionTypes: TeacherLesson = {
   goDeeper: [
     { title: "Active & Passive Insufficiency", href: "/learn/active-passive-insufficiency", note: { en: "Length–tension applied to two-joint muscles.", ur: "Two-joint muscles par length–tension ka istemal." } },
     { title: "Manual Muscle Testing — Skills Lab", href: "/skills/manual-muscle-testing", note: { en: "Test strength at the right joint angle.", ur: "Sahi joint angle par strength test karein." } },
-    { title: "Hamstring Strain", href: "/msk-injuries/hamstring-strain", note: { en: "Eccentric loading in a real injury.", ur: "Asli injury mein eccentric loading." } },
+    { title: "Hamstring Strain", href: "/conditions/hamstring-strain", note: { en: "Eccentric loading in a real injury.", ur: "Asli injury mein eccentric loading." } },
   ],
   sources: [
     { citation: "Neumann DA. Kinesiology of the Musculoskeletal System: Foundations for Rehabilitation. 3rd ed. Elsevier; 2017." },

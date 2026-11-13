@@ -233,7 +233,7 @@ export const endFeelCapsularPatterns: TeacherLesson = {
     { id: "ef-5", front: { en: "Resisted test weak & painless — think?", ur: "Resisted test weak & painless — kya sochein?" }, back: { en: "Complete rupture or a neurological cause.", ur: "Mukammal rupture ya neurological wajah." } },
   ],
   goDeeper: [
-    { title: "Adhesive Capsulitis (Frozen Shoulder)", href: "/msk-injuries/adhesive-capsulitis", note: { en: "The classic capsular pattern, start to finish.", ur: "Classic capsular pattern, shuru se aakhir tak." } },
+    { title: "Adhesive Capsulitis (Frozen Shoulder)", href: "/conditions/adhesive-capsulitis", note: { en: "The classic capsular pattern, start to finish.", ur: "Classic capsular pattern, shuru se aakhir tak." } },
     { title: "Goniometry — Skills Lab", href: "/skills/goniometry", note: { en: "Measure the range before you judge the end-feel.", ur: "End-feel judge karne se pehle range naapein." } },
     { title: "Cyriax Deep Transverse Friction", href: "/manual-therapy/cyriax-deep-transverse-friction", note: { en: "Cyriax's treatment for contractile lesions.", ur: "Contractile lesions ke liye Cyriax ka treatment." } },
   ],

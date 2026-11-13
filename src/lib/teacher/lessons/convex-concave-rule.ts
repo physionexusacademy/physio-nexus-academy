@@ -275,7 +275,7 @@ export const convexConcaveRule: TeacherLesson = {
     },
     {
       title: "Adhesive Capsulitis",
-      href: "/msk-injuries/adhesive-capsulitis",
+      href: "/conditions/adhesive-capsulitis",
       note: { en: "Apply your new thinking to a stiff shoulder.", ur: "Apni nayi soch ko stiff shoulder par apply karein." },
     },
   ],

@@ -248,7 +248,7 @@ export const maitlandGrades: TeacherLesson = {
     },
     {
       title: "Adhesive Capsulitis",
-      href: "/msk-injuries/adhesive-capsulitis",
+      href: "/conditions/adhesive-capsulitis",
       note: { en: "Choose grades for a real stiff shoulder.", ur: "Asal stiff shoulder ke liye grades choose karein." },
     },
   ],

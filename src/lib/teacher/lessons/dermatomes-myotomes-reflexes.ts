@@ -267,8 +267,8 @@ export const dermatomesMyotomesReflexes: TeacherLesson = {
     { id: "dmr-6", front: { en: "What is the Jendrassik manoeuvre for?", ur: "Jendrassik manoeuvre kis liye?" }, back: { en: "Reinforcement to bring out a lower-limb reflex that seems absent (patient pulls hooked fingers apart).", ur: "Ghayab lagte lower-limb reflex ko ubharne ke liye reinforcement (patient interlocked fingers zor se kheenchta hai)." } },
   ],
   goDeeper: [
-    { title: "Lumbar Radiculopathy", href: "/msk-injuries/lumbar-radiculopathy", note: { en: "Put the lower-limb screen to work.", ur: "Lower-limb screen ko kaam mein layein." } },
-    { title: "Cervical Radiculopathy", href: "/msk-injuries/cervical-radiculopathy", note: { en: "The upper-limb screen in a real condition.", ur: "Asli condition mein upper-limb screen." } },
+    { title: "Lumbar Radiculopathy", href: "/conditions/lumbar-radiculopathy", note: { en: "Put the lower-limb screen to work.", ur: "Lower-limb screen ko kaam mein layein." } },
+    { title: "Cervical Radiculopathy", href: "/conditions/cervical-radiculopathy", note: { en: "The upper-limb screen in a real condition.", ur: "Asli condition mein upper-limb screen." } },
     { title: "UMN vs LMN Lesions", href: "/learn/umn-vs-lmn", note: { en: "What brisk vs reduced reflexes mean.", ur: "Tez vs kam reflexes ka matlab." } },
   ],
   sources: [

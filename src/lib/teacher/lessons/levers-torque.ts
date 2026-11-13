@@ -188,7 +188,7 @@ export const leversTorque: TeacherLesson = {
   goDeeper: [
     { title: "Open vs Closed Kinetic Chain", href: "/learn/open-vs-closed-chain", note: { en: "Where the load and the moment arms change.", ur: "Jahan load aur moment arms badalte hain." } },
     { title: "Manual Muscle Testing — Skills Lab", href: "/skills/manual-muscle-testing", note: { en: "Correct hand placement for long-lever testing.", ur: "Long-lever testing ke liye sahi hand placement." } },
-    { title: "Hip Osteoarthritis — treatment plan", href: "/treatment-plans/hip-osteoarthritis", note: { en: "Joint protection and walking aids in practice.", ur: "Practice mein joint protection aur walking aids." } },
+    { title: "Hip Osteoarthritis — treatment plan", href: "/conditions/hip-osteoarthritis#clinical", note: { en: "Joint protection and walking aids in practice.", ur: "Practice mein joint protection aur walking aids." } },
   ],
   sources: [
     { citation: "Neumann DA. Kinesiology of the Musculoskeletal System: Foundations for Rehabilitation. 3rd ed. Elsevier; 2017." },

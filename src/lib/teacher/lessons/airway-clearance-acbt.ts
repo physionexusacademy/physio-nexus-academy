@@ -184,8 +184,7 @@ export const airwayClearanceAcbt: TeacherLesson = {
     { id: "ac-5", front: { en: "Typical ACBT session length?", ur: "ACBT session ki aam lambai?" }, back: { en: "About 10–30 minutes, until two consecutive cycles produce no sputum or the patient tires.", ur: "Taqreeban 10–30 minute, jab tak lagatar do cycles mein balgham na nikle ya patient thak jaye." } },
   ],
   goDeeper: [
-    { title: "COPD — Pulmonary Rehabilitation", href: "/treatment-plans/copd-pulmonary-rehabilitation", note: { en: "Airway clearance as part of a full respiratory plan.", ur: "Mukammal respiratory plan ke hisse ke tor par airway clearance." } },
-    { title: "Bronchiectasis airway clearance", href: "/knowledge-hub/bronchiectasis-airway-clearance-pulmonary-rehab", note: { en: "Evidence and guidelines in more depth.", ur: "Evidence aur guidelines mazeed tafseel se." } },
+    { title: "COPD — Pulmonary Rehabilitation", href: "/conditions/copd-pulmonary-rehabilitation#clinical", note: { en: "Airway clearance as part of a full respiratory plan.", ur: "Mukammal respiratory plan ke hisse ke tor par airway clearance." } },
     { title: "Vital Signs — Skills Lab", href: "/skills/vital-signs", note: { en: "Monitor SpO₂, heart rate and breathlessness safely.", ur: "SpO₂, heart rate aur saans phoolna safely monitor karein." } },
   ],
   sources: [

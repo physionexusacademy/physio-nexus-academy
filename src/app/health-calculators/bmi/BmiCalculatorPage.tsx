@@ -120,7 +120,7 @@ export default function BmiCalculatorPage() {
         <div className="bmi-adult-table"><div><h3>Adult BMI categories</h3><p>For adults aged 20 years and over</p></div><div className="bmi-table-rows">{adultBands.map((item)=><div key={item.label}><span className={`bmi-table-dot ${item.tone}`}/><strong>{item.label}</strong><span>{item.range}</span></div>)}</div><small>Classification shown for general adult screening; individual clinical interpretation may vary.</small></div>
         <div className="bmi-disclaimer"><Info/><p><strong>Health note:</strong> This tool is for educational screening only. It does not diagnose a condition or replace personalised advice from a qualified healthcare professional. If you are concerned about your weight or growth, speak with an appropriate healthcare professional.</p></div>
       </section>
-      <section className="bmi-bottom-cta"><div className="bmi-shell"><div><span>PHYSIO NEXUS ACADEMY</span><h2>Better knowledge. Better care.</h2><p>Explore practical, evidence-informed physiotherapy learning and health tools.</p></div><a href="/knowledge-hub">Explore Knowledge Hub <ArrowRight/></a></div></section>
+      <section className="bmi-bottom-cta"><div className="bmi-shell"><div><span>PHYSIO NEXUS ACADEMY</span><h2>Better knowledge. Better care.</h2><p>Explore practical, evidence-informed physiotherapy learning and health tools.</p></div><a href="/conditions">Explore Conditions &amp; Treatment <ArrowRight/></a></div></section>
     </main>
   );
 }

@@ -18,7 +18,7 @@ const cases = [
   },
   {
     query: "kamar mein dard",
-    expectedHref: "/msk-injuries/non-specific-low-back-pain",
+    expectedHref: "/conditions/non-specific-low-back-pain#quick",
     label: "Roman Urdu understanding",
   },
   {

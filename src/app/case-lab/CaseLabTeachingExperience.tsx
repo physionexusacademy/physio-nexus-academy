@@ -285,8 +285,8 @@ export function CaseLabTeachingExperience({story}:{story:CaseStory}){
        <div className="rounded-2xl border border-teal-200 bg-teal-50 p-5">
         <p className="text-[11px] font-bold uppercase tracking-widest text-teal-800">From reading to challenge</p>
         <h3 className="mt-2 font-serif text-xl font-bold text-slate-900">Now test what you’ve learned.</h3>
-        <p className="mt-1.5 text-sm leading-7 text-slate-700">Case Lab teaches the reasoning. Clinical Arena challenges you to decide without the answers first.</p>
-        <Link href="/clinical-arena" className="cl-button mt-4">Open Clinical Challenge Arena <ArrowRight className="h-4 w-4"/></Link>
+        <p className="mt-1.5 text-sm leading-7 text-slate-700">Case Lab teaches the reasoning. The Daily Challenge checks it with five quick questions.</p>
+        <Link href="/daily-challenge" className="cl-button mt-4">Open the Daily Challenge <ArrowRight className="h-4 w-4"/></Link>
        </div>
       </div>}
 

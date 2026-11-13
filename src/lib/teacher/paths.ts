@@ -28,11 +28,11 @@ export const teacherPaths: TeacherPath[] = [
       {
         id: "mf-4",
         kind: "mission",
-        title: "Progressive Overload in Rehabilitation",
-        href: "/knowledge-hub/progressive-overload-in-rehabilitation",
+        title: "Patellofemoral Pain — treatment plan",
+        href: "/conditions/patellofemoral-pain#clinical",
         mission: {
-          en: "Read the article and write down one way you would progress a squat for a patient. You've just linked movement science to exercise prescription.",
-          ur: "Article parhein aur likhein ke aap patient ke liye squat ko kaise progress karenge. Aap ne movement science ko exercise prescription se jor diya.",
+          en: "Open the plan and write down how Stage 2 progresses squatting for a patient. You've just linked movement science to exercise prescription.",
+          ur: "Plan kholein aur likhein ke Stage 2 patient ke liye squat ko kaise progress karta hai. Aap ne movement science ko exercise prescription se jor diya.",
         },
         minutes: 8,
       },
@@ -83,11 +83,11 @@ export const teacherPaths: TeacherPath[] = [
       {
         id: "cr-5",
         kind: "mission",
-        title: "Clinical Challenge Arena",
-        href: "/clinical-arena",
+        title: "Clinical Case Lab",
+        href: "/case-lab",
         mission: {
-          en: "Solve one Arena case. Before choosing an answer, say out loud: which finding rules something IN, and which rules something OUT?",
-          ur: "Arena ka ek case solve karein. Jawab chunne se pehle zor se kahein: kaun si finding kuch rule IN karti hai aur kaun si rule OUT?",
+          en: "Open one Case Lab case. Before choosing an answer, say out loud: which finding rules something IN, and which rules something OUT?",
+          ur: "Case Lab ka ek case kholein. Jawab chunne se pehle zor se kahein: kaun si finding kuch rule IN karti hai aur kaun si rule OUT?",
         },
         minutes: 10,
       },
@@ -130,7 +130,7 @@ export const teacherPaths: TeacherPath[] = [
         id: "mt-6",
         kind: "mission",
         title: "Adhesive Capsulitis",
-        href: "/msk-injuries/adhesive-capsulitis",
+        href: "/conditions/adhesive-capsulitis",
         mission: {
           en: "Apply it: for a painful early-stage frozen shoulder and for a stiff later stage, which grades would you choose — and how would you reassess?",
           ur: "Apply karein: dard wale shuru ke frozen shoulder aur baad ke stiff stage ke liye aap kaun se grades chunenge — aur reassess kaise karenge?",
@@ -159,7 +159,7 @@ export const teacherPaths: TeacherPath[] = [
         id: "kn-2",
         kind: "mission",
         title: "ACL Injury",
-        href: "/msk-injuries/acl-injury",
+        href: "/conditions/acl-injury",
         mission: {
           en: "Read how an ACL injury presents. List the three history clues that would make you suspect it before you even touch the knee.",
           ur: "Parhein ke ACL injury kaise saamne aati hai. History ke woh teen ishare likhein jo knee chhoone se pehle hi aap ko shak mein daal dein.",
@@ -185,7 +185,7 @@ export const teacherPaths: TeacherPath[] = [
         id: "kn-6",
         kind: "mission",
         title: "ACL Reconstruction Rehabilitation plan",
-        href: "/treatment-plans/acl-reconstruction-rehabilitation",
+        href: "/conditions/acl-reconstruction-rehabilitation#clinical",
         mission: {
           en: "Walk through the plan phase by phase. At each phase, name one open-chain and one closed-chain exercise — and the criterion to progress.",
           ur: "Plan ko phase ba phase dekhein. Har phase mein ek open-chain aur ek closed-chain exercise ka naam lein — aur aage barhne ka criterion bhi.",
@@ -196,7 +196,7 @@ export const teacherPaths: TeacherPath[] = [
         id: "kn-7",
         kind: "mission",
         title: "Knee Osteoarthritis plan",
-        href: "/treatment-plans/knee-osteoarthritis",
+        href: "/conditions/knee-osteoarthritis#clinical",
         mission: {
           en: "Different knee, same principles: spot where load progression and patient education appear in this plan.",
           ur: "Alag knee, wohi usool: dekhein is plan mein load progression aur patient education kahan aate hain.",
@@ -238,11 +238,11 @@ export const teacherPaths: TeacherPath[] = [
       {
         id: "sa-6",
         kind: "mission",
-        title: "Clinical Challenge Arena",
-        href: "/clinical-arena",
+        title: "Clinical Case Lab",
+        href: "/case-lab",
         mission: {
-          en: "Solve one case, and before you choose a diagnosis, list the red flags you screened for and the neuro findings you'd check.",
-          ur: "Ek case solve karein, aur diagnosis chunne se pehle woh red flags likhein jo aap ne screen kiye aur woh neuro findings jo aap check karenge.",
+          en: "Open one case, and before you choose a diagnosis, list the red flags you screened for and the neuro findings you'd check.",
+          ur: "Ek case kholein, aur diagnosis chunne se pehle woh red flags likhein jo aap ne screen kiye aur woh neuro findings jo aap check karenge.",
         },
         minutes: 10,
       },
@@ -393,7 +393,7 @@ export const teacherPaths: TeacherPath[] = [
         id: "ce-6",
         kind: "mission",
         title: "COPD — Pulmonary Rehabilitation",
-        href: "/treatment-plans/copd-pulmonary-rehabilitation",
+        href: "/conditions/copd-pulmonary-rehabilitation#clinical",
         mission: {
           en: "Read the plan and write one week of a COPD patient's programme: airway clearance, walking dose by RPE, and when you would stop.",
           ur: "Plan parhein aur COPD patient ke programme ka ek hafta likhein: airway clearance, RPE se walking ki dose, aur aap kab rokenge.",

@@ -25,7 +25,7 @@ export default function MSKSpecialTestsPage() {
     <div className="min-h-screen bg-[#f8fbfc] text-slate-900">
       <div className="container-content py-9 sm:py-12">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
-          <Link href="/knowledge-hub" className="inline-flex items-center gap-1.5 text-teal-800 hover:underline"><ArrowLeft className="h-3.5 w-3.5"/> Knowledge Hub</Link>
+          <Link href="/conditions" className="inline-flex items-center gap-1.5 text-teal-800 hover:underline"><ArrowLeft className="h-3.5 w-3.5"/> Conditions &amp; Treatment</Link>
           <span aria-hidden="true">/</span><span>MSK Special Tests</span>
         </nav>
 
@@ -71,7 +71,7 @@ export default function MSKSpecialTestsPage() {
         <section className="mt-10" aria-labelledby="test-library-title">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Explore by body region</p><h2 id="test-library-title" className="mt-2 font-serif text-2xl font-bold text-slate-900 sm:text-3xl">Find the test. Learn the technique.</h2></div>
-            <Link href="/clinical-arena" className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-800 hover:underline">Practise clinical reasoning <ArrowRight className="h-4 w-4"/></Link>
+            <Link href="/virtual-patient" className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-800 hover:underline">Practise on a virtual patient <ArrowRight className="h-4 w-4"/></Link>
           </div>
           <TestExplorer tests={mskSpecialTests}/>
         </section>
@@ -80,8 +80,8 @@ export default function MSKSpecialTestsPage() {
           <strong>Clinical education notice:</strong> This is a skills reference for students and qualified clinicians, not a substitute for in-person instruction, validated clinical decision rules or specialist examination. A positive test is not the same as a confirmed diagnosis. Stop when symptoms worsen, assess relevant red flags, and refer promptly where indicated.
         </footer>
         <div className="mt-5 flex flex-wrap gap-3 text-sm font-bold">
-          <Link className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-700 hover:border-teal-300 hover:text-teal-800" href="/msk-injuries"><BookOpen className="h-4 w-4"/>Explore MSK conditions</Link>
-          <Link className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-white hover:bg-teal-800" href="/clinical-arena">Go to Clinical Challenge <ArrowRight className="h-4 w-4"/></Link>
+          <Link className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-700 hover:border-teal-300 hover:text-teal-800" href="/conditions"><BookOpen className="h-4 w-4"/>Explore conditions &amp; plans</Link>
+          <Link className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-white hover:bg-teal-800" href="/daily-challenge">Go to the Daily Challenge <ArrowRight className="h-4 w-4"/></Link>
         </div>
       </div>
     </div>

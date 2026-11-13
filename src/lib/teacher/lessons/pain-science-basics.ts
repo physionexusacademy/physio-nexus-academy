@@ -212,18 +212,13 @@ export const painScienceBasics: TeacherLesson = {
   ],
   goDeeper: [
     {
-      title: "Central Sensitization Explained",
-      href: "/knowledge-hub/central-sensitization-explained",
-      note: { en: "The next step after this lesson.", ur: "Is lesson ke baad agla qadam." },
-    },
-    {
       title: "Non-specific Low Back Pain — treatment plan",
-      href: "/treatment-plans/nonspecific-low-back-pain",
+      href: "/conditions/non-specific-low-back-pain#clinical",
       note: { en: "Pain science inside a full rehab plan.", ur: "Poore rehab plan ke andar pain science." },
     },
     {
       title: "Fibromyalgia — treatment plan",
-      href: "/treatment-plans/fibromyalgia",
+      href: "/conditions/fibromyalgia#clinical",
       note: { en: "Where sensitivity and pacing matter most.", ur: "Jahan sensitivity aur pacing sab se ahem hain." },
     },
   ],
