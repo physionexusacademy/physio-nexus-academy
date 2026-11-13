@@ -36,9 +36,11 @@ type Pt2 = { x: number; y: number; visible: boolean };
 /* ------------------------------------------------------------------ */
 
 function Tag({ x, y, text: full, tone = "cyan", w, h, anchor = "start" }: { x: number; y: number; text: string; tone?: Tone; w: number; h: number; anchor?: "start" | "end" | "middle" }) {
-  // On a narrow view long labels are shortened so they stay on screen.
-  const text = w < 520 && full.length > 22 ? `${full.slice(0, 21)}…` : full;
-  const width = Math.max(34, text.length * 6.4 + 16);
+  // Long labels are shortened so the tag always fits on screen (shorter still on a phone).
+  const per = 7.1;
+  const maxChars = Math.max(14, Math.min(w < 520 ? 24 : 80, Math.floor((w * 0.72 - 16) / per)));
+  const text = full.length > maxChars ? `${full.slice(0, maxChars - 1)}…` : full;
+  const width = Math.max(34, text.length * per + 16);
   let left = anchor === "end" ? x - width : anchor === "middle" ? x - width / 2 : x;
   left = Math.min(w - width - 4, Math.max(4, left));
   const top = Math.min(h - 26, Math.max(4, y - 11));
@@ -437,7 +439,7 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
     baseQuat.current = room.patientRoot.quaternion.clone();
     addProps(room, scene.props, { x: base.current.x, z: base.current.z });
     const plinth = room.scene.getObjectByName("plinth");
-    if (plinth) plinth.visible = !scene.hidePlinth;
+    if (plinth) plinth.visible = !(scene.hidePlinth ?? scene.position === "standing");
     const sign = side === "left" ? 1 : -1;
     const dir = patientDir(room, [scene.frame.view[0] * sign, scene.frame.view[1], scene.frame.view[2]]);
     if (dir.y < 0.1) dir.setY(0.1).normalize();

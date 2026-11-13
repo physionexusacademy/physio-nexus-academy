@@ -64,7 +64,7 @@ export type Scene = {
   planted?: string;
   /** Loop windows in which `planted` holds (default: the whole loop). The body stays where each window leaves it. */
   plantedWhen?: [number, number][];
-  /** Hide the treatment plinth (walking and standing tests). */
+  /** Hide the treatment plinth (default: hidden when the patient stands). */
   hidePlinth?: boolean;
   /** Length of one loop. */
   loopMs: number;

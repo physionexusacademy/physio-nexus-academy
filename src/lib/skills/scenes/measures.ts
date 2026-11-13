@@ -250,18 +250,18 @@ const occiputWall: Scene = {
   title: "Occiput-to-wall distance",
   position: "standing",
   loopMs: 12000,
-  frame: { focus: "head", zoom: 3.4, view: [1, 0.12, 0.05], around: ["head", "spine03", "foot"] },
-  props: [{ kind: "wall", at: [0, 0, -0.205] }],
+  frame: { focus: "head", zoom: 3.6, view: [1, 0.12, 0.55], around: ["head", "spine03", "foot"] },
+  props: [{ kind: "wall", at: [0, 0, -0.03] }],
   pose: (s, u) => {
     const m = ramp(u, 0.3, 0.6);
-    return P(s, { trunk: { flex: 20 * m }, neck: { flex: 12 * m }, head: { flex: -6 * m } });
+    return P(s, { trunk: { flex: 4.5 * m }, neck: { flex: 9 * m }, head: { flex: -3 * m } });
   },
   beats: [
     { to: 0.28, text: "Heels and buttocks against the wall, the patient looks straight ahead with the chin level", chip: "Stand" },
     { to: 0.62, text: "A stooped upper back moves the head away from the wall", chip: "Posture" },
     { to: 1, text: "Measure the horizontal distance from the back of the head to the wall: normal is 0 cm; more than 0 (above about 2 cm) suggests thoracic kyphosis or spondylitis", chip: "Measure" },
   ],
-  overlays: [{ t: "line", from: "head{0,0,-0.095}", to: "head{0,0,-0.095}|z=-0.205", label: (c, m) => `Occiput to wall: ${(m * 100).toFixed(0)} cm`, tone: "amber", when: [0.25, 1] }],
+  overlays: [{ t: "line", from: "head{0,0,-0.095}", to: "head{0,0,-0.095}|z=-0.03", label: (c, m) => `Occiput to wall: ${Math.max(0, (m - 0.085) * 100).toFixed(0)} cm`, tone: "amber", when: [0.25, 1] }],
   hud: [{ t: "stat", label: "Occiput–wall", value: (c) => (c.u < 0.3 ? "0 cm" : "> 0 cm"), sub: "normal = 0", tone: "amber" }],
 };
 
