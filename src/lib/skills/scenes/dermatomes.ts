@@ -21,8 +21,6 @@ const SPECS: Spec[] = [
   { id: "t4", levels: ["T4"], where: "Nipple line", area: "chest at the nipple line", view: [0.4, 0.1, 1] },
   { id: "t6", levels: ["T6"], where: "Xiphisternum", area: "lower chest", view: [0.4, 0.1, 1] },
   { id: "t10", levels: ["T10"], where: "Level of the umbilicus", area: "abdomen at the umbilicus", view: [0.4, 0.1, 1] },
-  { id: "t12", levels: ["T12"], where: "Midpoint of the inguinal ligament", area: "lower abdomen above the groin", view: [0.4, 0.1, 1] },
-  { id: "l1", levels: ["L1"], where: "Half-way between the T12 and L2 key points", area: "groin and upper thigh", view: [0.5, 0.1, 1] },
   { id: "l2", levels: ["L2"], where: "Middle of the front of the thigh", area: "front of the thigh", view: [0.7, 0.1, 1] },
   { id: "l3", levels: ["L3"], where: "Medial femoral condyle", area: "inner thigh and knee", view: [-0.8, 0.1, 1] },
   { id: "l4", levels: ["L4"], where: "Medial malleolus", area: "inner shin and ankle", view: [-0.9, 0.1, 1] },
@@ -63,5 +61,8 @@ function dermatomeScene(spec: Spec): Scene {
 
 export const dermatomeScenes: Record<string, Scene> = Object.fromEntries(SPECS.map((s) => [`dermatomes/${s.id}`, dermatomeScene(s)]));
 
-/** Saddle (S3, S4–S5) skin is perianal: it stays a 2D diagram — it is examined privately and with a chaperone. */
-export const DERMATOME_2D_ONLY = ["dermatomes/s3", "dermatomes/s45"];
+/**
+ * Stay 2D diagrams on purpose: saddle (S3, S4–S5) skin is perianal and examined privately with a chaperone; T12 and L1 lie at the groin, under the
+ * patient's shorts, so there is no skin to glow on the 3D model.
+ */
+export const DERMATOME_2D_ONLY = ["dermatomes/s3", "dermatomes/s45", "dermatomes/t12", "dermatomes/l1"];
