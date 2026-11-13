@@ -113,7 +113,8 @@ export function TeacherCatalog({
               <li key={lesson.slug}>
                 <Link
                   href={lesson.href}
-                  className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-md"
+                  className="group nx-holo flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+                  data-nx-reveal
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-bold", areaTone[lesson.area] ?? "bg-slate-100 text-slate-700")}>{lesson.area}</span>

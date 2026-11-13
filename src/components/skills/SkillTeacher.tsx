@@ -33,11 +33,11 @@ export function SkillTeacher({ data, item, level }: { data: SkillData; item: Ski
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group flex w-full items-center gap-3 rounded-2xl border border-teal-200 bg-gradient-to-r from-teal-50 to-white px-3.5 py-3 text-left transition hover:border-teal-400 hover:shadow-[0_14px_40px_-26px_rgba(14,110,110,0.7)]"
+        className="group nx-holo flex w-full items-center gap-3 rounded-2xl border border-teal-200 bg-gradient-to-r from-teal-50 to-white px-3.5 py-3 text-left"
       >
         <TeacherAvatar size="sm" />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-extrabold text-navy-800">{ur ? "PNA Teacher se samjhein" : "Learn this with PNA Teacher"}</span>
+          <span className="flex items-center gap-2 text-sm font-extrabold text-navy-800"><i className="nx-ping" aria-hidden="true" />{ur ? "PNA Teacher se samjhein" : "Learn this with PNA Teacher"}</span>
           <span className="block text-xs text-slate-600">{ur ? "Step by step, asaan zubaan mein — aur end par chhota sa check" : "Step by step, in plain words, with a quick check at the end"}</span>
         </span>
         <ArrowRight className="h-4 w-4 flex-none text-teal-700 transition group-hover:translate-x-0.5" aria-hidden="true" />
@@ -57,7 +57,7 @@ export function SkillTeacher({ data, item, level }: { data: SkillData; item: Ski
         </button>
       </header>
       <div className="h-1 overflow-hidden rounded-full bg-teal-100" aria-hidden="true">
-        <div className="h-full rounded-full bg-teal-600 transition-all duration-500" style={{ width: `${(shown / last) * 100}%` }} />
+        <div className="nx-glow-bar h-full rounded-full bg-teal-600 transition-all duration-500" style={{ width: `${(shown / last) * 100}%` }} />
       </div>
 
       <div className="mt-4 space-y-3">

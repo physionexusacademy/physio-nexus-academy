@@ -159,11 +159,93 @@ button.nx-glass:active,
   to { opacity: 1; translate: 0 0; scale: 1; }
 }
 
+/* ---------- futuristic polish: holographic card sheen, glowing progress, long lists ----------
+   Everything here moves with transform or opacity only. */
+.nx-holo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.nx-holo::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 36%, rgba(46, 230, 214, 0.2) 47%, rgba(143, 124, 255, 0.16) 53%, transparent 64%);
+  transform: translateX(-135%);
+  transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nx-holo:hover {
+    transform: translateY(-3px);
+    border-color: rgba(46, 230, 214, 0.55);
+    box-shadow: 0 30px 70px -42px rgba(14, 165, 200, 0.6), 0 0 0 1px rgba(46, 230, 214, 0.3);
+  }
+  .nx-holo:hover::after {
+    transform: translateX(135%);
+  }
+}
+/* A progress bar with a travelling light. */
+.nx-glow-bar {
+  position: relative;
+  overflow: hidden;
+}
+.nx-glow-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: nx-glow-slide 2.4s ease-in-out infinite;
+}
+@keyframes nx-glow-slide {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(320%); }
+}
+/* Closed atlas cards far below the screen cost nothing until they come near. */
+.nx-cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 92px;
+}
+/* The 3D demo frames repaint on their own and never relayout the page. */
+.s3,
+.s3-view {
+  contain: layout style;
+}
+/* A small live dot for "PNA Teacher is here". */
+.nx-ping {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2ee6d6;
+}
+.nx-ping::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(46, 230, 214, 0.6);
+  animation: nx-live-ring 2.2s ease-out infinite;
+}
+
 /* ---------- reduce motion: no movement, instant page changes ---------- */
 @media (prefers-reduced-motion: reduce) {
   .nx-live::after,
-  .nx-bar::after {
+  .nx-bar::after,
+  .nx-glow-bar::after,
+  .nx-ping::after {
     animation: none !important;
+  }
+  .nx-holo,
+  .nx-holo::after {
+    transition: none !important;
+  }
+  .nx-holo:hover {
+    transform: none;
   }
   ::view-transition-old(root),
   ::view-transition-new(root),

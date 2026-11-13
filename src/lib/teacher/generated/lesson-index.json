@@ -1698,6 +1698,37 @@
    "Standardise the chair and rules (arms folded, full stands), accept floor and ceiling effects and use the results to shape leg-strength training."
   ],
   "keywords": "Sit-to-Stand Tests — 5×STS and the 30-Second Chair Stand sit-to-stand-tests Skills · Balance & Function 5×STS: five full stands as fast as possible, over 15 s predicts recurrent falls (norm about 11 s at 60–69, 13 s in the 70s, 15 s in the 80s). 30-second chair stand counts full stands: below-age-norm scores (for example under 12 in men and 10 in women at 70–74) indicate falls risk. Standardise the chair and rules (arms folded, full stands), accept floor and ceiling effects and use the results to shape leg-strength training. 5×STS cut-off for recurrent falls? What is the 30-second chair stand? Standard chair height for the tests? What do you do when the hands are used to push up?",
+  "next": {
+   "slug": "choosing-balance-tests",
+   "title": "Choosing a Balance Test — Berg, FGA, Mini-BESTest, Four Square Step and mCTSIB",
+   "href": "/learn/choosing-balance-tests"
+  }
+ },
+ {
+  "href": "/learn/choosing-balance-tests",
+  "slug": "choosing-balance-tests",
+  "title": "Choosing a Balance Test — Berg, FGA, Mini-BESTest, Four Square Step and mCTSIB",
+  "hook": {
+   "en": "There is no single \"best\" balance test: each one answers a different question. Learn to match the test to the patient so that it can show change and point to the system that is failing.",
+   "ur": "Koi ek “behtareen” balance test nahi: har ek ka sawal mukhtalif hai. Test ko patient se milana seekhein taake woh tabdeeli dikha sake aur kharab hone wale system ki taraf ishara kare."
+  },
+  "area": "Skills · Balance & Function",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll describe Berg, FGA, Mini-BESTest, FSST and mCTSIB, give their cut-offs, name their ceiling effects and choose the right one for a patient.",
+   "ur": "End tak aap Berg, FGA, Mini-BESTest, FSST aur mCTSIB bayan karenge, un ke cut-offs denge, un ke ceiling effects batayenge aur patient ke liye sahi test chunenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Berg (0–56, below about 45 predicts falls, ceiling effect), FGA (0–30, 22 or less), Mini-BESTest (0–28, about 19 or less, four sections), FSST (15 s or more) and mCTSIB (four 30 s conditions).",
+   "Choose the test for the question and the patient: screening versus localising versus tracking a fit person.",
+   "Use sub-scores to pick training, standardise the set-up, guard the patient and never rely on one test to predict falls."
+  ],
+  "keywords": "Choosing a Balance Test — Berg, FGA, Mini-BESTest, Four Square Step and mCTSIB choosing-balance-tests Skills · Balance & Function Berg (0–56, below about 45 predicts falls, ceiling effect), FGA (0–30, 22 or less), Mini-BESTest (0–28, about 19 or less, four sections), FSST (15 s or more) and mCTSIB (four 30 s conditions). Choose the test for the question and the patient: screening versus localising versus tracking a fit person. Use sub-scores to pick training, standardise the set-up, guard the patient and never rely on one test to predict falls. Berg Balance Scale: range and cut-off? What is special about the Mini-BESTest? mCTSIB conditions? FSST cut-off?",
   "next": null
  },
  {

@@ -207,7 +207,7 @@ function LevelBar({ entry, progress, level, onChoose }: { entry: SkillIndexEntry
             aria-pressed={active}
             onClick={() => onChoose(item.id)}
             className={
-              "relative rounded-2xl border p-3 text-left transition " +
+              "nx-holo relative rounded-2xl border p-3 text-left " +
               (active ? "border-transparent bg-[#0a1f3d] text-white shadow-[0_18px_40px_-24px_rgba(10,31,61,0.9)]" : "border-slate-200 bg-white hover:border-teal-300")
             }
           >
@@ -247,7 +247,7 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
         </span>
       </div>
       {concepts.map((concept, index) => (
-        <article key={concept.id} id={concept.id} className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_24px_60px_-50px_rgba(10,60,90,0.6)] sm:p-6">
+        <article key={concept.id} id={concept.id} data-nx-reveal className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_24px_60px_-50px_rgba(10,60,90,0.6)] sm:p-6">
           <div className={concept.demo ? "grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : ""}>
             <div>
               <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-teal-700">
@@ -378,7 +378,7 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
           const visible = item.fields.filter((field) => levelRank(field.level) <= rank);
           const hidden = item.fields.length - visible.length;
           return (
-            <details key={item.id} id={item.id} className="group scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-4 open:shadow-[0_24px_60px_-48px_rgba(10,60,90,0.6)] sm:p-5">
+            <details key={item.id} id={item.id} className="group nx-cv scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-4 open:shadow-[0_24px_60px_-48px_rgba(10,60,90,0.6)] sm:p-5">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
                 <span>
                   <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-teal-700">{item.group}</span>

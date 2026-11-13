@@ -162,7 +162,7 @@ export default function SkillsHubPage() {
               <h2 id={`phase-${phase.id}`} className="nx-title mt-2 text-3xl text-navy-800">{phase.title}</h2>
               <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {skills.map((skill) => (
-                  <a key={skill.slug} href={`/skills/${skill.slug}`} className="group flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_24px_60px_-50px_rgba(10,60,90,0.6)]">
+                  <a key={skill.slug} href={`/skills/${skill.slug}`} className="group nx-holo flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_24px_60px_-50px_rgba(10,60,90,0.6)]" data-nx-reveal>
                     <span className="flex items-start justify-between gap-3">
                       <span className="nx-icon-tile">
                         <SkillIcon name={skill.icon} className="h-5 w-5" />

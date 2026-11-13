@@ -59,6 +59,7 @@ export const LESSONS_FOR_SKILL: Record<string, SkillLessonLink[]> = {
   "balance-function": [
     { slug: "timed-up-and-go-gait-speed", title: "TUG & gait speed" },
     { slug: "sit-to-stand-tests", title: "Sit-to-stand tests" },
+    { slug: "choosing-balance-tests", title: "Choosing a balance test" },
     { slug: "balance-falls-assessment", title: "Balance & falls assessment" },
   ],
 };
