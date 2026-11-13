@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowRight, Check, Eye, EyeOff, LoaderCircle, MailCheck, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { AccountLink, useAccountNav } from "@/components/student/AccountApp";
+import { AccountLink, useAccountNav } from "@/components/student/AccountNav";
 
 type Mode = "login" | "register" | "forgot" | "reset";
 

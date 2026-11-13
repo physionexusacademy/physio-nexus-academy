@@ -1,35 +1,26 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Activity, ArrowRight, BarChart3, LockKeyhole, Radar, Smartphone, Sparkles } from "lucide-react";
-import { AccountForm } from "@/components/student/AccountForms";
-import { MyPna } from "@/components/student/MyPna";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import dynamic from "next/dynamic";
+import { Activity, ArrowRight, BarChart3, LoaderCircle, LockKeyhole, Radar, Smartphone, Sparkles } from "lucide-react";
+import { AccountLink, AccountNavContext, type AccountMode, type AccountNavApi } from "@/components/student/AccountNav";
 import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 
 /**
  * One route (/account) for everything a student does with their account, so the site ships a single
  * page instead of six. The server-rendered landing page is the default view; ?m=login|register|forgot|reset
  * shows a form; and a signed-in student sees their My PNA record instead of the landing page.
+ *
+ * The forms and the dashboard talk to Supabase, so they are loaded in the browser only (ssr: false), exactly like the
+ * RehabVerse "Loader" screens. That keeps the Supabase client out of the Cloudflare worker (it is ~85 KiB gzip there).
  */
-export type AccountMode = "landing" | "login" | "register" | "forgot" | "reset";
 const modes: AccountMode[] = ["login", "register", "forgot", "reset"];
 
-type Nav = { go: (mode: AccountMode, notice?: string) => void; done: () => void };
-const AccountNav = createContext<Nav>({ go: () => undefined, done: () => undefined });
-export const useAccountNav = () => useContext(AccountNav);
-
-export const accountHref = (mode: AccountMode) => (mode === "landing" ? "/account" : `/account?m=${mode}`);
-
-/** A link that stays a normal link (works without JavaScript) but switches view without a page load. */
-export function AccountLink({ mode, className, children }: { mode: AccountMode; className?: string; children: ReactNode }) {
-  const nav = useAccountNav();
-  return (
-    <a href={accountHref(mode)} className={className} onClick={(event) => { event.preventDefault(); nav.go(mode); }}>
-      {children}
-    </a>
-  );
-}
-
+const screenLoading = (
+  <div className="mp-state" role="status" aria-busy="true"><LoaderCircle className="h-6 w-6 animate-spin" aria-hidden="true" /> Opening…</div>
+);
+const AccountForm = dynamic(() => import("./AccountForms").then((m) => m.AccountForm), { ssr: false, loading: () => screenLoading });
+const MyPna = dynamic(() => import("./MyPna").then((m) => m.MyPna), { ssr: false, loading: () => screenLoading });
 
 const features = [
   { icon: Activity, title: "Every activity recorded", text: "Lessons, skill levels, virtual patients and daily challenges are saved the moment you finish them, with XP and scores." },
@@ -85,7 +76,7 @@ export function AccountApp() {
     return () => window.removeEventListener("popstate", read);
   }, [read]);
 
-  const nav = useMemo<Nav>(() => ({
+  const nav = useMemo<AccountNavApi>(() => ({
     go: (mode, notice) => {
       const query = [mode === "landing" ? "" : `m=${mode}`, notice ? `notice=${notice}` : ""].filter(Boolean).join("&");
       window.history.pushState(null, "", `/account${query ? `?${query}` : ""}`);
@@ -111,5 +102,5 @@ export function AccountApp() {
       body = <><div className="container-content"><p className="acct-notice acct-banner" role="status">{bannerText[view.notice]}</p></div><Landing /></>;
     }
   }
-  return <AccountNav.Provider value={nav}>{body}</AccountNav.Provider>;
+  return <AccountNavContext.Provider value={nav}>{body}</AccountNavContext.Provider>;
 }

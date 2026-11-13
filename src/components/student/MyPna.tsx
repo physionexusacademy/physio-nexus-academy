@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { ArrowRight, Download, Flame, LoaderCircle, LogOut, ShieldCheck, Sparkles, Trash2, Zap } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useAccountNav } from "@/components/student/AccountApp";
-import { flushStudentOutbox, pendingCount, OUTBOX_EVENT, SYNCED_EVENT } from "@/lib/student/outbox";
+import { useAccountNav } from "@/components/student/AccountNav";
+import { pendingCount, OUTBOX_EVENT, SYNCED_EVENT } from "@/lib/student/outbox";
+import { flushStudentOutbox } from "@/lib/student/flush";
 import { levelFor, levels } from "@/lib/student/levels";
 import { buildInsights, mainSources, sourceInfo, type StudentSummary } from "@/lib/student/insights";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
