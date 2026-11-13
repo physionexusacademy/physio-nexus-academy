@@ -10,6 +10,7 @@ import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 import { InstallApp } from "@/components/InstallApp";
 import { AcademyIcon } from "@/components/nexus/AcademyIcon";
 import { CommandPalette } from "@/components/nexus/CommandPalette";
+import { StudentSync } from "@/components/student/StudentSync";
 
 /** Opens the command palette from anywhere (e.g. the homepage search). */
 export const OPEN_SEARCH_EVENT = "pna:open-search";
@@ -302,6 +303,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
       </div>
 
       <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} atlasPublished={atlasPublished} />
+      <StudentSync />
     </header>
   );
 }
