@@ -410,7 +410,7 @@ export const kneeExercises: ExerciseDef[] = [
       start: { hip: { flex: 45 }, knee: { flex: 60 }, ankle: { flex: 8 }, shoulder: { flex: 6 }, "shoulder:o": { flex: 6 } },
       props: [{ kind: "step", height: 0 }],
       moves: [{ to: { hip: { flex: 0 }, knee: { flex: 0 }, ankle: { flex: 0 }, "hip:o": { flex: 24 }, "knee:o": { flex: 40 } }, ms: 2000, hold: 600, breath: "out", say: { en: "Press through the heel and stand up tall on the step.", ru: "Aerhi se zor lagayein aur step par seedhe khare ho jayein." } }],
-      returnMs: 2200, view: "side", zoom: 0.8, focus: "lowerleg01",
+      returnMs: 2200, view: "side", zoom: 0.8, focus: "lowerleg01", close: 2.6,
       glow: { bones: ["upperleg01"], sides: "tested" },
       mistake: {
         text: { en: "Mistake: the knee falls inwards as you step up.", ru: "Ghalti: chadhte waqt ghutna andar gir jata hai." },
