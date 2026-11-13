@@ -11,48 +11,9 @@ import { Hand, Pause, Play, Rotate3d, RotateCcw, Snail } from "lucide-react";
 import { ExamRoom, type Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, handOff, players, releaseRoom, shared, snapshot, type Owner } from "@/lib/virtual-patient/shared-room";
 import { DEMO3D, type Demo3DSpec } from "@/lib/skills/demo3d";
+import { otherSide, patientDir, resolvePoint } from "@/lib/skills/points3d";
 
-const other = (side: Side): Side => (side === "left" ? "right" : "left");
-
-/* ---------------- points and directions ---------------- */
-
-function patientDir(room: ExamRoom, local: [number, number, number]) {
-  return new THREE.Vector3(...local).applyQuaternion(room.patientRoot.quaternion).normalize();
-}
-
-function resolvePoint(room: ExamRoom, spec: string, side: Side, axis?: THREE.Vector3): THREE.Vector3 {
-  const sign = side === "left" ? 1 : -1;
-  if (spec.startsWith("^")) {
-    const base = axis ?? new THREE.Vector3();
-    const ref: Record<string, THREE.Vector3> = {
-      up: new THREE.Vector3(0, 1, 0),
-      down: new THREE.Vector3(0, -1, 0),
-      front: patientDir(room, [0, 0, 1]),
-      back: patientDir(room, [0, 0, -1]),
-      head: patientDir(room, [0, 1, 0]),
-      feet: patientDir(room, [0, -1, 0]),
-      lat: patientDir(room, [sign, 0, 0]),
-      med: patientDir(room, [-sign, 0, 0]),
-    };
-    return base.clone().addScaledVector(ref[spec.slice(1)] ?? ref.up, 0.25);
-  }
-  const [pair, weight] = spec.split("*");
-  if (pair.includes("+")) {
-    const [a, b] = pair.split("+");
-    return resolvePoint(room, a, side).lerp(resolvePoint(room, b, side), weight ? Number(weight) : 0.5);
-  }
-  const tail = pair.endsWith(">");
-  const [name, flag] = pair.replace(/>$/, "").split(":");
-  const which: Side = flag === "o" ? other(side) : side;
-  if (name.startsWith("@")) {
-    try {
-      return room.landmarkWorld(name.slice(1), flag === "m" ? "mid" : which);
-    } catch {
-      return new THREE.Vector3();
-    }
-  }
-  return tail ? room.boneEnd(name, which) : room.boneWorld(name, which);
-}
+const other = otherSide;
 
 /** Camera for a demo: aimed between the start and end positions, far enough back to keep the whole movement in view. */
 function frameFor(room: ExamRoom, spec: Demo3DSpec, side: Side) {
@@ -436,7 +397,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
               {frame.push ? <ArrowOverlay at={frame.push.at} dir={frame.push.dir} label={spec.kind === "mmt" ? "Resist" : "Examiner moves"} tone={spec.kind === "mmt" ? "resist" : "move"} /> : null}
             </svg>
             <div className="pointer-events-none absolute left-2 top-2 max-w-[62%] rounded-xl bg-white/90 px-2.5 py-1 shadow-sm sm:left-2.5 sm:top-2.5 sm:max-w-[70%] sm:rounded-2xl sm:px-3 sm:py-1.5">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-teal-700">{spec.kind === "mmt" ? "Muscle test" : label}</p>
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-teal-700">{spec.kind === "mmt" ? spec.label ?? "Muscle test" : label}</p>
               <p className="text-xs font-bold leading-4 text-navy-800 sm:text-sm sm:leading-5" aria-live="polite">{phaseText}</p>
             </div>
             {showSay ? (

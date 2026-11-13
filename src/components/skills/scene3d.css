@@ -1,0 +1,61 @@
+/* Skills Lab 3D scenes — holographic HUD look over the 3D patient. */
+.s3 { position: relative; border-radius: 1.5rem; overflow: hidden; border: 1px solid #1b4b7d; background: linear-gradient(160deg, #081d38, #05122a 70%); box-shadow: 0 30px 70px -48px rgba(5, 60, 120, .95), inset 0 0 0 1px rgba(46, 230, 214, .06); }
+.s3-view { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #e8eef3; }
+@media (min-width: 640px) { .s3-view { aspect-ratio: 16 / 10; } }
+.s3-view::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(46, 230, 214, .0) 0%, rgba(8, 29, 56, .16) 100%); }
+.s3-corner { position: absolute; width: 18px; height: 18px; border: 2px solid #2ee6d6; pointer-events: none; filter: drop-shadow(0 0 5px rgba(46, 230, 214, .85)); z-index: 3; }
+.s3-corner.tl { left: 8px; top: 8px; border-right: 0; border-bottom: 0; border-top-left-radius: 8px; }
+.s3-corner.tr { right: 8px; top: 8px; border-left: 0; border-bottom: 0; border-top-right-radius: 8px; }
+.s3-corner.bl { left: 8px; bottom: 8px; border-right: 0; border-top: 0; border-bottom-left-radius: 8px; }
+.s3-corner.br { right: 8px; bottom: 8px; border-left: 0; border-top: 0; border-bottom-right-radius: 8px; }
+.s3-scan { position: absolute; left: 0; right: 0; height: 36%; top: -36%; pointer-events: none; z-index: 2; background: linear-gradient(180deg, rgba(46, 230, 214, 0), rgba(46, 230, 214, .10), rgba(46, 230, 214, 0)); animation: s3scan 5.5s linear infinite; }
+@keyframes s3scan { to { transform: translateY(380%); } }
+
+.s3-label { display: none; position: absolute; left: 14px; top: 14px; z-index: 4; max-width: 62%; border-radius: 14px; padding: 6px 11px 7px; background: rgba(6, 24, 47, .82); border: 1px solid rgba(46, 230, 214, .4); backdrop-filter: blur(6px); box-shadow: 0 0 22px -6px rgba(46, 230, 214, .55); pointer-events: none; }
+.s3-label p:first-child { margin: 0; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
+.s3-label p:last-child { margin: 1px 0 0; font-size: 12.5px; font-weight: 700; line-height: 1.3; color: #eaf6ff; }
+@media (min-width: 640px) { .s3-label { display: block; } .s3-label p:last-child { font-size: 14px; } .s3-caption { display: none; } }
+.s3-caption { padding: 8px 12px 9px; background: #06182f; border-top: 1px solid rgba(46, 230, 214, .22); }
+.s3-caption p:first-child { margin: 0; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
+.s3-caption p:last-child { margin: 2px 0 0; font-size: 13px; font-weight: 600; line-height: 1.35; color: #eaf6ff; }
+.s3-hud-tr, .s3-hud-tl { max-width: 44%; }
+
+.s3-hud { position: absolute; z-index: 4; display: flex; flex-direction: column; gap: 6px; pointer-events: none; max-width: 48%; }
+.s3-hud-tl { left: 14px; top: 76px; align-items: flex-start; }
+.s3-hud-tr { right: 14px; top: 14px; align-items: flex-end; }
+.s3-hud-bl { left: 14px; bottom: 14px; align-items: flex-start; }
+.s3-hud-br { right: 14px; bottom: 14px; align-items: flex-end; }
+.s3-card { border-radius: 14px; padding: 6px 10px 7px; background: rgba(6, 24, 47, .82); border: 1px solid rgba(46, 230, 214, .32); backdrop-filter: blur(6px); color: #eaf6ff; box-shadow: 0 0 20px -8px rgba(46, 230, 214, .5); }
+.s3-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: rgba(190, 225, 255, .82); }
+.s3-card-head strong { font-size: 17px; letter-spacing: 0; font-weight: 800; }
+.s3-card-head small { font-size: 10px; font-weight: 700; opacity: .8; }
+.s3-card-stat { display: grid; justify-items: end; gap: 0; text-align: right; min-width: 74px; }
+.s3-card-stat strong { font-size: 30px; line-height: 1.05; font-weight: 800; letter-spacing: -.01em; }
+.s3-stat-label { font-size: 9.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: rgba(190, 225, 255, .85); }
+.s3-stat-sub { font-size: 11px; font-weight: 700; color: #cfe7ff; max-width: 150px; line-height: 1.25; }
+
+.s3-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; border-top: 1px solid rgba(46, 230, 214, .22); background: #06182f; padding: 8px 10px; }
+.s3-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; border-radius: 999px; border: 1px solid rgba(120, 190, 255, .28); background: rgba(255, 255, 255, .05); color: #cfe7ff; transition: .15s; }
+.s3-btn:hover { border-color: #2ee6d6; color: #fff; }
+.s3-btn[aria-pressed="true"], .s3-btn.on { background: #2ee6d6; color: #03202a; border-color: #2ee6d6; box-shadow: 0 0 14px rgba(46, 230, 214, .55); }
+.s3-seg { display: inline-flex; border-radius: 999px; border: 1px solid rgba(120, 190, 255, .28); padding: 2px; }
+.s3-seg button { border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 800; color: #9fc6e8; }
+.s3-seg button[aria-pressed="true"] { background: #2ee6d6; color: #03202a; box-shadow: 0 0 12px rgba(46, 230, 214, .5); }
+.s3-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 10px 0; background: #06182f; }
+.s3-opts span { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #7fa7cc; }
+.s3-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px 0; background: #06182f; }
+.s3-chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px 4px 5px; font-size: 11.5px; font-weight: 700; color: #8fb5da; border: 1px solid rgba(120, 190, 255, .2); }
+.s3-chip i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-style: normal; font-size: 10px; font-weight: 800; background: rgba(255, 255, 255, .1); }
+.s3-chip.on { color: #03202a; background: #2ee6d6; border-color: #2ee6d6; box-shadow: 0 0 14px rgba(46, 230, 214, .5); }
+.s3-chip.on i { background: rgba(3, 32, 42, .2); }
+.s3-chip.done { color: #bfe6ff; border-color: rgba(46, 230, 214, .4); }
+.s3-range { width: 100%; accent-color: #2ee6d6; }
+
+.s3-ping { transform-box: fill-box; transform-origin: center; animation: s3ping 1.7s ease-out infinite; }
+.s3-ping2 { animation-delay: .85s; }
+@keyframes s3ping { 0% { transform: scale(.45); opacity: .95; } 100% { transform: scale(1.9); opacity: 0; } }
+.s3-flow { animation: s3flow 1.1s linear infinite; }
+@keyframes s3flow { to { stroke-dashoffset: -23; } }
+.s3-dash { animation: s3dash 1.4s linear infinite; }
+@keyframes s3dash { to { stroke-dashoffset: -18; } }
+@media (prefers-reduced-motion: reduce) { .s3-ping, .s3-flow, .s3-dash, .s3-scan { animation: none; } }

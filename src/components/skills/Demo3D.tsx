@@ -9,7 +9,7 @@ import { Box, Shapes } from "lucide-react";
  * away (and used automatically without WebGL). three.js and the patient model load only
  * when a demo is first opened and scrolled into view.
  */
-const Demo3DPlayer = dynamic(() => import("./Demo3DPlayer"), {
+const Demo3DPlayer = dynamic(() => import("./Demo3DAny"), {
   ssr: false,
   loading: () => (
     <div className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl border border-slate-200 bg-[#e8eef3] text-sm font-bold text-navy-800 sm:aspect-[16/10]" role="status">

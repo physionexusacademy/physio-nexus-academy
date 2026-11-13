@@ -22,7 +22,7 @@ export type PatientPosition = "standing" | "supine" | "prone" | "sitting" | "sid
 export type JointId = "shoulder" | "elbow" | "wrist" | "hand" | "fingers" | "thumb" | "hip" | "knee" | "ankle" | "toe";
 /**
  * Degrees. flex: flexion(+)/extension(−) — for the ankle dorsiflexion(+), for the great toe extension(+);
- * abd: abduction(+)/adduction(−) — for the wrist radial deviation(+); rot: internal rotation(+) — for the ankle inversion(+);
+ * abd: abduction(+)/adduction(−) — for the wrist radial deviation(+), for the knee the lower leg angled outwards (valgus, +) or inwards (varus, −); rot: internal rotation(+) — for the ankle inversion(+);
  * elbow rot: forearm rotation.
  * hand: flex = grip (0–100 %), abd = thumb flexion (0–100 %).
  * fingers (index to little, degrees, added to the grip): flex = MCP, abd = PIP, rot = DIP flexion.
@@ -159,6 +159,11 @@ export class ExamRoom {
   readonly controls: OrbitControls;
   readonly patientRoot = new THREE.Group();
   private skinned: THREE.SkinnedMesh | null = null;
+  /** Colour and pulse of the glowing skin zone (see highlightZone). */
+  readonly zoneUniforms = { uZoneColor: { value: new THREE.Color("#2ee6d6") }, uZonePulse: { value: 0 }, uZoneTime: { value: 0 } };
+  private zoneWeld: { id: Uint32Array; start: Uint32Array; list: Uint32Array; count: number } | null = null;
+  private zoneClass: { derm: string[]; nerve: string[]; side: Uint8Array; covered: Uint8Array } | null = null;
+  private zoneActive: Uint8Array | null = null;
   private bones = new Map<string, THREE.Bone>();
   private pose: Pose = {};
   /** The posture that defines the current position (e.g. hips and knees bent in sitting). */
@@ -305,7 +310,7 @@ export class ExamRoom {
         if (material.name === "skin" && !this.skinned) {
           originals.push(material);
           this.skinned = mesh;
-          mesh.material = new THREE.MeshPhysicalMaterial({
+          const skinMaterial = new THREE.MeshPhysicalMaterial({
             map: material.map,
             roughness: 0.56,
             metalness: 0,
@@ -314,6 +319,22 @@ export class ExamRoom {
             sheenColor: new THREE.Color("#ffb59a"),
             specularIntensity: 0.45,
           });
+          // A glowing skin zone (a dermatome or nerve territory): vertices with zone = 1 are tinted and made emissive.
+          skinMaterial.onBeforeCompile = (shader) => {
+            shader.uniforms.uZoneColor = this.zoneUniforms.uZoneColor;
+            shader.uniforms.uZonePulse = this.zoneUniforms.uZonePulse;
+            shader.uniforms.uZoneTime = this.zoneUniforms.uZoneTime;
+            shader.vertexShader = shader.vertexShader
+              .replace("#include <common>", "#include <common>\nattribute float zone;\nvarying float vZone;\nvarying float vZoneY;")
+              .replace("#include <begin_vertex>", "#include <begin_vertex>\nvZone = zone;")
+              .replace("#include <project_vertex>", "vZoneY = (modelMatrix * vec4(transformed, 1.0)).y;\n#include <project_vertex>");
+            shader.fragmentShader = shader.fragmentShader
+              .replace("#include <common>", "#include <common>\nvarying float vZone;\nvarying float vZoneY;\nuniform vec3 uZoneColor;\nuniform float uZonePulse;\nuniform float uZoneTime;")
+              .replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\nfloat zoneScan = 0.8 + 0.2 * sin(vZoneY * 170.0 - uZoneTime * 4.0);\ndiffuseColor.rgb = mix(diffuseColor.rgb, uZoneColor, vZone * 0.5);\ntotalEmissiveRadiance += uZoneColor * vZone * (0.42 + 0.34 * uZonePulse) * zoneScan;");
+          };
+          skinMaterial.customProgramCacheKey = () => "skin-zone";
+          mesh.geometry.setAttribute("zone", new THREE.BufferAttribute(new Float32Array(mesh.geometry.getAttribute("position").count), 1));
+          mesh.material = skinMaterial;
         }
       }
     });
@@ -526,7 +547,7 @@ export class ExamRoom {
         .multiply(q(Z, sign * (hp.abd ?? 0)))
         .multiply(q(Y, -sign * (hp.rot ?? 0)));
       targets.set(`upperleg01.${s}`, thigh.clone().multiply(align.thigh));
-      const shank = thigh.clone().multiply(q(X, j("knee").flex ?? 0));
+      const shank = thigh.clone().multiply(q(Z, sign * (j("knee").abd ?? 0))).multiply(q(X, j("knee").flex ?? 0));
       targets.set(`lowerleg01.${s}`, shank.clone().multiply(align.shank));
       const an = j("ankle");
       // flex = dorsiflexion(+); rot = inversion(+)
@@ -1049,6 +1070,164 @@ export class ExamRoom {
     return this.vertexPick(this.nearestVertex(anchor.p), { id, side: key, distance: 0 });
   }
 
+  /* ---------------- glowing skin zones (dermatomes, nerve territories) ---------------- */
+
+  /** Dermatome, nerve territory and side of every skin vertex (the patient's left is +x at rest). Worked out once, on first use. */
+  private zoneClassification() {
+    if (this.zoneClass) return this.zoneClass;
+    const mesh = this.skinned!;
+    const bind = this.bindPositionsOf()!;
+    const count = bind.length / 3;
+    const bones = mesh.skeleton.bones;
+    const derm: string[] = new Array(count);
+    const nerve: string[] = new Array(count);
+    const side = new Uint8Array(count);
+    const covered = new Uint8Array(count);
+    const cache = new Map<number, string>();
+    for (let i = 0; i < count; i++) {
+      const joint = this.skinOf(i)[0]?.joint ?? 0;
+      let name = cache.get(joint);
+      if (name === undefined) {
+        name = bones[joint]?.name ?? "";
+        cache.set(joint, name);
+      }
+      const info = classifySurface([bind[i * 3], bind[i * 3 + 1], bind[i * 3 + 2]], name);
+      derm[i] = info.dermatome ?? "";
+      nerve[i] = info.nerve ?? "";
+      side[i] = info.side === "left" ? 1 : 0;
+      covered[i] = info.covered ? 1 : 0;
+    }
+    this.zoneClass = { derm, nerve, side, covered };
+    return this.zoneClass;
+  }
+
+  /** Rounds the ragged vertex-level edge of a zone: averages over neighbouring vertices (seam duplicates welded), then sharpens. */
+  private smoothZone(mask: Uint8Array): Float32Array {
+    const mesh = this.skinned!;
+    if (!this.zoneWeld) {
+      const bind = this.bindPositionsOf()!;
+      const count = bind.length / 3;
+      const keys = new Map<string, number>();
+      const id = new Uint32Array(count);
+      for (let i = 0; i < count; i++) {
+        const key = `${Math.round(bind[i * 3] * 4000)},${Math.round(bind[i * 3 + 1] * 4000)},${Math.round(bind[i * 3 + 2] * 4000)}`;
+        let w = keys.get(key);
+        if (w === undefined) {
+          w = keys.size;
+          keys.set(key, w);
+        }
+        id[i] = w;
+      }
+      const n = keys.size;
+      const index = mesh.geometry.getIndex();
+      const neighbours: Set<number>[] = Array.from({ length: n }, () => new Set<number>());
+      if (index) {
+        for (let t = 0; t < index.count; t += 3) {
+          const a = id[index.getX(t)], b = id[index.getX(t + 1)], c = id[index.getX(t + 2)];
+          neighbours[a].add(b).add(c);
+          neighbours[b].add(a).add(c);
+          neighbours[c].add(a).add(b);
+        }
+      }
+      const start = new Uint32Array(n + 1);
+      neighbours.forEach((set, k) => (start[k + 1] = start[k] + set.size));
+      const list = new Uint32Array(start[n]);
+      neighbours.forEach((set, k) => {
+        let at = start[k];
+        set.forEach((v) => (list[at++] = v));
+      });
+      this.zoneWeld = { id, start, list, count: n };
+    }
+    const { id, start, list, count } = this.zoneWeld;
+    let a = new Float32Array(count);
+    for (let i = 0; i < id.length; i++) if (mask[i]) a[id[i]] = 1;
+    let b = new Float32Array(count);
+    for (let pass = 0; pass < 3; pass++) {
+      for (let k = 0; k < count; k++) {
+        let sum = a[k] * 2;
+        for (let e = start[k]; e < start[k + 1]; e++) sum += a[list[e]];
+        b[k] = sum / (2 + start[k + 1] - start[k]);
+      }
+      [a, b] = [b, a];
+    }
+    const out = new Float32Array(id.length);
+    for (let i = 0; i < id.length; i++) {
+      const t = Math.min(1, Math.max(0, (a[id[i]] - 0.3) / 0.4));
+      out[i] = t * t * (3 - 2 * t);
+    }
+    return out;
+  }
+
+  private zoneMatches(spec: { dermatomes?: string[]; nerves?: string[]; side: Side }) {
+    const cls = this.zoneClassification();
+    const want = spec.side === "left" ? 1 : 0;
+    const out = new Uint8Array(cls.derm.length);
+    for (let i = 0; i < out.length; i++) {
+      if (cls.side[i] !== want || cls.covered[i]) continue;
+      if ((spec.dermatomes && cls.derm[i] && spec.dermatomes.includes(cls.derm[i])) || (spec.nerves && cls.nerve[i] && spec.nerves.includes(cls.nerve[i]))) out[i] = 1;
+    }
+    return out;
+  }
+
+  /** Makes a dermatome or nerve territory glow on the skin of one side (null clears it). `amount` fades it in (0–1). */
+  highlightZone(spec: { dermatomes?: string[]; nerves?: string[]; side: Side } | null, color = "#2ee6d6") {
+    const mesh = this.skinned;
+    const attribute = mesh?.geometry.getAttribute("zone") as THREE.BufferAttribute | undefined;
+    if (!mesh || !attribute) return;
+    const array = attribute.array as Float32Array;
+    if (!spec) {
+      if (this.zoneActive) {
+        array.fill(0);
+        attribute.needsUpdate = true;
+        this.zoneActive = null;
+        this.invalidate();
+      }
+      return;
+    }
+    const matches = this.zoneMatches(spec);
+    const smooth = this.smoothZone(matches);
+    for (let i = 0; i < array.length; i++) array[i] = smooth[i];
+    this.zoneActive = matches;
+    this.zoneUniforms.uZoneColor.value.set(color);
+    attribute.needsUpdate = true;
+    this.invalidate();
+  }
+  /** Brightness pulse of the glowing zone (0–1). */
+  pulseZone(value: number, time = 0) {
+    this.zoneUniforms.uZonePulse.value = value;
+    this.zoneUniforms.uZoneTime.value = time;
+    this.invalidate();
+  }
+  /** World-space box round the glowing zone in the current pose (to aim the camera), and a skin point near its middle. */
+  zoneBounds(): { box: THREE.Box3; centre: THREE.Vector3; bone: string } | null {
+    const mesh = this.skinned;
+    const active = this.zoneActive;
+    if (!mesh || !active) return null;
+    this.patientRoot.updateMatrixWorld(true);
+    mesh.skeleton.update();
+    const box = new THREE.Box3();
+    const points: THREE.Vector3[] = [];
+    const indices: number[] = [];
+    const v = new THREE.Vector3();
+    for (let i = 0; i < active.length; i++) {
+      if (!active[i]) continue;
+      mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld);
+      points.push(v.clone());
+      indices.push(i);
+      box.expandByPoint(v);
+    }
+    if (!points.length) return null;
+    const middle = box.getCenter(new THREE.Vector3());
+    let best = 0;
+    for (let k = 1; k < points.length; k++) if (points[k].distanceToSquared(middle) < points[best].distanceToSquared(middle)) best = k;
+    const joint = this.skinOf(indices[best])[0]?.joint ?? 0;
+    return { box, centre: points[best].clone(), bone: mesh.skeleton.bones[joint]?.name ?? "" };
+  }
+  /** Where a named skin point (a dermatome key point or nerve zone from points.ts) is, in the current pose. */
+  skinPointWorld(probe: SkinProbe, side: Side) {
+    return this.probeSkin(probe, side)?.point ?? null;
+  }
+
   /* ---------------- tool props: markers, tape ---------------- */
 
   /** A small coloured dot stuck to the skin (it follows the body as he moves). */
@@ -1111,6 +1290,25 @@ export class ExamRoom {
     if (!bone || !rest) return this.jointWorld(full);
     // Rest bones have identity rotation, so the rest head→tail vector turns with the bone (as in headWorld).
     return this.jointWorld(full).add(V(rest.tail).sub(V(rest.head)).applyQuaternion(bone.getWorldQuaternion(new THREE.Quaternion())));
+  }
+  /** A point offset from a bone's head, in the bone's rest frame (x towards the patient's left on the left side, y up the limb, z to the front), so it follows the bone. */
+  boneOffset(name: string, side: Side, offset: [number, number, number]) {
+    const full = !/\.[LR]$/.test(name) && !/^(spine|neck|head|root|jaw)/.test(name) ? `${name}.${sideKey(side)}` : name;
+    const bone = this.bone(full);
+    const origin = this.jointWorld(full);
+    if (!bone) return origin;
+    const v = new THREE.Vector3(offset[0] * (side === "right" && !/^(spine|neck|head|root|jaw)/.test(name) ? -1 : 1), offset[1], offset[2]).applyQuaternion(bone.getWorldQuaternion(new THREE.Quaternion()));
+    return origin.add(v);
+  }
+  /** Where a bone-attached skin point sits now: `local` is expressed in that bone's space (see skinAnchor). */
+  anchorPoint(bone: string, local: THREE.Vector3) {
+    const b = this.bone(bone);
+    return b ? local.clone().applyMatrix4(b.matrixWorld) : local.clone();
+  }
+  /** Fixes a skin point (a pick result) to its bone so it can be followed cheaply as the patient moves. */
+  skinAnchor(pick: { bone: string; point: THREE.Vector3 }) {
+    const b = this.bone(pick.bone);
+    return { bone: pick.bone, local: b ? b.worldToLocal(pick.point.clone()) : pick.point.clone() };
   }
   /** Top of the head, for the patient's speech bubble. */
   headWorld() {

@@ -177,19 +177,42 @@ const length: Record<string, Demo3DSpec> = {
   "levator-scapulae": { kind: "length", position: "sitting", label: "Neck flexion, side flexion and rotation away", move: (s, a) => P(s, { neck: { flex: a * 0.8, abd: -toward(s) * a * 0.6, rot: -toward(s) * a * 0.6 } }), range: [0, 45], push: "head>", stab: "@scapular-spine", focus: "neck01+head", zoom: 1.05, view: [0.6, 0.3, -1] },
 };
 
+/* ------------------------------------------------------------------ */
+/* Myotomes: the key muscle of each root, tested exactly as in the muscle-testing atlas */
+/* ------------------------------------------------------------------ */
+
+const myo = (spec: Demo3DSpec, label: string): Demo3DSpec => ({ ...spec, label });
+const myotomes: Record<string, Demo3DSpec> = {
+  "c1-c2": myo(mmt["cervical-flexion"], "C1–C2 myotome · neck flexion"),
+  c3: { kind: "mmt", position: "sitting", label: "C3 myotome · neck side-flexion", move: (s, a) => P(s, { neck: { abd: toward(s) * a } }), range: [0, 30], push: "@ear", stab: "@ac-joint:o", focus: "neck01", zoom: 1.15, view: [0.2, 0.3, 1] },
+  c5: myo(mmt["shoulder-abduction"], "C5 myotome · shoulder abduction (deltoid)"),
+  c6: myo(mmt["wrist-extension"], "C6 myotome · wrist extension"),
+  c7: myo(mmt["elbow-extension"], "C7 myotome · elbow extension (triceps)"),
+  c8: myo(mmt["dip-flexion"], "C8 myotome · finger flexion (FDP)"),
+  l2: myo(mmt["hip-flexion"], "L2 myotome · hip flexion (iliopsoas)"),
+  l3: myo(mmt["knee-extension"], "L3 myotome · knee extension (quadriceps)"),
+  l4: myo(mmt["ankle-dorsiflexion"], "L4 myotome · ankle dorsiflexion"),
+  l5: myo(mmt["great-toe-extension"], "L5 myotome · great-toe extension"),
+  s1: myo(mmt["ankle-plantarflexion"], "S1 myotome · plantarflexion (toe raise)"),
+  s2: myo(mmt["knee-flexion"], "S2 myotome · knee flexion (hamstrings)"),
+};
+
 const prefix = (skill: string, specs: Record<string, Demo3DSpec>) => Object.fromEntries(Object.entries(specs).map(([id, spec]) => [`${skill}/${id}`, spec]));
 
 export const DEMO3D: Record<string, Demo3DSpec> = {
   ...prefix("goniometry", goniometry),
   ...prefix("manual-muscle-testing", mmt),
   ...prefix("muscle-length", length),
+  ...prefix("myotomes", myotomes),
   // Concept demonstrations reuse an atlas item.
   "goniometry/concept:the-instrument": goniometry["knee-flexion"],
+  "myotomes/concept:how-to-screen": myotomes.c5,
+  "myotomes/concept:isncsci-key-muscles": myotomes.c7,
   "manual-muscle-testing/concept:gravity-decides": mmt["shoulder-abduction"],
   "manual-muscle-testing/concept:resistance": mmt["elbow-flexion"],
 };
 
 /** Items that stay as 2D diagrams on purpose (movement the 3D patient cannot show). */
-export const DEMO3D_2D_ONLY = ["manual-muscle-testing/upper-trapezius", "manual-muscle-testing/pelvic-elevation", "manual-muscle-testing/finger-abduction", "manual-muscle-testing/finger-adduction", "muscle-length/pec-minor", "goniometry/lumbar-flexion-schober", "goniometry/tmj-opening"];
+export const DEMO3D_2D_ONLY = ["myotomes/c4", "myotomes/t1", "manual-muscle-testing/upper-trapezius", "manual-muscle-testing/pelvic-elevation", "manual-muscle-testing/finger-abduction", "manual-muscle-testing/finger-adduction", "muscle-length/pec-minor", "goniometry/lumbar-flexion-schober", "goniometry/tmj-opening"];
 
 export const hasDemo3D = (key: string) => key in DEMO3D;

@@ -186,7 +186,7 @@
  },
  {
   "slug": "dermatomes",
-  "version": 4271799885,
+  "version": 3405236865,
   "title": "Dermatomes & Sensory Testing",
   "short": "Dermatomes",
   "phase": "neuro",
@@ -250,7 +250,7 @@
  },
  {
   "slug": "myotomes",
-  "version": 2513842239,
+  "version": 863880035,
   "title": "Myotomes & Key Muscles",
   "short": "Myotomes",
   "phase": "neuro",
@@ -306,7 +306,7 @@
  },
  {
   "slug": "reflexes",
-  "version": 3850465818,
+  "version": 360330490,
   "title": "Reflexes & UMN Signs",
   "short": "Reflexes",
   "phase": "neuro",
@@ -360,7 +360,7 @@
  },
  {
   "slug": "peripheral-nerves",
-  "version": 3780891356,
+  "version": 368640308,
   "title": "Peripheral Nerve Examination",
   "short": "Peripheral nerves",
   "phase": "neuro",
@@ -417,7 +417,7 @@
  },
  {
   "slug": "tone-coordination",
-  "version": 3725632553,
+  "version": 2110950049,
   "title": "Tone & Coordination",
   "short": "Tone & coordination",
   "phase": "neuro",
@@ -527,7 +527,7 @@
  },
  {
   "slug": "vital-signs",
-  "version": 2577120572,
+  "version": 951998742,
   "title": "Vital Signs & Exercise Monitoring",
   "short": "Vital signs",
   "phase": "patient",
@@ -583,7 +583,7 @@
  },
  {
   "slug": "posture",
-  "version": 3232305478,
+  "version": 3942347112,
   "title": "Posture Assessment",
   "short": "Posture",
   "phase": "patient",
@@ -639,7 +639,7 @@
  },
  {
   "slug": "balance-function",
-  "version": 2936716517,
+  "version": 2895245111,
   "title": "Balance & Functional Tests",
   "short": "Balance & function",
   "phase": "patient",
@@ -699,7 +699,7 @@
  },
  {
   "slug": "limb-measurements",
-  "version": 642885271,
+  "version": 2933195537,
   "title": "Limb & Body Measurements",
   "short": "Limb measurements",
   "phase": "patient",
@@ -759,7 +759,7 @@
  },
  {
   "slug": "palpation",
-  "version": 3779673978,
+  "version": 2992642342,
   "title": "Surface Anatomy & Palpation",
   "short": "Palpation",
   "phase": "patient",
