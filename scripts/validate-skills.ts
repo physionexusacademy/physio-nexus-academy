@@ -13,6 +13,8 @@ import { SKILL_LEVELS, type SkillData, type SkillDefinition, type SkillLevelId }
 import { DEMO3D, DEMO3D_2D_ONLY } from "../src/lib/skills/demo3d.ts";
 import { SCENES, SCENES_2D_ONLY } from "../src/lib/skills/scenes.ts";
 import { DERMATOME_KEY_IDS } from "../src/lib/skills/scenes/dermatomes.ts";
+import { UR_BEATS } from "../src/lib/skills/ur/scene-captions.ts";
+import { UR_CONCEPTS } from "../src/lib/skills/ur/concepts.ts";
 
 const root = process.cwd();
 const failures: string[] = [];
@@ -347,7 +349,11 @@ for (const slug of slugs) {
       for (const opt of optionSets) {
         for (const u of [0, 0.13, 0.31, 0.5, 0.67, 0.86, 1]) {
           const c = { side, u, ms: u * scene.loopMs, opt };
-          for (const beat of scene.beats) if (typeof beat.text === "function" && !String(beat.text(c)).length) fail(at, "empty beat text");
+          for (const beat of scene.beats) {
+            const text = typeof beat.text === "function" ? String(beat.text(c)) : beat.text;
+            if (!text.length) fail(at, "empty beat text");
+            else if (!UR_BEATS[text]) fail(at, `no Roman Urdu caption for “${text.slice(0, 70)}…” (add it to src/lib/skills/ur/scene-captions.ts)`);
+          }
           for (const [poseKey, angles] of Object.entries(scene.pose?.(side, u, c) ?? {})) {
             const [joint, poseSide] = poseKey.split(".");
             const valid = poseKey === "neck" || poseKey === "trunk" || poseKey === "head" || (JOINTS.has(joint) && (poseSide === "left" || poseSide === "right"));
@@ -390,6 +396,20 @@ for (const slug of slugs) {
     for (const item of bySlug.get(slug)?.atlas ?? []) {
       const key = `${slug}/${item.id}`;
       if (item.demo && !DEMO3D[key] && !only2d.has(key)) fail(`demo3d ${key}`, "has a 2D diagram but no 3D demonstration (add one or list it in DEMO3D_2D_ONLY)");
+    }
+  }
+}
+
+{
+  // Every Learn-tab concept explains itself in Roman Urdu (its own `ur`, or one from ur/concepts.ts).
+  for (const skill of skillDefinitions) {
+    for (const concept of skill.concepts) {
+      const urdu = concept.ur ?? UR_CONCEPTS[`${skill.slug}/${concept.id}`];
+      if (!urdu || urdu.length < 60) fail(`${skill.slug} concept ${concept.id}`, "needs a Roman Urdu explanation (src/lib/skills/ur/concepts.ts)");
+    }
+    for (const key of Object.keys(UR_CONCEPTS)) {
+      const [slug, id] = key.split("/");
+      if (slug === skill.slug && !skill.concepts.some((concept) => concept.id === id)) fail(`ur concept ${key}`, "no such concept");
     }
   }
 }

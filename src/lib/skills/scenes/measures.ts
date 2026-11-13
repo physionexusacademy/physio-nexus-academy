@@ -294,10 +294,10 @@ const gripScene: Scene = {
   beats: [
     { to: 0.28, text: "Seated, shoulder by the side, elbow bent to 90° and the forearm in the neutral position", chip: "Position" },
     { to: 0.93, text: "Squeeze the dynamometer as hard as possible for about 3 seconds; three trials with a rest between", chip: "Squeeze" },
-    { to: 1, text: "Record the best (or average) of three trials in kg; compare with the other hand and with norms for age and sex", chip: "Record" },
+    { to: 1, text: "Record the best (or average) of three trials in kg and compare with the other hand and with norms for age and sex. Low grip strength is under 27 kg in men and 16 kg in women (EWGSOP2)", chip: "Record" },
   ],
   overlays: [{ t: "device", kind: "meter", at: "finger3-1", label: "Dynamometer", when: [0.1, 1] }],
-  hud: [{ t: "bar", label: "Grip force", unit: "kg", min: 0, max: 50, goodFrom: 26, goodTo: 50, value: (c) => 36 * ease(tri(Math.min(1, Math.max(0, (c.u - 0.28) / 0.65)), 3)) * (c.u < 0.28 ? 0 : 1), marks: [{ at: 26, label: "typical" }] }],
+  hud: [{ t: "bar", label: "Grip force", unit: "kg", min: 0, max: 50, goodFrom: 27, goodTo: 50, value: (c) => 36 * ease(tri(Math.min(1, Math.max(0, (c.u - 0.28) / 0.65)), 3)) * (c.u < 0.28 ? 0 : 1), marks: [{ at: 16, label: "F 16" }, { at: 27, label: "M 27" }] }],
 };
 
 const navicular: Scene = {

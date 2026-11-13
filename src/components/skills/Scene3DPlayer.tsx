@@ -15,6 +15,8 @@ import { clearPointCache, patientDir, resolvePoint, setZoneAnchor } from "@/lib/
 import { useRoomClaim } from "./useRoomClaim";
 import { addProps, clearProps } from "./scene-props";
 import { HudLayer, TONE } from "./SceneHud";
+import { useLang } from "@/lib/lang";
+import { UR_BEATS, UR_CHIPS, UR_OPTIONS } from "@/lib/skills/ur/scene-captions";
 import "./scene3d.css";
 
 const other = (side: Side): Side => (side === "left" ? "right" : "left");
@@ -343,6 +345,7 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
   const scene = SCENES[demoKey] as Scene | undefined;
   const { hostRef, roomRef, status, progress, poster, visible, posed, activate, mine } = useRoomClaim(Boolean(scene), onFail);
   const [side, setSide] = useState<Side>("right");
+  const [lang, setLang] = useLang();
   const [playing, setPlaying] = useState(true);
   const [slow, setSlow] = useState(false);
   const [turn, setTurn] = useState(false);
@@ -534,7 +537,11 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
 
   if (!scene) return null;
   const beat = scene.beats[Math.min(frame.beat, scene.beats.length - 1)];
-  const beatText = typeof beat.text === "function" ? beat.text(frame.ctx) : beat.text;
+  const beatEn = typeof beat.text === "function" ? beat.text(frame.ctx) : beat.text;
+  const ur = lang === "ur";
+  const beatText = ur ? UR_BEATS[beatEn] ?? beatEn : beatEn;
+  const chipText = (c: string) => (ur ? UR_CHIPS[c] ?? c : c);
+  const optText = (c: string) => (ur ? UR_OPTIONS[c] ?? c : c);
   const u = manual ?? frame.ctx.u;
   const w = hostRef.current?.clientWidth ?? 600, h = hostRef.current?.clientHeight ?? 400;
 
@@ -581,8 +588,8 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
             if (!b.chip) return null;
             const state = i === frame.beat ? "on" : i < frame.beat ? "done" : "";
             return (
-              <button key={i} type="button" className={`s3-chip ${state}`} onClick={() => { if (status !== "active") activate(); setPlaying(false); setManual(i === 0 ? 0.005 : scene.beats[i - 1].to + 0.01); }} aria-label={`Step ${i + 1}: ${b.chip}`}>
-                <i>{i + 1}</i>{b.chip}
+              <button key={i} type="button" className={`s3-chip ${state}`} onClick={() => { if (status !== "active") activate(); setPlaying(false); setManual(i === 0 ? 0.005 : scene.beats[i - 1].to + 0.01); }} aria-label={`Step ${i + 1}: ${chipText(b.chip)}`}>
+                <i>{i + 1}</i>{chipText(b.chip)}
               </button>
             );
           })}
@@ -593,10 +600,10 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
         <div className="s3-opts">
           {scene.options.map((o) => (
             <div key={o.id} className="flex flex-wrap items-center gap-2">
-              <span>{o.label}</span>
-              <div className="s3-seg" role="group" aria-label={o.label}>
+              <span>{optText(o.label)}</span>
+              <div className="s3-seg" role="group" aria-label={optText(o.label)}>
                 {o.choices.map((ch) => (
-                  <button key={ch.id} type="button" aria-pressed={opt[o.id] === ch.id} onClick={() => setOpt((prev) => ({ ...prev, [o.id]: ch.id }))}>{ch.label}</button>
+                  <button key={ch.id} type="button" aria-pressed={opt[o.id] === ch.id} onClick={() => setOpt((prev) => ({ ...prev, [o.id]: ch.id }))}>{optText(ch.label)}</button>
                 ))}
               </div>
             </div>
@@ -612,6 +619,10 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
           {(["left", "right"] as Side[]).map((s) => (
             <button key={s} type="button" onClick={() => setSide(s)} aria-pressed={side === s} className="capitalize">{s}</button>
           ))}
+        </div>
+        <div className="s3-seg s3-lang" role="group" aria-label="Language">
+          <button type="button" onClick={() => setLang("en")} aria-pressed={!ur}>EN</button>
+          <button type="button" onClick={() => setLang("ur")} aria-pressed={ur} title="Roman Urdu mix">Urdu</button>
         </div>
         <button type="button" className="s3-btn" onClick={() => setSlow((v) => !v)} aria-pressed={slow} title="Slow motion" aria-label="Slow motion"><Snail className="h-4 w-4" aria-hidden="true" /></button>
         <button type="button" className="s3-btn" onClick={() => setTurn((v) => !v)} aria-pressed={turn} title="Turn the view" aria-label="Turn the view"><Rotate3d className="h-4 w-4" aria-hidden="true" /></button>

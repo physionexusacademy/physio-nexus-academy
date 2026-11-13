@@ -1,6 +1,7 @@
 import type { SkillCard, SkillData, SkillDefinition, SkillIndexEntry, SkillQuestion } from "./types.ts";
 import { hasDemo3D } from "./demo3d.ts";
 import { hasScene } from "./scenes.ts";
+import { UR_CONCEPTS } from "./ur/concepts.ts";
 
 const hasAnyDemo = (key: string) => hasDemo3D(key) || hasScene(key);
 
@@ -133,7 +134,11 @@ export function compileSkill(skill: SkillDefinition): SkillData {
   const cards = [...(skill.cards ?? []), ...generatedCards, ...questionCards, ...pearlCards];
   // Mark the items and concepts the 3D Virtual Patient can demonstrate.
   const atlas = skill.atlas.map((item) => (hasAnyDemo(`${skill.slug}/${item.id}`) ? { ...item, demo3d: true } : item));
-  const concepts = skill.concepts.map((concept) => (hasAnyDemo(`${skill.slug}/concept:${concept.id}`) ? { ...concept, demo3d: true } : concept));
+  const concepts = skill.concepts.map((concept) => {
+    const ur = concept.ur ?? UR_CONCEPTS[`${skill.slug}/${concept.id}`];
+    const withUr = ur ? { ...concept, ur } : concept;
+    return hasAnyDemo(`${skill.slug}/concept:${concept.id}`) ? { ...withUr, demo3d: true } : withUr;
+  });
   const data: SkillData = { ...skill, atlas, concepts, questions, cards, version: 0 };
   data.version = hash(JSON.stringify(data));
   return data;

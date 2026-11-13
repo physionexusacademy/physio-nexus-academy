@@ -12,6 +12,7 @@ import { ExamRoom, type Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, handOff, players, releaseRoom, shared, snapshot, type Owner } from "@/lib/virtual-patient/shared-room";
 import { DEMO3D, type Demo3DSpec } from "@/lib/skills/demo3d";
 import { otherSide, patientDir, resolvePoint } from "@/lib/skills/points3d";
+import { useLang } from "@/lib/lang";
 
 const other = otherSide;
 
@@ -49,6 +50,11 @@ const PHASE_TEXT: Record<Demo3DSpec["kind"], Record<Phase, string>> = {
   rom: { start: "Starting position", move: "Moving through the range", end: "End of range — read the goniometer", back: "Back to the start", manual: "Your position" },
   length: { start: "Starting position", move: "Examiner slowly lengthens the muscle", end: "End of muscle length — read the angle", back: "Back to the start", manual: "Your position" },
   mmt: { start: "Starting position", move: "Patient moves against gravity", end: "Hold — examiner resists", back: "Relax", manual: "Your position" },
+};
+const PHASE_TEXT_UR: Record<Demo3DSpec["kind"], Record<Phase, string>> = {
+  rom: { start: "Starting position", move: "Range mein move ho raha hai", end: "Range ka end — goniometer read karein", back: "Wapas start par", manual: "Aap ki position" },
+  length: { start: "Starting position", move: "Examiner muscle ko aahista lamba karta hai", end: "Muscle length ka end — angle read karein", back: "Wapas start par", manual: "Aap ki position" },
+  mmt: { start: "Starting position", move: "Patient gravity ke khilaf move karta hai", end: "Hold karein — examiner resist karta hai", back: "Relax", manual: "Aap ki position" },
 };
 const ease = (t: number) => t * t * (3 - 2 * t);
 
@@ -149,6 +155,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
   const [progress, setProgress] = useState(shared.progress);
   const [poster, setPoster] = useState<string | null>(null);
   const [side, setSide] = useState<Side>("right");
+  const [lang, setLang] = useLang();
   const [playing, setPlaying] = useState(true);
   const [slow, setSlow] = useState(false);
   const [turn, setTurn] = useState(false);
@@ -365,7 +372,8 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
   }, [status, spec, side, playing, slow, manual]);
 
   if (!spec) return null;
-  const phaseText = PHASE_TEXT[spec.kind][frame.phase];
+  const ur = lang === "ur";
+  const phaseText = (ur ? PHASE_TEXT_UR : PHASE_TEXT)[spec.kind][frame.phase];
   const showSay = spec.kind === "mmt" && say && frame.phase === "end";
   const label = spec.label ?? title;
   const fraction = manual ?? lastF.current;
@@ -394,7 +402,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
             <svg className="pointer-events-none absolute inset-0 h-full w-full">
               {frame.stab ? <StabiliseOverlay at={frame.stab} /> : null}
               {frame.gonio ? <GoniometerOverlay {...frame.gonio} reading={frame.reading} /> : null}
-              {frame.push ? <ArrowOverlay at={frame.push.at} dir={frame.push.dir} label={spec.kind === "mmt" ? "Resist" : "Examiner moves"} tone={spec.kind === "mmt" ? "resist" : "move"} /> : null}
+              {frame.push ? <ArrowOverlay at={frame.push.at} dir={frame.push.dir} label={spec.kind === "mmt" ? (ur ? "Resist karein" : "Resist") : ur ? "Examiner move karta hai" : "Examiner moves"} tone={spec.kind === "mmt" ? "resist" : "move"} /> : null}
             </svg>
             <div className="pointer-events-none absolute left-2 top-2 max-w-[62%] rounded-xl bg-white/90 px-2.5 py-1 shadow-sm sm:left-2.5 sm:top-2.5 sm:max-w-[70%] sm:rounded-2xl sm:px-3 sm:py-1.5">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-teal-700">{spec.kind === "mmt" ? spec.label ?? "Muscle test" : label}</p>
@@ -402,7 +410,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
             </div>
             {showSay ? (
               <div className="pointer-events-none absolute inset-x-2.5 bottom-2.5 rounded-2xl rounded-bl-sm bg-[#0a1f3d]/90 px-3 py-2 text-[13px] font-semibold leading-5 text-white shadow-lg">
-                <span className="mr-1 text-teal-300">You say:</span> “{say}”
+                <span className="mr-1 text-teal-300">{ur ? "Aap kahein:" : "You say:"}</span> “{say}”
               </div>
             ) : null}
             {turn ? <p className="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-600">Drag to turn</p> : null}
@@ -419,6 +427,10 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
               {s}
             </button>
           ))}
+        </div>
+        <div className="inline-flex rounded-full border border-slate-200 p-0.5" role="group" aria-label="Language">
+          <button type="button" onClick={() => setLang("en")} aria-pressed={!ur} className={"rounded-full px-2.5 py-1 text-[11px] font-bold " + (!ur ? "bg-[#0a1f3d] text-white" : "text-slate-600")}>EN</button>
+          <button type="button" onClick={() => setLang("ur")} aria-pressed={ur} className={"rounded-full px-2.5 py-1 text-[11px] font-bold " + (ur ? "bg-[#0a1f3d] text-white" : "text-slate-600")} title="Roman Urdu mix">Urdu</button>
         </div>
         <button type="button" onClick={() => setSlow((v) => !v)} aria-pressed={slow} className={"d3-btn " + (slow ? "d3-on" : "")} title="Slow motion" aria-label="Slow motion">
           <Snail className="h-4 w-4" aria-hidden="true" />

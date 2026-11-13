@@ -36,7 +36,7 @@ const stsScene = (title: string, reps: number, seconds: number, target: number, 
 const fiveSts = stsScene("Five Times Sit-to-Stand (5×STS)", 5, 11.4, 15, [
   { to: 0.06, text: "Seated on a standard chair (about 43 cm), arms folded across the chest, back against the chair", chip: "Position" },
   { to: 0.92, text: "On “go”: stand up fully and sit down five times as fast as possible; start the timer on “go” and stop when the buttocks touch the seat the fifth time", chip: "Five stands" },
-  { to: 1, text: "Under 12 s is typical for adults under 60; over 15 s predicts falls in older adults. Stop if the arms are used", chip: "Interpret" },
+  { to: 1, text: "Norms: about 11 s at ages 60–69, 13 s in the 70s and 15 s in the 80s; over 15 s predicts recurrent falls. Stop and re-start if the arms are used", chip: "Interpret" },
 ]);
 const thirtyCst = stsScene("30-Second Chair Stand", 12, 30, 30, [
   { to: 0.06, text: "Seated on a 43 cm chair, arms folded across the chest, feet flat on the floor", chip: "Position" },
@@ -115,7 +115,7 @@ const tug: Scene = {
     { to: 0.5, text: "Walk 3 metres at a comfortable and safe pace", chip: "Walk" },
     { to: 0.6, text: "Turn around", chip: "Turn" },
     { to: 0.88, text: "Walk back to the chair", chip: "Return" },
-    { to: 1, text: "Sit down: stop the timer when the back touches the chair. 10 s or less is normal; 14 s or more means a risk of falls in older adults", chip: "Sit" },
+    { to: 1, text: "Sit down: stop the timer when the back touches the chair. Under 10 s is normal for healthy adults; 12 s or more suggests a risk of falls (CDC STEADI), and 14 s or more is a stronger warning in community-dwelling older adults", chip: "Sit" },
   ],
   hud: [
     { t: "timer", label: "Time", seconds: (c) => clamp01((c.u - 0.03) / 0.93) * 10.2, target: 12, when: [0.03, 1] },
@@ -277,7 +277,7 @@ const fsst: Scene = {
     { to: 0.06, text: "Four canes form a cross on the floor, making four squares; the patient stands in square 1 facing square 2", chip: "Set up" },
     { to: 0.5, text: "Step forward, right, back and left, in order, over the canes and into each square", chip: "Clockwise" },
     { to: 0.94, text: "Then reverse: step right, forward, left and back, facing forwards the whole time", chip: "Anticlockwise" },
-    { to: 1, text: "Timed as fast as is safe: over 15 s (about 12 s in people over 65) means a risk of multiple falls", chip: "Interpret" },
+    { to: 1, text: "Timed as fast as is safe: 15 s or more suggests a risk of multiple falls in older adults; healthy adults usually finish in 10–12 s or less", chip: "Interpret" },
   ],
   hud: [
     { t: "timer", label: "Time", seconds: (c) => clamp01((c.u - 0.06) / 0.88) * 12.4, target: 15, when: [0.05, 1] },

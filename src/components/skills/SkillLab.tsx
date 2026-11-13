@@ -16,7 +16,10 @@ import {
   Trophy,
   X,
 } from "lucide-react";
-import { RichText } from "@/components/teacher/ui";
+import { LangToggle, RichText } from "@/components/teacher/ui";
+import { useLang } from "@/lib/lang";
+import { LESSONS_FOR_SKILL } from "@/lib/skills/ur/lesson-links";
+import { SkillTeacher } from "./SkillTeacher";
 import { SKILL_LEVELS, levelRank, type SkillData, type SkillIndexEntry, type SkillLevelId, type SkillQuestion } from "@/lib/skills/types";
 import {
   PASS_MARK,
@@ -38,6 +41,7 @@ import { JointDemo } from "./JointDemo";
 import { BodyMapSim, GoniometerSim, GradeSim, VitalsTool } from "./Simulators";
 
 type Tab = "learn" | "atlas" | "practise" | "flashcards" | "test" | "osce";
+const TAB_UR: Record<Tab, string> = { learn: "Seekhein", atlas: "Atlas", practise: "Practice", flashcards: "Flashcards", test: "Level test", osce: "OSCE" };
 
 const tabs: { id: Tab; label: string; icon: typeof BookOpenCheck }[] = [
   { id: "learn", label: "Learn", icon: BookOpenCheck },
@@ -71,6 +75,8 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
   const [level, setLevel] = useState<SkillLevelId>("beginner");
   const [tab, setTab] = useState<Tab>("learn");
   const progress = useSkillsProgress();
+  const [lang, setLang] = useLang();
+  const ur = lang === "ur";
 
   const load = useCallback(() => {
     setFailed(false);
@@ -109,6 +115,7 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
 
   return (
     <div className="container-content pb-16 pt-8" data-pna-skill={entry.slug}>
+      <LangStrip slug={entry.slug} lang={lang} onLang={setLang} />
       <LevelBar entry={entry} progress={progress} level={level} onChoose={(value) => choose({ level: value })} />
 
       <div role="tablist" aria-label="Skill sections" className="mt-5 flex gap-1.5 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-1.5" data-horizontal-scroll>
@@ -125,7 +132,7 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
               className={"inline-flex flex-none items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold transition " + (active ? "bg-[#0a1f3d] text-white shadow" : "text-slate-600 hover:bg-slate-100")}
             >
               <Icon className={"h-4 w-4 " + (active ? "text-[#2ee6d6]" : "")} aria-hidden="true" />
-              {item.label}
+              {ur ? TAB_UR[item.id] : item.label}
             </button>
           );
         })}
@@ -159,6 +166,29 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
           <OsceTab data={data} />
         )}
       </div>
+    </div>
+  );
+}
+
+function LangStrip({ slug, lang, onLang }: { slug: string; lang: "en" | "ur"; onLang: (lang: "en" | "ur") => void }) {
+  const lessons = LESSONS_FOR_SKILL[slug] ?? [];
+  const ur = lang === "ur";
+  return (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-100 bg-gradient-to-r from-teal-50/70 to-white px-3.5 py-2.5">
+      <div className="flex flex-wrap items-center gap-3">
+        <LangToggle lang={lang} onChange={onLang} />
+        <p className="text-xs font-semibold text-slate-600">{ur ? "Demos, captions aur PNA Teacher ab Roman Urdu mix mein hain." : "Switch to a natural English + Roman Urdu mix: demos, captions and the PNA Teacher follow."}</p>
+      </div>
+      {lessons.length ? (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-teal-800">{ur ? "PNA Teacher lessons" : "PNA Teacher lessons"}</span>
+          {lessons.map((lesson) => (
+            <a key={lesson.slug} href={`/learn/${lesson.slug}`} className="rounded-full border border-teal-200 bg-white px-2.5 py-1 text-xs font-bold text-teal-900 hover:border-teal-400">
+              {lesson.title}
+            </a>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -239,11 +269,7 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
                   ))}
                 </ul>
               ) : null}
-              {concept.ur ? (
-                <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
-                  <strong>Roman Urdu mein:</strong> {concept.ur}
-                </p>
-              ) : null}
+              {concept.ur ? <UrduNote text={concept.ur} /> : null}
             </div>
             {concept.demo3d ? (
               <Demo3D demoKey={`${data.slug}/concept:${concept.id}`} title={concept.title} fallback={concept.demo ? <JointDemo spec={concept.demo} /> : undefined} />
@@ -296,6 +322,24 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
         </button>
       </div>
     </div>
+  );
+}
+
+function UrduNote({ text }: { text: string }) {
+  const [lang] = useLang();
+  const [forced, setForced] = useState(false);
+  const show = lang === "ur" || forced;
+  if (!show) {
+    return (
+      <button type="button" onClick={() => setForced(true)} className="mt-4 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1.5 text-xs font-extrabold text-amber-950 hover:border-amber-500">
+        Roman Urdu mein samjhein
+      </button>
+    );
+  }
+  return (
+    <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] leading-7 text-amber-950">
+      <strong>PNA Teacher (Roman Urdu mein):</strong> {text}
+    </p>
   );
 }
 
@@ -354,6 +398,7 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
                     <BodyChart view={item.point.view} markers={[{ id: item.id, ...item.point, tone: "active", label: item.title }]} />
                   </div>
                 ) : null}
+                <SkillTeacher data={data} item={item} level={level} />
                 <dl className="grid gap-2">
                   {visible.map((field) => (
                     <div key={field.label} className="rounded-2xl bg-slate-50 px-3 py-2">

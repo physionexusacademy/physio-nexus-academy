@@ -184,16 +184,17 @@ const orthostatic: Scene = {
   kind: "vitals",
   title: "Orthostatic (postural) hypotension check",
   position: "standing",
+  hidePlinth: true,
   planted: "toe3-1",
-  props: [{ kind: "chair", at: [0, 0, -0.18] }],
+  props: [{ kind: "chair", at: [0, 0, -0.16] }],
   loopMs: 15000,
   frame: { focus: "spine03", zoom: 3.2, view: [1, 0.15, 0.2], around: ["foot", "@nose"] },
   pose: (s, u) => {
     const up = ramp(u, 0.36, 0.5);
-    return P(s, { hip: { flex: 88 * (1 - up) }, "hip:o": { flex: 88 * (1 - up) }, knee: { flex: 88 * (1 - up) }, "knee:o": { flex: 88 * (1 - up) }, trunk: { flex: 14 * Math.sin(up * Math.PI) }, shoulder: { flex: 12 }, "shoulder:o": { flex: 12 }, elbow: { flex: 50 }, "elbow:o": { flex: 50 } });
+    return P(s, { hip: { flex: 88 * (1 - up) }, "hip:o": { flex: 88 * (1 - up) }, knee: { flex: 88 * (1 - up) }, "knee:o": { flex: 88 * (1 - up) }, trunk: { flex: 24 * Math.sin(up * Math.PI) + 3 * (1 - up) }, shoulder: { flex: 14 }, "shoulder:o": { flex: 14 }, elbow: { flex: 70 * (1 - up) + 40 * up }, "elbow:o": { flex: 70 * (1 - up) + 40 * up } });
   },
   beats: [
-    { to: 0.36, text: "Lie (or sit) rested for 5 minutes, then take BP and pulse", chip: "Rest" },
+    { to: 0.36, text: "Rest the patient (lying, or sitting if lying is not possible) for 5 minutes, then take BP and pulse", chip: "Rest" },
     { to: 0.52, text: "Stand the patient up; ask about dizziness; watch for unsteadiness", chip: "Stand" },
     { to: 0.8, text: "Measure again at 1 and 3 minutes of standing", chip: "Re-measure" },
     { to: 1, text: "A fall of 20 mmHg systolic or 10 mmHg diastolic (or dizziness) means orthostatic hypotension", chip: "Result" },
