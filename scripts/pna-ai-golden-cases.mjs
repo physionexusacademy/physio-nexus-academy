@@ -104,6 +104,8 @@ export const goldenCases = [
   { q: "Maitland grades roman urdu mein samjhao", lang: "ur", top: ["/learn/maitland-grades"] },
   { q: "mere ghar physio bhejein", lang: "ur", top: ["/home-visit"] },
   { q: "rehabverse kya hai account kaise banao", lang: "ur", top: ["/rehabverse"] },
+  { q: "mera progress save kaise karun", lang: "ur", anyTop2: ["/account"] },
+  { q: "how do I save my progress and see my learning history", lang: "en", anyTop2: ["/account"] },
   { q: "website par kya kya hai", lang: "ur", top: ["/#features"] },
   { q: "what does Physio Nexus Academy offer", lang: "en", top: ["/#features"] },
   { q: "physio ki padhai ke liye kahan se start karun", lang: "ur", top: ["/#features"] },

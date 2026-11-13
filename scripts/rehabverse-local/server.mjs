@@ -97,7 +97,7 @@ const issueCode = (userId, email) => {
 /* ----------------------------- http ----------------------------- */
 const cors = {
   "access-control-allow-origin": "*",
-  "access-control-allow-headers": "apikey, authorization, content-type, x-client-info, prefer, accept-profile, content-profile",
+  "access-control-allow-headers": "apikey, authorization, content-type, x-client-info, x-supabase-api-version, prefer, accept-profile, content-profile",
   "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 };
 function send(res, status, body) {

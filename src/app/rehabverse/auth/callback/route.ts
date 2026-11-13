@@ -2,10 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * Landing point of the links in RehabVerse e-mails (confirm e-mail, reset password).
- * Exchanges the one-time code for a session, then continues inside RehabVerse only.
+ * Landing point of the links in RehabVerse and student-account e-mails (confirm e-mail, reset password).
+ * Exchanges the one-time code for a session, then continues inside RehabVerse or the student account only.
  */
-const allowedNext = (value: string | null) => (value && /^\/rehabverse(\/[a-z0-9\-/]*)?$/i.test(value) ? value : "/rehabverse/me");
+const allowedNext = (value: string | null) => (value && /^\/(rehabverse|account)(\/[a-z0-9\-/]*)?$/i.test(value) ? value : "/rehabverse/me");
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -17,9 +17,10 @@ export async function GET(request: NextRequest) {
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(next, origin));
+    if (!error) return NextResponse.redirect(new URL(next === "/account/reset" ? "/account?m=reset" : next, origin));
     console.error("RehabVerse auth callback: code exchange failed:", error.code ?? error.message);
   }
   // Expired, already used, or opened on a different device from the one that asked for it.
+  if (next.startsWith("/account")) return NextResponse.redirect(new URL("/account?m=login&notice=link", origin));
   return NextResponse.redirect(new URL(`/rehabverse/login?notice=${next.endsWith("/reset") ? "reset_link" : "link"}`, origin));
 }

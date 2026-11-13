@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Check, ChevronDown, Flame, GraduationCap, Layers, PersonStanding, Ruler, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Flame, GraduationCap, Layers, PersonStanding, Ruler, Trophy, UserRound, Zap } from "lucide-react";
+import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
 import { getDeck, getDueCardIds, getTeacherProfile, getTeacherProgress, TEACHER_EVENT } from "@/lib/teacher/progress";
 import { getDueReviews } from "@/lib/clinical-review-queue";
@@ -95,6 +96,13 @@ function readPass(): PassState {
 export function StudentPass() {
   const [pass, setPass] = useState<PassState | null>(null);
   const [open, setOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => {
+    const sync = () => setSignedIn(hasStudentSession());
+    sync();
+    window.addEventListener(SESSION_EVENT, sync);
+    return () => window.removeEventListener(SESSION_EVENT, sync);
+  }, []);
   const refresh = useCallback(() => {
     try {
       setPass(readPass());
@@ -204,6 +212,14 @@ export function StudentPass() {
                 <span key={index} data-on={active} title={active ? "Active" : "Not active"} />
               ))}
             </div>
+            <a href={signedIn ? "/account" : "/account?m=register"} className="lobby-pass-skills lobby-pass-account">
+              <UserRound className="h-4 w-4 flex-none text-[var(--nx-aqua)]" aria-hidden="true" />
+              <span className="min-w-0 flex-1">
+                <strong>{signedIn ? "My PNA record" : "Save it across devices"}</strong>
+                <small>{signedIn ? "Insights and everything PNA has noticed about your learning" : "Free account — every activity recorded, insights made for you"}</small>
+              </span>
+              <ArrowRight className="h-4 w-4 flex-none text-[var(--nx-dim)]" aria-hidden="true" />
+            </a>
             <a href="/skills" className="lobby-pass-skills">
               <Ruler className="h-4 w-4 flex-none text-[var(--nx-aqua)]" aria-hidden="true" />
               <span className="min-w-0 flex-1">

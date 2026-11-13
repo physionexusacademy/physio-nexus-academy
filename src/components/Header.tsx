@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowRight, CalendarDays, ChevronDown, Flame, Home, Menu, Search, Trophy, X, Zap } from "lucide-react";
 import { visibleWings, wingForPath, type AcademyWing } from "@/lib/academy-map";
 import { getUnifiedProgress } from "@/lib/unified-progress";
+import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 import { InstallApp } from "@/components/InstallApp";
 import { AcademyIcon } from "@/components/nexus/AcademyIcon";
 import { CommandPalette } from "@/components/nexus/CommandPalette";
@@ -43,6 +44,14 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
   const [openWing, setOpenWing] = useState<AcademyWing["id"] | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const pass = useStudentPass();
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => {
+    const sync = () => setSignedIn(hasStudentSession());
+    sync();
+    window.addEventListener(SESSION_EVENT, sync);
+    return () => window.removeEventListener(SESSION_EVENT, sync);
+  }, [pathname]);
+  const passHref = signedIn ? "/account" : "/#student-pass";
   const headerRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const hoverTimer = useRef<number | null>(null);
@@ -188,7 +197,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
           <a href="/daily-challenge" className="nx-pill-challenge">
             <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
           </a>
-          <a href="/#student-pass" className="nx-pass" aria-label={pass && pass.xp > 0 ? `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak` : "Open your free student pass"}>
+          <a href={passHref} className="nx-pass" aria-label={pass && pass.xp > 0 ? `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak` : signedIn ? "Open My PNA" : "Open your free student pass"}>
             <span className="nx-pass-orb">{pass && pass.xp > 0 ? <Zap className="h-3.5 w-3.5" aria-hidden="true" /> : "PNA"}</span>
             {pass && pass.xp > 0 ? (
               <span className="flex items-center gap-2">
@@ -262,8 +271,8 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
             <a href="/daily-challenge" className="nx-pill-challenge !flex justify-center" onClick={closeAll}>
               <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
             </a>
-            <a href="/#student-pass" className="nx-btn nx-btn-ghost !min-h-[40px] !text-[0.85rem]" onClick={closeAll}>
-              Student pass <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <a href={passHref} className="nx-btn nx-btn-ghost !min-h-[40px] !text-[0.85rem]" onClick={closeAll}>
+              {signedIn ? "My PNA" : "Student pass"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </div>
 

@@ -125,7 +125,7 @@ export function saveResult(c: VirtualCase, result: SessionResult) {
   }
   if (result.passed && !before?.passedAt) {
     const xp = { Beginner: 40, Intermediate: 60, Advanced: 80, Expert: 100 }[c.level];
-    recordLearningActivity("virtual-patient", xp, `case:${c.id}`, `Virtual Patient: ${c.diagnosis} — passed`);
+    recordLearningActivity("virtual-patient", xp, `case:${c.id}`, `Virtual Patient: ${c.diagnosis} — passed`, result.total);
   }
   window.dispatchEvent(new Event(VP_EVENT));
 }

@@ -20,6 +20,7 @@ const routes = [
   "/virtual-patient",
   "/rehabverse",
   "/rehabverse/library",
+  "/account",
   "/about",
   "/founder",
   "/faculty",

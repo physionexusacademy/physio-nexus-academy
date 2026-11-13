@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/admin/", "/api", "/api/", "/rehabverse/me", "/rehabverse/start", "/rehabverse/login", "/rehabverse/register", "/rehabverse/forgot", "/rehabverse/reset", "/rehabverse/auth"],
+      disallow: ["/admin", "/admin/", "/api", "/api/", "/rehabverse/me", "/account?m=", "/rehabverse/start", "/rehabverse/login", "/rehabverse/register", "/rehabverse/forgot", "/rehabverse/reset", "/rehabverse/auth"],
     },
     sitemap: "https://physionexusacademy.com/sitemap.xml",
   };

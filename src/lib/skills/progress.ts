@@ -129,7 +129,7 @@ export function recordLevelTest(skill: string, skillTitle: string, level: SkillL
   writeJson(PROGRESS_KEY, progress);
   if (passed) {
     const xp = [30, 40, 50, 80][Math.max(0, levelRank(level))];
-    recordLearningActivity("skills-lab", xp, `level:${skill}:${level}`, `Skills Lab: ${skillTitle} — ${level} passed`);
+    recordLearningActivity("skills-lab", xp, `level:${skill}:${level}`, `Skills Lab: ${skillTitle} — ${level} passed`, score * 100);
   }
   notify();
   return { passed, firstPass: passed && !previous?.passedAt };

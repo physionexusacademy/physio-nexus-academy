@@ -189,7 +189,7 @@ export function DailyChallengeClient(){
    });
    setResult(saved);
    if(!saved.expired){
-    recordLearningActivity("daily-challenge",10+saved.correctCount*5,"daily:"+active.date,"Daily Clinical Challenge completed");
+    recordLearningActivity("daily-challenge",10+saved.correctCount*5,"daily:"+active.date,"Daily Clinical Challenge completed",saved.total>0?saved.correctCount/saved.total*100:undefined);
    }
    try{sessionStorage.removeItem("pna-daily-running-v1")}catch{}
    window.dispatchEvent(new Event("pna-daily-score-saved"));

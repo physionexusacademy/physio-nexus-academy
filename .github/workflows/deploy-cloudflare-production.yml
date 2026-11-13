@@ -114,6 +114,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-db
 
+      - name: Validate student accounts (private record, XP caps, outbox, insights)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:student
+
       - name: Validate Physio Nexus AI answers, Roman Urdu understanding and emergency safety
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:ai

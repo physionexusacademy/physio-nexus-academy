@@ -1,5 +1,7 @@
 "use client";
 
+import { enqueueStudentActivity } from "./student/outbox.ts";
+
 export type LearningSource = "daily-challenge" | "clinical-arena" | "pna-teacher" | "skills-lab" | "virtual-patient";
 export type UnifiedProgress = {
   version: 1;
@@ -66,7 +68,8 @@ export function getUnifiedProgress(): UnifiedProgress {
   const gap = progress.lastActiveDate ? dayNumber(getPakistanDate()) - dayNumber(progress.lastActiveDate) : Infinity;
   return { ...progress, currentStreak: gap <= 1 ? progress.currentStreak : 0 };
 }
-export function recordLearningActivity(source: LearningSource, xpEarned: number, eventId: string, label: string): UnifiedProgress {
+/** `scorePercent` (0–100, optional) is kept only in a signed-in student's own record, to show their average. */
+export function recordLearningActivity(source: LearningSource, xpEarned: number, eventId: string, label: string, scorePercent?: number): UnifiedProgress {
   const progress = readStoredProgress();
   const uniqueEventId = source + ":" + eventId;
   if (!eventId || progress.eventIds.includes(uniqueEventId)) return getUnifiedProgress();
@@ -85,6 +88,11 @@ export function recordLearningActivity(source: LearningSource, xpEarned: number,
     activeDates: [...new Set([...progress.activeDates, today])].slice(-365),
     eventIds: [...progress.eventIds, uniqueEventId].slice(-1000),
     lastActivityLabel: label,
+  });
+  // Signed-in students: also queue the activity for their personal PNA record (no-op for everyone else).
+  enqueueStudentActivity({
+    source, event_key: uniqueEventId, label: label.slice(0, 160), xp, occurred_at: new Date().toISOString(),
+    ...(typeof scorePercent === "number" && Number.isFinite(scorePercent) ? { score: Math.min(100, Math.max(0, Math.round(scorePercent))) } : {}),
   });
   return getUnifiedProgress();
 }

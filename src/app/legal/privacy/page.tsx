@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Physio Nexus Academy handles information submitted through forms, registrations and weekly clinical quizzes.",
+  description: "How Physio Nexus Academy handles information submitted through forms, registrations, student accounts and weekly clinical quizzes.",
   alternates: {
     canonical: "https://physionexusacademy.com/legal/privacy",
   },
@@ -31,6 +31,17 @@ export default function PrivacyPage() {
         Quiz Gmail addresses are kept private and are used to enforce one attempt per weekly
         quiz and to identify the relevant participant record. Public top-scorer announcements
         may display a participant&apos;s name, score and completion time, but not their Gmail address.
+      </p>
+
+      <h2>Student Accounts (My PNA)</h2>
+      <p>
+        If you create a free student account, we store your name, email address, study stage,
+        goal and (optionally) university and city, together with a record of the learning you
+        complete while signed in: the activity name, the area of the academy, the XP earned, any
+        score and the date. This record is private to your account: other students and the
+        public cannot see it. It is used to show you your own progress and insights. You can
+        download or permanently delete your record at any time from the My PNA page. Visitors
+        without an account keep their progress only on their own device.
       </p>
 
       <h2>Data Protection</h2>

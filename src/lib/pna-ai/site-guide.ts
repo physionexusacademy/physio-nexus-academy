@@ -143,6 +143,31 @@ export const siteGuide: SiteFeature[] = [
     keywords: "rehabverse what is how do I start create account register login sign up home exercises programme patient guided 3d library",
   },
   {
+    href: "/account",
+    id: "student-account",
+    create: true,
+    title: "My PNA — your personal learning record",
+    category: "Learn",
+    summary:
+      "A free student account saves everything you finish — lessons, skills, virtual patients and daily challenges — to your own private record, and shows your streak, progress and plain-language insights on any device. You can download or delete your record at any time.",
+    hookUr:
+      "Free student account aap ki har activity — lessons, skills, virtual patients aur daily challenges — aap ke apne private record mein save karta hai, aur kisi bhi device par aap ka streak, progress aur insights dikhata hai.",
+    points: [
+      "Create a free account in about a minute; your progress from this device is brought over",
+      "Every lesson, skill level, patient and challenge you finish is saved to your record",
+      "See your streak, a five-week activity map and what PNA noticed about your learning",
+      "Private to you; download or delete your record whenever you like",
+    ],
+    pointsUr: [
+      "Taqreeban ek minute mein free account banayein; is device ka progress saath aa jata hai",
+      "Jo lesson, skill level, patient ya challenge aap mukammal karte hain, aap ke record mein save hota hai",
+      "Apna streak, paanch hafte ka activity map aur PNA ne aap ki learning mein kya dekha — sab dekhein",
+      "Sirf aap ke liye private; jab chahein record download ya delete karein",
+    ],
+    tags: "my pna student account progress record save progress history activity insights sign in log in streak dashboard",
+    keywords: "my pna student account save my progress record learning history sign up login insights streak dashboard apna progress save",
+  },
+  {
     href: "/manual-therapy",
     id: "manual-therapy",
     create: true,

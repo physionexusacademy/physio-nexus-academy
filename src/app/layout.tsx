@@ -10,6 +10,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { PhysioNexusAILauncher } from "@/components/PhysioNexusAILauncher";
+import { StudentSync } from "@/components/student/StudentSync";
 import { siteConfig } from "@/lib/site-config";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
@@ -298,6 +299,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <WhatsAppButton />
         <PhysioNexusAILauncher />
+        <StudentSync />
         <MobilePortalNav />
         {/* Instant page opens: the browser fetches a page as soon as its link is touched or
             hovered (Chrome, Edge, Android). Never for APIs, admin, the registry or portals. */}
