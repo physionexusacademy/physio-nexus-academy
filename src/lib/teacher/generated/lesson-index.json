@@ -1264,6 +1264,192 @@
    "Standardise every measure (landmarks by palpation, same posture and device) and refer inflammatory or fragile-spine patterns instead of manipulating."
   ],
   "keywords": "Spinal Mobility and General Measures — Schober, Chest Expansion, Occiput-Wall, Grip and BMI spinal-and-general-measures Skills · Measurement Modified Schober (15 → at least 20 cm), chest expansion (at least 2.5 cm) and occiput-wall (0 cm) track spinal and chest stiffness. Grip under 27 kg (men) or 16 kg (women) screens for sarcopenia; BMI and waist circumference guide risk and exercise planning. Standardise every measure (landmarks by palpation, same posture and device) and refer inflammatory or fragile-spine patterns instead of manipulating. Normal modified Schober result? Normal chest expansion and where is it measured? Low grip strength cut-offs (EWGSOP2)? What is the normal occiput-to-wall distance?",
+  "next": {
+   "slug": "posture-plumb-line-analysis",
+   "title": "Posture Analysis with a Plumb Line — Front, Back and Side",
+   "href": "/learn/posture-plumb-line-analysis"
+  }
+ },
+ {
+  "href": "/learn/posture-plumb-line-analysis",
+  "slug": "posture-plumb-line-analysis",
+  "title": "Posture Analysis with a Plumb Line — Front, Back and Side",
+  "hook": {
+   "en": "\"Poor posture\" is a feeling until you measure it. Learn the plumb-line landmarks, the three views and the objective measures that turn an opinion into a number you can track.",
+   "ur": "“Kharab posture” tab tak ek ehsaas hai jab tak aap naapte nahi. Plumb-line landmarks, teen views aur woh objective measures seekhein jo raay ko aise number mein badal dete hain jo track ho sake."
+  },
+  "area": "Skills · Posture & Palpation",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll set up a posture assessment, name the plumb-line landmarks in side view and the symmetry checks from front and back, and choose an objective measure instead of \"looks bad\".",
+   "ur": "End tak aap posture assessment setup karenge, side view mein plumb-line landmarks aur front aur back se symmetry checks batayenge, aur “bura lagta hai” ke bajaye objective measure chunenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Side-view plumb line: ear, shoulder, greater trochanter, just in front of the knee and ankle; front and back views check symmetry and levels.",
+   "Measure objectively, check whether a deviation corrects (functional) or not (structural), and link it to the patient's complaint.",
+   "Posture and pain are only weakly linked, so favour movement variety and refer progressive, painful or sudden changes."
+  ],
+  "keywords": "Posture Analysis with a Plumb Line — Front, Back and Side posture-plumb-line-analysis Skills · Posture & Palpation Side-view plumb line: ear, shoulder, greater trochanter, just in front of the knee and ankle; front and back views check symmetry and levels. Measure objectively, check whether a deviation corrects (functional) or not (structural), and link it to the patient's complaint. Posture and pain are only weakly linked, so favour movement variety and refer progressive, painful or sudden changes. Plumb-line landmarks in side view? How do you tell functional from structural posture? Which measure tracks forward head posture? Is posture strongly linked to pain?",
+  "next": {
+   "slug": "janda-crossed-syndromes",
+   "title": "Janda's Crossed Syndromes and Kendall's Postures — Tight, Weak and What To Do",
+   "href": "/learn/janda-crossed-syndromes"
+  }
+ },
+ {
+  "href": "/learn/janda-crossed-syndromes",
+  "slug": "janda-crossed-syndromes",
+  "title": "Janda's Crossed Syndromes and Kendall's Postures — Tight, Weak and What To Do",
+  "hook": {
+   "en": "Some muscles shorten, others weaken, and together they draw a recognisable pattern. Learn the upper and lower crossed syndromes, the four Kendall postures and how to turn a pattern into a treatment plan.",
+   "ur": "Kuch muscles chhote ho jate hain, kuch kamzor, aur milkar ek pehchane jane wala pattern banate hain. Upper aur lower crossed syndromes, Kendall ki chaar postures aur pattern ko treatment plan mein badalna seekhein."
+  },
+  "area": "Skills · Posture & Palpation",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name the tight and weak muscles of the upper and lower crossed syndromes, identify the four Kendall spinal postures and plan treatment that fits the findings.",
+   "ur": "End tak aap upper aur lower crossed syndromes ke tight aur weak muscles batayenge, Kendall ki chaar spinal postures pehchanenge aur findings se milta ilaaj plan karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Upper crossed = tight upper trapezius, levator, pectorals and weak deep neck flexors, lower trapezius, serratus; lower crossed = tight hip flexors and lumbar extensors and weak abdominals and glutes.",
+   "Know Kendall's four postures (kypho-lordotic, lordotic, sway-back, flat-back) and test muscles before treating.",
+   "Treat measurable deficits with stretching, scapular and pelvic control and strengthening; the model is a hypothesis, not a diagnosis."
+  ],
+  "keywords": "Janda's Crossed Syndromes and Kendall's Postures — Tight, Weak and What To Do janda-crossed-syndromes Skills · Posture & Palpation Upper crossed = tight upper trapezius, levator, pectorals and weak deep neck flexors, lower trapezius, serratus; lower crossed = tight hip flexors and lumbar extensors and weak abdominals and glutes. Know Kendall's four postures (kypho-lordotic, lordotic, sway-back, flat-back) and test muscles before treating. Treat measurable deficits with stretching, scapular and pelvic control and strengthening; the model is a hypothesis, not a diagnosis. Which muscles are tight in the upper crossed syndrome? Which muscles are weak in the lower crossed syndrome? How does sway-back posture differ from kypho-lordotic? How good is the evidence for the crossed-syndrome model?",
+  "next": {
+   "slug": "scoliosis-and-limb-alignment",
+   "title": "Scoliosis Screening and Limb Alignment — Adams Test, Knees and Feet",
+   "href": "/learn/scoliosis-and-limb-alignment"
+  }
+ },
+ {
+  "href": "/learn/scoliosis-and-limb-alignment",
+  "slug": "scoliosis-and-limb-alignment",
+  "title": "Scoliosis Screening and Limb Alignment — Adams Test, Knees and Feet",
+  "hook": {
+   "en": "A child's curved spine, knocked knees or flat feet are often normal for the age — and sometimes the first sign of something that needs a specialist. Learn what is normal, what to measure and when to refer.",
+   "ur": "Bachay ki mudi hui spine, knock knees ya flat feet aksar umar ke hisaab se normal hain — aur kabhi kabhi us cheez ki pehli nishani jis ko specialist chahiye. Seekhein normal kya hai, kya naapna hai aur kab refer karna hai."
+  },
+  "area": "Skills · Posture & Palpation",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll screen for scoliosis with the forward-bend (Adams) test and a scoliometer, recognise genu valgum, varum and recurvatum and pes planus and cavus, and know the red flags that need referral.",
+   "ur": "End tak aap forward-bend (Adams) test aur scoliometer se scoliosis screen karenge, genu valgum, varum aur recurvatum aur pes planus aur cavus pehchanenge, aur woh red flags jaanenge jin par referral zaroori hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Scoliosis is a curve with rotation: screen with the Adams forward-bend test and a scoliometer (about 5–7° or more needs an X-ray).",
+   "Many limb alignments are normal for age (bow legs, knock knees, flexible flat feet); worry about rigid, painful, asymmetrical or progressing ones and cavus feet.",
+   "A painful scoliosis, abnormal neurology or a progressing curve needs prompt referral; measure, photograph and review over time."
+  ],
+  "keywords": "Scoliosis Screening and Limb Alignment — Adams Test, Knees and Feet scoliosis-and-limb-alignment Skills · Posture & Palpation Scoliosis is a curve with rotation: screen with the Adams forward-bend test and a scoliometer (about 5–7° or more needs an X-ray). Many limb alignments are normal for age (bow legs, knock knees, flexible flat feet); worry about rigid, painful, asymmetrical or progressing ones and cavus feet. A painful scoliosis, abnormal neurology or a progressing curve needs prompt referral; measure, photograph and review over time. What is the Adams forward-bend test for? When are knock knees normal? What distinguishes flexible from rigid flat foot? A cavus foot with claw toes and reduced ankle jerks suggests?",
+  "next": {
+   "slug": "palpation-spinal-levels",
+   "title": "Palpation of Spinal Levels — C7, T3, T7, L4 and S2",
+   "href": "/learn/palpation-spinal-levels"
+  }
+ },
+ {
+  "href": "/learn/palpation-spinal-levels",
+  "slug": "palpation-spinal-levels",
+  "title": "Palpation of Spinal Levels — C7, T3, T7, L4 and S2",
+  "hook": {
+   "en": "Finding the right spinal level by touch is a skill that needs landmarks, patience and honesty about error. Learn five landmarks that mark the spine and how to cross-check them.",
+   "ur": "Touch se sahi spinal level dhoondna aisa hunar hai jis ko landmarks, sabr aur ghalti ke baare mein imandari chahiye. Paanch landmarks seekhein jo spine ko mark karte hain aur unhein cross-check kaise karein."
+  },
+  "area": "Skills · Posture & Palpation",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll find C7, the scapular spine (T3), the inferior angle (T7), the iliac crests (L4) and the PSIS (S2) and use them together instead of trusting one.",
+   "ur": "End tak aap C7, scapular spine (T3), inferior angle (T7), iliac crests (L4) aur PSIS (S2) dhoondenge aur ek par bharosa karne ke bajaye unhein saath use karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "C7, scapular spine (T3), inferior angle (T7), iliac crests (L4) and PSIS (S2) mark the spine; use them together.",
+   "Confirm C7 with neck extension, count from both ends and record the level as approximate.",
+   "Single-level palpation is often one level out, so cross-check and request imaging if the exact level matters."
+  ],
+  "keywords": "Palpation of Spinal Levels — C7, T3, T7, L4 and S2 palpation-spinal-levels Skills · Posture & Palpation C7, scapular spine (T3), inferior angle (T7), iliac crests (L4) and PSIS (S2) mark the spine; use them together. Confirm C7 with neck extension, count from both ends and record the level as approximate. Single-level palpation is often one level out, so cross-check and request imaging if the exact level matters. Levels of the scapular spine root, inferior angle and iliac crests? What level is the PSIS? How do you identify C7? How accurate is spinal level palpation?",
+  "next": {
+   "slug": "palpation-upper-body-landmarks",
+   "title": "Palpation of the Chest, Shoulder and Elbow — From the Jugular Notch to the Epicondyles",
+   "href": "/learn/palpation-upper-body-landmarks"
+  }
+ },
+ {
+  "href": "/learn/palpation-upper-body-landmarks",
+  "slug": "palpation-upper-body-landmarks",
+  "title": "Palpation of the Chest, Shoulder and Elbow — From the Jugular Notch to the Epicondyles",
+  "hook": {
+   "en": "Good palpation starts from a landmark you already know and moves one step at a time. Learn the route from the jugular notch to the sternal angle, the AC joint, the coracoid and the elbow's bony points.",
+   "ur": "Acchi palpation us landmark se shuru hoti hai jo aap pehle se jaante hon aur ek ek qadam aage barhti hai. Jugular notch se sternal angle, AC joint, coracoid aur elbow ke bony points tak ka raasta seekhein."
+  },
+  "area": "Skills · Posture & Palpation",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll find the suprasternal notch, sternal angle, xiphoid, AC joint, coracoid process, medial and lateral epicondyles and olecranon, and say what each tells you clinically.",
+   "ur": "End tak aap suprasternal notch, sternal angle, xiphoid, AC joint, coracoid process, medial aur lateral epicondyles aur olecranon dhoondenge, aur batayenge ke har ek clinically kya batata hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Palpate in a chain from a known landmark: notch → sternal angle → xiphoid; clavicle → AC joint → coracoid; elbow epicondyles and olecranon.",
+   "Each landmark has a clinical use: rib counting, AC sprain, tendon origins (common extensor and flexor) and the ulnar nerve.",
+   "Use light, slow pressure; many structures are normally tender, so one-sided, familiar or post-traumatic tenderness is what counts."
+  ],
+  "keywords": "Palpation of the Chest, Shoulder and Elbow — From the Jugular Notch to the Epicondyles palpation-upper-body-landmarks Skills · Posture & Palpation Palpate in a chain from a known landmark: notch → sternal angle → xiphoid; clavicle → AC joint → coracoid; elbow epicondyles and olecranon. Each landmark has a clinical use: rib counting, AC sprain, tendon origins (common extensor and flexor) and the ulnar nerve. Use light, slow pressure; many structures are normally tender, so one-sided, familiar or post-traumatic tenderness is what counts. Where do you find the sternal angle? What is tender over the lateral epicondyle in tennis elbow? Which nerve lies behind the medial epicondyle? What does a step at the AC joint suggest?",
+  "next": {
+   "slug": "palpation-lower-limb-ottawa-rules",
+   "title": "Palpation of the Hip, Knee and Ankle — Pulses, Landmarks and the Ottawa Rules",
+   "href": "/learn/palpation-lower-limb-ottawa-rules"
+  }
+ },
+ {
+  "href": "/learn/palpation-lower-limb-ottawa-rules",
+  "slug": "palpation-lower-limb-ottawa-rules",
+  "title": "Palpation of the Hip, Knee and Ankle — Pulses, Landmarks and the Ottawa Rules",
+  "hook": {
+   "en": "A few seconds of correct palpation can decide whether an injured ankle needs an X-ray — and a pulse can reveal an artery problem. Learn the landmarks, the pulses and the Ottawa rules.",
+   "ur": "Sahi palpation ke chand second tay kar sakte hain ke zakhmi ankle ko X-ray chahiye — aur ek pulse artery ka masla dikha sakti hai. Landmarks, pulses aur Ottawa rules seekhein."
+  },
+  "area": "Skills · Posture & Palpation",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll palpate the ASIS, greater trochanter, ischial tuberosity, patella, tibial tuberosity, fibular head, malleoli and the main leg pulses, and apply the Ottawa ankle and foot rules.",
+   "ur": "End tak aap ASIS, greater trochanter, ischial tuberosity, patella, tibial tuberosity, fibular head, malleoli aur leg ki main pulses palpate karenge, aur Ottawa ankle aur foot rules lagayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Landmarks from the ASIS to the malleoli map the leg; the ASISs should be level and the lateral malleolus is lower than the medial.",
+   "Check pulses (femoral, popliteal, dorsalis pedis, posterior tibial) in context; the dorsalis pedis is absent in about 10% of healthy people.",
+   "The Ottawa ankle and foot rules (malleolar and 5th metatarsal/navicular bone tenderness, 4 steps) are highly sensitive and avoid unnecessary X-rays."
+  ],
+  "keywords": "Palpation of the Hip, Knee and Ankle — Pulses, Landmarks and the Ottawa Rules palpation-lower-limb-ottawa-rules Skills · Posture & Palpation Landmarks from the ASIS to the malleoli map the leg; the ASISs should be level and the lateral malleolus is lower than the medial. Check pulses (femoral, popliteal, dorsalis pedis, posterior tibial) in context; the dorsalis pedis is absent in about 10% of healthy people. The Ottawa ankle and foot rules (malleolar and 5th metatarsal/navicular bone tenderness, 4 steps) are highly sensitive and avoid unnecessary X-rays. What are the Ottawa ankle rule triggers for X-ray? What are the foot series landmarks? How common is an absent dorsalis pedis pulse? Why is the fibular head important to palpate?",
   "next": null
  },
  {
