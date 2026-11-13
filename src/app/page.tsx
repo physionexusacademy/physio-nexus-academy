@@ -10,6 +10,8 @@ import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { HomeBooks } from "@/components/home/HomeBooks";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeNeedHelp } from "@/components/home/HomeNeedHelp";
+import { HomeBodyMap } from "@/components/home/HomeBodyMap";
+import { conditionCatalog } from "@/lib/conditions/catalog";
 import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
 
@@ -142,6 +144,8 @@ export default async function HomePage() {
       <LobbyHero atlasPublished={atlasPublished} />
 
       <HomeNeedHelp />
+
+      <HomeBodyMap items={conditionCatalog.map(({ slug, name, area, type, stages }) => ({ slug, name, area, type, stages }))} />
 
       <HomeFeatures />
 

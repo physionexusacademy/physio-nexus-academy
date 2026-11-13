@@ -11,7 +11,7 @@
  *
  * Pure module with relative imports so it can be tested with Node directly.
  */
-import { CLINICAL_TERMS, FIRST_PERSON, STOP_WORDS, URDU_MARKERS, URDU_TERMS } from "./language.ts";
+import { CLINICAL_TERMS, FIRST_PERSON, STOP_WORDS, URDU_MARKERS, URDU_TERMS, fromUrduScript, hasUrduScript } from "./language.ts";
 import { screenForSafety, type SafetyAlert } from "./safety.ts";
 
 export type BrainResource = {
@@ -174,9 +174,10 @@ function chosenLanguage(normalized: string): Lang | null {
 }
 
 function understand(raw: string, context: BrainContext | undefined, vocabulary: Map<string, number>): Understanding {
-  const normalized = normalize(raw);
+  const urduScript = hasUrduScript(raw);
+  const normalized = normalize(fromUrduScript(raw));
   const forcedLang = chosenLanguage(normalized);
-  const lang = forcedLang ?? detectLanguage(normalized);
+  const lang = forcedLang ?? (urduScript ? "ur" : detectLanguage(normalized));
 
   let translated = normalized;
   for (const rule of URDU_TERMS) {

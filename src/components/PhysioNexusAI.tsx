@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowRight, Bot, ExternalLink, LoaderCircle, Phone, Send, ShieldAlert, Sparkles, X } from "lucide-react";
+import { ArrowRight, Bot, ExternalLink, LoaderCircle, Mic, MicOff, Phone, Send, ShieldAlert, Sparkles, Volume2, VolumeX, X } from "lucide-react";
 
 type Resource = {
   id: string;
@@ -91,6 +91,29 @@ function AnswerText({ text }: { text: string }) {
 /** "Explain this to me": a short, friendly explanation built from the lesson or guide itself. */
 function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanation; defaultOpen: boolean }) {
   const ur = /[a-z]/i.test(explanation.openLabel) && explanation.openLabel.startsWith("Poor");
+  const [speaking, setSpeaking] = useState(false);
+  const [canSpeak, setCanSpeak] = useState(false);
+  useEffect(() => {
+    setCanSpeak(!ur && typeof window !== "undefined" && "speechSynthesis" in window);
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    };
+  }, [ur]);
+  function toggleSpeech() {
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(spokenText(explanation));
+    utterance.lang = "en-US";
+    utterance.rate = 0.97;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+    setSpeaking(true);
+  }
   return (
     <details open={defaultOpen} className="group mt-3 rounded-xl border border-teal-200 bg-teal-50/60">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-xl px-3 py-2 text-[13px] font-bold text-teal-900 [&::-webkit-details-marker]:hidden">
@@ -126,12 +149,44 @@ function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanatio
             {explanation.check}
           </p>
         ) : null}
-        <a href={explanation.href} className="inline-flex items-center gap-1.5 rounded-full bg-teal-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-teal-800">
-          {explanation.openLabel} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+        <div className="flex flex-wrap items-center gap-2">
+          <a href={explanation.href} className="inline-flex items-center gap-1.5 rounded-full bg-teal-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-teal-800">
+            {explanation.openLabel} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+          {canSpeak ? (
+            <button type="button" onClick={toggleSpeech} aria-pressed={speaking} className="inline-flex items-center gap-1.5 rounded-full border border-teal-300 bg-white px-3 py-1.5 text-xs font-bold text-teal-900 hover:bg-teal-50">
+              {speaking ? <VolumeX className="h-3.5 w-3.5" aria-hidden="true" /> : <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />} {speaking ? "Stop" : "Listen"}
+            </button>
+          ) : null}
+        </div>
       </div>
     </details>
   );
+}
+
+/* ---------- voice (browser speech recognition and read-aloud; nothing is sent anywhere except the question itself) ---------- */
+type RecognitionResultEvent = { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> };
+type Recognition = {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  continuous: boolean;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: RecognitionResultEvent) => void) | null;
+  onerror: ((event: { error?: string }) => void) | null;
+  onend: (() => void) | null;
+};
+function recognitionCtor(): (new () => Recognition) | null {
+  if (typeof window === "undefined") return null;
+  const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+}
+
+/** Plain text of an explanation, for reading aloud. */
+function spokenText(explanation: Explanation): string {
+  const clean = (text: string) => text.replace(/\*\*/g, "");
+  return [clean(explanation.intro), ...explanation.steps.flatMap((step) => [step.label + ".", clean(step.text), ...(step.list ?? []).map(clean)])].filter(Boolean).join(" ");
 }
 
 function readProfile(): { stage?: string; goal?: string } | undefined {
@@ -152,6 +207,11 @@ function readProfile(): { stage?: string; goal?: string } | undefined {
 export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initialOpen?: boolean; initialQuestion?: string } = {}) {
   const [open, setOpen] = useState(initialOpen);
   const [query, setQuery] = useState("");
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [voiceLang, setVoiceLang] = useState<"en-US" | "ur-PK">("en-US");
+  const [listening, setListening] = useState(false);
+  const [voiceNote, setVoiceNote] = useState("");
+  const recognitionRef = useRef<Recognition | null>(null);
   const [loading, setLoading] = useState(false);
   const [nextId, setNextId] = useState(2);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -169,6 +229,64 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    setVoiceSupported(Boolean(recognitionCtor()));
+    try {
+      const saved = window.localStorage.getItem("pna-ai-voice-lang");
+      if (saved === "ur-PK" || saved === "en-US") setVoiceLang(saved);
+    } catch {
+      /* default is fine */
+    }
+    return () => recognitionRef.current?.stop();
+  }, []);
+
+  function toggleVoiceLanguage() {
+    const next = voiceLang === "en-US" ? "ur-PK" : "en-US";
+    setVoiceLang(next);
+    try {
+      window.localStorage.setItem("pna-ai-voice-lang", next);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function toggleListening() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const Ctor = recognitionCtor();
+    if (!Ctor) return;
+    setVoiceNote("");
+    const recognition = new Ctor();
+    recognition.lang = voiceLang;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+    let finalText = "";
+    recognition.onresult = (event) => {
+      let text = "";
+      for (let i = 0; i < event.results.length; i++) text += event.results[i][0].transcript;
+      finalText = text.trim();
+      setQuery(finalText.slice(0, 240));
+    };
+    recognition.onerror = (event) => {
+      setVoiceNote(event.error === "not-allowed" || event.error === "service-not-allowed" ? "Microphone is blocked — allow it in your browser, or type your question." : "Could not hear that. Try again or type your question.");
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+      if (finalText.length >= 2) void sendQueryRef.current(finalText.slice(0, 240));
+    };
+    recognitionRef.current = recognition;
+    try {
+      recognition.start();
+      setListening(true);
+    } catch {
+      setVoiceNote("Could not start the microphone.");
+    }
+  }
 
   // The command palette (Ctrl/⌘+K) can hand a question straight to the AI.
   const sendQueryRef = useRef<(value: string) => Promise<void>>(async () => {});
@@ -416,10 +534,33 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               maxLength={240}
-              placeholder="Ask anything — English or Roman Urdu"
+              placeholder="Ask in English, Roman Urdu or اردو"
               autoComplete="off"
               className="min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/15"
             />
+            {voiceSupported ? (
+              <>
+                <button
+                  type="button"
+                  onClick={toggleVoiceLanguage}
+                  aria-label={`Voice language: ${voiceLang === "en-US" ? "English" : "Urdu"}. Tap to switch.`}
+                  title="Voice language"
+                  className="h-10 shrink-0 rounded-xl border border-slate-300 bg-white px-2 text-[11px] font-bold text-slate-700 hover:border-teal-500"
+                >
+                  {voiceLang === "en-US" ? "EN" : "اردو"}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleListening}
+                  aria-pressed={listening}
+                  aria-label={listening ? "Stop listening" : "Ask by voice"}
+                  title={listening ? "Stop listening" : "Ask by voice"}
+                  className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition " + (listening ? "animate-pulse border-rose-500 bg-rose-50 text-rose-700" : "border-slate-300 bg-white text-slate-700 hover:border-teal-500")}
+                >
+                  {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                </button>
+              </>
+            ) : null}
             <button
               type="submit"
               disabled={loading || query.trim().length < 2}
@@ -429,6 +570,7 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
               {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
           </form>
+          {voiceNote ? <p role="status" className="bg-white px-3 pb-2 text-[11px] text-rose-700">{voiceNote}</p> : null}
           <p className="bg-white px-3 pb-3 text-[10px] leading-relaxed text-slate-500">
             Answers come from PNA&apos;s educational content and do not replace a clinical assessment. Don&apos;t enter names or other identifying details. Messages are not saved.
           </p>

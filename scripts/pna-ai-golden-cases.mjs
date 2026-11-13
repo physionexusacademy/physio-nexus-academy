@@ -117,6 +117,14 @@ export const goldenCases = [
   { q: "stroke ke baad physiotherapy kaise hoti hai", lang: "ur", anyTop2: ["/conditions/stroke-rehabilitation#quick", "/conditions/stroke-rehabilitation#clinical"] },
   // The overview question must not be glued onto the previous topic.
   { q: "website par kya kya hai", context: { lastTopic: "The Convex–Concave Rule" }, top: ["/#features"], freshTopic: true },
+  // --- Urdu script (typed or dictated by voice)
+  { q: "گھٹنے میں درد کا علاج", lang: "ur", anyTop2: ["/conditions/knee-osteoarthritis#clinical", "/conditions/patellofemoral-pain#clinical", "/conditions/knee-osteoarthritis#quick", "/conditions/patellofemoral-pain#quick"] },
+  { q: "کمر درد کی ورزشیں بتائیں", lang: "ur", anyTop2: ["/conditions/non-specific-low-back-pain#clinical", "/conditions/non-specific-low-back-pain#quick"] },
+  { q: "فروزن شولڈر کیا ہوتا ہے", lang: "ur", anyTop2: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
+  { q: "اپائنٹمنٹ کیسے لوں", lang: "ur", top: ["/appointment"] },
+  { q: "ریہاب ورس کیا ہے", lang: "ur", anyTop2: ["/rehabverse"] },
+  { q: "ویب سائٹ پر کیا کیا ہے", lang: "ur", top: ["/#features"] },
+  { q: "کنویکس کنکیو رول سمجھاؤ", lang: "ur", top: ["/learn/convex-concave-rule"] },
 ];
 
 /** Returns a list of failure messages for one case result. */

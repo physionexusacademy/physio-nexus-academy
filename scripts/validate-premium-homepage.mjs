@@ -41,7 +41,7 @@ const zones=[
 ];
 const tests={
   academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<HomeNeedHelp />")&&home.includes("<HomeFeatures />")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
-  lobbyOrder:home.indexOf("<LobbyHero")<home.indexOf("<HomeNeedHelp />")&&home.indexOf("<HomeNeedHelp />")<home.indexOf("<HomeFeatures />")&&home.indexOf("<HomeFeatures />")<home.indexOf("<HomeBooks />")&&home.indexOf("<HomeBooks />")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')&&home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf("<StudentPass />")&&home.indexOf("<StudentPass />")<home.indexOf("<PremiumPathwayBrowser"),
+  lobbyOrder:home.indexOf("<LobbyHero")<home.indexOf("<HomeNeedHelp />")&&home.indexOf("<HomeNeedHelp />")<home.indexOf("<HomeBodyMap")&&home.indexOf("<HomeBodyMap")<home.indexOf("<HomeFeatures />")&&home.indexOf("<HomeFeatures />")<home.indexOf("<HomeBooks />")&&home.indexOf("<HomeBooks />")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')&&home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf("<StudentPass />")&&home.indexOf("<StudentPass />")<home.indexOf("<PremiumPathwayBrowser"),
   noDuplicatedFeatureWall:!home.includes("portalActions.map")&&!home.includes("portalGroups.map")&&!home.includes("pna-home-zones"),
   allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
   retiredWeeklyQuizGone:!hrefs.includes("/clinical-quiz")&&!home.includes("/clinical-quiz"),

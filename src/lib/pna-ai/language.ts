@@ -189,3 +189,54 @@ export const FIRST_PERSON = /\b(i have|i've|i am|i'm|i feel|i can't|i cannot|i c
 
 /** Academic phrasing → a learner asking about a topic, not a live symptom. */
 export const ACADEMIC = /\b(what is|what are|what does|explain|define|definition|signs of|symptoms of|features of|causes of|difference|differentiate|vs|versus|lesson|teach|learn|notes|viva|exam|mcq|osce|kya hai|kya hota|kya hoti|kya hain|matlab|samjhao|samjha do|parhao|sikhao)\b/;
+
+/* ---------------- Urdu script ---------------- */
+
+/**
+ * Many learners type, or dictate by voice, in Urdu script. Known words are mapped to the Roman Urdu / English
+ * vocabulary the rest of the engine already understands; unknown words are dropped. Pure data and one function.
+ */
+const URDU_SCRIPT_WORDS: Record<string, string> = {
+  // body parts
+  "کمر": "kamar", "گردن": "gardan", "کندھا": "kandha", "کندھے": "kandhe", "کندھوں": "kandhe", "کہنی": "kohni", "کلائی": "kalai", "ہاتھ": "haath", "انگلی": "ungli", "انگلیاں": "ungliyan",
+  "گھٹنا": "ghutna", "گھٹنے": "ghutne", "گھٹنوں": "ghutne", "ٹخنہ": "takhna", "ٹخنے": "takhne", "ایڑی": "aedi", "پاؤں": "paon", "پاوں": "paon", "پیر": "paon", "پیروں": "paon", "ٹانگ": "taang", "ٹانگوں": "taang",
+  "کولہا": "kulha", "کولہے": "kulha", "جبڑا": "jabra", "جبڑے": "jabra", "سینہ": "seena", "سینے": "seena", "سر": "sar", "ریڑھ": "reerh", "ریڑھ کی": "reerh", "پٹھا": "pattha", "پٹھے": "pattha", "ہڈی": "haddi", "ہڈیاں": "haddi",
+  "جوڑ": "jor", "جوڑوں": "jor", "نس": "nas", "نسیں": "nas", "پسلی": "pasli", "بازو": "bazu", "پنڈلی": "pindli", "پیٹھ": "peeth", "دل": "dil",
+  // symptoms
+  "درد": "dard", "دردیں": "dard", "سوجن": "sujan", "اکڑن": "akran", "اکڑاہٹ": "akran", "کمزوری": "kamzori", "سن": "sunn", "سنّ": "sunn", "جھنجھناہٹ": "jhunjhunahat", "چکر": "chakkar", "بخار": "bukhar",
+  "چوٹ": "chot", "موچ": "moch", "فالج": "falij", "کپکپی": "kampan", "سانس": "saans", "پھولنا": "phoolna", "پھولتی": "phoolna", "پھولتا": "phoolna",
+  // question and function words
+  "کیا": "kya", "کیسے": "kaise", "کیوں": "kyun", "ہے": "hai", "ہیں": "hain", "ہوتا": "hota", "ہوتی": "hoti", "ہوتے": "hote", "کا": "ka", "کی": "ki", "کے": "ke", "میں": "mein", "سے": "se", "کو": "ko",
+  "اور": "aur", "کب": "kab", "کہاں": "kahan", "مجھے": "mujhe", "میرا": "mera", "میری": "meri", "میرے": "mere", "ہمارے": "hamare", "بتائیں": "batao", "بتاؤ": "batao", "بتائیے": "batao", "بتاو": "batao",
+  "سمجھاؤ": "samjhao", "سمجھائیں": "samjhao", "سمجھائیے": "samjhao", "سمجھاو": "samjhao", "سمجھا": "samjha", "علاج": "ilaj", "ورزش": "warzish", "ورزشیں": "warzish",
+  "کرنا": "karna", "کریں": "karein", "کرو": "karo", "چاہیے": "chahiye", "چاہئے": "chahiye", "پر": "par", "بعد": "baad", "لیے": "liye", "لئے": "liye", "جب": "jab", "اگر": "agar", "نہیں": "nahi", "آسان": "asaan", "لفظوں": "lafzon", "الفاظ": "lafzon",
+  "رات": "raat", "صبح": "subah", "نیند": "neend", "چلتے": "chalte", "چلنے": "chalne", "بچے": "bachay", "بچوں": "bachon", "بزرگ": "buzurg", "بزرگوں": "buzurgon",
+  // site and clinical vocabulary written in Urdu script
+  "فزیوتھراپی": "physiotherapy", "فزیو": "physio", "فزیوتھراپسٹ": "physiotherapist", "ڈاکٹر": "doctor", "مریض": "mareez", "اپائنٹمنٹ": "appointment", "ملاقات": "appointment", "بکنگ": "booking",
+  "گھر": "ghar", "ہوم": "home", "ویزٹ": "visit", "ویب": "website", "سائٹ": "website", "ویب سائٹ": "website", "کتاب": "book", "کتابیں": "books", "کتابوں": "books", "ورکشاپ": "workshop", "ورکشاپس": "workshops",
+  "ٹریننگ": "training", "سرٹیفکیٹ": "certificate", "امتحان": "imtihan", "ویوا": "viva", "کوئز": "quiz", "چیلنج": "challenge", "ڈیلی": "daily", "ورچوئل": "virtual", "پیشنٹ": "patient", "سکلز": "skills", "لیب": "lab",
+  "مینوئل": "manual", "تھراپی": "therapy", "ٹیچر": "teacher", "لیسن": "lesson", "سبق": "lesson", "فلیش": "flash", "کارڈز": "cards", "ریہاب": "rehab", "ریہب": "rehab", "ایکسرسائز": "exercise", "ٹریٹمنٹ": "treatment",
+  "پین": "pain", "بیک": "back", "نیک": "neck", "شولڈر": "shoulder", "نی": "knee", "اینکل": "ankle", "ہپ": "hip", "ایلبو": "elbow", "رسٹ": "wrist",
+  "سٹروک": "stroke", "پارکنسن": "parkinson", "سرجری": "surgery", "آپریشن": "operation", "حمل": "hamal", "شوگر": "sugar", "ذیابیطس": "sugar", "موٹاپا": "motapa",
+  "ٹینس": "tennis", "فروزن": "frozen", "سائیٹیکا": "sciatica", "سلپ": "slipped", "ڈسک": "disc", "آرتھرائٹس": "arthritis", "گٹھیا": "arthritis", "کنفرم": "confirm",
+  "کنویکس": "convex", "کانویکس": "convex", "کنکیو": "concave", "کانکیو": "concave", "کونکیو": "concave", "رول": "rule", "گلائیڈ": "glide", "گریڈ": "grade", "گریڈز": "grades",
+  "میٹلینڈ": "maitland", "مائٹلینڈ": "maitland", "ملیگن": "mulligan", "جوائنٹ": "joint", "موبلائزیشن": "mobilization", "ٹیسٹ": "test", "ٹیسٹس": "tests", "ریڈ": "red", "فلیگز": "flags",
+  "گونیومیٹری": "goniometry", "گونیومیٹر": "goniometer", "ریفلیکس": "reflex", "پوسچر": "posture", "بیلنس": "balance", "ٹینڈینوپیتھی": "tendinopathy", "کیس": "case", "کیسز": "cases",
+};
+
+/** Urdu script → the Roman Urdu / English the engine understands. Text without Urdu script is returned unchanged. */
+export function fromUrduScript(text: string): string {
+  if (!/[؀-ۿ]/.test(text)) return text;
+  const cleaned = text
+    .replace(/[ً-ٰٟ۔؟،؛]/g, " ") // diacritics, Urdu full stop, question mark, commas
+    .replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/ە/g, "ہ").replace(/ۀ/g, "ہ").replace(/ئ/g, "ئ");
+  return cleaned
+    .split(/(\s+)/)
+    .map((part) => {
+      if (!/[؀-ۿ]/.test(part)) return part;
+      return URDU_SCRIPT_WORDS[part] ?? URDU_SCRIPT_WORDS[part.replace(/[ۂہ]$/, "ہ")] ?? "";
+    })
+    .join(" ");
+}
+
+export const hasUrduScript = (text: string) => /[؀-ۿ]/.test(text);
