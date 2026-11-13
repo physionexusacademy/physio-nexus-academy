@@ -21,7 +21,9 @@
     "build:skills-data": "node --experimental-strip-types scripts/build-skills-data.ts",
     "validate:skills": "node --experimental-strip-types scripts/validate-skills.ts",
     "validate:virtual-patient": "node scripts/validate-virtual-patient.mjs",
-    "build:virtual-patient": "node scripts/build-virtual-patient.mjs"
+    "build:virtual-patient": "node scripts/build-virtual-patient.mjs",
+    "validate:rehabverse-db": "node scripts/validate-rehabverse-db.mjs",
+    "rehabverse:backend": "REHAB_DEV_SQL=1 node scripts/rehabverse-local/server.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -39,6 +41,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.16",
     "@gltf-transform/core": "^4.5.1",
     "@gltf-transform/extensions": "^4.5.1",
     "@gltf-transform/functions": "^4.5.1",
