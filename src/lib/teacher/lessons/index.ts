@@ -21,6 +21,7 @@ import { motorLearningNeuroplasticity } from "./motor-learning-neuroplasticity.t
 import { balanceFallsAssessment } from "./balance-falls-assessment.ts";
 import { tensUltrasoundEvidence } from "./tens-ultrasound-evidence.ts";
 import { airwayClearanceAcbt } from "./airway-clearance-acbt.ts";
+import { loadAuthoredLessons } from "../authored.ts";
 
 /** Display order on the PNA Teacher hub. */
 export const teacherLessons: TeacherLesson[] = [
@@ -51,6 +52,8 @@ export const teacherLessons: TeacherLesson[] = [
   painScienceBasics,
   tensUltrasoundEvidence,
   airwayClearanceAcbt,
+  // Clinical-skills lessons with Skills Lab 3D demonstrations, written in the compact .pna format (lessons/authored)
+  ...loadAuthoredLessons(),
 ];
 
 export function getTeacherLesson(slug: string): TeacherLesson | undefined {

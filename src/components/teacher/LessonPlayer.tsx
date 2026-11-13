@@ -28,6 +28,7 @@ import {
 } from "@/lib/teacher/progress";
 import { whatsappLink } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
 import { TeacherWidget } from "./widgets";
 import { SortActivity } from "./SortActivity";
 import { useSpeech } from "./useSpeech";
@@ -58,6 +59,12 @@ type Entry =
 type Session = { v: 1; log: Entry[]; attempts: Record<string, number[]> };
 
 const VOICE_KEY = "pna-teacher-voice-v1";
+
+/** Skills Lab 3D demonstrations inside a lesson: loaded only when a demo beat appears. */
+const LessonDemo = dynamic(() => import("@/components/skills/Demo3D").then((module) => module.Demo3D), {
+  ssr: false,
+  loading: () => <div className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl border border-slate-200 bg-[#e8eef3] text-sm font-bold text-navy-800 sm:aspect-[16/10]" role="status">Preparing the 3D patient…</div>,
+});
 
 const acknowledgements: BiText[] = [
   { en: "Got it 👍", ur: "Samajh gaya 👍" },
@@ -220,7 +227,7 @@ function LessonConversation({
         case "beat": {
           const beat = beats[entry.i];
           if (!beat) return "";
-          if (beat.type === "widget") return pick(beat.intro, lang);
+          if (beat.type === "widget" || beat.type === "demo") return pick(beat.intro, lang);
           if (beat.type === "check") return pick(beat.question, lang);
           if (beat.type === "try") return `${pick(beat.title, lang)}. ${beat.steps.map((step) => pick(step, lang)).join(". ")}. ${pick(beat.ask, lang)}`;
           if (beat.type === "sort") return pick(beat.prompt, lang);
@@ -291,7 +298,7 @@ function LessonConversation({
     }
     const beat = beats[lastBeat];
     const ack =
-      beat?.type === "widget"
+      beat?.type === "widget" || beat?.type === "demo"
         ? { en: "I've explored it — next", ur: "Dekh liya — aage chalein" }
         : acknowledgements[Math.max(0, lastBeat) % acknowledgements.length];
     respond(ack, [{ k: "beat", i: lastBeat + 1 }]);
@@ -395,6 +402,15 @@ function LessonConversation({
             <RichText text={pick(beat.intro, lang)} />
             <div className="mt-3">
               <TeacherWidget widget={beat.widget} lang={lang} />
+            </div>
+          </TeacherBubble>
+        );
+      case "demo":
+        return (
+          <TeacherBubble key={key} {...common} wide>
+            <RichText text={pick(beat.intro, lang)} />
+            <div className="mt-3">
+              <LessonDemo demoKey={beat.demo} title={beat.title} />
             </div>
           </TeacherBubble>
         );

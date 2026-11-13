@@ -675,6 +675,285 @@
    "Stop for frank haemoptysis, suspected pneumothorax, falling SpO₂ or a deteriorating patient, and escalate."
   ],
   "keywords": "Airway Clearance — The Active Cycle of Breathing Technique (ACBT) airway-clearance-acbt Cardiorespiratory ACBT = breathing control, thoracic expansion (with holds), breathing control, then huffs; cough only when sputum is high. Dose 10–30 min until clear, once or twice daily; adapt positions — avoid head-down tilts in reflux, breathlessness, heart failure and after surgery. Stop for frank haemoptysis, suspected pneumothorax, falling SpO₂ or a deteriorating patient, and escalate. Four components of ACBT? Low-volume vs high-volume huff? Why add a breath hold to thoracic expansion? When to stop airway clearance immediately? Typical ACBT session length?",
+  "next": {
+   "slug": "sensory-exam-dermatomes",
+   "title": "Sensory Exam & Dermatomes — Find the Level by Touch",
+   "href": "/learn/sensory-exam-dermatomes"
+  }
+ },
+ {
+  "href": "/learn/sensory-exam-dermatomes",
+  "slug": "sensory-exam-dermatomes",
+  "title": "Sensory Exam & Dermatomes — Find the Level by Touch",
+  "hook": {
+   "en": "A numb thumb, a tingling calf, a loss of feeling at the belly button — each one points to a spinal level. Learn to test sensation properly and read the map without memorising it blindly.",
+   "ur": "Sunn angootha, jhunjhunati pindli, nabhi par ehsaas ka khatam hona — har ek kisi spinal level ki taraf ishara karta hai. Sensation sahi tareeqay se test karna aur map ko ratay bagair parhna seekhein."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 13,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll test light touch and pinprick correctly, name the key points from C5 to S1, and tell a dermatome pattern from a nerve or glove-and-stocking pattern.",
+   "ur": "End tak aap light touch aur pinprick sahi test karenge, C5 se S1 tak key points batayenge, aur dermatome pattern ko nerve ya glove-and-stocking pattern se alag pehchan lenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "A dermatome is the skin strip of one root: test the key point, compare both sides, use light touch and pinprick, and never lead the patient.",
+   "Name the root by combining numbness with weakness and reflexes — overlap makes the map approximate, so test the autonomous zone.",
+   "Read the pattern: dermatomal strip = root, nerve territory = peripheral nerve, glove-and-stocking = neuropathy; saddle numbness is an emergency."
+  ],
+  "keywords": "Sensory Exam & Dermatomes — Find the Level by Touch sensory-exam-dermatomes Skills · Neuro Exam A dermatome is the skin strip of one root: test the key point, compare both sides, use light touch and pinprick, and never lead the patient. Name the root by combining numbness with weakness and reflexes — overlap makes the map approximate, so test the autonomous zone. Read the pattern: dermatomal strip = root, nerve territory = peripheral nerve, glove-and-stocking = neuropathy; saddle numbness is an emergency. Which fingers does C6, C7 and C8 supply? Key sensory point for L5? Why test both light touch and pinprick? What is the sensory level in ISNCSCI? Which tool checks protective sensation in the diabetic foot?",
+  "next": {
+   "slug": "myotome-screening-root-levels",
+   "title": "Myotome Screening — Which Root Is Weak?",
+   "href": "/learn/myotome-screening-root-levels"
+  }
+ },
+ {
+  "href": "/learn/myotome-screening-root-levels",
+  "slug": "myotome-screening-root-levels",
+  "title": "Myotome Screening — Which Root Is Weak?",
+  "hook": {
+   "en": "Ten quick resisted holds tell you which spinal root is struggling. Learn the myotome ladder, the disc rule and how to avoid the classic \"pain looks like weakness\" trap.",
+   "ur": "Das tez resisted holds batate hain ke kaun si spinal root takleef mein hai. Myotome ki seerhi, disc ka qaida aur “dard kamzori jaisa lagta hai” wali classic ghalti se bachna seekhein."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name the key muscle for each root from C5 to S1, screen all myotomes in a few minutes, and use the disc rule to predict which root a disc will hit.",
+   "ur": "End tak aap C5 se S1 tak har root ka key muscle batayenge, chand minutes mein saare myotomes screen karenge, aur disc rule se andaza lagayenge ke disc kaun si root ko dabayegi."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "A myotome is the key muscle of one root: test it with a 5-second resisted isometric hold in mid-range and compare sides.",
+   "Learn the ladder C5 → S1 and the disc rule (cervical hits the lower number, lumbar hits the traversing root).",
+   "Name the root only when myotome, dermatome and reflex agree; pain inhibits muscle and progressive or bilateral weakness needs urgent referral."
+  ],
+  "keywords": "Myotome Screening — Which Root Is Weak? myotome-screening-root-levels Skills · Neuro Exam A myotome is the key muscle of one root: test it with a 5-second resisted isometric hold in mid-range and compare sides. Learn the ladder C5 → S1 and the disc rule (cervical hits the lower number, lumbar hits the traversing root). Name the root only when myotome, dermatome and reflex agree; pain inhibits muscle and progressive or bilateral weakness needs urgent referral. C5, C6, C7, C8, T1 myotomes? L2, L3, L4, L5, S1 myotomes? An L4–L5 posterolateral disc compresses which root? How do you separate an L5 root lesion from a common fibular nerve palsy?",
+  "next": {
+   "slug": "deep-tendon-reflexes-technique",
+   "title": "Deep Tendon Reflexes — Technique, Grading and Reinforcement",
+   "href": "/learn/deep-tendon-reflexes-technique"
+  }
+ },
+ {
+  "href": "/learn/deep-tendon-reflexes-technique",
+  "slug": "deep-tendon-reflexes-technique",
+  "title": "Deep Tendon Reflexes — Technique, Grading and Reinforcement",
+  "hook": {
+   "en": "A reflex hammer is the most honest tool in the clinic: the patient cannot fake it. Learn where to tap, how to grade 0–4+ and why a \"bad\" reflex is often a bad technique.",
+   "ur": "Reflex hammer clinic ka sab se imandar tool hai: patient isay fake nahi kar sakta. Seekhein kahan tap karna hai, 0–4+ grade kaise dena hai aur ek “kharab” reflex aksar kharab technique kyun hota hai."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Foundation",
+  "bestFor": "1st year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll tap six reflexes with the right position, grade them 0–4+, use reinforcement and say what a brisk or absent reflex points to.",
+   "ur": "End tak aap chhe reflexes sahi position mein tap karenge, unhein 0–4+ grade denge, reinforcement use karenge aur batayenge ke brisk ya gayab reflex kis cheez ki taraf ishara karta hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "A stretch reflex runs through the spinal cord: damage above the arc makes it brisk, damage to the arc makes it reduced or absent.",
+   "Good technique wins: relaxed limb, tendon found by touch, brisk wrist tap, slight stretch, both sides — and reinforce before calling a reflex absent.",
+   "Asymmetry and the whole pattern matter more than any single grade; distal-first loss means neuropathy, brisk plus clonus means UMN."
+  ],
+  "keywords": "Deep Tendon Reflexes — Technique, Grading and Reinforcement deep-tendon-reflexes-technique Skills · Neuro Exam A stretch reflex runs through the spinal cord: damage above the arc makes it brisk, damage to the arc makes it reduced or absent. Good technique wins: relaxed limb, tendon found by touch, brisk wrist tap, slight stretch, both sides — and reinforce before calling a reflex absent. Asymmetry and the whole pattern matter more than any single grade; distal-first loss means neuropathy, brisk plus clonus means UMN. Roots of the biceps, brachioradialis, triceps, knee and ankle reflexes? What is reinforcement and when do you use it? What does a brisk reflex with clonus suggest? Which reflex pattern suggests peripheral neuropathy?",
+  "next": {
+   "slug": "upper-motor-neuron-signs-bedside",
+   "title": "UMN Signs at the Bedside — Babinski, Hoffmann, Clonus and the Jaw Jerk",
+   "href": "/learn/upper-motor-neuron-signs-bedside"
+  }
+ },
+ {
+  "href": "/learn/upper-motor-neuron-signs-bedside",
+  "slug": "upper-motor-neuron-signs-bedside",
+  "title": "UMN Signs at the Bedside — Babinski, Hoffmann, Clonus and the Jaw Jerk",
+  "hook": {
+   "en": "Four quick bedside signs separate a damaged brain or spinal cord from a damaged nerve. Learn to elicit each one safely and to say exactly what it means.",
+   "ur": "Chaar tez bedside signs kharab dimagh ya spinal cord ko kharab nerve se alag karte hain. Har ek ko mehfooz tareeqay se nikalna aur uska sahi matlab batana seekhein."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll elicit the plantar response, Hoffmann sign, ankle clonus and jaw jerk correctly, and use them to tell an upper motor neuron lesion from a lower motor neuron one.",
+   "ur": "End tak aap plantar response, Hoffmann sign, ankle clonus aur jaw jerk sahi nikalenge, aur unse upper motor neuron lesion ko lower motor neuron lesion se alag karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "UMN lesions release primitive reflexes: brisk jerks, sustained clonus, extensor plantar (Babinski), Hoffmann and spasticity.",
+   "Elicit each sign gently with correct technique; more than one sign together is far more convincing than a single sign.",
+   "A new UMN sign with neck or back symptoms, clumsy hands or sphincter change is an emergency; do not manipulate the neck."
+  ],
+  "keywords": "UMN Signs at the Bedside — Babinski, Hoffmann, Clonus and the Jaw Jerk upper-motor-neuron-signs-bedside Skills · Neuro Exam UMN lesions release primitive reflexes: brisk jerks, sustained clonus, extensor plantar (Babinski), Hoffmann and spasticity. Elicit each sign gently with correct technique; more than one sign together is far more convincing than a single sign. A new UMN sign with neck or back symptoms, clumsy hands or sphincter change is an emergency; do not manipulate the neck. What is a positive Babinski sign? How do you elicit Hoffmann's sign? How many clonus beats are abnormal? What does a brisk jaw jerk tell you?",
+  "next": {
+   "slug": "arm-nerve-injuries",
+   "title": "Arm Nerve Injuries — Radial, Median, Ulnar, Axillary and More",
+   "href": "/learn/arm-nerve-injuries"
+  }
+ },
+ {
+  "href": "/learn/arm-nerve-injuries",
+  "slug": "arm-nerve-injuries",
+  "title": "Arm Nerve Injuries — Radial, Median, Ulnar, Axillary and More",
+  "hook": {
+   "en": "A hand that drops, claws or won't oppose the thumb is a picture-diagnosis. Learn the classic deformity, the quick test and the usual injury site for each nerve of the arm.",
+   "ur": "Jo haath latak jaye, claw ban jaye ya thumb oppose na kare, woh tasveer se pehchana jata hai. Arm ki har nerve ke liye classic deformity, tez test aur injury ki aam jagah seekhein."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name the injury sign, the quick motor test and the usual site of injury for the radial, median, ulnar, axillary, musculocutaneous, long thoracic and spinal accessory nerves.",
+   "ur": "End tak aap radial, median, ulnar, axillary, musculocutaneous, long thoracic aur spinal accessory nerves ke liye injury sign, tez motor test aur aam injury site batayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "For each nerve know three things: motor job, autonomous sensory zone and vulnerable site.",
+   "Classic pictures: radial = wrist drop, median = ape hand, ulnar = claw hand, long thoracic = medial winging, axillary = flat deltoid.",
+   "Separate nerve from root by testing a muscle that shares the root but not the nerve; protect the joint and refer urgent or traumatic losses."
+  ],
+  "keywords": "Arm Nerve Injuries — Radial, Median, Ulnar, Axillary and More arm-nerve-injuries Skills · Neuro Exam For each nerve know three things: motor job, autonomous sensory zone and vulnerable site. Classic pictures: radial = wrist drop, median = ape hand, ulnar = claw hand, long thoracic = medial winging, axillary = flat deltoid. Separate nerve from root by testing a muscle that shares the root but not the nerve; protect the joint and refer urgent or traumatic losses. Radial nerve lesion at the spiral groove: what do you see? What causes ape hand? What is Froment's sign? Which nerve causes medial winging of the scapula?",
+  "next": {
+   "slug": "leg-nerve-injuries",
+   "title": "Leg Nerve Injuries — Femoral, Sciatic, Fibular, Tibial and Gluteal",
+   "href": "/learn/leg-nerve-injuries"
+  }
+ },
+ {
+  "href": "/learn/leg-nerve-injuries",
+  "slug": "leg-nerve-injuries",
+  "title": "Leg Nerve Injuries — Femoral, Sciatic, Fibular, Tibial and Gluteal",
+  "hook": {
+   "en": "A foot that slaps, a knee that gives way on stairs, a pelvis that drops when you walk — each one belongs to a different nerve. Learn the picture, the quick test and the usual site of injury.",
+   "ur": "Foot jo thap thap kare, knee jo seerhiyon par jawab de de, pelvis jo chalte hue gir jaye — har ek ka alag nerve hai. Tasveer, tez test aur injury ki aam jagah seekhein."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll match each leg nerve to its classic sign (foot drop, knee buckling, Trendelenburg, claw toes), test it quickly and name where it is usually injured.",
+   "ur": "End tak aap har leg nerve ko uske classic sign (foot drop, knee buckling, Trendelenburg, claw toes) se match karenge, jaldi test karenge aur batayenge ke aam taur par kahan zakhmi hoti hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Know the job of each leg nerve: femoral straightens the knee, obturator adducts, superior gluteal levels the pelvis, tibial plantarflexes, common fibular dorsiflexes.",
+   "Match the picture: foot drop and steppage = common fibular, Trendelenburg = superior gluteal, buckling = femoral, no push-off = tibial.",
+   "Test muscles that share the root but not the nerve to separate nerve from root; protect with orthoses and refer sudden or traumatic deficits."
+  ],
+  "keywords": "Leg Nerve Injuries — Femoral, Sciatic, Fibular, Tibial and Gluteal leg-nerve-injuries Skills · Neuro Exam Know the job of each leg nerve: femoral straightens the knee, obturator adducts, superior gluteal levels the pelvis, tibial plantarflexes, common fibular dorsiflexes. Match the picture: foot drop and steppage = common fibular, Trendelenburg = superior gluteal, buckling = femoral, no push-off = tibial. Test muscles that share the root but not the nerve to separate nerve from root; protect with orthoses and refer sudden or traumatic deficits. What is the sign of a common fibular nerve palsy? What does Trendelenburg's sign show? Which nerve causes the knee to give way on stairs? What is meralgia paraesthetica?",
+  "next": {
+   "slug": "tone-spasticity-rigidity-ashworth",
+   "title": "Muscle Tone — Spasticity, Rigidity and the Modified Ashworth Scale",
+   "href": "/learn/tone-spasticity-rigidity-ashworth"
+  }
+ },
+ {
+  "href": "/learn/tone-spasticity-rigidity-ashworth",
+  "slug": "tone-spasticity-rigidity-ashworth",
+  "title": "Muscle Tone — Spasticity, Rigidity and the Modified Ashworth Scale",
+  "hook": {
+   "en": "\"Tight\" is not a diagnosis. Learn the speed test that separates spasticity from rigidity, how to grade tone with the Modified Ashworth Scale and what the Tardieu angles tell you about treatment.",
+   "ur": "“Tight” koi tashkhees nahi. Speed test seekhein jo spasticity ko rigidity se alag karta hai, Modified Ashworth Scale se tone ka grade dena aur Tardieu angles treatment ke baare mein kya batate hain."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll tell spasticity from rigidity by speed, grade tone on the Modified Ashworth Scale and use Tardieu R1 and R2 to decide between a neural and a contracture problem.",
+   "ur": "End tak aap speed se spasticity ko rigidity se alag karenge, Modified Ashworth Scale par tone grade karenge aur Tardieu R1 aur R2 se tay karenge ke masla neural hai ya contracture."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Spasticity is velocity-dependent (catch and release); rigidity is the same at all speeds; move slowly, then fast.",
+   "Grade tone with the MAS (0 to 4, move in about 1 second, up to 3 times) and use Tardieu R1 and R2 to separate neural from contracture.",
+   "Always link tone to function and treat the cause: tone management for spasticity, serial casting for contracture, large-amplitude work for Parkinsonian rigidity."
+  ],
+  "keywords": "Muscle Tone — Spasticity, Rigidity and the Modified Ashworth Scale tone-spasticity-rigidity-ashworth Skills · Neuro Exam Spasticity is velocity-dependent (catch and release); rigidity is the same at all speeds; move slowly, then fast. Grade tone with the MAS (0 to 4, move in about 1 second, up to 3 times) and use Tardieu R1 and R2 to separate neural from contracture. Always link tone to function and treat the cause: tone management for spasticity, serial casting for contracture, large-amplitude work for Parkinsonian rigidity. How do you tell spasticity from rigidity? Modified Ashworth Scale grades? What do Tardieu R1 and R2 mean? What is cogwheel rigidity?",
+  "next": {
+   "slug": "cerebellar-exam-coordination",
+   "title": "The Cerebellar Exam — Finger-Nose, Rapid Movements, Heel-Shin and DANISH",
+   "href": "/learn/cerebellar-exam-coordination"
+  }
+ },
+ {
+  "href": "/learn/cerebellar-exam-coordination",
+  "slug": "cerebellar-exam-coordination",
+  "title": "The Cerebellar Exam — Finger-Nose, Rapid Movements, Heel-Shin and DANISH",
+  "hook": {
+   "en": "Clumsy, wobbly, overshooting — the cerebellum is the brain's quality controller for movement. Learn the three limb tests, the DANISH signs and how to tell cerebellar ataxia from sensory ataxia.",
+   "ur": "Anari, ladkhadati, target se aage nikalti harkat — cerebellum movement ka quality controller hai. Teen limb tests, DANISH signs aur cerebellar ataxia ko sensory ataxia se alag karna seekhein."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform finger-to-nose, rapid alternating movements and heel-to-shin, name the DANISH signs and separate cerebellar from sensory ataxia.",
+   "ur": "End tak aap finger-to-nose, rapid alternating movements aur heel-to-shin karenge, DANISH signs batayenge aur cerebellar ko sensory ataxia se alag karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "The cerebellum smooths movement: damage gives same-side ataxia, intention tremor, dysdiadochokinesia, nystagmus, slurred speech and hypotonia (DANISH).",
+   "Test finger-nose, rapid alternating movements and heel-shin, move the target, compare sides and rule out weakness and pain first.",
+   "Eyes-closed worsening means sensory ataxia; no change with nystagmus means cerebellar; sudden onset or headache needs urgent referral."
+  ],
+  "keywords": "The Cerebellar Exam — Finger-Nose, Rapid Movements, Heel-Shin and DANISH cerebellar-exam-coordination Skills · Neuro Exam The cerebellum smooths movement: damage gives same-side ataxia, intention tremor, dysdiadochokinesia, nystagmus, slurred speech and hypotonia (DANISH). Test finger-nose, rapid alternating movements and heel-shin, move the target, compare sides and rule out weakness and pain first. Eyes-closed worsening means sensory ataxia; no change with nystagmus means cerebellar; sudden onset or headache needs urgent referral. What does DANISH stand for? Which side of the body does one cerebellar hemisphere control? How do cerebellar and sensory ataxia differ with eyes closed? What is dysdiadochokinesia?",
+  "next": {
+   "slug": "romberg-tandem-pronator-drift",
+   "title": "Romberg, Tandem Gait and Pronator Drift — Three Fast Neuro Screens",
+   "href": "/learn/romberg-tandem-pronator-drift"
+  }
+ },
+ {
+  "href": "/learn/romberg-tandem-pronator-drift",
+  "slug": "romberg-tandem-pronator-drift",
+  "title": "Romberg, Tandem Gait and Pronator Drift — Three Fast Neuro Screens",
+  "hook": {
+   "en": "Three tests, three minutes, three different systems. Learn what each one really tests, how to keep the patient safe and what a \"positive\" result means.",
+   "ur": "Teen tests, teen minute, teen mukhtalif systems. Seekhein har ek asal mein kya test karta hai, patient ko mehfooz kaise rakhein aur “positive” result ka kya matlab hai."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform Romberg's test, tandem walking and the pronator drift test safely, and tell what each result says about proprioception, the cerebellum and the corticospinal tract.",
+   "ur": "End tak aap Romberg test, tandem walking aur pronator drift test mehfooz tareeqay se karenge, aur batayenge ke har result proprioception, cerebellum aur corticospinal tract ke baare mein kya kehta hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Romberg tests proprioception (vision removed), tandem gait tests the cerebellum, pronator drift tests the corticospinal tract.",
+   "Keep the patient safe (close, wall, gait belt) and call Romberg positive only if steady with eyes open and unsteady with eyes closed.",
+   "A positive screen tells you which system to examine next; sudden onset with headache, speech or weakness changes needs urgent referral."
+  ],
+  "keywords": "Romberg, Tandem Gait and Pronator Drift — Three Fast Neuro Screens romberg-tandem-pronator-drift Skills · Neuro Exam Romberg tests proprioception (vision removed), tandem gait tests the cerebellum, pronator drift tests the corticospinal tract. Keep the patient safe (close, wall, gait belt) and call Romberg positive only if steady with eyes open and unsteady with eyes closed. A positive screen tells you which system to examine next; sudden onset with headache, speech or weakness changes needs urgent referral. When is Romberg's test positive? What does pronator drift show? Which test is the most sensitive bedside test of mild cerebellar disease? Why test with eyes closed?",
   "next": null
  },
  {

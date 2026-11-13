@@ -47,6 +47,8 @@ export type TeacherBeat =
   | { type: "clinic"; text: BiText }
   /** Interactive visual explained by the teacher. */
   | { type: "widget"; widget: TeacherWidgetKey; intro: BiText }
+  /** A Skills Lab 3D demonstration ("<skill>/<item>", e.g. "reflexes/patellar") played inside the lesson, with the teacher's intro. */
+  | { type: "demo"; demo: string; title: string; intro: BiText }
   /** Understanding check with feedback for every option. */
   | { type: "check"; question: BiText; options: CheckOption[]; hint?: BiText }
   /** Embodied "try it on yourself" moment followed by a reflective question. */
@@ -112,7 +114,12 @@ export type TeacherArea =
   | "Tissue Healing"
   | "Pain Science"
   | "Electrotherapy"
-  | "Cardiorespiratory";
+  | "Cardiorespiratory"
+  | "Skills · Neuro Exam"
+  | "Skills · Measurement"
+  | "Skills · Posture & Palpation"
+  | "Skills · Vitals & Monitoring"
+  | "Skills · Balance & Function";
 
 export type TeacherLesson = {
   slug: string;

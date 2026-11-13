@@ -17,6 +17,8 @@ import { manualTherapyAdditions } from "../src/lib/manual-therapy-additions.ts";
 import { worldManualApproaches } from "../src/lib/manual-therapy-world.ts";
 import { recommendPathSlug, teacherPaths } from "../src/lib/teacher/paths.ts";
 import type { BiText, TeacherGoal, TeacherStage } from "../src/lib/teacher/types.ts";
+import { SCENES } from "../src/lib/skills/scenes.ts";
+import { DEMO3D } from "../src/lib/skills/demo3d.ts";
 
 const root = process.cwd();
 const failures: string[] = [];
@@ -37,6 +39,7 @@ const libSource = walk(path.join(root, "src/lib"))
   .map((file) => fs.readFileSync(file, "utf8"))
   .join("\n");
 const knownSlugs = new Set([...libSource.matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((match) => match[1]));
+for (const lesson of allTeacherLessons) knownSlugs.add(lesson.slug); // lessons written in the .pna format have no `slug: "…"` in a .ts file
 
 function routeExists(href: string): boolean {
   const clean = href.split("#")[0].split("?")[0];
@@ -116,6 +119,11 @@ for (const lesson of allTeacherLessons) {
       case "reveal":
         bi(beat.question, where);
         bi(beat.answer, `${where} answer`);
+        break;
+      case "demo":
+        bi(beat.intro, where);
+        check(beat.title.trim().length > 2, `${where}: demo needs a title`);
+        check(Boolean(SCENES[beat.demo] || DEMO3D[beat.demo]), `${where}: demo "${beat.demo}" is not a Skills Lab 3D demonstration`);
         break;
       case "widget":
         bi(beat.intro, where);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock3, Hand, Route } from "lucide-react";
 import type { TeacherLessonCard, TeacherPath } from "@/lib/teacher/types";
@@ -18,6 +19,11 @@ const areaTone: Record<string, string> = {
   "Exercise Prescription": "bg-lime-100 text-lime-800",
   Electrotherapy: "bg-orange-100 text-orange-800",
   Cardiorespiratory: "bg-cyan-100 text-cyan-800",
+  "Skills · Neuro Exam": "bg-fuchsia-100 text-fuchsia-800",
+  "Skills · Measurement": "bg-sky-100 text-sky-800",
+  "Skills · Posture & Palpation": "bg-amber-100 text-amber-800",
+  "Skills · Vitals & Monitoring": "bg-cyan-100 text-cyan-800",
+  "Skills · Balance & Function": "bg-emerald-100 text-emerald-800",
 };
 
 const manualGroups: { area: TeacherLessonCard["area"]; title: string; blurb: string }[] = [
@@ -37,6 +43,9 @@ export function TeacherCatalog({
 }) {
   const snapshot = useTeacherSnapshot();
   const lang = snapshot?.lang ?? "en";
+  const [area, setArea] = useState("All");
+  const areas = ["All", ...new Set(conceptLessons.map((lesson) => lesson.area))];
+  const shownLessons = area === "All" ? conceptLessons : conceptLessons.filter((lesson) => lesson.area === area);
   const progress = snapshot?.progress;
   const manualDone = manualLessons.filter((lesson) => progress?.lessons[lesson.slug]).length;
 
@@ -90,8 +99,15 @@ export function TeacherCatalog({
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
           The topics students struggle with most — taught as a conversation, with analogies, interactive visuals and checks after every idea.
         </p>
+        <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1" data-horizontal-scroll role="group" aria-label="Filter lessons by area">
+          {areas.map((name) => (
+            <button key={name} type="button" onClick={() => setArea(name)} aria-pressed={area === name} className={cn("flex-none rounded-full border px-3 py-1.5 text-xs font-bold transition", area === name ? "border-transparent bg-[#0a1f3d] text-white" : "border-slate-300 bg-white text-slate-600 hover:border-teal-400")}>
+              {name === "All" ? `All (${conceptLessons.length})` : name}
+            </button>
+          ))}
+        </div>
         <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {conceptLessons.map((lesson) => {
+          {shownLessons.map((lesson) => {
             const done = Boolean(progress?.lessons[lesson.slug]);
             return (
               <li key={lesson.slug}>
