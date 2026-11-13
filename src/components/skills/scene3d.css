@@ -59,3 +59,15 @@
 .s3-dash { animation: s3dash 1.4s linear infinite; }
 @keyframes s3dash { to { stroke-dashoffset: -18; } }
 @media (prefers-reduced-motion: reduce) { .s3-ping, .s3-flow, .s3-dash, .s3-scan { animation: none; } }
+
+/* Phones: smaller read-outs so they do not cover the patient. */
+@media (max-width: 639px) {
+  .s3-hud { max-width: 46%; }
+  .s3-hud-tr { transform-origin: top right; }
+  .s3-hud-br { transform-origin: bottom right; }
+  .s3-hud-tl { transform-origin: top left; top: 12px; }
+  .s3-hud-bl { transform-origin: bottom left; }
+  .s3-hud { transform: scale(0.7); gap: 4px; }
+  .s3-hud-tr, .s3-hud-tl { top: 10px; }
+  .s3-corner { width: 14px; height: 14px; }
+}

@@ -33,7 +33,9 @@ type Pt2 = { x: number; y: number; visible: boolean };
 /* Drawing helpers                                                     */
 /* ------------------------------------------------------------------ */
 
-function Tag({ x, y, text, tone = "cyan", w, h, anchor = "start" }: { x: number; y: number; text: string; tone?: Tone; w: number; h: number; anchor?: "start" | "end" | "middle" }) {
+function Tag({ x, y, text: full, tone = "cyan", w, h, anchor = "start" }: { x: number; y: number; text: string; tone?: Tone; w: number; h: number; anchor?: "start" | "end" | "middle" }) {
+  // On a narrow view long labels are shortened so they stay on screen.
+  const text = w < 520 && full.length > 22 ? `${full.slice(0, 21)}…` : full;
   const width = Math.max(34, text.length * 6.4 + 16);
   let left = anchor === "end" ? x - width : anchor === "middle" ? x - width / 2 : x;
   left = Math.min(w - width - 4, Math.max(4, left));
