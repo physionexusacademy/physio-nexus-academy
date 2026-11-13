@@ -1636,6 +1636,68 @@
    "Mobilise early, in stages and documented; a stop is useful information, so record it and hand over."
   ],
   "keywords": "When to Stop — Exercise Stop Signs and Early Mobilisation on the Ward and ICU exercise-stop-signs-and-ward-mobilisation Skills · Vitals & Monitoring Stop for chest pain, dizziness, pallor, severe breathlessness, falling systolic pressure, SpO₂ below about 88–90 % or when the patient asks. Before mobilising a ward or ICU patient use traffic-light criteria, the trend, the notes and the team's orders, and use NEWS2 to spot deterioration. Mobilise early, in stages and documented; a stop is useful information, so record it and hand over. List four stop signs for exercise. Typical safe ranges for mobilising on ICU? What does NEWS2 combine? What should you record after a session that stopped early?",
+  "next": {
+   "slug": "timed-up-and-go-gait-speed",
+   "title": "Timed Up and Go and Gait Speed — Two Minutes That Predict a Lot",
+   "href": "/learn/timed-up-and-go-gait-speed"
+  }
+ },
+ {
+  "href": "/learn/timed-up-and-go-gait-speed",
+  "slug": "timed-up-and-go-gait-speed",
+  "title": "Timed Up and Go and Gait Speed — Two Minutes That Predict a Lot",
+  "hook": {
+   "en": "How long a person takes to stand, walk three metres, turn and sit — and how fast they walk ten metres — says more about falls, hospital stay and survival than many expensive tests. Learn both, correctly.",
+   "ur": "Insaan ko uthne, teen metre chalne, mur'ne aur baithne mein kitna waqt lagta hai — aur woh das metre kitni tezi se chalta hai — girne, hospital mein qiyam aur zindagi ke baare mein bohat si mehngi tests se zyada batata hai. Dono sahi tareeqay se seekhein."
+  },
+  "area": "Skills · Balance & Function",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform the Timed Up and Go (TUG) and the 10-metre walk test with the correct set-up, apply the cut-offs and use the clinically meaningful change.",
+   "ur": "End tak aap sahi setup ke saath Timed Up and Go (TUG) aur 10-metre walk test karenge, cut-offs lagayenge aur clinically ahem tabdeeli use karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "TUG: stand, walk 3 m, turn, return, sit; 12 s or more suggests a falls risk (CDC STEADI), 14 s or more is a stronger warning.",
+   "Gait speed = distance ÷ time over the middle 6 m of a 10 m walkway; 1.2 m/s is needed to cross a street and 0.1 m/s is meaningful change.",
+   "Standardise the set-up, never change the test between visits and combine the numbers with history, since TUG alone does not predict falls well."
+  ],
+  "keywords": "Timed Up and Go and Gait Speed — Two Minutes That Predict a Lot timed-up-and-go-gait-speed Skills · Balance & Function TUG: stand, walk 3 m, turn, return, sit; 12 s or more suggests a falls risk (CDC STEADI), 14 s or more is a stronger warning. Gait speed = distance ÷ time over the middle 6 m of a 10 m walkway; 1.2 m/s is needed to cross a street and 0.1 m/s is meaningful change. Standardise the set-up, never change the test between visits and combine the numbers with history, since TUG alone does not predict falls well. TUG cut-offs for falls risk? How is gait speed measured? Clinically meaningful change in gait speed? Gait speed needed to cross a street safely?",
+  "next": {
+   "slug": "sit-to-stand-tests",
+   "title": "Sit-to-Stand Tests — 5×STS and the 30-Second Chair Stand",
+   "href": "/learn/sit-to-stand-tests"
+  }
+ },
+ {
+  "href": "/learn/sit-to-stand-tests",
+  "slug": "sit-to-stand-tests",
+  "title": "Sit-to-Stand Tests — 5×STS and the 30-Second Chair Stand",
+  "hook": {
+   "en": "Standing up from a chair is a squat in disguise. Two short tests, one counting time and one counting repetitions, give you leg strength, endurance and falls risk with nothing more than a chair and a stopwatch.",
+   "ur": "Chair se uthna chhupa hua squat hai. Do mukhtasar tests, ek waqt aur doosra repetitions ginta hua, sirf ek chair aur stopwatch se aap ko taangon ki taqat, endurance aur girne ka khatra batate hain."
+  },
+  "area": "Skills · Balance & Function",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform the five-times sit-to-stand (5×STS) and the 30-second chair stand, use the age norms and cut-offs and decide when to use each test.",
+   "ur": "End tak aap five-times sit-to-stand (5×STS) aur 30-second chair stand karenge, umar ke norms aur cut-offs use karenge aur tay karenge ke har test kab use karein."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "5×STS: five full stands as fast as possible, over 15 s predicts recurrent falls (norm about 11 s at 60–69, 13 s in the 70s, 15 s in the 80s).",
+   "30-second chair stand counts full stands: below-age-norm scores (for example under 12 in men and 10 in women at 70–74) indicate falls risk.",
+   "Standardise the chair and rules (arms folded, full stands), accept floor and ceiling effects and use the results to shape leg-strength training."
+  ],
+  "keywords": "Sit-to-Stand Tests — 5×STS and the 30-Second Chair Stand sit-to-stand-tests Skills · Balance & Function 5×STS: five full stands as fast as possible, over 15 s predicts recurrent falls (norm about 11 s at 60–69, 13 s in the 70s, 15 s in the 80s). 30-second chair stand counts full stands: below-age-norm scores (for example under 12 in men and 10 in women at 70–74) indicate falls risk. Standardise the chair and rules (arms folded, full stands), accept floor and ceiling effects and use the results to shape leg-strength training. 5×STS cut-off for recurrent falls? What is the 30-second chair stand? Standard chair height for the tests? What do you do when the hands are used to push up?",
   "next": null
  },
  {

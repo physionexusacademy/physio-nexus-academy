@@ -19,6 +19,7 @@ import { recommendPathSlug, teacherPaths } from "../src/lib/teacher/paths.ts";
 import type { BiText, TeacherGoal, TeacherStage } from "../src/lib/teacher/types.ts";
 import { SCENES } from "../src/lib/skills/scenes.ts";
 import { DEMO3D } from "../src/lib/skills/demo3d.ts";
+import { LESSONS_FOR_SKILL } from "../src/lib/skills/ur/lesson-links.ts";
 
 const root = process.cwd();
 const failures: string[] = [];
@@ -368,6 +369,10 @@ assert.ok(!store.has("pna-teacher-session-v1:convex-concave-rule"), "repair clea
 assert.deepEqual(Object.keys(JSON.parse(store.get("pna-teacher-progress-v1") ?? "{}").lessons), ["b"], "repair keeps valid lessons");
 
 /* ---------- report ---------- */
+
+for (const [skill, links] of Object.entries(LESSONS_FOR_SKILL)) {
+  for (const link of links) check(lessonSlugs.has(link.slug), `skills-lab link: ${skill} points to unknown lesson ${link.slug}`);
+}
 
 if (failures.length) {
   console.error(`PNA Teacher validation failed (${failures.length}):`);
