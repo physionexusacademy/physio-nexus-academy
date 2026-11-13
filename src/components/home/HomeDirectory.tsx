@@ -23,6 +23,7 @@ import { whatsappLink } from "@/lib/site-config";
  * small links. Server-rendered (no JavaScript needed).
  */
 const patientActions = [
+  { href: "/rehabverse", label: "Guided 3D home rehab", note: "RehabVerse — a programme made for you", icon: PersonStanding },
   { href: "/appointment", label: "Book an appointment", note: "Clinic or online", icon: CalendarCheck },
   { href: "/home-visit", label: "Physiotherapy at home", note: "A physio visits you", icon: House },
   { href: "/symptom-checker", label: "Check my symptoms", note: "Free, 2 minutes", icon: Stethoscope },

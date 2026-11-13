@@ -10,6 +10,7 @@ import path from "node:path";
 import { REGIONS, LEVELS, type Bi, type ExerciseDef, type Region } from "../src/lib/rehabverse/types.ts";
 import { SOURCE, serializeRehabverseData } from "../src/lib/rehabverse/library/source.ts";
 import { REFERENCES } from "../src/lib/rehabverse/references.ts";
+import { TEMPLATES } from "../src/lib/rehabverse/templates.ts";
 import { buildCycle, maxAngle } from "../src/lib/rehabverse/motion.ts";
 
 const failures: string[] = [];
@@ -120,6 +121,21 @@ for (const e of all) {
   m.glow?.bones.forEach(checkBone);
   m.arrows?.forEach((a) => checkBone(a.bone));
   if (m.anchor && typeof m.anchor === "object" && m.anchor.bone) checkBone(m.anchor.bone);
+}
+
+// Starter programmes only use exercises that exist, with sensible doses.
+const ids = new Set(all.map((e) => e.id));
+for (const t of TEMPLATES) {
+  if (t.days.length < 3 || t.days.length > 8) fail(`template ${t.id}`, "needs 3-8 days");
+  if (!t.title || !t.goal) fail(`template ${t.id}`, "title and goal needed");
+  t.days.forEach((d, i) => {
+    if (d.exercises.length < 2 || d.exercises.length > 6) fail(`template ${t.id} day ${i + 1}`, "needs 2-6 exercises");
+    for (const line of d.exercises) {
+      if (!ids.has(line.id)) fail(`template ${t.id} day ${i + 1}`, `unknown exercise ${line.id}`);
+      if (line.sets !== undefined && (line.sets < 1 || line.sets > 5)) fail(`template ${t.id} day ${i + 1}`, `${line.id}: sets out of range`);
+      if (line.reps !== undefined && (line.reps < 1 || line.reps > 30)) fail(`template ${t.id} day ${i + 1}`, `${line.id}: reps out of range`);
+    }
+  });
 }
 
 // The static files the site serves must match the reviewed source exactly.

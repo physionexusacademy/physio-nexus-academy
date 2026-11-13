@@ -57,8 +57,8 @@ function checkPassword(password, stored) {
   return crypto.timingSafeEqual(crypto.scryptSync(password, salt, 32), Buffer.from(hash, "hex"));
 }
 const publicUser = (u) => ({
-  id: u.id, aud: "authenticated", role: "authenticated", email: u.email, email_confirmed_at: u.created_at, phone: "",
-  confirmed_at: u.created_at, last_sign_in_at: new Date().toISOString(), app_metadata: { provider: "email", providers: ["email"] },
+  id: u.id, aud: "authenticated", role: "authenticated", email: u.email, email_confirmed_at: unconfirmed.has(u.id) ? null : u.created_at, phone: "",
+  confirmed_at: unconfirmed.has(u.id) ? null : u.created_at, last_sign_in_at: new Date().toISOString(), app_metadata: { provider: "email", providers: ["email"] },
   user_metadata: u.raw_user_meta_data ?? {}, identities: [], created_at: u.created_at, updated_at: u.created_at, is_anonymous: false,
 });
 function session(u) {
@@ -70,6 +70,19 @@ function session(u) {
   };
 }
 const normaliseEmail = (e) => String(e ?? "").trim().toLowerCase();
+
+/* E-mail flows. REHAB_LOCAL_CONFIRM=1 turns on "confirm your email" (new users cannot sign in until the code is used),
+   like a project with e-mail confirmation enabled. Codes are one-time, kept in memory, and readable in tests via /__dev/last-code. */
+const CONFIRM = process.env.REHAB_LOCAL_CONFIRM === "1";
+const unconfirmed = new Set();
+const codes = new Map();
+const lastCode = new Map();
+const issueCode = (userId, email) => {
+  const code = crypto.randomBytes(12).toString("hex");
+  codes.set(code, userId);
+  lastCode.set(email, code);
+  return code;
+};
 
 /* ----------------------------- seed the staff account ----------------------------- */
 {
@@ -123,13 +136,47 @@ const server = http.createServer(async (req, res) => {
       const email = normaliseEmail(body.email);
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return authError(res, 422, "validation_failed", "Unable to validate email address: invalid format");
       if (String(body.password ?? "").length < 8) return authError(res, 422, "weak_password", "Password should be at least 8 characters.");
-      const exists = await db.query("select 1 from auth.users where email = $1", [email]);
-      if (exists.rows.length) return authError(res, 422, "user_already_exists", "User already registered");
+      const exists = await db.query("select * from auth.users where email = $1", [email]);
+      if (exists.rows.length) {
+        // With e-mail confirmation on, GoTrue hides that the address is taken: a user with no identities comes back.
+        if (CONFIRM) return send(res, 200, { ...publicUser(exists.rows[0]), identities: [] });
+        return authError(res, 422, "user_already_exists", "User already registered");
+      }
       const { rows } = await db.query(
         "insert into auth.users (email, encrypted_password, raw_user_meta_data) values ($1, $2, $3::jsonb) returning *",
         [email, hashPassword(String(body.password)), JSON.stringify(body.data ?? {})],
       );
+      if (CONFIRM) {
+        unconfirmed.add(rows[0].id);
+        issueCode(rows[0].id, email);
+        return send(res, 200, { ...publicUser(rows[0]), identities: [{ identity_id: rows[0].id, provider: "email" }] });
+      }
       return send(res, 200, session(rows[0]));
+    }
+    if (url.pathname === "/auth/v1/recover" && req.method === "POST") {
+      const body = await readJson(req);
+      const { rows } = await db.query("select id from auth.users where email = $1", [normaliseEmail(body.email)]);
+      if (rows.length) issueCode(rows[0].id, normaliseEmail(body.email));
+      return send(res, 200, {});
+    }
+    if (url.pathname === "/auth/v1/resend" && req.method === "POST") {
+      const body = await readJson(req);
+      const { rows } = await db.query("select id from auth.users where email = $1", [normaliseEmail(body.email)]);
+      if (rows.length && unconfirmed.has(rows[0].id)) issueCode(rows[0].id, normaliseEmail(body.email));
+      return send(res, 200, {});
+    }
+    if (url.pathname === "/auth/v1/user" && req.method === "PUT") {
+      const claims = bearerClaims(req);
+      if (!claims) return authError(res, 401, "bad_jwt", "invalid JWT: unable to parse or verify signature");
+      const body = await readJson(req);
+      const { rows } = await db.query("select * from auth.users where id = $1", [claims.sub]);
+      if (!rows.length) return authError(res, 403, "user_not_found", "User from sub claim in JWT does not exist");
+      if (body.password !== undefined) {
+        if (String(body.password).length < 8) return authError(res, 422, "weak_password", "Password should be at least 8 characters.");
+        if (checkPassword(String(body.password), rows[0].encrypted_password)) return authError(res, 422, "same_password", "New password should be different from the old password.");
+        await db.query("update auth.users set encrypted_password = $1 where id = $2", [hashPassword(String(body.password)), claims.sub]);
+      }
+      return send(res, 200, publicUser(rows[0]));
     }
     if (url.pathname === "/auth/v1/token" && req.method === "POST") {
       const body = await readJson(req);
@@ -139,6 +186,15 @@ const server = http.createServer(async (req, res) => {
         if (!rows.length || !checkPassword(String(body.password ?? ""), rows[0].encrypted_password)) {
           return authError(res, 400, "invalid_credentials", "Invalid login credentials");
         }
+        if (unconfirmed.has(rows[0].id)) return authError(res, 400, "email_not_confirmed", "Email not confirmed");
+        return send(res, 200, session(rows[0]));
+      }
+      if (grant === "pkce") {
+        const userId = codes.get(String(body.auth_code ?? ""));
+        if (!userId) return authError(res, 400, "flow_state_not_found", "invalid flow state, no valid flow state found");
+        codes.delete(String(body.auth_code));
+        unconfirmed.delete(userId);
+        const { rows } = await db.query("select * from auth.users where id = $1", [userId]);
         return send(res, 200, session(rows[0]));
       }
       if (grant === "refresh_token") {
@@ -179,6 +235,9 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    if (url.pathname === "/__dev/last-code" && process.env.REHAB_DEV_SQL === "1") {
+      return send(res, 200, { code: lastCode.get(normaliseEmail(url.searchParams.get("email"))) ?? null });
+    }
     // Test-only: run SQL as the database owner (to age timestamps in end-to-end tests).
     if (url.pathname === "/__dev/sql" && req.method === "POST" && process.env.REHAB_DEV_SQL === "1") {
       const body = await readJson(req);

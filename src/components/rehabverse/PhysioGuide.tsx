@@ -10,7 +10,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, Stethoscope, Volume2, VolumeX } from "lucide-react";
+import { ChevronLeft, ChevronRight, Monitor, MonitorOff, Pause, Play, RotateCcw, Stethoscope, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Pose } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
 import { P, type Parts } from "@/lib/virtual-patient/parts";
@@ -141,6 +141,23 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
         setStatus("text");
       });
   }, []);
+
+  /** Text-only mode for slow phones or low battery: remembered on this device. */
+  const setLite = (lite: boolean) => {
+    try {
+      if (lite) window.localStorage.setItem("pna-rv-no3d", "1");
+      else window.localStorage.removeItem("pna-rv-no3d");
+    } catch {
+      // private mode: the choice just is not remembered
+    }
+    if (lite) {
+      releaseRoom(ownerRef.current);
+      roomRef.current = null;
+      setStatus("text");
+    } else {
+      activate();
+    }
+  };
 
   ownerRef.current.lost = () => {
     roomRef.current = null;
@@ -303,12 +320,15 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
           <span className="ml-1 flex items-center gap-1" aria-hidden="true">
             {active.beats.map((_, i) => <span key={i} className={"h-1.5 rounded-full transition-all " + (i === index ? "w-5 bg-teal-500" : "w-1.5 bg-slate-300")} />)}
           </span>
+          <button type="button" className={"d3-btn " + (lang === "en" ? "ml-auto" : "ml-2")} onClick={() => setLite(status !== "text")} aria-label={status === "text" ? "Turn the 3D guide on" : "Switch to text only"} title={status === "text" ? "Turn the 3D guide on" : "Text only (lighter on your phone)"}>
+            {status === "text" ? <Monitor className="h-4 w-4" aria-hidden="true" /> : <MonitorOff className="h-4 w-4" aria-hidden="true" />}
+          </button>
           {lang === "en" ? (
-            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English)">
+            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English)">
               {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
             </button>
           ) : (
-            <span className="ml-auto text-[11px] font-semibold text-slate-500">{lang === "ru" ? "Awaaz sirf English mein; Roman Urdu subtitles ke saath." : ""}</span>
+            <span className="ml-1 text-[11px] font-semibold text-slate-500">{lang === "ru" ? "Awaaz sirf English mein; Roman Urdu subtitles ke saath." : ""}</span>
           )}
         </div>
         {topics.length ? (

@@ -2,6 +2,7 @@
 
 import { RehabError, rpc } from "@/lib/rehabverse/api";
 import type { PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
+import { emailPatient, type PatientEmailKind } from "@/lib/rehabverse/notify";
 
 /**
  * Clinician actions. The database functions refuse anyone who is not owner/admin, so these are safe
@@ -25,26 +26,40 @@ export async function savePlanAction(assessmentId: string | null, programmeId: s
   } catch (e) { return fail(e); }
 }
 
-export async function programmeAction(programmeId: string, action: "approve" | "pause" | "resume" | "discontinue" | "complete", reason?: string): Promise<Result> {
+const PROGRAMME_EMAIL: Partial<Record<"approve" | "pause" | "resume" | "discontinue" | "complete", PatientEmailKind>> = {
+  approve: "programme_ready", pause: "paused", resume: "day_opened", discontinue: "stopped", complete: "completed",
+};
+
+export async function programmeAction(patientId: string, programmeId: string, action: "approve" | "pause" | "resume" | "discontinue" | "complete", reason?: string): Promise<Result> {
   try {
     await rpc("rehab_admin_programme_action", { p_programme_id: programmeId, p_action: action, p_reason: reason ?? null });
+    const kind = PROGRAMME_EMAIL[action];
+    if (kind) await emailPatient(patientId, kind);
     return { ok: true };
   } catch (e) { return fail(e); }
 }
 
-export async function reviewSessionAction(sessionId: string, decision: Exclude<ReviewDecision, "auto_continue">, notes: string, patientMessage: string, repeatCurrent: boolean, suggestion: unknown): Promise<Result> {
+const REVIEW_EMAIL: Partial<Record<Exclude<ReviewDecision, "auto_continue">, PatientEmailKind>> = {
+  progress: "next_day_ready", maintain: "next_day_ready", regress: "next_day_ready", modify: "next_day_ready",
+  reassess: "paused", pause: "paused", discontinue: "stopped",
+};
+
+export async function reviewSessionAction(patientId: string, sessionId: string, decision: Exclude<ReviewDecision, "auto_continue">, notes: string, patientMessage: string, repeatCurrent: boolean, suggestion: unknown): Promise<Result> {
   try {
     await rpc("rehab_admin_review_session", {
       p_session_id: sessionId, p_decision: decision, p_notes: notes || null, p_patient_message: patientMessage || null,
       p_repeat_current: repeatCurrent, p_suggestion: suggestion ?? null,
     });
+    const kind = REVIEW_EMAIL[decision];
+    if (kind) await emailPatient(patientId, kind);
     return { ok: true };
   } catch (e) { return fail(e); }
 }
 
-export async function overrideUnlockAction(sessionId: string, reason: string): Promise<Result> {
+export async function overrideUnlockAction(patientId: string, sessionId: string, reason: string): Promise<Result> {
   try {
     await rpc("rehab_admin_override_unlock", { p_session_id: sessionId, p_reason: reason });
+    await emailPatient(patientId, "day_opened");
     return { ok: true };
   } catch (e) { return fail(e); }
 }

@@ -12,6 +12,7 @@ import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { MeetPnaTeacher } from "@/components/home/MeetPnaTeacher";
 import { HomeDirectory } from "@/components/home/HomeDirectory";
 import { HomeBooks } from "@/components/home/HomeBooks";
+import { HomeRehabVerse } from "@/components/home/HomeRehabVerse";
 import { getLatestEpisode, stupidInternEpisodes } from "@/lib/stupid-intern-diaries";
 import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
@@ -168,6 +169,8 @@ export default async function HomePage() {
       <LobbyHero atlasPublished={atlasPublished} conditionCount={mskConditionIndex.length} />
 
       <HomeDirectory />
+
+      <HomeRehabVerse />
 
       <HomeBooks />
 

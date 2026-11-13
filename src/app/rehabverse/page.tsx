@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, BellRing, ClipboardCheck, Lock, ShieldCheck, Stethoscope, TrendingUp, UserCheck, Video } from "lucide-react";
+import { ArrowRight, BellRing, Lock, ShieldCheck, Stethoscope, TrendingUp, UserCheck, UserPlus, Video } from "lucide-react";
 import { GuideStage } from "@/components/rehabverse/GuideStage";
 import { T } from "@/components/rehabverse/useLang";
 import { GUIDE } from "@/lib/rehabverse/guide";
 
 const STEPS = [
-  { icon: ClipboardCheck, en: ["Tell us what hurts", "A short, friendly questionnaire — your area, symptoms, pain, and a few safety questions."], ru: ["Apni takleef bataein", "Chhota aur aasaan questionnaire — kahan takleef hai, kya alamaat hain, dard kitna hai, aur kuch safety sawal."] },
+  { icon: UserPlus, en: ["Create your account", "Your name, age and email — about one minute. Then a short, friendly questionnaire: your area, symptoms, pain, and a few safety questions."], ru: ["Account banayein", "Naam, umar aur email — lagbhag ek minute. Phir chhota aur aasaan questionnaire: kahan takleef hai, kya alamaat hain, dard kitna hai, aur kuch safety sawal."] },
   { icon: UserCheck, en: ["A physiotherapist reviews it", "A real physiotherapist reads your answers and builds your own programme. Nothing is automatic."], ru: ["Physiotherapist review karte hain", "Ek real physiotherapist aap ke jawabat parhte hain aur aap ka apna programme banate hain. Kuch bhi automatic nahi."] },
   { icon: Video, en: ["Learn every exercise in 3D", "Your virtual guide performs each movement slowly: start position, movement, return, common mistakes, breathing."], ru: ["Har exercise 3D mein seekhein", "Aap ka virtual guide har harkat aahista karke dikhata hai: start position, harkat, wapsi, aam ghaltiyan, saans."] },
   { icon: TrendingUp, en: ["Give daily feedback", "Pain before, during and after, how hard it felt, and how you recover later and the next day."], ru: ["Roz feedback dein", "Dard pehle, dauran aur baad mein, kitna mushkil laga, aur baad mein aur agle din recovery kaisi rahi."] },
@@ -19,9 +19,26 @@ const SAFE = [
   { icon: BellRing, en: "If you report a concerning symptom, your programme pauses and your physiotherapist is alerted.", ru: "Agar aap koi pareshan-kun alamat batate hain to programme ruk jata hai aur physiotherapist ko alert chala jata hai." },
 ];
 
+
+const FAQ = [
+  { en: ["Do I need an account?", "To get your own programme, yes — it keeps your answers and progress private and lets your physiotherapist reach you. Browsing the 3D exercise library needs no account."], ru: ["Kya account zaroori hai?", "Apna programme lene ke liye haan — ye aap ke jawabat aur progress ko private rakhta hai aur physiotherapist aap tak pohanch sakte hain. 3D exercise library dekhne ke liye account zaroori nahi."] },
+  { en: ["Who builds my programme?", "A real physiotherapist at Physio Nexus Academy reads your answers and builds, approves and can change your programme. The 3D guide only shows you how to do the exercises."], ru: ["Mera programme kaun banata hai?", "Physio Nexus Academy ke ek real physiotherapist aap ke jawabat parhte hain aur programme banate, approve karte aur badal sakte hain. 3D guide sirf exercises karke dikhata hai."] },
+  { en: ["What if my answers show a warning sign?", "Then no exercise programme is started. You will be asked to get a proper clinical assessment first — a ‘yes’ is not a diagnosis, it is a safety step."], ru: ["Agar mere jawab mein khatre ki alamat aaye?", "Tab koi exercise programme shuru nahi hota. Aap se pehle proper clinical assessment karwane ko kaha jata hai — ‘haan’ diagnosis nahi, safety ka qadam hai."] },
+  { en: ["Why is the next day locked?", "Each day builds on how your body responded to the one before. The next day opens after you give feedback and your physiotherapist approves it."], ru: ["Agla din locked kyun hai?", "Har din pichle din par banta hai ke aap ke jism ne kaisa response diya. Agla din feedback dene aur physiotherapist ki approval ke baad khulta hai."] },
+  { en: ["What if I feel pain or unwell?", "A mild ache can be normal, but sharp or worsening pain is not — stop and report it in your feedback. For chest pain, trouble breathing, sudden weakness or numbness, get emergency help straight away."], ru: ["Dard ya tabiyat kharab ho to?", "Halka dard aam ho sakta hai, lekin tez ya barhta dard nahi — ruk jayein aur feedback mein batayein. Seene mein dard, saans mein mushkil, achanak kamzori ya sunn-pan ho to foran emergency madad lein."] },
+  { en: ["Which languages and devices work?", "English and Roman Urdu, on phone or computer. The optional spoken voice is English only; Roman Urdu always has subtitles."], ru: ["Kaun si zubaan aur device?", "English aur Roman Urdu, phone ya computer par. Awaaz (optional) sirf English mein hai; Roman Urdu ke saath subtitles hamesha hote hain."] },
+  { en: ["Is my information private?", "Only you and your physiotherapist can see your records. Alert emails never contain your health details."], ru: ["Kya meri maloomat private hain?", "Sirf aap aur aap ke physiotherapist aap ka record dekh sakte hain. Alert emails mein aap ki sehat ki tafseel kabhi nahi hoti."] },
+];
+
 export default function RehabVerseHome() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.en[0], acceptedAnswer: { "@type": "Answer", text: f.en[1] } })),
+  };
   return (
     <div className="container-content pb-20 pt-8 sm:pt-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <section className="grid items-center gap-8 lg:grid-cols-[1.02fr_1fr] lg:gap-12">
         <div className="rv-fade-up">
           <p className="rv-h">PNA RehabVerse</p>
@@ -34,12 +51,16 @@ export default function RehabVerseHome() {
               ru="Apni takleef bataein, physiotherapist ka approved programme hasil karein aur din ba din follow karein. Har exercise 3D mein dikhai jati hai, aur har din tabhi khulta hai jab safe ho."
             />
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link href="/rehabverse/register" className="rv-btn rv-btn-primary">
-              <T en="Start my assessment" ru="Mera assessment shuru karein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="Create your account" ru="Apna account banayein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            <Link href="/rehabverse/login" className="rv-btn rv-btn-ghost"><T en="I already have an account" ru="Mera account pehle se hai" /></Link>
-            <Link href="/rehabverse/library" className="rv-btn rv-btn-ghost"><T en="Browse the 3D exercise library" ru="3D exercise library dekhein" /></Link>
+            <Link href="/rehabverse/login" className="rv-btn rv-btn-ghost"><T en="Sign in" ru="Sign in" /></Link>
+            <Link href="/rehabverse/library" className="text-[14px] font-bold text-teal-700 underline-offset-2 hover:underline"><T en="Browse the 3D exercise library" ru="3D exercise library dekhein" /></Link>
+          </div>
+          <div className="mt-5 max-w-xl rounded-2xl border border-teal-200/70 bg-white/70 p-3.5 text-[13px] leading-5 text-slate-700" aria-label="Getting started">
+            <b className="text-navy-800"><T en="New here? It takes three steps:" ru="Naye hain? Sirf teen qadam:" /></b>{" "}
+            <T en="① Create an account (1 minute) → ② answer a few questions (5 minutes) → ③ your physiotherapist builds and approves your programme." ru="① Account banayein (1 minute) → ② kuch sawalon ke jawab dein (5 minute) → ③ aap ke physiotherapist aap ka programme banate aur approve karte hain." />
           </div>
           <ul className="mt-6 flex flex-wrap gap-2">
             {[["English + Roman Urdu", "English + Roman Urdu"], ["Phone friendly", "Phone par aasaan"], ["Physiotherapist approved", "Physiotherapist approved"], ["Private", "Private"]].map(([en, ru]) => (
@@ -84,6 +105,29 @@ export default function RehabVerseHome() {
             </li>
           ))}
         </ul>
+      </section>
+
+
+      <section className="mt-14" aria-labelledby="faq">
+        <p className="rv-h"><T en="Questions" ru="Aam sawal" /></p>
+        <h2 id="faq" className="mt-1 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Before you start" ru="Shuru karne se pehle" /></h2>
+        <div className="mt-5 grid gap-2.5 lg:grid-cols-2">
+          {FAQ.map((f) => (
+            <details key={f.en[0]} className="rv-glass group p-4">
+              <summary className="cursor-pointer list-none text-[14.5px] font-bold text-navy-800 marker:hidden"><T en={f.en[0]} ru={f.ru[0]} /></summary>
+              <p className="mt-2 text-[13.5px] leading-6 text-slate-700"><T en={f.en[1]} ru={f.ru[1]} /></p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-14 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1f3d] via-[#0f4a63] to-[#0db3aa] p-6 text-white sm:p-9" aria-labelledby="ready">
+        <h2 id="ready" className="font-heading text-2xl font-extrabold !text-white sm:text-3xl"><T en="Ready to start your guided rehab?" ru="Apni guided rehab shuru karne ke liye tayyar?" /></h2>
+        <p className="mt-2 max-w-2xl text-[15px] leading-7 text-white/85"><T en="Create your account, answer a few questions, and your physiotherapist takes it from there." ru="Account banayein, kuch sawalon ke jawab dein, baaqi kaam aap ke physiotherapist sambhal lete hain." /></p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link href="/rehabverse/register" className="rv-btn !bg-white !text-[#0a1f3d]"><UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="Create your account" ru="Apna account banayein" /></Link>
+          <Link href="/rehabverse/login" className="rv-btn !border !border-white/50 !text-white"><T en="Sign in" ru="Sign in" /></Link>
+        </div>
       </section>
 
       <p className="mt-12 max-w-3xl text-xs leading-5 text-slate-500">

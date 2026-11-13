@@ -164,5 +164,7 @@ export const config = {
     "/rehabverse/start",
     "/rehabverse/login",
     "/rehabverse/register",
+    "/rehabverse/forgot",
+    "/rehabverse/reset",
   ],
 };

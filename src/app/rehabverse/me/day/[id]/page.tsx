@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DaySession } from "@/components/rehabverse/DaySession";
+import { DaySessionLoader } from "@/components/rehabverse/DaySessionLoader";
 import { RehabError, getSession } from "@/lib/rehabverse/api";
 import { requirePatient } from "@/lib/rehabverse/guard";
 
@@ -16,7 +16,7 @@ export default async function DayPage({ params }: { params: Promise<{ id: string
   try {
     // The database only returns a day that belongs to the signed-in patient.
     const data = await getSession(id);
-    return <DaySession data={data} />;
+    return <DaySessionLoader data={data} />;
   } catch (error) {
     if (error instanceof RehabError) notFound();
     throw error;

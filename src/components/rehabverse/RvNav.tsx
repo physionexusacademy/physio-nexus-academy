@@ -29,7 +29,11 @@ export function RvNav() {
             </Link>
           );
         })}
-        <LangToggle className="ml-auto" />
+        <span className="ml-auto flex items-center gap-1.5">
+          <Link href="/rehabverse/login" prefetch={false} className="hidden rounded-full px-3 py-1.5 text-[13px] font-bold text-slate-600 hover:bg-slate-100 sm:inline-flex"><T en="Sign in" ru="Sign in" /></Link>
+          <Link href="/rehabverse/register" prefetch={false} className="inline-flex items-center rounded-full bg-teal-600 px-3.5 py-1.5 text-[13px] font-extrabold text-white shadow-sm hover:bg-teal-700"><T en="Create account" ru="Account banayein" /></Link>
+          <LangToggle />
+        </span>
       </div>
     </nav>
   );

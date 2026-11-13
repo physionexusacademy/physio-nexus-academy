@@ -25,7 +25,7 @@ const TONE: Record<Suggestion, string> = {
 };
 const dt = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
-export function SessionReview({ bundle, previous, programmeStatus }: { bundle: AdminSessionBundle; previous: AdminSessionBundle[]; programmeStatus: ProgrammeStatus }) {
+export function SessionReview({ bundle, previous, programmeStatus, patientId }: { bundle: AdminSessionBundle; previous: AdminSessionBundle[]; programmeStatus: ProgrammeStatus; patientId: string }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const { session, feedback, exercises, completions, observations, reviews } = bundle;
@@ -44,7 +44,7 @@ export function SessionReview({ bundle, previous, programmeStatus }: { bundle: A
 
   const submit = () =>
     start(async () => {
-      const r = await reviewSessionAction(session.id, decision, notes, message, REPEATING.includes(decision) && repeat, { suggestion: support.suggestion, fired: support.rules.filter((x) => x.fired).map((x) => x.id), provisional: support.provisional.length > 0 });
+      const r = await reviewSessionAction(patientId, session.id, decision, notes, message, REPEATING.includes(decision) && repeat, { suggestion: support.suggestion, fired: support.rules.filter((x) => x.fired).map((x) => x.id), provisional: support.provisional.length > 0 });
       if (!r.ok) return setResult({ kind: "error", text: r.error === "programme_not_active_resume_first" ? "Resume the programme before continuing." : `Could not save (${r.error}).` });
       setResult({ kind: "ok", text: "Decision saved." });
       router.refresh();
@@ -165,7 +165,7 @@ export function SessionReview({ bundle, previous, programmeStatus }: { bundle: A
             <div className="flex flex-wrap items-center gap-2 rounded-xl bg-slate-50 p-2.5">
               <input className="rv-input !min-h-[38px] min-w-[14rem] flex-1 !text-[13px]" placeholder="Reason for opening this day early (required, audited)" value={override} onChange={(e) => setOverride(e.target.value)} aria-label="Override reason" />
               <button type="button" className="rv-btn rv-btn-ghost !min-h-[38px] !text-[13px]" disabled={pending || override.trim().length < 10 || programmeStatus !== "active"} onClick={() => start(async () => {
-                const r = await overrideUnlockAction(session.id, override);
+                const r = await overrideUnlockAction(patientId, session.id, override);
                 setResult(r.ok ? { kind: "ok", text: "Day opened." } : { kind: "error", text: `Could not open (${r.error}).` });
                 if (r.ok) { setOverride(""); router.refresh(); }
               })}><Unlock className="h-4 w-4" aria-hidden="true" /> Open this day now (override)</button>

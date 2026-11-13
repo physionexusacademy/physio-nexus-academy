@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PatientDashboard } from "@/components/rehabverse/PatientDashboard";
+import { PatientDashboardLoader } from "@/components/rehabverse/PatientDashboardLoader";
 import { getHistory, getNotifications } from "@/lib/rehabverse/api";
 import { requirePatient } from "@/lib/rehabverse/guard";
 
@@ -12,5 +12,5 @@ export default async function MyProgrammePage() {
     overview.programme ? getHistory().catch(() => null) : Promise.resolve(null),
     getNotifications().catch(() => []),
   ]);
-  return <PatientDashboard overview={overview} history={history} notifications={notifications} />;
+  return <PatientDashboardLoader overview={overview} history={history} notifications={notifications} />;
 }

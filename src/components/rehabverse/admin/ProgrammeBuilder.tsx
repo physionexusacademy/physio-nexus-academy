@@ -6,6 +6,8 @@ import { ArrowDown, ArrowUp, CalendarPlus, Copy, Lock, Plus, Save, Trash2 } from
 import { programmeAction, savePlanAction } from "@/app/admin/(dashboard)/rehabverse/actions";
 import type { AdminProgramme, FollowupPoint, PlanExercise, PlanPayload, UnlockMode } from "@/lib/rehabverse/api-types";
 import type { ExerciseDef, Region } from "@/lib/rehabverse/types";
+import { loadAllExercises } from "@/lib/rehabverse/library";
+import { TEMPLATES } from "@/lib/rehabverse/templates";
 import { ExercisePicker } from "./ExercisePicker";
 
 type Line = PlanExercise & { key: string };
@@ -41,7 +43,7 @@ function fromProgramme(p: AdminProgramme): Day[] {
 
 const num = (v: string): number | undefined => (v === "" ? undefined : Math.max(0, Math.round(Number(v))));
 
-export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, canCreate, patientName }: { assessmentId: string | null; programme?: AdminProgramme; assessmentRegions: string[]; canCreate: boolean; patientName: string }) {
+export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, canCreate, patientName, patientId }: { assessmentId: string | null; programme?: AdminProgramme; assessmentRegions: string[]; canCreate: boolean; patientName: string; patientId: string }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const p = programme?.programme;
@@ -57,6 +59,30 @@ export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, c
   const [reason, setReason] = useState("");
 
   const closed = p ? ["completed", "discontinued"].includes(p.status) : false;
+  const [templateId, setTemplateId] = useState("");
+  const [templateBusy, setTemplateBusy] = useState(false);
+  const canUseTemplate = !closed && (!p || p.status === "draft") && !days.some((d) => d.readonly);
+  const applyTemplate = async () => {
+    const t = TEMPLATES.find((x) => x.id === templateId);
+    if (!t) return;
+    if (days.some((d) => d.exercises.length) && !window.confirm("Replace the days you have so far with this starter programme?")) return;
+    setTemplateBusy(true);
+    try {
+      const library = new Map((await loadAllExercises()).map((e) => [e.id, e]));
+      setTitle(`${t.title} — ${patientName}`);
+      setGoal(t.goal);
+      setDays(t.days.map((d, i) => ({
+        key: uid(), day_number: i + 1, title: d.title, patient_note: d.note ?? "",
+        exercises: d.exercises.flatMap((line) => {
+          const e = library.get(line.id);
+          return e ? [{ ...lineFrom(e), sets: line.sets ?? e.dosage.sets, reps: line.reps ?? e.dosage.reps, hold_seconds: line.hold ?? e.dosage.holdSeconds, frequency: t.frequency }] : [];
+        }),
+      })));
+      setMessage({ kind: "ok", text: `Loaded “${t.title}” (${t.days.length} days). It is a starting point — review every exercise, dose and note before approving.` });
+    } finally {
+      setTemplateBusy(false);
+    }
+  };
   const initialRegion = assessmentRegions.map((r) => REGION_FOR[r]).find(Boolean);
 
   const patchDay = (key: string, patch: Partial<Day>) => setDays((ds) => ds.map((d) => (d.key === key ? { ...d, ...patch } : d)));
@@ -107,7 +133,7 @@ export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, c
   const act = (action: "approve" | "pause" | "resume" | "discontinue" | "complete") =>
     start(async () => {
       if (!p) return;
-      const r = await programmeAction(p.id, action, reason);
+      const r = await programmeAction(patientId, p.id, action, reason);
       if (!r.ok) return setMessage({ kind: "error", text: friendly(r.error) });
       setReason("");
       setMessage({ kind: "ok", text: `Programme ${action === "approve" ? "approved — Day 1 is open to the patient" : action + "d"}.` });
@@ -120,6 +146,19 @@ export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, c
 
   return (
     <div className="space-y-5">
+      {canUseTemplate ? (
+        <div className="rounded-2xl border border-teal-200 bg-teal-50/50 p-3.5">
+          <p className="text-[13px] font-extrabold text-navy-800">Start from a starter programme <span className="ml-1 rv-chip rv-chip-amber">draft for your review</span></p>
+          <p className="mt-0.5 text-[12.5px] leading-5 text-slate-600">Saves typing: pick one, then change anything. These are suggestions assembled from the 3D library — not a prescription.</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <select className="rv-input !min-h-[40px] min-w-[16rem] flex-1 !text-[13.5px]" value={templateId} onChange={(e) => setTemplateId(e.target.value)} aria-label="Starter programme">
+              <option value="">Choose a starter programme…</option>
+              {TEMPLATES.map((t) => <option key={t.id} value={t.id}>{t.title} — {t.summary}</option>)}
+            </select>
+            <button type="button" className="rv-btn rv-btn-ghost !min-h-[40px] !text-[13px]" disabled={!templateId || templateBusy} onClick={applyTemplate}>{templateBusy ? "Loading…" : "Use it"}</button>
+          </div>
+        </div>
+      ) : null}
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="sm:col-span-2"><label className="rv-label" htmlFor="pb-title">Programme title</label><input id="pb-title" className="rv-input" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} disabled={closed} /></div>
         <div className="sm:col-span-2"><label className="rv-label" htmlFor="pb-goal">Goal (shown to the patient)</label><input id="pb-goal" className="rv-input" value={goal} onChange={(e) => setGoal(e.target.value)} maxLength={300} placeholder="e.g. Return to comfortable walking and stairs" disabled={closed} /></div>

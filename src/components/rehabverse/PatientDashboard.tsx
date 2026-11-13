@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, CalendarClock, CheckCircle2, ClipboardList, Clock, HeartPulse, Lock, LogOut, PlayCircle, ShieldAlert, Sparkles, TrendingDown } from "lucide-react";
-import { logoutAction, markNotificationsReadAction } from "@/app/rehabverse/actions";
+import { Bell, CalendarClock, CheckCircle2, ClipboardList, Clock, Download, HeartPulse, Lock, LogOut, PlayCircle, ShieldAlert, Sparkles, TrendingDown, Trash2 } from "lucide-react";
+import { exportMyDataAction, logoutAction, markNotificationsReadAction, requestDeletionAction } from "@/app/rehabverse/actions";
 import type { History, Notification, Overview, OverviewSession, PatientSummary } from "@/lib/rehabverse/api-types";
 import { GUIDE, TOPIC_LOCKED, TOPIC_MISSED, type GuideBeat } from "@/lib/rehabverse/guide";
 import { INTAKE_REGIONS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
@@ -35,6 +35,7 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [unread, setUnread] = useState(overview.unread_notifications ?? 0);
+  const [dataNote, setDataNote] = useState<string | null>(null);
   const { patient, programme, sessions = [], assessments = [] } = overview;
   const firstName = patient.full_name.split(" ")[0];
   const now = Date.now();
@@ -120,9 +121,21 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
 
           {state === "new" ? (
             <section className="rv-glass p-5">
-              <p className="font-bold text-navy-800"><T en="Let us begin with a short assessment" ru="Chhote se assessment se shuru karte hain" /></p>
-              <p className="mt-1 text-[14px] leading-6 text-slate-700"><T en="It takes about 5 minutes. A physiotherapist reviews it and builds your programme." ru="Is mein lagbhag 5 minute lagte hain. Physiotherapist isay review kar ke aap ka programme banate hain." /></p>
-              <Link href="/rehabverse/start" className="rv-btn rv-btn-primary mt-3"><ClipboardList className="h-4 w-4" aria-hidden="true" /> <T en="Start my assessment" ru="Mera assessment shuru karein" /></Link>
+              <p className="font-bold text-navy-800"><T en="Welcome! You are 1 step in." ru="Khush aamdeed! Aap ek qadam aage hain." /></p>
+              <ol className="mt-3 space-y-2.5">
+                {[
+                  { done: true, en: ["Account created", "You are signed in."], ru: ["Account ban gaya", "Aap sign in hain."] },
+                  { done: false, now: true, en: ["Tell us what hurts", "A short assessment: your area, symptoms, pain and safety questions — about 5 minutes."], ru: ["Takleef bataein", "Chhota assessment: kahan takleef hai, alamaat, dard aur safety sawal — lagbhag 5 minute."] },
+                  { done: false, en: ["Your physiotherapist builds your programme", "They review your answers and approve a plan made for you."], ru: ["Physiotherapist aap ka programme banate hain", "Wo aap ke jawabat dekh kar aap ke liye plan approve karte hain."] },
+                  { done: false, en: ["Start Day 1", "3D demos for every exercise. Feedback opens the next day."], ru: ["Din 1 shuru karein", "Har exercise ka 3D demo. Feedback se agla din khulta hai."] },
+                ].map((st, i) => (
+                  <li key={i} className={"flex gap-3 " + (st.done || st.now ? "" : "opacity-60")}>
+                    <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-extrabold " + (st.done ? "bg-teal-500 text-white" : st.now ? "bg-[#0a1f3d] text-white" : "bg-slate-200 text-slate-500")}>{st.done ? <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> : i + 1}</span>
+                    <span><b className="block text-[14px] text-navy-800"><T en={st.en[0]} ru={st.ru[0]} /></b><span className="block text-[13px] leading-5 text-slate-600"><T en={st.en[1]} ru={st.ru[1]} /></span></span>
+                  </li>
+                ))}
+              </ol>
+              <Link href="/rehabverse/start" className="rv-btn rv-btn-primary mt-4"><ClipboardList className="h-4 w-4" aria-hidden="true" /> <T en="Start my assessment" ru="Mera assessment shuru karein" /></Link>
             </section>
           ) : null}
 
@@ -277,6 +290,32 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
                 ))}
               </ul>
             )}
+          </section>
+
+          <section className="rv-glass p-5" aria-labelledby="mydata">
+            <h2 id="mydata" className="font-heading text-base font-bold text-navy-800"><T en="Your data" ru="Aap ka data" /></h2>
+            <p className="mt-1 text-[13px] leading-5 text-slate-600"><T en="Your record is yours: download a copy any time, or ask the clinic to delete your account." ru="Aap ka record aap ka hai: kabhi bhi copy download karein, ya clinic se account delete karne ko kahein." /></p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button type="button" className="rv-btn rv-btn-ghost !min-h-[40px] !text-[13px]" disabled={pending} onClick={() => startTransition(async () => {
+                const r = await exportMyDataAction();
+                if (!r.ok) return setDataNote(lang === "ru" ? "Download nahi ho saka. Dobara koshish karein." : "Could not prepare the download. Please try again.");
+                const url = URL.createObjectURL(new Blob([r.json], { type: "application/json" }));
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = r.filename;
+                a.click();
+                URL.revokeObjectURL(url);
+                setDataNote(lang === "ru" ? "Aap ki copy download ho gayi." : "Your copy was downloaded.");
+              })}><Download className="h-4 w-4" aria-hidden="true" /> <T en="Download my data" ru="Mera data download karein" /></button>
+              <button type="button" className="rv-btn rv-btn-danger !min-h-[40px] !text-[13px]" disabled={pending} onClick={() => {
+                if (!window.confirm(lang === "ru" ? "Kya aap clinic se apna RehabVerse account aur record delete karne ko kehna chahte hain?" : "Ask the clinic to delete your RehabVerse account and records?")) return;
+                startTransition(async () => {
+                  const r = await requestDeletionAction();
+                  setDataNote(r.ok ? (lang === "ru" ? "Aap ki request clinic ko bhej di gayi. Wo aap se email par rabta karenge." : "Your request was sent to the clinic. They will contact you by email.") : (lang === "ru" ? "Request nahi bheji ja saki. Dobara koshish karein." : "Could not send the request. Please try again."));
+                });
+              }}><Trash2 className="h-4 w-4" aria-hidden="true" /> <T en="Ask to delete my account" ru="Account delete karne ko kahein" /></button>
+            </div>
+            {dataNote ? <p className="mt-2 text-[13px] font-semibold text-teal-800" role="status">{dataNote}</p> : null}
           </section>
 
           {!live && !openAssessment && state !== "new" ? (

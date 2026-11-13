@@ -43,7 +43,8 @@ async function newContext(browser, viewport = { width: 1280, height: 900 }, { no
   await context.addInitScript((flag) => { try { localStorage.setItem("pna-rv-lang", "en"); if (flag) localStorage.setItem("pna-rv-no3d", "1"); } catch { /* about:blank */ } }, no3d);
   const page = await context.newPage();
   page.setDefaultTimeout(60000);
-  page.on("pageerror", (e) => errors.push(String(e).slice(0, 200)));
+  // Chrome logs this harmless message when a cross-document view transition is replaced by a quick redirect (site-wide motion.css).
+  page.on("pageerror", (e) => { if (!/ViewTransition opt-in disabled/.test(String(e))) errors.push(String(e).slice(0, 200)); });
   return { context, page };
 }
 const errors = [];
@@ -58,7 +59,7 @@ async function register(page, who, age = 41) {
   await page.fill("#email", who.email);
   await page.fill("#password", who.password);
   await page.check("input[name=consent]");
-  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByRole("button", { name: "Create my account" }).click();
 }
 
 async function intake(page, { flags = [], region = "Lower back" } = {}) {
@@ -170,10 +171,32 @@ async function pickScale(page, group, n) {
   await shot(adm.page, "07-admin-programme-draft");
   // Patient cannot see a draft.
   await a.page.goto(`${BASE}/rehabverse/me`);
+  await a.page.getByText("Your assessment is being reviewed").waitFor();
   check("3f Draft programme is invisible to the patient", (await a.page.getByText("Start today's session").count()) === 0);
   await adm.page.getByRole("button", { name: /Approve & release Day 1/ }).click();
   await adm.page.getByText(/approved — Day 1 is open/).waitFor();
   check("3g Admin approves the programme (Day 1 released)", true);
+  await park(adm.page);
+
+  /* ───────────── 3h. Starter programme template (Patient C) ───────────── */
+  const C = { email: `patient.c.${stamp}@example.test`, password: "Patient-C-pass-2026", name: `Chitra Rao ${stamp}` };
+  const c = await newContext(browser);
+  await register(c.page, C, 47);
+  await c.page.waitForURL(/\/rehabverse\/start/);
+  await intake(c.page, { region: "Neck" });
+  await c.page.getByText("Thank you — your physiotherapist will review it.").waitFor();
+  await park(c.page);
+  await adm.page.goto(`${BASE}/admin/rehabverse`);
+  await adm.page.getByRole("link", { name: new RegExp(C.name) }).first().click();
+  await adm.page.getByText("Initial assessment").waitFor();
+  await adm.page.getByLabel("Starter programme").selectOption("neck-posture");
+  await adm.page.getByRole("button", { name: "Use it" }).click();
+  await adm.page.getByText(/Loaded “Neck stiffness and posture”/).waitFor();
+  const dayCount = await adm.page.locator('section[aria-label^="Day "]').count();
+  check("3h Clinician can start from a starter programme (4 days of real library exercises)", dayCount === 4 && (await adm.page.getByText("Chin tuck").count()) > 0, `days ${dayCount}`);
+  await adm.page.getByRole("button", { name: "Save as draft" }).click();
+  await adm.page.getByText(/Saved \(4 days\)/).waitFor();
+  check("3i The starter programme can be saved and edited like any other", true);
   await park(adm.page);
 
   /* ───────────── 4. Patient A: Day 1 only, 3D demos ───────────── */
@@ -281,6 +304,14 @@ async function pickScale(page, group, n) {
   await a.page.getByText("Your progress").waitFor();
   check("8c Progress charts and adherence are shown", (await a.page.locator("svg[role=img]").count()) >= 2);
   await shot(a.page, "13-dashboard-progress");
+  // Data rights: download a copy; ask for deletion.
+  const [download] = await Promise.all([a.page.waitForEvent("download"), a.page.getByRole("button", { name: "Download my data" }).click()]);
+  const exported = JSON.parse(require("fs").readFileSync(await download.path(), "utf8"));
+  check("8d Patient can download their own record (JSON)", exported.patient?.full_name === A.name && Array.isArray(exported.days) && exported.days.length >= 1 && !JSON.stringify(exported).includes(B.name));
+  a.page.once("dialog", (d) => d.accept());
+  await a.page.getByRole("button", { name: "Ask to delete my account" }).click();
+  await a.page.getByText(/request was sent to the clinic/).waitFor();
+  check("8e Patient can ask the clinic to delete their account", true);
 
   /* ───────────── 9. Isolation and access control ───────────── */
   const denied = await b.page.goto(`${BASE}/rehabverse/me/day/${day2}`);
