@@ -51,7 +51,7 @@ export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, c
   const [minHours, setMinHours] = useState(p?.min_hours_between_sessions ?? 0);
   const [autoPain, setAutoPain] = useState(p?.auto_unlock_max_pain ?? 5);
   const [schedule, setSchedule] = useState<FollowupPoint[]>(p?.errp_schedule ?? ["later_same_day", "24h"]);
-  const [days, setDays] = useState<Day[]>(programme ? fromProgramme(programme) : [{ key: uid(), day_number: 1, title: "Day 1 — Gentle start", patient_note: "", exercises: [] }]);
+  const [days, setDays] = useState<Day[]>(programme ? fromProgramme(programme) : [{ key: uid(), day_number: 1, title: "Gentle start", patient_note: "", exercises: [] }]);
   const [pickerFor, setPickerFor] = useState<string | null>(null);
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
   const [reason, setReason] = useState("");
@@ -154,11 +154,11 @@ export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, c
             <div className="flex flex-wrap items-start gap-2">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-navy-800 text-sm font-extrabold text-white">{d.day_number}</span>
               <div className="min-w-[10rem] flex-1">
-                <input className="rv-input !min-h-[40px] font-bold" value={d.title} onChange={(e) => patchDay(d.key, { title: e.target.value })} aria-label={`Day ${d.day_number} title`} disabled={!!d.readonly || closed} />
+                <input className="rv-input !min-h-[40px] font-bold" value={d.title} placeholder="Name this day, e.g. Gentle start" onChange={(e) => patchDay(d.key, { title: e.target.value })} aria-label={`Day ${d.day_number} title`} disabled={!!d.readonly || closed} />
               </div>
               {!d.readonly && !closed ? (
                 <div className="flex gap-1">
-                  <button type="button" className="rv-pill" title="Duplicate day" onClick={() => setDays((ds) => renumber([...ds.slice(0, di + 1), { ...d, key: uid(), id: undefined, title: d.title.replace(/^Day \d+/, "Day") + " (copy)", exercises: d.exercises.map((l) => ({ ...l, key: uid() })) }, ...ds.slice(di + 1)]))}><Copy className="h-3.5 w-3.5" /></button>
+                  <button type="button" className="rv-pill" title="Duplicate day" onClick={() => setDays((ds) => renumber([...ds.slice(0, di + 1), { ...d, key: uid(), id: undefined, title: d.title + " (copy)", exercises: d.exercises.map((l) => ({ ...l, key: uid() })) }, ...ds.slice(di + 1)]))}><Copy className="h-3.5 w-3.5" /></button>
                   <button type="button" className="rv-pill" title="Remove day" onClick={() => setDays((ds) => renumber(ds.filter((x) => x.key !== d.key)))} disabled={days.length === 1}><Trash2 className="h-3.5 w-3.5" /></button>
                 </div>
               ) : null}
@@ -200,7 +200,7 @@ export function ProgrammeBuilder({ assessmentId, programme, assessmentRegions, c
           </section>
         ))}
         {!closed ? (
-          <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setDays((ds) => [...ds, { key: uid(), day_number: ds.length + 1, title: `Day ${ds.length + 1}`, patient_note: "", exercises: [] }])}><CalendarPlus className="h-4 w-4" aria-hidden="true" /> Add a day</button>
+          <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setDays((ds) => [...ds, { key: uid(), day_number: ds.length + 1, title: "", patient_note: "", exercises: [] }])}><CalendarPlus className="h-4 w-4" aria-hidden="true" /> Add a day</button>
         ) : null}
       </div>
 

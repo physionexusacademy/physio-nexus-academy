@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AdminPatientRecord } from "@/components/rehabverse/admin/AdminPatientRecord";
+import { AdminPatientRecordLoader } from "@/components/rehabverse/admin/AdminPatientRecordLoader";
 import { RehabError, getPatient } from "@/lib/rehabverse/api";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 
@@ -17,7 +17,7 @@ export default async function RehabVersePatient({ params }: { params: Promise<{ 
     return (
       <div className="space-y-3">
         <Link href="/admin/rehabverse" className="text-[13px] font-bold text-teal-700 hover:underline">← Inbox</Link>
-        <AdminPatientRecord data={data} />
+        <AdminPatientRecordLoader data={data} />
       </div>
     );
   } catch (error) {

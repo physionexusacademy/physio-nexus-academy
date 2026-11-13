@@ -37,21 +37,25 @@ export function dosageChips(d: Dosage, lang: Lang, over?: { sets?: number | null
   return chips;
 }
 
-export function ExerciseDetails({ exercise, lang, clinical = false, dose }: { exercise: ExerciseDef; lang: Lang; clinical?: boolean; dose?: Parameters<typeof dosageChips>[2] }) {
+export function ExerciseDetails({ exercise, lang, clinical = false, dose, compact = false }: { exercise: ExerciseDef; lang: Lang; clinical?: boolean; dose?: Parameters<typeof dosageChips>[2]; compact?: boolean }) {
   const chips = dosageChips(exercise.dosage, lang, dose);
   return (
     <div className="space-y-4">
-      <div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {exercise.regions.map((r) => (
-            <span key={r} className="rv-chip rv-chip-teal">{t(lang, REGION_LABEL[r])}</span>
-          ))}
-          <span className="rv-chip">{t(lang, LEVEL_LABEL[exercise.level])}</span>
-          <span className="rv-chip">{t(lang, CATEGORY_LABEL[exercise.category])}</span>
+      {compact ? (
+        <p className="text-[15px] leading-7 text-slate-700">{t(lang, exercise.summary)}</p>
+      ) : (
+        <div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {exercise.regions.map((r) => (
+              <span key={r} className="rv-chip rv-chip-teal">{t(lang, REGION_LABEL[r])}</span>
+            ))}
+            <span className="rv-chip">{t(lang, LEVEL_LABEL[exercise.level])}</span>
+            <span className="rv-chip">{t(lang, CATEGORY_LABEL[exercise.category])}</span>
+          </div>
+          <h3 className="mt-2 font-heading text-xl font-bold text-navy-800">{t(lang, exercise.name)}</h3>
+          <p className="mt-1 text-[15px] leading-7 text-slate-700">{t(lang, exercise.summary)}</p>
         </div>
-        <h3 className="mt-2 font-heading text-xl font-bold text-navy-800">{t(lang, exercise.name)}</h3>
-        <p className="mt-1 text-[15px] leading-7 text-slate-700">{t(lang, exercise.summary)}</p>
-      </div>
+      )}
 
       <div className="rv-glass p-4">
         <h4 className="rv-h">{t(lang, COPY.dosage)}</h4>

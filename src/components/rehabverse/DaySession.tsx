@@ -8,10 +8,11 @@ import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronRight, Clock, Lock, Send
 import { submitFeedbackAction, submitFollowupAction } from "@/app/rehabverse/actions";
 import type { FollowupPoint, SessionDetail, SessionExercise } from "@/lib/rehabverse/api-types";
 import { GUIDE } from "@/lib/rehabverse/guide";
+import { cleanDayTitle } from "@/lib/rehabverse/format";
 import { DIFFICULTY_WORDS, FEEDBACK_FLAGS, PAIN_WORDS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { loadExercises } from "@/lib/rehabverse/library";
 import type { ExerciseDef } from "@/lib/rehabverse/types";
-import { ExerciseDetails, dosageChips } from "./ExerciseDetails";
+import { ExerciseDetails, } from "./ExerciseDetails";
 import { T, useRvLang } from "./useLang";
 import type { Lang } from "./ExercisePlayer";
 
@@ -268,11 +269,28 @@ export function DaySession({ data }: { data: SessionDetail }) {
   }, [feedback, data]);
   const upcoming = data.programme.errp_schedule.filter((p) => feedback && !data.followups.some((f) => f.timepoint === p) && !pendingCheckins.includes(p));
 
+  const exerciseList = (
+    <section className="rv-glass p-4" aria-label="Exercises">
+                <h2 className="font-heading text-base font-bold text-navy-800"><T en="Today's exercises" ru="Aaj ki exercises" /> ({exercises.length})</h2>
+                <ol className="mt-2 space-y-1.5">
+                  {exercises.map((e, i) => (
+                    <li key={e.id}>
+                      <button type="button" onClick={() => setSelected(i)} aria-current={i === selected} className={"rv-card flex w-full items-center gap-3 text-left " + (i === selected ? "rv-card-on" : "")}>
+                        <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-extrabold " + (i === selected ? "bg-teal-500 text-white" : "bg-slate-100 text-slate-600")}>{i + 1}</span>
+                        <span className="min-w-0 flex-1"><span className="block truncate text-[13.5px] font-bold text-navy-800">{e.exercise_title}</span><span className="block text-[11.5px] text-slate-500">{[e.sets ? `${e.sets} sets` : null, e.reps ? `${e.reps} reps` : null, e.hold_seconds ? `${e.hold_seconds}s hold` : null].filter(Boolean).join(" · ")}</span></span>
+                        <ChevronRight className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+  );
+
   return (
     <div className="container-content pb-20 pt-6 sm:pt-9">
       <Link href="/rehabverse/me" className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-700 hover:underline"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> <T en="My programme" ru="Mera programme" /></Link>
       <p className="rv-h mt-3">{data.programme.title}</p>
-      <h1 className="mt-1 font-heading text-2xl font-extrabold text-navy-800 sm:text-4xl"><T en="Day" ru="Din" /> {session.day_number}: {session.title}</h1>
+      <h1 className="mt-1 font-heading text-2xl font-extrabold text-navy-800 sm:text-4xl"><T en="Day" ru="Din" /> {session.day_number}: {cleanDayTitle(session.title)}</h1>
       {session.patient_note && (access === "open" || access === "done") ? <p className="mt-2 max-w-2xl text-[15px] leading-7 text-slate-600">{session.patient_note}</p> : null}
 
       {access === "locked" || access === "scheduled" || access === "paused" ? (
@@ -304,18 +322,12 @@ export function DaySession({ data }: { data: SessionDetail }) {
                   ) : (
                     <div className="grid aspect-[4/3] place-items-center rounded-3xl bg-slate-100 text-sm font-semibold text-slate-500 sm:aspect-[16/10]">{def === undefined && defs ? <T en="3D demo not available — follow the steps below." ru="3D demo maujood nahi — neeche ke steps follow karein." /> : <T en="Loading your guide…" ru="Guide aa raha hai…" />}</div>
                   )}
+                  <div className="lg:hidden">{exerciseList}</div>
                   <div className="rv-glass p-4">
                     <h2 className="font-heading text-lg font-bold text-navy-800">{exercise.exercise_title}</h2>
-                    {def ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {dosageChips(def.dosage, lang as Lang, { sets: exercise.sets, reps: exercise.reps, hold: exercise.hold_seconds, rest: exercise.rest_seconds, duration: exercise.duration_seconds, frequency: exercise.frequency, side: exercise.side }).map((c) => (
-                          <span key={c.label} className="rv-chip rv-chip-teal">{c.label}: {c.value}</span>
-                        ))}
-                      </div>
-                    ) : null}
                     {exercise.precautions ? <p className="mt-3 flex gap-2 rounded-xl bg-amber-50 px-3 py-2 text-[13.5px] leading-5 text-amber-950"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> <span><b><T en="Your physiotherapist says:" ru="Aap ke physiotherapist kehte hain:" /></b> {exercise.precautions}</span></p> : null}
                     {exercise.notes ? <p className="mt-2 text-[13.5px] leading-6 text-slate-700">{exercise.notes}</p> : null}
-                    {def ? <div className="mt-3"><ExerciseDetails exercise={def} lang={lang as Lang} dose={{ sets: exercise.sets, reps: exercise.reps, hold: exercise.hold_seconds, rest: exercise.rest_seconds, duration: exercise.duration_seconds, frequency: exercise.frequency, side: exercise.side }} /></div> : null}
+                    {def ? <div className="mt-3"><ExerciseDetails compact exercise={def} lang={lang as Lang} dose={{ sets: exercise.sets, reps: exercise.reps, hold: exercise.hold_seconds, rest: exercise.rest_seconds, duration: exercise.duration_seconds, frequency: exercise.frequency, side: exercise.side }} /></div> : null}
                   </div>
                 </>
               ) : (
@@ -324,20 +336,7 @@ export function DaySession({ data }: { data: SessionDetail }) {
             </div>
 
             <div className="space-y-5 lg:sticky lg:top-24">
-              <section className="rv-glass p-4" aria-label="Exercises">
-                <h2 className="font-heading text-base font-bold text-navy-800"><T en="Today's exercises" ru="Aaj ki exercises" /> ({exercises.length})</h2>
-                <ol className="mt-2 space-y-1.5">
-                  {exercises.map((e, i) => (
-                    <li key={e.id}>
-                      <button type="button" onClick={() => setSelected(i)} aria-current={i === selected} className={"rv-card flex w-full items-center gap-3 text-left " + (i === selected ? "rv-card-on" : "")}>
-                        <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-extrabold " + (i === selected ? "bg-teal-500 text-white" : "bg-slate-100 text-slate-600")}>{i + 1}</span>
-                        <span className="min-w-0 flex-1"><span className="block truncate text-[13.5px] font-bold text-navy-800">{e.exercise_title}</span><span className="block text-[11.5px] text-slate-500">{[e.sets ? `${e.sets} sets` : null, e.reps ? `${e.reps} reps` : null, e.hold_seconds ? `${e.hold_seconds}s hold` : null].filter(Boolean).join(" · ")}</span></span>
-                        <ChevronRight className="h-4 w-4 text-slate-400" aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ol>
-              </section>
+              <div className="hidden lg:block">{exerciseList}</div>
 
               {access === "open" ? (
                 <section className="rv-glass p-5" aria-labelledby="fb">

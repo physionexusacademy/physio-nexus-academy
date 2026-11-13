@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { Eye, Plus, Search, X } from "lucide-react";
 import { loadAllExercises } from "@/lib/rehabverse/library";
 import { LEVEL_LABEL, REGIONS, REGION_LABEL, type ExerciseDef, type Region } from "@/lib/rehabverse/types";
@@ -17,8 +18,20 @@ export function ExercisePicker({ initialRegion, onAdd, onClose }: { initialRegio
   const [preview, setPreview] = useState<ExerciseDef | null>(null);
   const [added, setAdded] = useState<string | null>(null);
 
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
     loadAllExercises().then(setAll);
+    setMounted(true);
+    // Keep the page behind still and let Escape close the dialog.
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener("keydown", onKey);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const list = useMemo(() => {
@@ -26,15 +39,17 @@ export function ExercisePicker({ initialRegion, onAdd, onClose }: { initialRegio
     return (all ?? []).filter((e) => (region === "all" || e.regions.includes(region)) && (level === "all" || e.level === level) && (!q || e.name.en.toLowerCase().includes(q) || e.targets.toLowerCase().includes(q) || e.id.includes(q)));
   }, [all, region, level, query]);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label="Exercise library">
+  if (!mounted) return null;
+  // Rendered on <body> so no animated or transformed ancestor in the admin shell can displace it.
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label="Exercise library">
       <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl">
         <header className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
           <h2 className="font-heading text-lg font-bold text-navy-800">Exercise library</h2>
           <button type="button" onClick={onClose} className="rounded-full p-2 hover:bg-slate-100" aria-label="Close"><X className="h-5 w-5" /></button>
         </header>
-        <div className="grid min-h-0 flex-1 gap-0 overflow-hidden md:grid-cols-[1fr_1fr]">
-          <div className="flex min-h-0 flex-col border-b border-slate-200 md:border-b-0 md:border-r">
+        <div className="grid min-h-0 flex-1 gap-0 overflow-hidden md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="flex min-h-0 min-w-0 flex-col border-b border-slate-200 md:border-b-0 md:border-r">
             <div className="space-y-2 p-3">
               <label className="relative block">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
@@ -63,7 +78,7 @@ export function ExercisePicker({ initialRegion, onAdd, onClose }: { initialRegio
               {all && list.length === 0 ? <li className="p-4 text-sm text-slate-500">No exercises match.</li> : null}
             </ul>
           </div>
-          <div className="min-h-0 overflow-y-auto p-3">
+          <div className="min-h-0 min-w-0 overflow-y-auto p-3">
             {preview ? (
               <div className="space-y-3">
                 <ExercisePlayer exercise={preview} lang="en" />
@@ -82,6 +97,7 @@ export function ExercisePicker({ initialRegion, onAdd, onClose }: { initialRegio
           <button type="button" onClick={onClose} className="rv-btn rv-btn-primary !min-h-[38px]">Done</button>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

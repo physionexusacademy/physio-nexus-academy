@@ -8,7 +8,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { REGIONS, LEVELS, type Bi, type ExerciseDef, type Region } from "../src/lib/rehabverse/types.ts";
-import { loadRegion } from "../src/lib/rehabverse/library/index.ts";
+import { SOURCE, serializeRehabverseData } from "../src/lib/rehabverse/library/source.ts";
 import { REFERENCES } from "../src/lib/rehabverse/references.ts";
 import { buildCycle, maxAngle } from "../src/lib/rehabverse/motion.ts";
 
@@ -41,7 +41,7 @@ const bi = (where: string, label: string, value: Bi | undefined, minWords = 1) =
 
 const all: ExerciseDef[] = [];
 for (const region of REGIONS) {
-  const list = await loadRegion(region);
+  const list = SOURCE[region];
   if (list.length < MIN_PER_REGION) fail(`region ${region}`, `only ${list.length} exercises (need ${MIN_PER_REGION}+)`);
   if (!list.some((e) => e.level === "beginner")) fail(`region ${region}`, "no beginner exercise");
   for (const exercise of list) {
@@ -121,6 +121,16 @@ for (const e of all) {
   m.arrows?.forEach((a) => checkBone(a.bone));
   if (m.anchor && typeof m.anchor === "object" && m.anchor.bone) checkBone(m.anchor.bone);
 }
+
+// The static files the site serves must match the reviewed source exactly.
+const expected = serializeRehabverseData();
+for (const [file, content] of Object.entries(expected)) {
+  const full = path.join(process.cwd(), file);
+  if (!fs.existsSync(full)) fail(file, "missing — run npm run build:rehabverse-data");
+  else if (fs.readFileSync(full, "utf8") !== content) fail(file, "stale — run npm run build:rehabverse-data");
+}
+const dataDir = path.join(process.cwd(), "public/rehabverse-data");
+for (const file of fs.existsSync(dataDir) ? fs.readdirSync(dataDir) : []) if (!expected[`public/rehabverse-data/${file}`]) fail(`public/rehabverse-data/${file}`, "orphan file — run npm run build:rehabverse-data");
 
 const total = all.length;
 const byRegion = Object.fromEntries(REGIONS.map((r) => [r, all.filter((e) => e.regions.includes(r)).length]));

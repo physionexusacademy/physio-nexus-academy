@@ -158,6 +158,16 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/auth/v1/logout" && req.method === "POST") return send(res, 204);
 
+    // The admin middleware reads the caller's own profile row (owner/admin) over REST.
+    if (url.pathname === "/rest/v1/profiles" && req.method === "GET") {
+      const claims = bearerClaims(req);
+      const id = /^eq\.([0-9a-f-]{36})$/i.exec(url.searchParams.get("id") ?? "")?.[1];
+      if (!claims || !id || id !== claims.sub) return send(res, 200, []);
+      const { rows } = await db.query("select id, role from public.profiles where id = $1", [id]);
+      if (String(req.headers.accept ?? "").includes("pgrst.object")) return rows.length ? send(res, 200, rows[0]) : send(res, 406, { code: "PGRST116", message: "The result contains 0 rows" });
+      return send(res, 200, rows);
+    }
+
     const rpc = url.pathname.match(/^\/rest\/v1\/rpc\/([a-z_][a-z0-9_]*)$/);
     if (rpc && req.method === "POST") {
       const claims = bearerClaims(req);

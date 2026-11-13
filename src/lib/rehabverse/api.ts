@@ -39,8 +39,8 @@ export async function isStaff(): Promise<boolean> {
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return false;
-  const { data } = await supabase.from("profiles").select("role").eq("id", auth.user.id).maybeSingle();
-  return !!data && ["owner", "admin"].includes(data.role);
+  const { data } = await supabase.rpc("is_admin");
+  return data === true;
 }
 
 // Patient

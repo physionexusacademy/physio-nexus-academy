@@ -595,7 +595,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
               {breath ? <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-teal-800">{text(lang, BREATH_LABEL[breath])}</span> : null}
             </div>
             {showMistake && hasMistake ? (
-              <p className="pointer-events-none absolute inset-x-2.5 top-16 rounded-xl bg-[#e5484d]/92 px-3 py-1.5 text-xs font-bold text-white shadow">
+              <p className="pointer-events-none absolute inset-x-2.5 top-16 rounded-xl bg-[#e5484d]/90 px-3 py-1.5 text-xs font-bold text-white shadow">
                 <AlertTriangle className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" /> {text(lang, exercise.motion.mistake!.text)}
               </p>
             ) : null}

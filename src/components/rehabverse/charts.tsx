@@ -10,7 +10,7 @@ export type Series = { name: string; colour: string; points: (number | null)[]; 
  */
 export function LineChart({ series, labels, title, height = 190, yMax = 10 }: { series: Series[]; labels: string[]; title: string; height?: number; yMax?: number }) {
   const id = useId();
-  const W = 520;
+  const W = 440;
   const H = height;
   const pad = { l: 28, r: 12, t: 12, b: 26 };
   const x = (i: number) => pad.l + (labels.length <= 1 ? (W - pad.l - pad.r) / 2 : (i * (W - pad.l - pad.r)) / (labels.length - 1));
@@ -23,11 +23,11 @@ export function LineChart({ series, labels, title, height = 190, yMax = 10 }: { 
         {ticks.map((t) => (
           <g key={t}>
             <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="#e3eaf1" strokeWidth={1} />
-            <text x={pad.l - 6} y={y(t) + 3.5} textAnchor="end" fontSize={10} fill="#64748b">{t}</text>
+            <text x={pad.l - 6} y={y(t) + 3.5} textAnchor="end" fontSize={11} fill="#64748b">{t}</text>
           </g>
         ))}
         {labels.map((l, i) => (
-          <text key={i} x={x(i)} y={H - 8} textAnchor="middle" fontSize={10} fill="#64748b">{l}</text>
+          <text key={i} x={x(i)} y={H - 8} textAnchor="middle" fontSize={11} fill="#64748b">{l}</text>
         ))}
         {series.map((s) => {
           const parts: string[] = [];

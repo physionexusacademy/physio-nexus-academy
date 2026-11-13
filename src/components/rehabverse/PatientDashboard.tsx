@@ -8,6 +8,7 @@ import { logoutAction, markNotificationsReadAction } from "@/app/rehabverse/acti
 import type { History, Notification, Overview, OverviewSession, PatientSummary } from "@/lib/rehabverse/api-types";
 import { GUIDE, TOPIC_LOCKED, TOPIC_MISSED, type GuideBeat } from "@/lib/rehabverse/guide";
 import { INTAKE_REGIONS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
+import { cleanDayTitle } from "@/lib/rehabverse/format";
 import { GuideStage } from "./GuideStage";
 import { LineChart } from "./charts";
 import { T, useRvLang } from "./useLang";
@@ -138,7 +139,7 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
             <section className="rv-glass relative overflow-hidden p-5 sm:p-6">
               <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-[#0db3aa] to-[#0a1f3d]" aria-hidden="true" />
               <p className="rv-h"><T en="Today" ru="Aaj" /></p>
-              <h2 className="mt-1 font-heading text-xl font-bold text-navy-800 sm:text-2xl"><T en="Day" ru="Din" /> {open.day_number}: {open.title}</h2>
+              <h2 className="mt-1 font-heading text-xl font-bold text-navy-800 sm:text-2xl"><T en="Day" ru="Din" /> {open.day_number}: {cleanDayTitle(open.title)}</h2>
               {open.patient_note ? <p className="mt-1 text-[14px] leading-6 text-slate-600">{open.patient_note}</p> : null}
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="rv-chip rv-chip-teal">{open.exercise_count ?? 0} <T en="exercises" ru="exercises" /></span>
@@ -192,7 +193,7 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
                         {s.status === "locked" ? <Lock className="h-4 w-4" aria-hidden="true" /> : s.status === "reviewed" ? <CheckCircle2 className="h-4.5 w-4.5" aria-hidden="true" /> : s.day_number}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[14px] font-bold text-navy-800"><T en="Day" ru="Din" /> {s.day_number} · {s.title}</span>
+                        <span className="block truncate text-[14px] font-bold text-navy-800"><T en="Day" ru="Din" /> {s.day_number} · {cleanDayTitle(s.title)}</span>
                         <span className="block text-[12px] text-slate-500">
                           {s.status === "locked" ? <T en="Opens after your feedback and your physiotherapist's approval" ru="Aap ke feedback aur physiotherapist ki approval ke baad khulega" /> : s.review_message ? s.review_message : s.exercise_count !== null ? `${s.exercise_count} ${lang === "ru" ? "exercises" : "exercises"}` : ""}
                         </span>
@@ -222,7 +223,7 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
                   <p className="text-[11px] font-semibold text-slate-500"><T en="Pain vs start" ru="Dard shuru ke muqable" /></p>
                 </div>
               </div>
-              <div className="mt-4 grid gap-5 sm:grid-cols-2">
+              <div className="mt-4 grid gap-6">
                 <div>
                   <h3 className="mb-1 text-[13px] font-bold text-slate-700"><T en="Pain around each session (0–10)" ru="Har session ke aas paas dard (0–10)" /></h3>
                   <LineChart

@@ -78,6 +78,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
   const [reduced, setReduced] = useState(false);
   const run = useRef({ index: 0, revealed: 0, holdLeft: 0, finished: false, spoken: -1 });
   const speaking = useRef(false);
+  const visible = useRef(true);
   const lang_ = useRef(lang);
   lang_.current = lang;
   const ownerRef = useRef<Owner>({ lost: () => undefined, reload: () => undefined, activate: () => undefined, isVisible: () => true, hasRoom: () => roomRef.current !== null });
@@ -106,6 +107,11 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
   const activate = useCallback(() => {
     const host = hostRef.current;
     if (!host) return;
+    // A device-level choice for slow phones or low-power mode: the same script plays as text.
+    if (typeof window !== "undefined" && window.localStorage.getItem("pna-rv-no3d") === "1") {
+      setStatus("text");
+      return;
+    }
     setStatus("loading");
     const listener = (p: number) => setProgress(p);
     shared.listeners.add(listener);
@@ -125,8 +131,8 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
         const centre = head.clone().lerp(waist, 0.46);
         const vfov = (room.camera.fov * Math.PI) / 180;
         const hfov = 2 * Math.atan(Math.tan(vfov / 2) * room.camera.aspect);
-        const span = 1.04;
-        const distance = Math.max(1.35, Math.max(span / (2 * Math.tan(vfov / 2)), 0.78 / (2 * Math.tan(hfov / 2))) * 1.08);
+        const span = 1.22;
+        const distance = Math.max(1.35, Math.max(span / (2 * Math.tan(vfov / 2)), 1.1 / (2 * Math.tan(hfov / 2))) * 1.08);
         room.frameCamera(false, centre, distance, new THREE.Vector3(0.12, 0.06, 1));
         setStatus("active");
       })
@@ -156,6 +162,15 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     };
   }, [activate]);
 
+  // Stop animating (and drawing) while the guide is scrolled out of view or the tab is hidden.
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([entry]) => (visible.current = entry.isIntersecting), { threshold: 0.05 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // The script runner and the animation share one loop.
   useEffect(() => {
     let raf = 0;
@@ -163,10 +178,12 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     let cur: Pose = P("right", IDLE);
     let nextBlink = last + 1500;
     let blinkUntil = 0;
+    let lastDraw = 0;
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       const dt = Math.min(64, now - last);
       last = now;
+      if (!visible.current) return;
       const r = run.current;
       const current = active.beats[Math.min(r.index, active.beats.length - 1)];
       const text = current ? current.say[lang_.current] : "";
@@ -206,9 +223,14 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
       const room = roomRef.current;
       if (!room) return;
       const talking = playing && !r.finished && (r.revealed < text.length || speaking.current) ? 1 : 0;
+      // Gestures and speech at ~30 fps, idle breathing at ~15 fps: smooth, but light on phones.
+      const busy = talking || (playing && !r.finished && (current?.gesture ?? "calm") !== "calm");
+      if (now - lastDraw < (busy ? 30 : 64)) return;
+      const drawDt = Math.min(120, now - lastDraw);
+      lastDraw = now;
       const t = now / 1000;
       const gesture: Gesture = reduced ? "calm" : r.finished || !playing ? "calm" : current?.gesture ?? "calm";
-      cur = blendPose(cur, P("right", gestureParts(gesture, t, talking)), 1 - Math.exp(-dt / 130));
+      cur = blendPose(cur, P("right", gestureParts(gesture, t, talking)), 1 - Math.exp(-drawDt / 130));
       room.setPose(cur, { animate: false, replace: true });
       // Face: mouth follows speech, soft smile, a blink every few seconds.
       if (now > nextBlink) {
@@ -260,18 +282,18 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
             )}
           </div>
         ) : null}
-        <span className="pointer-events-none absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full bg-white/92 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-teal-800 shadow-sm">
+        <span className="pointer-events-none absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-teal-800 shadow-sm">
           <Stethoscope className="h-3 w-3" aria-hidden="true" /> {label}
         </span>
         {status === "active" ? (
-          <div className="pointer-events-none absolute inset-x-2.5 bottom-2.5 rounded-2xl rounded-bl-sm bg-[#0a1f3d]/92 px-3.5 py-2.5 text-[14px] font-semibold leading-[1.55] text-white shadow-lg sm:text-[15px]">
+          <div className="pointer-events-none absolute inset-x-2.5 bottom-2.5 rounded-2xl rounded-bl-sm bg-[#0a1f3d]/90 px-3.5 py-2.5 text-[14px] font-semibold leading-[1.55] text-white shadow-lg sm:text-[15px]">
             <span className="mr-1.5 text-teal-300">Guide:</span>
             <span aria-hidden="true">{text}<span className="opacity-0">{line.slice(text.length)}</span></span>
             <span className="sr-only" aria-live="polite">{line}</span>
           </div>
         ) : null}
       </div>
-      <div className="space-y-2.5 border-t border-slate-200 bg-white/85 px-3 py-2.5">
+      <div className="space-y-2.5 border-t border-slate-200 bg-white/80 px-3 py-2.5">
         <div className="flex flex-wrap items-center gap-1.5">
           <button type="button" className="d3-btn" onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous"><ChevronLeft className="h-4 w-4" aria-hidden="true" /></button>
           <button type="button" className="d3-btn" onClick={() => (finished ? go(0) : setPlaying((p) => !p))} aria-label={finished ? "Replay" : playing ? "Pause" : "Play"}>

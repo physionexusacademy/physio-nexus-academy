@@ -69,6 +69,7 @@ export const academyWings: AcademyWing[] = [
     tagline: "Care for patients",
     intro: "Physiotherapy appointments, home visits and simple guidance to understand your condition.",
     places: [
+      { label: "RehabVerse", href: "/rehabverse", description: "Guided 3D rehab: approved programme, daily feedback, virtual physio guide", icon: "patient", keywords: "rehabverse rehab rehabilitation home exercise programme 3d exercises virtual physio guide daily feedback roman urdu physiotherapy recovery" },
       { label: "Patient Services", href: "/patient-services", description: "What we treat and how", icon: "care", keywords: "physiotherapy treatment patient" },
       { label: "Book Appointment", href: "/appointment", description: "Request a consultation", icon: "calendar", keywords: "booking consult session appointment" },
       { label: "Home Visit", href: "/home-visit", description: "Physiotherapy at your home", icon: "home", keywords: "home visit ghar" },

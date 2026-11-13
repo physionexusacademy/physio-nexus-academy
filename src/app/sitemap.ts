@@ -21,6 +21,8 @@ const routes = [
   "/learn",
   "/skills",
   "/virtual-patient",
+  "/rehabverse",
+  "/rehabverse/library",
   "/about",
   "/founder",
   "/faculty",

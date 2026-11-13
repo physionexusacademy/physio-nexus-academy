@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { IntakeWizard } from "@/components/rehabverse/IntakeWizard";
+import { IntakeWizardLoader } from "@/components/rehabverse/IntakeWizardLoader";
 import { requirePatient } from "@/lib/rehabverse/guard";
 
 export const metadata: Metadata = { title: "Symptom assessment", robots: { index: false, follow: false } };
@@ -17,7 +17,7 @@ export default async function StartPage() {
   if (live || drafting || assessments.some((a) => OPEN.includes(a.status))) redirect("/rehabverse/me");
   return (
     <div className="container-content pb-16 pt-6 sm:pt-10">
-      <IntakeWizard />
+      <IntakeWizardLoader />
     </div>
   );
 }

@@ -118,6 +118,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-library
 
+      - name: Validate RehabVerse decision-support rules (advisory only, most cautious rule wins)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-rules
+
       - name: Validate RehabVerse database (RLS, roles, unlock rules, audit trail)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-db

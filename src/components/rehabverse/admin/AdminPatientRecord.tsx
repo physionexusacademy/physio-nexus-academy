@@ -189,7 +189,7 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
 
       <Section id="audit" title="Audit trail" aside={<FileClock className="h-4 w-4 text-slate-400" aria-hidden="true" />}>
         <ol className="max-h-80 space-y-1 overflow-y-auto text-[12.5px] leading-5 text-slate-700">
-          {audit.map((l) => <li key={l.id}><span className="text-slate-400">{dt(l.at)}</span> · <b>{l.action.replace(/_/g, " ")}</b> <span className="text-slate-500">({l.entity}{l.actor_role ? `, ${l.actor_role}` : ""})</span>{l.details && Object.keys(l.details).length ? <span className="text-slate-500"> — {JSON.stringify(l.details).slice(0, 140)}</span> : null}</li>)}
+          {audit.map((l) => <li key={l.id}><span className="text-slate-400">{dt(l.at)}</span> · <b>{l.action.replace(/_/g, " ")}</b> <span className="text-slate-500">({l.entity}{l.actor_role ? `, ${l.actor_role}` : ""})</span>{l.details && !("changes" in l.details) && Object.keys(l.details).length ? <span className="text-slate-500"> — {JSON.stringify(l.details).slice(0, 140)}</span> : null}</li>)}
           {audit.length === 0 ? <li className="text-slate-500">Nothing recorded yet.</li> : null}
         </ol>
         <p className="mt-2 text-[11.5px] text-slate-500">The audit trail is append-only: entries cannot be edited or deleted.</p>
