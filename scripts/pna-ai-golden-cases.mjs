@@ -78,7 +78,7 @@ export const goldenCases = [
   { q: "mmt kaise karte hain", lang: "ur", top: ["/skills/manual-muscle-testing"] },
   { q: "goniometry practice", top: ["/skills/goniometry"] },
   { q: "goniometer se rom kaise naapte hain", top: ["/skills/goniometry"] },
-  { q: "modified ashworth scale", top: ["/skills/tone-coordination"] },
+  { q: "modified ashworth scale", top: ["/skills/tone-coordination", "/learn/tone-spasticity-rigidity-ashworth"] },
   { q: "spasticity grading", any: ["/skills/tone-coordination"] },
   { q: "thomas test", anyTop2: ["/skills/muscle-length", "/msk-special-tests"], any: ["/skills/muscle-length"] },
   { q: "berg balance scale", top: ["/skills/balance-function"] },

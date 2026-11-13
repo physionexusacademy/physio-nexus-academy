@@ -440,6 +440,8 @@ function QuestionCard({
   /** In a test, choices stay changeable and unmarked until submission. */
   reveal?: boolean;
 }) {
+  const [lang] = useLang();
+  const ur = lang === "ur";
   return (
     <div>
       {question.case ? <p className="mb-3 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-[15px] leading-7 text-indigo-950">{question.case}</p> : null}
@@ -484,7 +486,9 @@ function QuestionCard({
       </div>
       {reveal && answered !== null ? (
         <p className={"mt-3 rounded-2xl p-3 text-sm leading-6 " + (answered === question.answer ? "bg-emerald-50 text-emerald-900" : "bg-rose-50 text-rose-900")}>
-          <strong>{answered === question.answer ? "Correct. " : "Not quite. "}</strong>
+          <strong>{answered === question.answer ? (ur ? "Bilkul sahi. " : "Correct. ") : ur ? "Qareeb, lekin sahi nahi. " : "Not quite. "}</strong>
+          {answered !== question.answer && ur ? <>Sahi jawab yeh hai: <strong>{question.options[question.answer]}</strong>. </> : null}
+          {ur ? <span className="font-semibold">Yaad rakhein: </span> : null}
           {question.explain}
         </p>
       ) : null}
@@ -493,6 +497,8 @@ function QuestionCard({
 }
 
 function QuickDrill({ data, level }: { data: SkillData; level: SkillLevelId }) {
+  const [lang] = useLang();
+  const ur = lang === "ur";
   const pool = useMemo(() => questionPool(data, level), [data, level]);
   const preferred = useMemo(() => pool.filter((question) => question.level === level), [pool, level]);
   const draw = useCallback(() => {
@@ -510,7 +516,7 @@ function QuickDrill({ data, level }: { data: SkillData; level: SkillLevelId }) {
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-lg font-bold text-navy-800">Quick drill</h3>
+        <h3 className="text-lg font-bold text-navy-800">{ur ? "Jaldi practice" : "Quick drill"}</h3>
         <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Streak {streak}</span>
       </div>
       <div className="mt-3">
@@ -534,7 +540,7 @@ function QuickDrill({ data, level }: { data: SkillData; level: SkillLevelId }) {
             setAnswered(null);
           }}
         >
-          Next question <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          {ur ? "Agla sawal" : "Next question"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       ) : null}
     </section>
@@ -560,6 +566,8 @@ function PractiseTab({ data, level }: { data: SkillData; level: SkillLevelId }) 
 type CardMode = "review" | "level" | "mix";
 
 function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
+  const [lang] = useLang();
+  const ur = lang === "ur";
   // review = spaced repetition (due + new cards); level/mix = free practice that never runs dry.
   const [mode, setMode] = useState<CardMode>("review");
   const build = useCallback(() => {
@@ -643,21 +651,21 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
         type="button"
         onClick={() => setFlipped((value) => !value)}
         className="mt-4 block min-h-[220px] w-full rounded-3xl border border-slate-200 bg-white p-6 text-left shadow-[0_30px_70px_-50px_rgba(10,60,90,0.7)]"
-        aria-label={flipped ? "Show question" : "Show answer"}
+        aria-label={flipped ? (ur ? "Sawal dikhayein" : "Show question") : ur ? "Jawab dikhayein" : "Show answer"}
       >
-        <span className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-teal-700">{flipped ? "Answer" : "Question"}</span>
+        <span className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-teal-700">{flipped ? (ur ? "Jawab" : "Answer") : ur ? "Sawal" : "Question"}</span>
         <span className="mt-3 block text-lg font-bold leading-8 text-navy-800">
           <RichText text={flipped ? card.back : card.front} />
         </span>
-        {!flipped ? <span className="mt-6 block text-sm text-slate-500">Say your answer out loud, then tap to check.</span> : null}
+        {!flipped ? <span className="mt-6 block text-sm text-slate-500">{ur ? "Pehle apna jawab zor se bolein, phir tap kar ke check karein." : "Say your answer out loud, then tap to check."}</span> : null}
       </button>
       {flipped ? (
         <div className="mt-4 grid grid-cols-2 gap-3">
           <button type="button" onClick={() => answer(false)} className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-900">
-            <X className="mr-1 inline h-4 w-4" aria-hidden="true" /> Again
+            <X className="mr-1 inline h-4 w-4" aria-hidden="true" /> {ur ? "Dobara" : "Again"}
           </button>
           <button type="button" onClick={() => answer(true)} className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-900">
-            <Check className="mr-1 inline h-4 w-4" aria-hidden="true" /> Knew it
+            <Check className="mr-1 inline h-4 w-4" aria-hidden="true" /> {ur ? "Aata tha" : "Knew it"}
           </button>
         </div>
       ) : null}
@@ -679,6 +687,8 @@ function buildTest(data: SkillData, level: SkillLevelId): SkillQuestion[] {
 }
 
 function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: SkillLevelId; progress: SkillsProgress; onLevel: (level: SkillLevelId) => void }) {
+  const [lang] = useLang();
+  const ur = lang === "ur";
   const unlocked = isLevelUnlocked(progress, data.slug, level);
   const [questions, setQuestions] = useState<SkillQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -727,7 +737,7 @@ function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: S
           </p>
         ) : null}
         <button type="button" className="nx-btn nx-btn-primary mt-5" onClick={start}>
-          Start the test <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          {ur ? "Test shuru karein" : "Start the test"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
     );
@@ -762,7 +772,7 @@ function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: S
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          {done ? "Submit the test" : `Answer all ${questions.length} questions to submit`}
+          {done ? (ur ? "Test jama karwayein" : "Submit the test") : ur ? `Jama karwane ke liye saare ${questions.length} sawal hal karein` : `Answer all ${questions.length} questions to submit`}
         </button>
       ) : (
         <div className={"sticky bottom-24 rounded-3xl p-5 text-white shadow-2xl lg:bottom-6 " + (result.passed ? "bg-[#06402f]" : "bg-[#0a1f3d]")} role="status">
@@ -770,17 +780,23 @@ function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: S
           <p className="mt-1 text-sm text-white/80">
             {result.passed
               ? result.firstPass
-                ? `Passed! ${SKILL_LEVELS[rank].label} badge added to your student pass.`
-                : "Passed again — great revision."
-              : `Pass mark is ${Math.round(PASS_MARK * 100)}%. Review the explanations above, practise, and try again.`}
+                ? ur
+                  ? `Mubarak ho, pass! ${SKILL_LEVELS[rank].label} badge aap ke student pass mein add ho gaya.`
+                  : `Passed! ${SKILL_LEVELS[rank].label} badge added to your student pass.`
+                : ur
+                  ? "Phir se pass — shabash, revision acha raha."
+                  : "Passed again — great revision."
+              : ur
+                ? `Pass mark ${Math.round(PASS_MARK * 100)} % hai. Upar ki explanations parhein, practice karein aur dobara koshish karein.`
+                : `Pass mark is ${Math.round(PASS_MARK * 100)}%. Review the explanations above, practise, and try again.`}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button type="button" className="nx-btn nx-btn-ghost !min-h-[40px]" onClick={start}>
-              <RotateCcw className="h-4 w-4" aria-hidden="true" /> New test
+              <RotateCcw className="h-4 w-4" aria-hidden="true" /> {ur ? "Naya test" : "New test"}
             </button>
             {result.passed && next ? (
               <button type="button" className="nx-btn nx-btn-primary !min-h-[40px]" onClick={() => onLevel(next.id)}>
-                Continue to {next.label} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                {ur ? "Agla level" : "Continue to"} {next.label} <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
             ) : null}
           </div>
