@@ -26,7 +26,9 @@ export type BrainResource = {
   tags?: string;
   /** Authored key points (PNA Teacher lessons). */
   points?: string[];
-  /** Roman Urdu hook/goal (PNA Teacher lessons). */
+  /** Roman Urdu version of `points` (site guide entries). */
+  pointsUr?: string[];
+  /** Roman Urdu hook/goal (PNA Teacher lessons, site guide). */
   hookUr?: string;
   goalUr?: string;
   minutes?: number;
@@ -50,6 +52,9 @@ export type BrainResult = {
   confidence: "high" | "medium" | "low";
   /** Ranked candidates for the optional AI re-ranker. */
   candidates: BrainResource[];
+  /** What the question was about, so the server can build a grounded explanation. */
+  intents?: string[];
+  top?: { id: string; kind: Kind; href: string; title: string };
 };
 
 /* ---------------- text helpers ---------------- */
@@ -117,7 +122,7 @@ type Understanding = {
   setAsideTopic?: string;
 };
 
-type Intent = "define" | "compare" | "learn" | "treat" | "assess" | "technique" | "exam" | "patient" | "policy";
+type Intent = "define" | "compare" | "learn" | "treat" | "assess" | "technique" | "exam" | "patient" | "policy" | "simple";
 
 const intentRules: [Intent, RegExp][] = [
   ["define", /\b(what is|what are|define|definition|meaning|kya hai|kya hota|kya hoti|kya hain|matlab)\b/],
@@ -128,6 +133,7 @@ const intentRules: [Intent, RegExp][] = [
   ["technique", /\b(techniques?|mobili[sz]ation|manipulation|manual therapy|release|grades?|glide|thrust|cupping|needling|taping|massage|mwm|snags?|met|scs|mfr)\b/],
   ["exam", /\b(viva|osce|exams?|mcqs?|paper|prepare|preparation|revision|revise|imtihan|imtehan|quiz me|practice questions)\b/],
   ["policy", /\b(privacy|refund|terms|disclaimer|policy|cancellation)\b/],
+  ["simple", /\b(simply|simple|simpler|easy|easier|asaan|aasan|asan|aasaan|eli5|in simple words|beginner level|from scratch)\b/],
 ];
 
 /** Site destinations recognised directly from wording (checked in order). */
@@ -154,12 +160,23 @@ const INTENT_WORDS = new Set([
   "cure", "protocol", "plan", "prepare", "preparation", "revision", "revise", "viva", "exam", "osce", "mcq", "question",
 ]);
 
+/** "What does PNA offer?" / "website par kya kya hai" — about the whole academy, never a follow-up. */
+const overviewQuestion = /\b(what (does|can|do) (pna|physio nexus|this (website|site|academy)|you) (offer|have|do|provide)|what can i do here|what is on this (website|site)|what do you (offer|have)|website (par|pe|per|mein|me)|kya kya hai|pna (kya|what) (hai|is))\b/;
+
 const followUpPronouns = /\b(it|its|this|that|these|them|iska|iski|iske|iss|is ka|is ki|uska|uski|uske|us ka|us ki)\b/;
 const followUpWords = /\b(it|its|this|that|these|them|iska|iski|iske|iss|is ka|is ki|uska|uski|uske|us ka|us ki|and|aur|also|what about|how about|then)\b/;
 
+/** "Roman Urdu mein samjhao" / "in English" — the learner chooses the answer language. */
+function chosenLanguage(normalized: string): Lang | null {
+  if (/\b(in|into) (roman )?urdu\b|\b(roman )?urdu (mein|me|main|men|mai)\b/.test(normalized)) return "ur";
+  if (/\bin english\b|\benglish (mein|me|main|men|mai)\b/.test(normalized)) return "en";
+  return null;
+}
+
 function understand(raw: string, context: BrainContext | undefined, vocabulary: Map<string, number>): Understanding {
   const normalized = normalize(raw);
-  const lang = detectLanguage(normalized);
+  const forcedLang = chosenLanguage(normalized);
+  const lang = forcedLang ?? detectLanguage(normalized);
 
   let translated = normalized;
   for (const rule of URDU_TERMS) {
@@ -178,7 +195,9 @@ function understand(raw: string, context: BrainContext | undefined, vocabulary: 
   const examRule = intentRules.find(([intent]) => intent === "exam")?.[1];
   const standalone =
     !followUpPronouns.test(normalized) &&
-    (Boolean(examRule?.test(normalized)) || navigationRules.some((rule) => rule.href !== "/learn" && rule.re.test(normalized)));
+    (Boolean(examRule?.test(normalized)) ||
+      navigationRules.some((rule) => rule.href !== "/learn" && rule.re.test(normalized)) ||
+      overviewQuestion.test(normalized));
   if (context?.lastTopic && standalone) {
     setAsideTopic = context.lastTopic;
   } else if (context?.lastTopic && compactTokens.length <= 4 && (followUpWords.test(normalized) || compactTokens.length <= 2)) {
@@ -220,7 +239,7 @@ function understand(raw: string, context: BrainContext | undefined, vocabulary: 
 
   const intents = new Set<Intent>();
   for (const [intent, re] of intentRules) if (re.test(normalized) || re.test(translated)) intents.add(intent);
-  if (intents.has("define") || intents.has("compare")) intents.add("learn");
+  if (intents.has("define") || intents.has("compare") || forcedLang) intents.add("learn");
   const firstPerson = FIRST_PERSON.test(normalized);
   if (firstPerson && /\b(pain|numb\w*|tingling|swelling|stiff\w*|weak\w*|injur\w*|sprain|fracture|hurt\w*|ache\w*)\b/.test(translated)) intents.add("patient");
 
@@ -410,6 +429,24 @@ function shortTopic(title: string): string {
     .trim();
 }
 
+function featureLines(r: BrainResource, ur: boolean): string[] {
+  const lines = [`**${shortTopic(r.title)}** — ${firstSentences(ur && r.hookUr ? r.hookUr : r.summary, 2)}`];
+  const points = ur && r.pointsUr?.length ? r.pointsUr : (r.points ?? []);
+  for (const point of points.slice(0, 7)) lines.push(`• ${point}`);
+  return lines;
+}
+
+/** Where each flagship feature lives, for the "what does PNA offer?" answer. */
+const overviewChips: BrainResult["suggestions"] = [
+  { label: "PNA Teacher", href: "/learn" },
+  { label: "Skills Lab", href: "/skills" },
+  { label: "Virtual Patient", href: "/virtual-patient" },
+  { label: "RehabVerse", href: "/rehabverse" },
+  { label: "Manual Therapy", href: "/manual-therapy" },
+  { label: "Daily Challenge", href: "/daily-challenge" },
+  { label: "Books", href: "/resources" },
+];
+
 function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confidence: BrainResult["confidence"]): { message: string; suggestions: BrainResult["suggestions"] } {
   const ur = u.lang === "ur";
   const lines: string[] = [];
@@ -440,7 +477,13 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
   const r = top.resource;
   const name = shortTopic(r.title);
 
-  if (top.kind === "lesson") {
+  const featureMode = Boolean(r.pointsUr?.length) && !(top.kind === "practice" && u.intents.has("exam")) && top.kind !== "lesson";
+  if (featureMode) {
+    lines.push(...featureLines(r, ur));
+    lines.push(ur ? "Neeche seedha link hai — kholein aur shuru karein." : "The link below takes you straight there — open it and start.");
+    if (r.id === "feature:overview") suggestions.push(...overviewChips);
+    else suggestions.push({ label: ur ? "PNA par aur kya hai?" : "What else is on PNA?", query: ur ? "website par kya kya hai" : "what does Physio Nexus Academy offer" });
+  } else if (top.kind === "lesson") {
     const hook = ur && r.hookUr ? r.hookUr : r.summary;
     lines.push(`**${name}** — ${firstSentences(hook, 1)}`);
     if (r.points?.length) {
@@ -453,6 +496,8 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
         : `Want it step by step? The PNA Teacher lesson takes${r.minutes ? ` ~${r.minutes} min` : " a few minutes"}, with checks and flashcards.`,
     );
     suggestions.push(
+      { label: ur ? "Aur aasan karke samjhao" : "Explain it more simply", query: ur ? `${name} aur aasan lafzon mein samjhao` : `${name} explain simply` },
+      ur ? { label: "Explain in English", query: `${name} in english` } : { label: "Roman Urdu mein samjhao", query: `${name} roman urdu mein samjhao` },
       { label: ur ? "Mujhe quiz karein" : "Quiz me", href: "/daily-challenge" },
       { label: ur ? "Mere flashcards" : "My flashcards", href: "/learn/review" },
     );
@@ -482,6 +527,7 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
     suggestions.push(
       { label: ur ? `${name} ka treatment` : `How to treat ${name}`, query: `${name} treatment plan` },
       { label: ur ? `${name} ke special tests` : `Special tests for ${name}`, query: `special tests for ${name}` },
+      ur ? { label: "Explain in English", query: `${name} in english` } : { label: "Roman Urdu mein samjhao", query: `${name} roman urdu mein samjhao` },
     );
     if (u.intents.has("patient")) suggestions.push({ label: ur ? "Appointment request" : "Request an appointment", href: "/appointment" });
   } else if (top.kind === "technique" || top.kind === "regional") {
@@ -493,6 +539,7 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
           : "This chapter opens with PNA Teacher: analogy, safety, steps with reasons, a patient case and checks.",
       );
       suggestions.push({ label: ur ? `${name} qadam ba qadam` : `Learn ${name} step by step`, href: `${r.href}#pna-teacher` });
+      suggestions.push(ur ? { label: "Explain in English", query: `${name} in english` } : { label: "Roman Urdu mein samjhao", query: `${name} roman urdu mein samjhao` });
     }
     suggestions.push({ label: ur ? "Manual therapy ki saari techniques" : "All 35 manual therapy techniques", href: "/learn#manual-therapy" });
   } else if (top.kind === "practice" || u.intents.has("exam")) {
@@ -511,7 +558,7 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
   // De-duplicate suggestions and drop links already shown as results.
   const shown = new Set(picked.map((doc) => doc.resource.href));
   const unique = suggestions.filter((item, i, all) => all.findIndex((other) => other.label === item.label) === i && !(item.href && shown.has(item.href)));
-  return { message: lines.filter(Boolean).join("\n"), suggestions: unique.slice(0, 3) };
+  return { message: lines.filter(Boolean).join("\n"), suggestions: unique.slice(0, r.id === "feature:overview" ? 7 : 4) };
 }
 
 function navigationMessage(u: Understanding, hrefs: string[]): string {
@@ -613,12 +660,23 @@ export function think(
       : "For exams and viva, practise in this order: 1) today's Daily Challenge, 2) your flashcards, 3) PNA Teacher lessons for any topic you get wrong. Name a topic (e.g. \"stroke viva\") and I'll add the right lessons too."
     : "";
   const navLine = examLine || (navDocs.length ? navigationMessage(u, navDocs.map((doc) => doc.resource.href)) : "");
-  const top = topical[0];
+  // "What is the Daily Challenge?" / "virtual patient kaise use karte hain" — explain the feature instead of only linking to it.
+  const asksAbout = /\b(what is|what are|what does|how (do|does|to|can)|kya hai|kya hota|kaise|kese|about|explain|samjh\w*|tell me|batao|bataein|use karte|use kaise)\b/.test(u.normalized);
+  const child = topical[0];
+  const childWords = child ? tokenize(child.resource.href.split("#")[0].split("/").pop()!.replace(/-/g, " ")) : [];
+  // "skills lab mein kya hai" is about the Skills Lab, not about one skill inside it — unless the question names that skill.
+  const featureParent = asksAbout && child
+    ? navDocs.find((doc) => doc.resource.pointsUr?.length && child.resource.href.startsWith(`${doc.resource.href}/`) && !childWords.some((word) => u.tokens.has(word)))
+    : undefined;
+  const featureNav = asksAbout && !child ? navDocs.find((doc) => doc.resource.pointsUr?.length) : undefined;
+  const top = featureParent ?? topical[0] ?? featureNav;
+  if (featureParent) picked.unshift(...picked.splice(picked.indexOf(featureParent) >= 0 ? picked.indexOf(featureParent) : picked.length, 1));
   const composed = top ? compose(u, top, picked, confidence) : { message: "", suggestions: [] as BrainResult["suggestions"] };
   const continuing = u.usedContext && options.context?.lastTopic
     ? u.lang === "ur" ? `**${options.context.lastTopic}** ke baare mein aage:` : `Continuing with **${options.context.lastTopic}**:`
     : "";
-  const message = [continuing, u.intents.has("patient") ? composed.message : navLine, u.intents.has("patient") ? navLine : composed.message].filter(Boolean).join("\n");
+  const featureAnswer = Boolean(featureNav || featureParent);
+  const message = [continuing, u.intents.has("patient") ? composed.message : featureAnswer ? "" : navLine, u.intents.has("patient") ? (featureAnswer ? "" : navLine) : composed.message].filter(Boolean).join("\n");
 
   return {
     lang: u.lang,
@@ -631,5 +689,7 @@ export function think(
     topic: top ? shortTopic(top.resource.title) : undefined,
     confidence: top ? confidence : "high",
     candidates: ranked.slice(0, 8).map((item) => item.doc.resource),
+    intents: [...u.intents],
+    top: top ? { id: top.resource.id, kind: top.kind, href: top.resource.href, title: top.resource.title } : undefined,
   };
 }

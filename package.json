@@ -18,6 +18,7 @@
     "validate:teacher": "node --experimental-strip-types scripts/validate-pna-teacher.ts",
     "build:teacher-data": "node --experimental-strip-types scripts/build-teacher-data.ts",
     "validate:ai": "node scripts/validate-pna-ai.mjs",
+    "validate:ai-explain": "node --experimental-strip-types scripts/validate-pna-ai-explain.ts",
     "build:skills-data": "node --experimental-strip-types scripts/build-skills-data.ts",
     "validate:skills": "node --experimental-strip-types scripts/validate-skills.ts",
     "validate:virtual-patient": "node scripts/validate-virtual-patient.mjs",

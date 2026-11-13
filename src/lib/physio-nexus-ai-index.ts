@@ -10,6 +10,7 @@ import { clinicalCases } from "@/lib/all-clinical-cases";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
+import { siteGuide } from "@/lib/pna-ai/site-guide";
 
 export type PnaLearningResource = {
   id: string;
@@ -26,6 +27,8 @@ export type PnaLearningResource = {
   minutes?: number;
   /** Curated search names, weighted above body text (Skills Lab). */
   tags?: string;
+  /** Roman Urdu version of `points` (site guide entries). */
+  pointsUr?: string[];
 };
 
 const manualResources: PnaLearningResource[] = [
@@ -373,6 +376,33 @@ const browseResources: PnaLearningResource[] = [
 const uniqueResources = new Map<string, PnaLearningResource>();
 for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
   if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
+}
+
+// The site guide explains what each flagship feature is, in English and Roman Urdu.
+for (const guide of siteGuide) {
+  const existing = uniqueResources.get(guide.href);
+  if (existing) {
+    existing.summary = guide.summary;
+    existing.points = guide.points;
+    existing.pointsUr = guide.pointsUr;
+    existing.hookUr = guide.hookUr;
+    existing.tags = [existing.tags, guide.tags].filter(Boolean).join(" ");
+    existing.keywords = `${existing.keywords} ${guide.keywords}`;
+  } else {
+    uniqueResources.set(guide.href, {
+      id: `feature:${guide.id}`,
+      title: guide.title,
+      href: guide.href,
+      category: guide.category,
+      summary: guide.summary,
+      level: "Overview",
+      keywords: guide.keywords,
+      tags: guide.tags,
+      points: guide.points,
+      pointsUr: guide.pointsUr,
+      hookUr: guide.hookUr,
+    });
+  }
 }
 
 export const pnaLearningResources = Array.from(uniqueResources.values());

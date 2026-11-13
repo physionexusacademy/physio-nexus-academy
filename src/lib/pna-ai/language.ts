@@ -20,6 +20,8 @@ export const STOP_WORDS = new Set([
   "karen", "karo", "kr", "raha", "rahi", "rahe", "tha", "thi", "the", "bhi", "to", "toh", "bata", "batao", "bataen",
   "batayein", "btao", "samjhao", "samjha", "samjhaen", "chahiye", "chahye", "liye", "lye", "wala", "wali", "wale", "sa",
   "si", "na", "nahi", "nahin", "jab", "agar", "phir", "bohat", "bahut", "zyada", "thora", "thoda", "ab", "abhi",
+  "roman", "urdu", "english", "language", "par", "pe", "mareez", "mareezon", "mariz", "karun", "karoon", "lun", "dena", "dein", "den", "lagate", "karte", "krte", "lete", "kahan", "kidhar",
+  "tareeqe", "tareeka", "tarika", "tariqa", "lafzon", "lafzo", "lafz", "kitni", "kitne", "kitna", "konsa", "kaunsa", "kaun", "kon", "kuch", "kya",
 ]);
 
 /** Words that mark a message as Roman Urdu. */
@@ -27,6 +29,10 @@ export const URDU_MARKERS = new Set([
   "hai", "hain", "kya", "kia", "kaise", "kese", "kyun", "mujhe", "mera", "meri", "mere", "dard", "nahi", "nahin", "karna",
   "karein", "chahiye", "ilaj", "ilaaj", "batao", "samjhao", "mein", "ka", "ki", "ke", "ko", "aur", "raha", "rahi", "hota",
   "hoti", "kamar", "ghutna", "ghutne", "gardan", "kandha", "kandhe", "sunn", "akran", "chakkar", "tha", "thi", "wala",
+  "samjha", "samjhaen", "samjhain", "samjhaiye", "karun", "karoon", "bhejein", "bhejo", "bulayein", "lun", "milengi", "milega", "milti",
+  "kahan", "kidhar", "kaun", "kaunsa", "konsa", "kitni", "kitne", "saath", "sath", "lekin", "magar", "pehle", "baad", "aasan", "asaan",
+  "lafzon", "tareeqe", "tareeka", "padhai", "parhai", "parhein", "padhein", "ghar", "hota", "hotay", "hotey", "lagate", "karte", "mareez",
+  "pindli", "neend", "dil", "bazu", "haath", "paon", "taang", "reerh", "pasli", "peeth",
 ]);
 
 type Expansion = { re: RegExp; to: string; urduOnly?: boolean };
@@ -91,6 +97,22 @@ export const URDU_TERMS: Expansion[] = [
   { re: /\b(seerhi|seerhiyan|seerhiyon|siddhi)\b/g, to: "stairs" },
   { re: /\b(jhukna|jhukne|jhuknay)\b/g, to: "bending" },
   { re: /\b(theek|thik|sahi)\s+(kaise|kese|kaisay)\b/g, to: "treatment" },
+  { re: /\b(pindli|pindlee|pindliyon|pindliyan)\b/g, to: "calf" },
+  { re: /\b(bazu|bazoo|baazu|bazuon)\b/g, to: "arm" },
+  { re: /\b(pasli|pasliyan|pasliyon)\b/g, to: "rib chest" },
+  { re: /\b(peeth|pith)\b/g, to: "back" },
+  { re: /\b(neend|neendh|nind)\b/g, to: "night sleep" },
+  { re: /\b(raat|raaat|raatko)\b/g, to: "night", urduOnly: true },
+  { re: /\b(subah|subha|sawere)\b/g, to: "morning", urduOnly: true },
+  { re: /\b(dil)\s+(ke|ka|ki)?\s*(operation|surgery|ki surgery)\b/g, to: "heart surgery cardiac rehabilitation post cabg" },
+  { re: /\b(dil|dill)\b/g, to: "heart", urduOnly: true },
+  { re: /\b(operation|aperation|surgery)\b/g, to: "surgery" },
+  { re: /\b(sugar|shugar|diabetes)\b/g, to: "diabetes", urduOnly: true },
+  { re: /\b(padhai|parhai|padhna|parhna|padhein|parhein|parho|padho)\b/g, to: "study learn" },
+  { re: /\b(shuru|start)\s+(karun|karoon|karein|karen|kahan se)\b/g, to: "start here beginner" },
+  { re: /\b(bhejein|bhejo|bhejiye|bhej\s+do|bulayein|bulao|bulaen)\b/g, to: "visit", urduOnly: true },
+  { re: /\b(ghar)\b/g, to: "home", urduOnly: true },
+  { re: /\b(asaan|aasan|asan|aasaan)\b/g, to: "simple", urduOnly: true },
 ];
 
 /**

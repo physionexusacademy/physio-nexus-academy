@@ -17,10 +17,25 @@ type Resource = {
 type Suggestion = { label: string; query?: string; href?: string };
 type Safety = { level: "emergency" | "urgent" | "crisis"; kind: string; title: string; text: string };
 
+type ExplanationStep = { label: string; text: string; list?: string[] };
+type Explanation = {
+  kind: "lesson" | "condition";
+  title: string;
+  intro: string;
+  steps: ExplanationStep[];
+  check?: string;
+  href: string;
+  openLabel: string;
+  mixedLanguage?: boolean;
+  urSummary?: string;
+};
+
 type Message = {
   id: number;
   role: "assistant" | "user";
   text: string;
+  explanation?: Explanation | null;
+  explanationOpen?: boolean;
   resources?: Resource[];
   suggestions?: Suggestion[];
   safety?: Safety | null;
@@ -70,6 +85,52 @@ function AnswerText({ text }: { text: string }) {
         );
       })}
     </>
+  );
+}
+
+/** "Explain this to me": a short, friendly explanation built from the lesson or guide itself. */
+function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanation; defaultOpen: boolean }) {
+  const ur = /[a-z]/i.test(explanation.openLabel) && explanation.openLabel.startsWith("Poor");
+  return (
+    <details open={defaultOpen} className="group mt-3 rounded-xl border border-teal-200 bg-teal-50/60">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-xl px-3 py-2 text-[13px] font-bold text-teal-900 [&::-webkit-details-marker]:hidden">
+        <span className="inline-flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> {ur ? "Mujhe samjhao" : "Explain this to me"}</span>
+        <span className="text-[11px] font-semibold text-teal-700 group-open:hidden">{ur ? "kholein" : "open"}</span>
+      </summary>
+      <div className="space-y-2.5 border-t border-teal-100 px-3 pb-3 pt-2.5 text-[13px] leading-relaxed text-slate-700">
+        <div className="text-slate-800"><AnswerText text={explanation.intro} /></div>
+        {explanation.urSummary ? (
+          <p className="rounded-lg border border-teal-200 bg-white p-2.5 text-slate-800">
+            <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-teal-700">Aasan lafzon mein (AI, PNA guide se)</span>
+            {explanation.urSummary}
+          </p>
+        ) : null}
+        <ol className="space-y-2">
+          {explanation.steps.map((step, index) => (
+            <li key={step.label + index} className="rounded-lg bg-white/80 p-2.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-teal-700">{step.label}</p>
+              {step.text ? <div className="mt-0.5"><AnswerText text={step.text} /></div> : null}
+              {step.list?.length ? (
+                <ul className="mt-1 space-y-1">
+                  {step.list.map((item) => (
+                    <li key={item} className="flex gap-1.5"><span className="text-teal-600" aria-hidden="true">•</span><span><AnswerText text={item} /></span></li>
+                  ))}
+                </ul>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+        {explanation.check ? (
+          <p className="rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-amber-950">
+            <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-wider text-amber-800">{ur ? "Khud ko parkhein" : "Try it yourself"}</span>
+            {explanation.check}
+          </p>
+        ) : null}
+        <a href={explanation.href} className="inline-flex items-center gap-1.5 rounded-full bg-teal-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-teal-800">
+          {explanation.openLabel} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      </div>
+    </details>
   );
 }
 
@@ -157,6 +218,8 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
         suggestions?: Suggestion[];
         safety?: Safety | null;
         topic?: string;
+        explanation?: Explanation | null;
+        explanationOpen?: boolean;
         error?: string;
       };
 
@@ -171,6 +234,8 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
           suggestions: Array.isArray(result.suggestions) ? result.suggestions : [],
           safety: result.safety ?? null,
           topic: result.topic,
+          explanation: result.explanation ?? null,
+          explanationOpen: Boolean(result.explanationOpen),
         },
       ]);
     } catch (error) {
@@ -254,6 +319,8 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
                   ) : null}
 
                   {message.role === "user" ? <p>{message.text}</p> : message.text ? <AnswerText text={message.text} /> : null}
+
+                  {message.explanation ? <ExplanationCard explanation={message.explanation} defaultOpen={Boolean(message.explanationOpen)} /> : null}
 
                   {message.resources && message.resources.length > 0 && (
                     <div className="mt-3 space-y-2">

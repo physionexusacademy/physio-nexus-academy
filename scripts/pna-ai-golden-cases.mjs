@@ -99,6 +99,24 @@ export const goldenCases = [
   { q: "viva questions on it", context: { lastTopic: "Adhesive Capsulitis" }, any: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
   { q: "step by step?", context: { lastTopic: "Convex–Concave Rule" }, any: ["/learn/convex-concave-rule"] },
   { q: "Adhesive Capsulitis viva", anyTop2: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical", "/learn/review", "/daily-challenge"], any: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
+  // --- Roman Urdu understanding and "what does PNA have?" (site guide)
+  { q: "mujhe convex concave rule samjha do", lang: "ur", top: ["/learn/convex-concave-rule"] },
+  { q: "Maitland grades roman urdu mein samjhao", lang: "ur", top: ["/learn/maitland-grades"] },
+  { q: "mere ghar physio bhejein", lang: "ur", top: ["/home-visit"] },
+  { q: "rehabverse kya hai account kaise banao", lang: "ur", top: ["/rehabverse"] },
+  { q: "website par kya kya hai", lang: "ur", top: ["/#features"] },
+  { q: "what does Physio Nexus Academy offer", lang: "en", top: ["/#features"] },
+  { q: "physio ki padhai ke liye kahan se start karun", lang: "ur", top: ["/#features"] },
+  { q: "daily challenge kya hai", lang: "ur", top: ["/daily-challenge"] },
+  { q: "virtual patient kaise use karte hain", lang: "ur", top: ["/virtual-patient"] },
+  { q: "skills lab mein kya hai", lang: "ur", top: ["/skills"] },
+  { q: "manual therapy kitni techniques hain", lang: "ur", top: ["/manual-therapy"] },
+  { q: "dil ke operation ke baad exercise", lang: "ur", anyTop2: ["/conditions/post-cabg-rehabilitation#clinical", "/conditions/post-cabg-rehabilitation#quick"] },
+  { q: "neend mein haath sunn ho jata hai", lang: "ur", anyTop2: ["/conditions/carpal-tunnel-syndrome#quick", "/conditions/carpal-tunnel-syndrome#clinical"] },
+  { q: "frozen shoulder in english", lang: "en", anyTop2: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
+  { q: "stroke ke baad physiotherapy kaise hoti hai", lang: "ur", anyTop2: ["/conditions/stroke-rehabilitation#quick", "/conditions/stroke-rehabilitation#clinical"] },
+  // The overview question must not be glued onto the previous topic.
+  { q: "website par kya kya hai", context: { lastTopic: "The Convex–Concave Rule" }, top: ["/#features"], freshTopic: true },
 ];
 
 /** Returns a list of failure messages for one case result. */

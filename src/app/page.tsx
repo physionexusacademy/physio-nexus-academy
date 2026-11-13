@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import { ArrowRight, BookMarked, BookOpen, CalendarDays, Flame, Laugh, LibraryBig, MapPin, Medal, Quote, Sparkles, Timer, Trophy } from "lucide-react";
+import { ArrowRight, BookMarked, CalendarDays, Flame, Laugh, MapPin, Medal, Quote, Sparkles, Timer, Trophy } from "lucide-react";
 import { createPublicClient } from "@/lib/supabase/public";
 import { conditionCatalog } from "@/lib/conditions/catalog";
-import { areaLabel } from "@/lib/conditions/taxonomy";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard";
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
 import { LobbyHero } from "@/components/home/LobbyHero";
 import { StudentPass } from "@/components/home/StudentPass";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
-import { MeetPnaTeacher } from "@/components/home/MeetPnaTeacher";
-import { HomeDirectory } from "@/components/home/HomeDirectory";
 import { HomeBooks } from "@/components/home/HomeBooks";
-import { HomeRehabVerse } from "@/components/home/HomeRehabVerse";
+import { HomeFeatures } from "@/components/home/HomeFeatures";
+import { HomeNeedHelp } from "@/components/home/HomeNeedHelp";
 import { getLatestEpisode, stupidInternEpisodes } from "@/lib/stupid-intern-diaries";
 import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
@@ -112,10 +110,6 @@ export default async function HomePage() {
 
   const featuredWorkshops = workshopRows?.length ? workshopRows : null;
   const testimonials = testimonialRows?.length ? testimonialRows : null;
-  // Three popular starting points from the Conditions & Treatment Guide.
-  const popularConditions = ["non-specific-low-back-pain", "knee-osteoarthritis", "rotator-cuff-tendinopathy"]
-    .map((slug) => conditionCatalog.find((item) => item.slug === slug))
-    .filter((item): item is (typeof conditionCatalog)[number] => Boolean(item));
   const latestEpisode = getLatestEpisode();
 
   const brandHomeJsonLd = {
@@ -169,15 +163,11 @@ export default async function HomePage() {
       />
       <LobbyHero atlasPublished={atlasPublished} conditionCount={conditionCatalog.length} />
 
-      <HomeDirectory />
+      <HomeNeedHelp />
 
-      <HomeRehabVerse />
+      <HomeFeatures />
 
       <HomeBooks />
-
-      <StudentPass />
-
-      <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
       <section data-pna-home-flagship="daily-clinical-challenge-v2" className="nx-sky nx-grid lobby-arena" aria-labelledby="pna-daily-flagship-title">
         <div className="container-content lobby-arena-grid">
@@ -221,16 +211,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <MeetPnaTeacher />
+      <PremiumPathwayBrowser showAtlas={atlasPublished} />
+
+      <StudentPass />
 
       <section className="container-content lobby-news" aria-labelledby="campus-news-title">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="nx-kicker nx-kicker-light"><span className="nx-live" /> Campus news</p>
-            <h2 id="campus-news-title" className="nx-title mt-3 text-3xl text-navy-800 sm:text-4xl">Fresh on campus today</h2>
+            <p className="nx-kicker nx-kicker-light"><span className="nx-live" /> What&apos;s new</p>
+            <h2 id="campus-news-title" className="nx-title mt-3 text-3xl text-navy-800 sm:text-4xl">Fresh on campus</h2>
           </div>
-          <a href="/conditions" className="nx-btn nx-btn-light !min-h-[40px] !text-[0.85rem]">
-            Explore conditions &amp; treatment plans <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <a href="/workshops" className="nx-btn nx-btn-light !min-h-[40px] !text-[0.85rem]">
+            All workshops <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
 
@@ -267,23 +259,6 @@ export default async function HomePage() {
             <a href="/workshops" className="lobby-news-more">See all workshops <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
           </div>
 
-          <div className="lobby-news-card rounded-3xl border">
-            <span className="lobby-news-tag"><LibraryBig className="h-4 w-4" aria-hidden="true" /> Conditions &amp; treatment plans</span>
-            <ul className="mt-3 space-y-2.5">
-              {popularConditions.map((item) => (
-                <li key={item.slug}>
-                  <a href={`/conditions/${item.slug}`} className="group flex items-start gap-3 rounded-2xl p-2 hover:bg-teal-50/70">
-                    <BookOpen className="mt-0.5 h-4 w-4 flex-none text-teal-700" aria-hidden="true" />
-                    <span className="min-w-0">
-                      <strong className="block text-sm font-bold leading-snug text-navy-800 group-hover:text-teal-800">{item.name}</strong>
-                      <span className="text-xs text-slate-500">{areaLabel(item.area)} · {item.stages}-stage plan</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <a href="/conditions" className="lobby-news-more">All {conditionCatalog.length} conditions <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
-          </div>
         </div>
       </section>
 
@@ -323,6 +298,7 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
+
     </>
   );
 }

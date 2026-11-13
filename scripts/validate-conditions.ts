@@ -78,6 +78,6 @@ for (const gone of ["src/app/knowledge-hub", "src/app/clinical-arena", "src/app/
 // 7. Pages, sitemap and homepage are wired.
 assert.ok(fs.existsSync(path.join(root, "src/app/conditions/page.tsx")) && fs.existsSync(path.join(root, "src/app/conditions/[slug]/page.tsx")), "conditions pages missing");
 assert.ok(read("src/app/sitemap.ts").includes("conditionRoutes"), "sitemap must list every condition");
-assert.ok(read("src/components/home/HomeDirectory.tsx").includes('href: "/conditions"'), "homepage directory must link to /conditions");
+assert.ok(read("src/components/home/PremiumPathwayBrowser.tsx").includes('href: "/conditions"'), "homepage pathways must link to /conditions");
 
 console.log(`Conditions guide checks passed: ${catalog.length} conditions, ${areas.length} areas, ${types.length} types, redirects and links verified.`);

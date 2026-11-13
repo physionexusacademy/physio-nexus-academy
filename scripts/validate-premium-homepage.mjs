@@ -19,7 +19,8 @@ const header=read("src/components/Header.tsx");
 const palette=read("src/components/nexus/CommandPalette.tsx");
 const mobile=read("src/components/MobilePortalNav.tsx");
 const whatsapp=read("src/components/WhatsAppButton.tsx");
-const directory=read("src/components/home/HomeDirectory.tsx");
+const needHelp=read("src/components/home/HomeNeedHelp.tsx");
+const features=read("src/components/home/HomeFeatures.tsx");
 const booksRow=read("src/components/home/HomeBooks.tsx");
 const bookIds=[...read("src/lib/books.ts").matchAll(/^\s+id: "([a-z0-9-]+)",/gm)].map(match=>match[1]);
 
@@ -39,8 +40,8 @@ const zones=[
   "Workshops & Professional Growth","I Need Physiotherapy"
 ];
 const tests={
-  academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />')&&home.includes("<MeetPnaTeacher />"),
-  lobbyOrder:home.indexOf("<LobbyHero")<home.indexOf("<StudentPass />")&&home.indexOf("<StudentPass />")<home.indexOf("<PremiumPathwayBrowser")&&home.indexOf("<PremiumPathwayBrowser")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"'),
+  academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<HomeNeedHelp />")&&home.includes("<HomeFeatures />")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
+  lobbyOrder:home.indexOf("<LobbyHero")<home.indexOf("<HomeNeedHelp />")&&home.indexOf("<HomeNeedHelp />")<home.indexOf("<HomeFeatures />")&&home.indexOf("<HomeFeatures />")<home.indexOf("<HomeBooks />")&&home.indexOf("<HomeBooks />")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')&&home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf("<PremiumPathwayBrowser")&&home.indexOf("<PremiumPathwayBrowser")<home.indexOf("<StudentPass />"),
   noDuplicatedFeatureWall:!home.includes("portalActions.map")&&!home.includes("portalGroups.map")&&!home.includes("pna-home-zones"),
   allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
   retiredWeeklyQuizGone:!hrefs.includes("/clinical-quiz")&&!home.includes("/clinical-quiz"),
@@ -64,8 +65,10 @@ const tests={
   motionRespect:lobbyCss.includes("prefers-reduced-motion")&&nexusCss.includes("prefers-reduced-motion"),
   responsiveHero:lobbyCss.includes("max-width: 560px")&&lobbyCss.includes("max-width: 900px"),
   featureSearchKept:search.includes('role="search"')&&search.includes("results.map("),
-  // A plain-language directory straight after the hero: patients and learners find everything in one tap.
-  startHereDirectory:home.indexOf("<HomeDirectory />")>home.indexOf("<LobbyHero")&&home.indexOf("<HomeDirectory />")<home.indexOf("<StudentPass />")&&["/appointment","/home-visit","/symptom-checker","/learn","/skills","/virtual-patient","/workshops","/conditions"].every(url=>directory.includes(`href: "${url}"`)),
+  // Patients find care in one strip right under the hero.
+  patientStrip:home.indexOf("<HomeNeedHelp />")>home.indexOf("<LobbyHero")&&["/appointment","/home-visit","/symptom-checker","/rehabverse"].every(url=>needHelp.includes(`href: "${url}"`))&&needHelp.includes("whatsappLink("),
+  // The seven highlighted features, one card each, each one link away.
+  sevenFlagshipFeatures:["/learn","/skills","/virtual-patient","/rehabverse/register","/manual-therapy","/daily-challenge","#books"].every(url=>features.includes(`href="${url}`))&&features.includes('data-pna-home-feature="rehabverse-v1"')&&features.includes("Guided rehab at home")&&features.includes("Create your account")&&features.includes("I already have an account"),
   // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
   booksRowOnHome:home.includes("<HomeBooks />")&&booksRow.includes("BOOKS.map(")&&lobbyCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")&&bookIds.length>=3&&bookIds.every(id=>fs.existsSync(`public/images/books/thumbs/${id}.webp`))
 };

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, BadgeCheck, BookMarked, Calculator, Languages, Trophy } from "lucide-react";
+import { ArrowRight, BadgeCheck, Languages } from "lucide-react";
 import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
 import { LobbySearch } from "./LobbySearch";
 
@@ -12,7 +12,7 @@ export function LobbyHero({ atlasPublished, conditionCount }: { atlasPublished: 
   const stats = [
     { value: lessonIndex.length, label: "step-by-step lessons" },
     { value: manualLessonMetas.length, label: "manual therapy techniques" },
-    { value: conditionCount, label: "MSK conditions explained" },
+    { value: conditionCount, label: "conditions with treatment plans" },
     { value: "5", label: "daily challenge questions" },
   ];
 
@@ -23,14 +23,14 @@ export function LobbyHero({ atlasPublished, conditionCount }: { atlasPublished: 
       <div className="container-content lobby-hero-grid">
         <div className="lobby-copy">
           <p className="nx-kicker">
-            <span className="nx-live" /> Physio Nexus Academy · Campus online
+            <span className="nx-live" /> Physio Nexus Academy · Pakistan&apos;s physiotherapy academy
           </p>
           <h1 id="lobby-title" className="nx-title lobby-title">
             Clinical confidence <span className="nx-gradient-text">starts here.</span>
           </h1>
           <p className="nx-lead lobby-lead">
-            Welcome to Pakistan&apos;s online physiotherapy academy. Learn hard concepts step by step, practise on real patient cases,
-            and get expert care — in English or Roman Urdu.
+            Free lessons, 3D practice patients, manual therapy, guided home rehab and books — everything a physiotherapy student,
+            clinician or patient needs, in English and Roman Urdu.
           </p>
 
           <LobbySearch atlasPublished={atlasPublished} />
@@ -39,17 +39,11 @@ export function LobbyHero({ atlasPublished, conditionCount }: { atlasPublished: 
             <a href="/learn" className="nx-btn nx-btn-primary">
               Start learning free <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
-            <a href="/daily-challenge" className="nx-btn nx-btn-ghost">
-              <Trophy className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Today&apos;s challenge
-            </a>
-            <a href="/health-calculators/bmi" className="nx-btn nx-btn-ghost">
-              <Calculator className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /> BMI Calculator
-            </a>
-            <a href="/clinical-registry" className="nx-btn nx-btn-ghost">
-              <BookMarked className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /> Clinical Registry
+            <a href="#features" className="nx-btn nx-btn-ghost">
+              See what you can do here
             </a>
             <a href="/patient-services" className="lobby-patient-link">
-              I&apos;m a patient <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              I need physiotherapy <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           </div>
         </div>
