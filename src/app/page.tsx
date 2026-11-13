@@ -18,53 +18,51 @@ import "./home-lobby.css";
 
 export const metadata: Metadata = {
   title: {
-    absolute:
-      "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning in Pakistan",
+    absolute: "Physio Nexus Academy | Official Site — Physiotherapy Education & Workshops in Pakistan",
   },
   description:
-    "Physio Nexus Academy — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Knowledge Hub, manual therapy, treatment plans, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
+    "Official website of Physio Nexus Academy (PNA) — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Knowledge Hub, manual therapy, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
   keywords: [
     "Physio Nexus Academy",
+    "Physio Nexus Academy Pakistan",
     "PNA physiotherapy",
+    "Physio Nexus Academy official",
     "physiotherapy education Pakistan",
     "physiotherapy workshops Pakistan",
     "manual therapy training Pakistan",
-    "MSK physiotherapy",
-    "physiotherapy clinical skills",
-    "physiotherapy students Pakistan",
-    "CPD physiotherapy Pakistan",
-    "home physiotherapy Pakistan",
     "Dr Sajjad Raza PT",
+    "PNA Teacher",
+    "physiotherapy students Pakistan",
   ],
   openGraph: {
-    title: "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning",
+    title: "Physio Nexus Academy | Official Site",
     description:
-      "Practical physiotherapy education, clinical resources, workshops and patient care — Physio Nexus Academy, Pakistan.",
+      "Official website of Physio Nexus Academy — practical physiotherapy education, workshops and clinical learning in Pakistan.",
     url: "https://physionexusacademy.com",
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
     type: "website",
     images: [
       {
-        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy",
-      },
-      {
         url: "https://physionexusacademy.com/images/pna-logo.png",
         width: 512,
         height: 512,
         alt: "Physio Nexus Academy",
       },
+      {
+        url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy",
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Physio Nexus Academy | Physiotherapy Education & Workshops in Pakistan",
+    title: "Physio Nexus Academy | Official Site",
     description:
-      "Practical physiotherapy education, clinical resources and hands-on workshops from Physio Nexus Academy.",
-    images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
+      "Official website of Physio Nexus Academy — physiotherapy education and workshops in Pakistan.",
+    images: ["https://physionexusacademy.com/images/pna-logo.png"],
   },
   alternates: {
     canonical: "https://physionexusacademy.com",
@@ -81,8 +79,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Reads live, admin-editable data from Supabase: render on every request (prebuilt pages
-// are served from a read-only cache that never refreshes).
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
@@ -120,23 +116,44 @@ export default async function HomePage() {
     .slice(0, 3);
   const latestEpisode = getLatestEpisode();
 
-  const siteSectionsJsonLd = {
+  const brandHomeJsonLd = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Physio Nexus Academy — Main sections",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "PNA Teacher", url: "https://physionexusacademy.com/learn" },
-      { "@type": "ListItem", position: 2, name: "Clinical Skills Lab", url: "https://physionexusacademy.com/skills" },
-      { "@type": "ListItem", position: 3, name: "Virtual Patient", url: "https://physionexusacademy.com/virtual-patient" },
-      { "@type": "ListItem", position: 4, name: "Knowledge Hub", url: "https://physionexusacademy.com/knowledge-hub" },
-      { "@type": "ListItem", position: 5, name: "Manual Therapy", url: "https://physionexusacademy.com/manual-therapy" },
-      { "@type": "ListItem", position: 6, name: "Treatment Plans", url: "https://physionexusacademy.com/treatment-plans" },
-      { "@type": "ListItem", position: 7, name: "Workshops & CPD", url: "https://physionexusacademy.com/workshops" },
-      { "@type": "ListItem", position: 8, name: "Books & Resources", url: "https://physionexusacademy.com/resources" },
-      { "@type": "ListItem", position: 9, name: "Home Visit", url: "https://physionexusacademy.com/home-visit" },
-      { "@type": "ListItem", position: 10, name: "Book Appointment", url: "https://physionexusacademy.com/appointment" },
-      { "@type": "ListItem", position: 11, name: "About", url: "https://physionexusacademy.com/about" },
-      { "@type": "ListItem", position: 12, name: "Contact", url: "https://physionexusacademy.com/contact" },
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://physionexusacademy.com/#webpage",
+        url: "https://physionexusacademy.com",
+        name: "Physio Nexus Academy",
+        description:
+          "Official website of Physio Nexus Academy — practical physiotherapy education, clinical learning and workshops in Pakistan.",
+        isPartOf: { "@id": "https://physionexusacademy.com/#website" },
+        about: { "@id": "https://physionexusacademy.com/#organization" },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: "https://physionexusacademy.com/images/pna-logo.png",
+        },
+        inLanguage: "en-PK",
+      },
+      {
+        "@type": "ItemList",
+        name: "Physio Nexus Academy — Main sections",
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+        numberOfItems: 12,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "PNA Teacher", url: "https://physionexusacademy.com/learn" },
+          { "@type": "ListItem", position: 2, name: "Clinical Skills Lab", url: "https://physionexusacademy.com/skills" },
+          { "@type": "ListItem", position: 3, name: "Virtual Patient", url: "https://physionexusacademy.com/virtual-patient" },
+          { "@type": "ListItem", position: 4, name: "Knowledge Hub", url: "https://physionexusacademy.com/knowledge-hub" },
+          { "@type": "ListItem", position: 5, name: "Manual Therapy", url: "https://physionexusacademy.com/manual-therapy" },
+          { "@type": "ListItem", position: 6, name: "Treatment Plans", url: "https://physionexusacademy.com/treatment-plans" },
+          { "@type": "ListItem", position: 7, name: "Workshops & CPD", url: "https://physionexusacademy.com/workshops" },
+          { "@type": "ListItem", position: 8, name: "Books & Resources", url: "https://physionexusacademy.com/resources" },
+          { "@type": "ListItem", position: 9, name: "Home Visit", url: "https://physionexusacademy.com/home-visit" },
+          { "@type": "ListItem", position: 10, name: "Book Appointment", url: "https://physionexusacademy.com/appointment" },
+          { "@type": "ListItem", position: 11, name: "About", url: "https://physionexusacademy.com/about" },
+          { "@type": "ListItem", position: 12, name: "Contact", url: "https://physionexusacademy.com/contact" },
+        ],
+      },
     ],
   };
 
@@ -145,12 +162,11 @@ export default async function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(siteSectionsJsonLd).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(brandHomeJsonLd).replace(/</g, "\\u003c"),
         }}
       />
       <LobbyHero atlasPublished={atlasPublished} conditionCount={mskConditionIndex.length} />
 
-      {/* Plain-language directory and the books, before anything else, so a new visitor finds their way at once. */}
       <HomeDirectory />
 
       <HomeBooks />
