@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HubJsonLd } from "@/lib/seo/hub";
 import { notFound } from "next/navigation";
 import {
   Activity,
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ClinicalVisualAtlasPage() {
+function ClinicalVisualAtlasPageBody() {
   if (!atlasPublished) notFound();
 
   const readyEntries = clinicalVisualAtlas.filter(
@@ -165,5 +166,14 @@ export default function ClinicalVisualAtlasPage() {
         </p>
       </section>
     </div>
+  );
+}
+
+export default function ClinicalVisualAtlasPage() {
+  return (
+    <>
+      <HubJsonLd name={"Clinical Visual Atlas"} description={"Free visual atlas of musculoskeletal anatomy, injuries and clinical findings for physiotherapy students and clinicians."} path={"/clinical-visual-atlas"} crumbs={[{ name: "Clinical Visual Atlas", path: "/clinical-visual-atlas" }]} />
+      <ClinicalVisualAtlasPageBody />
+    </>
   );
 }

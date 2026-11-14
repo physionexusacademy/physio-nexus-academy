@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HubJsonLd } from "@/lib/seo/hub";
 import { ArrowRight, Map, Hand, Activity, BookOpenCheck } from "lucide-react";
 import {
   completeRegionalManualApplications,
@@ -17,7 +18,7 @@ function regionSlug(region: string) {
   return region.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-export default function RegionalManualTherapyPage() {
+function RegionalManualTherapyPageBody() {
   const authored = completeRegionalManualApplications.filter(isTechniqueSpecificRegionalApplication);
   const overviewCount = completeRegionalManualApplications.length - authored.length;
 
@@ -112,5 +113,14 @@ export default function RegionalManualTherapyPage() {
         })}
       </section>
     </div>
+  );
+}
+
+export default function RegionalManualTherapyPage() {
+  return (
+    <>
+      <HubJsonLd name={"Manual Therapy by Body Region"} description={"Region-by-region manual therapy technique guides for the spine, shoulder, elbow, wrist, hip, knee and ankle, with indications and safety notes."} path={"/manual-therapy/regions"} crumbs={[{ name: "Manual Therapy", path: "/manual-therapy" }, { name: "By Body Region", path: "/manual-therapy/regions" }]} />
+      <RegionalManualTherapyPageBody />
+    </>
   );
 }

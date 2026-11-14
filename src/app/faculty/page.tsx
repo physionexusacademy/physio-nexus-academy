@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HubJsonLd } from "@/lib/seo/hub";
 import Image from "next/image";
 import { ArrowRight, GraduationCap, UserRound } from "lucide-react";
 import { facultyMembers } from "@/lib/faculty";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FacultyPage() {
+function FacultyPageBody() {
   return (
     <div className="section-padding bg-gradient-to-b from-grey-50 via-white to-cyan-50/40">
       <div className="container-content">
@@ -84,5 +85,14 @@ export default function FacultyPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FacultyPage() {
+  return (
+    <>
+      <HubJsonLd name={"Physio Nexus Academy faculty"} description={"Meet the Physio Nexus Academy faculty and clinical training team."} path={"/faculty"} crumbs={[{ name: "Faculty", path: "/faculty" }]} />
+      <FacultyPageBody />
+    </>
   );
 }
