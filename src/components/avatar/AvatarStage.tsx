@@ -15,7 +15,7 @@ import { resolvePoint } from "@/lib/skills/points3d";
 import { plain } from "@/lib/avatar/text";
 import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
-import { onVoices, planSpeech, readPrefs, savePref, supportsSpeech, voicesFor } from "@/lib/speech/voices";
+import { genderOf, onVoices, planSpeech, readPrefs, savePref, supportsSpeech, voicesFor } from "@/lib/speech/voices";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
@@ -61,8 +61,11 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const stageRef = useRef<TeachingStage | null>(null);
   const docRef = useRef<DrSajjad | null>(null);
   const langRef = useRef(lang);
+  // The latest voice and speed settings: the stage is built a few seconds after the first tap (dynamic imports, the character), and a setting changed meanwhile must not be lost.
+  const settingsRef = useRef({ voice: false, speed: 1 });
   const sizeRef = useRef({ w: 600, h: 400 });
   langRef.current = lang;
+  settingsRef.current = { voice: voice && voiceOk, speed };
 
   // What this device can do.
   useEffect(() => {
@@ -84,7 +87,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         for (const v of voicesFor(kind, "male")) {
           if (seen.has(v.name)) continue;
           seen.add(v.name);
-          list.push({ name: v.name, label: `${v.name} (${v.lang})` });
+          list.push({ name: v.name, label: `${v.name} (${v.lang})${genderOf(v) === "male" ? " ♂" : genderOf(v) === "female" ? " ♀" : ""}` });
         }
       }
       setVoiceList(list);
@@ -154,7 +157,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
           docRef.current = await DrSajjad.create({ light });
           if (cancelled) return;
         }
-        const stage = new TeachingStage(room, docRef.current, choreo, { lang: langRef.current, voice: voice && voiceOk, speed, light }, draw);
+        const stage = new TeachingStage(room, docRef.current, choreo, { lang: langRef.current, voice: settingsRef.current.voice, speed: settingsRef.current.speed, light }, draw);
         stageRef.current = stage;
         stage.init();
         posed.current = true;

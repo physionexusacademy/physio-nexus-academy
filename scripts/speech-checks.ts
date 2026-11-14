@@ -1,5 +1,5 @@
 // Entry bundled by scripts/validate-speech.mjs: checks voice choice and Roman Urdu preparation with a mocked speech synthesiser.
-import { planSpeech, voicesFor } from "../src/lib/speech/voices";
+import { genderOf, planSpeech, voicesFor } from "../src/lib/speech/voices";
 import { convertRun, splitRuns, toDevanagari, toUrdu } from "../src/lib/speech/roman-urdu";
 import fs from "node:fs";
 
@@ -44,6 +44,30 @@ plan = await planSpeech("karein", "ur");
 check(plan.mode === "none" && Boolean(plan.note), "No Urdu/Hindi voice → silent with a note");
 install([]);
 check((await planSpeech("Hello", "en")).mode === "none", "No voices at all → silent");
+
+// 2b. The therapist is a man: a known male voice beats any other (even a natural female one); otherwise the pitch is lowered
+const ARIA = v("Microsoft Aria Online (Natural) - English (United States)", "en-US", false), GOOGLE_MALE = v("Google UK English Male", "en-GB"), IN_PLAIN = v("English India", "en-IN");
+const GOOGLE_HI = v("Google \u0939\u093f\u0928\u094d\u0926\u0940", "hi-IN");
+install([ARIA, GOOGLE_MALE, EN_US]);
+plan = await planSpeech("Hello", "en");
+check(plan.segments[0].voice?.name === GOOGLE_MALE.name && plan.segments[0].pitch === 1, "A known male voice beats a natural female one");
+install([ARIA]);
+plan = await planSpeech("Hello", "en");
+check(plan.segments[0].voice?.name === ARIA.name && plan.segments[0].pitch === 0.7, "Only a female voice: pitch lowered to 0.7 (got " + plan.segments[0].pitch + ")");
+install([IN_PLAIN]);
+plan = await planSpeech("Hello", "en");
+check(plan.segments[0].pitch === 0.8, "Unlabelled voice: pitch 0.8");
+install([ARIA]);
+plan = await planSpeech("Hello", "en", { en: ARIA.name });
+check(plan.segments[0].pitch === 1, "A voice the visitor chose is never altered");
+install([EN_US, GOOGLE_HI, HI_M]);
+plan = await planSpeech("karein", "ur");
+check(plan.segments[0].voice?.name === HI_M.name && plan.segments[0].pitch === 1, "Male Hindi voice (Prabhat) beats Google Hindi (female)");
+install([EN_US, GOOGLE_HI]);
+plan = await planSpeech("karein", "ur");
+check(plan.segments[0].voice?.name === GOOGLE_HI.name && plan.segments[0].pitch === 0.7, "Google Hindi is recognised as female and lowered");
+install([EN_US, EN_IN_M]);
+check(genderOf(EN_IN_M) === "male" && genderOf(ARIA) === "female" && genderOf(IN_PLAIN) === null, "genderOf");
 
 // 3. Conversion spot checks
 const cases: [string, string, string][] = [["hai", "है", "ہے"], ["karein", "करें", "کریں"], ["mein", "में", "میں"], ["dekhein", "देखें", "دیکھیں"], ["logon", "लोगों", "لوگوں"], ["mushkil", "मुश्किल", "مشکل"], ["yahan", "यहां", "یہاں"]];

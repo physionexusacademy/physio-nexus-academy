@@ -10,7 +10,7 @@ import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyDa
 import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT, applyHeadFit } from "./fit";
 
 export const LOOK = {
-  skin: "#d29c82",
+  skin: "#c08b72",
   hair: "#2a1b14",
   beard: "#1f1612",
   scrubs: "#14284a",
@@ -20,6 +20,8 @@ export const LOOK = {
   logoUrl: "/teacher/pna-chest-logo.webp",
   /** His face, fitted to the reference photograph and baked into the body's UV layout (2048 px, transparent outside the head). */
   faceUrl: "/teacher/dr-sajjad-face.webp",
+  /** Fine relief of his skin (pores, creases, stubble) from the photograph, in the body's UV layout. */
+  bumpUrl: "/teacher/dr-sajjad-bump.webp",
   /** His hair as photographed (hair pixels only), projected from the front on the hair shell. */
   hairUrl: "/teacher/dr-sajjad-hair.webp",
 };
@@ -94,7 +96,7 @@ function shellMaterial(base: THREE.MeshStandardMaterial, options: { soft?: numbe
 /* ---------------- skin ---------------- */
 
 /** Re-colours the body's baked skin texture to Dr. Sajjad's complexion, keeping the painted hair, brows, lips and shading. */
-function recolourSkin(figure: Figure, face: HTMLImageElement | null, light: boolean) {
+function recolourSkin(figure: Figure, face: HTMLImageElement | null, bump: HTMLImageElement | null, light: boolean) {
   const material = figure.mesh.material as THREE.MeshStandardMaterial;
   const image = material.map?.image as CanvasImageSource & { width: number; height: number } | undefined;
   const skin = new THREE.Color(LOOK.skin);
@@ -148,6 +150,15 @@ function recolourSkin(figure: Figure, face: HTMLImageElement | null, light: bool
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
     next.map = map;
+    if (face && bump && !light) {
+      // relief from the photograph's fine detail (skipped in light mode to save memory)
+      const relief = figure.own(new THREE.Texture(bump));
+      relief.flipY = false;
+      relief.needsUpdate = true;
+      relief.anisotropy = 4;
+      next.bumpMap = relief;
+      next.bumpScale = 1.0;
+    }
   } else {
     next.color = skin;
   }
@@ -155,35 +166,61 @@ function recolourSkin(figure: Figure, face: HTMLImageElement | null, light: bool
   figure.own(next);
 }
 
-/** The photographed eyes have warm, slightly tired whites; the generic texture's cool grey would look startled. */
+/** Brown eyes as photographed: warm whites with a faint rim, a fibrous brown iris with a dark limbal ring, a pupil and a small catchlight (painted over the generic texture's layout). */
 function warmEyes(figure: Figure) {
   const material = figure.eyes?.material as THREE.MeshStandardMaterial | undefined;
   const image = material?.map?.image as (CanvasImageSource & { width: number; height: number }) | undefined;
   if (!material || !image) return;
+  const k = image.width / 256;
   const c = canvas(image.width, image.height);
-  const ctx = c.getContext("2d", { willReadFrequently: true })!;
+  const ctx = c.getContext("2d")!;
   ctx.drawImage(image, 0, 0);
-  const data = ctx.getImageData(0, 0, c.width, c.height);
-  const px = data.data;
-  for (let i = 0; i < px.length; i += 4) {
-    const r = px[i], g = px[i + 1], b = px[i + 2];
-    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-    const sat = Math.max(r, g, b) - Math.min(r, g, b);
-    if (lum > 120 && sat < 40) {
-      // white of the eye: warmer and a touch darker towards the rim
-      const k = Math.min(1, lum / 200);
-      px[i] = Math.min(255, 238 * k + 8);
-      px[i + 1] = Math.min(255, 226 * k + 6);
-      px[i + 2] = Math.min(255, 214 * k + 4);
+  const paint = (scleraX: number, scleraY: number, irisX: number, irisY: number) => {
+    const sx = scleraX * k, sy = scleraY * k, ix = irisX * k, iy = irisY * k;
+    const sclera = ctx.createRadialGradient(sx, sy, 0, sx, sy, 64 * k);
+    sclera.addColorStop(0, "#f4ebe2");
+    sclera.addColorStop(0.62, "#ecdfd4");
+    sclera.addColorStop(0.9, "#cfb8aa");
+    sclera.addColorStop(1, "#b9a094");
+    ctx.fillStyle = sclera;
+    ctx.beginPath();
+    ctx.arc(sx, sy, 63 * k, 0, Math.PI * 2);
+    ctx.fill();
+    const iris = ctx.createRadialGradient(ix, iy, 6 * k, ix, iy, 31 * k);
+    iris.addColorStop(0, "#8b5a34");
+    iris.addColorStop(0.5, "#5e3519");
+    iris.addColorStop(0.86, "#3a2012");
+    iris.addColorStop(1, "#150b06");
+    ctx.fillStyle = iris;
+    ctx.beginPath();
+    ctx.arc(ix, iy, 31 * k, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 0.9 * k;
+    for (let i = 0; i < 44; i++) {
+      const a = (i / 44) * Math.PI * 2 + (i % 3) * 0.05;
+      ctx.strokeStyle = i % 2 ? "rgba(176,118,64,0.38)" : "rgba(30,15,7,0.42)";
+      ctx.beginPath();
+      ctx.moveTo(ix + Math.cos(a) * 12 * k, iy + Math.sin(a) * 12 * k);
+      ctx.lineTo(ix + Math.cos(a) * 29 * k, iy + Math.sin(a) * 29 * k);
+      ctx.stroke();
     }
-  }
-  ctx.putImageData(data, 0, 0);
+    ctx.fillStyle = "#090504";
+    ctx.beginPath();
+    ctx.arc(ix, iy, 11 * k, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.88)";
+    ctx.beginPath();
+    ctx.ellipse(ix - 9 * k, iy - 10 * k, 5 * k, 4 * k, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  paint(192, 64, 180, 76);
+  paint(64, 192, 73.5, 181);
   const map = new THREE.CanvasTexture(c);
   map.flipY = material.map!.flipY;
   map.colorSpace = THREE.SRGBColorSpace;
   map.anisotropy = 4;
   material.map = map;
-  material.roughness = 0.12;
+  material.roughness = 0.1;
   material.needsUpdate = true;
   figure.own(map);
 }
@@ -343,7 +380,8 @@ function hairFields(body: BodyData) {
     const phi = angleOf(x, z);
     const deg = (phi * 180) / Math.PI;
     // Hairline height all round: forehead, temples (faded sides), nape.
-    const hairline = 1.717 - 0.048 * smooth(32, 85, deg) - 0.062 * smooth(105, 150, deg);
+    // the temple hair comes down to the top of the ear and meets the sideburn and beard (no bare band between them)
+    const hairline = 1.717 - 0.048 * smooth(32, 85, deg) - 0.032 * smooth(60, 100, deg) - 0.062 * smooth(105, 150, deg);
     let f = y - hairline;
     // The ears stay clear.
     f = Math.min(f, (earD(x, y, z) - 1.0) * 0.02);
@@ -479,16 +517,19 @@ function beardField(body: BodyData) {
   return field;
 }
 
-function dressBeard(figure: Figure, parts: THREE.Object3D[]) {
+function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Texture | null) {
   const body = figure.body;
   const field = beardField(body);
   const strands = figure.own(strandTexture(LOOK.beard));
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: LOOK.beard, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.016, noiseCells: cellsFor(body, 0.0016) });
+  // With his face on the skin, the beard layer wears the same picture (so it is the photographed beard standing out, not a separate black shape);
+  // it only adds volume at the jaw and in profile.
+  if (skinMap) strands.repeat.set(46, 46);
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : LOOK.beard, map: skinMap ?? undefined, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.03, noiseCells: cellsFor(body, 0.0016) });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.012 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
-    planarUv: { u: "x", v: "y", su: 12, sv: 12, ou: 0, ov: 0 },
-    offset: (_i, p) => 0.0032 + 0.002 * smooth(1.52, 1.5, p.y) + (noise3(p.x * 55, p.y * 55, p.z * 55) - 0.5) * 0.0016,
+    ...(skinMap ? {} : { planarUv: { u: "x" as const, v: "y" as const, su: 12, sv: 12, ou: 0, ov: 0 } }),
+    offset: (_i, p) => 0.0022 + 0.0015 * smooth(1.52, 1.5, p.y) + (noise3(p.x * 55, p.y * 55, p.z * 55) - 0.5) * 0.0016,
   });
   if (mesh) {
     figure.mesh.parent?.add(mesh);
@@ -645,13 +686,13 @@ export type DressOptions = { light?: boolean };
 
 export async function dressDrSajjad(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
   const parts: THREE.Object3D[] = [];
-  const [face, fitted, hairPhoto] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure), loadImage(LOOK.hairUrl)]);
+  const [face, fitted, hairPhoto, bumpPhoto] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure), loadImage(LOOK.hairUrl), loadImage(LOOK.bumpUrl)]);
   // His face is a photograph fitted to this head; without the fit the generic head would carry a stretched picture, so use both or neither.
   const likeness = face && fitted ? face : null;
-  recolourSkin(figure, likeness, Boolean(options.light));
+  recolourSkin(figure, likeness, bumpPhoto, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
   dressHair(figure, parts, likeness ? hairPhoto : null);
-  dressBeard(figure, parts);
+  dressBeard(figure, parts, likeness ? (figure.mesh.material as THREE.MeshPhysicalMaterial).map : null);
   dressShoes(figure, parts);
   dressWatch(figure, parts);
   warmEyes(figure);

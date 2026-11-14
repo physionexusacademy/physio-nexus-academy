@@ -11,7 +11,7 @@
 import { convertRun, splitRuns, type Lexicon, type Run } from "./roman-urdu";
 
 export type SpeechLang = "en" | "ur";
-export type Segment = { text: string; voice: SpeechSynthesisVoice | null; lang: string };
+export type Segment = { text: string; voice: SpeechSynthesisVoice | null; lang: string; pitch?: number };
 export type VoicePlan = {
   mode: "english" | "hindi" | "urdu" | "none";
   segments: Segment[];
@@ -23,6 +23,7 @@ export type VoicePlan = {
 export type VoicePrefs = {
   en?: string | null;
   ur?: string | null;
+  /** Whose voice to prefer. Default "male": the therapist is a man. */
   gender?: "male" | null;
   /** Read English terms inside Urdu lines with the English voice (several short utterances) instead of one code-mixed utterance. */
   split?: boolean;
@@ -30,8 +31,19 @@ export type VoicePrefs = {
 
 export const supportsSpeech = () => typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
 
-const MALE = /\b(male|david|mark|guy|ryan|ravi|prabhat|hemant|asad|rishi|daniel|alex|fred|james|george|thomas|oliver|rishi|aaron|arthur|google uk english male)\b/i;
-const FEMALE = /\b(female|zira|hazel|susan|swara|kalpana|uzma|heera|samantha|karen|moira|lekha|tessa|veena|fiona|kate|serena|neerja|aria|jenny|ava)\b/i;
+/** Voice names that identify a man's or a woman's voice (Windows/Edge, macOS, Chrome desktop). Phones often give no gender in the name; see `pitchFor`. */
+const MALE =
+  /\b(male|david|mark|guy|ryan|ravi|prabhat|hemant|madhur|asad|rishi|daniel|alex|fred|james|george|thomas|oliver|aaron|arthur|eric|davis|brian|christopher|roger|steffan|liam|connor|william|jorge|diego|male voice|google uk english male)\b/i;
+const FEMALE =
+  /\b(female|zira|hazel|susan|swara|kalpana|uzma|heera|samantha|karen|moira|lekha|tessa|veena|fiona|kate|serena|neerja|aria|jenny|ava|emma|libby|sonia|michelle|monica|paulina|google us english|google (\u0939\u093f\u0928\u094d\u0926\u0940|hindi)|google \u0627\u0631\u062f\u0648)\b|google (\u0939\u093f\u0928\u094d\u0926\u0940|hindi|\u0627\u0631\u062f\u0648)/i;
+
+export type Gender = "male" | "female" | null;
+/** The gender a voice's name tells us, if any. */
+export function genderOf(voice: { name: string }): Gender {
+  if (MALE.test(voice.name) && !/female/i.test(voice.name)) return "male";
+  if (FEMALE.test(voice.name)) return "female";
+  return null;
+}
 
 function allVoices(): SpeechSynthesisVoice[] {
   return supportsSpeech() ? window.speechSynthesis.getVoices() : [];
@@ -63,9 +75,13 @@ function score(voice: SpeechSynthesisVoice, kind: "en" | "hi" | "ur", gender: "m
   if (/microsoft/i.test(name)) s += 10;
   if (voice.localService) s += 3;
   if (voice.default) s += 2;
+  // The therapist is a man: a voice known to be male beats any other, however natural; a known female voice is the last resort.
+  // (the 200 keeps every voice of the right language eligible: a negative adjustment makes a voice the last choice, never impossible)
+  s += 200;
   if (gender === "male") {
-    if (MALE.test(name)) s += 22;
-    if (FEMALE.test(name)) s -= 12;
+    const g = genderOf(voice);
+    if (g === "male") s += 70;
+    if (g === "female") s -= 60;
   }
   return s;
 }
@@ -115,12 +131,24 @@ const NO_URDU_VOICE =
   "This device has no Urdu or Hindi voice, so Roman Urdu is shown as text only. On Android install the Urdu (or Hindi) voice in Settings → Text-to-speech; on Windows add an Urdu or Hindi voice in Settings → Time & language → Speech. English voice still works.";
 const NO_ENGLISH_VOICE = "This browser has no English voice, so the lesson is shown as text only.";
 
+/**
+ * Pitch for a voice. A voice known to be male is used as it is. When the device only offers female or unlabelled voices (most phones),
+ * the pitch is lowered so the therapist does not sound like a woman; a voice the visitor chose themselves is never altered.
+ */
+function pitchFor(voice: SpeechSynthesisVoice | null, explicit: boolean, gender: "male" | null): number {
+  if (!voice || explicit || gender !== "male") return 1;
+  const g = genderOf(voice);
+  if (g === "male") return 1;
+  return g === "female" ? 0.7 : 0.8;
+}
+
 export async function planSpeech(text: string, lang: SpeechLang, prefs: VoicePrefs = {}): Promise<VoicePlan> {
-  const gender = prefs.gender ?? null;
+  const gender: "male" | null = prefs.gender === null ? null : "male";
   const english = pick("en", prefs.en, gender);
+  const englishExplicit = Boolean(english && prefs.en && english.name === prefs.en);
   if (lang === "en") {
     if (!english) return { mode: "none", segments: [], note: NO_ENGLISH_VOICE, sameText: true };
-    return { mode: "english", segments: [{ text, voice: english, lang: english.lang }], note: null, sameText: true };
+    return { mode: "english", segments: [{ text, voice: english, lang: english.lang, pitch: pitchFor(english, englishExplicit, gender) }], note: null, sameText: true };
   }
   // Urdu / Roman Urdu: Hindi voices read Devanagari reliably (explicit vowels); Urdu voices need Urdu script. A saved choice wins.
   const hindi = pick("hi", prefs.ur, gender);
@@ -132,6 +160,8 @@ export async function planSpeech(text: string, lang: SpeechLang, prefs: VoicePre
     return { mode: "none", segments: [], note: NO_URDU_VOICE, sameText: false };
   }
   const voice = target === "hindi" ? hindi! : urdu!;
+  const voicePitch = pitchFor(voice, Boolean(prefs.ur && voice.name === prefs.ur), gender);
+  const englishPitch = pitchFor(english, englishExplicit, gender);
   const lexicon = await loadLexicon();
   const runs: Run[] = splitRuns(text, lexicon);
   const script = target === "hindi" ? "devanagari" : "urdu";
@@ -139,13 +169,13 @@ export async function planSpeech(text: string, lang: SpeechLang, prefs: VoicePre
     // One utterance per line in the Urdu/Hindi voice, English terms left in Latin letters: how South Asian speakers mix the languages,
     // and it avoids a choppy line of one-word utterances.
     const mixed = runs.map((run) => (run.kind === "ur" ? convertRun(run.text, script) : run.text)).join("");
-    return { mode: target, segments: [{ text: mixed, voice, lang: voice.lang }], note: null, sameText: false };
+    return { mode: target, segments: [{ text: mixed, voice, lang: voice.lang, pitch: voicePitch }], note: null, sameText: false };
   }
   const segments: Segment[] = [];
   for (const run of runs) {
     if (!/[A-Za-z]/.test(run.text)) continue;
-    if (run.kind === "ur") segments.push({ text: convertRun(run.text, script), voice, lang: voice.lang });
-    else segments.push({ text: run.text, voice: english, lang: english.lang });
+    if (run.kind === "ur") segments.push({ text: convertRun(run.text, script), voice, lang: voice.lang, pitch: voicePitch });
+    else segments.push({ text: run.text, voice: english, lang: english.lang, pitch: englishPitch });
   }
   return { mode: target, segments, note: null, sameText: false };
 }
@@ -174,6 +204,7 @@ export function speakPlan(plan: VoicePlan, options: { rate?: number; onStart?: (
     const utterance = new SpeechSynthesisUtterance(segment.text);
     if (segment.voice) utterance.voice = segment.voice;
     utterance.lang = segment.voice?.lang ?? segment.lang;
+    utterance.pitch = segment.pitch ?? 1;
     utterance.rate = Math.max(0.5, Math.min(2, (plan.mode === "english" ? 0.97 : 0.92) * rate));
     if (index === 0) utterance.onstart = () => options.onStart?.();
     if (plan.sameText) utterance.onboundary = (event) => (event.name === "sentence" ? undefined : options.onBoundary?.(event.charIndex));
@@ -233,7 +264,7 @@ export async function speakText(
     options.onEnd?.();
     return null;
   }
-  const plan = await planSpeech(text, lang, { ...readPrefs(), gender: options.gender ?? null });
+  const plan = await planSpeech(text, lang, { ...readPrefs(), gender: options.gender === null ? null : "male" });
   options.onNote?.(plan.note);
   if (options.isCurrent && !options.isCurrent()) return null; // a newer line started while the voice was being chosen
   if (plan.mode === "none") {

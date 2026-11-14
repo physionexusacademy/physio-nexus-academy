@@ -11,6 +11,8 @@ Inputs (not committed): the reference photograph `reference/dr-sajjad-raza.png` 
    symmetrised and paired with the matching points on the generic head. A thin-plate spline gives the displacement of every vertex above the neck,
    written to `public/teacher/dr-sajjad-fit.bin`. The photo (eyes removed, shadows flattened, background wall masked out) is then
    projected on the fitted head and baked into the body's 2048 px UV layout: `public/teacher/dr-sajjad-face.webp` (RGBA).
+   `hair.py` cuts the photographed hair (hair pixels only, ears and background removed) into `public/teacher/dr-sajjad-hair.webp`. `fit.py` also writes the relief map
+   `dr-sajjad-bump.webp`. Write the outputs to `public/teacher/`.
 3. Runtime: `src/lib/avatar/fit.ts` applies the displacement; `dress.ts` composites the face over the recoloured skin.
 
 If the landmarks change, run steps 1–2 again and re-check with the side-by-side renders (photo | avatar).

@@ -32,7 +32,13 @@ stylised likeness rather than an identical copy.
 4. Hair and beard are shells with dithered cut-out edges (no blended wisps). The hair shell carries the photographed hair (projected from the front, thin along its lower edge so it hugs the head); skin tone is sampled from the photo.
 5. **One skin tone from face to hands.** The neck and ears in the face texture are colour-matched to the face, and the body's own skin uses the face's measured tone (`LOOK.skin`).
    (An earlier version read the hex colour in three.js's linear space and used it as sRGB bytes, which made the body darker and more orange than the face; fixed.)
-6. **Body proportions** (`fit.ts`, applied before dressing): head about 10 % larger about the eye line, neck 12 % thicker, arms 10 %, chest 7 %, abdomen 5 % and shoulders 6 % fuller,
+6. **Why the face once looked like a "cover", and the fix.** A frontal photograph only covers the front of the head, so the first version ended in a visible edge
+   at the cheeks and ears, beyond which the head was flat pale base skin; the photo's baked shadows fought the scene lighting; the beard was a separate jet-black layer;
+   the eyes were flat. Now (`scripts/avatar-likeness/fit.py`): the photographic colours are **diffused across the rest of the head in 3D** (blurred, fading into the
+   face's own skin tone and dark hair above the temples), the ears have an explicit matching tone, shadows are flattened, and the original painted texture never shows;
+   the beard layer wears the same skin picture (so it is the photographed beard standing out, adding volume only at the jaw and in profile); the eyes are painted
+   brown with a limbal ring, catchlight, a lid line and lashes; a **relief map** from the photo's fine detail (`dr-sajjad-bump.webp`, 35 KB) gives pores, stubble and creases.
+7. **Body proportions** (`fit.ts`, applied before dressing): head about 10 % larger about the eye line, neck 12 % thicker, arms 10 %, chest 7 %, abdomen 5 % and shoulders 6 % fuller,
    all radial about each bone's own line so posing and the hand placement are unaffected.
 
 Tools and re-generation steps: `scripts/avatar-likeness/README.md`. The photograph is never committed or uploaded; only the derived face texture ships.
@@ -43,7 +49,10 @@ A scanned or sculpted GLB dropped into `public/teacher/dr-sajjad.glb` replaces a
 
 All voices are the device's own free text-to-speech; no audio is generated or uploaded, and nothing is cloned. Code: `src/lib/speech/`.
 
-* **English**: best English voice (Indian/Pakistani/British English first, natural/online voices first; male-sounding for the avatar).
+* **English**: best English voice (Indian/Pakistani/British English first, natural/online voices first). **The therapist is a man, so a voice known to be male always wins**
+  (Ravi, David, Prabhat, Madhur, Asad, Google UK English Male and so on; female voices such as Aria, Swara, Heera, Google US English and Google Hindi come last). Phones often give no
+  gender in a voice's name; then the pitch is lowered (0.8 for an unlabelled voice, 0.7 for a known female one) so he does not sound like a woman. A voice the visitor picks themselves is never altered.
+  The voice list marks voices ♂/♀ when the name says so.
 * **Urdu / Roman Urdu**: the site's Urdu is Roman Urdu mixed with English terms. Urdu words (found with a lexicon built from the site's own lessons, `public/teacher/ur-lexicon.json`,
   made by `npm run build:ur-lexicon`) are converted to **Devanagari for a Hindi voice** (explicit vowels, available on almost every device) or to **Urdu script for an Urdu voice**;
   English terms stay in Latin letters. Default is one mixed utterance per line (how South Asian speakers mix the languages); the avatar has an option to read English terms with the English voice.

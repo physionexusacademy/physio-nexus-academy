@@ -70,13 +70,20 @@ def deflatten(img):
     lum = .299 * R + .587 * G + .114 * B
     skin = ((lum > .38) & ((R - B) > .09)).astype(np.float32)
     blur = lambda a, r: np.asarray(Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(r)), np.float32) / 255
-    num = blur(lum * skin, 22); den = blur(skin, 22) + 1e-4
+    num = blur(lum * skin, 14); den = blur(skin, 14) + 1e-4
     low = num / den
     target = float((lum * skin).sum() / skin.sum())
-    gain = np.clip((target / np.maximum(low, .2)) ** .65, .85, 1.3)
+    gain = np.clip((target / np.maximum(low, .2)) ** .9, .8, 1.4)
     soft = blur(skin, 3)[..., None]
     return np.clip(img * (1 + (gain[..., None] - 1) * soft), 0, 1)
 PHOTO = deflatten(PHOTO)
+# The blur source must not contain the photo's backlit ears (orange) or the wall: extrude the face-edge columns outward over them first.
+NOEAR = PHOTO.copy()
+for y0_, y1_ in ((395, 530),):
+    for x_edge, xs_ in ((396, range(340, 396)), (644, range(645, 700))):
+        for xx_ in xs_:
+            NOEAR[y0_:y1_, xx_] = PHOTO[y0_:y1_, x_edge]
+PHOTO_BLUR = np.asarray(Image.fromarray((np.clip(NOEAR, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(14)), np.float32) / 255
 def sample(img, xy):
     x = np.clip(xy[:, 0], 0, PW - 1.001); y = np.clip(xy[:, 1], 0, PH - 1.001)
     x0 = x.astype(int); y0 = y.astype(int); fx = (x - x0)[:, None]; fy = (y - y0)[:, None]
@@ -90,18 +97,135 @@ attrs = np.concatenate([FP[sel_t], N[sel_t]], -1)
 buf, mask = raster(Ut, attrs, AW, AW, FP[sel_t][:, :, 2])
 ys, xs = np.nonzero(mask)
 pos = buf[ys, xs, :3]; nor = buf[ys, xs, 3:6]; nor /= np.linalg.norm(nor, axis=1, keepdims=True) + 1e-9
-ph = np.stack([MID + pos[:, 0] * S, EYE_PY + (EYE_Y - pos[:, 1]) * S], 1).astype(np.float32)
-col = sample(PHOTO, ph)
-lo, hi = .05, .45
-w = np.clip((nor[:, 2] - lo) / (hi - lo), 0, 1); w = w * w * (3 - 2 * w)
+# The photo is a frontal projection. Beyond the face outline the outline's own colours are carried sideways (blurred, so there are no streaks):
+# skin on the cheek, short dark hair at the temple, the beard up to the ear. The texture then covers the whole front half of the head and
+# only fades out behind the ear, so there is no visible edge in front of it.
+OUT_Y = [1.45, 1.50, 1.55, 1.60, 1.655, 1.70, 1.75, 1.80]
+OUT_X = [0.047, 0.053, 0.064, 0.074, 0.075, 0.071, 0.057, 0.032]
+def smooth(a, b, x):
+    t_ = np.clip((x - a) / (b - a), 0, 1); return t_ * t_ * (3 - 2 * t_)
+outline = np.interp(pos[:, 1], OUT_Y, OUT_X)
+ax = np.abs(pos[:, 0])
+sx = np.sign(pos[:, 0]) * np.minimum(ax, outline * 0.97)
+ph = np.stack([MID + sx * S, EYE_PY + (EYE_Y - pos[:, 1]) * S], 1).astype(np.float32)
+col_sharp = sample(PHOTO, ph); col_blur = sample(PHOTO_BLUR, ph)
+bl = smooth(outline * 0.9, outline * 1.1, ax)[:, None]
+col = col_sharp * (1 - bl) + col_blur * bl
+conf_geo = (ax < outline * 0.97).astype(np.float32) * smooth(0.05, 0.45, nor[:, 2])     # where the photograph really shows the surface
+w = conf_geo
 R, G, B = PHOTO[..., 0], PHOTO[..., 1], PHOTO[..., 2]
 lum = .299 * R + .587 * G + .114 * B
 bg = (((R - B) < .07) & (lum > .40)).astype(np.float32)            # grey/blue wall: anything bright that is not warm
 bgs = np.asarray(Image.fromarray((bg * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(5)), np.float32) / 255
 bgv = sample(bgs[..., None].repeat(3, 2), ph)[:, 0]
 w = w * (1 - np.clip(bgv * 2.0, 0, 1))
+conf = w.copy()
+
+# Spread the photographic colour over the rest of the head in 3D: every texel outside the photographed area takes the (blurred) colour of its
+# neighbours on the head and fades gradually into the base skin, so there is no edge where the picture ends.
+VOX = 0.004
+lo3 = np.array([-0.13, 1.38, -0.09]); hi3 = np.array([0.13, 1.82, 0.22])
+dims = np.ceil((hi3 - lo3) / VOX).astype(int)
+def to_cell(p):
+    c = np.floor((p - lo3) / VOX).astype(int)
+    return np.clip(c, 0, dims - 1)
+cell = to_cell(pos)
+flat = (cell[:, 0] * dims[1] + cell[:, 1]) * dims[2] + cell[:, 2]
+G = np.zeros((int(np.prod(dims)), 4), np.float32)
+good = conf > .5
+np.add.at(G, flat[good], np.concatenate([col[good] * conf[good, None], conf[good, None]], 1))
+G = G.reshape(*dims, 4)
+def box(a, axis, r):
+    c = np.cumsum(np.pad(a, [(r + 1, r) if i == axis else (0, 0) for i in range(a.ndim)]), axis=axis)
+    n = a.shape[axis]
+    hi_ = np.take(c, range(2 * r + 1, 2 * r + 1 + n), axis=axis); lo_ = np.take(c, range(0, n), axis=axis)
+    return (hi_ - lo_) / (2 * r + 1)
+for _ in range(5):
+    for ax_ in range(3): G = box(G, ax_, 3)
+# trilinear lookup (no blocky cells)
+fp = (pos - lo3) / VOX - 0.5
+i0 = np.clip(np.floor(fp).astype(int), 0, dims - 2); fr = np.clip(fp - i0, 0, 1)
+Gf = np.zeros((len(pos), 4), np.float32)
+for dx_ in (0, 1):
+    for dy_ in (0, 1):
+        for dz_ in (0, 1):
+            wgt = (fr[:, 0] if dx_ else 1 - fr[:, 0]) * (fr[:, 1] if dy_ else 1 - fr[:, 1]) * (fr[:, 2] if dz_ else 1 - fr[:, 2])
+            Gf += G[i0[:, 0] + dx_, i0[:, 1] + dy_, i0[:, 2] + dz_] * wgt[:, None]
+mass = Gf[:, 3]
+ext_col = Gf[:, :3] / np.maximum(mass[:, None], 1e-6)
+ext_a = smooth(0.0002, 0.012, mass)                       # fades with distance from the photographed area
+inside = (conf > .5)
+col = np.where(inside[:, None], col, ext_col)
+w = np.where(inside, conf, np.maximum(conf, ext_a))
+# Far from the photographed area (the sides and back of the head) there is no photograph: use the face's own skin tone, and dark hair above the
+# temples, so the original painted texture never shows. Only the very back of the head keeps the base texture (it is under the hair).
+far = 1 - smooth(1e-4, 4e-3, mass)
+face_skin = col[(conf > .8) & (pos[:, 1] > 1.55) & (pos[:, 1] < 1.66) & (np.abs(pos[:, 0]) < .05) & (((col[:, 0] - col[:, 2]) > .10))]
+face_skin = face_skin.mean(0) if len(face_skin) else np.array([.8, .6, .5])
+hair_dark = np.array([.11, .08, .075])
+hair_wt = np.clip(smooth(1.655, 1.70, pos[:, 1]) * smooth(0.055, 0.075, ax) + smooth(1.69, 1.72, pos[:, 1]), 0, 1)
+def desat(c, k):
+    l = (c * np.array([.299, .587, .114])).sum(-1, keepdims=True)
+    return l + (c - l) * k
+skin_soft = face_skin * 1.0                # the sides of a face are less saturated than the cheeks that took the light
+far_col = skin_soft * (1 - hair_wt[:, None]) + hair_dark * hair_wt[:, None]
+col = np.where(inside[:, None], col, col * (1 - far[:, None]) + far_col * far[:, None])
+w = np.where(inside, conf, np.maximum(w, smooth(-0.07, -0.025, pos[:, 2])))
+# Ears: an explicit skin tone (a touch warmer than the cheek), not whatever the diffusion finds on their back and inner surfaces.
+face_ref = col[(conf > .8) & (pos[:, 1] > 1.55) & (pos[:, 1] < 1.66) & (np.abs(pos[:, 0]) < .05) & (((col[:, 0] - col[:, 2]) > .10))]
+face_ref = face_ref.mean(0) if len(face_ref) else np.array([.8, .6, .5])
+ear_w = smooth(.064, .070, ax) * smooth(1.560, 1.572, pos[:, 1]) * (1 - smooth(1.668, 1.680, pos[:, 1])) * (1 - smooth(0.080, 0.092, pos[:, 2])) * smooth(-0.05, -0.02, pos[:, 2])
+ear_col = np.clip(face_ref * np.array([1.02, 1.0, 0.99]), 0, 1)
+col = col * (1 - ear_w[:, None]) + ear_col * ear_w[:, None]
+w = np.maximum(w, ear_w)
+# Colour harmony: the photo's neck (shadowed under the beard) and ears (backlit, red) are matched to the face's skin tone, and the tile fades out
+# at the bottom of the neck so the body's own skin (same tone) takes over without a seam.
+lum_c = .299 * col[:, 0] + .587 * col[:, 1] + .114 * col[:, 2]
+is_skin = ((col[:, 0] - col[:, 2]) > .10) & (lum_c > .45)
+face_zone = (pos[:, 1] > 1.545) & (np.abs(pos[:, 0]) < .062) & is_skin & (w > .8)
+face_mean = col[face_zone].mean(0)
+neck_zone = (pos[:, 1] > 1.47) & (pos[:, 1] < 1.51) & (np.abs(pos[:, 0]) < .05) & (lum_c > .3)
+if neck_zone.sum() > 200:
+    neck_mean = col[neck_zone].mean(0)
+    gain = np.clip(face_mean / np.maximum(neck_mean, 1e-3), .9, 1.8)
+    wn = smooth(1.525, 1.505, pos[:, 1])                   # 1 under the chin line, 0 above
+    col = np.clip(col * (1 + (gain - 1) * wn[:, None]), 0, 1)
+    print('neck mean', (neck_mean * 255).round(0), '-> face mean', (face_mean * 255).round(0), 'gain', gain.round(2))
+ear_zone = (np.abs(pos[:, 0]) > .066) & (pos[:, 1] > 1.57) & (pos[:, 1] < 1.66)
+if ear_zone.sum() > 200:
+    ear_mean = col[ear_zone].mean(0)
+    gain_e = np.clip(face_mean / np.maximum(ear_mean, 1e-3), .7, 1.4)
+    col[ear_zone] = np.clip(col[ear_zone] * (1 + (gain_e - 1) * .85), 0, 1)
+# calm any remaining red patches (the photo's backlit ears bleed onto the temples at grazing angles)
+rg = col[:, 0] - col[:, 1]
+excess = np.maximum(0, rg - 0.24) * (lum_c > .3)
+col[:, 0] = np.clip(col[:, 0] - excess * .85, 0, 1)
+w = w * smooth(1.455, 1.49, pos[:, 1])
+# Lid line and lashes: a dark band just outside each eye opening (strong along the upper lid, faint along the lower), so the eye has an edge.
+def smooth_(a, b, x):
+    t_ = np.clip((x - a) / (b - a), 0, 1); return t_ * t_ * (3 - 2 * t_)
+for sgn in (-1, 1):
+    ex, ey, ea, eb = sgn * 0.0320, 1.6343, 0.0168, 0.0056
+    rr = np.hypot((pos[:, 0] - ex) / ea, (pos[:, 1] - ey) / eb)
+    band = smooth_(0.82, 1.0, rr) * (1 - smooth_(1.10, 1.45, rr))
+    upper = (pos[:, 1] >= ey).astype(np.float32)
+    thick = band * (0.62 * upper + 0.22 * (1 - upper))
+    near = (np.abs(pos[:, 0] - ex) < 0.025) & (np.abs(pos[:, 1] - ey) < 0.014) & (pos[:, 2] > 0.07)
+    f = 1 - thick * near
+    col = col * f[:, None] + np.array([.05, .035, .03]) * (1 - f[:, None])
 tile = np.zeros((AW, AW, 4), np.float32); tile[ys, xs, :3] = col; tile[ys, xs, 3] = w
+print('face skin albedo (255) =', (face_mean * 255).round(0), '#%02x%02x%02x' % tuple(int(round(v * 255)) for v in face_mean))
 np.save('tile-full.npy', tile)
 out = Image.fromarray((np.clip(tile, 0, 1) * 255).astype(np.uint8), 'RGBA')
 out.save('dr-sajjad-face.webp', quality=80, method=6, alpha_quality=80)
 import os; print('face webp', os.path.getsize('dr-sajjad-face.webp') // 1024, 'KB')
+
+# ---- relief map: the photo's fine detail (pores, creases, stubble) as a grey bump map in the same layout ------------------
+lumT = .299 * tile[..., 0] + .587 * tile[..., 1] + .114 * tile[..., 2]
+img = Image.fromarray((np.clip(lumT, 0, 1) * 255).astype(np.uint8))
+low = np.asarray(img.filter(ImageFilter.GaussianBlur(2.5)), np.float32) / 255
+hi = (lumT - low)
+bump = np.clip(0.5 + hi * 3.0, 0, 1) * (tile[..., 3] > .02) + 0.5 * (tile[..., 3] <= .02)
+bump = 0.5 + (bump - 0.5) * np.clip(tile[..., 3], 0, 1)                      # flat where there is no photograph
+Image.fromarray((bump * 255).astype(np.uint8)).save('dr-sajjad-bump.webp', quality=78, method=6)
+print('bump webp', os.path.getsize('dr-sajjad-bump.webp') // 1024, 'KB')
