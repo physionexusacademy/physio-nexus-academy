@@ -88,7 +88,7 @@ alter table public.pna_job_runs enable row level security;
 revoke all on public.pna_reminder_log, public.pna_job_runs from anon, authenticated;
 grant all on public.pna_reminder_log, public.pna_job_runs, public.league_members, public.league_cohorts, public.league_entries to service_role;
 
-alter table public.rehab_patients add column if not exists remind_email boolean not null default true;
+alter table public.rehab_patients add column if not exists remind_email boolean not null default false;
 
 -- ─────────────────────────────── leagues: helpers ─────────────
 -- Monday of the Pakistan week that contains ts.
@@ -249,8 +249,8 @@ create or replace function public.rehab_set_reminders(p_enabled boolean)
 returns jsonb language plpgsql security definer set search_path = public, pg_temp as $$
 declare pid uuid := public.rehab__require_patient();
 begin
-  update public.rehab_patients set remind_email = coalesce(p_enabled, true), updated_at = now() where id = pid;
-  return jsonb_build_object('remind_email', coalesce(p_enabled, true));
+  update public.rehab_patients set remind_email = coalesce(p_enabled, false), updated_at = now() where id = pid;
+  return jsonb_build_object('remind_email', coalesce(p_enabled, false));
 end $$;
 
 create or replace function public.rehab_my_followup()
