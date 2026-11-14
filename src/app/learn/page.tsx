@@ -149,6 +149,7 @@ export default function LearnPage() {
               { label: "MSK Special Tests", href: "/msk-special-tests" },
               { label: "Clinical Case Lab", href: "/case-lab" },
               { label: "Daily Challenge", href: "/daily-challenge" },
+              { label: "Weekly Leagues", href: "/leagues" },
             ].map((link) => (
               <li key={link.href}>
                 <a href={link.href} className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white ring-1 ring-white/20 transition hover:bg-white/20">

@@ -35,6 +35,7 @@ const routes = [
   "/case-lab",
   "/stupid-intern-diaries",
   "/daily-challenge",
+  "/leagues",
   "/research",
   "/patient-services",
   "/symptom-checker",

@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { ArrowRight, Download, Flame, LoaderCircle, LogOut, ShieldCheck, Sparkles, Trash2, Zap } from "lucide-react";
+import { ArrowRight, BellRing, Download, Flame, LoaderCircle, LogOut, ShieldCheck, Sparkles, Trash2, Zap } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAccountNav } from "@/components/student/AccountNav";
+import { LeaguePanel } from "@/components/student/LeaguePanel";
 import { pendingCount, OUTBOX_EVENT, SYNCED_EVENT } from "@/lib/student/outbox";
 import { flushStudentOutbox } from "@/lib/student/flush";
 import { levelFor, levels } from "@/lib/student/levels";
@@ -14,6 +15,8 @@ const stages: Record<string, string> = { "year1-2": "DPT year 1–2", "year3-4":
 const goalsLabel: Record<string, string> = { understand: "Understand concepts deeply", exams: "Exams and viva", clinic: "Better in the clinic", manual: "Manual therapy" };
 
 type Load = { status: "loading" } | { status: "ready"; summary: StudentSummary } | { status: "error"; message: string };
+
+const formatHour = (h: number) => `${h % 12 === 0 ? 12 : h % 12}:00 ${h < 12 ? "am" : "pm"}`;
 
 function Ring({ percent, children }: { percent: number; children: React.ReactNode }) {
   const r = 52;
@@ -84,6 +87,7 @@ export function MyPna() {
   const [busy, setBusy] = useState("");
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState({ display_name: "", stage: "year3-4", goal: "understand", university: "", city: "" });
+  const [remind, setRemind] = useState({ on: false, hour: 18 });
   const today = getPakistanDate();
 
   const fetchSummary = useCallback(async (): Promise<StudentSummary> => {
@@ -113,7 +117,10 @@ export function MyPna() {
       await flushStudentOutbox();
       summary = await fetchSummary();
       const pr = summary.profile;
-      if (pr) setForm({ display_name: pr.display_name, stage: pr.stage ?? "year3-4", goal: pr.goal ?? "understand", university: pr.university ?? "", city: pr.city ?? "" });
+      if (pr) {
+        setForm({ display_name: pr.display_name, stage: pr.stage ?? "year3-4", goal: pr.goal ?? "understand", university: pr.university ?? "", city: pr.city ?? "" });
+        setRemind({ on: pr.remind_email === true, hour: pr.remind_hour ?? 18 });
+      }
       setLoad({ status: "ready", summary });
     } catch (e) {
       setLoad({ status: "error", message: e instanceof Error ? e.message : "Could not load your record." });
@@ -138,6 +145,15 @@ export function MyPna() {
     if (error) { setMsg(error.message); return; }
     setEditing(false); setMsg("Profile saved.");
     await boot();
+  }
+  async function saveReminders(next: { on: boolean; hour: number }) {
+    const before = remind;
+    setRemind(next);
+    setBusy("remind"); setMsg("");
+    const { error } = await supabase.rpc("student_set_reminders", { p_enabled: next.on, p_hour: next.hour });
+    setBusy("");
+    if (error) { setRemind(before); setMsg(error.message); return; }
+    setMsg(next.on ? `Reminder on: we will e-mail you at ${formatHour(next.hour)} (Pakistan time) on days you have not played the Daily Challenge yet.` : "Reminder e-mails are off.");
   }
   async function exportData() {
     setBusy("export");
@@ -196,6 +212,8 @@ export function MyPna() {
         <div className="mp-tile"><span>Activities</span><strong>{summary.totals?.events ?? 0}</strong><small>recorded</small></div>
       </section>
 
+      <section className="mp-league" aria-label="Weekly league"><LeaguePanel compact /></section>
+
       <div className="mp-grid">
         <section className="mp-panel" aria-labelledby="mp-insights">
           <h2 id="mp-insights"><Sparkles className="h-4 w-4" aria-hidden="true" /> What PNA noticed</h2>
@@ -244,6 +262,24 @@ export function MyPna() {
           <ol className="mp-levels">{levels.map((l) => <li key={l.name} data-on={xp >= l.min}><strong>{l.name}</strong><small>{l.min} XP</small></li>)}</ol>
         </section>
       </div>
+
+      <section className="mp-panel mp-settings" aria-labelledby="mp-reminders">
+        <h2 id="mp-reminders"><BellRing className="h-4 w-4" aria-hidden="true" /> Daily Challenge reminder</h2>
+        <div className="mp-remind">
+          <label className="mp-switch">
+            <input type="checkbox" checked={remind.on} disabled={busy === "remind"} onChange={(e) => void saveReminders({ ...remind, on: e.target.checked })} />
+            <span>E-mail me a reminder when I have not played today</span>
+          </label>
+          <label className="mp-hour">
+            at
+            <select value={remind.hour} disabled={!remind.on || busy === "remind"} onChange={(e) => void saveReminders({ ...remind, hour: Number(e.target.value) })} aria-label="Reminder time, Pakistan time">
+              {Array.from({ length: 16 }, (_, i) => i + 6).map((h) => <option key={h} value={h}>{formatHour(h)}</option>)}
+            </select>
+            Pakistan time
+          </label>
+        </div>
+        <p className="mp-note">One short e-mail a day at most, never when you have already played, and every e-mail has a one-click unsubscribe.</p>
+      </section>
 
       <section className="mp-panel mp-settings" aria-labelledby="mp-settings">
         <h2 id="mp-settings">Your details</h2>

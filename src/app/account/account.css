@@ -129,3 +129,12 @@
 @media (max-width: 900px) { .mp-grid { grid-template-columns: 1fr; } .mp-tiles { grid-template-columns: 1fr 1fr; } .mp-levels { grid-template-columns: 1fr 1fr; } .mp-form { grid-template-columns: 1fr; } .mp-hero { padding: 20px 18px; } }
 
 @media (max-width: 600px) { .mp-ring { margin: 4px auto 0; } .mp-hero { justify-content: center; } .mp-hero-id { width: 100%; } .mp-heat-wrap { margin-inline: auto; } }
+
+/* league card + reminder settings inside My PNA */
+.mp-league .lg { margin: 0; }
+.mp-remind { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+.mp-switch { display: inline-flex; align-items: center; gap: 10px; font-size: .92rem; font-weight: 700; color: #0b2a4a; cursor: pointer; }
+.mp-switch input { width: 20px; height: 20px; accent-color: #0db3aa; }
+.mp-hour { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 600; color: #475569; }
+.mp-hour select { border: 1px solid #cbd5e1; border-radius: 10px; padding: 7px 10px; font-size: .9rem; color: #0b2a4a; background: #fff; }
+.mp-hour select:disabled { opacity: .5; }

@@ -183,6 +183,15 @@ const browseResources: PnaLearningResource[] = [
     tags: "virtual patient 3d simulator simulated osce examine",
   },
   {
+    id: "quiz:leagues",
+    title: "Weekly Leagues",
+    href: "/leagues",
+    category: "Quiz and clinical practice",
+    summary: "Join a free weekly league, earn XP from your learning and move up seven tiers from Bronze to Diamond.",
+    level: "Clinical practice",
+    keywords: "leagues weekly league tiers bronze silver gold diamond xp rank promotion compete students",
+  },
+  {
     id: "quiz:daily-challenge",
     title: "Daily Clinical Challenge",
     href: "/daily-challenge",
