@@ -25,11 +25,14 @@ export type RegionalField =
  *  - lesson: the first beat of that type in the technique's PNA Teacher lesson (English + Roman Urdu); stable when other beats are added.
  *    `step` picks one item of a "steps" beat.
  *  - regional: one line of the regional guide (English only; Roman Urdu mode keeps the clinical wording in English, as the Teacher does).
+ *  - site: the site guide's own text for a feature of the academy (English + Roman Urdu) — used by the "Guide me" tour.
  */
 export type LessonBeatType = "say" | "analogy" | "safety" | "steps" | "clinic" | "mistake" | "evidence" | "memory";
 export type TextRef =
   | { src: "lesson"; beat: LessonBeatType; step?: number }
-  | { src: "regional"; field: RegionalField; index?: number };
+  | { src: "regional"; field: RegionalField; index?: number }
+  /** The site guide (lib/pna-ai/site-guide.ts), in English and Roman Urdu: `summary` = the feature's summary / Roman Urdu hook; `point` = one of its key points. */
+  | { src: "site"; id: string; part: "summary" | "point"; index?: number };
 
 /**
  * A hand placed on the patient. `at` uses the point syntax of lib/skills/points3d.ts (landmarks, bone heads, offsets in the patient's frame).
@@ -55,6 +58,9 @@ export type LabeledOverlay = Overlay & { note?: { tag: string; ref: TextRef } };
 
 export type Gesture = "none" | "open" | "point" | "care" | "nod";
 
+/** A patient movement repeated while the step plays (a goniometry sweep, an exercise): the pose eases between the step's pose and `to` every `seconds`. */
+export type Cycle = { to: Pose; seconds: number };
+
 export type DoctorStep = {
   /** Short name for the step chips (UI wording, not clinical text). */
   chip: string;
@@ -62,8 +68,13 @@ export type DoctorStep = {
   say: TextRef[];
   /** Where he stands. Omit to stay where he is. */
   stand?: { side: "tested" | "other"; at: string; distance: number; face: "patient" | "camera" };
+  /** Changes how the patient lies or stands for this step (the room is rearranged; used by the tour). */
+  position?: PatientPosition;
   /** The patient's pose for this step (merged over the starting pose). */
   patient?: Pose;
+  cycle?: Cycle;
+  /** A button under the stage that opens a page of the site. Resolved from the site guide at build time (the page must exist). */
+  link?: { id: string; /** Button wording (interface text); default "Open <feature title>". */ label?: { en: string; ur: string } };
   /** Hands on the patient. Omit = hands free. */
   contacts?: Contact[];
   /** Trunk lean (degrees) he adds when his hands are on the patient (the data may leave it out: reach is solved automatically). */
@@ -77,9 +88,12 @@ export type DoctorStep = {
 };
 
 export type Choreo = {
-  /** Same as the regional application slug, which is the source of the technique's position/contact/direction text. */
+  /** "technique": teaches one manual-therapy technique (slug = the regional application slug). "tour": the site tour ("Guide me"). */
+  kind?: "technique" | "tour";
+  /** For techniques: the regional application slug, which is the source of the technique's position/contact/direction text. */
   slug: string;
-  lessonSlug: string;
+  /** For techniques: the PNA Teacher lesson this belongs to. */
+  lessonSlug?: string;
   /** Title shown on the stage (UI wording). */
   title: { en: string; ur: string };
   side: Side;

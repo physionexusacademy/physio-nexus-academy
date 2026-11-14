@@ -8,7 +8,7 @@ import * as THREE from "three";
 import type { ExamRoom, Pose } from "@/lib/virtual-patient/engine";
 import type { Ctx, Overlay } from "@/lib/skills/scene-types";
 import { clearPointCache, patientDir, resolvePoint } from "@/lib/skills/points3d";
-import type { BuiltChoreo, BuiltStep, Line, Note } from "./choreo/built";
+import type { BuiltChoreo, BuiltLink, BuiltStep, Line, Note } from "./choreo/built";
 import type { DrSajjad } from "./teacher";
 import { DoctorRig, type WorldHand } from "./rig";
 import type { Lang } from "./speech";
@@ -32,6 +32,11 @@ export type StageView = {
   progress: number;
   /** Hands could not reach their targets (metres) — for tests and the log. */
   reachError: number;
+  /** The page this step is about (tour). */
+  link: BuiltLink | null;
+  /** A question he is answering right now (Ask Dr. Sajjad): shown as the subtitle instead of the step's line. */
+  extra: { tag: string; text: string; lang: Lang } | null;
+  tour: boolean;
 };
 
 export type StageOptions = { lang: Lang; voice: boolean; speed: number; light: boolean };
@@ -46,6 +51,17 @@ function reviveOverlays(list: BuiltStep["overlays"]): Overlay[] {
     }
     return o as unknown as Overlay;
   });
+}
+
+/** Eases every joint listed in `a` or `b` between the two poses (missing joints count as 0). */
+function blendPose(a: Pose, b: Pose, t: number): Pose {
+  const out: Pose = {};
+  for (const key of new Set([...Object.keys(b)]) as Set<keyof Pose>) {
+    const x = (a[key] ?? {}) as { flex?: number; abd?: number; rot?: number };
+    const y = (b[key] ?? {}) as { flex?: number; abd?: number; rot?: number };
+    (out as Record<string, unknown>)[key] = { flex: (x.flex ?? 0) + ((y.flex ?? 0) - (x.flex ?? 0)) * t, abd: (x.abd ?? 0) + ((y.abd ?? 0) - (x.abd ?? 0)) * t, rot: (x.rot ?? 0) + ((y.rot ?? 0) - (x.rot ?? 0)) * t };
+  }
+  return out;
 }
 
 const side = (c: BuiltChoreo) => c.side;
@@ -68,6 +84,8 @@ export class TeachingStage {
   private glidePhase = 0;
   private disposed = false;
   private stepStandSet = false;
+  private cycleBase: Pose = {};
+  private extra: { tag: string; text: string; lang: Lang; done: boolean } | null = null;
 
   constructor(
     private room: ExamRoom,
@@ -92,7 +110,7 @@ export class TeachingStage {
     room.setPose(choreo.patient, { animate: false, replace: true });
     room.patientRoot.updateMatrixWorld(true);
     const plinth = room.scene.getObjectByName("plinth");
-    if (plinth) plinth.visible = true;
+    if (plinth) plinth.visible = choreo.position !== "standing";
     room.scene.add(this.doc.root);
     if (this.opt.light) {
       room.patientRoot.visible = false;
@@ -121,7 +139,7 @@ export class TeachingStage {
     room.frameCamera(false, target, 3.5 * Math.max(1, 1.3 / (room.camera.aspect || 1.6)), new THREE.Vector3(0.25, 0.1, 1).normalize());
   }
 
-  private frame() {
+  private frame(animate = false) {
     const { room, choreo } = this;
     const shoulder = resolvePoint(room, "upperarm01", side(choreo));
     const up = new THREE.Vector3(0, 1, 0);
@@ -131,7 +149,7 @@ export class TeachingStage {
     if (dir.y < 0.25) dir.setY(0.25).normalize();
     // Wider views fit with the same distance; a narrower one (a phone held upright) needs to back off.
     const aspect = room.camera.aspect || 1.6;
-    room.frameCamera(false, centre, 3.6 * Math.max(1, 1.5 / aspect), dir);
+    room.frameCamera(animate, centre, 3.6 * Math.max(1, 1.5 / aspect), dir);
   }
 
   private cameraWorld() {
@@ -215,6 +233,7 @@ export class TeachingStage {
     if (index < 0 || index >= choreo.steps.length) return;
     this.lineToken++;
     this.doc.speaker.cancel();
+    this.extra = null;
     this.index = index;
     this.lineIndex = 0;
     this.stepClock = 0;
@@ -228,7 +247,18 @@ export class TeachingStage {
       this.emit(true);
       return;
     }
+    // The room is rearranged when the step changes how the patient lies or stands (the tour does this).
+    if (step.position && step.position !== room.getPosition()) {
+      room.setPosition(step.position, false);
+      const plinth = room.scene.getObjectByName("plinth");
+      if (plinth) plinth.visible = step.position !== "standing";
+      void room.setPose(choreo.patient, { animate: false, replace: true });
+      room.patientRoot.updateMatrixWorld(true);
+      clearPointCache(room);
+      this.frame(true);
+    }
     // Patient pose for this step (earlier steps' poses carry over).
+    this.cycleBase = step.patient ?? {};
     if (step.patient) void room.setPose(step.patient, { animate: true, duration: 1200 / this.opt.speed });
     // Where he stands.
     if (step.stand) {
@@ -311,10 +341,41 @@ export class TeachingStage {
 
   /* ---------------- per frame ---------------- */
 
+  /** He answers a question (Ask Dr. Sajjad): the sequence pauses, he turns to the visitor and says `text` (voice in English only). */
+  interject(text: string, lang: Lang, tag: string) {
+    this.doc.speaker.cancel();
+    this.lineToken++;
+    const e = { tag, text, lang, done: false };
+    this.extra = e;
+    this.playing = false;
+    this.rig.hands = { L: null, R: null };
+    this.rig.gesture = "open";
+    this.rig.leanTarget = 0;
+    this.rig.crouchTarget = 0;
+    void this.doc.speaker.speak(text, { lang, voice: this.opt.voice && lang === "en" }).then(() => {
+      if (this.extra === e) e.done = true;
+    });
+    this.emit(true);
+  }
+
   tick(realDt: number) {
     if (this.disposed) return;
     const dt = Math.min(0.05, realDt);
     this.doc.face.update(dt);
+    if (this.extra) {
+      this.doc.speaker.tick(dt);
+      this.clock += dt;
+      this.rig.hands = { L: null, R: null };
+      this.rig.lookAt = this.opt.light ? null : this.cameraWorld();
+      this.rig.update(dt, this.clock);
+      this.room.invalidate();
+      if (this.extra.done) {
+        this.extra = null;
+        this.rig.gesture = "none";
+      }
+      this.emit(false);
+      return;
+    }
     if (!this.playing) {
       if (!this.opt.light) this.rig.update(0, this.clock);
       this.emit(false);
@@ -338,6 +399,10 @@ export class TeachingStage {
         this.rig.push.copy(dir);
       }
       this.rig.lookAt = this.lookTarget(step);
+      if (step.cycle) {
+        const w = 0.5 - 0.5 * Math.cos((this.stepClock / step.cycle.seconds) * Math.PI * 2);
+        void this.room.setPose(blendPose(this.cycleBase, step.cycle.to, w), { animate: false });
+      }
       this.rig.update(adt, this.clock);
     } else {
       this.rig.lookAt = null;
@@ -390,6 +455,9 @@ export class TeachingStage {
       speaking: this.doc.speaker.speaking,
       progress: this.index < 0 ? 0 : this.done ? 1 : (this.index + (this.linesDone ? 1 : this.doc.speaker.progress)) / total,
       reachError: this.rig.reachError,
+      link: step?.link ?? null,
+      extra: this.extra ? { tag: this.extra.tag, text: this.extra.text, lang: this.extra.lang } : null,
+      tour: this.choreo.kind === "tour",
     });
   }
 

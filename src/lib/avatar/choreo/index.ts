@@ -1,8 +1,11 @@
 import type { Choreo } from "./types.ts";
 import { maitlandShoulderPosteriorGlide } from "./maitland-shoulder-posterior-glide.ts";
+import { siteTour } from "./site-tour.ts";
 
 /** Every technique Dr. Sajjad can demonstrate. Add a file for the next technique and list it here, then `npm run build:avatar-data`. */
-export const CHOREOS: Choreo[] = [maitlandShoulderPosteriorGlide];
+export const TECHNIQUES: Choreo[] = [maitlandShoulderPosteriorGlide];
+/** Everything the stage can play: techniques and the site tour. */
+export const CHOREOS: Choreo[] = [...TECHNIQUES, siteTour];
 export const choreoBySlug = new Map(CHOREOS.map((c) => [c.slug, c]));
 export type { Choreo } from "./types.ts";
 
@@ -11,7 +14,7 @@ export type { Choreo } from "./types.ts";
  * "avatar/<slug>" is played by components/avatar/AvatarStage.tsx. This is interface wording, not clinical content.
  */
 export function avatarDemoBeat(lessonSlug: string) {
-  const choreo = CHOREOS.find((c) => c.lessonSlug === lessonSlug);
+  const choreo = TECHNIQUES.find((c) => c.lessonSlug === lessonSlug);
   if (!choreo) return null;
   return {
     type: "demo" as const,

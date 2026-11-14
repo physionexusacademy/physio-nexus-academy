@@ -32,10 +32,8 @@ function shapeFor(ch: string): MouthShape {
   return CLOSED;
 }
 
-/** Plain speaking text: markdown emphasis removed, whitespace collapsed. */
-export function speakable(text: string) {
-  return text.replace(/\*\*/g, "").replace(/[`_]/g, "").replace(/\s+/g, " ").trim();
-}
+import { plain as speakable } from "./text";
+export { speakable };
 
 type Timeline = { total: number; starts: Float32Array; text: string };
 

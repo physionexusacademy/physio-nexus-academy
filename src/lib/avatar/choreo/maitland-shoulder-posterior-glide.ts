@@ -34,7 +34,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
       stand: { side: "tested", at: "upperarm01", distance: 0.62, face: "patient" },
       patient: { "shoulder.left": { flex: 150 }, "elbow.left": { flex: 0 } },
       overlays: [
-        { t: "angle", vertex: "upperarm01", a: "upperarm01{0,1,0}", b: "lowerarm01", label: "Flexion {deg}°", tone: "cyan", note: { tag: "Re-test", ref: { src: "regional", field: "reassess", index: 0 } } },
+        { t: "angle", vertex: "upperarm01", a: "upperarm01{0,-1,0}", b: "lowerarm01", label: "Flexion {deg}°", tone: "cyan", note: { tag: "Re-test", ref: { src: "regional", field: "reassess", index: 0 } } },
       ],
       gesture: "point",
       look: "patient",
@@ -105,7 +105,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
       stand: { side: "tested", at: "upperarm01", distance: 0.62, face: "patient" },
       patient: { "shoulder.left": { flex: 150, abd: 0 }, "elbow.left": { flex: 0 } },
       overlays: [
-        { t: "angle", vertex: "upperarm01", a: "upperarm01{0,1,0}", b: "lowerarm01", label: "Flexion {deg}°", tone: "green", note: { tag: "Re-test", ref: { src: "regional", field: "reassess", index: 0 } } },
+        { t: "angle", vertex: "upperarm01", a: "upperarm01{0,-1,0}", b: "lowerarm01", label: "Flexion {deg}°", tone: "green", note: { tag: "Re-test", ref: { src: "regional", field: "reassess", index: 0 } } },
       ],
       gesture: "point",
       look: "patient",

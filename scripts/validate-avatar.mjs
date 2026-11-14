@@ -20,6 +20,7 @@ check(splitNumbered("1. Ek baat. 2. Doosri baat. 3. Teesri.").length === 3, "spl
 
 for (const c of built) {
   check(c.steps.length >= 3, `${c.slug}: needs at least 3 steps`);
+  if (c.kind === "tour") for (const s of c.steps) check(Boolean(s.link), `${c.slug}: every tour stop needs a link to its page (${s.chip})`);
   check(new Set(c.steps.map((s) => s.chip)).size === c.steps.length, `${c.slug}: step chips must be unique`);
   c.steps.forEach((s, i) => {
     const where = `${c.slug} step ${i}`;

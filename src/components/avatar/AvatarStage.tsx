@@ -12,6 +12,8 @@ import type { ExamRoom } from "@/lib/virtual-patient/engine";
 import { useRoomClaim } from "@/components/skills/useRoomClaim";
 import { drawOverlay, type Env } from "@/components/skills/Scene3DPlayer";
 import { resolvePoint } from "@/lib/skills/points3d";
+import { plain } from "@/lib/avatar/text";
+import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
@@ -200,9 +202,13 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
 
   // The 3D host must exist from the first render (the visibility observer attaches once), so there is no early return while loading.
   const line = view?.line;
-  const english = Boolean(line?.urFallback);
-  const subtitle = line ? (ur && !english ? line.ur : line.en) : ur ? "Play dabaiye — Dr. Sajjad technique dikhayenge." : "Press play and Dr. Sajjad will demonstrate the technique.";
+  const extra = view?.extra ?? null;
+  const english = Boolean(line?.urFallback) && !extra;
+  const tour = choreo?.kind === "tour";
+  const idle = tour ? (ur ? "Play dabaiye — Dr. Sajjad academy ka tour karwayenge." : "Press play and Dr. Sajjad will show you around the academy.") : ur ? "Play dabaiye — Dr. Sajjad technique dikhayenge." : "Press play and Dr. Sajjad will demonstrate the technique.";
+  const subtitle = extra ? plain(extra.text) : line ? plain(ur && !english ? line.ur : line.en) : idle;
   const stepTitle = choreo ? choreo.title[ur ? "ur" : "en"] : title;
+  const subTag = extra ? extra.tag : view?.chip ? `${view.chip} · ${view.step + 1}/${view.steps}` : stepTitle;
   const chipOn = view?.step ?? 0;
   const draft = choreo ? choreo.review.status !== "reviewed" : false;
 
@@ -235,7 +241,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
               {draft ? <span className="av-badge" title="The hand placement and movement are a draft until the supervising physiotherapist has reviewed them.">Draft — pending clinical review</span> : null}
             </div>
             <div className="av-subs" aria-live="polite" role="status">
-              <p className="av-subs-tag">{view?.chip ? `${view.chip} · ${view.step + 1}/${view.steps}` : stepTitle}{english && ur ? " · English (guide wording)" : ""}</p>
+              <p className="av-subs-tag">{subTag}{english && ur ? " · English (guide wording)" : ""}</p>
               <p className={`av-subs-text${subtitle.length > 170 ? " long" : ""}`}>{subtitle}</p>
             </div>
             {!started ? (
@@ -250,7 +256,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
 
       {status === "active" && !building && choreo ? (
         <div className="av-caption" aria-hidden="true">
-          <p>{view?.chip ? `${view.chip} · ${view.step + 1}/${view.steps}` : stepTitle}{english && ur ? " · English (guide wording)" : ""}</p>
+          <p>{subTag}{english && ur ? " · English (guide wording)" : ""}</p>
           <p>{subtitle}</p>
         </div>
       ) : null}
@@ -273,6 +279,12 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
           </button>
         ))}
       </div>
+
+      {view?.link ? (
+        <div className="av-link">
+          <a href={view.link.href}>{ur ? view.link.label.ur : view.link.label.en} →</a>
+        </div>
+      ) : null}
 
       <figcaption className="s3-bar">
         <button type="button" className="s3-btn" onClick={toggle} aria-label={view?.playing ? "Pause" : view?.done ? "Replay" : "Play"}>
@@ -299,6 +311,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         <button type="button" className="s3-btn" onClick={() => { const next = !(light ?? false); write("pna-avatar-light", next ? "1" : "0"); setLight(next); }} aria-pressed={Boolean(light)} title="Light mode: one still pose, no animation" aria-label="Light mode"><Zap className="h-4 w-4" aria-hidden="true" /></button>
         <span className="ml-auto hidden items-center gap-1 text-[11px] font-bold text-cyan-100/60 sm:inline-flex"><Hand className="h-3.5 w-3.5" aria-hidden="true" /> {Math.round((view?.progress ?? 0) * 100)}%</span>
       </figcaption>
+      {tour ? <AskPanel ur={ur} onAnswer={(text, answerLang, tag) => { if (status !== "active") activate(); stage()?.interject(text, answerLang, tag); }} /> : null}
       <p className="av-foot">{AVATAR_LABEL}. {AVATAR_NOTICE}</p>
     </figure>
   );
