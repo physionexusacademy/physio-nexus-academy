@@ -104,6 +104,11 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
       try {
         const [{ DrSajjad }, { TeachingStage }] = await Promise.all([import("@/lib/avatar/teacher"), import("@/lib/avatar/stage")]);
         if (cancelled) return;
+        // The character is built once per mount; it is rebuilt if light mode is switched (light mode changes its animation set).
+        if (docRef.current && docRef.current.light !== light) {
+          docRef.current.dispose();
+          docRef.current = null;
+        }
         if (!docRef.current) {
           docRef.current = await DrSajjad.create({ light });
           if (cancelled) return;
