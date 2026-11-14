@@ -15,8 +15,9 @@ export function ReminderCard() {
 
   useEffect(() => {
     let alive = true;
-    void supabase.from("student_profiles").select("remind_email,remind_hour").maybeSingle().then(({ data }) => {
-      if (alive && data) setState({ ready: true, on: data.remind_email === true, hour: data.remind_hour ?? 18 });
+    void supabase.rpc("student_my_prefs").then(({ data }) => {
+      const prefs = data as { remind_email?: boolean; remind_hour?: number } | null;
+      if (alive && prefs) setState({ ready: true, on: prefs.remind_email === true, hour: prefs.remind_hour ?? 18 });
     });
     return () => { alive = false; };
   }, [supabase]);

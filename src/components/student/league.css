@@ -56,6 +56,7 @@
 .lg-row[data-top="true"] .lg-rank { color: #ffd76a; }
 .lg-avatar { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 13px; font-size: .78rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, hsl(var(--h) 70% 48%), hsl(calc(var(--h) + 40) 70% 32%)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25); }
 .lg-name { position: relative; min-width: 0; display: grid; gap: 5px; font-size: .92rem; font-weight: 700; color: #fff; overflow: hidden; }
+.lg-name-row { display: flex; align-items: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lg-name em { margin-left: 8px; border-radius: 999px; padding: 1px 8px; font-style: normal; font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; color: #032a2a; background: var(--tier); }
 .lg-bar { display: block; height: 4px; border-radius: 4px; width: var(--w); background: linear-gradient(90deg, color-mix(in srgb, var(--tier) 90%, #fff), color-mix(in srgb, var(--tier) 40%, transparent)); animation: lg-grow .9s cubic-bezier(.2, .8, .2, 1) both; transform-origin: left; }
 .lg-xp { font-size: 1rem; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }

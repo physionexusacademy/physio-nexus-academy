@@ -167,6 +167,8 @@ const unsub = await asRole("service_role", "select public.pna_reminder_unsubscri
 assert.deepEqual(unsub[0].r, { ok: true, kind: "daily_challenge" });
 assert.equal((await q("select remind_email from public.student_profiles where user_id=$1", [uuid(R(1))]))[0].remind_email, false);
 assert.deepEqual((await asRole("service_role", "select public.pna_reminder_unsubscribe(gen_random_uuid()) as r"))[0].r, { ok: false }); pass("one-click unsubscribe switches reminders off; unknown tokens do nothing");
+assert.deepEqual(await rpc(user(R(1)), "student_my_prefs", {}), { remind_email: false, remind_hour: 9, league_opt_in: true });
+assert.equal(await rpc({ sub: uuid(998), role: "authenticated" }, "student_my_prefs", {}), null);
 const set = await rpc(user(R(1)), "student_set_reminders", { p_enabled: true, p_hour: 3 });
 assert.deepEqual(set, { remind_email: true, remind_hour: 6 }); pass("students can switch reminders back on; the hour is kept between 06:00 and 21:00");
 

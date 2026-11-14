@@ -238,6 +238,12 @@ begin
   return jsonb_build_object('remind_email', row_out.remind_email, 'remind_hour', row_out.remind_hour);
 end $$;
 
+create or replace function public.student_my_prefs()
+returns jsonb language sql stable security definer set search_path = public, pg_temp as $$
+  select coalesce((select jsonb_build_object('remind_email', remind_email, 'remind_hour', remind_hour, 'league_opt_in', league_opt_in)
+                     from public.student_profiles where user_id = auth.uid()), 'null'::jsonb)
+$$;
+
 -- Patient side of the RehabVerse follow-up e-mails.
 create or replace function public.rehab_set_reminders(p_enabled boolean)
 returns jsonb language plpgsql security definer set search_path = public, pg_temp as $$
@@ -459,12 +465,12 @@ end $$;
 -- ─────────────────────────────── permissions ─────────────
 revoke all on function public.pna__week_start(timestamptz), public.pna__league_xp(uuid, date), public.pna__league_settle(date),
   public.pna__student_streak(uuid) from public, anon, authenticated;
-revoke all on function public.student_league_my(), public.student_set_league(boolean), public.student_set_reminders(boolean, int),
+revoke all on function public.student_my_prefs(), public.student_league_my(), public.student_set_league(boolean), public.student_set_reminders(boolean, int),
   public.rehab_set_reminders(boolean), public.rehab_my_followup(), public.rehab_admin_followups(),
   public.pna_reminders_claim(timestamptz, integer), public.pna_reminders_finish(jsonb, text), public.pna_reminder_unsubscribe(uuid)
   from public, anon;
 revoke all on function public.pna_reminders_claim(timestamptz, integer), public.pna_reminders_finish(jsonb, text), public.pna_reminder_unsubscribe(uuid)
   from authenticated;
-grant execute on function public.student_league_my(), public.student_set_league(boolean), public.student_set_reminders(boolean, int),
+grant execute on function public.student_my_prefs(), public.student_league_my(), public.student_set_league(boolean), public.student_set_reminders(boolean, int),
   public.rehab_set_reminders(boolean), public.rehab_my_followup(), public.rehab_admin_followups(), public.student_export_my_data(), public.student_delete_my_data() to authenticated;
 grant execute on function public.pna_reminders_claim(timestamptz, integer), public.pna_reminders_finish(jsonb, text), public.pna_reminder_unsubscribe(uuid) to service_role;

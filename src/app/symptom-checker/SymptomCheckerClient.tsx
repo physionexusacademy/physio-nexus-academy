@@ -601,7 +601,7 @@ function PainSlider({ value, onChange }: { value: number | null; onChange: (valu
           <span>10 worst</span>
         </div>
         <p className="sc-pain-read">
-          {value === null ? "Not set — slide to rate it, or skip." : <><b>{value}</b>/10</>}
+          {value === null ? <span>Not set — slide to rate it, or skip.</span> : <span><b>{value}</b>/10</span>}
           {value !== null ? <button type="button" onClick={() => onChange(null)}>Clear</button> : null}
         </p>
       </div>

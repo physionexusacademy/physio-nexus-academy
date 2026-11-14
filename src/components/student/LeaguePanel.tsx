@@ -68,7 +68,7 @@ function Row({ row, max, zone }: { row: LeagueRow; max: number; zone: "promote" 
     <li className="lg-row" data-me={row.me} data-zone={zone} data-top={row.rank <= 3} style={{ ["--w" as string]: `${Math.max(3, Math.round((row.xp / Math.max(1, max)) * 100))}%` }}>
       <span className="lg-rank">{row.rank === 1 ? <Crown className="h-4 w-4" aria-label="1st" /> : row.rank}</span>
       <span className="lg-avatar" style={{ ["--h" as string]: hue(row.name) }} aria-hidden="true">{initials(row.name)}</span>
-      <span className="lg-name">{row.name}{row.me ? <em>you</em> : null}<i className="lg-bar" aria-hidden="true" /></span>
+      <span className="lg-name"><span className="lg-name-row">{row.name}{row.me ? <em>you</em> : null}</span><i className="lg-bar" aria-hidden="true" /></span>
       <b className="lg-xp">{row.xp} <small>XP</small></b>
     </li>
   );

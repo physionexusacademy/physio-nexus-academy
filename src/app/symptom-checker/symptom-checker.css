@@ -141,7 +141,7 @@
 .sc-note svg { flex: none; margin-top: 2px; }
 .sc-note h4 { margin: 4px 0 0; font-size: 1.05rem; color: #fff; }
 .sc-note p { margin: 6px 0 0; font-size: .9rem; line-height: 1.6; color: var(--mute); }
-.sc-note ul { margin: 6px 0 0; padding-left: 18px; font-size: .88rem; line-height: 1.6; color: #dbe9f6; }
+.sc-note ul { list-style: disc; margin: 6px 0 0; padding-left: 18px; font-size: .88rem; line-height: 1.6; color: #dbe9f6; }
 .sc-note[data-tone="info"] { border-color: rgba(127, 180, 255, .5); background: rgba(127, 180, 255, .09); }
 .sc-note[data-tone="info"] svg { color: #7fb4ff; }
 .sc-note[data-tone="warn"] { border-color: rgba(255, 198, 92, .55); background: rgba(255, 198, 92, .09); }
@@ -163,7 +163,7 @@
 .sc-fit span { display: block; margin-top: 6px; font-size: .78rem; color: var(--mute); }
 .sc-fit b { color: #fff; }
 .sc-why { margin-top: 12px; }
-.sc-why ul, .sc-against ul { margin: 6px 0 0; padding-left: 18px; font-size: .86rem; line-height: 1.6; color: #cfe3f5; }
+.sc-why ul, .sc-against ul { list-style: disc; margin: 6px 0 0; padding-left: 18px; font-size: .86rem; line-height: 1.6; color: #cfe3f5; }
 .sc-against { margin-top: 12px; border-radius: 14px; padding: 10px 14px; background: rgba(255, 198, 92, .09); border: 1px solid rgba(255, 198, 92, .35); }
 .sc-against .sc-eyebrow { color: var(--warn); }
 .sc-against ul { color: #fff0c8; }
