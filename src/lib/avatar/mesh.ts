@@ -101,6 +101,8 @@ export type ShellOptions = {
   colors?: Float32Array;
   /** Planar UVs from rest positions: [axisU, axisV, scaleU, scaleV, originU, originV]. Defaults to the body's own UVs. */
   planarUv?: { u: "x" | "y" | "z"; v: "x" | "y" | "z"; su: number; sv: number; ou: number; ov: number };
+  /** UVs from the final (displaced) rest position of each vertex, for projecting a photograph. Wins over `planarUv`. */
+  uvFrom?: (position: THREE.Vector3) => [number, number];
 };
 
 /** Cuts a sub-mesh out of the body (same skeleton and weights), optionally displaced, and returns it ready to add next to the body. */
@@ -157,7 +159,17 @@ export function makeShell(body: BodyData, material: THREE.Material, options: She
       sIdx[k * 4 + w] = skinIndex.getComponent(i, w);
       sWt[k * 4 + w] = skinWeight.getComponent(i, w);
     }
-    if (options.planarUv) {
+    if (options.uvFrom) {
+      const at = new THREE.Vector3(body.bind[i * 3], body.bind[i * 3 + 1], body.bind[i * 3 + 2]);
+      if (options.offset) {
+        const r = options.offset(i, at.clone(), new THREE.Vector3(body.restNormal[i * 3], body.restNormal[i * 3 + 1], body.restNormal[i * 3 + 2]));
+        if (typeof r === "number") at.addScaledVector(new THREE.Vector3(body.restNormal[i * 3], body.restNormal[i * 3 + 1], body.restNormal[i * 3 + 2]), r);
+        else at.add(r);
+      }
+      const [u, v] = options.uvFrom(at);
+      uv[k * 2] = u;
+      uv[k * 2 + 1] = v;
+    } else if (options.planarUv) {
       const p = options.planarUv;
       uv[k * 2] = (body.bind[i * 3 + axis(p.u)] - p.ou) * p.su;
       uv[k * 2 + 1] = (body.bind[i * 3 + axis(p.v)] - p.ov) * p.sv;

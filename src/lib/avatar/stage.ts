@@ -1,6 +1,6 @@
 /**
  * The teaching stage (browser only): plays one choreography on the shared 3D patient with Dr. Sajjad beside it. For each step he
- * says the existing lines (voice in English if the browser has one, always subtitles), walks, bends and leans to reach, puts his hands
+ * says the existing lines (voice in English, or in Urdu/Hindi for Roman Urdu, if the device has one; always subtitles), walks, bends and leans to reach, puts his hands
  * on the patient's landmarks and performs the movement while the Skills Lab overlays mark contact, direction and angles.
  * Pause, replay, step jump, speed and language are controls on this class; the React component only draws what it reports.
  */
@@ -330,8 +330,8 @@ export class TeachingStage {
       return;
     }
     this.linesDone = false;
-    // The mouth runs even without sound; sound only in English.
-    const voice = this.opt.voice && this.opt.lang === "en" && !line.urFallback;
+    // The mouth runs even without sound; sound uses the best English, Hindi or Urdu voice the device has.
+    const voice = this.opt.voice;
     void this.doc.speaker.speak(this.lineText(line), { lang: this.opt.lang === "ur" && line.urFallback ? "en" : this.opt.lang, voice }).then(() => {
       if (token !== this.lineToken || this.disposed) return;
       if (i + 1 < step.say.length) this.speakLine(i + 1);
@@ -352,7 +352,7 @@ export class TeachingStage {
     this.rig.gesture = "open";
     this.rig.leanTarget = 0;
     this.rig.crouchTarget = 0;
-    void this.doc.speaker.speak(text, { lang, voice: this.opt.voice && lang === "en" }).then(() => {
+    void this.doc.speaker.speak(text, { lang, voice: this.opt.voice }).then(() => {
       if (this.extra === e) e.done = true;
     });
     this.emit(true);

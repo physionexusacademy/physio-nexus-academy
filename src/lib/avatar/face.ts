@@ -27,6 +27,10 @@ const LIPS: [string, [number, number, number], keyof MouthShape][] = [
 
 const ease = (current: number, target: number, rate: number, dt: number) => current + (target - current) * (1 - Math.exp(-rate * dt));
 
+/** Relaxed resting lids (rad): his upper lids sit lower than the generic head's, as in the photograph. */
+const REST_LID_UP = 0.17;
+const REST_LID_LOW = -0.04;
+
 export class FaceAnimator {
   /** Targets (set by the speaker / player). */
   mouth: MouthShape = { ...CLOSED };
@@ -136,8 +140,8 @@ export class FaceAnimator {
     for (const side of ["L", "R"]) {
       const up = f.bone(`orbicularis03.${side}`);
       const low = f.bone(`orbicularis04.${side}`);
-      if (up) up.rotation.x = lid * 0.55 - widen * 0.55;
-      if (low) low.rotation.x = -lid * 0.35 + widen * 0.2;
+      if (up) up.rotation.x = REST_LID_UP + lid * (0.55 - REST_LID_UP) - widen * 0.55;
+      if (low) low.rotation.x = REST_LID_LOW + lid * (-0.35 - REST_LID_LOW) + widen * 0.2;
       const eye = f.bone(`eye.${side}`);
       if (eye) {
         eye.rotation.y = this.shownGaze.x * 0.32;

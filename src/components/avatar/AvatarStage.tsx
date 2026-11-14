@@ -15,6 +15,7 @@ import { resolvePoint } from "@/lib/skills/points3d";
 import { plain } from "@/lib/avatar/text";
 import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
+import { onVoices, planSpeech, readPrefs, savePref, supportsSpeech, voicesFor } from "@/lib/speech/voices";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
@@ -48,6 +49,10 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const [svg, setSvg] = useState<ReactNode>(null);
   const [voice, setVoice] = useState(false);
   const [voiceOk, setVoiceOk] = useState(false);
+  const [voiceList, setVoiceList] = useState<{ name: string; label: string }[]>([]);
+  const [voiceName, setVoiceName] = useState("");
+  const [voiceNote, setVoiceNote] = useState<string | null>(null);
+  const [splitVoice, setSplitVoice] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [turn, setTurn] = useState(false);
   const [light, setLight] = useState<boolean | null>(null);
@@ -61,11 +66,45 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
 
   // What this device can do.
   useEffect(() => {
-    setVoiceOk(typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined");
+    setVoiceOk(supportsSpeech());
+    setSplitVoice(readPrefs().split === true);
     setVoice(read("pna-avatar-voice") === "1");
     setSpeed(Number(read("pna-avatar-speed")) || 1);
     void import("@/lib/avatar/teacher").then((m) => setLight(m.detectLightMode()));
   }, []);
+
+  // Voices this device offers for the current language (browsers load them late), and what to tell the visitor when none fits.
+  useEffect(() => {
+    if (!supportsSpeech()) return;
+    const kinds = ur ? (["hi", "ur"] as const) : (["en"] as const);
+    return onVoices(() => {
+      const seen = new Set<string>();
+      const list: { name: string; label: string }[] = [];
+      for (const kind of kinds) {
+        for (const v of voicesFor(kind, "male")) {
+          if (seen.has(v.name)) continue;
+          seen.add(v.name);
+          list.push({ name: v.name, label: `${v.name} (${v.lang})` });
+        }
+      }
+      setVoiceList(list);
+      const saved = readPrefs()[ur ? "ur" : "en"] ?? "";
+      setVoiceName(list.some((v) => v.name === saved) ? saved : "");
+    });
+  }, [ur]);
+  useEffect(() => {
+    if (!voice || !voiceOk) {
+      setVoiceNote(null);
+      return;
+    }
+    let cancelled = false;
+    void planSpeech("Test.", ur ? "ur" : "en", { ...readPrefs(), gender: "male" }).then((plan) => {
+      if (!cancelled) setVoiceNote(plan.note);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [voice, voiceOk, ur, voiceList]);
 
   // The choreography (static JSON: not part of the worker).
   useEffect(() => {
@@ -307,14 +346,30 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
             {SPEEDS.map((v) => <option key={v} value={v}>{v}×</option>)}
           </select>
         </label>
-        <button type="button" className="s3-btn" onClick={() => { const v = !voice; setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz sirf English mein" : "Voice (English only)") : "Voice is not available in this browser"} aria-label="Voice">
+        <button type="button" className="s3-btn" onClick={() => { const v = !voice; setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: Urdu/Hindi voice jo device mein ho" : "Voice: read aloud") : "Voice is not available in this browser"} aria-label="Voice">
           {voice && voiceOk ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
         </button>
+        {voice && voiceOk && voiceList.length ? (
+          <label className="av-ctl text-[11px] font-bold text-cyan-100/80">
+            <span className="sr-only">Voice choice</span>
+            <select className="max-w-[9.5rem] rounded-full border border-cyan-300/30 bg-[#06182f] px-2 py-1 text-xs font-bold text-cyan-100" value={voiceName} aria-label="Voice choice" onChange={(e) => { const v = e.target.value; setVoiceName(v); savePref(ur ? "ur" : "en", v || null); }}>
+              <option value="">{ur ? "Auto (behtareen awaaz)" : "Auto (best voice)"}</option>
+              {voiceList.map((v) => <option key={v.name} value={v.name}>{v.label}</option>)}
+            </select>
+          </label>
+        ) : null}
+        {voice && voiceOk && ur && voicesFor("en").length ? (
+          <label className="av-ctl text-[11px] font-bold text-cyan-100/80" title="Read English terms in the English voice (several short pieces) instead of one mixed line">
+            <input type="checkbox" checked={splitVoice} onChange={(e) => { setSplitVoice(e.target.checked); savePref("split", e.target.checked ? "1" : null); }} />
+            <span>English words: English voice</span>
+          </label>
+        ) : null}
         <button type="button" className="s3-btn" onClick={() => setTurn((v) => !v)} aria-pressed={turn} title="Turn the view" aria-label="Turn the view"><Rotate3d className="h-4 w-4" aria-hidden="true" /></button>
         <button type="button" className="s3-btn" onClick={() => { const next = !(light ?? false); write("pna-avatar-light", next ? "1" : "0"); setLight(next); }} aria-pressed={Boolean(light)} title="Light mode: one still pose, no animation" aria-label="Light mode"><Zap className="h-4 w-4" aria-hidden="true" /></button>
         <span className="ml-auto hidden items-center gap-1 text-[11px] font-bold text-cyan-100/60 sm:inline-flex"><Hand className="h-3.5 w-3.5" aria-hidden="true" /> {Math.round((view?.progress ?? 0) * 100)}%</span>
       </figcaption>
       {tour ? <AskPanel ur={ur} onAnswer={(text, answerLang, tag) => { if (status !== "active") activate(); stage()?.interject(text, answerLang, tag); }} /> : null}
+      {voice && voiceNote ? <p className="av-voice-note" role="status">{voiceNote}</p> : null}
       <p className="av-foot">{AVATAR_LABEL}. {AVATAR_NOTICE}</p>
     </figure>
   );
