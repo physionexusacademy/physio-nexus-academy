@@ -166,6 +166,13 @@ jobs:
             printf '%s' "$RESEND_FROM_EMAIL" | npx wrangler secret put RESEND_FROM_EMAIL
           fi
 
+          # The hourly reminder cron (custom-worker.ts) reads the database key from the Worker environment as well.
+          if [ -n "${SUPABASE_SERVICE_ROLE_KEY}" ]; then
+            printf '%s' "$SUPABASE_SERVICE_ROLE_KEY" | npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+          else
+            echo "::warning::SUPABASE_SERVICE_ROLE_KEY is not configured; reminder e-mails will be skipped."
+          fi
+
           npm run deploy
 
       - name: Smoke test production

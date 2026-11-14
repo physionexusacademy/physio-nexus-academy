@@ -9,9 +9,12 @@
  *   the clinical registry, workshop portals, React Server Component requests, responses that
  *   set cookies, or visitors who are signed in (Supabase auth cookie).
  * - Deploy smoke tests add a unique query string, so they always see a fresh render.
+ *
+ * It also owns the hourly cron trigger that sends the opt-in reminder e-mails (src/lib/reminders/job.ts).
  */
 // @ts-ignore — built by `opennextjs-cloudflare build`
 import openNextWorker from "./.open-next/worker.js";
+import { runReminderJob, type ReminderEnv } from "./src/lib/reminders/job";
 // @ts-ignore — re-exported so Wrangler still finds OpenNext's Durable Object classes
 export { DOQueueHandler, DOShardedTagCache, BucketCachePurge } from "./.open-next/worker.js";
 
@@ -57,6 +60,14 @@ function forBrowser(response: Response, state: string) {
 }
 
 export default {
+  /** Hourly cron (wrangler.jsonc → triggers.crons): Daily Clinical Challenge and RehabVerse follow-up reminder e-mails. */
+  async scheduled(_event: unknown, env: ReminderEnv, ctx: Ctx): Promise<void> {
+    ctx.waitUntil(
+      runReminderJob(env)
+        .then((result) => console.log("PNA reminders", JSON.stringify(result)))
+        .catch((error) => console.error("PNA reminders crashed", error instanceof Error ? error.message : error)),
+    );
+  },
   async fetch(request: Request, env: unknown, ctx: Ctx): Promise<Response> {
     const url = new URL(request.url);
     const edgeCache = (globalThis as unknown as { caches?: { default?: Cache } }).caches?.default;
