@@ -5,8 +5,8 @@ import "./research-library.css";
 export const dynamic="force-static";
 export const revalidate=false;
 export const metadata:Metadata={
- title:"PNA Research Case Library | Published Physiotherapy Case Reports & Clinical Lessons",
- description:"Learn from published, evidence-based physiotherapy and rehabilitation case reports. Plain-English summaries, original source links, reported interventions, outcomes, clinical lessons and limitations — curated for students and clinicians.",
+ title:"Case Lab — Physiotherapy Case Reports Library",
+ description:"Learn from published physiotherapy case reports: plain-English summaries, interventions, outcomes and clinical lessons, with links to the original source.",
  keywords:[
   "physiotherapy case reports",
   "published physiotherapy cases",
@@ -23,8 +23,8 @@ export const metadata:Metadata={
  ],
  alternates:{canonical:"https://physionexusacademy.com/case-lab"},
  openGraph:{
-  title:"PNA Research Case Library | Published Physiotherapy Case Reports",
-  description:"Published clinical rehabilitation case reports explained in plain English, with links to the original research, outcomes and clinical lessons.",
+  title:"Case Lab — Physiotherapy Case Reports Library | PNA",
+  description:"Learn from published physiotherapy case reports: plain-English summaries, interventions, outcomes and clinical lessons, with links to the original source.",
   url:"https://physionexusacademy.com/case-lab",
   siteName:"Physio Nexus Academy",
   locale:"en_PK",
@@ -40,8 +40,8 @@ export const metadata:Metadata={
  },
  twitter:{
   card:"summary_large_image",
-  title:"PNA Research Case Library | Physiotherapy Case Reports",
-  description:"Evidence-based published physiotherapy case reports with plain-English summaries, original sources and clinical lessons.",
+  title:"Case Lab — Physiotherapy Case Reports Library | PNA",
+  description:"Learn from published physiotherapy case reports: plain-English summaries, interventions, outcomes and clinical lessons, with links to the original source.",
   images:["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
  },
  robots:{index:true,follow:true},

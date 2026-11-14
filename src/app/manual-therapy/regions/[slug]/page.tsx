@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -51,8 +52,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     robots: { index: isTechniqueSpecificRegionalApplication(item), follow: true },
-    title: item.title + " | Regional Manual Therapy",
-    description: item.clinicalUse[0],
+    title: fitTitle(item.title, 54),
+    description: fitDescription(`${item.title}: ${item.clinicalUse[0]}`, "Indications, step-by-step method, safety checks and evidence for physiotherapists."),
     alternates: {
       canonical:
         "https://physionexusacademy.com/manual-therapy/regions/" + item.slug,

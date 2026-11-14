@@ -11,11 +11,9 @@ const whatsappUrl =
   );
 
 export const metadata: Metadata = {
-  title: {
-    absolute: "Home Physiotherapy Across Pakistan — Book a Physiotherapist Home Visit",
-  },
+  title: "Home Physiotherapy Visits Across Pakistan",
   description:
-    "Request physiotherapy at home anywhere in Pakistan. A physiotherapist can visit you at home — submit the form or WhatsApp. Availability confirmed before the visit is scheduled. Strong pathways in Sindh and requests accepted nationwide.",
+    "Request a physiotherapist home visit anywhere in Pakistan. Submit the form or WhatsApp and we confirm availability before the visit.",
   keywords: [
     "home physiotherapy Pakistan",
     "physiotherapy home visit Pakistan",
@@ -34,9 +32,9 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/home-visit`,
   },
   openGraph: {
-    title: "Home Physiotherapy Across Pakistan | Physio Nexus Academy",
+    title: "Home Physiotherapy Visits Across Pakistan | PNA",
     description:
-      "Book a physiotherapy home visit from anywhere in Pakistan. Form + WhatsApp. Availability confirmed before scheduling.",
+      "Request a physiotherapist home visit anywhere in Pakistan. Submit the form or WhatsApp and we confirm availability before the visit.",
     url: `${siteUrl}/home-visit`,
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -52,9 +50,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Home Physiotherapy Across Pakistan",
+    title: "Home Physiotherapy Visits Across Pakistan | PNA",
     description:
-      "Request home physiotherapy anywhere in Pakistan. Form + WhatsApp confirmation.",
+      "Request a physiotherapist home visit anywhere in Pakistan. Submit the form or WhatsApp and we confirm availability before the visit.",
     images: [`${siteUrl}/images/founder-dr-sajjad.jpg`],
   },
   robots: {

@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -21,9 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const lesson = getLessonMeta(slug);
   if (!lesson || lesson.kind !== "concept") return {};
   const url = `${siteUrl}/learn/${lesson.slug}`;
-  const description = `${lesson.hook.en} ${lesson.goal.en} A step-by-step PNA Teacher lesson in English and Roman Urdu.`;
+  const description = fitDescription(`${lesson.hook.en} ${lesson.goal.en}`, "A step-by-step PNA Teacher lesson in English and Roman Urdu.");
   return {
-    title: `${lesson.title} — Explained Simply | PNA Teacher`,
+    title: { absolute: `${fitTitle(lesson.title, 40)} | PNA Teacher` },
     description,
     alternates: { canonical: url },
     openGraph: { title: `${lesson.title} — Explained Simply`, description, url, type: "article", siteName: "Physio Nexus Academy", locale: "en_PK" },

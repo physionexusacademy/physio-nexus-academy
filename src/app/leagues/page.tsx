@@ -7,10 +7,10 @@ import "./leagues.css";
 const url = "https://physionexusacademy.com/leagues";
 
 export const metadata: Metadata = {
-  title: "Weekly Leagues for Physiotherapy Students | Physio Nexus Academy",
-  description: "Join a free weekly league: earn XP from lessons, Skills Lab levels, Virtual Patient cases and the Daily Clinical Challenge, climb seven tiers from Bronze to Diamond and move up with the top 30 %.",
+  title: "Weekly Physiotherapy Leagues — Earn XP, Rise a Tier",
+  description: "Join free weekly physiotherapy leagues: earn XP from lessons, Skills Lab and the Daily Challenge, climb seven tiers from Bronze to Diamond.",
   alternates: { canonical: url },
-  openGraph: { title: "Weekly Leagues | Physio Nexus Academy", description: "Seven tiers, weekly promotion and demotion, scored from your own learning record.", url, siteName: "Physio Nexus Academy", type: "website" },
+  openGraph: { title: "Weekly Physiotherapy Leagues — Earn XP, Rise a Tier | PNA", description: "Join free weekly physiotherapy leagues: earn XP from lessons, Skills Lab and the Daily Challenge, climb seven tiers from Bronze to Diamond.", url, siteName: "Physio Nexus Academy", type: "website" },
 };
 
 const steps = [

@@ -6,9 +6,9 @@ import { siteConfig } from "@/lib/site-config";
 const url = "https://physionexusacademy.com/about";
 
 export const metadata: Metadata = {
-  title: "About Us — Founder, Mission & Vision",
+  title: "About Physio Nexus Academy — Mission & Founder",
   description:
-    "About Physio Nexus Academy — founded and led by Dr. Sajjad Raza PT. Practical physiotherapy education, clinical workshops and patient services for students, professionals and patients across Pakistan.",
+    "About Physio Nexus Academy: Dr. Sajjad Raza PT's mission to make practical physiotherapy education, workshops and patient care accessible in Pakistan.",
   keywords: [
     "about Physio Nexus Academy",
     "Dr Sajjad Raza PT",
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     "practical physiotherapy education",
   ],
   openGraph: {
-    title: "About Physio Nexus Academy | Founder, Mission & Vision",
+    title: "About Physio Nexus Academy — Mission & Founder | PNA",
     description:
-      "Physio Nexus Academy bridges physiotherapy theory and real clinical practice under the leadership of Dr. Sajjad Raza PT — serving learners across Pakistan.",
+      "About Physio Nexus Academy: Dr. Sajjad Raza PT's mission to make practical physiotherapy education, workshops and patient care accessible in Pakistan.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -36,9 +36,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Physio Nexus Academy",
+    title: "About Physio Nexus Academy — Mission & Founder | PNA",
     description:
-      "Purpose, vision and mission of Physio Nexus Academy — practical physiotherapy education across Pakistan.",
+      "About Physio Nexus Academy: Dr. Sajjad Raza PT's mission to make practical physiotherapy education, workshops and patient care accessible in Pakistan.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {

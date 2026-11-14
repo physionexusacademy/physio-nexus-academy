@@ -94,12 +94,9 @@ const libraryFamilies = libraryFamilyOrder.filter((name) =>
 const url = "https://physionexusacademy.com/manual-therapy";
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Manual Therapy Encyclopedia — 35+ Techniques for Physiotherapists | Maitland, Mulligan, MET & More",
-  },
+  title: "Manual Therapy Encyclopedia — 35+ Techniques",
   description:
-    "Learn 35+ manual therapy techniques used in physiotherapy: Maitland, Mulligan, Kaltenborn, MET, myofascial release, strain-counterstrain and more — with setup, hand placement, dosage, safety and clinical reasoning. Free learning for students and clinicians in Pakistan.",
+    "35+ manual therapy techniques — Maitland, Mulligan, Kaltenborn, MET, myofascial release and more — with setup, hand placement, safety and evidence.",
   keywords: [
     "manual therapy techniques",
     "manual therapy physiotherapy",
@@ -114,9 +111,9 @@ export const metadata: Metadata = {
     "World Manual Therapy Encyclopedia",
   ],
   openGraph: {
-    title: "World Manual Therapy Encyclopedia | Physio Nexus Academy",
+    title: "Manual Therapy Encyclopedia — 35+ Techniques | PNA",
     description:
-      "Trusted approaches, clinical stories and deeper learning for manual therapy techniques used in physiotherapy practice.",
+      "35+ manual therapy techniques — Maitland, Mulligan, Kaltenborn, MET, myofascial release and more — with setup, hand placement, safety and evidence.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -132,9 +129,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "World Manual Therapy Encyclopedia | Physio Nexus Academy",
+    title: "Manual Therapy Encyclopedia — 35+ Techniques | PNA",
     description:
-      "Clinical guide to major manual therapy systems for physiotherapy students and professionals.",
+      "35+ manual therapy techniques — Maitland, Mulligan, Kaltenborn, MET, myofascial release and more — with setup, hand placement, safety and evidence.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {

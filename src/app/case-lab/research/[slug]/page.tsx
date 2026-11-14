@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type {Metadata} from "next";
 import {notFound} from "next/navigation";
 import Link from "next/link";
@@ -14,8 +15,8 @@ export function generateStaticParams(){return publishedCaseReports.map(r=>({slug
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{
  const {slug}=await params; const report=getPublishedCaseReport(slug); if(!report)return {};
  return {
-  title:report.title+" | PNA Research Case Library",
-  description:report.caseSummary,
+  title:{absolute:fitTitle(report.title,44)+" | PNA Case Lab"},
+  description:fitDescription(report.caseSummary,"A published physiotherapy case report with a plain-English summary, interventions, outcomes and clinical lessons."),
   keywords: [report.specialty, "physiotherapy case report", "rehabilitation case study", "clinical lessons", "Physio Nexus Academy"],
   // A paper listed twice points search engines at one page.
   alternates:{canonical:base+"/case-lab/research/"+canonicalCaseReportSlug(report.slug)},

@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -34,8 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!item) return {};
 
   return {
-    title: item.title + " | PNA Clinical Visual Atlas",
-    description: item.summary,
+    title: `${fitTitle(item.title, 40)} — Visual Atlas`,
+    description: fitDescription(item.summary, "A 3D clinical visual from the PNA Clinical Visual Atlas, connecting anatomy with musculoskeletal pathology."),
     alternates: {
       canonical:
         "https://physionexusacademy.com/clinical-visual-atlas/" + item.slug,

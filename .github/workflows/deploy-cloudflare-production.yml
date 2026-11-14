@@ -118,6 +118,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student
 
+      - name: Validate search-result title and description helpers
+        if: steps.auth.outputs.ready == 'true'
+        run: node --experimental-strip-types scripts/validate-seo-text.ts
+
       - name: Validate Physio Nexus AI answers, Roman Urdu understanding and emergency safety
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:ai
@@ -295,6 +299,19 @@ jobs:
 
           # Exercise the read-only PNA AI resource navigator. These requests do not submit forms or create records.
           node scripts/validate-pna-ai-production.mjs
+
+  seo-live:
+    name: Verify live SEO (titles, canonicals, structured data, sitemap)
+    needs: deploy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check every hub page and a sample of each section on production
+        run: node scripts/verify-seo-production.mjs
 
   pathway-images:
     name: Verify live pathway photos and responsive interactions

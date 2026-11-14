@@ -5,9 +5,9 @@ import { stupidInternEpisodes, getLatestEpisode } from "@/lib/stupid-intern-diar
 import { EpisodeArchive } from "./EpisodeArchive";
 
 export const metadata: Metadata = {
-  title: "Stupid Intern Diaries | Funny Physiotherapy Lessons & Clinical Mistakes",
+  title: "Stupid Intern Diaries — Funny Clinical Lessons",
   description:
-    "Daily funny clinic conversations between Dr. Sajjad and the Stupid Intern. Learn real physiotherapy safety lessons, red flags, clinical reasoning and what never to do — through sharp humor and unforgettable clinical disasters.",
+    "Funny clinic conversations between Dr. Sajjad and the Stupid Intern that teach real physiotherapy safety lessons, red flags and clinical reasoning.",
   keywords: [
     "stupid intern diaries",
     "physiotherapy humor",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     canonical: "https://physionexusacademy.com/stupid-intern-diaries",
   },
   openGraph: {
-    title: "Stupid Intern Diaries | Funny Physiotherapy Lessons & Clinical Mistakes",
+    title: "Stupid Intern Diaries — Funny Clinical Lessons | PNA",
     description:
-      "Daily funny clinic conversations + sharp clinical lessons. Learn what never to do in physiotherapy through the disasters of one very confident intern.",
+      "Funny clinic conversations between Dr. Sajjad and the Stupid Intern that teach real physiotherapy safety lessons, red flags and clinical reasoning.",
     url: "https://physionexusacademy.com/stupid-intern-diaries",
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Stupid Intern Diaries | Funny Physiotherapy Lessons",
+    title: "Stupid Intern Diaries — Funny Clinical Lessons | PNA",
     description:
-      "Daily clinic disasters + sharp clinical lessons for physiotherapy students and interns. Learn safety, red flags and clinical reasoning the memorable way.",
+      "Funny clinic conversations between Dr. Sajjad and the Stupid Intern that teach real physiotherapy safety lessons, red flags and clinical reasoning.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

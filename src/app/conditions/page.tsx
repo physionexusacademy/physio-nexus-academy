@@ -8,11 +8,11 @@ export const dynamic = "force-static";
 export const revalidate = false;
 
 const url = "https://physionexusacademy.com/conditions";
-const title = "Conditions & Treatment Guide — Injuries, Plans and Rehab by Body Area";
-const description = `Find ${conditionCatalog.length} physiotherapy conditions by body area or type. Pick your depth — quick guide, clinical plan or expert detail — and follow a stage-by-stage treatment plan with doses and clear rules for when to progress.`;
+const title = "Conditions & Treatment Guide — Rehab Plans";
+const description = "Find physiotherapy conditions by body area. Choose quick, clinical or expert depth and follow a stage-by-stage rehab plan with doses and red flags.";
 
 export const metadata: Metadata = {
-  title: { absolute: title },
+  title,
   description,
   keywords: ["physiotherapy treatment plans", "musculoskeletal injuries", "rehabilitation by body area", "tendinopathy rehab", "ACL rehabilitation", "low back pain exercises", "stroke rehabilitation", "physiotherapy guide Pakistan"],
   alternates: { canonical: url },

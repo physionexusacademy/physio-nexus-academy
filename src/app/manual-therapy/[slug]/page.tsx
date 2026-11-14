@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -51,7 +52,7 @@ export function generateStaticParams() {
 
 /** Search-friendly title: short technique names get what people look for ("how to apply", evidence). */
 function techniqueTitle(name: string) {
-  return name.length <= 30 ? `${name}: How to Apply, Indications & Evidence` : name;
+  return fitTitle(name.length <= 26 ? `${name}: How to Apply & Evidence` : name, 54);
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -61,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (worldLesson) return {
     title: techniqueTitle(worldLesson.title), // the layout template adds " | Physio Nexus Academy"
-    description: worldLesson.summary,
+    description: fitDescription(worldLesson.summary, "Technique, indications, safety and evidence for physiotherapists."),
     keywords: [worldLesson.title, "manual therapy", "physiotherapy", "clinical techniques", "Physio Nexus Academy"],
     alternates: { canonical: "https://physionexusacademy.com/manual-therapy/" + slug },
     openGraph: {
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!technique) return {};
 
   const pageTitle = technique.name + " | Physio Nexus Academy";
-  const pageDescription = technique.summary;
+  const pageDescription = fitDescription(technique.summary, "Technique, indications, safety and evidence for physiotherapists.");
 
   return {
     title: techniqueTitle(technique.name),

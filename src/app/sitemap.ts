@@ -52,6 +52,30 @@ const routes = [
 
 const base = "https://physionexusacademy.com";
 
+// Honest <lastmod> dates: the day each part of the site last changed in a release. Google ignores sitemaps whose dates are always
+// "today", so these are fixed per section and only move when that section's content actually changes (update them with the content).
+const day = (iso: string) => new Date(`${iso}T00:00:00+05:00`);
+const EXACT_UPDATED: Record<string, Date> = {
+  "": day("2026-11-14"), "/learn": day("2026-11-14"), "/skills": day("2026-11-14"), "/virtual-patient": day("2026-11-13"),
+  "/rehabverse": day("2026-11-14"), "/rehabverse/library": day("2026-11-13"), "/account": day("2026-11-14"), "/leagues": day("2026-11-14"),
+  "/daily-challenge": day("2026-11-14"), "/symptom-checker": day("2026-11-14"), "/conditions": day("2026-11-13"), "/msk-special-tests": day("2026-11-13"),
+  "/contact": day("2026-11-13"), "/appointment": day("2026-11-13"), "/home-visit": day("2026-11-13"), "/research": day("2026-11-13"), "/resources": day("2026-11-13"),
+  "/about": day("2026-11-12"), "/founder": day("2026-11-12"), "/faq": day("2026-11-12"), "/workshops": day("2026-11-12"), "/manual-therapy": day("2026-11-12"),
+  "/legal/privacy": day("2026-11-14"), "/legal/terms": day("2026-11-07"), "/legal/disclaimer": day("2026-11-07"),
+  "/reviews": day("2026-11-08"), "/patient-services": day("2026-11-07"), "/training": day("2026-11-07"), "/verify": day("2026-11-07"),
+  "/case-lab": day("2026-11-06"), "/stupid-intern-diaries": day("2026-11-06"), "/faculty": day("2026-11-03"), "/clinical-visual-atlas": day("2026-11-13"),
+  "/manual-therapy/regions": day("2026-11-03"),
+};
+const SECTION_UPDATED: [string, Date][] = [
+  ["/learn/", day("2026-11-14")], ["/skills/", day("2026-11-14")], ["/conditions/", day("2026-11-13")], ["/clinical-visual-atlas/", day("2026-11-13")],
+  ["/case-lab/", day("2026-11-07")], ["/manual-therapy/", day("2026-11-03")], ["/locations/", day("2026-11-03")], ["/faculty/", day("2026-11-03")], ["/training/", day("2026-11-03")],
+];
+function lastModifiedFor(url: string): Date | undefined {
+  const path = url.replace(base, "");
+  if (path in EXACT_UPDATED) return EXACT_UPDATED[path];
+  return SECTION_UPDATED.find(([prefix]) => path.startsWith(prefix))?.[1];
+}
+
 function getRoutePriority(route: string): number {
   if (route === "") return 1;
   if (route === "/home-visit" || route === "/appointment") return 0.9;
@@ -185,5 +209,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (!uniqueEntries.has(entry.url)) uniqueEntries.set(entry.url, entry);
   }
 
-  return [...uniqueEntries.values()];
+  return [...uniqueEntries.values()].map((entry) => ({ ...entry, lastModified: entry.lastModified ?? lastModifiedFor(entry.url) }));
 }

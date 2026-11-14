@@ -4,9 +4,9 @@ import type { Region } from "@/lib/rehabverse/types";
 import { REGIONS } from "@/lib/rehabverse/types";
 
 export const metadata: Metadata = {
-  title: "3D Exercise Library",
+  title: "3D Rehab Exercise Library — RehabVerse",
   description:
-    "Rehabilitation exercises for the neck, back, shoulder, hand, hip, knee and ankle — each performed in 3D by a virtual physiotherapist guide, with English and Roman Urdu instructions.",
+    "Neck, back, shoulder, hip, knee and ankle rehab exercises performed in 3D by a virtual physiotherapist, with English and Roman Urdu instructions.",
   alternates: { canonical: "https://physionexusacademy.com/rehabverse/library" },
 };
 

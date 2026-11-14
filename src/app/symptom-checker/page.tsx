@@ -12,12 +12,12 @@ import { SymptomCheckerClient } from "./SymptomCheckerLoader";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "MSK Symptom Checker | Musculoskeletal Screening",
+  title: "MSK Symptom Checker — Free Musculoskeletal Screening",
   description:
-    "Use the Physio Nexus Academy musculoskeletal symptom checker to screen common neck, shoulder, back, hip, knee, ankle and other MSK symptom patterns and decide the next step.",
+    "Free MSK symptom checker from Physio Nexus Academy: screen neck, shoulder, back, hip, knee and ankle problems, spot red flags and know your next step.",
   openGraph: {
-    title: "MSK Symptom Checker | Physio Nexus Academy",
-    description: "Safety-first screening of common musculoskeletal symptom patterns with guidance on appropriate next steps.",
+    title: "MSK Symptom Checker — Free Musculoskeletal Screening | PNA",
+    description: "Free MSK symptom checker from Physio Nexus Academy: screen neck, shoulder, back, hip, knee and ankle problems, spot red flags and know your next step.",
     url: "https://physionexusacademy.com/symptom-checker",
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MSK Symptom Checker | Physio Nexus Academy",
-    description: "Safety-first screening of common musculoskeletal symptom patterns with guidance on appropriate next steps.",
+    title: "MSK Symptom Checker — Free Musculoskeletal Screening | PNA",
+    description: "Free MSK symptom checker from Physio Nexus Academy: screen neck, shoulder, back, hip, knee and ankle problems, spot red flags and know your next step.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {

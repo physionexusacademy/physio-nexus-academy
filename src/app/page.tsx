@@ -16,11 +16,9 @@ import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
 
 export const metadata: Metadata = {
-  title: {
-    absolute: "Physio Nexus Academy | Official Site — Physiotherapy Education & Workshops in Pakistan",
-  },
+  title: { absolute: "Physio Nexus Academy — Physiotherapy Learning in Pakistan" },
   description:
-    "Official website of Physio Nexus Academy (PNA) — Pakistan’s practical physiotherapy academy. Free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, Conditions & Treatment Guide, manual therapy, CPD workshops, books, home visits and appointments. Founded by Dr. Sajjad Raza PT.",
+    "Physio Nexus Academy (PNA): free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, RehabVerse, workshops and physiotherapy care in Pakistan.",
   keywords: [
     "Physio Nexus Academy",
     "Physio Nexus Academy Pakistan",
@@ -34,9 +32,9 @@ export const metadata: Metadata = {
     "physiotherapy students Pakistan",
   ],
   openGraph: {
-    title: "Physio Nexus Academy | Official Site",
+    title: "Physio Nexus Academy — Physiotherapy Learning in Pakistan",
     description:
-      "Official website of Physio Nexus Academy — practical physiotherapy education, workshops and clinical learning in Pakistan.",
+      "Physio Nexus Academy (PNA): free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, RehabVerse, workshops and physiotherapy care in Pakistan.",
     url: "https://physionexusacademy.com",
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -58,9 +56,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Physio Nexus Academy | Official Site",
+    title: "Physio Nexus Academy — Physiotherapy Learning in Pakistan",
     description:
-      "Official website of Physio Nexus Academy — physiotherapy education and workshops in Pakistan.",
+      "Physio Nexus Academy (PNA): free clinical learning, PNA Teacher, Skills Lab, Virtual Patient, RehabVerse, workshops and physiotherapy care in Pakistan.",
     images: ["https://physionexusacademy.com/images/pna-logo.png"],
   },
   alternates: {

@@ -7,12 +7,9 @@ import { ContactForm } from "./ContactForm";
 const url = "https://physionexusacademy.com/contact";
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Contact Physio Nexus Academy — Workshops, Appointments & Home Visits Across Pakistan",
-  },
+  title: "Contact Physio Nexus Academy — Karachi, Pakistan",
   description:
-    "Contact Physio Nexus Academy for physiotherapy workshops, patient appointments, home visits and general enquiries across Pakistan. WhatsApp, email or contact form.",
+    "Contact Physio Nexus Academy for workshops, appointments, home visits and enquiries across Pakistan — WhatsApp, e-mail or contact form.",
   keywords: [
     "contact Physio Nexus Academy",
     "physiotherapy contact Pakistan",
@@ -25,9 +22,9 @@ export const metadata: Metadata = {
     canonical: url,
   },
   openGraph: {
-    title: "Contact Physio Nexus Academy",
+    title: "Contact Physio Nexus Academy — Karachi, Pakistan | PNA",
     description:
-      "Questions about workshops, resources or appointments across Pakistan? Message us on WhatsApp, email or the contact form.",
+      "Contact Physio Nexus Academy for workshops, appointments, home visits and enquiries across Pakistan — WhatsApp, e-mail or contact form.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -43,9 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Physio Nexus Academy",
+    title: "Contact Physio Nexus Academy — Karachi, Pakistan | PNA",
     description:
-      "Workshops, appointments and home visit enquiries across Pakistan.",
+      "Contact Physio Nexus Academy for workshops, appointments, home visits and enquiries across Pakistan — WhatsApp, e-mail or contact form.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

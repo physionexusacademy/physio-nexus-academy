@@ -7,9 +7,9 @@ import {
 } from "@/lib/manual-therapy-regional";
 
 export const metadata: Metadata = {
-  title: "Regional Manual Therapy Encyclopedia",
+  title: "Regional Manual Therapy Techniques by Body Area",
   description:
-    "Browse detailed, authored regional manual therapy lessons and lightweight region-based libraries of introductory overviews.",
+    "Browse regional manual therapy lessons by body area: techniques, indications, safety checks and clinical reasoning for physiotherapists.",
   alternates: { canonical: "https://physionexusacademy.com/manual-therapy/regions" },
 };
 

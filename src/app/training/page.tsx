@@ -10,9 +10,9 @@ import {
 } from "@/lib/training-history";
 
 export const metadata: Metadata = {
-  title: "Past Physiotherapy Workshops, Internships & Clinical Training",
+  title: "Past Physiotherapy Workshops & Internships",
   description:
-    "Explore past physiotherapy workshops, internship programs and clinical training activities from the professional portfolio of Physio Nexus Academy and Dr. Sajjad Raza PT.",
+    "Past physiotherapy workshops, internships and clinical training delivered by Physio Nexus Academy and Dr. Sajjad Raza PT.",
   alternates: {
     canonical: "https://physionexusacademy.com/training",
   },

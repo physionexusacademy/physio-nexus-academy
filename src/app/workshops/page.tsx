@@ -7,12 +7,9 @@ import { createPublicClient } from "@/lib/supabase/public";
 const url = "https://physionexusacademy.com/workshops";
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Physiotherapy Workshops & CPD Courses Across Pakistan | Hands-on Manual Therapy Training",
-  },
+  title: "Physiotherapy Workshops & CPD Courses in Pakistan",
   description:
-    "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills across Pakistan. Verifiable certificates. Training scheduled in multiple cities with strong pathways in Sindh and nationwide requests.",
+    "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills across Pakistan, with verifiable certificates.",
   keywords: [
     "physiotherapy workshops Pakistan",
     "CPD physiotherapy Pakistan",
@@ -26,9 +23,9 @@ export const metadata: Metadata = {
     "Physio Nexus Academy workshops",
   ],
   openGraph: {
-    title: "Physiotherapy Workshops & CPD Across Pakistan | Physio Nexus Academy",
+    title: "Physiotherapy Workshops & CPD Courses in Pakistan | PNA",
     description:
-      "Practical physiotherapy workshops and clinical skills training for students and professionals across Pakistan.",
+      "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills across Pakistan, with verifiable certificates.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -44,9 +41,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Physiotherapy Workshops & CPD Across Pakistan",
+    title: "Physiotherapy Workshops & CPD Courses in Pakistan | PNA",
     description:
-      "Hands-on clinical skills and CPD workshops for physiotherapy students and professionals.",
+      "Hands-on physiotherapy workshops and CPD courses in manual therapy and clinical skills across Pakistan, with verifiable certificates.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {

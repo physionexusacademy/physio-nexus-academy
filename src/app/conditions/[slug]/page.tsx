@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { conditionCatalog, conditionUrl, getCondition } from "@/lib/conditions/catalog";
@@ -18,10 +19,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const item = getCondition(slug);
   if (!item) return {};
-  const title = `${item.name} — Assessment, Treatment Plan & Rehab Stages`;
+  const title = `${fitTitle(`${item.name} — Assessment & Rehab Plan`, 54)}`;
   return {
-    title: { absolute: `${title} | Physio Nexus Academy` },
-    description: item.summary.length > 155 ? `${item.summary.slice(0, 152)}…` : item.summary,
+    title: { absolute: `${title} | PNA` },
+    description: fitDescription(item.summary, "Assessment, treatment plan and rehab stages from the PNA Conditions & Treatment Guide."),
     alternates: { canonical: conditionUrl(item.slug) },
     openGraph: { title, description: item.summary, url: conditionUrl(item.slug), siteName: "Physio Nexus Academy", type: "article", locale: "en_PK" },
   };

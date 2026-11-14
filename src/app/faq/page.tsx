@@ -5,12 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 const url = "https://physionexusacademy.com/faq";
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "FAQ — Physiotherapy Workshops, Appointments, Home Visits & Learning | Physio Nexus Academy",
-  },
+  title: "FAQ — Workshops, Appointments, Home Visits & Learning",
   description:
-    "Frequently asked questions about Physio Nexus Academy: physiotherapy workshops, CPD, appointments, home visits, books, certificates and learning resources across Pakistan.",
+    "Answers about Physio Nexus Academy: workshops, CPD, appointments, home visits, books, certificates and learning resources in Pakistan.",
   keywords: [
     "physiotherapy FAQ Pakistan",
     "physiotherapy workshop FAQ",
@@ -23,9 +20,9 @@ export const metadata: Metadata = {
     canonical: url,
   },
   openGraph: {
-    title: "FAQ | Physio Nexus Academy",
+    title: "FAQ — Workshops, Appointments, Home Visits & Learning | PNA",
     description:
-      "Answers about workshops, certificates, appointments, home visits and learning resources.",
+      "Answers about Physio Nexus Academy: workshops, CPD, appointments, home visits, books, certificates and learning resources in Pakistan.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -41,9 +38,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FAQ | Physio Nexus Academy",
+    title: "FAQ — Workshops, Appointments, Home Visits & Learning | PNA",
     description:
-      "Quick answers about learning, workshops and patient services at Physio Nexus Academy.",
+      "Answers about Physio Nexus Academy: workshops, CPD, appointments, home visits, books, certificates and learning resources in Pakistan.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

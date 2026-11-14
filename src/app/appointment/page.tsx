@@ -20,12 +20,9 @@ const whatsappUrl =
   );
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Book Physiotherapy Appointment Online or In-Person Across Pakistan",
-  },
+  title: "Book a Physiotherapy Appointment in Pakistan",
   description:
-    "Book a physiotherapy appointment or online consultation from anywhere in Pakistan. In-person or remote options. Submit the form or WhatsApp — availability confirmed before the appointment is finalised.",
+    "Book a physiotherapy appointment or online consultation anywhere in Pakistan, in person or remote. Submit the form or WhatsApp.",
   keywords: [
     "book physiotherapy appointment Pakistan",
     "physiotherapy consultation Pakistan",
@@ -43,9 +40,9 @@ export const metadata: Metadata = {
     canonical: `${siteUrl}/appointment`,
   },
   openGraph: {
-    title: "Book Physiotherapy Appointment Across Pakistan | Physio Nexus Academy",
+    title: "Book a Physiotherapy Appointment in Pakistan | PNA",
     description:
-      "Request in-person or online physiotherapy consultation from anywhere in Pakistan. Form + WhatsApp confirmation.",
+      "Book a physiotherapy appointment or online consultation anywhere in Pakistan, in person or remote. Submit the form or WhatsApp.",
     url: `${siteUrl}/appointment`,
     siteName: "Physio Nexus Academy",
     locale: "en_PK",
@@ -61,9 +58,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Book Physiotherapy Appointment Across Pakistan",
+    title: "Book a Physiotherapy Appointment in Pakistan | PNA",
     description:
-      "In-person or online physiotherapy consultation. Available pathway for patients nationwide.",
+      "Book a physiotherapy appointment or online consultation anywhere in Pakistan, in person or remote. Submit the form or WhatsApp.",
     images: [`${siteUrl}/images/founder-dr-sajjad.jpg`],
   },
   robots: {
