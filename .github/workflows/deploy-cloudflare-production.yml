@@ -122,6 +122,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:avatar
 
+      - name: Validate voice choice and Roman Urdu reading (English, Hindi, Urdu, no voice)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:speech
+
       - name: Validate search-result title and description helpers
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-seo-text.ts
