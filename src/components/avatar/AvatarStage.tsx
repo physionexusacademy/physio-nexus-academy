@@ -15,7 +15,8 @@ import { resolvePoint } from "@/lib/skills/points3d";
 import { plain } from "@/lib/avatar/text";
 import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
-import { BUILTIN_LABEL, BUILTIN_VOICE, builtinSupported, onVoices, planSpeech, readPrefs, savePref, supportsSpeech, unlockAudio, voicesFor, warmBuiltin } from "@/lib/speech/voices";
+import { NOTE_ROMAN_URDU, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
+import { recordedPacks, warmPack } from "@/lib/speech/recorded";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
@@ -49,11 +50,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const [svg, setSvg] = useState<ReactNode>(null);
   const [voice, setVoice] = useState(false);
   const [voiceOk, setVoiceOk] = useState(false);
-  const [voiceList, setVoiceList] = useState<{ name: string; label: string }[]>([]);
-  const [voiceName, setVoiceName] = useState("");
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
-  const [splitVoice, setSplitVoice] = useState(false);
-  const [builtinInUse, setBuiltinInUse] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [turn, setTurn] = useState(false);
   const [light, setLight] = useState<boolean | null>(null);
@@ -71,52 +68,32 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   // What this device can do.
   useEffect(() => {
     setVoiceOk(supportsSpeech());
-    // Start loading the built-in male voice (about 0.8 MB, once) while the stage builds, so the first line is spoken without waiting.
-    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
-    if (!saveData) warmBuiltin();
-    setSplitVoice(readPrefs().split === true);
     setVoice(read("pna-avatar-voice") === "1");
     setSpeed(Number(read("pna-avatar-speed")) || 1);
     void import("@/lib/avatar/teacher").then((m) => setLight(m.detectLightMode()));
   }, []);
 
-  // The voices to choose from: the PNA Teacher's built-in male voice, then any male voice installed on this device (browsers load those
-  // late). A female voice, or one that is not known to be male, is never offered.
-  useEffect(() => {
-    if (!supportsSpeech()) return;
-    const kinds = ur ? (["hi", "ur"] as const) : (["en"] as const);
-    return onVoices(() => {
-      const seen = new Set<string>();
-      const list: { name: string; label: string }[] = [];
-      if (builtinSupported()) list.push({ name: BUILTIN_VOICE, label: `${BUILTIN_LABEL} ♂` });
-      for (const kind of kinds) {
-        for (const v of voicesFor(kind, "male")) {
-          if (seen.has(v.name)) continue;
-          seen.add(v.name);
-          list.push({ name: v.name, label: `${v.name} (${v.lang}) ♂${/natural|neural/i.test(v.name) ? " · natural" : v.localService === false ? " · online" : ""}` });
-        }
-      }
-      setVoiceList(list);
-      const saved = readPrefs()[ur ? "ur" : "en"] ?? "";
-      setVoiceName(list.some((v) => v.name === saved) ? saved : "");
-    });
-  }, [ur]);
+  // Whether this demonstration's lines are recorded (English only), and a head start on downloading them.
   useEffect(() => {
     if (!voice || !voiceOk) {
       setVoiceNote(null);
-      setBuiltinInUse(false);
+      return;
+    }
+    if (ur) {
+      setVoiceNote(NOTE_ROMAN_URDU);
       return;
     }
     let cancelled = false;
-    void planSpeech("Test.", ur ? "ur" : "en", { ...readPrefs(), gender: "male" }).then((plan) => {
+    void recordedPacks().then((packs) => {
       if (cancelled) return;
-      setVoiceNote(plan.note);
-      setBuiltinInUse(plan.engine === "builtin");
+      const pack = `avatar-${slug}`;
+      setVoiceNote(packs.includes(pack) ? null : "This demonstration has no recorded voice yet, so it plays with subtitles.");
+      if (packs.includes(pack)) warmPack(pack);
     });
     return () => {
       cancelled = true;
     };
-  }, [voice, voiceOk, ur, voiceList]);
+  }, [voice, voiceOk, ur, slug]);
 
   // The choreography (static JSON: not part of the worker).
   useEffect(() => {
@@ -273,7 +250,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         <span className="s3-corner tl" /><span className="s3-corner tr" /><span className="s3-corner bl" /><span className="s3-corner br" />
         {status === "active" ? <span className="s3-scan" aria-hidden="true" /> : null}
         {status === "parked" || status === "idle" ? (
-          <button type="button" onClick={activate} className="absolute inset-0 z-[5] flex items-center justify-center bg-cover bg-center" style={poster ? { backgroundImage: `url(${poster})` } : undefined} aria-label={`Show the 3D demonstration: ${stepTitle}`}>
+          <button type="button" onClick={() => { if (voice) unlockAudio(); activate(); }} className="absolute inset-0 z-[5] flex items-center justify-center bg-cover bg-center" style={poster ? { backgroundImage: `url(${poster})` } : undefined} aria-label={`Show the 3D demonstration: ${stepTitle}`}>
             <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/50 bg-[#06182f]/90 px-4 py-2 text-sm font-bold text-cyan-100 shadow-[0_0_24px_rgba(46,230,214,.45)]"><Play className="h-4 w-4" aria-hidden="true" /> {ur ? "PNA Teacher ka demo dekhein" : "Watch the PNA Teacher demonstrate"}</span>
           </button>
         ) : null}
@@ -358,34 +335,19 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
             {SPEEDS.map((v) => <option key={v} value={v}>{v}×</option>)}
           </select>
         </label>
-        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: PNA Teacher ki awaaz (mard ki)" : "Voice: the PNA Teacher reads aloud (male voice)") : "Voice is not available in this browser"} aria-label="Voice">
+        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz abhi sirf English mein hai" : "Voice: the PNA Teacher reads aloud (recorded male voice)") : "Voice is not available in this browser"} aria-label="Voice">
           {voice && voiceOk ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
         </button>
-        {voice && voiceOk && voiceList.length ? (
-          <label className="av-ctl text-[11px] font-bold text-cyan-100/80">
-            <span className="sr-only">Voice choice</span>
-            <select className="max-w-[9.5rem] rounded-full border border-cyan-300/30 bg-[#06182f] px-2 py-1 text-xs font-bold text-cyan-100" value={voiceName} aria-label="Voice choice" onChange={(e) => { const v = e.target.value; setVoiceName(v); savePref(ur ? "ur" : "en", v || null); }}>
-              <option value="">{ur ? "Auto (mard ki awaaz)" : "Auto (male voice)"}</option>
-              {voiceList.map((v) => <option key={v.name} value={v.name}>{v.label}</option>)}
-            </select>
-          </label>
-        ) : null}
-        {voice && voiceOk && ur && voiceName && voiceName !== BUILTIN_VOICE && voicesFor("en", "male").length ? (
-          <label className="av-ctl text-[11px] font-bold text-cyan-100/80" title="Read English terms in the English voice (several short pieces) instead of one mixed line">
-            <input type="checkbox" checked={splitVoice} onChange={(e) => { setSplitVoice(e.target.checked); savePref("split", e.target.checked ? "1" : null); }} />
-            <span>English words: English voice</span>
-          </label>
-        ) : null}
         <button type="button" className="s3-btn" onClick={() => setTurn((v) => !v)} aria-pressed={turn} title="Turn the view" aria-label="Turn the view"><Rotate3d className="h-4 w-4" aria-hidden="true" /></button>
         <button type="button" className="s3-btn" onClick={() => { const next = !(light ?? false); write("pna-avatar-light", next ? "1" : "0"); setLight(next); }} aria-pressed={Boolean(light)} title="Light mode: one still pose, no animation" aria-label="Light mode"><Zap className="h-4 w-4" aria-hidden="true" /></button>
         <span className="ml-auto hidden items-center gap-1 text-[11px] font-bold text-cyan-100/60 sm:inline-flex"><Hand className="h-3.5 w-3.5" aria-hidden="true" /> {Math.round((view?.progress ?? 0) * 100)}%</span>
       </figcaption>
       {tour ? <AskPanel ur={ur} onAnswer={(text, answerLang, tag) => { if (status !== "active") activate(); stage()?.interject(text, answerLang, tag); }} /> : null}
       {voice && voiceNote ? <p className="av-voice-note" role="status">{voiceNote}</p> : null}
-      {voice && voiceOk && builtinInUse ? (
+      {voice && voiceOk && !ur ? (
         <p className="av-voice-note">
-          Built-in male voice: eSpeak NG (open source, GPL-3.0) — a clear computer voice, the same on every device, nothing is sent anywhere. For a more human voice, choose a "natural" male voice in the list when your device has one.{" "}
-          <a href="/teacher/espeak/README.txt" className="underline">Licence and source</a>
+          Voice: a recorded male voice (George), made offline with the free Kokoro model — nothing is generated on your device.{" "}
+          <a href="/voice/george/README.txt" className="underline">Credit and licence</a>
         </p>
       ) : null}
       <p className="av-foot">{AVATAR_LABEL}. {AVATAR_NOTICE}</p>

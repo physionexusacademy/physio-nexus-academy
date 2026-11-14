@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { TeacherWidget } from "./widgets";
 import { SortActivity } from "./SortActivity";
+import { unlockAudio } from "@/lib/speech/voices";
 import { useSpeech } from "./useSpeech";
 import {
   Chip,
@@ -176,7 +177,9 @@ function LessonConversation({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userActed = useRef(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const speech = useSpeech();
+  // The recorded voice of this lesson (English only); the buttons appear only when the lesson has a recording.
+  const speech = useSpeech(`lesson-${lesson.slug}`);
+  const canListen = speech.supported && lang === "en";
   const { beats } = lesson;
 
   useEffect(() => {
@@ -276,7 +279,7 @@ function LessonConversation({
       setSession((current) => ({ ...current, log: [...current.log, ...teacher] }));
       setTyping(false);
       const last = teacher[teacher.length - 1];
-      if (voiceOn && speech.supported && last) {
+      if (voiceOn && canListen && last) {
         const text = plainText(entryText(last));
         if (text) speech.speak("auto-" + Date.now(), text, lang);
       }
@@ -323,6 +326,7 @@ function LessonConversation({
 
   function toggleVoice() {
     const value = !voiceOn;
+    if (value) unlockAudio(); // from the tap: the only moment a browser lets sound start
     setVoiceOn(value);
     try {
       window.localStorage.setItem(VOICE_KEY, value ? "on" : "off");
@@ -352,7 +356,7 @@ function LessonConversation({
     const meta = beatLabels[beat.type];
     const label = meta ? pick(meta.label, lang) : undefined;
     const tone = meta?.tone ?? "plain";
-    const listen = speech.supported ? () => speech.toggle(key, plainText(entryText({ k: "beat", i: index })), lang) : undefined;
+    const listen = canListen ? () => speech.toggle(key, plainText(entryText({ k: "beat", i: index })), lang) : undefined;
     const common = { label, tone, onListen: listen, listening: speech.speakingId === key };
 
     switch (beat.type) {
@@ -535,7 +539,7 @@ function LessonConversation({
   function renderEntry(entry: Entry, index: number) {
     const key = `${entry.k}-${index}`;
     const listen = (text: string) =>
-      speech.supported ? () => speech.toggle(key, plainText(text), lang) : undefined;
+      canListen ? () => speech.toggle(key, plainText(text), lang) : undefined;
 
     switch (entry.k) {
       case "intro": {
@@ -754,12 +758,12 @@ function LessonConversation({
           </div>
           <div className="flex items-center gap-1.5">
             <LangToggle lang={lang} onChange={changeLang} />
-            {speech.supported ? (
+            {canListen ? (
               <button
                 type="button"
                 onClick={toggleVoice}
                 aria-pressed={voiceOn}
-                title={voiceOn ? "Stop reading new messages aloud" : lang === "ur" ? "Naye messages awaaz mein suniye (Urdu/Hindi voice jo device mein ho)" : "Read new messages aloud"}
+                title={voiceOn ? "Stop reading new messages aloud" : "Read new messages aloud (recorded male voice)"}
                 className={cn(
                   "inline-flex h-9 w-9 items-center justify-center rounded-full border transition disabled:opacity-40",
                   voiceOn ? "border-teal-700 bg-teal-700 text-white" : "border-slate-200 bg-white text-slate-600 hover:text-teal-700",

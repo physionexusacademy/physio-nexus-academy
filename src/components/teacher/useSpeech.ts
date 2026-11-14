@@ -1,13 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { speakText, stopSpeaking, supportsSpeech, type Playback, type SpeechLang } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, supportsSpeech, unlockAudio, type Playback, type SpeechLang } from "@/lib/speech/voices";
+import { recordedPacks } from "@/lib/speech/recorded";
 
 /**
- * Browser text-to-speech (no network, no cost). English with an English voice; Roman Urdu with a Hindi or Urdu voice if the device has
- * one (see lib/speech), otherwise `note` explains that only the text is shown.
+ * The PNA Teacher's recorded voice for a lesson (see lib/speech/recorded.ts). `supported` is true only when this browser can play it and
+ * the lesson's recording exists (`pack`, for example "lesson-abpi-and-glucose-exercise-safety"), so no Listen button appears for a lesson
+ * that has no recording. English only: the lesson player does not offer it in Roman Urdu. `note` says why a line was not spoken.
  */
-export function useSpeech() {
+export function useSpeech(pack?: string) {
   const [supported, setSupported] = useState(false);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
@@ -15,12 +17,17 @@ export function useSpeech() {
   const current = useRef<string | null>(null);
 
   useEffect(() => {
-    setSupported(supportsSpeech());
+    let cancelled = false;
+    if (!supportsSpeech()) return;
+    void recordedPacks().then((packs) => {
+      if (!cancelled) setSupported(pack ? packs.includes(pack) : packs.length > 0);
+    });
     return () => {
+      cancelled = true;
       playback.current?.cancel();
       stopSpeaking();
     };
-  }, []);
+  }, [pack]);
 
   const stop = useCallback(() => {
     playback.current?.cancel();
@@ -36,6 +43,7 @@ export function useSpeech() {
       playback.current?.cancel();
       current.current = id;
       setSpeakingId(id);
+      unlockAudio();
       void speakText(text, lang, {
         onNote: setNote,
         isCurrent: () => current.current === id,
@@ -46,7 +54,7 @@ export function useSpeech() {
           }
         },
       }).then((p) => {
-        // A newer line may have started while the voice was being chosen.
+        // A newer line may have started while the recording was being looked up.
         if (current.current === id) playback.current = p;
         else p?.cancel();
       });

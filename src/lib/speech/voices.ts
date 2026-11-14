@@ -1,362 +1,76 @@
 /**
- * Reading text aloud in English, Urdu and Roman Urdu (free, nothing is sent anywhere). The therapist is a man, so the voice is always male.
+ * Reading text aloud: the PNA Teacher's recorded voice (see recorded.ts). The therapist is a man, so the voice is a man's (George).
  *
- *  - Voice: a voice the device is *known* to offer as male and that is installed on the device (so it starts at once). Phones and many
- *    computers have none, so there is always the PNA Teacher's own built-in male voice (builtin.ts), the same on every device. A female voice,
- *    or one whose name does not say it is male, is never used; neither is a voice that is streamed from the internet (it would lag).
- *  - English: Indian/Pakistani/British English first. Urdu / Roman Urdu: the site's Urdu is Roman Urdu mixed with English terms. Urdu
- *    words are converted (roman-urdu.ts) to Devanagari (a Hindi voice reads it reliably) or Urdu script; English terms in the same line
- *    stay with the English voice.
- *  - When neither exists, the plan says so and the caller shows subtitles only.
- * Browser only: import it from client code (the helpers are safe to import on the server, they just do nothing there).
+ * There is no speech synthesiser any more, neither the device's nor a built-in one: a synthetic voice sounded robotic, and a neural voice
+ * is too heavy to run on a visitor's phone. So a line is spoken only when it was recorded (the 3D guide and demonstrations, the RehabVerse
+ * guide and exercise cues, and lessons as they are recorded); otherwise it is shown as text. Roman Urdu is shown as text (no Urdu recording).
+ * Everything here is safe to import on the server: the helpers simply do nothing there.
  */
-import { convertRun, splitRuns, type Lexicon, type Run } from "./roman-urdu";
-import { BUILTIN_VOICE, builtinSupported, cancelBuiltin, speakBuiltin, unlockAudio, warmBuiltin, type BuiltinLang, type BuiltinPlayback } from "./builtin";
-export { BUILTIN_LABEL, BUILTIN_VOICE, builtinSupported, unlockAudio, warmBuiltin } from "./builtin";
 import { toSpoken } from "./spoken";
+import { cancelRecorded, findRecording, playRecording, recordedSupported, unlockRecorded, type Part } from "./recorded";
 
 export type SpeechLang = "en" | "ur";
-export type Segment = { text: string; voice: SpeechSynthesisVoice | null; lang: string; builtin?: BuiltinLang };
+
+export const NOTE_ROMAN_URDU = "The voice is in English for now. Roman Urdu is shown as text.";
+export const NOTE_NO_RECORDING = "This line has no recording yet, so it is shown as text.";
+
 export type VoicePlan = {
-  mode: "english" | "hindi" | "urdu" | "none";
-  /** The same line for the built-in voice, used if an online device voice has not started in time. */
-  fallback?: VoicePlan;
-  /** Which speaker reads it: a male voice installed on the device, or the PNA Teacher's built-in male voice. */
-  engine: "device" | "builtin" | "none";
-  segments: Segment[];
-  /** Plain-language note for the person when something is missing (shown next to the voice button). */
+  mode: "english" | "none";
+  engine: "recorded" | "none";
+  parts: Part[];
+  /** Plain-language note for the person when a line is not spoken (shown next to the voice button). */
   note: string | null;
-  /** True when the spoken text is the displayed text (so word-boundary events can be used to keep the lips in sync). */
-  sameText: boolean;
-};
-export type VoicePrefs = {
-  en?: string | null;
-  ur?: string | null;
-  /** Whose voice to use. Default "male": the therapist is a man. (`null` lifts the restriction; nothing on the site does that.) */
-  gender?: "male" | null;
-  /** Read English terms inside Urdu lines with the English voice (several short utterances) instead of one code-mixed utterance. */
-  split?: boolean;
 };
 
-const supportsDeviceSpeech = () => typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
-/** True when something can speak here: the device's own synthesiser or the built-in male voice. */
-export const supportsSpeech = () => supportsDeviceSpeech() || builtinSupported();
+/** True when this browser can play the recorded voice. */
+export const supportsSpeech = () => recordedSupported();
+/** Lets the browser play sound: call it from the tap that turns the voice on or starts a line. */
+export const unlockAudio = unlockRecorded;
 
-/** Voice names that identify a man's or a woman's voice (Windows/Edge, macOS, Chrome desktop). Phones often give no gender in the name: those voices are not used (the built-in male voice covers them). */
-const MALE =
-  /\b(male|david|mark|guy|ryan|ravi|prabhat|hemant|madhur|asad|rishi|daniel|alex|fred|james|george|thomas|oliver|aaron|arthur|eric|davis|brian|christopher|roger|steffan|liam|connor|william|jorge|diego|andrew|jason|tony|brandon|mitchell|noah|sean|jacob|ethan|evan|salman|faiz|nadeem|farhan|male voice|google uk english male)\b/i;
-const FEMALE =
-  /\b(female|zira|hazel|susan|swara|kalpana|uzma|heera|samantha|karen|moira|lekha|tessa|veena|fiona|kate|serena|neerja|aria|jenny|ava|emma|libby|sonia|michelle|monica|paulina|ana|natasha|clara|leah|maisie|mia|olivia|ruth|salli|joanna|kimberly|kendra|ivy|nicole|amy|raveena|aditi|google us english|google (\u0939\u093f\u0928\u094d\u0926\u0940|hindi)|google \u0627\u0631\u062f\u0648)\b|google (\u0939\u093f\u0928\u094d\u0926\u0940|hindi|\u0627\u0631\u062f\u0648)/i;
+const none = (note: string | null): VoicePlan => ({ mode: "none", engine: "none", parts: [], note });
 
-export type Gender = "male" | "female" | null;
-/** The gender a voice's name tells us, if any. */
-export function genderOf(voice: { name: string }): Gender {
-  if (MALE.test(voice.name) && !/female/i.test(voice.name)) return "male";
-  if (FEMALE.test(voice.name)) return "female";
-  return null;
+/** Finds the recording of a line (English only). */
+export async function planSpeech(written: string, lang: SpeechLang): Promise<VoicePlan> {
+  if (lang !== "en") return none(NOTE_ROMAN_URDU);
+  const parts = await findRecording(toSpoken(written, "en"));
+  return parts ? { mode: "english", engine: "recorded", parts, note: null } : none(NOTE_NO_RECORDING);
 }
 
-function allVoices(): SpeechSynthesisVoice[] {
-  return supportsDeviceSpeech() ? window.speechSynthesis.getVoices() : [];
-}
-
-const norm = (lang: string) => lang.toLowerCase().replace("_", "-");
-
-function score(voice: SpeechSynthesisVoice, kind: "en" | "hi" | "ur", gender: "male" | null): number {
-  const lang = norm(voice.lang);
-  const name = voice.name;
-  let s = 0;
-  if (kind === "en") {
-    if (/^en-(in|pk)/.test(lang)) s += 40;
-    else if (/^en-gb/.test(lang)) s += 34;
-    else if (/^en-(us|au|ca|za)/.test(lang)) s += 26;
-    else if (lang.startsWith("en")) s += 15;
-    else return -1;
-  } else if (kind === "hi") {
-    if (/^hi/.test(lang)) s += 40;
-    else return -1;
-  } else {
-    if (/^ur-pk/.test(lang)) s += 45;
-    else if (/^ur/.test(lang)) s += 40;
-    else if (/urdu|اردو/i.test(name)) s += 35;
-    else return -1;
-  }
-  if (/natural|neural/i.test(name)) s += 60;
-  else if (/online/i.test(name)) s += 20;
-  if (/google/i.test(name)) s += 14;
-  if (/microsoft/i.test(name)) s += 10;
-  if (voice.localService) s += 3;
-  if (voice.default) s += 2;
-  // The therapist is a man: only a voice known to be male is eligible. Natural online voices are the most human-sounding, so they are
-  // welcome; if one is slow to start the built-in voice takes over (see speakPlan).
-  if (gender === "male" && genderOf(voice) !== "male") return -1;
-  return s;
-}
-
-/** Device voices that can speak this kind of text, best first (natural ones first). With `"male"` only voices known to be male are listed. */
-export function voicesFor(kind: "en" | "hi" | "ur", gender: "male" | null = null): SpeechSynthesisVoice[] {
-  return allVoices()
-    .map((voice) => ({ voice, s: score(voice, kind, gender) }))
-    .filter((x) => x.s >= 0)
-    .sort((a, b) => b.s - a.s)
-    .map((x) => x.voice);
-}
-
-function pick(kind: "en" | "hi" | "ur", preferred: string | null | undefined, gender: "male" | null): SpeechSynthesisVoice | null {
-  const list = voicesFor(kind, gender);
-  return (preferred ? list.find((v) => v.name === preferred) : undefined) ?? list[0] ?? null;
-}
-
-export type Availability = { supported: boolean; en: number; hi: number; ur: number };
-export function availability(): Availability {
-  return { supported: supportsSpeech(), en: voicesFor("en").length, hi: voicesFor("hi").length, ur: voicesFor("ur").length };
-}
-
-/** Runs `callback` now and whenever the browser finishes loading its voice list (many browsers load voices late). */
-export function onVoices(callback: () => void): () => void {
-  if (!supportsSpeech()) return () => undefined;
-  const synth = window.speechSynthesis;
-  callback();
-  synth.addEventListener?.("voiceschanged", callback);
-  return () => synth.removeEventListener?.("voiceschanged", callback);
-}
-
-/* ---------------- Urdu lexicon (fetched once, only when Urdu is spoken) ---------------- */
-
-let lexiconPromise: Promise<Lexicon> | null = null;
-export function loadLexicon(): Promise<Lexicon> {
-  lexiconPromise ??= fetch("/teacher/ur-lexicon.json")
-    .then((r) => (r.ok ? (r.json() as Promise<string[]>) : []))
-    .then((words) => new Set(words))
-    .catch(() => new Set<string>());
-  return lexiconPromise;
-}
-
-/* ---------------- planning ---------------- */
-
-const NO_MALE_VOICE =
-  "No male voice is available in this browser, so the lines are shown as text only. (The therapist's voice is always male; the built-in voice needs a current browser.)";
-
-/**
- * Chooses the voice for a line and prepares the text. The saved choice (the built-in voice, or the name of a male voice installed on the
- * device) wins; otherwise the best male device voice for the language; otherwise the PNA Teacher's built-in male voice. Never a female voice.
- */
-export async function planSpeech(written: string, lang: SpeechLang, prefs: VoicePrefs = {}): Promise<VoicePlan> {
-  const text = toSpoken(written, lang);
-  const same = text === written;
-  const gender: "male" | null = prefs.gender === null ? null : "male";
-  const saved = lang === "en" ? prefs.en : prefs.ur;
-  const builtinChosen = saved === BUILTIN_VOICE;
-  const builtinOk = builtinSupported();
-
-  if (lang === "en") {
-    const english = builtinChosen ? null : pick("en", prefs.en, gender);
-    const builtinPlan: VoicePlan | null = builtinOk ? { mode: "english", engine: "builtin", segments: [{ text, voice: null, lang: "en-us", builtin: "en-us" }], note: null, sameText: same } : null;
-    if (english) return { mode: "english", engine: "device", segments: [{ text, voice: english, lang: english.lang }], note: null, sameText: same, ...(builtinPlan && english.localService === false ? { fallback: builtinPlan } : {}) };
-    if (builtinPlan) return builtinPlan;
-    return { mode: "none", engine: "none", segments: [], note: NO_MALE_VOICE, sameText: same };
-  }
-
-  // Urdu / Roman Urdu: Hindi voices read Devanagari reliably (explicit vowels); Urdu voices need Urdu script. A saved choice wins.
-  const hindi = builtinChosen ? null : pick("hi", prefs.ur, gender);
-  const urdu = builtinChosen ? null : pick("ur", prefs.ur, gender);
-  const savedIsUrdu = Boolean(prefs.ur && urdu && urdu.name === prefs.ur);
-  const target = savedIsUrdu ? "urdu" : hindi ? "hindi" : urdu ? "urdu" : null;
-  const lexicon = await loadLexicon();
-  const runs: Run[] = splitRuns(text, lexicon);
-  const builtinUrdu = (parts: Run[]): VoicePlan => {
-    const mixed = parts.map((run) => (run.kind === "ur" ? convertRun(run.text, "devanagari") : run.text)).join("");
-    return { mode: "hindi", engine: "builtin", segments: [{ text: mixed, voice: null, lang: "hi", builtin: "hi" }], note: null, sameText: false };
-  };
-  if (!target) {
-    if (!builtinOk) return { mode: "none", engine: "none", segments: [], note: NO_MALE_VOICE, sameText: false };
-    // One line, one voice: the built-in Hindi voice reads the Urdu words (as Devanagari) and switches by itself to English for the
-    // English terms left in Latin letters (eSpeak NG changes language per word), so a mixed line flows like one speaker.
-    return builtinUrdu(runs);
-  }
-  const voice = target === "hindi" ? hindi! : urdu!;
-  const english = pick("en", prefs.en, gender);
-  const script = target === "hindi" ? "devanagari" : "urdu";
-  if (!prefs.split || !english) {
-    // One utterance per line in the Urdu/Hindi voice, English terms left in Latin letters: how South Asian speakers mix the languages,
-    // and it avoids a choppy line of one-word utterances.
-    const mixed = runs.map((run) => (run.kind === "ur" ? convertRun(run.text, script) : run.text)).join("");
-    return { mode: target, engine: "device", segments: [{ text: mixed, voice, lang: voice.lang }], note: null, sameText: false, ...(builtinOk && voice.localService === false ? { fallback: builtinUrdu(runs) } : {}) };
-  }
-  const segments: Segment[] = [];
-  for (const run of runs) {
-    if (!/[A-Za-z]/.test(run.text)) continue;
-    if (run.kind === "ur") segments.push({ text: convertRun(run.text, script), voice, lang: voice.lang });
-    else segments.push({ text: run.text, voice: english, lang: english.lang });
-  }
-  return { mode: target, engine: "device", segments, note: null, sameText: false };
-}
-
-/** Stops all speech: the device synthesiser and the built-in voice. */
+/** Stops all speech. */
 export function stopSpeaking() {
-  try {
-    if (supportsDeviceSpeech()) window.speechSynthesis.cancel();
-  } catch {
-    /* ignore */
-  }
-  cancelBuiltin();
+  cancelRecorded();
 }
 
 export type Playback = {
   cancel: () => void;
   done: Promise<void>;
-  /** Present for the built-in voice (the device synthesiser is paused through `speechSynthesis`). */
   pause?: () => void;
   resume?: () => void;
 };
 
-/**
- * Speaks a plan. `onStart` fires when the first segment starts (to start the lips); `onBoundary` (device voices) re-syncs the lips on
- * every word; `onDuration` (built-in voice) gives the real length of the line in seconds once it is known.
- */
-type SpeakOptions = { rate?: number; onStart?: () => void; onBoundary?: (charIndex: number) => void; onDuration?: (seconds: number) => void };
-
-/** How long an online (streamed) voice may take to start before the built-in voice takes over, so the lesson never waits. */
-const ONLINE_START_MS = 1800;
-
-export function speakPlan(plan: VoicePlan, options: SpeakOptions = {}): Playback {
-  if (plan.engine === "builtin") {
-    const parts = plan.segments.filter((s) => s.text.trim()).map((s) => ({ text: s.text, lang: s.builtin ?? "en-us" }));
-    const playback: BuiltinPlayback = speakBuiltin(parts, { rate: options.rate, onStart: options.onStart, onDuration: options.onDuration });
-    return playback;
-  }
-  if (plan.fallback) return speakWithFallback(plan, options);
-  return speakDevice(plan, options);
+/** Speaks a plan. `onStart` fires when sound starts; `onDuration` gives the real length of the line in seconds (to spread the lips over it). */
+export function speakPlan(plan: VoicePlan, options: { rate?: number; onStart?: () => void; onDuration?: (seconds: number) => void } = {}): Playback {
+  return playRecording(plan.parts, options);
 }
-
-/** A natural online voice: if it has not started within `ONLINE_START_MS` the same line is spoken by the built-in voice instead. */
-function speakWithFallback(plan: VoicePlan, options: SpeakOptions): Playback {
-  let started = false;
-  let switched = false;
-  let ended = false;
-  let resolveDone: () => void = () => undefined;
-  const done = new Promise<void>((resolve) => (resolveDone = resolve));
-  const finish = () => {
-    if (ended) return;
-    ended = true;
-    clearTimeout(timer);
-    resolveDone();
-  };
-  let current: Playback = speakDevice(plan, {
-    ...options,
-    onStart: () => {
-      started = true;
-      clearTimeout(timer);
-      options.onStart?.();
-    },
-  });
-  void current.done.then(() => {
-    if (!switched) finish();
-  });
-  const timer = setTimeout(() => {
-    if (started || ended || !plan.fallback) return;
-    switched = true;
-    current.cancel();
-    current = speakPlan({ ...plan.fallback, fallback: undefined }, options);
-    void current.done.then(finish);
-  }, ONLINE_START_MS);
-  return {
-    cancel: () => {
-      current.cancel();
-      finish();
-    },
-    done,
-    pause: () => (current.pause ? current.pause() : window.speechSynthesis?.pause()),
-    resume: () => (current.resume ? current.resume() : window.speechSynthesis?.resume()),
-  };
-}
-
-function speakDevice(plan: VoicePlan, options: SpeakOptions): Playback {
-  const synth = window.speechSynthesis;
-  const rate = options.rate ?? 1;
-  let finished = false;
-  let resolveDone: () => void = () => undefined;
-  const done = new Promise<void>((resolve) => (resolveDone = resolve));
-  const finish = () => {
-    if (finished) return;
-    finished = true;
-    resolveDone();
-  };
-  const segments = plan.segments.filter((s) => s.text.trim());
-  if (!segments.length) {
-    finish();
-    return { cancel: finish, done };
-  }
-  synth.cancel();
-  segments.forEach((segment, index) => {
-    const utterance = new SpeechSynthesisUtterance(segment.text);
-    if (segment.voice) utterance.voice = segment.voice;
-    utterance.lang = segment.voice?.lang ?? segment.lang;
-    utterance.rate = Math.max(0.5, Math.min(2, (plan.mode === "english" ? 0.97 : 0.92) * rate));
-    if (index === 0) utterance.onstart = () => options.onStart?.();
-    if (plan.sameText) utterance.onboundary = (event) => (event.name === "sentence" ? undefined : options.onBoundary?.(event.charIndex));
-    if (index === segments.length - 1) {
-      utterance.onend = finish;
-    }
-    utterance.onerror = (event) => {
-      // "canceled"/"interrupted" are what cancel() causes; anything else must not leave the lesson waiting.
-      if (index === segments.length - 1 || (event as SpeechSynthesisErrorEvent).error !== "interrupted") finish();
-    };
-    synth.speak(utterance);
-  });
-  return {
-    cancel: () => {
-      try {
-        synth.cancel();
-      } catch {
-        /* ignore */
-      }
-      finish();
-    },
-    done,
-  };
-}
-
-/* ---------------- remembered choices ---------------- */
-
-const KEY = { en: "pna-voice-en", ur: "pna-voice-ur", split: "pna-voice-split" } as const;
-export function readPrefs(): VoicePrefs {
-  try {
-    return { en: window.localStorage.getItem(KEY.en), ur: window.localStorage.getItem(KEY.ur), split: window.localStorage.getItem(KEY.split) === "1" };
-  } catch {
-    return {};
-  }
-}
-export function savePref(kind: "en" | "ur" | "split", value: string | null) {
-  try {
-    if (value) window.localStorage.setItem(KEY[kind], value);
-    else window.localStorage.removeItem(KEY[kind]);
-  } catch {
-    /* storage blocked */
-  }
-}
-
-/* ---------------- one call for the simple readers ---------------- */
 
 /**
- * Reads one text aloud in the given language with the best voice (see planSpeech). Returns the playback, or null when the device has no
- * suitable voice (then `onNote` receives the reason). `onStart` / `onEnd` bracket the speech so callers can pace themselves.
+ * Reads one text aloud with the recorded voice. Returns the playback, or null when the line is not recorded (then `onNote` receives the
+ * reason and `onEnd` is called). `onStart` / `onEnd` bracket the speech so callers can pace themselves.
  */
 export async function speakText(
   text: string,
   lang: SpeechLang,
-  options: { rate?: number; gender?: "male" | null; onStart?: () => void; onEnd?: () => void; onNote?: (note: string | null) => void; isCurrent?: () => boolean } = {},
+  options: { rate?: number; onStart?: () => void; onEnd?: () => void; onNote?: (note: string | null) => void; isCurrent?: () => boolean } = {},
 ): Promise<Playback | null> {
   if (!supportsSpeech()) {
     options.onEnd?.();
     return null;
   }
-  // Called straight from a tap (listen / voice button): this is the moment a browser lets the built-in voice make sound.
+  // Called straight from a tap (listen / voice button): this is the moment a browser lets sound play.
   unlockAudio();
-  warmBuiltin();
-  const plan = await planSpeech(text, lang, { ...readPrefs(), gender: options.gender === null ? null : "male" });
+  const plan = await planSpeech(text, lang);
   options.onNote?.(plan.note);
-  if (options.isCurrent && !options.isCurrent()) return null; // a newer line started while the voice was being chosen
+  if (options.isCurrent && !options.isCurrent()) return null; // a newer line started while the recording was being looked up
   if (plan.mode === "none") {
     options.onEnd?.();
     return null;

@@ -1,8 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
-import { stopSpeaking, supportsSpeech, speakText } from "@/lib/speech/voices";
-import { ArrowRight, Bot, ExternalLink, LoaderCircle, Mic, MicOff, Phone, Send, ShieldAlert, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowRight, Bot, ExternalLink, LoaderCircle, Mic, MicOff, Phone, Send, ShieldAlert, Sparkles, X } from "lucide-react";
 
 type Resource = {
   id: string;
@@ -92,32 +91,6 @@ function AnswerText({ text }: { text: string }) {
 /** "Explain this to me": a short, friendly explanation built from the lesson or guide itself. */
 function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanation; defaultOpen: boolean }) {
   const ur = /[a-z]/i.test(explanation.openLabel) && explanation.openLabel.startsWith("Poor");
-  const [speaking, setSpeaking] = useState(false);
-  const [canSpeak, setCanSpeak] = useState(false);
-  const [voiceNote, setVoiceNote] = useState<string | null>(null);
-  const playback = useRef<{ cancel: () => void } | null>(null);
-  const speakToken = useRef(0);
-  useEffect(() => {
-    setCanSpeak(supportsSpeech());
-    return () => {
-      playback.current?.cancel();
-      stopSpeaking();
-    };
-  }, [ur]);
-  function toggleSpeech() {
-    if (speaking) {
-      speakToken.current++;
-      playback.current?.cancel();
-      playback.current = null;
-      setSpeaking(false);
-      return;
-    }
-    setSpeaking(true);
-    const token = ++speakToken.current;
-    void speakText(spokenText(explanation), ur ? "ur" : "en", { onNote: setVoiceNote, isCurrent: () => token === speakToken.current, onEnd: () => setSpeaking(false) }).then((p) => {
-      playback.current = p;
-    });
-  }
   return (
     <details open={defaultOpen} className="group mt-3 rounded-xl border border-teal-200 bg-teal-50/60">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-xl px-3 py-2 text-[13px] font-bold text-teal-900 [&::-webkit-details-marker]:hidden">
@@ -157,13 +130,7 @@ function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanatio
           <a href={explanation.href} className="inline-flex items-center gap-1.5 rounded-full bg-teal-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-teal-800">
             {explanation.openLabel} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </a>
-          {canSpeak ? (
-            <button type="button" onClick={toggleSpeech} aria-pressed={speaking} className="inline-flex items-center gap-1.5 rounded-full border border-teal-300 bg-white px-3 py-1.5 text-xs font-bold text-teal-900 hover:bg-teal-50">
-              {speaking ? <VolumeX className="h-3.5 w-3.5" aria-hidden="true" /> : <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />} {speaking ? (ur ? "Rokein" : "Stop") : ur ? "Suniye" : "Listen"}
-            </button>
-          ) : null}
         </div>
-        {voiceNote ? <p role="status" className="mt-2 text-[11px] leading-4 text-amber-800">{voiceNote}</p> : null}
       </div>
     </details>
   );
@@ -189,10 +156,6 @@ function recognitionCtor(): (new () => Recognition) | null {
 }
 
 /** Plain text of an explanation, for reading aloud. */
-function spokenText(explanation: Explanation): string {
-  const clean = (text: string) => text.replace(/\*\*/g, "");
-  return [clean(explanation.intro), ...explanation.steps.flatMap((step) => [step.label + ".", clean(step.text), ...(step.list ?? []).map(clean)])].filter(Boolean).join(" ");
-}
 
 function readProfile(): { stage?: string; goal?: string } | undefined {
   try {

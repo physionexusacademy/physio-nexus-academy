@@ -8,7 +8,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { speakText, stopSpeaking, supportsSpeech } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
 import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
@@ -544,7 +544,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
     return () => cancelAnimationFrame(raf);
   }, [status, playing, speed, exercise, side, showMistake]);
 
-  // Optional spoken guidance: English voice, or a Hindi/Urdu voice for Roman Urdu when the device has one (subtitles always stay).
+  // Optional spoken guidance: the recorded male voice for the lines that were recorded, in English (subtitles always stay).
   useEffect(() => {
     if (!voice || !line || !supportsSpeech()) {
       speakingRef.current = false;
@@ -650,7 +650,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
             </button>
           ) : null}
           {lang === "en" ? (
-            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English, or Urdu/Hindi voice if your device has one)">
+            <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (recorded male voice, English; Roman Urdu is shown as text)">
               {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
             </button>
           ) : null}

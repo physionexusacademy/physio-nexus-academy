@@ -1,14 +1,12 @@
 /**
- * Speaking for the teaching avatar (browser only). The voice is always male (he is a man): a male voice installed on the device, or
- * his own built-in male voice (lib/speech/builtin.ts), which works the same on every phone and computer. English is read with the
- * English voice; Roman Urdu is converted (lib/speech) and read with the Hindi rules, English terms in the same line in English.
- * When no voice can run the lines are still shown as subtitles and the mouth still moves. The mouth is
- * driven from the text on a timeline (vowel shapes, closed lips on b/m/p, pauses at punctuation) that starts when the voice starts and
- * is re-synchronised on every word-boundary event the browser reports. Where boundary events do not exist (most phones) the timeline
- * simply runs at the speaking rate. No microphone, no camera, no network.
+ * Speaking for the teaching avatar (browser only). His voice is a recording of a male voice (lib/speech/recorded.ts): the lines of the
+ * 3D demonstrations and the tour were read once, offline, and are played here sentence by sentence. A line that is not recorded (and all
+ * Roman Urdu) is shown as subtitles only, and the mouth still moves. The mouth is driven from the text on a timeline (vowel shapes,
+ * closed lips on b/m/p, pauses at punctuation) that starts when the voice starts and is stretched to the real length of the recording.
+ * No microphone, no camera, no synthesiser, nothing generated on the device.
  */
 import type { FaceAnimator, MouthShape } from "./face";
-import { planSpeech, readPrefs, speakPlan, stopSpeaking, supportsSpeech, type Playback } from "@/lib/speech/voices";
+import { planSpeech, speakPlan, stopSpeaking, supportsSpeech, type Playback } from "@/lib/speech/voices";
 import { CLOSED } from "./face";
 
 export type Lang = "en" | "ur";
@@ -92,7 +90,7 @@ export class Speaker {
     return new Promise<void>((resolve) => {
       this.resolve = resolve;
       if (!options.voice || !supportsSpeech()) return;
-      void planSpeech(text, options.lang, { ...readPrefs(), gender: "male" })
+      void planSpeech(text, options.lang)
         .then((plan) => {
           if (token !== this.token || !this.timeline) return; // cancelled or replaced while the plan was prepared
           this.note = plan.note;
@@ -103,13 +101,6 @@ export class Speaker {
             onStart: () => {
               this.voiceHeard = true;
               this.clock = 0;
-            },
-            onBoundary: (charIndex) => {
-              const tl = this.timeline;
-              if (!tl) return;
-              const at = tl.starts[Math.min(charIndex, tl.text.length)] ?? this.clock;
-              // Re-sync the lips to the voice, but never jump backwards by more than a word.
-              if (Math.abs(at - this.clock) > 0.12) this.clock = at;
             },
           });
           void this.playback.done.then(() => {
@@ -123,8 +114,7 @@ export class Speaker {
   pause() {
     this.paused = true;
     try {
-      if (this.playback?.pause) this.playback.pause();
-      else window.speechSynthesis?.pause();
+      this.playback?.pause?.();
     } catch {
       /* ignore */
     }
@@ -134,14 +124,13 @@ export class Speaker {
   resume() {
     this.paused = false;
     try {
-      if (this.playback?.resume) this.playback.resume();
-      else window.speechSynthesis?.resume();
+      this.playback?.resume?.();
     } catch {
       /* ignore */
     }
   }
 
-  /** The built-in voice reports how long the line really is: spread the lip timeline over that length. */
+  /** The recording reports how long the line really is: spread the lip timeline over that length. */
   private stretch(seconds: number) {
     const tl = this.timeline;
     if (!tl || seconds < 0.3) return;

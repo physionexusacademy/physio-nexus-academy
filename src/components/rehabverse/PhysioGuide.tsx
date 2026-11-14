@@ -17,7 +17,7 @@ import { P, type Parts } from "@/lib/virtual-patient/parts";
 import { blendPose } from "@/lib/rehabverse/motion";
 import type { Gesture, GuideBeat, GuideTopic } from "@/lib/rehabverse/guide";
 import type { Lang } from "./ExercisePlayer";
-import { speakText, stopSpeaking, supportsSpeech } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
 
 const IDLE: Parts = { shoulder: { flex: 4, abd: 8 }, "shoulder:o": { flex: 4, abd: 8 }, elbow: { flex: 18 }, "elbow:o": { flex: 18 } };
 
@@ -210,7 +210,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
         if (voice && r.spoken !== r.index && supportsSpeech()) {
           r.spoken = r.index;
           const spokenIndex = r.index;
-          // English voice, or a Hindi/Urdu voice for Roman Urdu when the device has one; the subtitles always stay.
+          // The recorded male voice (English); the subtitles always stay.
           void speakText(text, lang_.current === "ru" ? "ur" : "en", {
             rate: 0.98,
             isCurrent: () => r.spoken === spokenIndex,
@@ -326,7 +326,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
             {status === "text" ? <Monitor className="h-4 w-4" aria-hidden="true" /> : <MonitorOff className="h-4 w-4" aria-hidden="true" />}
           </button>
           {lang === "en" ? (
-            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English, or Urdu/Hindi voice if your device has one)">
+            <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (recorded male voice, English; Roman Urdu is shown as text)">
               {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
             </button>
           ) : (
