@@ -71,6 +71,7 @@ Measured with `opennextjs-cloudflare build` + `wrangler deploy --dry-run` (gzip,
 | --- | --- |
 | Before (branch start) | 2846.10 KiB |
 | After Phase 1 (avatar code, nothing wired) | 2841.54 KiB |
-| After Phase 2 (stage, data, lesson beat) | see the final report |
+| After Phase 2 (stage, data, lesson beat) | 2845.57 KiB (−0.53 vs the start) |
 
 Static assets (not counted): `public/teacher/pna-chest-logo.webp` ~30 KB, `public/teacher/choreo/*.json` ~9 KB per technique. The body model is the existing 326 KB `patient.glb`.
+Browser JS added by the avatar (production build, lazy, only when a demonstration opens): two chunks, 12.7 KB + 26.9 KB raw = **14.7 KB gzip**, on top of the three.js chunk (75 KB gzip) that the Virtual Patient and Skills Lab demos already load.
