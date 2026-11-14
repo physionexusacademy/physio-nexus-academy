@@ -12,7 +12,7 @@ import { readBody, sanitize, type BodyData } from "./mesh";
 
 export const BODY_URL = "/virtual-patient/patient.glb";
 
-export type LoadOptions = { url?: string; onProgress?: (fraction: number) => void };
+export type LoadOptions = { url?: string; onProgress?: (fraction: number) => void; /** A replacement model: pick its biggest skinned mesh instead of the one called "skin". */ custom?: boolean };
 
 export class Figure {
   /** Add this to the scene; moving it moves the whole figure (the feet are at its origin). */
@@ -40,13 +40,16 @@ export class Figure {
         mesh.frustumCulled = false;
         mesh.castShadow = true;
         const name = (mesh.material as THREE.Material).name;
-        if (name === "skin" && !figure.mesh) figure.mesh = mesh;
+        if (options.custom) {
+          const count = mesh.geometry.getAttribute("position").count;
+          if (!figure.mesh || count > figure.mesh.geometry.getAttribute("position").count) figure.mesh = mesh;
+        } else if (name === "skin" && !figure.mesh) figure.mesh = mesh;
         else if (name === "eyes") figure.eyes = mesh;
       }
     });
     if (!figure.mesh) throw new Error("The body model has no skin mesh.");
     figure.root.add(gltf.scene);
-    figure.body = readBody(figure.mesh);
+    if (!options.custom) figure.body = readBody(figure.mesh);
     figure.setPose({});
     figure.ground();
     return figure;
