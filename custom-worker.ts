@@ -1,10 +1,11 @@
 /**
  * Cloudflare Worker entry: wraps the OpenNext worker with a short edge cache for the
  * public pages that read live Supabase data (they are rendered on every request, which
- * took 1–2 s for the homepage).
+ * took 1–2 s). The homepage is not listed: it is a prebuilt static page.
  *
- * - Fresh for 60 s; after that the cached page is still served instantly while a new copy
- *   is rendered in the background (up to 10 minutes old, then it waits for a fresh render).
+ * - Fresh for 5 minutes; after that the cached page is still served instantly while a new copy
+ *   is rendered in the background (up to an hour old, then it waits for a fresh render). A page the admin has just edited
+ *   therefore shows the change within about five minutes.
  * - Only full HTML page requests for the listed paths are cached: never API routes, admin,
  *   the clinical registry, workshop portals, React Server Component requests, responses that
  *   set cookies, or visitors who are signed in (Supabase auth cookie).
@@ -22,10 +23,10 @@ type Ctx = { waitUntil(promise: Promise<unknown>): void; passThroughOnException?
 type Handler = { fetch(request: Request, env: unknown, ctx: Ctx): Promise<Response> };
 const worker = openNextWorker as Handler;
 
-const FRESH_MS = 60_000;
-const STALE_MS = 10 * 60_000;
-const STORE_SECONDS = 15 * 60;
-const CACHED_PATHS = new Set(["/", "/resources", "/workshops", "/faq", "/about", "/founder", "/training", "/daily-challenge"]);
+const FRESH_MS = 5 * 60_000;
+const STALE_MS = 60 * 60_000;
+const STORE_SECONDS = 2 * 60 * 60;
+const CACHED_PATHS = new Set(["/resources", "/workshops", "/faq", "/about", "/founder", "/training", "/daily-challenge"]);
 const refreshing = new Set<string>();
 
 function cacheable(request: Request, url: URL) {

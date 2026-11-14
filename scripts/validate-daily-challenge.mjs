@@ -14,6 +14,7 @@ const quiz=read("src/app/daily-challenge/DailyChallengeClient.tsx");
 const board=read("src/components/daily-challenge/DailyLeaderboard.tsx");
 const css=read("src/app/daily-challenge/daily-challenge.css");
 const home=read("src/app/page.tsx");
+const homeBoard=read("src/components/home/HomeDailyBoard.tsx");
 const pathwayBrowser=read("src/components/home/PremiumPathwayBrowser.tsx");
 const hub=read("src/app/learn/page.tsx");
 const migration=read("supabase/migrations/20261009_pna_daily_challenge.sql");
@@ -37,7 +38,7 @@ const tests={
   oldScoresNotCleared:!migration.includes("truncate table")&&!migration.includes("delete from"),
   serverMidnightDeadline:actions.includes("time>=midnight")&&actions.includes("Today's challenge is closing"),
   publicPager:board.includes('Next</button>')&&board.includes('Previous</button>'),
-  topFive:board.includes("compact||preview?5:30")&&home.includes("<DailyLeaderboard compact"),
+  topFive:board.includes("compact||preview?5:30")&&homeBoard.includes("<DailyLeaderboard compact"),
   allRankings:board.includes('"month"')&&board.includes('"year"')&&board.includes('"today"'),
   monthAndYearChampions:board.includes('initialPeriod="month"')&&board.includes('initialPeriod="year"'),
   archiveArrows:board.includes("changeAnchor")&&board.includes("onClick={()=>shift(-1)}"),
@@ -53,9 +54,9 @@ const tests={
   noGeneratedFakeRanks:!board.includes("Demo Participant"),
   challengeMarker:quiz.includes('data-pna-daily-challenge="v1"'),
   homepageFlagshipAccessible:home.includes('data-pna-home-flagship="daily-clinical-challenge-v2"') && home.includes("<LobbyHero") && home.indexOf("<LobbyHero") < home.indexOf('data-pna-home-flagship'),
-  flagshipSingleHero:(home.match(/data-pna-home-flagship/g)||[]).length===1 && (home.match(/<DailyLeaderboard compact/g)||[]).length===1,
+  flagshipSingleHero:(home.match(/data-pna-home-flagship/g)||[]).length===1 && (homeBoard.match(/<DailyLeaderboard compact/g)||[]).length===1&&!home.includes("<DailyLeaderboard"),
   flagshipActivePlay:home.includes('href="/daily-challenge#play-daily"'),
-  flagshipLiveBoard:home.includes('title="Today\'s Top 5"') && home.includes("DailyChallengeCountdown"),
+  flagshipLiveBoard:homeBoard.includes('title="Today\'s Top 5"') && home.includes("DailyChallengeCountdown"),
   topLevelNav:nav.includes('label: "Daily Challenge", href: "/daily-challenge"') && desktop.includes('href="/daily-challenge" className="nx-pill-challenge"'),
   mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
   desktopChallengeHighlight:desktop.includes('className="nx-pill-challenge"') && read("src/app/nexus.css").includes(".nx-pill-challenge {"),

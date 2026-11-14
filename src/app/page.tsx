@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { ArrowRight, ChevronDown, Flame, Medal, Quote, Trophy } from "lucide-react";
-import { createPublicClient } from "@/lib/supabase/public";
+import { ArrowRight, Flame, Medal } from "lucide-react";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
-import { DailyLeaderboard } from "@/components/daily-challenge/DailyLeaderboard";
+import { HomeDailyBoard } from "@/components/home/HomeDailyBoard";
 import { DailyChallengeCountdown } from "@/components/daily-challenge/DailyChallengeCountdown";
 import { LobbyHero } from "@/components/home/LobbyHero";
 import { StudentPass } from "@/components/home/StudentPass";
@@ -11,6 +10,8 @@ import { HomeBooks } from "@/components/home/HomeBooks";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeNeedHelp } from "@/components/home/HomeNeedHelp";
 import { HomeBodyMap } from "@/components/home/HomeBodyMap";
+import { GuideMe } from "@/components/avatar/GuideMe";
+import { HomeTestimonials } from "@/components/home/HomeTestimonials";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
@@ -76,20 +77,9 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-
-export default async function HomePage() {
-  const supabase = createPublicClient();
-
-  const { data: testimonialRows } = await supabase
-    .from("testimonials")
-    .select("id,content,name,role,sort_order")
-    .eq("status", "published")
-    .order("sort_order", { ascending: true })
-    .limit(3);
-
-  const testimonials = testimonialRows?.length ? testimonialRows : null;
-
+// A prebuilt (static) page: it is served straight from Cloudflare's edge in a fraction of a second and never renders per visit.
+// Everything live on it (countdown, leaderboard, testimonials) loads in the browser.
+export default function HomePage() {
   const brandHomeJsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -143,11 +133,11 @@ export default async function HomePage() {
 
       <HomeNeedHelp />
 
+      <GuideMe />
+
       <HomeBodyMap items={conditionCatalog.map(({ slug, name, area, type, stages }) => ({ slug, name, area, type, stages }))} />
 
       <HomeFeatures />
-
-      <HomeBooks />
 
       <section data-pna-home-flagship="daily-clinical-challenge-v2" className="hdc" aria-labelledby="pna-daily-flagship-title">
         <div className="container-content">
@@ -161,6 +151,12 @@ export default async function HomePage() {
               </div>
             </div>
             <div className="hdc-time"><DailyChallengeCountdown /></div>
+            <ol className="hdc-track" aria-hidden="true">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <li key={n}><i />Q{n}</li>
+              ))}
+              <li className="hdc-track-end"><i />100</li>
+            </ol>
             <div className="hdc-actions">
               <a href="/daily-challenge#play-daily" className="nx-btn nx-btn-primary">
                 Take today&apos;s challenge <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -169,39 +165,18 @@ export default async function HomePage() {
                 <Medal className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Hall of Fame
               </a>
             </div>
-            <details className="hdc-board">
-              <summary><Trophy className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Today&apos;s leaderboard — top 5 <ChevronDown className="hdc-chev h-4 w-4" aria-hidden="true" /></summary>
-              <div className="hdc-board-body">
-                <DailyLeaderboard compact title="Today's Top 5" />
-                <a href="/daily-challenge#full-leaderboard" className="hdc-board-link">All scores, monthly leaders and yearly champions <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
-              </div>
-            </details>
+            <HomeDailyBoard />
           </div>
         </div>
       </section>
+
+      <HomeBooks />
 
       <StudentPass />
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
-      {testimonials ? (
-        <section className="container-content pb-12" aria-labelledby="home-testimonials-title">
-          <p className="nx-kicker nx-kicker-light">Trusted by learners</p>
-          <h2 id="home-testimonials-title" className="nx-title mt-3 text-3xl text-navy-800">What physiotherapists & students say</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {testimonials.map((t) => (
-              <figure key={t.id} className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-                <Quote className="h-5 w-5 text-teal-600" aria-hidden="true" />
-                <blockquote className="mt-3 flex-1 text-sm leading-7 text-slate-700">“{t.content}”</blockquote>
-                <figcaption className="mt-4 border-t border-slate-100 pt-3">
-                  <p className="text-sm font-bold text-navy-800">{t.name}</p>
-                  {t.role ? <p className="text-xs font-medium text-slate-500">{t.role}</p> : null}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      <HomeTestimonials />
 
     </>
   );
