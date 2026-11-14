@@ -4,7 +4,7 @@ Label used everywhere: **"AI teaching assistant based on Dr. Sajjad Raza PT"** (
 driven by the existing lesson text. He is not the real Dr. Sajjad, has no cloned voice (voice is the browser's own text-to-speech), and
 uses **no camera and no microphone**.
 
-## What exists (Phase 0–2)
+## What exists (Phase 0–4)
 
 | Piece | Where |
 | --- | --- |
@@ -13,6 +13,8 @@ uses **no camera and no microphone**.
 | Teaching: walking, leaning, hands on landmarks | `rig.ts` (stance, gait, gestures), `ik.ts` (arm IK), `stage.ts` (plays a choreography step by step) |
 | Teaching data | `src/lib/avatar/choreo/*.ts` → `npm run build:avatar-data` → `public/teacher/choreo/<slug>.json` |
 | UI inside the lesson | `src/components/avatar/AvatarStage.tsx` (+ `avatar.css`), reached through the lesson's existing `demo:` beat with the key `avatar/<slug>` (`components/skills/Demo3DAny.tsx`) |
+| Site guide ("Guide me") | `src/lib/avatar/choreo/site-tour.ts` (13 stops, wording taken from the existing site guide `site-guide.ts` / `academy-map.ts`), `components/avatar/GuideMe.tsx` (card on `/learn` and `/skills`, the stage opens in place, with a text version for browsers without WebGL) |
+| "Ask Dr. Sajjad" (tour only) | `components/avatar/AskPanel.tsx` → the existing `/api/physio-nexus-ai`. Text box only. He reads out the answer the site's own search returns (resources + suggestions); emergency wording shows the safety box. |
 
 No new routes. All 3D, avatar, voice and animation code is client-only (`next/dynamic({ ssr: false })` / dynamic `import()`); the worker only
 gained one extra lesson beat's metadata.
@@ -26,6 +28,13 @@ gained one extra lesson beat's metadata.
   **"Draft — pending clinical review"** badge until the supervising physiotherapist signs the file off (`review: { status: "reviewed", by, date }`).
 * Roman Urdu: the lesson's own Roman Urdu is shown (and mouthed). The regional guide has no Roman Urdu, so those lines stay in English and are tagged "English (guide wording)".
   Voice is **English only** (an English voice mangles Roman Urdu); in Roman Urdu the mouth still moves and subtitles are shown.
+
+## Site guide ("Guide me") and Ask
+
+* `site-tour.json` is built like the technique data: each stop's line is a `TextRef` to a site-guide field (`id` + `part`). Stops that matter on the page carry a link (`href` is checked against the real app routes by `validate:avatar`).
+* The tour stands the patient up or lays him down as needed (`position` per step) and uses the same overlays as Skills Lab scenes for the short demonstrations.
+* **Ask Dr. Sajjad** sends the typed question (nothing else) to `/api/physio-nexus-ai`, which is deterministic and grounded in PNA's own content. His reply is only the answer text and resource titles that route returns; no model text is invented in the browser. Red-flag wording (e.g. chest pain) shows the route's safety message first. Rate limit and privacy rules are the route's own.
+* Voice input is **not** offered here (no microphone).
 
 ## Adding another technique (data only)
 
@@ -56,6 +65,20 @@ Limitation: a model on a *different* skeleton (e.g. Mixamo) is not retargeted au
 Automatically on for `prefers-reduced-motion`, data saver, ≤ 2 GB device memory or ≤ 2 CPU cores; visitors can toggle it (⚡ button, remembered in `localStorage["pna-avatar-light"]`).
 Light mode = one static pose per step, **no patient and no second figure**, no idle animation, subtitles and step list still work.
 
+## Accessibility
+
+* The stage is one focusable figure: **Space/K** play or pause, **←/→** step, **R** replay. These keys are ignored while a button, link, select or text box inside the stage has focus, so those keep their normal keys (Space/Enter on a button, arrows in a select).
+* Subtitles are a single `role="status"` / `aria-live="polite"` region. On phones it is visually hidden (the caption under the 3D view shows the same words) but stays in the accessibility tree. Screen-reader users who also have the voice on can switch the voice off (🔊 button).
+* Every control has an accessible name; touch targets are ≥ 28 px high (buttons 36 px). Focus rings are visible. Light mode replaces animation with one still pose per step and turns on automatically for `prefers-reduced-motion`.
+* The 3D view is `role="img"` with a label; the same information is always available as text (subtitles, step chips, the guide-wording notes, and a text step list when WebGL is missing).
+* Roman Urdu is written in Latin script and read by the screen reader's English voice; this is a limitation of Roman Urdu, not of the stage.
+
+## Privacy
+
+* No camera, microphone, geolocation or speech-recognition API is used anywhere in `src/lib/avatar` or `src/components/avatar` (checked by search, and at run time by a test that traps `getUserMedia`, `enumerateDevices`, geolocation and `SpeechRecognition`: none called during a full tour with Ask).
+* Network: static files from this site (`/teacher/choreo/*.json`, `/virtual-patient/patient.glb`, the logo, JS chunks), plus `POST /api/physio-nexus-ai` with the typed question when the visitor uses Ask. No third-party host is contacted by the avatar.
+* `localStorage` holds only three preferences: `pna-avatar-light`, `pna-avatar-speed`, `pna-avatar-voice`. The voice is the browser's own text-to-speech.
+
 ## Testing
 
 * `npm run validate:avatar` — teaching data. `npm run validate:teacher`, `validate:skills` — unchanged validators still pass.
@@ -72,6 +95,33 @@ Measured with `opennextjs-cloudflare build` + `wrangler deploy --dry-run` (gzip,
 | Before (branch start) | 2846.10 KiB |
 | After Phase 1 (avatar code, nothing wired) | 2841.54 KiB |
 | After Phase 2 (stage, data, lesson beat) | 2845.57 KiB (−0.53 vs the start) |
+| After Phase 3 (Guide me, Ask, site tour) | 2846.84 KiB (+0.74) |
+| Final (Phase 4 accessibility + light-mode timing) | 2844.08 KiB (−2.02 vs the start; limit 3072) |
+
+Differences of a few KiB between builds are build noise (hashed chunk names); nothing avatar-related is bundled into the worker.
 
 Static assets (not counted): `public/teacher/pna-chest-logo.webp` ~30 KB, `public/teacher/choreo/*.json` ~9 KB per technique. The body model is the existing 326 KB `patient.glb`.
 Browser JS added by the avatar (production build, lazy, only when a demonstration opens): two chunks, 12.7 KB + 26.9 KB raw = **14.7 KB gzip**, on top of the three.js chunk (75 KB gzip) that the Virtual Patient and Skills Lab demos already load.
+
+## Load time and transfer (phone profile)
+
+Production build served with `next start`, Chromium with a Pixel 5 profile, **Slow 4G** (1.6 Mbit/s down, 150 ms RTT) and 4× CPU slowdown, on a machine with **software WebGL** (no GPU), so the 3D part is slower here than on a real phone. Fresh browser each time, no cache:
+
+| Step | Result |
+| --- | --- |
+| `/learn` before the tour is opened | loads in ~2.0 s, 359 KB; **no avatar assets requested** |
+| Tap "Start the tour" → poster + Play button ready | **~10 s** (unthrottled: 3.8 s) |
+| Extra download for the avatar | **~596 KB**: `patient.glb` 242 KB (shared with the Virtual Patient, cached afterwards), three.js chunk 75 KB, avatar chunks ~14.7 KB gzip, other lazy chunks, logo 30 KB, tour JSON ~9 KB |
+| Whole page after the avatar | ~955 KB; JS heap ~25 MB |
+
+Very slow 3G (0.8 Mbit/s, 562 ms RTT) also completes (about 10 s to ready in the same test) because the work is CPU-bound with software GL; a real phone's GPU should do better.
+The first view shows a progress bar; nothing is requested until the visitor taps Start (or the demonstration scrolls into view in a lesson).
+
+## Known limitations
+
+* The face is a stylised portrait on the generic CC0 head (hair, beard, scrubs), not a scan or likeness model. A 3D artist's GLB can be dropped in (see above).
+* Hand placement and movement for the Maitland technique are a **draft** until the supervising physiotherapist signs them off (badge shown). The site tour uses interface wording only and needs no clinical review.
+* Voice is English only; Roman Urdu is subtitles plus silent mouth movement. Regional-guide lines have no Roman Urdu and stay English (tagged).
+* Per-frame time is capped at 50 ms to keep walking/IK stable, so on a device slower than ~20 fps the full demonstration plays in slow motion (light mode is not capped and follows real time).
+* Tested only in headless Chromium with software WebGL. Real-phone GPU performance, battery use and the browser's actual voices have not been measured.
+* `npm run lint` is not set up in this repository (no ESLint config), so linting could not be run; `tsc`, `validate:avatar`, `validate:teacher` and `validate:skills` all pass.
