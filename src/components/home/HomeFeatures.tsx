@@ -1,13 +1,12 @@
-import { ArrowRight, BookOpen, Flame, GraduationCap, Hand, Languages, Ruler, Sparkles, Stethoscope, Trophy } from "lucide-react";
+import { ArrowRight, GraduationCap, Hand, Languages, Ruler, Sparkles, Stethoscope } from "lucide-react";
 import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
-import { BOOKS } from "@/lib/books";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import "./home-features.css";
 import "./home-flagships.css";
 
 /**
- * "What you'll find here" — the seven things PNA does best, one card each, so a first-time visitor
- * understands the whole academy in one screen. Server-rendered, no JavaScript. Every card is one link.
+ * "What you'll find here" — the things PNA does best, one card each, so a first-time visitor
+ * understands the academy in one screen. Server-rendered, no JavaScript. Every card is one link.
  * The small previews are built from plain markup (no extra images to load) and match the real screens.
  */
 export function HomeFeatures() {
@@ -15,7 +14,7 @@ export function HomeFeatures() {
     <section id="features" className="hf" aria-labelledby="hf-title">
       <div className="container-content">
         <p className="nx-kicker nx-kicker-light">What you will find here</p>
-        <h2 id="hf-title" className="nx-title mt-2 text-3xl text-navy-800 sm:text-4xl">Seven ways to learn, practise and recover</h2>
+        <h2 id="hf-title" className="nx-title mt-2 text-3xl text-navy-800 sm:text-4xl">Learn, practise and recover</h2>
         <p className="hf-lead">New here? Pick one. A good first week: learn a concept in <b>PNA Teacher</b>, practise it in the <b>Skills Lab</b> or on the <b>Virtual Patient</b>, then test yourself in the <b>Daily Challenge</b>.</p>
 
         <ul className="hf-grid">
@@ -136,52 +135,11 @@ export function HomeFeatures() {
               <p className="hf-fine">Virtual guide — not a real clinician. Your physiotherapist reviews and approves everything. Not for emergencies.</p>
             </div>
           </li>
-
-          <li className="hf-card hf-mt">
-            <a href="/manual-therapy" className="hf-link" aria-label="Manual Therapy — techniques with hand placement and safety">
-              <div className="hf-media hf-media-photo">
-                <img src="/images/pathway-features/manual-therapy.webp" width={384} height={192} loading="lazy" decoding="async" alt="" />
-              </div>
-              <div className="hf-body">
-                <span className="hf-tag">Free</span>
-                <h3>Manual Therapy</h3>
-                <p>{manualLessonMetas.length} techniques with hand placement, dosage, contraindications and safety — explained for students and physiotherapists.</p>
-                <span className="hf-go"><Hand className="h-4 w-4" aria-hidden="true" /> Explore techniques <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-              </div>
-            </a>
-          </li>
-
-          <li className="hf-card hf-daily">
-            <a href="/daily-challenge#play-daily" className="hf-link" aria-label="Daily Clinical Challenge — five questions every day">
-              <div className="hf-media hf-media-photo">
-                <img src="/images/pathway-features/daily-challenge.webp" width={384} height={192} loading="lazy" decoding="async" alt="" />
-              </div>
-              <div className="hf-body">
-                <span className="hf-tag"><Flame className="h-3.5 w-3.5" aria-hidden="true" /> Every day</span>
-                <h3>Daily Clinical Challenge</h3>
-                <p>Five quick clinical questions a day. Score points, learn from every explanation and climb the public leaderboard.</p>
-                <span className="hf-go"><Trophy className="h-4 w-4" aria-hidden="true" /> Take today&apos;s challenge <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-              </div>
-            </a>
-          </li>
-
-          <li className="hf-card hf-books">
-            <a href="#books" className="hf-link" aria-label="Books by Dr. Sajjad Raza PT — see all books">
-              <div className="hf-media hf-media-photo">
-                <img src="/images/pathway-features/books-resources.webp" width={384} height={192} loading="lazy" decoding="async" alt="" />
-              </div>
-              <div className="hf-body">
-                <span className="hf-tag">Order online</span>
-                <h3>Physiotherapy Books</h3>
-                <p>All {BOOKS.length} printed books by Dr. Sajjad Raza PT — manual therapy, rehabilitation and clinical cases. Delivered to your door.</p>
-                <span className="hf-go"><BookOpen className="h-4 w-4" aria-hidden="true" /> See all books <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-              </div>
-            </a>
-          </li>
         </ul>
 
         <p className="hf-foot">
           <Languages className="h-4 w-4" aria-hidden="true" /> Everything is in English and Roman Urdu.
+          <a href="/manual-therapy"><Hand className="h-4 w-4" aria-hidden="true" /> Manual therapy techniques</a>
           <a href="#explore-pna">Looking for something else? Browse by who you are</a>
           <a href="/symptom-checker"><Stethoscope className="h-4 w-4" aria-hidden="true" /> Not sure what is wrong? Try the symptom checker</a>
         </p>
