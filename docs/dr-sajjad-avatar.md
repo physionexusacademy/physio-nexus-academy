@@ -19,6 +19,43 @@ uses **no camera and no microphone**.
 No new routes. All 3D, avatar, voice and animation code is client-only (`next/dynamic({ ssr: false })` / dynamic `import()`); the worker only
 gained one extra lesson beat's metadata.
 
+## Likeness (how his face matches the reference photo)
+
+The character is the shared CC0 body with its head **fitted to the owner's reference photograph**; it is not a scan, so it is a close
+stylised likeness rather than an identical copy.
+
+1. Landmarks measured on the photo (eye corners and lid edges, nostrils, mouth, chin, jaw, cheeks, ears, hairline) are paired with the same points on the generic head.
+2. A thin-plate spline turns that into a per-vertex displacement (`public/teacher/dr-sajjad-fit.bin`, 27 KB) applied by `src/lib/avatar/fit.ts` before dressing,
+   so the proportions (eye width, mouth width, chin, brow-to-eye distance) follow the photo and the hair, beard and clothes follow the fitted head.
+3. The photo (eyes removed, shadows flattened, background wall masked out) is projected onto the fitted head and baked into the body's 2048 px UV layout
+   (`public/teacher/dr-sajjad-face.webp`, 67 KB, RGBA). The 3D eyes stay real (brown irises, warm whites, resting lids a little lowered), so he can still blink and look around.
+4. Hair and beard are shells with dithered cut-out edges (no blended wisps); skin tone is sampled from the photo.
+
+Tools and re-generation steps: `scripts/avatar-likeness/README.md`. The photograph is never committed or uploaded; only the derived face texture ships.
+Limits: the head's *shape* in side view is still the generic head, the hair is a smooth stylised quiff (not strand-accurate), and the face is baked from one lit photo.
+A scanned or sculpted GLB dropped into `public/teacher/dr-sajjad.glb` replaces all of this (see "Swapping in a 3D artist's model").
+
+## Voices (English, Urdu, Roman Urdu)
+
+All voices are the device's own free text-to-speech; no audio is generated or uploaded, and nothing is cloned. Code: `src/lib/speech/`.
+
+* **English**: best English voice (Indian/Pakistani/British English first, natural/online voices first; male-sounding for the avatar).
+* **Urdu / Roman Urdu**: the site's Urdu is Roman Urdu mixed with English terms. Urdu words (found with a lexicon built from the site's own lessons, `public/teacher/ur-lexicon.json`,
+  made by `npm run build:ur-lexicon`) are converted to **Devanagari for a Hindi voice** (explicit vowels, available on almost every device) or to **Urdu script for an Urdu voice**;
+  English terms stay in Latin letters. Default is one mixed utterance per line (how South Asian speakers mix the languages); the avatar has an option to read English terms with the English voice.
+  If both a Hindi and an Urdu voice exist the Hindi one is used unless the visitor picks the Urdu voice in the voice list.
+* **No suitable voice**: the player says so in plain words (install an Urdu/Hindi voice) and carries on with subtitles and lip movement.
+* Where it works: the avatar, PNA Teacher lessons (read aloud buttons), the AI "Explain" card, RehabVerse guide and exercise player.
+* **Honest limits**: Roman Urdu spelling does not mark long and short vowels, so some words are approximated (for example *ishara* is read with a short "a"); the result is
+  understandable Hindustani, not a trained Urdu voice. Voice quality and which voices exist depend on the phone or computer. `npm run validate:speech` checks the logic with a mocked synthesiser;
+  real audio could not be heard in the build environment and must be checked on a phone (Android Chrome with the Urdu/Hindi voice installed, and Windows Edge natural voices, are the best bets).
+
+## Idle life in every 3D demonstration
+
+The shared room (`src/lib/virtual-patient/engine.ts`, used by Skills Lab, Virtual Patient and the avatar's patient) adds slow breathing (0.5° of trunk, 4.6 s cycle) and an occasional blink
+on top of any pose, plus faint skin pores (bump map) and slightly warmer hands and feet. It re-renders at about 11 frames a second only while the view is on screen and the tab is visible, and
+is off for reduced motion, data saver, low memory or two cores or fewer.
+
 ## Safety model
 
 * He says **only existing text**. Every line is a *reference* (`TextRef`) to a beat of the technique's PNA Teacher lesson (English + Roman Urdu) or to a line of the

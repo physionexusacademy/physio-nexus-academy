@@ -60,6 +60,43 @@ const sideSign = (side: Side) => (side === "left" ? 1 : -1);
 
 export const PLINTH = { length: 1.95, width: 0.68, height: 0.66 };
 
+/** A small tileable noise used as a bump map for skin pores (generated, nothing is downloaded). */
+function skinPoreBump(): THREE.Texture {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const image = ctx.createImageData(size, size);
+  let seed = 7;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < size * size; i++) {
+    const v = 128 + (rand() - 0.5) * 110;
+    image.data.set([v, v, v, 255], i * 4);
+  }
+  ctx.putImageData(image, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(14, 14);
+  return texture;
+}
+
+/** Per-vertex colour multiplier: hands and feet are a little warmer than the trunk, as in life. */
+function extremityTint(mesh: THREE.SkinnedMesh): Float32Array {
+  const geometry = mesh.geometry;
+  const count = geometry.getAttribute("position").count;
+  const index = geometry.getAttribute("skinIndex");
+  const weight = geometry.getAttribute("skinWeight");
+  const warm = mesh.skeleton.bones.map((bone) => /^(finger|wrist|toe|foot)/i.test(bone.name));
+  const out = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    let w = 0;
+    for (let k = 0; k < 4; k++) if (warm[index.getComponent(i, k)]) w += weight.getComponent(i, k);
+    w = Math.min(1, w);
+    out.set([1 + 0.05 * w, 1 - 0.035 * w, 1 - 0.05 * w], i * 3);
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------------ */
 /* Anatomical alignment: rest (A-pose) → anatomical "arms at sides"     */
 /* ------------------------------------------------------------------ */
@@ -284,6 +321,55 @@ export class ExamRoom {
   readonly extras = new THREE.Group(); // tools (goniometer, tape, markers) live here
   private disposed = false;
   private boundsDirty = true;
+
+  /* ---------------- idle life (breathing and blinking) ---------------- */
+
+  /** A quiet idle layer on top of whatever pose is shown: slow breathing and the odd blink. Off for reduced motion, data saver and weak devices. */
+  private idleOn = false;
+  private idleLast = 0;
+  private idleBreath = 0;
+  private idleBlink = 0;
+  private idleBlinkT = -1;
+  private idleBlinkAt = 2.4;
+  private inView = true;
+  private viewObserver: IntersectionObserver | null = null;
+
+  private idleAllowed(): boolean {
+    if (typeof window === "undefined") return false;
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return false;
+    if (nav.connection?.saveData) return false;
+    if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 2) return false;
+    if (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 2) return false;
+    return true;
+  }
+
+  /** Called from the render loop at about 11 frames a second while the view is visible and nothing else is moving. */
+  private tickIdle(now: number) {
+    const dt = Math.min(0.2, (now - this.idleLast) / 1000);
+    this.idleLast = now;
+    const t = now / 1000;
+    this.idleBreath = Math.sin((t / 4.6) * Math.PI * 2);
+    if (this.idleBlinkT < 0 && t > this.idleBlinkAt) this.idleBlinkT = 0;
+    if (this.idleBlinkT >= 0) {
+      this.idleBlinkT += dt;
+      const x = this.idleBlinkT / 0.26;
+      this.idleBlink = x >= 1 ? 0 : Math.sin(x * Math.PI);
+      if (x >= 1) {
+        this.idleBlinkT = -1;
+        this.idleBlinkAt = t + 2.8 + Math.random() * 3.2;
+      }
+    }
+    this.applyPose();
+  }
+
+  /** The pose with a hair of breathing added (trunk 0.5°, neck −0.25°). */
+  private withBreath(pose: Pose): Pose {
+    if (!this.idleOn || !this.idleBreath) return pose;
+    const trunk = pose.trunk ?? {};
+    const neck = pose.neck ?? {};
+    return { ...pose, trunk: { ...trunk, flex: (trunk.flex ?? 0) + 0.5 * this.idleBreath }, neck: { ...neck, flex: (neck.flex ?? 0) - 0.25 * this.idleBreath } };
+  }
   /** Bony landmarks from the rig plus soft-tissue sites found on the mesh at load. */
   private landmarks: RigData["landmarks"] = { ...RIG.landmarks };
   /** Rest-pose (bind) position of every skin vertex, for surface lookup. */
@@ -327,6 +413,13 @@ export class ExamRoom {
     this.scene.add(this.patientRoot, this.extras);
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
+    this.idleOn = this.idleAllowed();
+    if (typeof IntersectionObserver !== "undefined") {
+      this.viewObserver = new IntersectionObserver((entries) => {
+        this.inView = entries.some((entry) => entry.isIntersecting);
+      });
+      this.viewObserver.observe(container);
+    }
     this.resize();
     this.loop = this.loop.bind(this);
     this.frame = requestAnimationFrame(this.loop);
@@ -433,6 +526,11 @@ export class ExamRoom {
               .replace("#include <common>", "#include <common>\nvarying float vZone;\nvarying float vZoneY;\nuniform vec3 uZoneColor;\nuniform float uZonePulse;\nuniform float uZoneTime;")
               .replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\nfloat zoneScan = 0.8 + 0.2 * sin(vZoneY * 170.0 - uZoneTime * 4.0);\ndiffuseColor.rgb = mix(diffuseColor.rgb, uZoneColor, vZone * 0.5);\ntotalEmissiveRadiance += uZoneColor * vZone * (0.42 + 0.34 * uZonePulse) * zoneScan;");
           };
+          // Skin micro-detail: fine pores that only show close up, and a faint warmth in the hands and feet.
+          skinMaterial.bumpMap = skinPoreBump();
+          skinMaterial.bumpScale = 0.35;
+          skinMaterial.vertexColors = true;
+          mesh.geometry.setAttribute("color", new THREE.BufferAttribute(extremityTint(mesh), 3));
           skinMaterial.customProgramCacheKey = () => "skin-zone";
           mesh.geometry.setAttribute("zone", new THREE.BufferAttribute(new Float32Array(mesh.geometry.getAttribute("position").count), 1));
           mesh.material = skinMaterial;
@@ -472,9 +570,12 @@ export class ExamRoom {
   attach(container: HTMLElement) {
     if (container === this.container) return;
     this.resizeObserver.unobserve(this.container);
+    this.viewObserver?.unobserve(this.container);
     this.container = container;
     container.appendChild(this.renderer.domElement);
     this.resizeObserver.observe(container);
+    this.viewObserver?.observe(container);
+    this.inView = true;
     this.resize();
   }
 
@@ -493,6 +594,7 @@ export class ExamRoom {
     this.frame = requestAnimationFrame(this.loop);
     const controlsMoved = this.controls.update();
     if (this.tween) this.stepTween(now);
+    else if (this.idleOn && this.inView && !this.needsRender && now - this.idleLast > 90 && typeof document !== "undefined" && document.visibilityState === "visible") this.tickIdle(now);
     if (this.needsRender || controlsMoved) {
       this.needsRender = false;
       this.renderer.render(this.scene, this.camera);
@@ -504,6 +606,7 @@ export class ExamRoom {
     this.disposed = true;
     cancelAnimationFrame(this.frame);
     this.resizeObserver.disconnect();
+    this.viewObserver?.disconnect();
     this.controls.dispose();
     // Free GPU memory: geometries, materials and their textures, the environment map.
     const textures = new Set<THREE.Texture>();
@@ -595,7 +698,7 @@ export class ExamRoom {
   /** Converts the anatomical pose into bone rotations (see applyPoseToBones). */
   private applyPose() {
     if (!this.bones.size) return;
-    applyPoseToBones((name) => this.bone(name), this.pose);
+    applyPoseToBones((name) => this.bone(name), this.withBreath(this.pose));
     this.applyFace();
     this.patientRoot.updateMatrixWorld(true);
     this.boundsDirty = true;
@@ -640,7 +743,14 @@ export class ExamRoom {
       const amount = this.face[key];
       bone.position.set(rest.x + delta[0] * amount, rest.y + delta[1] * amount, rest.z + delta[2] * amount);
     }
-    void blink;
+    // Eyelids: the upper lid lowers and the lower lid lifts (a demo's own blink, or the idle blink).
+    const lid = Math.max(blink, this.idleBlink);
+    for (const side of ["L", "R"]) {
+      const up = this.bone(`orbicularis03.${side}`);
+      const low = this.bone(`orbicularis04.${side}`);
+      if (up) up.rotation.x = lid * 0.55;
+      if (low) low.rotation.x = -lid * 0.35;
+    }
     void brow;
     void smile;
   }

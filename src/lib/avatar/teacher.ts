@@ -40,14 +40,29 @@ export function detectLightMode(): boolean {
   return false;
 }
 
+/** Is there an artist's model at `url`? Asked once per browser session so a missing file logs at most one 404. */
 async function modelExists(url: string) {
+  const key = `pna-avatar-model:${url}`;
+  try {
+    const known = window.sessionStorage.getItem(key);
+    if (known) return known === "1";
+  } catch {
+    /* storage blocked */
+  }
+  let found = false;
   try {
     const response = await fetch(url, { method: "HEAD" });
     const type = response.headers.get("content-type") ?? "";
-    return response.ok && !type.includes("text/html");
+    found = response.ok && !type.includes("text/html");
   } catch {
-    return false;
+    found = false;
   }
+  try {
+    window.sessionStorage.setItem(key, found ? "1" : "0");
+  } catch {
+    /* storage blocked */
+  }
+  return found;
 }
 
 /** Reports which required bones a loaded figure lacks (names as in the rig). */

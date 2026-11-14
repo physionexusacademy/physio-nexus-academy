@@ -426,7 +426,7 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
     const room = roomRef.current;
     if (status !== "active" || !room || !scene) return;
     clearPointCache(room);
-    room.viewInsetTop = window.innerWidth >= 640 ? 76 : 0; // keep the subject clear of the caption
+    room.viewInsetTop = window.innerWidth >= 640 ? 104 : 0; // keep the subject clear of the caption (up to three lines of text)
     zoneOn.current = false;
     room.highlightZone(null);
     room.setCasePosture(undefined);

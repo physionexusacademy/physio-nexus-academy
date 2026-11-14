@@ -12,6 +12,10 @@ import type { Figure } from "./figure";
 import { readBody } from "./mesh";
 
 export const FIT_URL = "/teacher/dr-sajjad-fit.bin";
+/** The fitted head is in photo proportions: photo pixel = mid + x·scale, eyePy + (eyeY − y)·scale (see scripts/avatar-likeness). */
+export const PHOTO_FIT = { mid: 527, scale: 1887, eyeY: 1.6345, eyePy: 408.5 };
+/** The hair crop of the photograph (pixels of the 1121×1403 reference) shipped as public/teacher/dr-sajjad-hair.webp. */
+export const HAIR_CROP = { x0: 300, y0: 100, w: 400, h: 360 };
 /** The photographed eyes are wider than the generic ones; the eyeballs grow to fill the openings (front plane only). */
 const EYE_SCALE = 1.08;
 

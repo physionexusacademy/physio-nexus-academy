@@ -7,7 +7,7 @@
 import * as THREE from "three";
 import type { Figure } from "./figure";
 import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyData } from "./mesh";
-import { applyHeadFit } from "./fit";
+import { HAIR_CROP, PHOTO_FIT, applyHeadFit } from "./fit";
 
 export const LOOK = {
   skin: "#dbb09c",
@@ -20,6 +20,8 @@ export const LOOK = {
   logoUrl: "/teacher/pna-chest-logo.webp",
   /** His face, fitted to the reference photograph and baked into the body's UV layout (2048 px, transparent outside the head). */
   faceUrl: "/teacher/dr-sajjad-face.webp",
+  /** His hair as photographed (hair pixels only), projected from the front on the hair shell. */
+  hairUrl: "/teacher/dr-sajjad-hair.webp",
 };
 
 type Dressed = {
@@ -397,17 +399,26 @@ function hairColourMap() {
   return t;
 }
 
-function dressHair(figure: Figure, parts: THREE.Object3D[]) {
+function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElement | null) {
   const body = figure.body;
   const field = hairFields(body);
   const strands = figure.own(strandTexture(LOOK.hair));
-  const colourMap = figure.own(hairColourMap());
+  const photoMap = photo ? figure.own(new THREE.Texture(photo)) : null;
+  if (photoMap) {
+    photoMap.colorSpace = THREE.SRGBColorSpace;
+    photoMap.needsUpdate = true;
+    photoMap.anisotropy = 4;
+  }
+  const colourMap = photoMap ?? figure.own(hairColourMap());
+  if (photoMap) strands.repeat.set(10, 10);
   // Low specular: strong rim light on thin hair edges otherwise shows as bright grey wisps at the temples.
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.004) });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.004) });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.015 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
-    planarUv: { u: "x", v: "z", su: 9, sv: 9, ou: 0, ov: 0 },
+    ...(photoMap
+      ? { uvFrom: (at: THREE.Vector3): [number, number] => [(PHOTO_FIT.mid + at.x * PHOTO_FIT.scale - HAIR_CROP.x0) / HAIR_CROP.w, (PHOTO_FIT.eyePy + (PHOTO_FIT.eyeY - at.y) * PHOTO_FIT.scale - HAIR_CROP.y0) / HAIR_CROP.h] }
+      : { planarUv: { u: "x" as const, v: "z" as const, su: 9, sv: 9, ou: 0, ov: 0 } }),
     offset: (i, p, n) => {
       const deg = (angleOf(p.x, p.z) * 180) / Math.PI;
       // Short, faded sides and back; fuller crown; a lifted, swept-back quiff rising from the front hairline.
@@ -624,12 +635,12 @@ export type DressOptions = { light?: boolean };
 
 export async function dressDrSajjad(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
   const parts: THREE.Object3D[] = [];
-  const [face, fitted] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure)]);
+  const [face, fitted, hairPhoto] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure), loadImage(LOOK.hairUrl)]);
   // His face is a photograph fitted to this head; without the fit the generic head would carry a stretched picture, so use both or neither.
   const likeness = face && fitted ? face : null;
   recolourSkin(figure, likeness, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
-  dressHair(figure, parts);
+  dressHair(figure, parts, likeness ? hairPhoto : null);
   dressBeard(figure, parts);
   dressShoes(figure, parts);
   dressWatch(figure, parts);
