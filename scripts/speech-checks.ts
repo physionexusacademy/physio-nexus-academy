@@ -1,105 +1,87 @@
-// Entry bundled by scripts/validate-speech.mjs: checks voice choice and Roman Urdu preparation with a mocked speech synthesiser.
-import { genderOf, planSpeech, supportsSpeech, voicesFor } from "../src/lib/speech/voices";
-import { shortFirst, splitForSpeech } from "../src/lib/speech/builtin";
+// Entry bundled by scripts/validate-speech.mjs: checks how a line finds its recording (sentence keys, planning, missing recordings, Roman Urdu),
+// that every fixed English line of the site has a recording, and the spoken-style text and Roman Urdu preparation that remain.
+import { NOTE_NO_RECORDING, NOTE_ROMAN_URDU, planSpeech } from "../src/lib/speech/voices";
+import { clipKey, normalise, splitSentences } from "../src/lib/speech/clip-key";
 import { toSpoken } from "../src/lib/speech/spoken";
 import { convertRun, splitRuns, toDevanagari, toUrdu } from "../src/lib/speech/roman-urdu";
+import { collectGroups } from "./voice/collect.mts";
 import fs from "node:fs";
+import path from "node:path";
 
-type V = { name: string; lang: string; localService: boolean; default: boolean; voiceURI: string };
-const v = (name: string, lang: string, local = true, def = false): V => ({ name, lang, localService: local, default: def, voiceURI: name });
 const g = globalThis as unknown as Record<string, unknown>;
-/** A browser with these device voices; `builtin` says whether the built-in male voice can run (Web Worker + Web Audio). */
-function install(voices: V[], builtin = true, withSynth = true) {
-  const win: Record<string, unknown> = { localStorage: { getItem: () => null, setItem() {}, removeItem() {} }, addEventListener() {} };
-  if (withSynth) win.speechSynthesis = { getVoices: () => voices, addEventListener() {}, removeEventListener() {}, cancel() {}, speak() {}, pause() {}, resume() {} };
-  if (builtin) win.AudioContext = function () {};
-  g.window = win;
-  if (builtin) g.Worker = function () {};
-  else delete g.Worker;
-  if (withSynth) g.SpeechSynthesisUtterance = function () {} as unknown;
-  else delete g.SpeechSynthesisUtterance;
-}
-g.fetch = async () => ({ ok: true, json: async () => JSON.parse(fs.readFileSync("public/teacher/ur-lexicon.json", "utf8")) });
+const voiceDir = "public/voice/george";
+// The browser fetches /voice/george/<file>; here that is read from disk.
+g.fetch = async (url: string) => {
+  const file = String(url).startsWith("/voice/george/") ? path.join(voiceDir, String(url).slice("/voice/george/".length)) : "";
+  if (!file || !fs.existsSync(file)) return { ok: false, status: 404, json: async () => null };
+  return { ok: true, status: 200, json: async () => JSON.parse(fs.readFileSync(file, "utf8")) };
+};
 
 const failures: string[] = [];
 const check = (ok: boolean, what: string) => { if (!ok) failures.push(what); };
 
-// Voices as browsers really report them: Chrome/Android ones carry no gender, Google's are female, Microsoft's say who they are.
-const EN_US = v("Google US English", "en-US", false), EN_GB_F = v("Google UK English Female", "en-GB", false), ARIA = v("Microsoft Aria Online (Natural) - English (United States)", "en-US", false);
-const IN_PLAIN = v("English India", "en-IN"), RAVI_ONLINE = v("Microsoft Ravi Online (Natural) - English (India)", "en-IN", false);
-const DAVID = v("Microsoft David - English (United States)", "en-US"), GOOGLE_MALE = v("Google UK English Male", "en-GB", false), MARK = v("Microsoft Mark - English (United States)", "en-US");
-const GOOGLE_HI = v("Google \u0939\u093f\u0928\u094d\u0926\u0940", "hi-IN", false), HEMANT = v("Microsoft Hemant - Hindi (India)", "hi-IN"), KALPANA = v("Microsoft Kalpana - Hindi (India)", "hi-IN");
-const ASAD = v("Microsoft Asad - Urdu (Pakistan)", "ur-PK"), UZMA = v("Microsoft Uzma - Urdu (Pakistan)", "ur-PK");
-
-// 1. English. The voice is always male: a natural male voice the device offers (even a streamed one: if it is slow the built-in voice takes over),
-// otherwise the built-in male voice. Never a female or unlabelled one.
-install([EN_US, EN_GB_F, ARIA, IN_PLAIN]);
-let plan = await planSpeech("Hello", "en");
-check(plan.engine === "builtin" && plan.mode === "english" && plan.segments[0].builtin === "en-us" && plan.segments[0].voice === null, "No male device voice (female, unlabelled): the built-in male voice (got " + plan.engine + ")");
-check(voicesFor("en", "male").length === 0, "Unlabelled and female voices are not offered");
-install([EN_US, EN_GB_F, ARIA, IN_PLAIN, RAVI_ONLINE, GOOGLE_MALE]);
-plan = await planSpeech("Hello", "en");
-check(plan.engine === "device" && plan.segments[0].voice?.name === RAVI_ONLINE.name, "A natural online male voice is the first choice (got " + plan.segments[0].voice?.name + ")");
-check(plan.fallback?.engine === "builtin" && plan.fallback.segments[0].builtin === "en-us", "An online voice carries a built-in fallback for the case it is slow to start");
-check(voicesFor("en", "male").map((x) => x.name).join("|") === [RAVI_ONLINE, GOOGLE_MALE].map((x) => x.name).join("|"), "Natural male voices are listed first");
-install([EN_US, ARIA, DAVID, MARK, IN_PLAIN]);
-plan = await planSpeech("Hello", "en");
-check(plan.engine === "device" && plan.segments[0].voice?.name === DAVID.name && !plan.fallback, "A male voice installed on the device is used, with no fallback needed (got " + plan.segments[0].voice?.name + ")");
-check(voicesFor("en", "male").map((x) => x.name).sort().join("|") === [DAVID, MARK].map((x) => x.name).sort().join("|"), "Only the male installed voices are listed");
-plan = await planSpeech("Hello", "en", { en: "pna-builtin-male" });
-check(plan.engine === "builtin", "The built-in voice can be chosen even when a male device voice exists");
-plan = await planSpeech("Hello", "en", { en: MARK.name });
-check(plan.engine === "device" && plan.segments[0].voice?.name === MARK.name, "A saved male device voice wins");
-plan = await planSpeech("Hello", "en", { en: ARIA.name });
-check(plan.segments[0].voice?.name !== ARIA.name, "A saved female voice is ignored");
-install([ARIA, EN_US]);
-plan = await planSpeech("Hello", "en", { en: ARIA.name });
-check(plan.engine === "builtin", "Female voices only: built-in male voice, never the female one");
-install([ARIA, EN_US], false);
-plan = await planSpeech("Hello", "en");
-check(plan.mode === "none" && plan.engine === "none" && Boolean(plan.note), "Female voices only and no built-in voice: silent with a note (never a female voice)");
-install([], true, false);
-check(supportsSpeech() && (await planSpeech("Hello", "en")).engine === "builtin", "No speech synthesiser at all: the built-in voice still speaks");
-install([], false, false);
-check(!supportsSpeech() && (await planSpeech("Hello", "en")).mode === "none", "Nothing can speak: silent");
-check(genderOf(DAVID) === "male" && genderOf(ARIA) === "female" && genderOf(IN_PLAIN) === null && genderOf(EN_US) === "female" && genderOf(GOOGLE_HI) === "female", "genderOf");
-
-// 2. Urdu / Roman Urdu
-install([EN_US, GOOGLE_HI, KALPANA, UZMA]);
-plan = await planSpeech("Shoulder ko posterior glide karein.", "ur");
-check(plan.engine === "builtin" && plan.mode === "hindi", "Only female Hindi/Urdu voices: built-in male voice");
-check(plan.segments.length === 1 && plan.segments[0].builtin === "hi" && plan.segments[0].text === "Shoulder को posterior glide करें।", "Built-in voice: one mixed line for the Hindi voice, Urdu words in Devanagari, English terms in Latin (it switches language by word) (got " + JSON.stringify(plan.segments.map((x) => x.text)) + ")");
-install([EN_US, HEMANT, ASAD]);
-plan = await planSpeech("Shoulder ko posterior glide karein.", "ur");
-check(plan.engine === "device" && plan.mode === "hindi" && plan.segments.length === 1 && plan.segments[0].voice?.name === HEMANT.name, "A male Hindi voice on the device reads one mixed line");
-check(plan.segments[0].text === "Shoulder को posterior glide करें।", "Roman Urdu in Devanagari, English terms in Latin (got " + plan.segments[0].text + ")");
-plan = await planSpeech("karein", "ur", { ur: ASAD.name });
-check(plan.mode === "urdu" && plan.segments[0].text.includes("کریں"), "A saved male Urdu voice gets Urdu script");
-plan = await planSpeech("karein", "ur", { ur: "pna-builtin-male" });
-check(plan.engine === "builtin", "The built-in voice can be chosen for Urdu");
-install([DAVID, HEMANT]);
-plan = await planSpeech("Shoulder ko posterior glide karein.", "ur", { split: true });
-check(plan.engine === "device" && plan.segments.length === 4 && plan.segments.map((x) => x.voice?.name).join("|") === [DAVID, HEMANT, DAVID, HEMANT].map((x) => x.name).join("|"), "Device voices, split mode: English terms on the English voice");
-install([EN_US], false);
-check((await planSpeech("karein", "ur")).mode === "none", "No male Urdu/Hindi voice and no built-in voice: silent");
-
-// 2a. Written text becomes spoken text (symbols to words, a pause instead of an arrow, a finished sentence)
-check(toSpoken("Flex to 90° (about 3–5 mm) → then hold; e.g. 30% more") === "Flex to 90 degrees, about 3 to 5 mm, then hold; for example, 30 percent more.", "toSpoken: degrees, aside, range, arrow, e.g., percent, final stop (got " + toSpoken("Flex to 90° (about 3–5 mm) → then hold; e.g. 30% more") + ")");
-check(toSpoken("**Step 1** — place the hand\n• keep the elbow relaxed") === "Step 1, place the hand. keep the elbow relaxed.", "toSpoken: markdown, dash, list mark, line break (got " + toSpoken("**Step 1** — place the hand\n• keep the elbow relaxed") + ")");
-check(toSpoken("Already a sentence.") === "Already a sentence.", "toSpoken leaves a finished sentence alone");
-check(toSpoken("5-10 baar", "ur") === "5 se 10 baar.", "toSpoken: Roman Urdu range (got " + toSpoken("5-10 baar", "ur") + ")");
-
-// 2b. Cutting text into sentences for the built-in voice
-const bits = splitForSpeech("Tilt the head 3.5 degrees. Hold it, then breathe out! Ready?");
+// 1. Sentences and keys: the same text always has the same key, whatever the spacing; a decimal point is not a sentence end.
+check(clipKey("Hold it  steady. ") === clipKey("Hold it steady."), "A key ignores extra spaces");
+check(clipKey("Hold it steady.") !== clipKey("Hold it steady!"), "A different sentence has a different key");
+check(/^[0-9a-z]{6,12}$/.test(clipKey("Hold it steady.")), "A key is a short base-36 string (got " + clipKey("Hold it steady.") + ")");
+check(normalise("  a \n b ") === "a b", "normalise collapses white space");
+let bits = splitSentences("Tilt the head 3.5 degrees. Hold it, then breathe out! Ready?");
 check(bits.length === 3 && bits[0] === "Tilt the head 3.5 degrees." && bits[2] === "Ready?", "Sentences are cut after . ! ? but not inside 3.5 (got " + JSON.stringify(bits) + ")");
-const longBits = splitForSpeech("This is a long line, with many clauses, " + "that goes on and on, ".repeat(20) + "and finally ends.");
-check(longBits.every((x) => x.length <= 230) && longBits.length > 1, "Long sentences are cut at commas");
-check(splitForSpeech("... ?! ").length === 0, "Punctuation only: nothing to say");
-const lead = shortFirst(["Physio Nexus Academy (PNA) is Pakistan's online physiotherapy academy: free step-by-step lessons, 3D practice patients, a clinical skills lab."]);
-check(lead.length === 2 && lead[0].length <= 80 && lead[0].endsWith(":") && lead.join(" ").replace(/\s+/g, " ").length >= 130, "The first piece of a long line is short, cut at a clause end (got " + JSON.stringify(lead) + ")");
-check(shortFirst(["A short sentence."]).length === 1, "A short first sentence is left alone");
+bits = splitSentences("No final stop here");
+check(bits.length === 1 && bits[0] === "No final stop here", "A line without a final stop is one sentence");
+check(splitSentences(" ... ?! ").length === 0, "Punctuation only: nothing to say");
 
-// 3. Conversion spot checks
+// 2. Written text becomes spoken text (symbols to words, a pause instead of an arrow, a finished sentence)
+check(toSpoken("Flex to 90° (about 3–5 mm) → then hold; e.g. 30% more") === "Flex to 90 degrees, about 3 to 5 mm, then hold; for example, 30 percent more.", "toSpoken: degrees, aside, range, arrow, e.g., percent, final stop");
+check(toSpoken("**Step 1** — place the hand\n• keep the elbow relaxed") === "Step 1, place the hand. keep the elbow relaxed.", "toSpoken: markdown, dash, list mark, line break");
+check(toSpoken("Already a sentence.") === "Already a sentence.", "toSpoken leaves a finished sentence alone");
+check(toSpoken("5-10 baar", "ur") === "5 se 10 baar.", "toSpoken: Roman Urdu range");
+
+// 3. The voice files and their index
+const packs: string[] = JSON.parse(fs.readFileSync(`${voiceDir}/packs.json`, "utf8"));
+const index = JSON.parse(fs.readFileSync(`${voiceDir}/clips.json`, "utf8")) as { packs: string[]; clips: Record<string, [number, number, number]>; rate: number };
+check(packs.length >= 11 && packs.includes("avatar-site-tour") && packs.includes("rehab-guide"), "packs.json lists the packs (got " + packs.length + ")");
+check(index.packs.length === packs.length && index.packs.every((stem, i) => stem.startsWith(packs[i] + ".")), "clips.json packs match packs.json (name.hash)");
+for (const stem of index.packs) check(fs.existsSync(`${voiceDir}/${stem}.mp3`), `Pack file missing: ${stem}.mp3`);
+for (const [key, [pack, start, dur]] of Object.entries(index.clips)) {
+  const size = fs.existsSync(`${voiceDir}/${index.packs[pack]}.mp3`) ? fs.statSync(`${voiceDir}/${index.packs[pack]}.mp3`).size : 0;
+  // 32 kbit/s = 4000 bytes a second; a clip must lie inside its pack
+  if (!(dur > 200 && start >= 0 && (start + dur) / 1000 <= size / 4000 + 0.5)) failures.push(`Clip ${key} lies outside its pack (${start} + ${dur} ms, pack ${size} bytes)`);
+}
+check(fs.statSync(`${voiceDir}/clips.json`).size < 400_000, "clips.json must stay small (it is loaded when something is first spoken)");
+check(/Apache License|Kokoro/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")) && /hexgrad|Kokoro/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")), "The voice README credits the model");
+
+// 4. Every fixed English line of the site (3D demonstrations, tour, RehabVerse guide and exercise cues) has a recording
+const groups = collectGroups(process.cwd());
+let missing = 0;
+for (const group of groups) {
+  for (let i = 0; i < group.keys.length; i++) {
+    if (!index.clips[group.keys[i]]) {
+      missing++;
+      if (missing <= 5) failures.push(`No recording for (${group.name}): ${group.sentences[i].slice(0, 70)}`);
+    }
+  }
+  check(packs.includes(group.name) || group.sentences.length === 0, `No pack for group ${group.name}`);
+}
+if (missing > 5) failures.push(`... and ${missing - 5} more sentences without a recording (run scripts/voice/, see its README)`);
+
+// 5. Planning a line: found, not found, Roman Urdu
+const first = groups.find((x) => x.name === "avatar-site-tour")!.sentences[0];
+let plan = await planSpeech(first, "en");
+check(plan.mode === "english" && plan.engine === "recorded" && plan.parts.length >= 1 && plan.note === null, "A recorded line is planned for the recorded voice");
+check(plan.parts.every((part) => part.dur > 0.2 && /^[a-z0-9_-]+\.[0-9a-f]{8}$/.test(part.pack)), "Parts point at hashed pack files");
+plan = await planSpeech("This sentence was never recorded anywhere.", "en");
+check(plan.mode === "none" && plan.engine === "none" && plan.note === NOTE_NO_RECORDING, "An unrecorded line is not spoken (no synthesiser takes over)");
+plan = await planSpeech(first + " This one was never recorded.", "en");
+check(plan.mode === "none", "A line is spoken completely or not at all");
+plan = await planSpeech("Shoulder ko posterior glide karein.", "ur");
+check(plan.mode === "none" && plan.note === NOTE_ROMAN_URDU, "Roman Urdu is not spoken");
+// two recorded sentences of one pack play as one piece
+const two = groups.find((x) => x.name === "rehab-guide")!.sentences.slice(0, 2).join(" ");
+plan = await planSpeech(two, "en");
+check(plan.mode === "english", "Two recorded sentences in a row are found (got " + plan.mode + ")");
+
+// 6. Roman Urdu preparation (kept for a future Hindi recording)
 const cases: [string, string, string][] = [["hai", "है", "ہے"], ["karein", "करें", "کریں"], ["mein", "में", "میں"], ["dekhein", "देखें", "دیکھیں"], ["logon", "लोगों", "لوگوں"], ["mushkil", "मुश्किल", "مشکل"], ["yahan", "यहां", "یہاں"]];
 for (const [w, d, u] of cases) {
   check(toDevanagari(w) === d, `Devanagari ${w}: got ${toDevanagari(w)} want ${d}`);
@@ -114,4 +96,5 @@ if (failures.length) {
   console.error("Speech checks FAILED:\n - " + failures.join("\n - "));
   process.exit(1);
 }
-console.log(`Speech checks passed: male-only voice choice (natural device voice with fallback, local device voice, built-in voice, none), spoken-style text, Roman Urdu for the built-in voice, sentence cutting, run splitting, ${cases.length} conversion spot checks.`);
+const total = groups.reduce((n, x) => n + x.keys.length, 0);
+console.log(`Speech checks passed: sentence keys, spoken-style text, ${index.packs.length} voice packs and ${Object.keys(index.clips).length} clips consistent, all ${total} fixed English sentences recorded, planning (found / missing / Roman Urdu), ${cases.length} Roman Urdu conversion spot checks.`);

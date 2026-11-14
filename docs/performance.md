@@ -65,7 +65,9 @@ It was designed to cost almost nothing:
 To add a card: add an entry to `slides` in `LobbyHero.tsx` and a `scene…` function in `hero-scenes.ts` (and an icon in `hero-icons.ts` if needed) (give its animation rule the
 `.hs-slide:not([data-pos="idle"])` prefix in `home-hero.css`).
 
-## The built-in male voice
+## The recorded voice
 
-`public/teacher/espeak/` (about 0.8 MB compressed) is loaded only when the avatar stage opens or a voice button is used, never on first paint, and is
-cached for a month (`public/_headers`). Measured in Chromium: the engine is ready in 0.2 s and speaks about 60× faster than real time.
+`public/voice/george/` holds MP3 packs of the PNA Teacher's voice (a few hundred KB each, mono 24 kHz 32 kbit/s, hashed file names, cached for a year) plus two
+small JSON files. Nothing is loaded until the voice is used: `packs.json` (a few hundred bytes) tells a page whether its lines are recorded, `clips.json`
+(about 20 KB for the avatar and RehabVerse lines) is fetched when something is first spoken, and a pack is fetched and decoded when needed (at most two are
+kept in memory). Playing a recording uses no processor to speak of, so it is the same on a cheap phone as on a laptop. See `scripts/voice/README.md`.

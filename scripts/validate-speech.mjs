@@ -1,4 +1,4 @@
-// Bundles scripts/speech-checks.ts and runs it (voice choice with a mocked synthesiser, Roman Urdu preparation).
+// Bundles scripts/speech-checks.ts and runs it (recorded voice: sentence keys, the voice files, every fixed line recorded, planning).
 import { build } from "esbuild";
 import { pathToFileURL } from "node:url";
 import fs from "node:fs";
@@ -6,37 +6,30 @@ import os from "node:os";
 import path from "node:path";
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pna-speech-"));
 const outfile = path.join(dir, "checks.mjs");
-await build({ entryPoints: ["scripts/speech-checks.ts"], bundle: true, format: "esm", platform: "node", outfile, logLevel: "error", target: "node22" });
+await build({ entryPoints: ["scripts/speech-checks.ts"], bundle: true, format: "esm", platform: "node", outfile, logLevel: "error", target: "node22", loader: { ".mts": "ts" } });
 try {
   await import(pathToFileURL(outfile).href);
 } finally {
   fs.rmSync(dir, { recursive: true, force: true });
 }
 
-// The built-in male voice (eSpeak NG): files present, data list consistent and small, no female variant, licence and source credit, long cache,
-// and nothing on the site talks to the device synthesiser directly any more (everything goes through lib/speech so a female voice cannot slip in).
+// The voice is recordings only: no synthesiser (the device's or a built-in one) anywhere, the old built-in voice is gone, and the
+// credit and licence for the model that made the recordings ships with them.
 const assert = (await import("node:assert/strict")).default;
-const voiceDir = "public/teacher/espeak";
-for (const name of ["espeak-ng.js", "espeak-ng-data.json", "worker.js", "LICENSE.txt", "README.txt"]) assert(fs.existsSync(`${voiceDir}/${name}`), `Built-in voice file missing: ${name}`);
-const espeakJs = fs.readFileSync(`${voiceDir}/espeak-ng.js`, "latin1");
-const data = fs.statSync(`${voiceDir}/espeak-ng-data.json`).size;
-const manifest = /files:\[(.*?)\],remote_package_size:(\d+)/s.exec(espeakJs);
-assert(manifest, "eSpeak data manifest not found");
-assert.equal(Number(manifest[2]), data, "eSpeak data size must match its manifest");
-const entries = [...manifest[1].matchAll(/\{filename:"([^"]+)",start:(\d+),end:(\d+)\}/g)].map((m) => ({ name: m[1].replace("/usr/share/espeak-ng-data/", ""), start: Number(m[2]), end: Number(m[3]) }));
-assert(entries.length > 15 && entries.every((e) => e.end <= data && e.start < e.end), "eSpeak data entries must fit the data file");
-for (const need of ["phondata", "phonindex", "phontab", "intonations", "en_dict", "hi_dict", "lang/gmw/en-US", "lang/inc/hi"]) assert(entries.some((e) => e.name === need), `eSpeak data must contain ${need}`);
-assert(!entries.some((e) => /^voices\/!v\/(f\d|female|linda|belinda|anika|annie|steph|alicia|grandma|whisperf)/i.test(e.name)), "No female voice variant may be shipped");
-assert(data < 1_300_000 && espeakJs.length < 900_000, "The built-in voice must stay small (data < 1.3 MB, script < 0.9 MB)");
-assert(espeakJs.includes("espeak-ng-data.json") && !espeakJs.includes('"espeak-ng.data"'), "eSpeak script must point at the renamed (compressible) data file");
-assert(fs.readFileSync(`${voiceDir}/worker.js`, "utf8").includes('from "./espeak-ng.js"'), "The voice worker must import the engine");
-assert(/GNU GENERAL PUBLIC LICENSE/.test(fs.readFileSync(`${voiceDir}/LICENSE.txt`, "utf8")), "The GPL text must ship with eSpeak");
-assert(/github\.com\/espeak-ng\/espeak-ng/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")), "The README must credit and link the eSpeak source");
-assert(/\/teacher\/espeak\/\*\s*\n\s*Cache-Control: public,max-age=\d{6,}/.test(fs.readFileSync("public/_headers", "utf8")), "The built-in voice files must be cached for a long time");
-assert(fs.readFileSync("src/lib/speech/builtin.ts", "utf8").includes('"/teacher/espeak/worker.js"'), "builtin.ts must load /teacher/espeak/worker.js");
-const stage = fs.readFileSync("src/components/avatar/AvatarStage.tsx", "utf8");
-assert(!stage.includes("♀") && stage.includes("BUILTIN_VOICE") && stage.includes('voicesFor(kind, "male")'), "The voice list offers the built-in voice and male voices only");
-for (const f of ["src/components/rehabverse/ExercisePlayer.tsx", "src/components/rehabverse/PhysioGuide.tsx", "src/components/PhysioNexusAI.tsx", "src/components/teacher/useSpeech.ts"]) {
-  assert(!/speechSynthesis/.test(fs.readFileSync(f, "utf8")), `${f} must not use the device synthesiser directly (use lib/speech)`);
+const read = (f) => fs.readFileSync(f, "utf8");
+const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
+for (const f of walk("src").filter((f) => /\.(ts|tsx)$/.test(f))) {
+  assert(!/speechSynthesis|SpeechSynthesisUtterance/.test(read(f)), `${f} must not use a speech synthesiser: the voice is recordings (lib/speech/recorded.ts)`);
 }
-console.log("Built-in voice checks passed: files, data list, no female variant, licence and credit, cache, no direct synthesiser use.");
+assert(!fs.existsSync("src/lib/speech/builtin.ts") && !fs.existsSync("public/teacher/espeak"), "The old built-in synthesiser must stay removed");
+const readme = read("public/voice/george/README.txt");
+assert(/Kokoro/.test(readme) && /Apache/i.test(readme) && /github\.com\/hexgrad|huggingface\.co\/hexgrad/.test(readme), "The voice README must credit Kokoro, its licence and source");
+assert(/\/voice\/george\/\*\.mp3\s*\n\s*Cache-Control: public,max-age=\d{7,},immutable/.test(read("public/_headers")), "The hashed voice packs must be cached for a long time");
+const recorded = read("src/lib/speech/recorded.ts");
+assert(recorded.includes("packs.json") && recorded.includes("clips.json") && recorded.includes("decodeAudioData"), "recorded.ts plays the packs through Web Audio");
+for (const f of ["src/components/rehabverse/ExercisePlayer.tsx", "src/components/rehabverse/PhysioGuide.tsx", "src/components/PhysioNexusAI.tsx", "src/components/teacher/useSpeech.ts"]) {
+  assert(!/speechSynthesis/.test(read(f)), `${f} must not use the device synthesiser`);
+}
+assert(!/speakText|supportsSpeech/.test(read("src/components/PhysioNexusAI.tsx")), "PNA AI answers are made on the fly and have no recording: no Listen button there");
+assert(read("src/components/teacher/LessonPlayer.tsx").includes("useSpeech(`lesson-${lesson.slug}`)"), "The lesson player offers the voice only for lessons that have a recording");
+console.log("Voice checks passed: recordings only, no synthesiser, old built-in voice gone, credit and licence, long cache, Listen only where a recording exists.");
