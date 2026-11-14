@@ -12,6 +12,7 @@
  * Relative imports only (no "@/") so scripts/validate-pna-teacher.ts can load it.
  */
 import type { MasteryGuide } from "../../manual-therapy-mastery-types.ts";
+import { avatarDemoBeat } from "../../avatar/choreo/index.ts";
 import { masteryJoint } from "../../manual-therapy-mastery-joint.ts";
 import { masterySoftTissue } from "../../manual-therapy-mastery-soft.ts";
 import { masteryWorld } from "../../manual-therapy-mastery-world.ts";
@@ -224,6 +225,10 @@ function buildLesson(guide: MasteryGuide, meta: Meta): TeacherLesson {
     steps,
     ur: slots.steps,
   });
+
+  // Dr. Sajjad's 3D demonstration of this technique, when one exists (see lib/avatar/choreo).
+  const avatarDemo = avatarDemoBeat(meta.slug);
+  if (avatarDemo) beats.push(avatarDemo);
 
   // Check 3 — sequencing: what comes first?
   const mid = Math.max(2, Math.floor(n / 2));

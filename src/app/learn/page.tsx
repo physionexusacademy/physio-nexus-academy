@@ -5,6 +5,7 @@ import { teacherPaths } from "@/lib/teacher/paths";
 import { TeacherHome } from "@/components/teacher/TeacherHome";
 import { TeacherCatalog } from "@/components/teacher/TeacherCatalog";
 import { TeacherAvatar } from "@/components/teacher/ui";
+import { GuideMe } from "@/components/avatar/GuideMe";
 
 const url = "https://physionexusacademy.com/learn";
 
@@ -135,6 +136,10 @@ export default function LearnPage() {
         <section className="mx-auto mt-8 max-w-3xl" aria-label="Your personal teacher">
           <TeacherHome lessons={lessonIndex} paths={teacherPaths} />
         </section>
+
+        <div className="mx-auto mt-10 max-w-3xl">
+          <GuideMe />
+        </div>
 
         <div className="mx-auto mt-14 max-w-6xl">
           <TeacherCatalog conceptLessons={conceptLessonMetas} manualLessons={manualLessonMetas} paths={teacherPaths} />

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArrowRight, BookOpenCheck, ClipboardCheck, Dumbbell, Layers, PersonStanding, Trophy } from "lucide-react";
 import { NexusHero } from "@/components/nexus/NexusHero";
 import { SkillIcon } from "@/components/skills/SkillIcon";
+import { GuideMe } from "@/components/avatar/GuideMe";
 import { SkillProgressBadge } from "@/components/skills/SkillProgressBadge";
 import { skillIndex, skillPhases } from "@/lib/skills/catalog";
 
@@ -152,6 +153,10 @@ export default function SkillsHubPage() {
           </span>
           <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2ee6d6]">Enter the exam room <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
         </a>
+
+        <div className="mt-6">
+          <GuideMe />
+        </div>
 
         {skillPhases.map((phase) => {
           const skills = skillIndex.filter((skill) => skill.phase === phase.id);
