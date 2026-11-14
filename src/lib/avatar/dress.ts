@@ -7,10 +7,10 @@
 import * as THREE from "three";
 import type { Figure } from "./figure";
 import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyData } from "./mesh";
-import { HAIR_CROP, PHOTO_FIT, applyHeadFit } from "./fit";
+import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT, applyHeadFit } from "./fit";
 
 export const LOOK = {
-  skin: "#dbb09c",
+  skin: "#d29c82",
   hair: "#2a1b14",
   beard: "#1f1612",
   scrubs: "#14284a",
@@ -98,7 +98,9 @@ function recolourSkin(figure: Figure, face: HTMLImageElement | null, light: bool
   const material = figure.mesh.material as THREE.MeshStandardMaterial;
   const image = material.map?.image as CanvasImageSource & { width: number; height: number } | undefined;
   const skin = new THREE.Color(LOOK.skin);
-  const target = [skin.r, skin.g, skin.b].map((c) => c * 255);
+  // The hex is sRGB; THREE.Color holds linear values, so read the bytes from the hex itself (using skin.r/g/b here darkened and over-saturated the body).
+  const hex = parseInt(LOOK.skin.slice(1), 16);
+  const target = [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
   const next = new THREE.MeshPhysicalMaterial({
     roughness: 0.58,
     metalness: 0,
@@ -181,7 +183,7 @@ function warmEyes(figure: Figure) {
   map.colorSpace = THREE.SRGBColorSpace;
   map.anisotropy = 4;
   material.map = map;
-  material.roughness = 0.3;
+  material.roughness = 0.12;
   material.needsUpdate = true;
   figure.own(map);
 }
@@ -341,7 +343,7 @@ function hairFields(body: BodyData) {
     const phi = angleOf(x, z);
     const deg = (phi * 180) / Math.PI;
     // Hairline height all round: forehead, temples (faded sides), nape.
-    const hairline = 1.708 - 0.046 * smooth(32, 85, deg) - 0.06 * smooth(105, 150, deg);
+    const hairline = 1.717 - 0.048 * smooth(32, 85, deg) - 0.062 * smooth(105, 150, deg);
     let f = y - hairline;
     // The ears stay clear.
     f = Math.min(f, (earD(x, y, z) - 1.0) * 0.02);
@@ -406,24 +408,32 @@ function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElem
   const photoMap = photo ? figure.own(new THREE.Texture(photo)) : null;
   if (photoMap) {
     photoMap.colorSpace = THREE.SRGBColorSpace;
+    photoMap.flipY = false; // the UVs are in image coordinates (v = 0 at the top)
     photoMap.needsUpdate = true;
     photoMap.anisotropy = 4;
   }
   const colourMap = photoMap ?? figure.own(hairColourMap());
   if (photoMap) strands.repeat.set(10, 10);
   // Low specular: strong rim light on thin hair edges otherwise shows as bright grey wisps at the temples.
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.004) });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.0028) });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.015 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
     ...(photoMap
-      ? { uvFrom: (at: THREE.Vector3): [number, number] => [(PHOTO_FIT.mid + at.x * PHOTO_FIT.scale - HAIR_CROP.x0) / HAIR_CROP.w, (PHOTO_FIT.eyePy + (PHOTO_FIT.eyeY - at.y) * PHOTO_FIT.scale - HAIR_CROP.y0) / HAIR_CROP.h] }
+      ? { uvFrom: (at: THREE.Vector3): [number, number] => {
+          // the photo fit is in the head's size before it was enlarged
+          const x = HEAD_PIVOT.x + (at.x - HEAD_PIVOT.x) / HEAD_SCALE;
+          const y = HEAD_PIVOT.y + (at.y - HEAD_PIVOT.y) / HEAD_SCALE;
+          return [(PHOTO_FIT.mid + x * PHOTO_FIT.scale - HAIR_CROP.x0) / HAIR_CROP.w, (PHOTO_FIT.eyePy + (PHOTO_FIT.eyeY - y) * PHOTO_FIT.scale - HAIR_CROP.y0) / HAIR_CROP.h];
+        } }
       : { planarUv: { u: "x" as const, v: "z" as const, su: 9, sv: 9, ou: 0, ov: 0 } }),
     offset: (i, p, n) => {
       const deg = (angleOf(p.x, p.z) * 180) / Math.PI;
       // Short, faded sides and back; fuller crown; a lifted, swept-back quiff rising from the front hairline.
       const fade = smooth(1.665, 1.72, p.y);
-      let d = 0.0016 + 0.010 * fade + 0.011 * smooth(1.70, 1.76, p.y);
+      const edge = field[i];
+      // The hair is thin along its lower edge so it hugs the head (a free edge thicker than that hangs off the head like a skirt).
+      let d = (0.0016 + 0.010 * fade + 0.011 * smooth(1.70, 1.76, p.y)) * (0.12 + 0.88 * smooth(0.0, 0.035, edge));
       d += (noise3(p.x * 40, p.y * 40, p.z * 40) - 0.5) * 0.0035 * fade;
       const out = new THREE.Vector3(n.x, n.y, n.z).multiplyScalar(d);
       const front = smooth(-0.01, 0.1, p.z) * smooth(95, 40, deg);
@@ -445,7 +455,7 @@ function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElem
 function beardField(body: BodyData) {
   const { bind, count, boneOf } = body;
   const field = new Float32Array(count).fill(-1);
-  const mouth = { x: 0, y: 1.5585 };
+  const mouth = { x: 0, y: 1.5535 };
   for (let i = 0; i < count; i++) {
     const x = bind[i * 3], y = bind[i * 3 + 1], z = bind[i * 3 + 2];
     if (y < 1.48 || y > 1.66 || z < 0.05) continue;
@@ -453,12 +463,12 @@ function beardField(body: BodyData) {
     const ax = Math.abs(x);
     if (ax > 0.082) continue;
     // Upper edge: under the cheekbone, rising to the sideburn in front of the ear.
-    const top = 1.595 + 0.012 * smooth(0.025, 0.055, ax) + 0.05 * smooth(0.055, 0.074, ax);
+    const top = 1.59 + 0.012 * smooth(0.025, 0.055, ax) + 0.05 * smooth(0.055, 0.074, ax);
     // Lower edge: under the chin, a short way down the neck.
-    const bottom = 1.5 + 0.014 * smooth(0.0, 0.07, ax);
+    const bottom = 1.495 + 0.014 * smooth(0.0, 0.07, ax);
     let f = Math.min(top - y, y - bottom, (0.076 - ax) * 1.2, (z - 0.07) * 0.9);
     // The nostril / philtrum area stays clear above the moustache.
-    if (y > 1.576 && ax < 0.03) f = Math.min(f, (1.59 - y) * 0.9);
+    if (y > 1.571 && ax < 0.03) f = Math.min(f, (1.585 - y) * 0.9);
     // The mouth opening stays clear.
     const ex = (x - mouth.x) / 0.034, ey = (y - mouth.y) / 0.0145;
     const inside = Math.hypot(ex, ey);
@@ -473,7 +483,7 @@ function dressBeard(figure: Figure, parts: THREE.Object3D[]) {
   const body = figure.body;
   const field = beardField(body);
   const strands = figure.own(strandTexture(LOOK.beard));
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: LOOK.beard, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.016, noiseCells: cellsFor(body, 0.0026) });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: LOOK.beard, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.016, noiseCells: cellsFor(body, 0.0016) });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.012 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },

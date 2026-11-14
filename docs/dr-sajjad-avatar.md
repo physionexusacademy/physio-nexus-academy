@@ -29,7 +29,11 @@ stylised likeness rather than an identical copy.
    so the proportions (eye width, mouth width, chin, brow-to-eye distance) follow the photo and the hair, beard and clothes follow the fitted head.
 3. The photo (eyes removed, shadows flattened, background wall masked out) is projected onto the fitted head and baked into the body's 2048 px UV layout
    (`public/teacher/dr-sajjad-face.webp`, 67 KB, RGBA). The 3D eyes stay real (brown irises, warm whites, resting lids a little lowered), so he can still blink and look around.
-4. Hair and beard are shells with dithered cut-out edges (no blended wisps); skin tone is sampled from the photo.
+4. Hair and beard are shells with dithered cut-out edges (no blended wisps). The hair shell carries the photographed hair (projected from the front, thin along its lower edge so it hugs the head); skin tone is sampled from the photo.
+5. **One skin tone from face to hands.** The neck and ears in the face texture are colour-matched to the face, and the body's own skin uses the face's measured tone (`LOOK.skin`).
+   (An earlier version read the hex colour in three.js's linear space and used it as sRGB bytes, which made the body darker and more orange than the face; fixed.)
+6. **Body proportions** (`fit.ts`, applied before dressing): head about 10 % larger about the eye line, neck 12 % thicker, arms 10 %, chest 7 %, abdomen 5 % and shoulders 6 % fuller,
+   all radial about each bone's own line so posing and the hand placement are unaffected.
 
 Tools and re-generation steps: `scripts/avatar-likeness/README.md`. The photograph is never committed or uploaded; only the derived face texture ships.
 Limits: the head's *shape* in side view is still the generic head, the hair is a smooth stylised quiff (not strand-accurate), and the face is baked from one lit photo.
