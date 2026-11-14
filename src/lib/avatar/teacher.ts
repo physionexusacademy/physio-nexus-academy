@@ -101,7 +101,7 @@ export class DrSajjad {
     let brows: { left: THREE.Group; right: THREE.Group } | undefined;
     if (!figure) {
       figure = await Figure.load({ onProgress: options.onProgress });
-      const dressed = await dressDrSajjad(figure);
+      const dressed = await dressDrSajjad(figure, { light });
       brows = dressed.brows;
     }
     const face = new FaceAnimator(figure, brows);

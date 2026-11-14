@@ -7,16 +7,19 @@
 import * as THREE from "three";
 import type { Figure } from "./figure";
 import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyData } from "./mesh";
+import { applyHeadFit } from "./fit";
 
 export const LOOK = {
-  skin: "#f0c8ae",
-  hair: "#17120f",
-  beard: "#271d18",
+  skin: "#dbb09c",
+  hair: "#2a1b14",
+  beard: "#1f1612",
   scrubs: "#14284a",
   scrubsTrim: "#1c3a66",
   teal: "#01828B",
   name: "Dr. Sajjad Raza PT",
   logoUrl: "/teacher/pna-chest-logo.webp",
+  /** His face, fitted to the reference photograph and baked into the body's UV layout (2048 px, transparent outside the head). */
+  faceUrl: "/teacher/dr-sajjad-face.webp",
 };
 
 type Dressed = {
@@ -63,8 +66,9 @@ function shellMaterial(base: THREE.MeshStandardMaterial, options: { soft?: numbe
   base.side = THREE.FrontSide;
   const soft = options.soft ?? 0;
   if (soft) {
-    base.transparent = true;
-    base.alphaTest = 0.04;
+    // A noisy cut-out edge rather than alpha blending: blended hair edges that overhang the skull pick up the pale background and look like white wisps.
+    base.transparent = false;
+    base.alphaTest = 0.5;
   }
   base.onBeforeCompile = (shader) => {
     shader.vertexShader = shader.vertexShader
@@ -88,7 +92,7 @@ function shellMaterial(base: THREE.MeshStandardMaterial, options: { soft?: numbe
 /* ---------------- skin ---------------- */
 
 /** Re-colours the body's baked skin texture to Dr. Sajjad's complexion, keeping the painted hair, brows, lips and shading. */
-function recolourSkin(figure: Figure) {
+function recolourSkin(figure: Figure, face: HTMLImageElement | null, light: boolean) {
   const material = figure.mesh.material as THREE.MeshStandardMaterial;
   const image = material.map?.image as CanvasImageSource & { width: number; height: number } | undefined;
   const skin = new THREE.Color(LOOK.skin);
@@ -125,7 +129,17 @@ function recolourSkin(figure: Figure) {
       px[i + 2] = b + (target[2] * lum - b) * w;
     }
     ctx.putImageData(data, 0, 0);
-    const map = new THREE.CanvasTexture(c);
+    let finalCanvas = c;
+    if (face) {
+      // His own face goes over the head's UV island. Phones in light mode keep the 1024 px layout (the face is drawn at half size).
+      const size = light ? 1024 : 2048;
+      finalCanvas = canvas(size, size);
+      const out = finalCanvas.getContext("2d")!;
+      out.imageSmoothingQuality = "high";
+      out.drawImage(c, 0, 0, size, size);
+      out.drawImage(face, 0, 0, size, size);
+    }
+    const map = new THREE.CanvasTexture(finalCanvas);
     map.flipY = false;
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
@@ -135,6 +149,39 @@ function recolourSkin(figure: Figure) {
   }
   figure.mesh.material = next;
   figure.own(next);
+}
+
+/** The photographed eyes have warm, slightly tired whites; the generic texture's cool grey would look startled. */
+function warmEyes(figure: Figure) {
+  const material = figure.eyes?.material as THREE.MeshStandardMaterial | undefined;
+  const image = material?.map?.image as (CanvasImageSource & { width: number; height: number }) | undefined;
+  if (!material || !image) return;
+  const c = canvas(image.width, image.height);
+  const ctx = c.getContext("2d", { willReadFrequently: true })!;
+  ctx.drawImage(image, 0, 0);
+  const data = ctx.getImageData(0, 0, c.width, c.height);
+  const px = data.data;
+  for (let i = 0; i < px.length; i += 4) {
+    const r = px[i], g = px[i + 1], b = px[i + 2];
+    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    const sat = Math.max(r, g, b) - Math.min(r, g, b);
+    if (lum > 120 && sat < 40) {
+      // white of the eye: warmer and a touch darker towards the rim
+      const k = Math.min(1, lum / 200);
+      px[i] = Math.min(255, 238 * k + 8);
+      px[i + 1] = Math.min(255, 226 * k + 6);
+      px[i + 2] = Math.min(255, 214 * k + 4);
+    }
+  }
+  ctx.putImageData(data, 0, 0);
+  const map = new THREE.CanvasTexture(c);
+  map.flipY = material.map!.flipY;
+  map.colorSpace = THREE.SRGBColorSpace;
+  map.anisotropy = 4;
+  material.map = map;
+  material.roughness = 0.3;
+  material.needsUpdate = true;
+  figure.own(map);
 }
 
 /* ---------------- scrubs ---------------- */
@@ -292,7 +339,7 @@ function hairFields(body: BodyData) {
     const phi = angleOf(x, z);
     const deg = (phi * 180) / Math.PI;
     // Hairline height all round: forehead, temples (faded sides), nape.
-    const hairline = 1.697 - 0.044 * smooth(32, 85, deg) - 0.06 * smooth(105, 150, deg);
+    const hairline = 1.708 - 0.046 * smooth(32, 85, deg) - 0.06 * smooth(105, 150, deg);
     let f = y - hairline;
     // The ears stay clear.
     f = Math.min(f, (earD(x, y, z) - 1.0) * 0.02);
@@ -301,7 +348,7 @@ function hairFields(body: BodyData) {
   return field;
 }
 
-function strandTexture(color: string) {
+function strandTexture(color: string, warm = false) {
   const c = canvas(256, 256);
   const ctx = c.getContext("2d")!;
   ctx.fillStyle = "#808080";
@@ -324,11 +371,39 @@ function strandTexture(color: string) {
   return t;
 }
 
+/** Dark brown-black hair with warm lighter streaks running front to back (the swept quiff of the photograph). */
+function hairColourMap() {
+  const c = canvas(256, 256);
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = "#e9e0da";
+  ctx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 900; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 256;
+    const len = 40 + Math.random() * 90;
+    const warm = Math.random();
+    // Mostly dark strands; some catch the light as warm brown.
+    const light = warm > 0.86 ? 255 : warm > 0.6 ? 210 : 150 + Math.random() * 60;
+    ctx.strokeStyle = warm > 0.86 ? `rgba(255,205,160,0.5)` : `rgba(${light},${light * 0.92},${light * 0.86},0.35)`;
+    ctx.lineWidth = 0.8 + Math.random() * 1.6;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x + (Math.random() - 0.5) * 8, y + len * 0.3, x + (Math.random() - 0.5) * 10, y + len * 0.7, x + (Math.random() - 0.5) * 6, y + len);
+    ctx.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
 function dressHair(figure: Figure, parts: THREE.Object3D[]) {
   const body = figure.body;
   const field = hairFields(body);
   const strands = figure.own(strandTexture(LOOK.hair));
-  const material = shellMaterial(new THREE.MeshStandardMaterial({ color: LOOK.hair, roughness: 0.66, metalness: 0, bumpMap: strands, bumpScale: 1.0 }), { soft: 0.012, noiseCells: cellsFor(body, 0.006) });
+  const colourMap = figure.own(hairColourMap());
+  // Low specular: strong rim light on thin hair edges otherwise shows as bright grey wisps at the temples.
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.004) });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.015 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -337,15 +412,15 @@ function dressHair(figure: Figure, parts: THREE.Object3D[]) {
       const deg = (angleOf(p.x, p.z) * 180) / Math.PI;
       // Short, faded sides and back; fuller crown; a lifted, swept-back quiff rising from the front hairline.
       const fade = smooth(1.665, 1.72, p.y);
-      let d = 0.0022 + 0.011 * fade + 0.005 * smooth(1.72, 1.75, p.y);
+      let d = 0.0016 + 0.010 * fade + 0.011 * smooth(1.70, 1.76, p.y);
       d += (noise3(p.x * 40, p.y * 40, p.z * 40) - 0.5) * 0.0035 * fade;
       const out = new THREE.Vector3(n.x, n.y, n.z).multiplyScalar(d);
       const front = smooth(-0.01, 0.1, p.z) * smooth(95, 40, deg);
       const f = field[i];
       // Volume rises from the hairline, peaks about 4 cm back, then eases into the crown; the edge itself pushes slightly forward.
-      const bump = smooth(0.0, 0.04, f) * smooth(0.1, 0.05, f);
-      out.y += 0.028 * bump * front;
-      out.z += 0.007 * smooth(0.02, 0.0, f) * front + 0.012 * bump * front;
+      const bump = smooth(0.0, 0.035, f) * smooth(0.085, 0.045, f);
+      out.y += 0.012 * bump * front;
+      out.z += 0.004 * bump * front;
       return out;
     },
   });
@@ -359,7 +434,7 @@ function dressHair(figure: Figure, parts: THREE.Object3D[]) {
 function beardField(body: BodyData) {
   const { bind, count, boneOf } = body;
   const field = new Float32Array(count).fill(-1);
-  const mouth = { x: 0, y: 1.5495 };
+  const mouth = { x: 0, y: 1.5585 };
   for (let i = 0; i < count; i++) {
     const x = bind[i * 3], y = bind[i * 3 + 1], z = bind[i * 3 + 2];
     if (y < 1.48 || y > 1.66 || z < 0.05) continue;
@@ -367,14 +442,14 @@ function beardField(body: BodyData) {
     const ax = Math.abs(x);
     if (ax > 0.082) continue;
     // Upper edge: under the cheekbone, rising to the sideburn in front of the ear.
-    const top = 1.587 + 0.012 * smooth(0.025, 0.055, ax) + 0.05 * smooth(0.055, 0.074, ax);
+    const top = 1.595 + 0.012 * smooth(0.025, 0.055, ax) + 0.05 * smooth(0.055, 0.074, ax);
     // Lower edge: under the chin, a short way down the neck.
-    const bottom = 1.492 + 0.014 * smooth(0.0, 0.07, ax);
+    const bottom = 1.5 + 0.014 * smooth(0.0, 0.07, ax);
     let f = Math.min(top - y, y - bottom, (0.076 - ax) * 1.2, (z - 0.07) * 0.9);
     // The nostril / philtrum area stays clear above the moustache.
-    if (y > 1.568 && ax < 0.03) f = Math.min(f, (1.582 - y) * 0.9);
+    if (y > 1.576 && ax < 0.03) f = Math.min(f, (1.59 - y) * 0.9);
     // The mouth opening stays clear.
-    const ex = (x - mouth.x) / 0.029, ey = (y - mouth.y) / 0.0125;
+    const ex = (x - mouth.x) / 0.034, ey = (y - mouth.y) / 0.0145;
     const inside = Math.hypot(ex, ey);
     if (inside < 1.22) f = Math.min(f, (inside - 1.0) * 0.012);
     f = Math.min(f, (earD(x, y, z) - 1.0) * 0.02);
@@ -387,7 +462,7 @@ function dressBeard(figure: Figure, parts: THREE.Object3D[]) {
   const body = figure.body;
   const field = beardField(body);
   const strands = figure.own(strandTexture(LOOK.beard));
-  const material = shellMaterial(new THREE.MeshStandardMaterial({ color: LOOK.beard, roughness: 0.68, metalness: 0, bumpMap: strands, bumpScale: 0.8 }), { soft: 0.016, noiseCells: cellsFor(body, 0.005) });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: LOOK.beard, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.016, noiseCells: cellsFor(body, 0.0026) });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.012 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -536,15 +611,35 @@ function dressShoes(figure: Figure, parts: THREE.Object3D[]) {
 
 /* ---------------- public ---------------- */
 
-export async function dressDrSajjad(figure: Figure): Promise<Dressed> {
+function loadImage(url: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = url;
+  });
+}
+
+export type DressOptions = { light?: boolean };
+
+export async function dressDrSajjad(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
   const parts: THREE.Object3D[] = [];
-  recolourSkin(figure);
+  const [face, fitted] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure)]);
+  // His face is a photograph fitted to this head; without the fit the generic head would carry a stretched picture, so use both or neither.
+  const likeness = face && fitted ? face : null;
+  recolourSkin(figure, likeness, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
   dressHair(figure, parts);
   dressBeard(figure, parts);
   dressShoes(figure, parts);
   dressWatch(figure, parts);
+  warmEyes(figure);
   const brows = dressBrows(figure, parts);
+  // His brows are part of the photographed face; the separate brow strips are only used when the face image is missing.
+  if (likeness) {
+    brows.left.visible = false;
+    brows.right.visible = false;
+  }
   // Embroidery as photographed: the name on the wearer's right chest (viewer's left, −x), the PNA logo on the left chest (+x).
   const name = figure.own(nameTexture());
   chestDecal(figure, shirt, [-0.092, 1.318], [0.118, 0.026], name, parts);
