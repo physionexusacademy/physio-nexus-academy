@@ -8,7 +8,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { speakText, supportsSpeech } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, supportsSpeech } from "@/lib/speech/voices";
 import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
@@ -565,7 +565,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       cancelled = true;
       speakingRef.current = false;
       playback?.cancel();
-      window.speechSynthesis.cancel();
+      stopSpeaking();
     };
   }, [voice, line, lang]);
 

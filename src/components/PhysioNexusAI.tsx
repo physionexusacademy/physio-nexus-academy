@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
-import { supportsSpeech, speakText } from "@/lib/speech/voices";
+import { stopSpeaking, supportsSpeech, speakText } from "@/lib/speech/voices";
 import { ArrowRight, Bot, ExternalLink, LoaderCircle, Mic, MicOff, Phone, Send, ShieldAlert, Sparkles, Volume2, VolumeX, X } from "lucide-react";
 
 type Resource = {
@@ -101,7 +101,7 @@ function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanatio
     setCanSpeak(supportsSpeech());
     return () => {
       playback.current?.cancel();
-      if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+      stopSpeaking();
     };
   }, [ur]);
   function toggleSpeech() {

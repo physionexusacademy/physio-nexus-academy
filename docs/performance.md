@@ -27,11 +27,21 @@ leaderboard loads only when its fold is opened (`HomeDailyBoard`). **Opening the
 4. **No request on load that is not needed** (the homepage makes zero API calls).
 5. **Worker size is the cold-start cost**: stay under 3072 KiB gzip (`docs/worker-size.md`). The static homepage made it slightly smaller.
 
-## Measured (mobile Lighthouse, production)
+## Measured on production (Lighthouse, same method before and after, 14 Nov 2026)
 
-| | Before this change | After |
-|---|---|---|
-| Time to first byte (homepage) | 1,190 ms | see the release notes of the deploy |
-| Largest contentful paint | 3.0 s | |
-| Total blocking time | 350 ms | |
-| Performance score | 84 | |
+| Homepage | Mobile before | Mobile after | Desktop before | Desktop after |
+|---|---|---|---|---|
+| Performance score | 84 | **92** | 99 | 99 |
+| Server response (Lighthouse lab) | 1,190 ms | **520 ms** | 680 ms | 420 ms |
+| Total blocking time | 350 ms | **80 ms** | 20 ms | **0 ms** |
+| Main-thread work | 5.1 s | **2.1 s** | 0.9 s | 0.9 s |
+| Script boot-up | 1.0 s | **0.5 s** | 0.2 s | 0.1 s |
+| Requests that are API calls | 1 (leaderboard) | **0** | 1 | **0** |
+
+Real first byte from `curl` after the change: about 0.2 s (`x-opennext-cache: HIT`). Largest contentful paint is the founder photo (24 KB, already
+prioritised) and is unchanged at about 3 s on the throttled mobile profile; it is dominated by the simulated network, not by the server.
+
+## The built-in male voice
+
+`public/teacher/espeak/` (about 0.8 MB compressed) is loaded only when the avatar stage opens or a voice button is used, never on first paint, and is
+cached for a month (`public/_headers`). Measured in Chromium: the engine is ready in 0.2 s and speaks about 60× faster than real time.

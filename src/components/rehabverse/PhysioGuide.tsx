@@ -17,7 +17,7 @@ import { P, type Parts } from "@/lib/virtual-patient/parts";
 import { blendPose } from "@/lib/rehabverse/motion";
 import type { Gesture, GuideBeat, GuideTopic } from "@/lib/rehabverse/guide";
 import type { Lang } from "./ExercisePlayer";
-import { speakText, supportsSpeech } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, supportsSpeech } from "@/lib/speech/voices";
 
 const IDLE: Parts = { shoulder: { flex: 4, abd: 8 }, "shoulder:o": { flex: 4, abd: 8 }, elbow: { flex: 18 }, "elbow:o": { flex: 18 } };
 
@@ -93,7 +93,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     setShown(0);
     run.current = { index: 0, revealed: 0, holdLeft: 0, finished: false, spoken: -1 };
     setPlaying(true);
-    window.speechSynthesis?.cancel();
+    stopSpeaking();
   }, []);
 
   useEffect(() => {
@@ -176,7 +176,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     activate();
     return () => {
       releaseRoom(owner);
-      window.speechSynthesis?.cancel();
+      stopSpeaking();
     };
   }, [activate]);
 
@@ -273,7 +273,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     setIndex(i);
     setShown(0);
     setPlaying(true);
-    window.speechSynthesis?.cancel();
+    stopSpeaking();
   };
 
   const finished = run.current.finished;
