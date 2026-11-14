@@ -1,0 +1,25 @@
+/* Dr. Sajjad teaching stage — extends the Skills Lab scene look (scene3d.css). */
+.av-subs { display: none; position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 4; max-height: 46%; overflow-y: auto; border-radius: 14px; padding: 8px 12px 9px; background: rgba(4, 18, 40, .88); border: 1px solid rgba(46, 230, 214, .34); color: #f2f9ff; backdrop-filter: blur(6px); box-shadow: 0 0 22px -8px rgba(46, 230, 214, .55); pointer-events: none; }
+.av-subs-tag { margin: 0 0 2px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
+.av-subs-text { margin: 0; font-size: 13.5px; font-weight: 600; line-height: 1.38; }
+.av-subs-text.long { font-size: 12.5px; }
+@media (min-width: 640px) { .av-subs { display: block; left: 14px; right: 14px; bottom: 14px; padding: 10px 14px 11px; } .av-subs-text { font-size: 15.5px; } .av-subs-text.long { font-size: 13.5px; } .av-caption { display: none; } }
+/* Phones: a taller 3D view and the subtitles under it, so the figures are never hidden behind text. */
+.av-caption { padding: 9px 12px 10px; background: #06182f; border-top: 1px solid rgba(46, 230, 214, .22); }
+.av-caption p:first-child { margin: 0; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
+.av-caption p:last-child { margin: 3px 0 0; font-size: 14px; font-weight: 600; line-height: 1.42; color: #f2f9ff; }
+@media (max-width: 639px) { .s3-view.av-view { aspect-ratio: 1 / 1; } }
+.av-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 5px; border-radius: 999px; padding: 2px 9px; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #3a2a00; background: #ffcf5a; box-shadow: 0 0 12px rgba(255, 207, 90, .45); }
+.av-notes { display: grid; gap: 6px; padding: 8px 10px 2px; background: #06182f; }
+.av-note { border-radius: 12px; padding: 6px 10px 7px; border: 1px solid rgba(46, 230, 214, .26); background: rgba(46, 230, 214, .06); }
+.av-note b { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
+.av-note span { display: block; margin-top: 1px; font-size: 12.5px; line-height: 1.38; color: #dcefff; }
+.av-note em { font-style: normal; font-size: 10px; font-weight: 700; color: #8fb5da; margin-left: 6px; }
+.av-foot { padding: 6px 12px 10px; background: #06182f; font-size: 11px; line-height: 1.35; color: #8fb5da; }
+.av-ctl { display: inline-flex; align-items: center; gap: 4px; }
+.av-play { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; background: rgba(4, 18, 40, .38); }
+.av-play span { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 10px 18px; font-size: 14px; font-weight: 800; color: #e9fbff; background: #06182f; border: 1px solid rgba(46, 230, 214, .6); box-shadow: 0 0 28px rgba(46, 230, 214, .5); }
+.av-focus:focus-visible { outline: 3px solid #2ee6d6; outline-offset: 2px; }
+.av-text-steps { display: grid; gap: 8px; padding: 12px; background: #06182f; color: #dcefff; }
+.av-text-steps li { font-size: 13.5px; line-height: 1.45; }
+@media (prefers-reduced-motion: reduce) { .av-play span { box-shadow: none; } }

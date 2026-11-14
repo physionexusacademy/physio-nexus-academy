@@ -19,6 +19,7 @@ import { recommendPathSlug, teacherPaths } from "../src/lib/teacher/paths.ts";
 import type { BiText, TeacherGoal, TeacherStage } from "../src/lib/teacher/types.ts";
 import { SCENES } from "../src/lib/skills/scenes.ts";
 import { DEMO3D } from "../src/lib/skills/demo3d.ts";
+import { CHOREOS } from "../src/lib/avatar/choreo/index.ts";
 import { LESSONS_FOR_SKILL } from "../src/lib/skills/ur/lesson-links.ts";
 
 const root = process.cwd();
@@ -124,7 +125,7 @@ for (const lesson of allTeacherLessons) {
       case "demo":
         bi(beat.intro, where);
         check(beat.title.trim().length > 2, `${where}: demo needs a title`);
-        check(Boolean(SCENES[beat.demo] || DEMO3D[beat.demo]), `${where}: demo "${beat.demo}" is not a Skills Lab 3D demonstration`);
+        check(Boolean(SCENES[beat.demo] || DEMO3D[beat.demo] || (beat.demo.startsWith("avatar/") && CHOREOS.some((c) => `avatar/${c.slug}` === beat.demo))), `${where}: demo "${beat.demo}" is not a Skills Lab 3D demonstration or a Dr. Sajjad choreography`);
         break;
       case "widget":
         bi(beat.intro, where);

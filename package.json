@@ -17,6 +17,8 @@
     "validate:student": "node --experimental-strip-types scripts/validate-student.ts && node scripts/student-local/test-db.mjs && node scripts/student-local/test-leagues.mjs && node scripts/student-local/test-participants.mjs && node --experimental-strip-types scripts/validate-reminders.ts && node --experimental-strip-types scripts/validate-league.ts && node --experimental-strip-types scripts/validate-rehabverse-followup.ts",
     "validate:clinical-registry": "node scripts/validate-clinical-registry-integration.mjs",
     "validate:teacher": "node --experimental-strip-types scripts/validate-pna-teacher.ts",
+    "build:avatar-data": "node scripts/build-avatar-data.mjs",
+    "validate:avatar": "node scripts/validate-avatar.mjs",
     "build:teacher-data": "node --experimental-strip-types scripts/build-teacher-data.ts",
     "validate:ai": "node scripts/validate-pna-ai.mjs",
     "validate:ai-explain": "node --experimental-strip-types scripts/validate-pna-ai-explain.ts",

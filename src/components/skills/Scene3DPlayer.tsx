@@ -55,7 +55,7 @@ function Tag({ x, y, text: full, tone = "cyan", w, h, anchor = "start" }: { x: n
 
 const glow = (c: string) => ({ filter: `drop-shadow(0 0 5px ${c})` });
 
-type Env = {
+export type Env = {
   room: ExamRoom;
   side: Side;
   ctx: Ctx;
@@ -65,7 +65,7 @@ type Env = {
   W: (spec: string, axis?: THREE.Vector3) => THREE.Vector3;
 };
 
-function drawOverlay(o: Overlay, i: number, env: Env): ReactNode {
+export function drawOverlay(o: Overlay, i: number, env: Env): ReactNode {
   const { ctx, w, h, P, W } = env;
   // A hammer stays in view a little after the strike (the rebound and the impact flash).
   const window: When | undefined = o.t === "hammer" ? [o.when[0], o.when[1] + 0.08] : "when" in o ? o.when : undefined;

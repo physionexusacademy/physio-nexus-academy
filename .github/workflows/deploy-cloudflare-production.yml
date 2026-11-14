@@ -118,6 +118,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student
 
+      - name: Validate Dr. Sajjad teaching data (every spoken line resolves in English and Roman Urdu, JSON is fresh)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:avatar
+
       - name: Validate search-result title and description helpers
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-seo-text.ts

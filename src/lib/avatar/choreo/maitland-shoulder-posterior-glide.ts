@@ -1,8 +1,8 @@
 /**
  * Maitland joint mobilization — glenohumeral posterior glide, supine.
  *
- * Teaching order follows the lesson "maitland-joint-mobilization": the eight steps of its "How to do it" beat (beat 8), then the
- * dosage line (beat 10). Contact, stabilisation and force direction labels are lines of the regional guide
+ * Teaching order follows the lesson "maitland-joint-mobilization": the eight steps of its "How to do it" beat ("steps" beat), then the
+ * dosage line (the "clinic" beat). Contact, stabilisation and force direction labels are lines of the regional guide
  * "maitland-shoulder-posterior-glide". Hand placement, stance and movement are choreography (geometry) and are DRAFT until the
  * supervising physiotherapist reviews them.
  */
@@ -23,14 +23,14 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
   steps: [
     {
       chip: "Intro",
-      say: [{ src: "lesson", beat: 8 }],
+      say: [{ src: "lesson", beat: "steps" }],
       stand: { side: "tested", at: "upperarm01", distance: 0.62, face: "camera" },
       gesture: "open",
       look: "camera",
     },
     {
       chip: "1 Comparable sign",
-      say: [{ src: "lesson", beat: 8, step: 0 }],
+      say: [{ src: "lesson", beat: "steps", step: 0 }],
       stand: { side: "tested", at: "upperarm01", distance: 0.62, face: "patient" },
       patient: { "shoulder.left": { flex: 150 }, "elbow.left": { flex: 0 } },
       overlays: [
@@ -42,14 +42,14 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
     },
     {
       chip: "2 Red flags",
-      say: [{ src: "lesson", beat: 8, step: 1 }],
+      say: [{ src: "lesson", beat: "steps", step: 1 }],
       patient: { "shoulder.left": { flex: 0 }, "elbow.left": { flex: 0 } },
       gesture: "care",
       look: "patient",
     },
     {
       chip: "3 Position",
-      say: [{ src: "lesson", beat: 8, step: 2 }, { src: "regional", field: "patientPosition", index: 0 }],
+      say: [{ src: "lesson", beat: "steps", step: 2 }, { src: "regional", field: "patientPosition", index: 0 }],
       stand: { side: "tested", at: "upperarm01", distance: 0.4, face: "patient" },
       patient: { "shoulder.left": { flex: 20, abd: 55 }, "elbow.left": { flex: 40 } },
       contacts: [{ hand: "L", at: ELBOW_UNDER, palm: [0, 0, 1], fingers: [0, 1, 0], shape: "cupped" }],
@@ -60,7 +60,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
     },
     {
       chip: "4 Contact",
-      say: [{ src: "lesson", beat: 8, step: 3 }, { src: "regional", field: "contact", index: 0 }],
+      say: [{ src: "lesson", beat: "steps", step: 3 }, { src: "regional", field: "contact", index: 0 }],
       contacts: [
         { hand: "R", at: SHOULDER_HEAD, palm: [0, 0, -1], fingers: [-1, -0.25, 0], shape: "flat" },
         { hand: "L", at: ELBOW_UNDER, palm: [0, 0, 1], fingers: [0, 1, 0], shape: "cupped" },
@@ -74,7 +74,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
     },
     {
       chip: "5 Body weight",
-      say: [{ src: "lesson", beat: 8, step: 4 }],
+      say: [{ src: "lesson", beat: "steps", step: 4 }],
       contacts: [
         { hand: "R", at: SHOULDER_HEAD, palm: [0, 0, -1], fingers: [-1, -0.25, 0], shape: "flat" },
         { hand: "L", at: ELBOW_UNDER, palm: [0, 0, 1], fingers: [0, 1, 0], shape: "cupped" },
@@ -87,7 +87,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
     },
     {
       chip: "6 Start low",
-      say: [{ src: "lesson", beat: 8, step: 5 }, { src: "lesson", beat: 10 }],
+      say: [{ src: "lesson", beat: "steps", step: 5 }, { src: "lesson", beat: "clinic" }],
       contacts: [
         { hand: "R", at: SHOULDER_HEAD, palm: [0, 0, -1], fingers: [-1, -0.25, 0], shape: "flat" },
         { hand: "L", at: ELBOW_UNDER, palm: [0, 0, 1], fingers: [0, 1, 0], shape: "cupped" },
@@ -101,7 +101,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
     },
     {
       chip: "7 Retest",
-      say: [{ src: "lesson", beat: 8, step: 6 }],
+      say: [{ src: "lesson", beat: "steps", step: 6 }],
       stand: { side: "tested", at: "upperarm01", distance: 0.62, face: "patient" },
       patient: { "shoulder.left": { flex: 150, abd: 0 }, "elbow.left": { flex: 0 } },
       overlays: [
@@ -113,7 +113,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
     },
     {
       chip: "8 Hand it back",
-      say: [{ src: "lesson", beat: 8, step: 7 }],
+      say: [{ src: "lesson", beat: "steps", step: 7 }],
       patient: { "shoulder.left": { flex: 20, abd: 30 }, "elbow.left": { flex: 20 } },
       gesture: "open",
       look: "camera",

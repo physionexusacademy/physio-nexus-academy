@@ -23,6 +23,8 @@ export type StageView = {
   notes: Note[];
   overlays: Overlay[];
   ctx: Ctx;
+  /** A step has begun (false until the visitor presses play for the first time). */
+  started: boolean;
   playing: boolean;
   done: boolean;
   speaking: boolean;
@@ -123,11 +125,13 @@ export class TeachingStage {
     const { room, choreo } = this;
     const shoulder = resolvePoint(room, "upperarm01", side(choreo));
     const up = new THREE.Vector3(0, 1, 0);
-    const centre = shoulder.clone().addScaledVector(this.lateral("tested"), 0.25).addScaledVector(up, 0.12);
+    const centre = shoulder.clone().addScaledVector(this.lateral("tested"), 0.25).addScaledVector(up, 0.32);
     // From the patient's far side and foot end, a little above: the patient in front, Dr. Sajjad facing the camera behind.
     const dir = patientDir(room, [-0.75 * sign(choreo), -0.5, 0.85]).normalize();
     if (dir.y < 0.25) dir.setY(0.25).normalize();
-    room.frameCamera(false, centre, 2.75, dir);
+    // Wider views fit with the same distance; a narrower one (a phone held upright) needs to back off.
+    const aspect = room.camera.aspect || 1.6;
+    room.frameCamera(false, centre, 3.6 * Math.max(1, 1.5 / aspect), dir);
   }
 
   private cameraWorld() {
@@ -367,7 +371,7 @@ export class TeachingStage {
 
   private emit(force: boolean) {
     const now = performance.now();
-    if (!force && now - this.lastView < 66) return;
+    if (!force && now - this.lastView < 33) return;
     this.lastView = now;
     const step = this.choreo.steps[Math.max(0, this.index)];
     const total = this.choreo.steps.length;
@@ -380,10 +384,11 @@ export class TeachingStage {
       notes: step?.notes ?? [],
       overlays: this.overlays,
       ctx: { side: side(this.choreo), u: Math.min(1, (this.index + (this.linesDone ? 1 : this.doc.speaker.progress)) / total), ms: this.clock * 1000, opt: {} },
+      started: this.index >= 0,
       playing: this.playing,
       done: this.done,
       speaking: this.doc.speaker.speaking,
-      progress: this.done ? 1 : (Math.max(0, this.index) + (this.linesDone ? 1 : this.doc.speaker.progress)) / total,
+      progress: this.index < 0 ? 0 : this.done ? 1 : (this.index + (this.linesDone ? 1 : this.doc.speaker.progress)) / total,
       reachError: this.rig.reachError,
     });
   }

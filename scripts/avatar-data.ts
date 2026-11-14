@@ -25,9 +25,10 @@ export function resolveRef(ref: TextRef, c: Choreo, problems: string[]): Line {
   const where = `${c.slug}: ${JSON.stringify(ref)}`;
   if (ref.src === "lesson") {
     const lesson: any = lessonBySlug.get(c.lessonSlug);
-    const beat = lesson?.beats?.[ref.beat];
+    const beatIndex = (lesson?.beats ?? []).findIndex((b: any) => b.type === ref.beat);
+    const beat = lesson?.beats?.[beatIndex];
     if (!beat) {
-      problems.push(`${where} — lesson beat does not exist`);
+      problems.push(`${where} — the lesson has no "${ref.beat}" beat`);
       return { en: "", ur: "", src: "missing" };
     }
     if (ref.step !== undefined) {
@@ -42,12 +43,12 @@ export function resolveRef(ref: TextRef, c: Choreo, problems: string[]): Line {
       }
       const ur = beat.ur ? splitNumbered(beat.ur) : [];
       if (ur.length !== beat.steps.length) problems.push(`${where} — Roman Urdu steps (${ur.length}) do not match English steps (${beat.steps.length})`);
-      return { en: `${s.title}. ${s.detail}`, ur: ur[ref.step] ?? "", src: `lesson ${c.lessonSlug} beat ${ref.beat} step ${ref.step}` };
+      return { en: `${s.title}. ${s.detail}`, ur: ur[ref.step] ?? "", src: `lesson ${c.lessonSlug} ${ref.beat} step ${ref.step}` };
     }
     const en = beat.text?.en ?? beat.title?.en ?? beat.intro?.en ?? "";
     const ur = beat.text?.ur ?? beat.title?.ur ?? beat.intro?.ur ?? "";
     if (!en || !ur) problems.push(`${where} — beat has no bilingual text`);
-    return { en, ur, src: `lesson ${c.lessonSlug} beat ${ref.beat}` };
+    return { en, ur, src: `lesson ${c.lessonSlug} ${ref.beat}` };
   }
   const reg: any = regionalBySlug.get(c.slug);
   const list: string[] | undefined = reg?.[ref.field];

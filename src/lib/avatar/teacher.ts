@@ -12,7 +12,7 @@ import { Speaker } from "./speech";
 import { REST } from "./mesh";
 
 export const CUSTOM_MODEL_URL = "/teacher/dr-sajjad.glb";
-export const LABEL = "AI teaching assistant based on Dr. Sajjad Raza PT";
+export { AVATAR_LABEL as LABEL } from "./labels";
 
 /** Bones the pose system and the hand placement rely on; a custom model must have (nearly) all of them. */
 const REQUIRED = [

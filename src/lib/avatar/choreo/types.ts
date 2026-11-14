@@ -22,11 +22,13 @@ export type RegionalField =
 
 /**
  * Where an existing line of text lives.
- *  - lesson: a beat of the technique's PNA Teacher lesson (English + Roman Urdu). `step` picks one item of a "steps" beat.
+ *  - lesson: the first beat of that type in the technique's PNA Teacher lesson (English + Roman Urdu); stable when other beats are added.
+ *    `step` picks one item of a "steps" beat.
  *  - regional: one line of the regional guide (English only; Roman Urdu mode keeps the clinical wording in English, as the Teacher does).
  */
+export type LessonBeatType = "say" | "analogy" | "safety" | "steps" | "clinic" | "mistake" | "evidence" | "memory";
 export type TextRef =
-  | { src: "lesson"; beat: number; step?: number }
+  | { src: "lesson"; beat: LessonBeatType; step?: number }
   | { src: "regional"; field: RegionalField; index?: number };
 
 /**
