@@ -87,15 +87,22 @@ assert.equal(result.skipped, "claim failed"); assert.equal(net.calls.length, 1);
 
 /* participants */
 const person = (over: Partial<ClaimedReminder> = {}): ClaimedReminder => ({ id: 31, token: "33333333-2222-4333-8444-555555555555", kind: "daily_participant", to: "ayesha@gmail.com", name: "Ayesha Khan", lang: "mix", streak: 3, stats: { missions: 12, points: 940, best: 100, first_day: "2026-10-09", last_day: "2026-11-13", participants: 32, top_percent: 8 }, ...over });
-const star = buildReminderMail(person(), origin);
-assert.equal(star.subject, "Ayesha Khan, your 3-day streak is waiting");
-assert.match(star.text, /^Assalam-o-alaikum, Ayesha Khan,/); assert.match(star.text, /You are on a 3-day streak/); assert.match(star.text, /top 8% of PNA challengers/); assert.match(star.text, /12 missions · 940 points · best 100\/100 · 3-day streak/); assert.match(star.text, /one of only 32 learners/);
-assert.match(star.text, /Aap ke liye aaj ka Daily Clinical Challenge tayyar hai/); assert.ok(star.text.includes(`${origin}/api/reminders/unsubscribe?t=${person().token}`)); assert.ok(star.text.includes("Raja Ghazanfar Ali Khan Road"));
-assert.ok(star.html.includes("Ayesha Khan") && star.html.includes("Start today's mission") && star.html.includes("Unsubscribe in one click")); assert.equal(star.headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click"); ok("participant e-mail: full name, streak, personal record, top-percent badge, Roman Urdu, one-click unsubscribe, sender address");
-const tailored = (st: Partial<NonNullable<ClaimedReminder["stats"]>>, streak = 0) => buildReminderMail(person({ streak, stats: { ...person().stats!, ...st } }), origin);
-assert.match(tailored({ missions: 0, points: 0, best: 0, top_percent: 100 }).text, /You started a mission with us on 9 October/); assert.ok(!/top \d+%/.test(tailored({ missions: 0, points: 0, best: 0, top_percent: 100 }).text));
-assert.match(tailored({ missions: 1, points: 80, best: 80 }).text, /completed your first mission and scored 80\/100/); assert.match(tailored({ missions: 5, points: 300, best: 90, top_percent: 70 }, 0).text, /5 missions for 300 points.*best of 90\/100/); assert.ok(!/top \d+%/.test(tailored({ missions: 5, points: 300, best: 90, top_percent: 70 }).text));
-assert.equal(tailored({ missions: 5 }, 0).subject, "Ayesha Khan, your clinical mission is waiting"); assert.ok(!/one of only/.test(tailored({ participants: 3 }).text)); ok("participant e-mail adapts: never played, first mission, regular, no streak, small community; the badge shows only for the top half");
+const mail = buildReminderMail(person(), origin);
+assert.equal(mail.subject, "Ayesha Khan, today's Clinical Challenge is ready");
+assert.match(mail.text, /^Assalam-o-alaikum, Ayesha Khan,/); assert.match(mail.text, /five clinical questions, 30 seconds each/);
+assert.match(mail.text, /Thank you for taking part on 3 consecutive days\. You have completed 12 challenges so far, with a best score of 100\/100\./);
+assert.match(mail.text, /Aaj ka Daily Clinical Challenge tayyar hai/); assert.ok(mail.text.includes(`${origin}/api/reminders/unsubscribe?t=${person().token}`)); assert.ok(mail.text.includes("Raja Ghazanfar Ali Khan Road")); assert.match(mail.text, /With regards,\nPhysio Nexus Academy/);
+assert.ok(mail.html.includes("<strong>Ayesha Khan</strong>") && mail.html.includes("Open today's challenge") && mail.html.includes("unsubscribe in one click"));
+assert.equal(mail.headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click"); assert.equal(mail.headers["List-Unsubscribe"], `<${origin}/api/reminders/unsubscribe?t=${person().token}>`); ok("participant e-mail: full name, sober acknowledgement of their record, one button, one-click unsubscribe, sender address");
+// the standard stays professional: no gamification, no emoji, no rankings, no pressure, no community size
+for (const item of [person(), person({ streak: 0, stats: { ...person().stats!, missions: 0, points: 0, best: 0, top_percent: 100 } }), person({ streak: 0, stats: { ...person().stats!, missions: 1, points: 80, best: 80 } })]) {
+  const all = `${buildReminderMail(item, origin).subject}\n${buildReminderMail(item, origin).text}\n${buildReminderMail(item, origin).html}`;
+  assert.ok(!/\p{Extended_Pictographic}/u.test(all), "no emoji"); assert.ok(!/top \d+\s*%|streak|leaderboard|only \d+ learners|points|mission|don't miss|hurry|last chance/i.test(all), "no gamified or pushy wording");
+}
+const copy = (st: Partial<NonNullable<ClaimedReminder["stats"]>>, streak = 0) => buildReminderMail(person({ streak, stats: { ...person().stats!, ...st } }), origin).text;
+assert.match(copy({ missions: 0, points: 0, best: 0 }), /You began a challenge with us on 9 October\. Today's questions are ready whenever you would like to complete one\./);
+assert.match(copy({ missions: 1, points: 80, best: 80 }), /Thank you for completing your first challenge, where you scored 80\/100\./);
+assert.match(copy({ missions: 5, points: 300, best: 90 }), /Thank you for taking part regularly\. You have completed 5 challenges so far, with a best score of 90\/100\./); ok("participant e-mail: professional tone in every case — never played, first challenge, regular, consecutive days; no emoji, rankings, badges or pressure");
 const nasty = buildReminderMail(person({ name: '  <script>alert(1)</script>\n  Evil  "Name"  ' }), origin);
 assert.ok(!nasty.html.includes("<script>") && !nasty.subject.includes("<") && !nasty.subject.includes("\n")); assert.match(nasty.text, /^Assalam-o-alaikum, scriptalert\(1\)\/script Evil "Name",/); ok("a hostile full name cannot inject markup or break the subject line");
 
