@@ -117,8 +117,8 @@ export class TeachingStage {
 
   private frameLight() {
     const room = this.room;
-    const target = new THREE.Vector3(0, 1.0, 0.2);
-    room.frameCamera(false, target, 2.7, new THREE.Vector3(0.25, 0.12, 1).normalize());
+    const target = new THREE.Vector3(0, 0.92, 0.2);
+    room.frameCamera(false, target, 3.5 * Math.max(1, 1.3 / (room.camera.aspect || 1.6)), new THREE.Vector3(0.25, 0.1, 1).normalize());
   }
 
   private frame() {
