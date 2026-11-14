@@ -361,10 +361,13 @@ export class TeachingStage {
   tick(realDt: number) {
     if (this.disposed) return;
     const dt = Math.min(0.05, realDt);
+    // Light mode has no walking or IK to keep stable, so its timeline follows real time even on a slow phone;
+    // everything the rig does still advances in small steps.
+    const timeDt = this.opt.light ? Math.min(0.5, realDt) : dt;
     this.doc.face.update(dt);
     if (this.extra) {
-      this.doc.speaker.tick(dt);
-      this.clock += dt;
+      this.doc.speaker.tick(timeDt);
+      this.clock += timeDt;
       this.rig.hands = { L: null, R: null };
       this.rig.lookAt = this.opt.light ? null : this.cameraWorld();
       this.rig.update(dt, this.clock);
@@ -381,10 +384,10 @@ export class TeachingStage {
       this.emit(false);
       return;
     }
-    const adt = dt * this.opt.speed;
+    const adt = timeDt * this.opt.speed;
     this.clock += adt;
     this.stepClock += adt;
-    this.doc.speaker.tick(dt);
+    this.doc.speaker.tick(timeDt);
     const step = this.choreo.steps[this.index];
     if (!step) return;
 
@@ -406,7 +409,7 @@ export class TeachingStage {
       this.rig.update(adt, this.clock);
     } else {
       this.rig.lookAt = null;
-      this.rig.update(adt, this.clock);
+      this.rig.update(Math.min(0.05, adt), this.clock);
     }
     this.room.invalidate();
 

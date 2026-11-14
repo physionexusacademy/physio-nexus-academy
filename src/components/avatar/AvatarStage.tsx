@@ -184,7 +184,10 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   };
   const started = Boolean(view?.started);
   const keys = (event: React.KeyboardEvent) => {
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) return;
+    // Let real controls keep their own keys (Space/Enter on a button, arrows in a select or text box).
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement || event.target instanceof HTMLTextAreaElement) return;
+    const onControl = event.target instanceof HTMLButtonElement || event.target instanceof HTMLAnchorElement;
+    if ((event.key === " " || event.key === "k") && onControl) return;
     if (event.key === " " || event.key === "k") {
       event.preventDefault();
       toggle();

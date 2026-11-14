@@ -1,9 +1,11 @@
 /* Dr. Sajjad teaching stage — extends the Skills Lab scene look (scene3d.css). */
-.av-subs { display: none; position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 4; max-height: 46%; overflow-y: auto; border-radius: 14px; padding: 8px 12px 9px; background: rgba(4, 18, 40, .88); border: 1px solid rgba(46, 230, 214, .34); color: #f2f9ff; backdrop-filter: blur(6px); box-shadow: 0 0 22px -8px rgba(46, 230, 214, .55); pointer-events: none; }
+/* The subtitle box is the one live region for screen readers. On phones it is visually hidden (the caption under the view shows the same words) but stays in the accessibility tree. */
+.av-subs { position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 4; max-height: 46%; overflow-y: auto; border-radius: 14px; padding: 8px 12px 9px; background: rgba(4, 18, 40, .88); border: 1px solid rgba(46, 230, 214, .34); color: #f2f9ff; backdrop-filter: blur(6px); box-shadow: 0 0 22px -8px rgba(46, 230, 214, .55); pointer-events: none; }
+@media (max-width: 639px) { .av-subs { left: auto; right: auto; bottom: auto; width: 1px; height: 1px; max-height: none; overflow: hidden; padding: 0; border: 0; clip-path: inset(50%); box-shadow: none; backdrop-filter: none; white-space: nowrap; } }
 .av-subs-tag { margin: 0 0 2px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
 .av-subs-text { margin: 0; font-size: 13.5px; font-weight: 600; line-height: 1.38; }
 .av-subs-text.long { font-size: 12.5px; }
-@media (min-width: 640px) { .av-subs { display: block; left: 14px; right: 14px; bottom: 14px; padding: 10px 14px 11px; } .av-subs-text { font-size: 15.5px; } .av-subs-text.long { font-size: 13.5px; } .av-caption { display: none; } }
+@media (min-width: 640px) { .av-subs { left: 14px; right: 14px; bottom: 14px; padding: 10px 14px 11px; } .av-subs-text { font-size: 15.5px; } .av-subs-text.long { font-size: 13.5px; } .av-caption { display: none; } }
 /* Phones: a taller 3D view and the subtitles under it, so the figures are never hidden behind text. */
 .av-caption { padding: 9px 12px 10px; background: #06182f; border-top: 1px solid rgba(46, 230, 214, .22); }
 .av-caption p:first-child { margin: 0; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #2ee6d6; }
@@ -43,8 +45,8 @@
 .av-ask-text p { margin: 0 0 4px; font-size: 13.5px; line-height: 1.45; }
 .av-ask-safety { border-radius: 12px; padding: 8px 10px; background: rgba(255, 90, 90, .14); border: 1px solid rgba(255, 120, 120, .6); }
 .av-ask-safety p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; }
-.av-ask-links { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
-.av-ask-links a { font-size: 13px; font-weight: 800; color: #2ee6d6; text-decoration: underline; }
+.av-ask-links { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.av-ask-links a { display: inline-block; padding: 7px 0 3px; min-height: 28px; font-size: 13px; font-weight: 800; color: #2ee6d6; text-decoration: underline; }
 .av-ask-links span { display: block; font-size: 12px; color: #9fc6e8; }
 .av-ask-error { margin: 8px 0 0; font-size: 13px; font-weight: 700; color: #ffb4b4; }
 .av-ask-note { margin: 8px 0 6px; font-size: 11px; line-height: 1.4; color: #8fb5da; }
