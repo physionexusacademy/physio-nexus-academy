@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CalendarDays, MapPin, Users, Award, ShieldCheck } from "lucide-react";
@@ -56,8 +57,8 @@ export async function generateMetadata({
 
   return {
     // The layout template adds " | Physio Nexus Academy"; social cards keep the full title.
-    title: workshop.title,
-    description,
+    title: fitTitle(workshop.title, 54),
+    description: fitDescription(description, "Hands-on physiotherapy workshop by Physio Nexus Academy."),
     alternates: { canonical: canonicalUrl },
     openGraph: {
       title,

@@ -10,12 +10,9 @@ const siteUrl = "https://physionexusacademy.com";
 const founderUrl = `${siteUrl}/founder`;
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Dr. Sajjad Raza PT — Founder of Physio Nexus Academy | Physiotherapist & Clinical Educator Pakistan",
-  },
+  title: "Dr. Sajjad Raza PT — Founder, Physio Nexus Academy",
   description:
-    "Official profile of Dr. Sajjad Raza PT — physiotherapist, clinical educator and Founder of Physio Nexus Academy. Manual therapy, clinical workshops and practical physiotherapy education across Pakistan.",
+    "Dr. Sajjad Raza PT — physiotherapist, clinical educator and founder of Physio Nexus Academy, teaching manual therapy and practical clinical skills.",
   keywords: [
     "Dr Sajjad Raza PT",
     "Physio Nexus Academy founder",
@@ -28,9 +25,9 @@ export const metadata: Metadata = {
     canonical: founderUrl,
   },
   openGraph: {
-    title: "Dr. Sajjad Raza PT — Physiotherapist, Clinical Educator & Founder",
+    title: "Dr. Sajjad Raza PT — Founder, Physio Nexus Academy | PNA",
     description:
-      "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
+      "Dr. Sajjad Raza PT — physiotherapist, clinical educator and founder of Physio Nexus Academy, teaching manual therapy and practical clinical skills.",
     url: founderUrl,
     type: "profile",
     siteName: "Physio Nexus Academy",
@@ -46,9 +43,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dr. Sajjad Raza PT — Founder, Physio Nexus Academy",
+    title: "Dr. Sajjad Raza PT — Founder, Physio Nexus Academy | PNA",
     description:
-      "Official profile of Dr. Sajjad Raza PT, physiotherapist, clinical educator and Founder of Physio Nexus Academy.",
+      "Dr. Sajjad Raza PT — physiotherapist, clinical educator and founder of Physio Nexus Academy, teaching manual therapy and practical clinical skills.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

@@ -17,12 +17,9 @@ import { BOOKS, DEFAULT_BOOK_ID, formatPkr, getBook } from "@/lib/books";
 const url = "https://physionexusacademy.com/resources";
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Buy Physiotherapy Books Online in Pakistan | Clinical Mastery, Myofascial Therapy & Study Resources",
-  },
+  title: "Physiotherapy Books & Study Resources Pakistan",
   description:
-    "Order physiotherapy books and learning resources from Physio Nexus Academy. Clinical mastery guides, myofascial therapy manuals and study materials delivered across Pakistan. Free educational PDFs also available.",
+    "Order physiotherapy books and study resources from Physio Nexus Academy — clinical guides and myofascial therapy manuals delivered across Pakistan.",
   keywords: [
     "physiotherapy books Pakistan",
     "buy physiotherapy books online",
@@ -41,9 +38,9 @@ export const metadata: Metadata = {
     canonical: url,
   },
   openGraph: {
-    title: "Physiotherapy Books & Resources for Sale | Physio Nexus Academy",
+    title: "Physiotherapy Books & Study Resources Pakistan | PNA",
     description:
-      "Order evidence-informed physiotherapy books and learning resources. Delivery across Pakistan. Free educational materials also available.",
+      "Order physiotherapy books and study resources from Physio Nexus Academy — clinical guides and myofascial therapy manuals delivered across Pakistan.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -59,9 +56,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buy Physiotherapy Books Online in Pakistan",
+    title: "Physiotherapy Books & Study Resources Pakistan | PNA",
     description:
-      "Clinical mastery guides, myofascial therapy manuals and study resources. Delivery across Pakistan.",
+      "Order physiotherapy books and study resources from Physio Nexus Academy — clinical guides and myofascial therapy manuals delivered across Pakistan.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

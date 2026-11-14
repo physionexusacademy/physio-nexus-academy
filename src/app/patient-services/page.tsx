@@ -6,7 +6,7 @@ import { NexusHero } from "@/components/nexus/NexusHero";
 export const metadata: Metadata = {
   title: "Physiotherapy Services & Patient Appointments",
   description:
-    "Explore physiotherapy consultation, appointment and home visit request pathways from Physio Nexus Academy.",
+    "Physiotherapy consultations, appointments and home visits from Physio Nexus Academy — explore how to get care.",
   alternates: {
     canonical: "https://physionexusacademy.com/patient-services",
   },

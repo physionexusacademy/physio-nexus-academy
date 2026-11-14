@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -32,8 +33,8 @@ export async function generateMetadata({
   const image = `${siteUrl}${item.image}`;
 
   return {
-    title: `${item.title} — Past Training Record`,
-    description: item.summary,
+    title: `${fitTitle(item.title, 42)} — Past Training`,
+    description: fitDescription(item.summary, "A past physiotherapy workshop or training record from Physio Nexus Academy."),
     alternates: { canonical: url },
     openGraph: {
       title: item.title,

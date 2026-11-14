@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BellRing, Lock, ShieldCheck, Stethoscope, TrendingUp, UserCheck, UserPlus, Video } from "lucide-react";
 import { GuideStage } from "@/components/rehabverse/GuideStage";
+import { EnglishNote } from "@/components/rehabverse/EnglishNote";
 import { T } from "@/components/rehabverse/useLang";
 import { GUIDE } from "@/lib/rehabverse/guide";
 
@@ -30,6 +32,21 @@ const FAQ = [
   { en: ["Is my information private?", "Only you and your physiotherapist can see your records. Alert emails never contain your health details."], ru: ["Kya meri maloomat private hain?", "Sirf aap aur aap ke physiotherapist aap ka record dekh sakte hain. Alert emails mein aap ki sehat ki tafseel kabhi nahi hoti."] },
 ];
 
+export const metadata: Metadata = {
+  title: "RehabVerse — Guided 3D Home Rehabilitation",
+  description: "RehabVerse by Physio Nexus Academy: describe your symptoms, get a physiotherapist-approved home programme and follow each exercise with a 3D virtual guide.",
+  // The layout is shared by sign-in and dashboard pages, so this page declares its own canonical (it used to inherit the homepage's).
+  alternates: { canonical: "https://physionexusacademy.com/rehabverse" },
+  openGraph: {
+    title: "RehabVerse — Guided 3D Home Rehabilitation | PNA",
+    description: "A physiotherapist-approved home rehabilitation programme with a 3D virtual guide for every exercise, in English and Roman Urdu.",
+    url: "https://physionexusacademy.com/rehabverse",
+    siteName: "Physio Nexus Academy",
+    type: "website",
+    locale: "en_PK",
+  },
+};
+
 export default function RehabVerseHome() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -51,6 +68,7 @@ export default function RehabVerseHome() {
               ru="Apni takleef bataein, physiotherapist ka approved programme hasil karein aur din ba din follow karein. Har exercise 3D mein dikhai jati hai, aur har din tabhi khulta hai jab safe ho."
             />
           </p>
+          <EnglishNote />
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link href="/rehabverse/register" className="rv-btn rv-btn-primary">
               <UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="Create your account" ru="Apna account banayein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />

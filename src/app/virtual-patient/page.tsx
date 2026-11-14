@@ -6,12 +6,9 @@ import "./virtual-patient.css";
 const url = "https://physionexusacademy.com/virtual-patient";
 
 export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Virtual Patient — 3D Physiotherapy Exam Simulator with OSCE Scoring",
-  },
+  title: "Virtual Patient — 3D Physiotherapy Exam Simulator",
   description:
-    "Examine a realistic 3D physiotherapy patient: take history, measure ROM with goniometer, test muscles (MMT), reflexes and sensation, palpate landmarks, run special tests, then diagnose and get an OSCE-style score. Free clinical skills practice for DPT students across Pakistan.",
+    "Examine a realistic 3D patient: take a history, measure range, test muscles and reflexes, run special tests, then diagnose and get an OSCE-style score.",
   keywords: [
     "virtual patient physiotherapy",
     "3D patient simulator physiotherapy",
@@ -26,9 +23,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: url },
   openGraph: {
-    title: "Virtual Patient — 3D Physiotherapy Exam Simulator | Physio Nexus Academy",
+    title: "Virtual Patient — 3D Physiotherapy Exam Simulator | PNA",
     description:
-      "Practice full physiotherapy examination on a 3D patient: history, goniometry, MMT, neuro tests, special tests and OSCE scoring. Free for students across Pakistan.",
+      "Examine a realistic 3D patient: take a history, measure range, test muscles and reflexes, run special tests, then diagnose and get an OSCE-style score.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -44,9 +41,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Virtual Patient — 3D Physiotherapy Exam Simulator",
+    title: "Virtual Patient — 3D Physiotherapy Exam Simulator | PNA",
     description:
-      "Full physiotherapy examination practice on a realistic 3D patient with OSCE-style scoring.",
+      "Examine a realistic 3D patient: take a history, measure range, test muscles and reflexes, run special tests, then diagnose and get an OSCE-style score.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

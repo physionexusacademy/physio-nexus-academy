@@ -8,14 +8,14 @@ const pageUrl = `${siteUrl}/research`;
 export const metadata: Metadata = {
   title: "Physiotherapy Research & Academic Support",
   description:
-    "Research mentoring for physiotherapy students and professionals: research questions, literature review planning, methodology, critical appraisal and ethical academic guidance.",
+    "Research mentoring for physiotherapy students and professionals: questions, literature review, methodology, critical appraisal and ethics.",
   alternates: {
     canonical: pageUrl,
   },
   openGraph: {
-    title: "Physiotherapy Research & Academic Support | Physio Nexus Academy",
+    title: "Physiotherapy Research & Academic Support | PNA",
     description:
-      "Structured physiotherapy research mentoring covering question development, literature review planning, study design, methodology and critical appraisal.",
+      "Research mentoring for physiotherapy students and professionals: questions, literature review, methodology, critical appraisal and ethics.",
     url: pageUrl,
     type: "website",
   },

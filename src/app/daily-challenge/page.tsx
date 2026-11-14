@@ -10,8 +10,8 @@ export const dynamic="force-dynamic";
 export const revalidate=0;
 
 export const metadata:Metadata={
- title:"Daily Clinical Challenge | Free Physiotherapy Quiz + Live Leaderboard",
- description:"Take the free daily physiotherapy clinical challenge. Five practical questions every day, public leaderboard, monthly & yearly champions. Sharpen clinical reasoning with Physio Nexus Academy.",
+ title:"Daily Clinical Challenge — Free Physiotherapy Quiz",
+ description:"Take the free Daily Clinical Challenge: five physiotherapy questions a day, a live leaderboard and monthly champions from Physio Nexus Academy.",
  keywords:[
   "daily physiotherapy quiz",
   "physiotherapy clinical challenge",
@@ -26,8 +26,8 @@ export const metadata:Metadata={
  ],
  alternates:{canonical:"https://physionexusacademy.com/daily-challenge"},
  openGraph:{
-  title:"Daily Clinical Challenge | Free Physiotherapy Quiz + Live Leaderboard",
-  description:"Five practical physiotherapy questions every day. Compete on the public leaderboard and build clinical reasoning skills.",
+  title:"Daily Clinical Challenge — Free Physiotherapy Quiz | PNA",
+  description:"Take the free Daily Clinical Challenge: five physiotherapy questions a day, a live leaderboard and monthly champions from Physio Nexus Academy.",
   url:"https://physionexusacademy.com/daily-challenge",
   siteName:"Physio Nexus Academy",
   locale:"en_PK",
@@ -36,8 +36,8 @@ export const metadata:Metadata={
  },
  twitter:{
   card:"summary_large_image",
-  title:"Daily Clinical Challenge | Physiotherapy Quiz",
-  description:"Five clinical questions daily. Public leaderboard. Monthly & yearly champions. Free for every learner.",
+  title:"Daily Clinical Challenge — Free Physiotherapy Quiz | PNA",
+  description:"Take the free Daily Clinical Challenge: five physiotherapy questions a day, a live leaderboard and monthly champions from Physio Nexus Academy.",
   images:["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
  },
  robots:{index:true,follow:true},

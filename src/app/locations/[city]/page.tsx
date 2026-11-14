@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -34,7 +35,7 @@ export async function generateMetadata({
   if (!city) return {};
 
   // People search "physiotherapist in <city>" far more than "physiotherapy home visit".
-  const title = `Physiotherapist in ${city.name} — Home Physiotherapy Visits`;
+  const title = fitTitle(`Physiotherapist in ${city.name} — Home Visits`, 54);
   const description = `Book a physiotherapist home visit in ${city.name}, ${city.province}, through Physio Nexus Academy. Request on the form or WhatsApp and we confirm your visit.`;
   const pageUrl = `${siteUrl}/locations/${city.slug}`;
 

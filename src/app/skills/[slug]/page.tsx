@@ -1,3 +1,4 @@
+import { fitDescription, fitTitle } from "@/lib/seo/text";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NexusHero } from "@/components/nexus/NexusHero";
@@ -20,8 +21,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const skill = getSkillEntry(slug);
   if (!skill) return {};
   return {
-    title: `${skill.title} — Beginner to Expert | Clinical Skills Lab`,
-    description: `${skill.summary} Practise with simulators, ${skill.counts.questions} questions, ${skill.counts.cards} flashcards and OSCE stations.`,
+    title: `${fitTitle(skill.title, 40)} — Skills Lab`,
+    description: fitDescription(`${skill.summary} Practise with simulators, ${skill.counts.questions} questions, ${skill.counts.cards} flashcards and OSCE stations.`),
     alternates: { canonical: `https://physionexusacademy.com/skills/${skill.slug}` },
   };
 }

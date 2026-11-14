@@ -8,9 +8,9 @@ import { skillIndex, skillPhases } from "@/lib/skills/catalog";
 const url = "https://physionexusacademy.com/skills";
 
 export const metadata: Metadata = {
-  title: "Clinical Skills Lab — MMT, Goniometry & OSCE Practice",
+  title: "Clinical Skills Lab — MMT, Goniometry & OSCE",
   description:
-    "Master clinical skills every DPT student in Pakistan needs: Manual Muscle Testing (MMT), goniometry, dermatomes, myotomes, reflexes, vital signs and more. Beginner to expert with demonstrations, simulators, flashcards, level tests and OSCE stations.",
+    "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — beginner to expert, free at Physio Nexus Academy.",
   keywords: [
     "clinical skills lab physiotherapy",
     "MMT practice",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: url },
   openGraph: {
-    title: "Clinical Skills Lab — MMT, Goniometry & OSCE Practice | Physio Nexus Academy",
+    title: "Clinical Skills Lab — MMT, Goniometry & OSCE | PNA",
     description:
-      "Hands-on clinical skills training for physiotherapy students: MMT, goniometry, neuro exam, flashcards and OSCE stations. Progress from beginner to expert.",
+      "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — beginner to expert, free at Physio Nexus Academy.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Clinical Skills Lab — MMT, Goniometry & OSCE Practice",
+    title: "Clinical Skills Lab — MMT, Goniometry & OSCE | PNA",
     description:
-      "Master physiotherapy clinical skills with simulators, flashcards and OSCE stations. Built for DPT students across Pakistan.",
+      "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — beginner to expert, free at Physio Nexus Academy.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

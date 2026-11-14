@@ -21,9 +21,9 @@ export const dynamic = "force-static";
 export const revalidate = false;
 
 export const metadata: Metadata = {
-  title: "PNA Clinical Visual Atlas | 3D Physiotherapy Learning",
+  title: "Clinical Visual Atlas — 3D Anatomy & Pathology",
   description:
-    "Explore premium 3D clinical visuals connecting anatomy with common musculoskeletal pathology across physiotherapy body regions.",
+    "Explore 3D clinical visuals that connect anatomy with common musculoskeletal pathology across every body region.",
   alternates: {
     canonical: "https://physionexusacademy.com/clinical-visual-atlas",
   },

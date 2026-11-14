@@ -22,7 +22,30 @@ const display = localFont({
   fallback: ["Segoe UI", "system-ui", "sans-serif"],
 });
 
-const socialProfiles = Object.values(siteConfig.contact.social).filter(Boolean);
+const googleMapsProfile = "https://www.google.com/maps/place/?q=place_id:ChIJEyXEA0A-bG8RCrIF9nIJv3A";
+const socialProfiles = [...Object.values(siteConfig.contact.social).filter(Boolean), googleMapsProfile];
+
+/** The academy's main features as a navigation list: a clear, crawlable statement of what the site offers (helps Google choose sitelinks). */
+const featureNav = [
+  ["PNA Teacher", "/learn"],
+  ["Clinical Skills Lab", "/skills"],
+  ["Virtual Patient", "/virtual-patient"],
+  ["RehabVerse", "/rehabverse"],
+  ["Conditions & Treatment Guide", "/conditions"],
+  ["MSK Symptom Checker", "/symptom-checker"],
+  ["Daily Clinical Challenge", "/daily-challenge"],
+  ["Weekly Leagues", "/leagues"],
+  ["Case Lab", "/case-lab"],
+  ["Manual Therapy Encyclopedia", "/manual-therapy"],
+  ["MSK Special Tests", "/msk-special-tests"],
+  ["Clinical Visual Atlas", "/clinical-visual-atlas"],
+  ["Workshops & CPD", "/workshops"],
+  ["Books & Resources", "/resources"],
+  ["Book an Appointment", "/appointment"],
+  ["Home Physiotherapy Visit", "/home-visit"],
+  ["About Physio Nexus Academy", "/about"],
+  ["Contact", "/contact"],
+] as const;
 
 const siteJsonLd = {
   "@context": "https://schema.org",
@@ -32,7 +55,7 @@ const siteJsonLd = {
       "@type": ["EducationalOrganization", "Physiotherapy", "MedicalOrganization", "LocalBusiness"],
       "@id": "https://physionexusacademy.com/#organization",
       name: "Physio Nexus Academy",
-      alternateName: ["PNA", "Physio Nexus Academy Pakistan"],
+      alternateName: ["PNA", "Physio Nexus", "PhysioNexus Academy", "Physio Nexus Academy Pakistan"],
       url: "https://physionexusacademy.com",
       logo: {
         "@type": "ImageObject",
@@ -101,6 +124,7 @@ const siteJsonLd = {
         "Myofascial release",
         "Strain Counterstrain",
       ],
+      hasMap: googleMapsProfile,
       ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
       hasOfferCatalog: {
         "@type": "OfferCatalog",
@@ -157,6 +181,7 @@ const siteJsonLd = {
       "@id": "https://physionexusacademy.com/#website",
       url: "https://physionexusacademy.com",
       name: "Physio Nexus Academy",
+      alternateName: ["PNA", "Physio Nexus", "PhysioNexus Academy", "Physionexus"],
       description:
         "Practical physiotherapy education, clinical resources, workshops and patient services from Physio Nexus Academy in Pakistan.",
       publisher: {
@@ -172,14 +197,22 @@ const siteJsonLd = {
         "query-input": "required name=search_term_string",
       },
     },
+    ...featureNav.map(([name, path]) => ({
+      "@type": "SiteNavigationElement",
+      "@id": `https://physionexusacademy.com/#nav-${path.replace(/\W+/g, "-").replace(/^-|-$/g, "") || "home"}`,
+      name,
+      url: `https://physionexusacademy.com${path}`,
+    })),
   ],
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://physionexusacademy.com"),
   title: {
-    default: "Physio Nexus Academy | Physiotherapy Education, Workshops & Clinical Learning in Pakistan",
-    template: "%s | Physio Nexus Academy",
+    default: "Physio Nexus Academy — Physiotherapy Learning in Pakistan",
+    // Short suffix: most titles were cut by Google because " | Physio Nexus Academy" alone took a third of the visible width.
+    // The brand is carried by the site name (WebSite structured data), the domain and the hub pages' own titles.
+    template: "%s | PNA",
   },
   description:
     "Physio Nexus Academy offers evidence-based physiotherapy education, MSK & manual therapy resources, clinical case labs, daily challenges, hands-on workshops and patient physiotherapy services across Pakistan. Founded by Dr. Sajjad Raza PT.",

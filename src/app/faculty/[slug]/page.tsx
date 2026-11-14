@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { fitDescription } from "@/lib/seo/text";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -33,7 +34,7 @@ export async function generateMetadata({
 
   return {
     title: `${member.name} — Physiotherapy Faculty`,
-    description: `${member.name} — ${member.professionalTitle}. ${member.academyRole} at Physio Nexus Academy.`,
+    description: fitDescription(`${member.name} — ${member.professionalTitle}. ${member.academyRole} at Physio Nexus Academy.`, `${member.name} — physiotherapy faculty at Physio Nexus Academy.`),
     alternates: {
       canonical: `https://physionexusacademy.com/faculty/${member.slug}`,
     },

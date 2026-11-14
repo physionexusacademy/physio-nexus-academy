@@ -8,12 +8,12 @@ export const dynamic = "force-static";
 export const revalidate = false;
 
 export const metadata: Metadata = {
-  title: "MSK Special Tests | Applying Method, Purpose & Positive Signs",
-  description: "Explore upper-limb, lower-limb, cervical and lumbar physiotherapy special tests. Learn patient positions, therapist hand placement, applying methods, positive findings and interpretation.",
+  title: "MSK Special Tests — Method, Purpose & Positive Signs",
+  description: "Upper-limb, lower-limb, cervical and lumbar special tests: patient position, hand placement, how to apply them and what a positive sign means.",
   alternates: { canonical: "https://physionexusacademy.com/msk-special-tests" },
   openGraph: {
-    title: "MSK Special Tests Library | Physio Nexus Academy",
-    description: "Step-by-step clinical tests for physiotherapy students and clinicians, organized by region with purpose, technique, findings and safety.",
+    title: "MSK Special Tests — Method, Purpose & Positive Signs | PNA",
+    description: "Upper-limb, lower-limb, cervical and lumbar special tests: patient position, hand placement, how to apply them and what a positive sign means.",
     url: "https://physionexusacademy.com/msk-special-tests",
     type: "website",
   },

@@ -9,9 +9,9 @@ import { TeacherAvatar } from "@/components/teacher/ui";
 const url = "https://physionexusacademy.com/learn";
 
 export const metadata: Metadata = {
-  title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy",
+  title: "PNA Teacher — Physiotherapy Concepts Made Easy",
   description:
-    "Free conversational physiotherapy teacher for DPT students across Pakistan. Learn convex–concave rule, Maitland grades, sensitivity & specificity, UMN vs LMN, tissue healing, pain science and manual therapy concepts with analogies, interactive visuals, checks, flashcards and Roman Urdu.",
+    "Free PNA Teacher lessons that explain hard physiotherapy concepts step by step in English and Roman Urdu, with practice questions and flashcards.",
   keywords: [
     "PNA Teacher",
     "physiotherapy teacher",
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: url },
   openGraph: {
-    title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy | Physio Nexus Academy",
+    title: "PNA Teacher — Physiotherapy Concepts Made Easy | PNA",
     description:
-      "Step-by-step conversational physiotherapy lessons with analogies, interactive visuals, quick checks, flashcards and Roman Urdu. Built for DPT students across Pakistan.",
+      "Free PNA Teacher lessons that explain hard physiotherapy concepts step by step in English and Roman Urdu, with practice questions and flashcards.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PNA Teacher — Hard Physiotherapy Concepts Made Easy",
+    title: "PNA Teacher — Physiotherapy Concepts Made Easy | PNA",
     description:
-      "Conversational physiotherapy lessons for DPT students across Pakistan — English + Roman Urdu.",
+      "Free PNA Teacher lessons that explain hard physiotherapy concepts step by step in English and Roman Urdu, with practice questions and flashcards.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {

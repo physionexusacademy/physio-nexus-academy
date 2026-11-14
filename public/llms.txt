@@ -1,0 +1,33 @@
+# Physio Nexus Academy (PNA)
+
+> Physio Nexus Academy is Pakistan's practical physiotherapy academy, founded by Dr. Sajjad Raza PT. It offers free clinical learning for physiotherapy students and clinicians, hands-on CPD workshops, and physiotherapy services for patients (appointments, home visits and guided home rehabilitation). Based in Saddar, Karachi; serving Pakistan. Website: https://physionexusacademy.com
+
+Learning content is educational and is not a substitute for clinical assessment. Patient tools are screening or exercise-guidance aids that never replace a physiotherapist or doctor.
+
+## Learn and practise
+- [PNA Teacher](https://physionexusacademy.com/learn): conversational lessons that explain hard physiotherapy concepts step by step, in English and Roman Urdu, with practice questions and flashcards.
+- [Clinical Skills Lab](https://physionexusacademy.com/skills): manual muscle testing, goniometry, dermatomes, myotomes, reflexes, peripheral nerves, vital signs, posture, palpation and more, with 3D demonstrations, quizzes and OSCE stations.
+- [Virtual Patient](https://physionexusacademy.com/virtual-patient): examine a 3D patient with a hidden diagnosis and receive an OSCE-style score.
+- [Conditions & Treatment Guide](https://physionexusacademy.com/conditions): stage-by-stage physiotherapy plans for common conditions at three depths (quick, clinical, expert).
+- [Manual Therapy Encyclopedia](https://physionexusacademy.com/manual-therapy): Maitland, Mulligan, Kaltenborn, MET, myofascial release, strain-counterstrain and more, with set-up, hand placement, safety and evidence.
+- [Regional Manual Therapy](https://physionexusacademy.com/manual-therapy/regions): techniques organised by body area.
+- [MSK Special Tests](https://physionexusacademy.com/msk-special-tests): patient position, hand placement and interpretation.
+- [Clinical Visual Atlas](https://physionexusacademy.com/clinical-visual-atlas): 3D visuals connecting anatomy with musculoskeletal pathology.
+- [Case Lab](https://physionexusacademy.com/case-lab): published physiotherapy case reports summarised in plain English.
+- [Daily Clinical Challenge](https://physionexusacademy.com/daily-challenge): five timed physiotherapy questions every day with a public leaderboard.
+- [Weekly Leagues](https://physionexusacademy.com/leagues): seven tiers from Bronze to Diamond, ranked by XP earned from learning.
+- [My PNA](https://physionexusacademy.com/account): a free student account that records learning activity and shows progress and insights.
+
+## For patients
+- [RehabVerse](https://physionexusacademy.com/rehabverse): physiotherapist-approved home rehabilitation programmes with a 3D virtual guide for every exercise.
+- [3D Exercise Library](https://physionexusacademy.com/rehabverse/library): rehab exercises for the neck, back, shoulder, hand, hip, knee and ankle.
+- [MSK Symptom Checker](https://physionexusacademy.com/symptom-checker): free musculoskeletal screening with a safety check; screening only, not a diagnosis.
+- [Book an appointment](https://physionexusacademy.com/appointment) and [home physiotherapy visits](https://physionexusacademy.com/home-visit) across Pakistan.
+
+## Academy
+- [Workshops & CPD courses](https://physionexusacademy.com/workshops) with verifiable certificates ([verify a certificate](https://physionexusacademy.com/verify)).
+- [Books & resources](https://physionexusacademy.com/resources) by Dr. Sajjad Raza PT.
+- [About](https://physionexusacademy.com/about), [Founder](https://physionexusacademy.com/founder), [Faculty](https://physionexusacademy.com/faculty), [Contact](https://physionexusacademy.com/contact), [FAQ](https://physionexusacademy.com/faq), [Reviews](https://physionexusacademy.com/reviews).
+
+## Sitemap
+- https://physionexusacademy.com/sitemap.xml
