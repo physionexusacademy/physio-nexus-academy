@@ -138,6 +138,107 @@ function fingerAxes(side: Side) {
 }
 const FINGERS = { left: fingerAxes("left"), right: fingerAxes("right") };
 
+/**
+ * Converts an anatomical pose into bone rotations on any skeleton that uses this rig's bone names. All bones rest
+ * with identity rotation, so each controlled bone's skeleton-space orientation is
+ * A = (clinical rotation, chained from its parent segment) × (rest→anatomical alignment).
+ * Shared by the patient (ExamRoom) and the teaching avatar (lib/avatar). Facial bones that no pose entry names are reset to identity.
+ */
+export function applyPoseToBones(getBone: (name: string) => THREE.Bone | undefined, pose: Pose) {
+  const q = (axis: THREE.Vector3, deg: number) => new THREE.Quaternion().setFromAxisAngle(axis, deg * DEG);
+  const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
+  const targets = new Map<string, THREE.Quaternion>();
+
+  // Trunk and neck (flexion forwards, side-flexion, rotation), spread over the segments.
+  const trunk = pose.trunk ?? {};
+  const trunkQ = (share: number) => q(X, (trunk.flex ?? 0) * share).multiply(q(Z, (trunk.abd ?? 0) * share)).multiply(q(Y, -(trunk.rot ?? 0) * share));
+  const neck = pose.neck ?? {};
+  const neckQ = (share: number) => q(X, (neck.flex ?? 0) * share).multiply(q(Z, (neck.abd ?? 0) * share)).multiply(q(Y, -(neck.rot ?? 0) * share));
+  const spine = ["spine05", "spine04", "spine03", "spine02", "spine01"];
+  let trunkWorld = new THREE.Quaternion();
+  spine.forEach((name) => {
+    trunkWorld = trunkWorld.clone().multiply(trunkQ(1 / spine.length));
+    targets.set(name, trunkWorld.clone());
+  });
+  let neckWorld = trunkWorld.clone();
+  ["neck01", "neck02", "neck03", "head"].forEach((name) => {
+    neckWorld = neckWorld.clone().multiply(neckQ(0.25));
+    targets.set(name, neckWorld.clone());
+  });
+  const headOnNeck = pose.head;
+  if (headOnNeck && (headOnNeck.flex || headOnNeck.abd || headOnNeck.rot)) {
+    targets.set("head", neckWorld.clone().multiply(q(X, headOnNeck.flex ?? 0)).multiply(q(Z, headOnNeck.abd ?? 0)).multiply(q(Y, -(headOnNeck.rot ?? 0))));
+  }
+
+  for (const side of ["left", "right"] as Side[]) {
+    const s = sideKey(side);
+    const sign = sideSign(side);
+    const align = ALIGN[side];
+    const j = (joint: JointId) => pose[`${joint}.${side}`] ?? {};
+    // Upper limb (chained from the trunk).
+    const sh = j("shoulder");
+    const arm = trunkWorld.clone()
+      .multiply(q(X, -(sh.flex ?? 0)))
+      .multiply(q(Z, sign * (sh.abd ?? 0)))
+      .multiply(q(Y, -sign * (sh.rot ?? 0)));
+    targets.set(`upperarm01.${s}`, arm.clone().multiply(align.upperarm));
+    const fore = arm.clone().multiply(q(X, -(j("elbow").flex ?? 0))).multiply(q(Y, sign * (j("elbow").rot ?? 0)));
+    targets.set(`lowerarm01.${s}`, fore.clone().multiply(align.forearm));
+    const wr = j("wrist");
+    const hand = fore.clone().multiply(q(Z, -sign * (wr.flex ?? 0))).multiply(q(X, -(wr.abd ?? 0)));
+    targets.set(`wrist.${s}`, hand.clone().multiply(align.hand));
+    // Lower limb (pelvis is not part of the trunk chain).
+    const hp = j("hip");
+    const thigh = new THREE.Quaternion()
+      .multiply(q(X, -(hp.flex ?? 0)))
+      .multiply(q(Z, sign * (hp.abd ?? 0)))
+      .multiply(q(Y, -sign * (hp.rot ?? 0)));
+    targets.set(`upperleg01.${s}`, thigh.clone().multiply(align.thigh));
+    const shank = thigh.clone().multiply(q(Z, sign * (j("knee").abd ?? 0))).multiply(q(X, j("knee").flex ?? 0));
+    targets.set(`lowerleg01.${s}`, shank.clone().multiply(align.shank));
+    const an = j("ankle");
+    // flex = dorsiflexion(+); rot = inversion(+)
+    const foot = shank.clone().multiply(q(X, -(an.flex ?? 0))).multiply(q(Z, -sign * (an.rot ?? 0)));
+    targets.set(`foot.${s}`, foot);
+    const toe = j("toe");
+    targets.set(`toe1-1.${s}`, foot.clone().multiply(q(X, -(toe.flex ?? 0))));
+  }
+
+  // Fingers: local curls about each bone's own flexion axis.
+  const locals = new Map<string, THREE.Quaternion>();
+  for (const side of ["left", "right"] as Side[]) {
+    const hand = pose[`hand.${side}`] ?? {};
+    const grip = Math.max(0, Math.min(100, hand.flex ?? 0)) / 100;
+    const thumb = Math.max(0, Math.min(100, hand.abd ?? 0)) / 100;
+    const digits = pose[`fingers.${side}`] ?? {};
+    const thumbJoints = pose[`thumb.${side}`] ?? {};
+    for (const finger of FINGERS[side]) {
+      const amount = finger.thumb ? Math.max(thumb, grip * 0.6) : grip;
+      let local = amount > 0 ? q(finger.axis, finger.max * amount) : null;
+      // Single-joint movements (goniometry of the fingers and thumb).
+      const extra = finger.thumb
+        ? [0, 0, thumbJoints.flex ?? 0, thumbJoints.rot ?? 0][finger.segment]
+        : [0, digits.flex ?? 0, digits.abd ?? 0, digits.rot ?? 0][finger.segment];
+      if (extra) local = (local ?? new THREE.Quaternion()).multiply(q(finger.flexAxis, extra));
+      if (finger.thumb && finger.segment === 1 && thumbJoints.abd) local = (local ?? new THREE.Quaternion()).multiply(q(finger.axis, thumbJoints.abd));
+      if (local) locals.set(finger.name, local);
+    }
+  }
+
+  // Convert skeleton-space orientations into local quaternions, parents first.
+  const world = new Map<string, THREE.Quaternion>();
+  for (const b of RIG.bones) {
+    const bone = getBone(b.name);
+    if (!bone) continue;
+    const parentWorld = b.parent ? world.get(b.parent) ?? new THREE.Quaternion() : new THREE.Quaternion();
+    const wanted = targets.get(b.name);
+    if (wanted) bone.quaternion.copy(parentWorld.clone().invert().multiply(wanted));
+    else if (locals.has(b.name)) bone.quaternion.copy(locals.get(b.name)!);
+    else bone.quaternion.identity();
+    world.set(b.name, parentWorld.clone().multiply(bone.quaternion));
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* Exam room                                                          */
 /* ------------------------------------------------------------------ */
@@ -491,105 +592,10 @@ export class ExamRoom {
     return this.bones.get(sanitize(name));
   }
 
-  /**
-   * Converts the anatomical pose into bone rotations. All bones rest with identity
-   * rotation, so each controlled bone's skeleton-space orientation is
-   * A = (clinical rotation, chained from its parent segment) × (rest→anatomical alignment).
-   */
+  /** Converts the anatomical pose into bone rotations (see applyPoseToBones). */
   private applyPose() {
     if (!this.bones.size) return;
-    const q = (axis: THREE.Vector3, deg: number) => new THREE.Quaternion().setFromAxisAngle(axis, deg * DEG);
-    const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
-    const targets = new Map<string, THREE.Quaternion>();
-
-    // Trunk and neck (flexion forwards, side-flexion, rotation), spread over the segments.
-    const trunk = this.pose.trunk ?? {};
-    const trunkQ = (share: number) => q(X, (trunk.flex ?? 0) * share).multiply(q(Z, (trunk.abd ?? 0) * share)).multiply(q(Y, -(trunk.rot ?? 0) * share));
-    const neck = this.pose.neck ?? {};
-    const neckQ = (share: number) => q(X, (neck.flex ?? 0) * share).multiply(q(Z, (neck.abd ?? 0) * share)).multiply(q(Y, -(neck.rot ?? 0) * share));
-    const spine = ["spine05", "spine04", "spine03", "spine02", "spine01"];
-    let trunkWorld = new THREE.Quaternion();
-    spine.forEach((name) => {
-      trunkWorld = trunkWorld.clone().multiply(trunkQ(1 / spine.length));
-      targets.set(name, trunkWorld.clone());
-    });
-    let neckWorld = trunkWorld.clone();
-    ["neck01", "neck02", "neck03", "head"].forEach((name) => {
-      neckWorld = neckWorld.clone().multiply(neckQ(0.25));
-      targets.set(name, neckWorld.clone());
-    });
-    const headOnNeck = this.pose.head;
-    if (headOnNeck && (headOnNeck.flex || headOnNeck.abd || headOnNeck.rot)) {
-      targets.set("head", neckWorld.clone().multiply(q(X, headOnNeck.flex ?? 0)).multiply(q(Z, headOnNeck.abd ?? 0)).multiply(q(Y, -(headOnNeck.rot ?? 0))));
-    }
-
-    for (const side of ["left", "right"] as Side[]) {
-      const s = sideKey(side);
-      const sign = sideSign(side);
-      const align = ALIGN[side];
-      const j = (joint: JointId) => this.pose[`${joint}.${side}`] ?? {};
-      // Upper limb (chained from the trunk).
-      const sh = j("shoulder");
-      const arm = trunkWorld.clone()
-        .multiply(q(X, -(sh.flex ?? 0)))
-        .multiply(q(Z, sign * (sh.abd ?? 0)))
-        .multiply(q(Y, -sign * (sh.rot ?? 0)));
-      targets.set(`upperarm01.${s}`, arm.clone().multiply(align.upperarm));
-      const fore = arm.clone().multiply(q(X, -(j("elbow").flex ?? 0))).multiply(q(Y, sign * (j("elbow").rot ?? 0)));
-      targets.set(`lowerarm01.${s}`, fore.clone().multiply(align.forearm));
-      const wr = j("wrist");
-      const hand = fore.clone().multiply(q(Z, -sign * (wr.flex ?? 0))).multiply(q(X, -(wr.abd ?? 0)));
-      targets.set(`wrist.${s}`, hand.clone().multiply(align.hand));
-      // Lower limb (pelvis is not part of the trunk chain).
-      const hp = j("hip");
-      const thigh = new THREE.Quaternion()
-        .multiply(q(X, -(hp.flex ?? 0)))
-        .multiply(q(Z, sign * (hp.abd ?? 0)))
-        .multiply(q(Y, -sign * (hp.rot ?? 0)));
-      targets.set(`upperleg01.${s}`, thigh.clone().multiply(align.thigh));
-      const shank = thigh.clone().multiply(q(Z, sign * (j("knee").abd ?? 0))).multiply(q(X, j("knee").flex ?? 0));
-      targets.set(`lowerleg01.${s}`, shank.clone().multiply(align.shank));
-      const an = j("ankle");
-      // flex = dorsiflexion(+); rot = inversion(+)
-      const foot = shank.clone().multiply(q(X, -(an.flex ?? 0))).multiply(q(Z, -sign * (an.rot ?? 0)));
-      targets.set(`foot.${s}`, foot);
-      const toe = j("toe");
-      targets.set(`toe1-1.${s}`, foot.clone().multiply(q(X, -(toe.flex ?? 0))));
-    }
-
-    // Fingers: local curls about each bone's own flexion axis.
-    const locals = new Map<string, THREE.Quaternion>();
-    for (const side of ["left", "right"] as Side[]) {
-      const hand = this.pose[`hand.${side}`] ?? {};
-      const grip = Math.max(0, Math.min(100, hand.flex ?? 0)) / 100;
-      const thumb = Math.max(0, Math.min(100, hand.abd ?? 0)) / 100;
-      const digits = this.pose[`fingers.${side}`] ?? {};
-      const thumbJoints = this.pose[`thumb.${side}`] ?? {};
-      for (const finger of FINGERS[side]) {
-        const amount = finger.thumb ? Math.max(thumb, grip * 0.6) : grip;
-        let local = amount > 0 ? q(finger.axis, finger.max * amount) : null;
-        // Single-joint movements (goniometry of the fingers and thumb).
-        const extra = finger.thumb
-          ? [0, 0, thumbJoints.flex ?? 0, thumbJoints.rot ?? 0][finger.segment]
-          : [0, digits.flex ?? 0, digits.abd ?? 0, digits.rot ?? 0][finger.segment];
-        if (extra) local = (local ?? new THREE.Quaternion()).multiply(q(finger.flexAxis, extra));
-        if (finger.thumb && finger.segment === 1 && thumbJoints.abd) local = (local ?? new THREE.Quaternion()).multiply(q(finger.axis, thumbJoints.abd));
-        if (local) locals.set(finger.name, local);
-      }
-    }
-
-    // Convert skeleton-space orientations into local quaternions, parents first.
-    const world = new Map<string, THREE.Quaternion>();
-    for (const b of RIG.bones) {
-      const bone = this.bone(b.name);
-      if (!bone) continue;
-      const parentWorld = b.parent ? world.get(b.parent) ?? new THREE.Quaternion() : new THREE.Quaternion();
-      const wanted = targets.get(b.name);
-      if (wanted) bone.quaternion.copy(parentWorld.clone().invert().multiply(wanted));
-      else if (locals.has(b.name)) bone.quaternion.copy(locals.get(b.name)!);
-      else bone.quaternion.identity();
-      world.set(b.name, parentWorld.clone().multiply(bone.quaternion));
-    }
+    applyPoseToBones((name) => this.bone(name), this.pose);
     this.applyFace();
     this.patientRoot.updateMatrixWorld(true);
     this.boundsDirty = true;

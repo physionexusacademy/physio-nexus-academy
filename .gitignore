@@ -21,3 +21,6 @@ npm-debug.log*
 /artifacts/
 /.cache/
 e2e-out/
+
+# Local reference photo of Dr. Sajjad Raza (not committed)
+/reference/
