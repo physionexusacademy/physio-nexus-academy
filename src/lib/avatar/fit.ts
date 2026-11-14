@@ -1,9 +1,9 @@
 /**
- * Fits the shared body's head to the reference photograph of Dr. Sajjad (browser only).
+ * Gives the shared body's head its shape and proportions (browser only).
  *
- * `public/teacher/dr-sajjad-fit.bin` holds, for every vertex above the neck that has to move, a small displacement in the
- * front plane (x, y), computed offline by `scripts/avatar-likeness/` from landmarks measured on the photo (eye corners and lid edges,
- * nostrils, mouth corners and lips, chin, jaw, cheeks, ears, hairline). Layout (little endian):
+ * `public/teacher/pna-teacher-fit.bin` holds, for every vertex above the neck that has to move, a small displacement in the
+ * front plane (x, y), computed offline (a smooth warp of the generic head: eye corners and lid edges, nostrils, mouth corners and lips,
+ * chin, jaw, cheeks, ears, hairline). The face itself is painted procedurally (`scripts/avatar-face/design-face.py`). Layout (little endian):
  *   uint32 count | uint16 vertex[count] | int16 dx, dy [count × 2]   (units of 0.01 mm)
  * The eyeballs are scaled to fill the wider eye openings. Run before the body is read for dressing, so hair, beard and clothes follow.
  */
@@ -11,14 +11,14 @@ import * as THREE from "three";
 import type { Figure } from "./figure";
 import { readBody, restHead, restTail, smooth } from "./mesh";
 
-export const FIT_URL = "/teacher/dr-sajjad-fit.bin";
-/** The fitted head is in photo proportions: photo pixel = mid + x·scale, eyePy + (eyeY − y)·scale (see scripts/avatar-likeness). */
+export const FIT_URL = "/teacher/pna-teacher-fit.bin";
+/** The fitted head's front-plane mapping used by the hair texture: pixel = mid + x·scale, eyePy + (eyeY − y)·scale. */
 export const PHOTO_FIT = { mid: 527, scale: 1887, eyeY: 1.6345, eyePy: 408.5 };
-/** The hair crop of the photograph (pixels of the 1121×1403 reference) shipped as public/teacher/dr-sajjad-hair.webp. */
+/** The crop of the hair image (public/teacher/pna-teacher-hair.webp) in the same pixel frame. */
 export const HAIR_CROP = { x0: 300, y0: 100, w: 400, h: 360 };
-/** The photographed eyes are wider than the generic ones; the eyeballs grow to fill the openings (front plane only). */
+/** The fitted eye openings are a little wider than the generic ones; the eyeballs grow to fill them (front plane only). */
 const EYE_SCALE = 1.08;
-/** Proportions of the real man against the generic body: a larger head (about 3:1 shoulders to head), a thicker neck, fuller arms. */
+/** Proportions against the generic body: a larger head (about 3:1 shoulders to head), a thicker neck, fuller arms. */
 export const HEAD_SCALE = 1.1;
 export const HEAD_PIVOT = new THREE.Vector3(0, 1.636, 0.05);
 const NECK_THICKEN = 0.12;

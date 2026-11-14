@@ -1,11 +1,10 @@
-import Image from "next/image";
 import { ArrowRight, BadgeCheck, Languages } from "lucide-react";
 import { LobbySearch } from "./LobbySearch";
 
 /**
  * The academy lobby: the first thing a visitor sees. Dark night-sky campus,
- * the founder's approved portrait in a holographic frame, an "ask anything"
- * bar. (The CPD approval lives in the site header.)
+ * the PNA Teacher (the AI teaching assistant) in a holographic frame, an "ask anything"
+ * bar. The founder's portrait is in the Founder section further down. (The CPD approval lives in the site header.)
  */
 export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
   return (
@@ -40,27 +39,27 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
           </div>
         </div>
 
-        <div className="lobby-founder">
-          <div className="lobby-founder-frame">
-            <Image
-              src="/images/founder-dr-sajjad.jpg"
-              alt="Dr. Sajjad Raza PT, founder of Physio Nexus Academy"
-              width={960}
-              height={1200}
-              sizes="(max-width: 900px) 70vw, 400px"
-              className="pna-hero-photo lobby-founder-photo"
-              priority
+        <div className="lobby-teacher">
+          <div className="lobby-teacher-frame">
+            <img
+              src="/teacher/pna-teacher-poster.webp"
+              alt="PNA Teacher, the academy's AI teaching assistant"
+              width={410}
+              height={547}
+              fetchPriority="high"
+              decoding="async"
+              className="pna-hero-photo lobby-teacher-photo"
             />
             <span className="lobby-scan" aria-hidden="true" />
           </div>
-          <a href="/founder" className="nx-glass lobby-founder-id">
+          <a href="#guide" className="nx-glass lobby-teacher-id">
             <span className="nx-icon-tile !h-9 !w-9 !rounded-xl"><BadgeCheck className="h-4 w-4" aria-hidden="true" /></span>
             <span className="min-w-0">
-              <strong>Dr. Sajjad Raza PT</strong>
-              <small>Founder · Clinical educator</small>
+              <strong>PNA Teacher</strong>
+              <small>AI teaching assistant · Take the tour</small>
             </span>
           </a>
-          <div className="nx-glass lobby-founder-chip">
+          <div className="nx-glass lobby-teacher-chip">
             <Languages className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" />
             English + Roman Urdu
           </div>

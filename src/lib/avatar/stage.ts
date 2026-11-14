@@ -1,5 +1,5 @@
 /**
- * The teaching stage (browser only): plays one choreography on the shared 3D patient with Dr. Sajjad beside it. For each step he
+ * The teaching stage (browser only): plays one choreography on the shared 3D patient with the PNA Teacher beside it. For each step he
  * says the existing lines (voice in English, or in Urdu/Hindi for Roman Urdu, if the device has one; always subtitles), walks, bends and leans to reach, puts his hands
  * on the patient's landmarks and performs the movement while the Skills Lab overlays mark contact, direction and angles.
  * Pause, replay, step jump, speed and language are controls on this class; the React component only draws what it reports.
@@ -9,7 +9,7 @@ import type { ExamRoom, Pose } from "@/lib/virtual-patient/engine";
 import type { Ctx, Overlay } from "@/lib/skills/scene-types";
 import { clearPointCache, patientDir, resolvePoint } from "@/lib/skills/points3d";
 import type { BuiltChoreo, BuiltLink, BuiltStep, Line, Note } from "./choreo/built";
-import type { DrSajjad } from "./teacher";
+import type { PnaTeacher } from "./teacher";
 import { DoctorRig, type WorldHand } from "./rig";
 import type { Lang } from "./speech";
 import type { Side as ArmSide } from "./ik";
@@ -34,7 +34,7 @@ export type StageView = {
   reachError: number;
   /** The page this step is about (tour). */
   link: BuiltLink | null;
-  /** A question he is answering right now (Ask Dr. Sajjad): shown as the subtitle instead of the step's line. */
+  /** A question he is answering right now (Ask PNA Teacher): shown as the subtitle instead of the step's line. */
   extra: { tag: string; text: string; lang: Lang } | null;
   tour: boolean;
 };
@@ -89,7 +89,7 @@ export class TeachingStage {
 
   constructor(
     private room: ExamRoom,
-    private doc: DrSajjad,
+    private doc: PnaTeacher,
     private choreo: BuiltChoreo,
     options: StageOptions,
     private onView: (view: StageView) => void,
@@ -144,7 +144,7 @@ export class TeachingStage {
     const shoulder = resolvePoint(room, "upperarm01", side(choreo));
     const up = new THREE.Vector3(0, 1, 0);
     const centre = shoulder.clone().addScaledVector(this.lateral("tested"), 0.25).addScaledVector(up, 0.32);
-    // From the patient's far side and foot end, a little above: the patient in front, Dr. Sajjad facing the camera behind.
+    // From the patient's far side and foot end, a little above: the patient in front, the PNA Teacher facing the camera behind.
     const dir = patientDir(room, [-0.75 * sign(choreo), -0.5, 0.85]).normalize();
     if (dir.y < 0.25) dir.setY(0.25).normalize();
     // Wider views fit with the same distance; a narrower one (a phone held upright) needs to back off.
@@ -341,7 +341,7 @@ export class TeachingStage {
 
   /* ---------------- per frame ---------------- */
 
-  /** He answers a question (Ask Dr. Sajjad): the sequence pauses, he turns to the visitor and says `text` (voice in English only). */
+  /** He answers a question (Ask PNA Teacher): the sequence pauses, he turns to the visitor and says `text` (voice in English only). */
   interject(text: string, lang: Lang, tag: string) {
     this.doc.speaker.cancel();
     this.lineToken++;

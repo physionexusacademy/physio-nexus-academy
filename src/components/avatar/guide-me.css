@@ -1,4 +1,4 @@
-/* Homepage guide card: Dr. Sajjad's tour of the academy. A dark, glowing card (picture + text + one button); the 3D stage opens inside it. */
+/* Homepage guide card: the PNA Teacher's tour of the academy. A dark, glowing card (picture + text + one button); the 3D stage opens inside it. */
 .gm { padding: 22px 0 6px; scroll-margin-top: calc(var(--nx-header-h, 72px) + 8px); }
 .gm-card { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 20px 28px; align-items: center; border-radius: 28px; padding: clamp(20px, 3vw, 34px); border: 1px solid rgba(46, 230, 214, 0.3); box-shadow: 0 34px 80px -46px rgba(8, 40, 90, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.03); }
 .gm-open .gm-card { grid-template-columns: minmax(0, 1fr); }

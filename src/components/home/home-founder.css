@@ -1,0 +1,18 @@
+/* Homepage Founder section: portrait + short introduction. Calm and light, like the rest of the page below the hero. */
+.hfd { padding: 12px 0 40px; content-visibility: auto; contain-intrinsic-size: auto 520px; }
+.hfd-card { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(20px, 4vw, 44px); align-items: center; border-radius: 30px; padding: clamp(18px, 3vw, 30px); background: #fff; border: 1px solid #dbe7ef; box-shadow: 0 24px 60px -44px rgba(7, 38, 64, 0.55); }
+.hfd-photo { position: relative; justify-self: center; width: 100%; border-radius: 24px; overflow: hidden; background: #e8eef3; box-shadow: 0 18px 40px -26px rgba(7, 38, 64, 0.7); }
+.hfd-img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 22%; }
+.hfd-copy { min-width: 0; }
+.hfd-title { margin: 10px 0 0; font-size: clamp(1.7rem, 3.6vw, 2.5rem); line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; color: #0b2a4a; }
+.hfd-role { margin: 6px 0 0; font-size: 1rem; font-weight: 700; color: #01828b; }
+.hfd-cred { margin: 10px 0 0; display: flex; align-items: flex-start; gap: 8px; font-size: 0.86rem; font-weight: 600; color: #475569; }
+.hfd-cred svg { flex: none; margin-top: 2px; color: #01828b; }
+.hfd-text { margin: 14px 0 0; max-width: 40rem; font-size: 0.98rem; line-height: 1.7; color: #475569; }
+.hfd-quote { margin: 16px 0 0; max-width: 40rem; padding: 4px 0 4px 16px; border-left: 3px solid #2ee6d6; font-size: 0.95rem; line-height: 1.7; font-style: italic; color: #334155; }
+.hfd-actions { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 760px) {
+  .hfd-card { grid-template-columns: minmax(0, 1fr); border-radius: 24px; }
+  .hfd-photo { width: min(62%, 260px); }
+  .hfd-actions .nx-btn { flex: 1; justify-content: center; }
+}

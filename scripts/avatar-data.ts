@@ -1,5 +1,5 @@
 /**
- * Dr. Sajjad teaching data: resolves each choreography's text references into the final bilingual lines, and checks them.
+ * PNA Teacher teaching data: resolves each choreography's text references into the final bilingual lines, and checks them.
  * Bundled with esbuild by build-avatar-data.mjs / validate-avatar.mjs (the regional guide uses "@/" imports Node cannot load directly).
  */
 import { CHOREOS } from "../src/lib/avatar/choreo/index.ts";

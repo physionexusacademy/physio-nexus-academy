@@ -226,7 +226,7 @@ function buildLesson(guide: MasteryGuide, meta: Meta): TeacherLesson {
     ur: slots.steps,
   });
 
-  // Dr. Sajjad's 3D demonstration of this technique, when one exists (see lib/avatar/choreo).
+  // The PNA Teacher's 3D demonstration of this technique, when one exists (see lib/avatar/choreo).
   const avatarDemo = avatarDemoBeat(meta.slug);
   if (avatarDemo) beats.push(avatarDemo);
 

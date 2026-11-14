@@ -5,7 +5,7 @@
  */
 import * as THREE from "three";
 import type { Pose } from "@/lib/virtual-patient/engine";
-import type { DrSajjad } from "./teacher";
+import type { PnaTeacher } from "./teacher";
 import { ARM_REACH, bonePosition, solveArm, type ArmGoal, type Side } from "./ik";
 import { restHead } from "./mesh";
 
@@ -50,7 +50,7 @@ export class DoctorRig {
   /** Largest gap between a hand and its target on the last frame (metres). */
   reachError = 0;
 
-  constructor(private doc: DrSajjad) {
+  constructor(private doc: PnaTeacher) {
     this.measureGround();
   }
 

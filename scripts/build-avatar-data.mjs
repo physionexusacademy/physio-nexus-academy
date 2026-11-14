@@ -1,5 +1,5 @@
 /**
- * Builds the static teaching data for Dr. Sajjad: public/teacher/choreo/<slug>.json (one per technique) and index.json.
+ * Builds the static teaching data for the PNA Teacher: public/teacher/choreo/<slug>.json (one per technique) and index.json.
  * The browser fetches these; they never enter the Cloudflare worker. Run after editing src/lib/avatar/choreo/*.
  */
 import fs from "node:fs";

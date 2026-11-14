@@ -20,6 +20,7 @@ const palette=read("src/components/nexus/CommandPalette.tsx");
 const mobile=read("src/components/MobilePortalNav.tsx");
 const whatsapp=read("src/components/WhatsAppButton.tsx");
 const needHelp=read("src/components/home/HomeNeedHelp.tsx");
+const founderSection=read("src/components/home/HomeFounder.tsx");
 const features=read("src/components/home/HomeFeatures.tsx");
 const dailyBoard=read("src/components/home/HomeDailyBoard.tsx");
 const guide=read("src/components/avatar/GuideMe.tsx");
@@ -55,8 +56,10 @@ const tests={
   suppliedPathwayPhotosUncropped:browser.includes("/images/pathway-backgrounds/")&&lobbyCss.includes("aspect-ratio: 754 / 498")&&lobbyCss.includes("object-fit: contain"),
   conditionalAtlas:browser.includes('showAtlas || link.href !== "/clinical-visual-atlas"'),
   portraitExistsAndValid:portrait.length>20000&&portrait.toString("latin1",4,8)==="ftyp"&&portrait.includes(Buffer.from("avif")),
-  approvedHeroImageUsed:hero.includes('src="/images/founder-dr-sajjad.jpg"')&&hero.includes("priority")&&hero.includes("pna-hero-photo"),
-  portraitNotDistorted:jpgSize&&jpgSize.w*5===jpgSize.h*4&&lobbyCss.includes("aspect-ratio: 4 / 5"),
+  // The top of the page shows the PNA Teacher, not the founder: his name and portrait are only in the Founder section.
+  heroShowsPnaTeacher:hero.includes('src="/teacher/pna-teacher-poster.webp"')&&hero.includes('fetchPriority="high"')&&hero.includes("pna-hero-photo")&&hero.includes("<strong>PNA Teacher</strong>")&&!hero.includes("Sajjad")&&!hero.includes("founder-dr-sajjad"),
+  founderOnlyInFounderSection:founderSection.includes("siteConfig.founder")&&founderSection.includes("founder.photo")&&founderSection.includes('href="/founder"')&&home.includes("<HomeFounder />")&&home.indexOf("<PremiumPathwayBrowser")<home.indexOf("<HomeFounder />")&&!read("src/components/Header.tsx").includes("Sajjad")&&!read("src/components/Header.tsx").includes("founder-dr-sajjad"),
+  portraitNotDistorted:jpgSize&&jpgSize.w*5===jpgSize.h*4&&lobbyCss.includes("aspect-ratio: 4 / 5")&&read("src/components/home/home-founder.css").includes("aspect-ratio: 4 / 5")&&read("src/components/home/home-founder.css").includes("object-fit: cover"),
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
   originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),
   maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),
@@ -82,7 +85,7 @@ const tests={
   // The Daily Clinical Challenge stays on the site and is a dark, glowing panel (five-question track) on the homepage.
   dailyChallengeFuturistic:home.includes('className="hdc-card nx-sky nx-grid"')&&home.includes("hdc-track")&&flagshipCss.includes(".hdc-track")&&flagshipCss.includes("hdc-scan")&&flagshipCss.includes("prefers-reduced-motion"),
   // Dr. Sajjad's guide lives on the homepage (the 3D tour loads only when started), not on the Teacher / Skills Lab pages.
-  guideOnHome:home.includes('import { GuideMe } from "@/components/avatar/GuideMe"')&&guide.includes("data-guide-me")&&guide.includes("ssr: false")&&guide.includes('demoKey="avatar/site-tour"')&&guide.includes("loading=\"lazy\"")&&guideCss.includes(".gm-card")&&!learnPage.includes("GuideMe")&&!skillsPage.includes("GuideMe")&&fs.existsSync("public/teacher/dr-sajjad-poster.webp")&&fs.statSync("public/teacher/dr-sajjad-poster.webp").size<60000,
+  guideOnHome:home.includes('import { GuideMe } from "@/components/avatar/GuideMe"')&&guide.includes("data-guide-me")&&guide.includes("ssr: false")&&guide.includes('demoKey="avatar/site-tour"')&&guide.includes("loading=\"lazy\"")&&guideCss.includes(".gm-card")&&!learnPage.includes("GuideMe")&&!skillsPage.includes("GuideMe")&&fs.existsSync("public/teacher/pna-teacher-poster.webp")&&fs.statSync("public/teacher/pna-teacher-poster.webp").size<60000,
   // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
   // The page stays short: no stats strip in the hero, no news block, the Registry sits in the physiotherapist pathway, Student Pass is one button.
   calmerHome:!hero.includes("lobby-stats")&&!home.includes("lobby-news")&&!home.includes("clinical-registry-v1")&&browser.includes('data-pna-home-feature="clinical-registry-v1"')&&pass.includes("aria-expanded={open}")&&dailyBoard.includes('className="hdc-board"'),
