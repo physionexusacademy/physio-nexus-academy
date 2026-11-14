@@ -49,8 +49,12 @@ It was designed to cost almost nothing:
 - **The heading is plain text** (one `<h1>`, the full sentence is its `aria-label`). The letters rise into place one after another with CSS animations only
   (`.hw-ch`, `--i` sets each letter's delay), so nothing waits for JavaScript and search engines read normal text. The brand gradient is a colour per letter, not
   `background-clip`, so the letters can move freely. A light beam passes over the heading every few seconds; the tagline "types" in once.
-- **The slideshow has no images.** `HeroSlideshow.tsx` (a client component, the only JavaScript in the hero) shows one card per feature; each card's small
-  "screen" is markup and SVG from `HeroScenes.tsx`, rendered on the server. The first card is in the HTML, so the page is complete before script runs.
+- **The slideshow has no images, and it is one HTML string.** `HeroSlideshow.tsx` builds the whole slideshow (nine cards, about 450 elements) as a string
+  (`hero-scenes.ts` draws each card's small animated "screen" in markup and SVG, `hero-icons.ts` holds the few icons) and inserts it with
+  `dangerouslySetInnerHTML`. The browser parses it once and React never looks inside it. This matters: the first version rendered the same cards as React
+  elements, which the page then received a second time in its React data (`__next_f`, +40 KB) and walked again at start-up; on the live site that doubled the
+  start-up script work of the main chunk and raised mobile blocking time from about 80 ms to about 345 ms. The only script is `HeroShowController.tsx`
+  (renders nothing; it finds the markup by id). The first card is in the HTML, so the page is complete before script runs. Nothing in the string comes from a visitor.
 - **Only the card on screen animates** (`.hs-slide:not([data-pos="idle"])`), and only with `transform`, `opacity` and a few small SVG strokes. When the hero is
   scrolled off screen or the tab is hidden everything pauses (`data-awake="0"`, `IntersectionObserver`, `visibilitychange`).
 - **The progress bar is the timer**: a CSS animation per card; when it ends (`onAnimationEnd`) the next card shows. Hover, keyboard focus, a touch, the pause
@@ -58,13 +62,7 @@ It was designed to cost almost nothing:
 - **Every card is one link to a real page** (`/learn`, `/skills`, `/virtual-patient`, `/rehabverse`, `/manual-therapy`, `/daily-challenge`, `/conditions`,
   `/symptom-checker`, `/leagues`); `scripts/validate-premium-homepage.mjs` checks each exists. Counts on the cards (lessons, patients, guides) come from the data, not from typing.
 
-Measured on the production build served locally (same method as before, Lighthouse mobile preset, three runs): score 89–90 (88 with the previous hero),
-total blocking time 120 ms (130–160 ms before), layout shift 0, desktop 99. The slideshow adds about 9 KB (gzip) to the page HTML (nine cards of markup) and
-nothing to download: no image, no extra request. Worker size 2,865 KiB gzip.
-Why a controller and not a React component: React hydrates what it renders on the client, so a client slideshow made the page do that work for nine cards
-(measured: blocking time about 250 ms). `HeroShowController` renders nothing and only attaches to the server markup.
-
-To add a card: add an entry to `slides` in `LobbyHero.tsx` and a `Scene…` in `HeroScenes.tsx` (give its animation rule the
+To add a card: add an entry to `slides` in `LobbyHero.tsx` and a `scene…` function in `hero-scenes.ts` (and an icon in `hero-icons.ts` if needed) (give its animation rule the
 `.hs-slide:not([data-pos="idle"])` prefix in `home-hero.css`).
 
 ## The built-in male voice

@@ -1,11 +1,11 @@
 import { Fragment, type CSSProperties } from "react";
-import { ArrowRight, Flame, GraduationCap, HeartPulse, Layers, Hand, Ruler, ScanLine, Stethoscope, Trophy } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { LobbySearch } from "./LobbySearch";
 import { HeroSlideshow, type HeroSlide } from "./HeroSlideshow";
-import { SceneConditions, SceneDaily, SceneLeagues, SceneManual, SceneRehab, SceneSkills, SceneSymptom, SceneTeacher, SceneVirtual } from "./HeroScenes";
+import { sceneConditions, sceneDaily, sceneLeagues, sceneManual, sceneRehab, sceneSkills, sceneSymptom, sceneTeacher, sceneVirtual } from "./hero-scenes";
 import "./home-hero.css";
 
 /**
@@ -54,7 +54,6 @@ function Word({ text, from, tintStart, tintCount }: { text: string; from: number
 }
 
 export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
-  const cls = "h-3.5 w-3.5";
   const guides = conditionCatalog.length;
   const slides: HeroSlide[] = [
     {
@@ -66,8 +65,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: [`${lessonIndex.length} lessons`, "English + Roman Urdu", "Quick checks"],
       cta: "Start learning",
       accent: "46 230 214",
-      icon: <GraduationCap className={cls} aria-hidden="true" />,
-      scene: <SceneTeacher />,
+      icon: "learn",
+      scene: sceneTeacher(),
     },
     {
       id: "skills",
@@ -78,8 +77,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: ["Goniometry", "Muscle testing", "Four levels"],
       cta: "Open the Skills Lab",
       accent: "143 124 255",
-      icon: <Ruler className={cls} aria-hidden="true" />,
-      scene: <SceneSkills />,
+      icon: "skills",
+      scene: sceneSkills(),
     },
     {
       id: "virtual-patient",
@@ -90,8 +89,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: [`${VP_CASE_COUNT} patients`, "Guided or timed OSCE", "Red flags included"],
       cta: "Meet a patient",
       accent: "60 200 255",
-      icon: <Stethoscope className={cls} aria-hidden="true" />,
-      scene: <SceneVirtual />,
+      icon: "patient",
+      scene: sceneVirtual(),
     },
     {
       id: "rehabverse",
@@ -102,8 +101,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: ["3D exercise library", "English + Roman Urdu", "Home programme"],
       cta: "Open RehabVerse",
       accent: "59 229 157",
-      icon: <HeartPulse className={cls} aria-hidden="true" />,
-      scene: <SceneRehab />,
+      icon: "rehab",
+      scene: sceneRehab(),
     },
     {
       id: "manual-therapy",
@@ -114,8 +113,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: ["Step by step", "3D demonstrations", "English + Roman Urdu"],
       cta: "Explore techniques",
       accent: "255 198 92",
-      icon: <Hand className={cls} aria-hidden="true" />,
-      scene: <SceneManual />,
+      icon: "manual",
+      scene: sceneManual(),
     },
     {
       id: "daily-challenge",
@@ -126,8 +125,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: ["5 questions a day", "Live leaderboard", "Monthly champions"],
       cta: "Take today's challenge",
       accent: "255 122 162",
-      icon: <Flame className={cls} aria-hidden="true" />,
-      scene: <SceneDaily />,
+      icon: "daily",
+      scene: sceneDaily(),
     },
     {
       id: "conditions",
@@ -138,8 +137,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: [`${guides} guides`, "Three depth levels", "Stage-based plans"],
       cta: "Browse conditions",
       accent: "111 231 255",
-      icon: <Layers className={cls} aria-hidden="true" />,
-      scene: <SceneConditions />,
+      icon: "conditions",
+      scene: sceneConditions(),
     },
     {
       id: "symptom-checker",
@@ -150,8 +149,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: ["Neck to ankle", "Red-flag aware", "Plain language"],
       cta: "Check my symptoms",
       accent: "255 160 92",
-      icon: <ScanLine className={cls} aria-hidden="true" />,
-      scene: <SceneSymptom />,
+      icon: "symptom",
+      scene: sceneSymptom(),
     },
     {
       id: "leagues",
@@ -162,8 +161,8 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       chips: ["Free weekly league", "XP from your learning", "Seven tiers"],
       cta: "Join a league",
       accent: "201 139 255",
-      icon: <Trophy className={cls} aria-hidden="true" />,
-      scene: <SceneLeagues />,
+      icon: "leagues",
+      scene: sceneLeagues(),
     },
   ];
 
@@ -209,9 +208,7 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
           </p>
         </div>
 
-        <div className="lobby-show">
-          <HeroSlideshow slides={slides} />
-        </div>
+        <HeroSlideshow slides={slides} />
 
         <div className="lobby-copy lobby-copy-bottom">
           <LobbySearch atlasPublished={atlasPublished} />
