@@ -30,7 +30,7 @@ export const siteConfig = {
     serviceAreas: ["Karachi", "Hyderabad"],
     googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJEyXEA0A-bG8RCrIF9nIJv3A",
     social: {
-      facebook: "",
+      facebook: "https://www.facebook.com/share/1GGD2CBeNA/",
       instagram: "https://www.instagram.com/physionexusacademy/",
       linkedin: "",
       youtube: "",
