@@ -8,6 +8,10 @@ import assert from "node:assert/strict";
 const read=(path)=>fs.readFileSync(path,"utf8");
 const home=read("src/app/page.tsx");
 const hero=read("src/components/home/LobbyHero.tsx");
+const heroShow=read("src/components/home/HeroSlideshow.tsx");
+const heroControl=read("src/components/home/HeroShowController.tsx");
+const heroScenes=read("src/components/home/HeroScenes.tsx");
+const heroCss=read("src/components/home/home-hero.css");
 const search=read("src/components/home/LobbySearch.tsx");
 const pass=read("src/components/home/StudentPass.tsx");
 const browser=read("src/components/home/PremiumPathwayBrowser.tsx");
@@ -56,10 +60,20 @@ const tests={
   suppliedPathwayPhotosUncropped:browser.includes("/images/pathway-backgrounds/")&&lobbyCss.includes("aspect-ratio: 754 / 498")&&lobbyCss.includes("object-fit: contain"),
   conditionalAtlas:browser.includes('showAtlas || link.href !== "/clinical-visual-atlas"'),
   portraitExistsAndValid:portrait.length>20000&&portrait.toString("latin1",4,8)==="ftyp"&&portrait.includes(Buffer.from("avif")),
-  // The top of the page shows the PNA Teacher, not the founder: his name and portrait are only in the Founder section.
-  heroShowsPnaTeacher:hero.includes('src="/teacher/pna-teacher-poster.webp"')&&hero.includes('fetchPriority="high"')&&hero.includes("pna-hero-photo")&&hero.includes("<strong>PNA Teacher</strong>")&&!hero.includes("Sajjad")&&!hero.includes("founder-dr-sajjad"),
+  // The top of the page is an animated "Welcome to Physio Nexus Academy" (plain text, one h1, letters appear with CSS only) beside a slideshow of the academy's features.
+  heroAnimatedWelcome:hero.includes('const BRAND = "Physio Nexus Academy"')&&hero.includes('"Welcome"')&&hero.includes('className="nx-title lobby-title hw"')&&hero.includes("aria-label={`Welcome to ${BRAND}`}")&&(hero.match(/<h1/g)||[]).length===1&&hero.includes("hw-beam")&&hero.includes("Clinical confidence")&&heroCss.includes("@keyframes hw-in")&&heroCss.includes("@keyframes hw-beam")&&heroCss.includes("@keyframes hw-type")&&heroCss.includes("prefers-reduced-motion: reduce"),
+  // The PNA Teacher's 3D picture is no longer in the hero (the Guide section further down still introduces him); neither is the founder's name or photo.
+  heroHasNoTeacherImage:!hero.includes("pna-teacher-poster")&&!hero.includes("pna-hero-photo")&&!hero.includes("<img")&&!hero.includes("lobby-teacher")&&!hero.includes("Sajjad")&&!hero.includes("founder-dr-sajjad")&&!lobbyCss.includes(".lobby-teacher")&&!heroScenes.includes("<img")&&!heroScenes.includes("next/image"),
+  // The slideshow shows nine real features, each a link to a page that exists, with nothing to download but markup.
+  heroSlideshowOfFeatures:hero.includes("<HeroSlideshow slides={slides} />")&&(()=>{const links=[...hero.matchAll(/href: "(\/[a-z0-9-]+)"/g)].map(match=>match[1]);return links.length>=9&&new Set(links).size===links.length&&links.every(url=>fs.existsSync(`src/app${url}/page.tsx`));})()&&["/learn","/skills","/virtual-patient","/rehabverse","/manual-therapy","/daily-challenge","/conditions","/symptom-checker","/leagues"].every(url=>hero.includes(`href: "${url}"`)),
+  // The slideshow is a proper carousel: plays by itself but stops for hover/focus/touch, a hidden tab, off-screen and reduced motion; arrows, dots, swipe and pause all work.
+  heroSlideshowAccessible:heroShow.includes('aria-roledescription="carousel"')&&heroShow.includes('aria-roledescription="slide"')&&heroShow.includes("inert={i !== 0}")&&heroShow.includes("Pause the slideshow")&&heroShow.includes("<HeroShowController />")&&heroControl.includes('"use client"')&&heroControl.includes("prefers-reduced-motion: reduce")&&heroControl.includes("visibilitychange")&&heroControl.includes("IntersectionObserver")&&heroControl.includes('"ArrowRight"')&&heroControl.includes('"ArrowLeft"')&&heroControl.includes('"pointerup"')&&heroControl.includes('"animationend"')&&heroControl.includes("AbortController")&&heroCss.includes('[data-awake="0"]')&&heroCss.includes("touch-action: pan-y"),
+  // The slideshow is server-rendered markup (nothing to hydrate, nothing sent twice); its controller renders nothing and uses no state library.
+  heroSlideshowIsLight:!heroShow.includes('"use client"')&&!heroShow.includes("useState")&&heroControl.includes("return null;")&&!heroControl.includes("useState")&&heroControl.length<9000,
+  // Only the slide on screen animates, and only with transform, opacity and a few small SVG strokes.
+  heroMotionIsLight:heroCss.includes(':not([data-pos="idle"])')&&heroCss.includes("@media (prefers-reduced-motion: no-preference)")&&![...heroCss.matchAll(/@keyframes [a-z-]+ \{([^@]*?)\n\}/g)].some(match=>/\b(top|left|right|bottom|width|height|margin|box-shadow|background-position)\s*:/.test(match[1])),
   founderOnlyInFounderSection:founderSection.includes("siteConfig.founder")&&founderSection.includes("founder.photo")&&founderSection.includes('href="/founder"')&&home.includes("<HomeFounder />")&&home.indexOf("<PremiumPathwayBrowser")<home.indexOf("<HomeFounder />")&&!read("src/components/Header.tsx").includes("Sajjad")&&!read("src/components/Header.tsx").includes("founder-dr-sajjad"),
-  portraitNotDistorted:jpgSize&&jpgSize.w*5===jpgSize.h*4&&lobbyCss.includes("aspect-ratio: 4 / 5")&&read("src/components/home/home-founder.css").includes("aspect-ratio: 4 / 5")&&read("src/components/home/home-founder.css").includes("object-fit: cover"),
+  portraitNotDistorted:jpgSize&&jpgSize.w*5===jpgSize.h*4&&read("src/components/home/home-founder.css").includes("aspect-ratio: 4 / 5")&&read("src/components/home/home-founder.css").includes("object-fit: cover"),
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),
   originalFounderPagesUnaffected:read("src/lib/site-config.ts").includes('photo: "/images/founder-dr-sajjad.jpg"'),
   maleOnlyClinicalArt:artwork.includes("male patient")&&artwork.includes('kind==="care"'),

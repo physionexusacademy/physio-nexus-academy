@@ -41,6 +41,32 @@ leaderboard loads only when its fold is opened (`HomeDailyBoard`). **Opening the
 Real first byte from `curl` after the change: about 0.2 s (`x-opennext-cache: HIT`). Largest contentful paint is the founder photo (24 KB, already
 prioritised) and is unchanged at about 3 s on the throttled mobile profile; it is dominated by the simulated network, not by the server.
 
+## The hero: animated welcome and feature slideshow
+
+The top of the homepage (`src/components/home/LobbyHero.tsx`) is an animated "Welcome to Physio Nexus Academy" beside a slideshow of what the academy offers.
+It was designed to cost almost nothing:
+
+- **The heading is plain text** (one `<h1>`, the full sentence is its `aria-label`). The letters rise into place one after another with CSS animations only
+  (`.hw-ch`, `--i` sets each letter's delay), so nothing waits for JavaScript and search engines read normal text. The brand gradient is a colour per letter, not
+  `background-clip`, so the letters can move freely. A light beam passes over the heading every few seconds; the tagline "types" in once.
+- **The slideshow has no images.** `HeroSlideshow.tsx` (a client component, the only JavaScript in the hero) shows one card per feature; each card's small
+  "screen" is markup and SVG from `HeroScenes.tsx`, rendered on the server. The first card is in the HTML, so the page is complete before script runs.
+- **Only the card on screen animates** (`.hs-slide:not([data-pos="idle"])`), and only with `transform`, `opacity` and a few small SVG strokes. When the hero is
+  scrolled off screen or the tab is hidden everything pauses (`data-awake="0"`, `IntersectionObserver`, `visibilitychange`).
+- **The progress bar is the timer**: a CSS animation per card; when it ends (`onAnimationEnd`) the next card shows. Hover, keyboard focus, a touch, the pause
+  button, a hidden tab and "reduce motion" all stop it, with no timers to leak. Arrow keys, the dots, the buttons and a swipe move it by hand.
+- **Every card is one link to a real page** (`/learn`, `/skills`, `/virtual-patient`, `/rehabverse`, `/manual-therapy`, `/daily-challenge`, `/conditions`,
+  `/symptom-checker`, `/leagues`); `scripts/validate-premium-homepage.mjs` checks each exists. Counts on the cards (lessons, patients, guides) come from the data, not from typing.
+
+Measured on the production build served locally (same method as before, Lighthouse mobile preset, three runs): score 89–90 (88 with the previous hero),
+total blocking time 120 ms (130–160 ms before), layout shift 0, desktop 99. The slideshow adds about 9 KB (gzip) to the page HTML (nine cards of markup) and
+nothing to download: no image, no extra request. Worker size 2,865 KiB gzip.
+Why a controller and not a React component: React hydrates what it renders on the client, so a client slideshow made the page do that work for nine cards
+(measured: blocking time about 250 ms). `HeroShowController` renders nothing and only attaches to the server markup.
+
+To add a card: add an entry to `slides` in `LobbyHero.tsx` and a `Scene…` in `HeroScenes.tsx` (give its animation rule the
+`.hs-slide:not([data-pos="idle"])` prefix in `home-hero.css`).
+
 ## The built-in male voice
 
 `public/teacher/espeak/` (about 0.8 MB compressed) is loaded only when the avatar stage opens or a voice button is used, never on first paint, and is

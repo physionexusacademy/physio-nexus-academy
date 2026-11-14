@@ -66,8 +66,7 @@
   }
   /* Slow decorative rotations and floats only cost battery on a phone. */
   .lobby-orbit-a,
-  .lobby-orbit-b,
-  .lobby-teacher-chip {
+  .lobby-orbit-b {
     animation: none;
   }
 }
