@@ -1,6 +1,6 @@
 /**
- * Dresses the shared CC0 body as "Dr. Sajjad Raza PT" (browser only): medium-light skin, navy scrubs with the embroidered
- * name and the PNA logo, a textured quiff with faded sides, a full trimmed beard, brows, a black smartwatch and shoes.
+ * Dresses the shared CC0 body as the "PNA Teacher" (browser only): medium-light skin, navy scrubs with the embroidered
+ * name and the PNA logo, a textured quiff with faded sides, a neat short beard, brows, a black smartwatch and shoes.
  * Everything is generated at run time from the body's own geometry (shells skinned to the same skeleton) and small canvas
  * textures; the only downloads are the body that the Virtual Patient already loads and one 15 KB logo image.
  */
@@ -9,6 +9,9 @@ import type { Figure } from "./figure";
 import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyData } from "./mesh";
 import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT, applyHeadFit } from "./fit";
 
+/** A separate 3D beard layer on top of the painted beard (more volume, but a ragged edge). The painted short beard is cleaner. */
+const BEARD_VOLUME = false;
+
 export const LOOK = {
   skin: "#c08b72",
   hair: "#2a1b14",
@@ -16,14 +19,14 @@ export const LOOK = {
   scrubs: "#14284a",
   scrubsTrim: "#1c3a66",
   teal: "#01828B",
-  name: "Dr. Sajjad Raza PT",
+  name: "PNA Teacher",
   logoUrl: "/teacher/pna-chest-logo.webp",
-  /** His face, fitted to the reference photograph and baked into the body's UV layout (2048 px, transparent outside the head). */
-  faceUrl: "/teacher/dr-sajjad-face.webp",
-  /** Fine relief of his skin (pores, creases, stubble) from the photograph, in the body's UV layout. */
-  bumpUrl: "/teacher/dr-sajjad-bump.webp",
-  /** His hair as photographed (hair pixels only), projected from the front on the hair shell. */
-  hairUrl: "/teacher/dr-sajjad-hair.webp",
+  /** The teacher's face: a clean professional face painted procedurally (scripts/avatar-face/design-face.py) onto the body's UV layout (2048 px, transparent outside the head). No photograph is involved. */
+  faceUrl: "/teacher/pna-teacher-face.webp",
+  /** Fine skin relief (pores, faint creases, stubble), generated, in the body's UV layout. */
+  bumpUrl: "/teacher/pna-teacher-bump.webp",
+  /** The hair's colour and texture (hair pixels only), projected from the front on the hair shell. */
+  hairUrl: "/teacher/pna-teacher-hair.webp",
 };
 
 type Dressed = {
@@ -66,7 +69,7 @@ const cellsFor = (body: BodyData, cellMetres: number) => body.scale / cellMetres
  * Cloth/hair/beard material: a standard material that follows the shell's per-vertex "field" (positive inside the garment or
  * hair region). `soft` fades the edge out over that many metres with a little noise (hair and beard); otherwise the edge is a clean cut.
  */
-function shellMaterial(base: THREE.MeshStandardMaterial, options: { soft?: number; noiseCells?: number } = {}) {
+function shellMaterial(base: THREE.MeshStandardMaterial, options: { soft?: number; noiseCells?: number; jitter?: number } = {}) {
   base.side = THREE.FrontSide;
   const soft = options.soft ?? 0;
   if (soft) {
@@ -85,17 +88,17 @@ function shellMaterial(base: THREE.MeshStandardMaterial, options: { soft?: numbe
       .replace(
         "#include <alphamap_fragment>",
         soft
-          ? `#include <alphamap_fragment>\n  float soft = smoothstep(0.0, ${soft.toFixed(4)}, vField + ((0.6 * vn(vObjPos * ${cells}) + 0.4 * vn(vObjPos * ${cells} * 2.7)) - 0.5) * ${(soft * 1.1).toFixed(4)});\n  diffuseColor.a *= soft;`
+          ? `#include <alphamap_fragment>\n  float soft = smoothstep(0.0, ${soft.toFixed(4)}, vField + ((0.6 * vn(vObjPos * ${cells}) + 0.4 * vn(vObjPos * ${cells} * 2.7)) - 0.5) * ${(soft * (options.jitter ?? 1.1)).toFixed(4)});\n  diffuseColor.a *= soft;`
           : "#include <alphamap_fragment>",
       );
   };
-  base.customProgramCacheKey = () => `avatar-shell-${soft.toFixed(4)}-${(options.noiseCells ?? 0).toFixed(1)}`;
+  base.customProgramCacheKey = () => `avatar-shell-${soft.toFixed(4)}-${(options.noiseCells ?? 0).toFixed(1)}-${(options.jitter ?? 1.1).toFixed(2)}`;
   return base;
 }
 
 /* ---------------- skin ---------------- */
 
-/** Re-colours the body's baked skin texture to Dr. Sajjad's complexion, keeping the painted hair, brows, lips and shading. */
+/** Re-colours the body's baked skin texture to the teacher's complexion, keeping the painted hair, brows, lips and shading. */
 function recolourSkin(figure: Figure, face: HTMLImageElement | null, bump: HTMLImageElement | null, light: boolean) {
   const material = figure.mesh.material as THREE.MeshStandardMaterial;
   const image = material.map?.image as CanvasImageSource & { width: number; height: number } | undefined;
@@ -453,7 +456,7 @@ function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElem
   const colourMap = photoMap ?? figure.own(hairColourMap());
   if (photoMap) strands.repeat.set(10, 10);
   // Low specular: strong rim light on thin hair edges otherwise shows as bright grey wisps at the temples.
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.0028) });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.0028), jitter: 0.6 });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.015 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -684,7 +687,7 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
 
 export type DressOptions = { light?: boolean };
 
-export async function dressDrSajjad(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
+export async function dressTeacher(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
   const parts: THREE.Object3D[] = [];
   const [face, fitted, hairPhoto, bumpPhoto] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure), loadImage(LOOK.hairUrl), loadImage(LOOK.bumpUrl)]);
   // His face is a photograph fitted to this head; without the fit the generic head would carry a stretched picture, so use both or neither.
@@ -692,7 +695,7 @@ export async function dressDrSajjad(figure: Figure, options: DressOptions = {}):
   recolourSkin(figure, likeness, bumpPhoto, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
   dressHair(figure, parts, likeness ? hairPhoto : null);
-  dressBeard(figure, parts, likeness ? (figure.mesh.material as THREE.MeshPhysicalMaterial).map : null);
+  if (!likeness || BEARD_VOLUME) dressBeard(figure, parts, likeness ? (figure.mesh.material as THREE.MeshPhysicalMaterial).map : null);
   dressShoes(figure, parts);
   dressWatch(figure, parts);
   warmEyes(figure);
@@ -720,5 +723,5 @@ export async function dressDrSajjad(figure: Figure, options: DressOptions = {}):
 }
 
 export async function install(h: { figure: Figure }) {
-  (h as unknown as { dressed: Dressed }).dressed = await dressDrSajjad(h.figure);
+  (h as unknown as { dressed: Dressed }).dressed = await dressTeacher(h.figure);
 }

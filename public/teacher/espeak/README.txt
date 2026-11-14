@@ -2,7 +2,7 @@ Built-in male reading voice for Physio Nexus Academy
 ====================================================
 
 This folder holds eSpeak NG, a free, open-source speech synthesiser, compiled to JavaScript. It runs inside the visitor's browser
-(nothing is sent anywhere) and gives Dr. Sajjad the same male voice on every phone and computer, without waiting for a download
+(nothing is sent anywhere) and gives the PNA Teacher the same male voice on every phone and computer, without waiting for a download
 from a speech service.
 
   espeak-ng.js          eSpeak NG compiled to JavaScript (npm package @echogarden/espeak-ng-emscripten 0.3.5), with its list of data

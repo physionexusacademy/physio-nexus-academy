@@ -12,6 +12,7 @@ import { HomeNeedHelp } from "@/components/home/HomeNeedHelp";
 import { HomeBodyMap } from "@/components/home/HomeBodyMap";
 import { GuideMe } from "@/components/avatar/GuideMe";
 import { HomeTestimonials } from "@/components/home/HomeTestimonials";
+import { HomeFounder } from "@/components/home/HomeFounder";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
@@ -175,6 +176,8 @@ export default function HomePage() {
       <StudentPass />
 
       <PremiumPathwayBrowser showAtlas={atlasPublished} />
+
+      <HomeFounder />
 
       <HomeTestimonials />
 

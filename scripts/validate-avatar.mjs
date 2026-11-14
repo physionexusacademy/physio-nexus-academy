@@ -1,5 +1,5 @@
 /**
- * Dr. Sajjad teaching data validator. Run: npm run validate:avatar
+ * PNA Teacher teaching data validator. Run: npm run validate:avatar
  * Every spoken line and note resolves to existing lesson / guide text in English and Roman Urdu, every landmark exists, steps are
  * well formed, the choreography is bound to a real lesson, and the generated JSON in public/teacher/choreo/ is fresh.
  */

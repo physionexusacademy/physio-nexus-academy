@@ -1,8 +1,9 @@
-# Dr. Sajjad — the 3D AI teaching assistant
+# PNA Teacher — the 3D AI teaching assistant
 
-Label used everywhere: **"AI teaching assistant based on Dr. Sajjad Raza PT"** (`src/lib/avatar/labels.ts`). He is an animated character
-driven by the existing lesson text. He is not the real Dr. Sajjad, has no cloned voice (a built-in male voice, eSpeak NG), and
-uses **no camera and no microphone**.
+Label used everywhere: **"PNA Teacher — AI teaching assistant"** (`src/lib/avatar/labels.ts`). He is an animated character driven by the existing
+lesson text. **The founder's name and photograph do not appear in the 3D demonstrations, the guide, the Ask box or the voice**: Dr. Sajjad Raza PT's name and
+picture are only in the homepage Founder section (`components/home/HomeFounder.tsx`) and on the Founder page; his name remains as the author of his books.
+The teacher has no cloned voice (a built-in male voice, or a natural male voice the device offers) and uses **no camera and no microphone**.
 
 ## What exists (Phase 0–4)
 
@@ -14,53 +15,56 @@ uses **no camera and no microphone**.
 | Teaching data | `src/lib/avatar/choreo/*.ts` → `npm run build:avatar-data` → `public/teacher/choreo/<slug>.json` |
 | UI inside the lesson | `src/components/avatar/AvatarStage.tsx` (+ `avatar.css`), reached through the lesson's existing `demo:` beat with the key `avatar/<slug>` (`components/skills/Demo3DAny.tsx`) |
 | Site guide ("Guide me") | `src/lib/avatar/choreo/site-tour.ts` (13 stops, wording taken from the existing site guide `site-guide.ts` / `academy-map.ts`), `components/avatar/GuideMe.tsx` (the dark "Guide me" card on the **homepage**, right under the "Need physiotherapy?" strip: portrait `public/teacher/dr-sajjad-poster.webp` (18 KB, rendered from the avatar itself), topic chips, one Start button; the stage opens in place inside the card, with a text version for browsers without WebGL. Nothing 3D is requested until Start; hovering, focusing or touching the button warms the 3D code. It no longer appears on `/learn` and `/skills`) |
-| "Ask Dr. Sajjad" (tour only) | `components/avatar/AskPanel.tsx` → the existing `/api/physio-nexus-ai`. Text box only. He reads out the answer the site's own search returns (resources + suggestions); emergency wording shows the safety box. |
+| "Ask PNA Teacher" (tour only) | `components/avatar/AskPanel.tsx` → the existing `/api/physio-nexus-ai`. Text box only. He reads out the answer the site's own search returns (resources + suggestions); emergency wording shows the safety box. |
 
 No new routes. All 3D, avatar, voice and animation code is client-only (`next/dynamic({ ssr: false })` / dynamic `import()`); the worker only
 gained one extra lesson beat's metadata.
 
-## Likeness (how his face matches the reference photo)
+## The face and look (no photograph)
 
-The character is the shared CC0 body with its head **fitted to the owner's reference photograph**; it is not a scan, so it is a close
-stylised likeness rather than an identical copy.
+The character is the shared CC0 body, dressed at run time. **No photograph of anyone is used or shipped.** (An earlier version baked a photo of the owner onto the head; it was
+removed on the owner's request, and the face was redesigned.)
 
-1. Landmarks measured on the photo (eye corners and lid edges, nostrils, mouth, chin, jaw, cheeks, ears, hairline) are paired with the same points on the generic head.
-2. A thin-plate spline turns that into a per-vertex displacement (`public/teacher/dr-sajjad-fit.bin`, 27 KB) applied by `src/lib/avatar/fit.ts` before dressing,
-   so the proportions (eye width, mouth width, chin, brow-to-eye distance) follow the photo and the hair, beard and clothes follow the fitted head.
-3. The photo (eyes removed, shadows flattened, background wall masked out) is projected onto the fitted head and baked into the body's 2048 px UV layout
-   (`public/teacher/dr-sajjad-face.webp`, 67 KB, RGBA). The 3D eyes stay real (brown irises, warm whites, resting lids a little lowered), so he can still blink and look around.
-4. Hair and beard are shells with dithered cut-out edges (no blended wisps). The hair shell carries the photographed hair (projected from the front, thin along its lower edge so it hugs the head); skin tone is sampled from the photo.
-5. **One skin tone from face to hands.** The neck and ears in the face texture are colour-matched to the face, and the body's own skin uses the face's measured tone (`LOOK.skin`).
-   (An earlier version read the hex colour in three.js's linear space and used it as sRGB bytes, which made the body darker and more orange than the face; fixed.)
-6. **Why the face once looked like a "cover", and the fix.** A frontal photograph only covers the front of the head, so the first version ended in a visible edge
-   at the cheeks and ears, beyond which the head was flat pale base skin; the photo's baked shadows fought the scene lighting; the beard was a separate jet-black layer;
-   the eyes were flat. Now (`scripts/avatar-likeness/fit.py`): the photographic colours are **diffused across the rest of the head in 3D** (blurred, fading into the
-   face's own skin tone and dark hair above the temples), the ears have an explicit matching tone, shadows are flattened, and the original painted texture never shows;
-   the beard layer wears the same skin picture (so it is the photographed beard standing out, adding volume only at the jaw and in profile); the eyes are painted
-   brown with a limbal ring, catchlight, a lid line and lashes; a **relief map** from the photo's fine detail (`dr-sajjad-bump.webp`, 35 KB) gives pores, stubble and creases.
-7. **Body proportions** (`fit.ts`, applied before dressing): head about 10 % larger about the eye line, neck 12 % thicker, arms 10 %, chest 7 %, abdomen 5 % and shoulders 6 % fuller,
-   all radial about each bone's own line so posing and the hand placement are unaffected.
+1. **Head shape.** `public/teacher/pna-teacher-fit.bin` (27 KB) is a smooth warp of the generic head (per-vertex displacements in the front plane), applied by
+   `src/lib/avatar/fit.ts` before dressing, so the proportions (eye width, mouth width, chin, brow-to-eye distance) are well balanced and the hair, beard and clothes follow the head.
+2. **The face is painted procedurally** (`scripts/avatar-face/design-face.py` → `public/teacher/pna-teacher-face.webp`, ~35 KB, and the fine skin relief `pna-teacher-bump.webp`, ~160 KB):
+   every texel's colour is a function of its 3D position on the fitted head, so it is symmetric and follows the surface exactly. It paints a warm skin tone with gentle regional
+   variation (forehead, cheeks, nose tip, cooler under-eye, warmer ears), soft shading (eye socket, upper-lid crease, nasolabial folds, philtrum, under the lip and chin), tapered
+   eyebrows with hair strokes, lid lines and lashes, nostrils, lips (vermilion with a cupid's bow, mouth line, soft highlight), and a **neat short beard** with a curved cheek line,
+   shaved around the lips, dense at the chin and light on the cheek. The relief map adds random pores and stubble (random noise, not regular patterns, so it cannot produce moire).
+   Re-generate: dump the body with `scripts/avatar-face/dump-mesh.cjs`, then `python3 scripts/avatar-face/design-face.py mesh.json public/teacher/pna-teacher-fit.bin public/teacher`.
+3. **Hair and beard.** The hairstyle (a textured quiff with faded sides) is a shell with a cut-out edge (`pna-teacher-hair.webp` carries its colour and texture, hair pixels only). The beard is painted into
+   the face texture; the extra 3D beard layer is off (`BEARD_VOLUME` in `dress.ts`) because its ragged edge looked less professional.
+4. **Eyes.** The 3D eyes stay real (brown irises with a limbal ring, catchlight, warm whites), so he blinks and looks around.
+5. **One skin tone from face to hands.** `LOOK.skin` is used for the body and as the base of the face tile (note: three.js holds colours in linear space; the hex is read as sRGB bytes).
+6. **Body proportions** (`fit.ts`): head about 10 % larger about the eye line, neck 12 % thicker, arms 10 %, chest 7 %, abdomen 5 % and shoulders 6 % fuller, radial about each bone's own line so posing and hand placement are unaffected.
+7. **Scrubs** carry the embroidered name **"PNA Teacher"** and the PNA logo.
 
-Tools and re-generation steps: `scripts/avatar-likeness/README.md`. The photograph is never committed or uploaded; only the derived face texture ships.
-Limits: the head's *shape* in side view is still the generic head, the hair is a smooth stylised quiff (not strand-accurate), and the face is baked from one lit photo.
-A scanned or sculpted GLB dropped into `public/teacher/dr-sajjad.glb` replaces all of this (see "Swapping in a 3D artist's model").
+Limits: this is a clean stylised face, not a scan or a photoreal person; the lower face is wide because the head is fitted from a generic base. A scanned or sculpted GLB dropped into
+`public/teacher/pna-teacher.glb` replaces all of this (see "Swapping in a 3D artist's model").
 
-## Voices (English, Urdu, Roman Urdu): always male, same on every device
+## Voices (English, Urdu, Roman Urdu): always male, as natural as the device allows
 
 No audio is generated by a service, uploaded or cloned. Code: `src/lib/speech/`. **The therapist is a man, so the voice is always male and a female voice is never used.**
+A free voice that sounds fully human does not exist in a browser without a large download; this is what is done to get as close as possible, and what the limits are.
 
-* **Which voice**: (1) a male voice *installed on the device* whose name says it is male (Microsoft David, Mark, Ravi, Hemant, Asad, Daniel, Alex …) and that is local (a streamed "online" voice would lag), else
-  (2) Dr. Sajjad's own **built-in male voice** (`builtin.ts`). Most phones and many computers only have female voices or voices with no gender in the name; those are not used. The visitor can choose either in the voice list
-  (it lists the built-in voice and installed male voices only, no ♀ entries). A saved choice of a female voice is ignored.
+* **Which voice** (best first): (1) a **natural** male voice the device offers (Edge/Windows "Microsoft Guy/Ryan/Andrew/Brian … Online (Natural)", Hindi "Prabhat/Madhur", Urdu "Asad"; macOS "Daniel/Alex" enhanced and so on): these are
+  neural voices and sound like a person; (2) another male voice the device offers (named as male: David, Mark, Ravi, Hemant, Daniel, "Google UK English Male" …); (3) the PNA Teacher's own **built-in male voice** (`builtin.ts`).
+  Voices that are female or whose name does not say they are male (most phone voices) are never used. A natural online voice is streamed, so if it has not started within 1.8 s the same line is spoken by the built-in voice (`speakWithFallback`)
+  and the lesson never waits. The voice list (avatar stage) shows the built-in voice and the male voices, marked ♂ and "natural"/"online".
+* **Fluent, not word-by-word**: `spoken.ts` turns written lesson text into text meant to be said, without changing a word of the clinical content: ° → "degrees", % → "percent", "3–5" → "3 to 5", arrows → ", then", dashes and bullets → a pause,
+  brackets → a spoken aside, e.g./i.e. → "for example"/"that is", markdown and list marks removed, and every line ends like a sentence so the voice finishes with falling intonation. Lines are spoken as whole sentences (device voices) or
+  sentence by sentence with a short breath between (built-in voice).
 * **Built-in voice** = **eSpeak NG** (open source, GPL-3.0; `public/teacher/espeak/`, licence and source link in `README.txt`, credit shown next to the voice button) running in a Web Worker in the visitor's browser. Nothing is sent anywhere, it works offline once loaded,
-  and it is **fast**: measured in Chromium, the engine is ready in 0.2 s, a 170-character sentence (12 s of speech) is made in 0.2 s (60× real time), Hindi in 0.03 s. The first piece of a line is kept short (~70 characters) so sound starts at once even on a slow phone,
-  the rest follows gaplessly (Web Audio). It is loaded (0.8 MB compressed, cached for a month) when the avatar stage opens, so the first line does not wait. Measured pitch of the audio actually played: **106 Hz English, 109 Hz Urdu** (adult male range).
-  It sounds like a clear computer voice, not a natural human one: that is the price of a free voice that is male and instant on every device. Files: `espeak-ng.js` (the engine, data list reduced), `espeak-ng-data.json` (a binary file named .json so Cloudflare compresses it; English, Hindi, Urdu rules, male variants only), `worker.js`; `scripts/espeak/build.py` rebuilds them from the npm package `@echogarden/espeak-ng-emscripten` (not a dependency of the site).
-* **English**: the English voice. **Urdu / Roman Urdu**: the site's Urdu is Roman Urdu mixed with English terms (the word list `public/teacher/ur-lexicon.json`, made by `npm run build:ur-lexicon`). Urdu words are converted to **Devanagari** (explicit vowels) for the Hindi voice; the English terms stay in Latin letters. The built-in voice reads the whole mixed line as one speaker (eSpeak NG switches language by word, so "posterior glide" is English inside a Hindi line);
-  a device Hindi/Urdu male voice reads one mixed utterance (the avatar has an option to read English terms with the English voice).
+  and it is **fast**: measured in Chromium, the engine is ready in 0.2 s and a 170-character sentence (12 s of speech) is made in 0.2 s (60× real time). The first piece of a line is kept short (~70 characters) so sound starts at once even on a slow phone, the rest follows
+  gaplessly (Web Audio). Loaded (0.8 MB compressed, cached for a month) when the avatar stage opens. Tuned for an adult male that is not flat: pitch 48 (median about 106 Hz), a wide intonation range (72 vs the default 50 widens the pitch movement of a sentence by about a third),
+  152 words a minute. **It is still a synthetic voice** and sounds like one; a human-quality voice needs a neural model (tens of MB per visitor) or a paid service, neither of which is used.
+  Files: `espeak-ng.js`, `espeak-ng-data.json` (a binary file named .json so Cloudflare compresses it), `worker.js`; `scripts/espeak/build.py` rebuilds them from the npm package `@echogarden/espeak-ng-emscripten` (not a dependency of the site).
+* **English**: the English voice. **Urdu / Roman Urdu**: the site's Urdu is Roman Urdu mixed with English terms (the word list `public/teacher/ur-lexicon.json`, made by `npm run build:ur-lexicon`). Urdu words are converted to **Devanagari** (explicit vowels) for the Hindi voice; English terms stay in Latin letters.
+  The built-in voice reads the whole mixed line as one speaker (eSpeak NG switches language by word); a device Hindi/Urdu male voice reads one mixed utterance.
 * **No voice available** (an old browser with no Web Workers/Web Audio and no male device voice): the player says so in plain words and carries on with subtitles and lip movement.
 * **Lip-sync**: from the text on a timeline; with the built-in voice the timeline is spread over the real length of the line once it is known.
-* Limits: Hindi/Urdu rules make understandable Hindustani, not a trained Urdu voice; Roman Urdu vowel length is approximate. `npm run validate:speech` checks the voice choice with a mocked synthesiser and checks the files; the pitch and speed above were measured on real output in a browser. Real phone speakers were not heard in the build environment.
+* Limits: Hindi/Urdu rules make understandable Hindustani, not a trained Urdu voice; Roman Urdu vowel length is approximate. `npm run validate:speech` checks the voice choice with a mocked synthesiser, the spoken-style text and the files; the pitch and speed above were measured on real output in a browser. Real phone speakers were not heard in the build environment.
 
 ## Idle life in every 3D demonstration
 
@@ -82,7 +86,7 @@ is off for reduced motion, data saver, low memory or two cores or fewer.
 
 * `site-tour.json` is built like the technique data: each stop's line is a `TextRef` to a site-guide field (`id` + `part`). Stops that matter on the page carry a link (`href` is checked against the real app routes by `validate:avatar`).
 * The tour stands the patient up or lays him down as needed (`position` per step) and uses the same overlays as Skills Lab scenes for the short demonstrations.
-* **Ask Dr. Sajjad** sends the typed question (nothing else) to `/api/physio-nexus-ai`, which is deterministic and grounded in PNA's own content. His reply is only the answer text and resource titles that route returns; no model text is invented in the browser. Red-flag wording (e.g. chest pain) shows the route's safety message first. Rate limit and privacy rules are the route's own.
+* **Ask PNA Teacher** sends the typed question (nothing else) to `/api/physio-nexus-ai`, which is deterministic and grounded in PNA's own content. His reply is only the answer text and resource titles that route returns; no model text is invented in the browser. Red-flag wording (e.g. chest pain) shows the route's safety message first. Rate limit and privacy rules are the route's own.
 * Voice input is **not** offered here (no microphone).
 
 ## Adding another technique (data only)
@@ -97,7 +101,7 @@ is off for reduced motion, data saver, low memory or two cores or fewer.
 
 ## Swapping in a 3D artist's model
 
-Put the file at `public/teacher/dr-sajjad.glb`. If it exists, `DrSajjad.create()` loads it **instead of** the generated character (no dressing is applied — the artist's file brings its own clothes,
+Put the file at `public/teacher/pna-teacher.glb`. If it exists, `PnaTeacher.create()` loads it **instead of** the generated character (no dressing is applied — the artist's file brings its own clothes,
 hair and textures) and drives it with the same pose system, face animator and IK.
 
 Requirements (the pose system, face animation and hand placement use the rig's bone *names* and rest pose):
@@ -105,7 +109,7 @@ Requirements (the pose system, face animation and hand placement use the rig's b
 * A single skinned mesh (the biggest skinned mesh is used) on the **PNA body rig** — the MakeHuman "default" skeleton used by `public/virtual-patient/patient.glb`: `root`, `spine01–05`, `neck01–03`, `head`, `clavicle.L/R`, `upperarm01/02.L/R`, `lowerarm01/02.L/R`, `wrist.L/R`, `finger1-1 … finger5-3.L/R`, `upperleg01/02`, `lowerleg01/02`, `foot`, `toe…`, plus face bones `jaw`, `eye.L/R`, `orbicularis03/04.L/R` (eyelids), `oris*`, `risorius*`. Bones rest with **identity rotation** (A-pose), as in `patient.glb`.
 * Feet at y = 0, metres, +z forward, +x = the character's left.
 * Compression: the existing loader supports Meshopt, KTX2-free WebP textures and `KHR_mesh_quantization`.
-* If required bones are missing, the console lists them (`[dr-sajjad] … is missing N required bone(s)`); with more than 20 % missing the model is rejected and the generated character is used.
+* If required bones are missing, the console lists them (`[pna-teacher] … is missing N required bone(s)`); with more than 20 % missing the model is rejected and the generated character is used.
 
 Limitation: a model on a *different* skeleton (e.g. Mixamo) is not retargeted automatically — rig it to the PNA skeleton, or ask for a bone-name map plus rest-pose correction to be added.
 

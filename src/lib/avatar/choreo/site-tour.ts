@@ -1,5 +1,5 @@
 /**
- * "Guide me": Dr. Sajjad's tour of the academy. Every line is the site guide's own text for that feature (lib/pna-ai/site-guide.ts,
+ * "Guide me": the PNA Teacher's tour of the academy. Every line is the site guide's own text for that feature (lib/pna-ai/site-guide.ts,
  * English + Roman Urdu); the button under each stop opens that feature's page. The 3D part is a short, harmless demonstration that
  * suggests what the feature does (a goniometer sweep for the Skills Lab, an exercise for RehabVerse, hands-on for Manual Therapy).
  */
@@ -79,7 +79,11 @@ export const siteTour: Choreo = {
     talk("case-lab", "Case Lab", { gesture: "care", look: "patient", overlays: [] }),
     talk("daily-challenge", "Daily Challenge", { gesture: "point", look: "camera" }),
     talk("leagues", "Leagues"),
-    talk("books", "Books"),
+    // The books stop uses the guide's key points (no author name: the tour is the PNA Teacher's).
+    talk("books", "Books", {
+      say: [{ src: "site", id: "books", part: "point", index: 0 }, { src: "site", id: "books", part: "point", index: 1 }],
+      link: { id: "books", label: { en: "Open Books & Resources", ur: "Books & Resources kholein" } },
+    }),
     talk("workshops", "Workshops"),
     talk("student-account", "My PNA", { gesture: "nod" }),
   ],

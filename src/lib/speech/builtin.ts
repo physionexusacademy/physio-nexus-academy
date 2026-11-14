@@ -2,7 +2,7 @@
  * The built-in male reading voice (browser only).
  *
  * Most phones and many computers only have female voices, and a voice that is downloaded from a speech service is slow to start. So
- * Dr. Sajjad has his own voice that works the same everywhere: eSpeak NG, a small open-source speech synthesiser (GPL-3.0, see
+ * The PNA Teacher has his own voice that works the same everywhere: eSpeak NG, a small open-source speech synthesiser (GPL-3.0, see
  * /teacher/espeak/README.txt) that runs inside the visitor's browser in a Web Worker. Nothing is sent anywhere, it works offline once
  * loaded and it is fast (about twenty times faster than real time), so a line starts speaking a fraction of a second after it is asked for.
  *
@@ -14,17 +14,17 @@
  */
 
 export const BUILTIN_VOICE = "pna-builtin-male";
-export const BUILTIN_LABEL = "Dr. Sajjad — built-in male voice";
+export const BUILTIN_LABEL = "PNA Teacher — built-in male voice";
 export type BuiltinLang = "en-us" | "hi";
 export type BuiltinPart = { text: string; lang: BuiltinLang };
 export type BuiltinPlayback = { cancel: () => void; pause: () => void; resume: () => void; done: Promise<void> };
 
 const WORKER_URL = "/teacher/espeak/worker.js";
-/** eSpeak settings that give a natural-sounding adult male: pitch 50 is the male default (about 103 Hz), range 55 a little livelier than flat. */
-const PITCH = 50;
-const RANGE = 55;
-const WORDS_PER_MINUTE = 156;
-const SENTENCE_GAP = 0.1;
+/** eSpeak settings for an adult male that is not flat: pitch 48 (median about 106 Hz), and a wide intonation range (72 instead of the default 50 widens the pitch movement of a sentence by about a third), a calm 152 words a minute, and a short breath between sentences. */
+const PITCH = 48;
+const RANGE = 72;
+const WORDS_PER_MINUTE = 152;
+const SENTENCE_GAP = 0.14;
 
 type AudioContextClass = typeof AudioContext;
 const audioContextClass = (): AudioContextClass | null =>

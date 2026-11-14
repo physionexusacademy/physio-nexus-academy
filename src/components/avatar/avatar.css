@@ -1,4 +1,4 @@
-/* Dr. Sajjad teaching stage — extends the Skills Lab scene look (scene3d.css). */
+/* PNA Teacher teaching stage — extends the Skills Lab scene look (scene3d.css). */
 /* The subtitle box is the one live region for screen readers. It is visually hidden at every width (the caption under the 3D view shows the same words,
    so the subtitles never cover the figures) but stays in the accessibility tree. */
 .av-subs { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; overflow: hidden; padding: 0; border: 0; clip-path: inset(50%); white-space: nowrap; pointer-events: none; }
@@ -25,7 +25,7 @@
 .av-text-steps li { font-size: 13.5px; line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) { .av-play span { box-shadow: none; } }
 
-/* Ask Dr. Sajjad (tour) and the page link under each stop */
+/* Ask PNA Teacher (tour) and the page link under each stop */
 .av-link { display: flex; padding: 8px 10px 0; background: #06182f; }
 .av-link a { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 800; color: #03202a; background: #2ee6d6; box-shadow: 0 0 16px rgba(46, 230, 214, .5); text-decoration: none; }
 .av-link a:hover { background: #7ff2e8; }

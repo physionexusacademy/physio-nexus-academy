@@ -1,6 +1,7 @@
 // Entry bundled by scripts/validate-speech.mjs: checks voice choice and Roman Urdu preparation with a mocked speech synthesiser.
 import { genderOf, planSpeech, supportsSpeech, voicesFor } from "../src/lib/speech/voices";
 import { shortFirst, splitForSpeech } from "../src/lib/speech/builtin";
+import { toSpoken } from "../src/lib/speech/spoken";
 import { convertRun, splitRuns, toDevanagari, toUrdu } from "../src/lib/speech/roman-urdu";
 import fs from "node:fs";
 
@@ -30,14 +31,20 @@ const DAVID = v("Microsoft David - English (United States)", "en-US"), GOOGLE_MA
 const GOOGLE_HI = v("Google \u0939\u093f\u0928\u094d\u0926\u0940", "hi-IN", false), HEMANT = v("Microsoft Hemant - Hindi (India)", "hi-IN"), KALPANA = v("Microsoft Kalpana - Hindi (India)", "hi-IN");
 const ASAD = v("Microsoft Asad - Urdu (Pakistan)", "ur-PK"), UZMA = v("Microsoft Uzma - Urdu (Pakistan)", "ur-PK");
 
-// 1. English. The voice is always male: a male voice installed on the device, otherwise the built-in male voice. Never a female or unlabelled one.
-install([EN_US, EN_GB_F, ARIA, IN_PLAIN, RAVI_ONLINE, GOOGLE_MALE]);
+// 1. English. The voice is always male: a natural male voice the device offers (even a streamed one: if it is slow the built-in voice takes over),
+// otherwise the built-in male voice. Never a female or unlabelled one.
+install([EN_US, EN_GB_F, ARIA, IN_PLAIN]);
 let plan = await planSpeech("Hello", "en");
-check(plan.engine === "builtin" && plan.mode === "english" && plan.segments[0].builtin === "en-us" && plan.segments[0].voice === null, "No eligible device voice (female, unlabelled, streamed): the built-in male voice (got " + plan.engine + ")");
-check(voicesFor("en", "male").length === 0, "Streamed (non-local) male voices and unlabelled/female ones are not offered");
+check(plan.engine === "builtin" && plan.mode === "english" && plan.segments[0].builtin === "en-us" && plan.segments[0].voice === null, "No male device voice (female, unlabelled): the built-in male voice (got " + plan.engine + ")");
+check(voicesFor("en", "male").length === 0, "Unlabelled and female voices are not offered");
+install([EN_US, EN_GB_F, ARIA, IN_PLAIN, RAVI_ONLINE, GOOGLE_MALE]);
+plan = await planSpeech("Hello", "en");
+check(plan.engine === "device" && plan.segments[0].voice?.name === RAVI_ONLINE.name, "A natural online male voice is the first choice (got " + plan.segments[0].voice?.name + ")");
+check(plan.fallback?.engine === "builtin" && plan.fallback.segments[0].builtin === "en-us", "An online voice carries a built-in fallback for the case it is slow to start");
+check(voicesFor("en", "male").map((x) => x.name).join("|") === [RAVI_ONLINE, GOOGLE_MALE].map((x) => x.name).join("|"), "Natural male voices are listed first");
 install([EN_US, ARIA, DAVID, MARK, IN_PLAIN]);
 plan = await planSpeech("Hello", "en");
-check(plan.engine === "device" && plan.segments[0].voice?.name === DAVID.name, "A male voice installed on the device is used (got " + plan.segments[0].voice?.name + ")");
+check(plan.engine === "device" && plan.segments[0].voice?.name === DAVID.name && !plan.fallback, "A male voice installed on the device is used, with no fallback needed (got " + plan.segments[0].voice?.name + ")");
 check(voicesFor("en", "male").map((x) => x.name).sort().join("|") === [DAVID, MARK].map((x) => x.name).sort().join("|"), "Only the male installed voices are listed");
 plan = await planSpeech("Hello", "en", { en: "pna-builtin-male" });
 check(plan.engine === "builtin", "The built-in voice can be chosen even when a male device voice exists");
@@ -76,6 +83,12 @@ check(plan.engine === "device" && plan.segments.length === 4 && plan.segments.ma
 install([EN_US], false);
 check((await planSpeech("karein", "ur")).mode === "none", "No male Urdu/Hindi voice and no built-in voice: silent");
 
+// 2a. Written text becomes spoken text (symbols to words, a pause instead of an arrow, a finished sentence)
+check(toSpoken("Flex to 90° (about 3–5 mm) → then hold; e.g. 30% more") === "Flex to 90 degrees, about 3 to 5 mm, then hold; for example, 30 percent more.", "toSpoken: degrees, aside, range, arrow, e.g., percent, final stop (got " + toSpoken("Flex to 90° (about 3–5 mm) → then hold; e.g. 30% more") + ")");
+check(toSpoken("**Step 1** — place the hand\n• keep the elbow relaxed") === "Step 1, place the hand. keep the elbow relaxed.", "toSpoken: markdown, dash, list mark, line break (got " + toSpoken("**Step 1** — place the hand\n• keep the elbow relaxed") + ")");
+check(toSpoken("Already a sentence.") === "Already a sentence.", "toSpoken leaves a finished sentence alone");
+check(toSpoken("5-10 baar", "ur") === "5 se 10 baar.", "toSpoken: Roman Urdu range (got " + toSpoken("5-10 baar", "ur") + ")");
+
 // 2b. Cutting text into sentences for the built-in voice
 const bits = splitForSpeech("Tilt the head 3.5 degrees. Hold it, then breathe out! Ready?");
 check(bits.length === 3 && bits[0] === "Tilt the head 3.5 degrees." && bits[2] === "Ready?", "Sentences are cut after . ! ? but not inside 3.5 (got " + JSON.stringify(bits) + ")");
@@ -101,4 +114,4 @@ if (failures.length) {
   console.error("Speech checks FAILED:\n - " + failures.join("\n - "));
   process.exit(1);
 }
-console.log(`Speech checks passed: male-only voice choice (device male voice, built-in male voice, none), Roman Urdu for the built-in voice, sentence cutting, run splitting, ${cases.length} conversion spot checks.`);
+console.log(`Speech checks passed: male-only voice choice (natural device voice with fallback, local device voice, built-in voice, none), spoken-style text, Roman Urdu for the built-in voice, sentence cutting, run splitting, ${cases.length} conversion spot checks.`);

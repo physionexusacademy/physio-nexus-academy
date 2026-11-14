@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * "Ask Dr. Sajjad": a text box that asks the site's own Physio Nexus AI (/api/physio-nexus-ai — the same search and authored answers as the
+ * "Ask PNA Teacher": a text box that asks the site's own Physio Nexus AI (/api/physio-nexus-ai — the same search and authored answers as the
  * AI chat; it answers only from PNA's lessons, guides and feature descriptions). The answer is shown here and the avatar says it.
  * Text only: no microphone, no camera.
  */
@@ -63,14 +63,14 @@ export default function AskPanel({ ur, onAnswer }: { ur: boolean; onAnswer: (tex
   }
 
   return (
-    <section className="av-ask" aria-label="Ask Dr. Sajjad">
+    <section className="av-ask" aria-label="Ask PNA Teacher">
       <form
         onSubmit={(event) => {
           event.preventDefault();
           void ask(query);
         }}
       >
-        <label htmlFor="av-ask-input">{ur ? "Dr. Sajjad se poochhein" : "Ask Dr. Sajjad about the academy"}</label>
+        <label htmlFor="av-ask-input">{ur ? "PNA Teacher se poochhein" : "Ask PNA Teacher about the academy"}</label>
         <div className="av-ask-row">
           <input id="av-ask-input" type="text" value={query} maxLength={240} onChange={(event) => setQuery(event.target.value)} placeholder={ur ? "Masalan: Skills Lab kya hai?" : "e.g. What is the Skills Lab?"} autoComplete="off" />
           <button type="submit" disabled={busy || query.trim().length < 2} aria-label="Ask">

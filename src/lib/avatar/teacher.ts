@@ -1,17 +1,17 @@
 /**
- * "Dr. Sajjad" the AI teaching assistant, assembled (browser only): the figure, his look, his face, his voice and the light mode.
+ * The "PNA Teacher" AI teaching assistant, assembled (browser only): the figure, his look, his face, his voice and the light mode.
  *
- * Model slot: if `/teacher/dr-sajjad.glb` exists it is used instead of the generated character (see docs/dr-sajjad-avatar.md for
+ * Model slot: if `/teacher/pna-teacher.glb` exists it is used instead of the generated character (see docs/pna-teacher-avatar.md for
  * the rig it must use); otherwise the character is generated from the shared CC0 body. Either way the same pose system drives it.
  */
 import type * as THREE from "three";
 import { Figure } from "./figure";
-import { dressDrSajjad } from "./dress";
+import { dressTeacher } from "./dress";
 import { FaceAnimator } from "./face";
 import { Speaker } from "./speech";
 import { REST } from "./mesh";
 
-export const CUSTOM_MODEL_URL = "/teacher/dr-sajjad.glb";
+export const CUSTOM_MODEL_URL = "/teacher/pna-teacher.glb";
 export { AVATAR_LABEL as LABEL } from "./labels";
 
 /** Bones the pose system and the hand placement rely on; a custom model must have (nearly) all of them. */
@@ -72,7 +72,7 @@ export function missingBones(figure: Figure) {
 
 export type TeacherOptions = { light?: boolean; modelUrl?: string; onProgress?: (fraction: number) => void };
 
-export class DrSajjad {
+export class PnaTeacher {
   readonly custom: boolean;
   readonly light: boolean;
   readonly figure: Figure;
@@ -91,7 +91,7 @@ export class DrSajjad {
     return this.figure.root;
   }
 
-  static async create(options: TeacherOptions = {}): Promise<DrSajjad> {
+  static async create(options: TeacherOptions = {}): Promise<PnaTeacher> {
     const light = options.light ?? detectLightMode();
     const url = options.modelUrl ?? CUSTOM_MODEL_URL;
     let figure: Figure | null = null;
@@ -101,7 +101,7 @@ export class DrSajjad {
         figure = await Figure.load({ url, onProgress: options.onProgress, custom: true });
         const missing = missingBones(figure);
         if (missing.length) {
-          console.error(`[dr-sajjad] ${url} is missing ${missing.length} required bone(s): ${missing.join(", ")}. It must use the PNA body rig (see docs/dr-sajjad-avatar.md).`);
+          console.error(`[pna-teacher] ${url} is missing ${missing.length} required bone(s): ${missing.join(", ")}. It must use the PNA body rig (see docs/pna-teacher-avatar.md).`);
           if (missing.length > REQUIRED.length * 0.2) {
             figure.dispose();
             figure = null;
@@ -109,14 +109,14 @@ export class DrSajjad {
         }
         custom = Boolean(figure);
       } catch (error) {
-        console.error(`[dr-sajjad] could not load ${url}; using the generated character.`, error);
+        console.error(`[pna-teacher] could not load ${url}; using the generated character.`, error);
         figure = null;
       }
     }
     let brows: { left: THREE.Group; right: THREE.Group } | undefined;
     if (!figure) {
       figure = await Figure.load({ onProgress: options.onProgress });
-      const dressed = await dressDrSajjad(figure, { light });
+      const dressed = await dressTeacher(figure, { light });
       brows = dressed.brows;
     }
     const face = new FaceAnimator(figure, brows);
@@ -124,7 +124,7 @@ export class DrSajjad {
     const speaker = new Speaker(face);
     if (light) speaker.intensity = 0.6;
     figure.setPose({});
-    return new DrSajjad(figure, face, speaker, custom, light);
+    return new PnaTeacher(figure, face, speaker, custom, light);
   }
 
   /** Advances speech and idle life. Returns true when the picture changed. */

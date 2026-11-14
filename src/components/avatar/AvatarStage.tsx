@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * "Dr. Sajjad" teaching stage inside a PNA Teacher lesson: the AI teaching assistant based on Dr. Sajjad Raza PT demonstrates a
+ * The PNA Teacher's teaching stage inside a PNA Teacher lesson: the AI teaching assistant demonstrates a
  * manual-therapy technique on the shared 3D patient (see lib/avatar). Subtitles are always shown; voice is optional (English, free
  * browser speech). No camera, no microphone. Light mode (low-end phones, reduced motion, or the visitor's choice) shows one static pose
  * and no patient. Everything 3D loads in the browser only, after the visitor scrolls the demonstration into view.
@@ -19,7 +19,7 @@ import { BUILTIN_LABEL, BUILTIN_VOICE, builtinSupported, onVoices, planSpeech, r
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
-import type { DrSajjad } from "@/lib/avatar/teacher";
+import type { PnaTeacher } from "@/lib/avatar/teacher";
 import "@/components/skills/scene3d.css";
 import "./avatar.css";
 
@@ -60,7 +60,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState(false);
   const stageRef = useRef<TeachingStage | null>(null);
-  const docRef = useRef<DrSajjad | null>(null);
+  const docRef = useRef<PnaTeacher | null>(null);
   const langRef = useRef(lang);
   // The latest voice and speed settings: the stage is built a few seconds after the first tap (dynamic imports, the character), and a setting changed meanwhile must not be lost.
   const settingsRef = useRef({ voice: false, speed: 1 });
@@ -80,7 +80,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
     void import("@/lib/avatar/teacher").then((m) => setLight(m.detectLightMode()));
   }, []);
 
-  // The voices to choose from: Dr. Sajjad's built-in male voice, then any male voice installed on this device (browsers load those
+  // The voices to choose from: the PNA Teacher's built-in male voice, then any male voice installed on this device (browsers load those
   // late). A female voice, or one that is not known to be male, is never offered.
   useEffect(() => {
     if (!supportsSpeech()) return;
@@ -93,7 +93,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         for (const v of voicesFor(kind, "male")) {
           if (seen.has(v.name)) continue;
           seen.add(v.name);
-          list.push({ name: v.name, label: `${v.name} (${v.lang}) ♂` });
+          list.push({ name: v.name, label: `${v.name} (${v.lang}) ♂${/natural|neural/i.test(v.name) ? " · natural" : v.localService === false ? " · online" : ""}` });
         }
       }
       setVoiceList(list);
@@ -155,7 +155,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
     setBuilding(true);
     (async () => {
       try {
-        const [{ DrSajjad }, { TeachingStage }] = await Promise.all([import("@/lib/avatar/teacher"), import("@/lib/avatar/stage")]);
+        const [{ PnaTeacher }, { TeachingStage }] = await Promise.all([import("@/lib/avatar/teacher"), import("@/lib/avatar/stage")]);
         if (cancelled) return;
         // The character is built once per mount; it is rebuilt if light mode is switched (light mode changes its animation set).
         if (docRef.current && docRef.current.light !== light) {
@@ -163,7 +163,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
           docRef.current = null;
         }
         if (!docRef.current) {
-          docRef.current = await DrSajjad.create({ light });
+          docRef.current = await PnaTeacher.create({ light });
           if (cancelled) return;
         }
         const stage = new TeachingStage(room, docRef.current, choreo, { lang: langRef.current, voice: settingsRef.current.voice, speed: settingsRef.current.speed, light }, draw);
@@ -183,7 +183,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         };
         raf = requestAnimationFrame(tick);
       } catch (e) {
-        console.error("[dr-sajjad] could not start the demonstration", e);
+        console.error("[pna-teacher] could not start the demonstration", e);
         if (!cancelled) {
           setBuilding(false);
           setError(true);
@@ -259,7 +259,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const extra = view?.extra ?? null;
   const english = Boolean(line?.urFallback) && !extra;
   const tour = choreo?.kind === "tour";
-  const idle = tour ? (ur ? "Play dabaiye — Dr. Sajjad academy ka tour karwayenge." : "Press play and Dr. Sajjad will show you around the academy.") : ur ? "Play dabaiye — Dr. Sajjad technique dikhayenge." : "Press play and Dr. Sajjad will demonstrate the technique.";
+  const idle = tour ? (ur ? "Play dabaiye — PNA Teacher academy ka tour karwayega." : "Press play and the PNA Teacher will show you around the academy.") : ur ? "Play dabaiye — PNA Teacher technique dikhayega." : "Press play and the PNA Teacher will demonstrate the technique.";
   const subtitle = extra ? plain(extra.text) : line ? plain(ur && !english ? line.ur : line.en) : idle;
   const stepTitle = choreo ? choreo.title[ur ? "ur" : "en"] : title;
   const subTag = extra ? extra.tag : view?.chip ? `${view.chip} · ${view.step + 1}/${view.steps}` : stepTitle;
@@ -267,14 +267,14 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const draft = choreo ? choreo.review.status !== "reviewed" : false;
 
   return (
-    <figure className="s3 av-focus" data-demo3d={demoKey} data-avatar="dr-sajjad" tabIndex={0} onKeyDown={keys} aria-label={`${AVATAR_LABEL}: ${stepTitle}. Space plays or pauses, arrow keys change step, R replays.`}>
+    <figure className="s3 av-focus" data-demo3d={demoKey} data-avatar="pna-teacher" tabIndex={0} onKeyDown={keys} aria-label={`${AVATAR_LABEL}: ${stepTitle}. Space plays or pauses, arrow keys change step, R replays.`}>
       <div className="s3-view av-view">
         <div ref={hostRef} className="absolute inset-0" role="img" aria-label={`3D demonstration by the ${AVATAR_LABEL}: ${title}`} />
         <span className="s3-corner tl" /><span className="s3-corner tr" /><span className="s3-corner bl" /><span className="s3-corner br" />
         {status === "active" ? <span className="s3-scan" aria-hidden="true" /> : null}
         {status === "parked" || status === "idle" ? (
           <button type="button" onClick={activate} className="absolute inset-0 z-[5] flex items-center justify-center bg-cover bg-center" style={poster ? { backgroundImage: `url(${poster})` } : undefined} aria-label={`Show the 3D demonstration: ${stepTitle}`}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/50 bg-[#06182f]/90 px-4 py-2 text-sm font-bold text-cyan-100 shadow-[0_0_24px_rgba(46,230,214,.45)]"><Play className="h-4 w-4" aria-hidden="true" /> {ur ? "Dr. Sajjad ka demo dekhein" : "Watch Dr. Sajjad demonstrate"}</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/50 bg-[#06182f]/90 px-4 py-2 text-sm font-bold text-cyan-100 shadow-[0_0_24px_rgba(46,230,214,.45)]"><Play className="h-4 w-4" aria-hidden="true" /> {ur ? "PNA Teacher ka demo dekhein" : "Watch the PNA Teacher demonstrate"}</span>
           </button>
         ) : null}
         {error && !choreo ? (
@@ -282,7 +282,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         ) : null}
         {!error && (status === "loading" || building || (!choreo && status === "active")) ? (
           <div className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 bg-[#06182f]" role="status">
-            <span className="text-sm font-bold text-cyan-100">{ur ? "Dr. Sajjad aa rahe hain…" : "Bringing in Dr. Sajjad…"} {status === "loading" ? `${Math.round(progress * 100)}%` : ""}</span>
+            <span className="text-sm font-bold text-cyan-100">{ur ? "PNA Teacher aa rahe hain…" : "Bringing in the PNA Teacher…"} {status === "loading" ? `${Math.round(progress * 100)}%` : ""}</span>
             <span className="h-1.5 w-40 overflow-hidden rounded-full bg-white/10"><span className="block h-full rounded-full bg-cyan-300 transition-[width]" style={{ width: `${Math.max(8, (status === "loading" ? progress : 0.9) * 100)}%` }} /></span>
           </div>
         ) : null}
@@ -358,7 +358,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
             {SPEEDS.map((v) => <option key={v} value={v}>{v}×</option>)}
           </select>
         </label>
-        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: Dr. Sajjad ki awaaz (mard ki)" : "Voice: Dr. Sajjad reads aloud (male voice)") : "Voice is not available in this browser"} aria-label="Voice">
+        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: PNA Teacher ki awaaz (mard ki)" : "Voice: the PNA Teacher reads aloud (male voice)") : "Voice is not available in this browser"} aria-label="Voice">
           {voice && voiceOk ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
         </button>
         {voice && voiceOk && voiceList.length ? (
@@ -384,7 +384,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
       {voice && voiceNote ? <p className="av-voice-note" role="status">{voiceNote}</p> : null}
       {voice && voiceOk && builtinInUse ? (
         <p className="av-voice-note">
-          Built-in male voice: eSpeak NG (open source, GPL-3.0) — a clear computer voice, the same on every device, nothing is sent anywhere.{" "}
+          Built-in male voice: eSpeak NG (open source, GPL-3.0) — a clear computer voice, the same on every device, nothing is sent anywhere. For a more human voice, choose a "natural" male voice in the list when your device has one.{" "}
           <a href="/teacher/espeak/README.txt" className="underline">Licence and source</a>
         </p>
       ) : null}

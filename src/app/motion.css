@@ -67,7 +67,7 @@
   /* Slow decorative rotations and floats only cost battery on a phone. */
   .lobby-orbit-a,
   .lobby-orbit-b,
-  .lobby-founder-chip {
+  .lobby-teacher-chip {
     animation: none;
   }
 }
@@ -112,8 +112,10 @@ button.nx-glass:active,
 }
 
 /* ---------- smooth page-to-page transitions (Chrome, Edge, Safari 18.2+) ---------- */
-@view-transition {
-  navigation: auto;
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
 }
 /* The header and the dock stay put while the page underneath changes. */
 .nx-bar {

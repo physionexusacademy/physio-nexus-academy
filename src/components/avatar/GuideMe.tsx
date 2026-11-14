@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * "Guide me": the homepage card where Dr. Sajjad (the AI teaching assistant) tours the academy and answers questions. The card itself is
+ * "Guide me": the homepage card where the PNA Teacher (the AI teaching assistant) tours the academy and answers questions. The card itself is
  * light: a picture, two lines of text and a button. Nothing 3D is downloaded until the visitor starts the tour (and a hover, focus or
  * touch on the button warms the 3D code, so the tour opens quickly). Where 3D is not available the tour is a plain list of the same pages.
  */
@@ -20,7 +20,7 @@ const Demo3D = dynamic(loadDemo, {
   loading: () => <div className="gm-loading" role="status">Preparing the tour…</div>,
 });
 
-/** The topics Dr. Sajjad covers, in tour order (shown as small chips; each is a real page). */
+/** The topics the PNA Teacher covers, in tour order (shown as small chips; each is a real page). */
 const TOPICS: { label: string; href: string }[] = [
   { label: "PNA Teacher", href: "/learn" },
   { label: "Skills Lab", href: "/skills" },
@@ -78,7 +78,7 @@ export function GuideMe() {
           <div className="gm-copy">
             <p className="gm-kicker"><Compass className="h-4 w-4" aria-hidden="true" /> {AVATAR_LABEL}</p>
             <h2 id="guide-me-title" className="gm-title">
-              {ur ? "Guide me — Dr. Sajjad ke saath academy ka tour" : "Guide me — a tour of the academy with Dr. Sajjad"}
+              {ur ? "Guide me — PNA Teacher ke saath academy ka tour" : "Guide me — a tour of the academy with PNA Teacher"}
             </h2>
             <p className="gm-lead">
               {ur
@@ -105,7 +105,7 @@ export function GuideMe() {
             <div className="gm-visual" aria-hidden="true">
               <span className="gm-ring gm-ring-a" />
               <span className="gm-ring gm-ring-b" />
-              <img src="/teacher/dr-sajjad-poster.webp" alt="" width={410} height={547} loading="lazy" decoding="async" className="gm-poster" />
+              <img src="/teacher/pna-teacher-poster.webp" alt="" width={410} height={547} loading="lazy" decoding="async" className="gm-poster" />
               <span className="gm-badge gm-badge-a">3D demos</span>
               <span className="gm-badge gm-badge-b">English · Roman Urdu</span>
               <span className="gm-badge gm-badge-c">Ask anything</span>

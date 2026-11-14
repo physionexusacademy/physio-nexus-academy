@@ -1,5 +1,5 @@
 /**
- * Teaching choreography: what Dr. Sajjad does, step by step, while he teaches one manual-therapy technique on the 3D patient.
+ * Teaching choreography: what the PNA Teacher does, step by step, while he teaches one manual-therapy technique on the 3D patient.
  *
  * A choreography is DATA. It never contains clinical wording of its own: every line he says, and every label drawn on the
  * patient, is a *reference* (`TextRef`) to text that already exists in a PNA Teacher lesson (English + Roman Urdu) or in the
