@@ -1,7 +1,7 @@
 /** Turns the numbers of a student's own record into plain observations. Pure and tested. */
 export type SourceStat = { source: string; xp: number; events: number; xp_7d: number; last_day: string | null; avg_score: number | null };
 export type StudentSummary = {
-  profile: { display_name: string; stage: string | null; goal: string | null; university: string | null; city: string | null; created_at: string } | null;
+  profile: { display_name: string; stage: string | null; goal: string | null; university: string | null; city: string | null; created_at: string; league_opt_in?: boolean; remind_email?: boolean; remind_hour?: number } | null;
   totals?: { xp: number; events: number; active_days: number; first_day: string | null };
   streak?: { current: number; best: number };
   by_day?: { day: string; xp: number; events: number }[];

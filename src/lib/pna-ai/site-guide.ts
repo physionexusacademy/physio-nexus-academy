@@ -143,6 +143,30 @@ export const siteGuide: SiteFeature[] = [
     keywords: "rehabverse what is how do I start create account register login sign up home exercises programme patient guided 3d library",
   },
   {
+    href: "/leagues",
+    id: "leagues",
+    title: "Weekly Leagues",
+    category: "Practise",
+    summary:
+      "Free weekly leagues for signed-in students: earn XP from lessons, Skills Lab levels, Virtual Patient cases and the Daily Clinical Challenge, compete with up to 30 students at your tier, and move up (top 30 %) or down (bottom 20 %) across seven tiers from Bronze to Diamond every Sunday midnight Pakistan time.",
+    hookUr:
+      "Weekly Leagues mein signed-in students har hafte XP kamate hain — lessons, Skills Lab, Virtual Patient aur Daily Challenge se — apni tier ke 30 tak students se muqabla karte hain, aur har Itwar raat Bronze se Diamond tak 7 tiers mein upar (top 30 %) ya neeche (bottom 20 %) jate hain.",
+    points: [
+      "Seven tiers from Bronze to Diamond; weeks run Monday to Sunday, Pakistan time",
+      "Scores are counted on the server from your saved learning record, so nothing can be typed in",
+      "Top 30 % (with at least 100 XP) move up, the bottom 20 % move down",
+      "Needs a free My PNA account; you can hide yourself from leagues at any time",
+    ],
+    pointsUr: [
+      "Bronze se Diamond tak 7 tiers; hafta Pir se Itwar tak, Pakistan ke waqt ke mutabiq",
+      "Scores server par aap ke saved learning record se gine jate hain, is liye khud likhe nahi ja sakte",
+      "Top 30 % (kam az kam 100 XP ke saath) upar jate hain, bottom 20 % neeche aate hain",
+      "Free My PNA account chahiye; aap jab chahein khud ko leagues se hata sakte hain",
+    ],
+    tags: "leagues weekly league tiers bronze silver gold platinum diamond xp promotion demotion ranking leaderboard students",
+    keywords: "leagues weekly league tier bronze silver gold diamond promote demote xp rank compete students league kya hai",
+  },
+  {
     href: "/account",
     id: "student-account",
     create: true,

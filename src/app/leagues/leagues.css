@@ -1,0 +1,22 @@
+/* /leagues — the page around the league panel. The panel itself is styled in components/student/league.css. */
+.lgp { padding-bottom: 64px; }
+.lgp-hero { border-radius: 0 0 36px 36px; padding: 52px 0 46px; position: relative; overflow: hidden; }
+.lgp-kicker { margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #2ee6d6; }
+.lgp-hero h1 { margin: 10px 0 0; font-size: clamp(2.3rem, 7vw, 4rem); line-height: 1.04; font-weight: 800; letter-spacing: -.03em; color: #fff; background: linear-gradient(100deg, #fff 30%, #7fe9f0 70%, #c98bff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.lgp-lead { margin: 14px 0 0; max-width: 42rem; font-size: 1.06rem; line-height: 1.65; color: #b9cde1; }
+.lgp-tiers { margin: 22px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.lgp-tiers li { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 6px 14px 6px 8px; font-size: .82rem; font-weight: 700; color: #fff; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .16); }
+.lgp-tiers i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); }
+.lgp-main { display: grid; gap: 24px; padding-top: 24px; }
+.lgp-invite { border-radius: 28px; padding: 26px; background: radial-gradient(120% 90% at 0% 0%, #0c3358 0%, #071a33 60%, #050f22 100%); border: 1px solid rgba(46, 230, 214, .35); color: #eaf6ff; }
+.lgp-invite h2 { margin: 0; font-size: 1.5rem; font-weight: 800; color: #fff; }
+.lgp-invite p { margin: 8px 0 0; max-width: 40rem; line-height: 1.65; color: #b9cde1; }
+.lgp-cta { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+.lgp-how { display: grid; gap: 14px; grid-template-columns: repeat(4, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; counter-reset: step; }
+.lgp-how li { counter-increment: step; border-radius: 22px; padding: 18px; background: #fff; border: 1px solid #dbe7ef; box-shadow: 0 18px 40px -36px rgba(7, 38, 64, .6); }
+.lgp-how li::before { content: counter(step); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 12px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #0db3aa, #6f6cff); }
+.lgp-how strong { display: block; margin-top: 10px; font-size: 1rem; color: #0b2a4a; }
+.lgp-how p { margin: 6px 0 0; font-size: .9rem; line-height: 1.6; color: #475569; }
+.lgp-fine { font-size: .84rem; line-height: 1.7; color: #64748b; max-width: 52rem; }
+@media (max-width: 900px) { .lgp-how { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .lgp-how { grid-template-columns: 1fr; } .lgp-hero { padding: 38px 0 34px; border-radius: 0 0 26px 26px; } }

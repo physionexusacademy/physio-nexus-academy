@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import "./symptom-checker.css";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
   CalendarDays,
+  Check,
   CheckCircle2,
+  ClipboardCopy,
   Home,
   Info,
   RotateCcw,
   ShieldAlert,
+  Siren,
   Stethoscope,
 } from "lucide-react";
 import { AnatomyRegionVisual } from "./AnatomyRegionVisual";
@@ -20,12 +24,14 @@ import {
   getCarePriority,
   getImagingNotice,
   getNeurologicHint,
+  getOverlapNote,
   getSafetyDisposition,
   redFlags,
   regions,
   scoreConditions,
   type RegionId,
 } from "@/lib/msk-symptom-checker";
+import { buildSummaryText } from "@/lib/msk-symptom-summary";
 
 type Step = 0 | 1 | 2 | 3 | 4 | 5;
 
@@ -44,6 +50,12 @@ const traumaOnlyClueIds = new Set([
   "clue_ankle_hindfoot_tender",
 ]);
 
+const PRIORITY_LEVEL: Record<string, number> = {
+  "Monitor and assess as needed": 0,
+  "Professional assessment recommended": 1,
+  "Prompt professional assessment recommended": 2,
+};
+
 export function SymptomCheckerClient() {
   const [step, setStep] = useState<Step>(0);
   const [regionId, setRegionId] = useState<RegionId | null>(null);
@@ -51,11 +63,16 @@ export function SymptomCheckerClient() {
   const [onset, setOnset] = useState("");
   const [duration, setDuration] = useState("");
   const [impact, setImpact] = useState("");
+  const [pain, setPain] = useState<number | null>(null);
   const [location, setLocation] = useState("");
   const [clues, setClues] = useState<Set<string>>(new Set());
   const [selectedRedFlags, setSelectedRedFlags] = useState<Set<string>>(new Set());
   const [noRedFlags, setNoRedFlags] = useState(false);
   const [message, setMessage] = useState("");
+  const [copied, setCopied] = useState<"idle" | "done" | "failed">("idle");
+  const consoleRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const firstRender = useRef(true);
 
   const region = regions.find((item) => item.id === regionId) ?? null;
 
@@ -66,20 +83,10 @@ export function SymptomCheckerClient() {
     return values;
   }, [age, onset, duration, impact, location, clues]);
 
-  const results = useMemo(
-    () => (regionId ? scoreConditions(regionId, selectedFeatures) : []),
-    [regionId, selectedFeatures],
-  );
-
-  const imagingNotice = useMemo(
-    () => (regionId ? getImagingNotice(regionId, selectedFeatures) : null),
-    [regionId, selectedFeatures],
-  );
-
-  const neurologicHint = useMemo(
-    () => (regionId ? getNeurologicHint(regionId, selectedFeatures) : null),
-    [regionId, selectedFeatures],
-  );
+  const results = useMemo(() => (regionId ? scoreConditions(regionId, selectedFeatures) : []), [regionId, selectedFeatures]);
+  const imagingNotice = useMemo(() => (regionId ? getImagingNotice(regionId, selectedFeatures) : null), [regionId, selectedFeatures]);
+  const neurologicHint = useMemo(() => (regionId ? getNeurologicHint(regionId, selectedFeatures) : null), [regionId, selectedFeatures]);
+  const overlapNote = useMemo(() => getOverlapNote(results), [results]);
 
   const visibleClues = useMemo(
     () =>
@@ -95,25 +102,32 @@ export function SymptomCheckerClient() {
 
   useEffect(() => {
     if (onset === "onset_trauma") return;
-
     setClues((current) => {
       const next = new Set(current);
       let changed = false;
-
       traumaOnlyClueIds.forEach((id) => {
         if (next.delete(id)) changed = true;
       });
-
       return changed ? next : current;
     });
   }, [onset]);
 
-  const carePriority = useMemo(() => getCarePriority(selectedFeatures), [selectedFeatures]);
+  // Every step change brings the console into view and moves keyboard/screen-reader focus to its heading.
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      const top = (consoleRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - 84;
+      if (Math.abs(window.scrollY - top) > 40) window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      headingRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [step]);
 
-  const safetyDisposition = useMemo(
-    () => getSafetyDisposition(selectedRedFlags),
-    [selectedRedFlags],
-  );
+  const carePriority = useMemo(() => getCarePriority(selectedFeatures, pain), [selectedFeatures, pain]);
+  const safetyDisposition = useMemo(() => getSafetyDisposition(selectedRedFlags), [selectedRedFlags]);
   const selectedFlagObjects = safetyDisposition?.flags ?? [];
   const hasEmergencyFlag = safetyDisposition?.level === "emergency";
 
@@ -146,22 +160,18 @@ export function SymptomCheckerClient() {
 
   const next = () => {
     setMessage("");
-
     if (step === 1 && (!age || !onset || !duration || !impact)) {
       setMessage("Please choose your age range, how the problem started, how long it has been present and how much it affects daily activity.");
       return;
     }
-
     if (step === 2 && !location) {
       setMessage("Please choose the location that best matches your symptoms.");
       return;
     }
-
     if (step === 4 && selectedRedFlags.size === 0 && !noRedFlags) {
       setMessage("Please confirm whether any safety warning applies, or choose ‘None of these apply’.");
       return;
     }
-
     setStep((current) => Math.min(5, current + 1) as Step);
   };
 
@@ -177,12 +187,32 @@ export function SymptomCheckerClient() {
     setOnset("");
     setDuration("");
     setImpact("");
+    setPain(null);
     setLocation("");
     setClues(new Set());
     setSelectedRedFlags(new Set());
     setNoRedFlags(false);
     setMessage("");
+    setCopied("idle");
   };
+
+  const summary = useMemo(
+    () =>
+      region
+        ? buildSummaryText({ region, selected: selectedFeatures, pain, results, priority: carePriority, imaging: imagingNotice, flagIds: selectedRedFlags })
+        : "",
+    [region, selectedFeatures, pain, results, carePriority, imagingNotice, selectedRedFlags],
+  );
+
+  async function copySummary() {
+    try {
+      await navigator.clipboard.writeText(summary);
+      setCopied("done");
+    } catch {
+      setCopied("failed");
+    }
+    window.setTimeout(() => setCopied((value) => (value === "done" ? "idle" : value)), 2500);
+  }
 
   const topResult = results[0];
   const reason = imagingNotice
@@ -190,95 +220,61 @@ export function SymptomCheckerClient() {
     : topResult
       ? `${region?.label ?? "MSK"} symptoms — screening pattern most compatible with ${topResult.condition.name}. Screening is not a confirmed diagnosis.`
       : `${region?.label ?? "Musculoskeletal"} symptoms — completed PNA MSK symptom screening; professional assessment requested.`;
-
   const appointmentHref = `/appointment?reason=${encodeURIComponent(reason)}`;
+  const priorityLevel = PRIORITY_LEVEL[carePriority.label] ?? 0;
 
   return (
-    <div className="mt-7">
-      <div className="overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-2xl shadow-navy-900/10">
-        <div className="border-b border-white/10 bg-navy-900 px-5 py-5 text-white sm:px-7 sm:py-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="sc-wrap" ref={consoleRef}>
+      <div className="sc" data-step={step}>
+        <p className="sc-emergency" role="note">
+          <Siren className="h-4 w-4" aria-hidden="true" />
+          <span>
+            <strong>Emergency?</strong> Chest pain, trouble breathing, sudden weakness or numbness, or loss of bladder/bowel control — call your local emergency number now (1122 in much of Pakistan). This tool is not for emergencies.
+          </span>
+        </p>
+
+        <header className="sc-head">
+          <div className="sc-head-top">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-teal-300">
-                PNA MSK Screening Assistant
-              </p>
-              <div className="mt-1.5 flex items-center gap-2">
-                <p className="text-lg font-bold text-white">{steps[step]}</p>
-                <span className="text-xs font-semibold text-slate-400">Step {step + 1} / {steps.length}</span>
-              </div>
+              <p className="sc-kicker">PNA MSK Screening Assistant</p>
+              <h2 className="sc-title" tabIndex={-1} ref={headingRef}>
+                {steps[step]} <span>Step {step + 1} / {steps.length}</span>
+              </h2>
             </div>
-            <span className="rounded-full border border-white/10 bg-white/[0.08] px-3.5 py-2 text-xs font-semibold text-slate-200 backdrop-blur">
-              Adults 18+ · Clinical screening
-            </span>
+            <span className="sc-badge">Adults 18+ · Clinical screening</span>
           </div>
-
-          <div className="mt-5 hidden grid-cols-6 gap-2 sm:grid">
-            {steps.map((label, index) => {
-              const complete = index < step;
-              const active = index === step;
-              return (
-                <div key={label} className="min-w-0">
-                  <div
-                    className={`flex h-9 items-center justify-center rounded-xl border px-2 text-[11px] font-bold transition-all ${
-                      active
-                        ? "border-teal-300/50 bg-teal-300/15 text-teal-100"
-                        : complete
-                          ? "border-white/10 bg-white/[0.08] text-slate-200"
-                          : "border-white/5 bg-white/[0.035] text-slate-500"
-                    }`}
-                  >
-                    <span className="truncate">{index + 1}. {label}</span>
-                  </div>
-                </div>
-              );
-            })}
+          <ol className="sc-steps" aria-label="Progress">
+            {steps.map((label, index) => (
+              <li key={label} data-state={index < step ? "done" : index === step ? "now" : "todo"} aria-current={index === step ? "step" : undefined}>
+                <i aria-hidden="true">{index < step ? <Check className="h-3 w-3" /> : index + 1}</i>
+                <span>{label}</span>
+              </li>
+            ))}
+          </ol>
+          <div className="sc-bar" aria-hidden="true">
+            <div style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
           </div>
+        </header>
 
-          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-teal-300 to-cyan-300 transition-all duration-500"
-              style={{ width: `${((step + 1) / steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="bg-[linear-gradient(180deg,#ffffff_0%,#fbfdfe_100%)] p-5 sm:p-7 lg:p-8">
+        <div className="sc-body" key={step}>
           {step === 0 && (
             <section>
-              <div className="max-w-2xl">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Start here</p>
-                <h2 className="mt-2 text-2xl font-bold text-navy-900 sm:text-3xl">Where is your main problem?</h2>
-              </div>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">
-                Choose the body area that bothers you most. Simple wording comes first; the medical term is shown underneath.
-              </p>
-              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              <p className="sc-eyebrow">Start here</p>
+              <h3 className="sc-h">Where is your main problem?</h3>
+              <p className="sc-lead">Choose the body area that bothers you most. Simple wording comes first; the medical term is shown underneath.</p>
+              <div className="sc-regions">
                 {regions.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => chooseRegion(item.id)}
-                    className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-xl hover:shadow-teal-900/10"
-                  >
-                    <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 transition-opacity group-hover:opacity-100" />
-                    <span className="flex items-center gap-4">
-                      <span className="relative flex h-24 w-20 flex-none items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-inner">
-                        <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.75),transparent_55%)]" />
-                        <AnatomyRegionVisual
-                          region={item.id}
-                          compact
-                          className="relative h-[88px] w-[64px] transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center justify-between gap-3">
-                          <span className="block text-base font-bold text-navy-900">{item.label}</span>
-                          <ArrowRight className="h-4 w-4 flex-none text-slate-300 transition group-hover:translate-x-1 group-hover:text-teal-600" />
-                        </span>
-                        <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-wide text-teal-700">{item.medical}</span>
-                        <span className="mt-2 block text-sm leading-5 text-navy-500">{item.hint}</span>
-                      </span>
+                  <button key={item.id} type="button" onClick={() => chooseRegion(item.id)} className="sc-region">
+                    <span className="sc-figure">
+                      <AnatomyRegionVisual region={item.id} compact className="h-[88px] w-[64px]" />
+                      <i aria-hidden="true" />
                     </span>
+                    <span className="sc-region-text">
+                      <b>{item.label}</b>
+                      <em>{item.medical}</em>
+                      <small>{item.hint}</small>
+                    </span>
+                    <ArrowRight className="sc-go h-4 w-4" aria-hidden="true" />
                   </button>
                 ))}
               </div>
@@ -287,53 +283,38 @@ export function SymptomCheckerClient() {
 
           {step === 1 && region && (
             <section>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Clinical context</p>
-              <h2 className="mt-2 text-2xl font-bold text-navy-900 sm:text-3xl">A few basics first</h2>
-              <p className="mt-2 text-sm text-navy-600">
-                These details help separate injury, overuse and longer-term patterns.
-              </p>
-
+              <p className="sc-eyebrow">Clinical context</p>
+              <h3 className="sc-h">A few basics first</h3>
+              <p className="sc-lead">These details help separate injury, overuse and longer-term patterns.</p>
               <ChoiceGroup title="Your age" options={commonHistoryOptions.age} value={age} onChange={setAge} />
               <ChoiceGroup title="How did it start?" options={commonHistoryOptions.onset} value={onset} onChange={setOnset} />
               <ChoiceGroup title="How long has it been present?" options={commonHistoryOptions.duration} value={duration} onChange={setDuration} />
               <ChoiceGroup title="How much is it affecting normal life?" options={commonHistoryOptions.impact} value={impact} onChange={setImpact} />
+              <PainSlider value={pain} onChange={setPain} />
             </section>
           )}
 
           {step === 2 && region && (
             <section>
-              <div className="grid items-center gap-5 sm:grid-cols-[1fr_150px]">
+              <div className="sc-split">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Symptom location</p>
-                  <h2 className="mt-2 text-2xl font-bold text-navy-900 sm:text-3xl">Where exactly do you feel it?</h2>
-                  <p className="mt-2 text-sm text-navy-600">Choose the closest match for your main symptom location.</p>
+                  <p className="sc-eyebrow">Symptom location</p>
+                  <h3 className="sc-h">Where exactly do you feel it?</h3>
+                  <p className="sc-lead">Choose the closest match for your main symptom location.</p>
                 </div>
-                <div className="hidden justify-self-end sm:block">
-                  <div className="relative flex h-44 w-32 items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.78),transparent_58%)]" />
-                    <AnatomyRegionVisual region={region.id} className="relative h-40 w-auto" />
-                  </div>
+                <div className="sc-figure sc-figure-lg" aria-hidden="true">
+                  <AnatomyRegionVisual region={region.id} className="h-40 w-auto" />
+                  <i />
                 </div>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="sc-grid">
                 {region.locations.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setLocation(item.id)}
-                    className={`relative rounded-2xl border p-4 text-left transition-all duration-200 ${
-                      location === item.id
-                        ? "border-teal-400 bg-teal-50/80 shadow-md shadow-teal-900/5 ring-1 ring-teal-300"
-                        : "border-slate-200 bg-white shadow-sm hover:border-teal-300 hover:shadow-md"
-                    }`}
-                  >
-                    <span className="flex items-center justify-between gap-3">
-                      <span className="font-semibold text-navy-900">{item.label}</span>
-                      <span className={`h-3.5 w-3.5 rounded-full border-2 ${
-                        location === item.id ? "border-teal-600 bg-teal-500 ring-4 ring-teal-100" : "border-slate-300"
-                      }`} />
+                  <button key={item.id} type="button" aria-pressed={location === item.id} onClick={() => setLocation(item.id)} className="sc-choice" data-on={location === item.id}>
+                    <span>
+                      <b>{item.label}</b>
+                      {item.medical ? <em>{item.medical}</em> : null}
                     </span>
-                    {item.medical ? <span className="mt-1 block text-xs text-teal-700">{item.medical}</span> : null}
+                    <i aria-hidden="true" />
                   </button>
                 ))}
               </div>
@@ -342,32 +323,20 @@ export function SymptomCheckerClient() {
 
           {step === 3 && region && (
             <section>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Pattern matching</p>
-              <h2 className="mt-2 text-2xl font-bold text-navy-900 sm:text-3xl">Which statements fit you?</h2>
-              <p className="mt-2 text-sm text-navy-600">
-                Select every option that clearly matches. Leave an option unticked if you are unsure.
-              </p>
-              <div className="mt-5 grid gap-3">
+              <p className="sc-eyebrow">Pattern matching</p>
+              <h3 className="sc-h">Which statements fit you?</h3>
+              <p className="sc-lead">Select every option that clearly matches. Leave an option unticked if you are unsure — unsure is fine.</p>
+              <p className="sc-count" aria-live="polite">{clues.size} selected</p>
+              <div className="sc-list">
                 {visibleClues.map((item) => {
                   const checked = clues.has(item.id);
                   return (
-                    <label
-                      key={item.id}
-                      className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-all duration-200 ${
-                        checked
-                          ? "border-teal-400 bg-teal-50/80 shadow-sm ring-1 ring-teal-200"
-                          : "border-slate-200 bg-white hover:border-teal-300 hover:bg-slate-50/60"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleClue(item.id)}
-                        className="mt-1 h-4 w-4 accent-teal-600"
-                      />
+                    <label key={item.id} className="sc-check" data-on={checked}>
+                      <input type="checkbox" checked={checked} onChange={() => toggleClue(item.id)} />
+                      <i aria-hidden="true">{checked ? <Check className="h-3.5 w-3.5" /> : null}</i>
                       <span>
-                        <span className="block font-medium text-navy-800">{item.label}</span>
-                        {item.medical ? <span className="mt-1 block text-xs text-teal-700">{item.medical}</span> : null}
+                        <b>{item.label}</b>
+                        {item.medical ? <em>{item.medical}</em> : null}
                       </span>
                     </label>
                   );
@@ -378,49 +347,29 @@ export function SymptomCheckerClient() {
 
           {step === 4 && (
             <section>
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-amber-100 text-amber-700">
-                  <ShieldAlert className="h-6 w-6" />
-                </span>
+              <div className="sc-gate">
+                <span aria-hidden="true"><ShieldAlert className="h-6 w-6" /></span>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-700">Safety gate</p>
-                  <h2 className="mt-1 text-2xl font-bold text-navy-900 sm:text-3xl">Safety check</h2>
-                  <p className="mt-1 text-sm leading-6 text-navy-600">
-                    Before showing musculoskeletal possibilities, we screen for symptoms that need medical care first.
-                  </p>
+                  <p className="sc-eyebrow sc-eyebrow-warn">Safety gate</p>
+                  <h3 className="sc-h">Safety check</h3>
+                  <p className="sc-lead">Before showing musculoskeletal possibilities, we screen for symptoms that need medical care first. Tick anything that applies right now.</p>
                 </div>
               </div>
-
-              <div className="mt-5 grid gap-3">
+              <div className="sc-list">
                 {redFlags.map((flag) => {
                   const checked = selectedRedFlags.has(flag.id);
                   return (
-                    <label
-                      key={flag.id}
-                      className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-all duration-200 ${
-                        checked
-                          ? "border-red-300 bg-red-50 shadow-sm ring-1 ring-red-200"
-                          : "border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/30"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleRedFlag(flag.id)}
-                        className="mt-1 h-4 w-4 accent-red-600"
-                      />
-                      <span className="text-sm leading-6 text-navy-700">{flag.label}</span>
+                    <label key={flag.id} className="sc-check sc-flag" data-on={checked} data-level={flag.level}>
+                      <input type="checkbox" checked={checked} onChange={() => toggleRedFlag(flag.id)} />
+                      <i aria-hidden="true">{checked ? <Check className="h-3.5 w-3.5" /> : null}</i>
+                      <span>
+                        <b>{flag.label}</b>
+                        <em>{flag.level === "emergency" ? "Emergency warning" : "Urgent warning"}</em>
+                      </span>
                     </label>
                   );
                 })}
-
-                <label
-                  className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 transition-all ${
-                    noRedFlags
-                      ? "border-teal-400 bg-teal-50 shadow-sm ring-1 ring-teal-200"
-                      : "border-slate-200 bg-white hover:border-teal-300"
-                  }`}
-                >
+                <label className="sc-check sc-none" data-on={noRedFlags}>
                   <input
                     type="checkbox"
                     checked={noRedFlags}
@@ -428,9 +377,9 @@ export function SymptomCheckerClient() {
                       setNoRedFlags(event.target.checked);
                       if (event.target.checked) setSelectedRedFlags(new Set());
                     }}
-                    className="h-4 w-4 accent-teal-600"
                   />
-                  <span className="font-semibold text-navy-800">None of these apply to me</span>
+                  <i aria-hidden="true">{noRedFlags ? <Check className="h-3.5 w-3.5" /> : null}</i>
+                  <span><b>None of these apply to me</b></span>
                 </label>
               </div>
             </section>
@@ -440,274 +389,221 @@ export function SymptomCheckerClient() {
             <section aria-live="polite">
               {selectedFlagObjects.length > 0 ? (
                 <div>
-                  <div className={`rounded-2xl border p-5 ${
-                    hasEmergencyFlag ? "border-red-300 bg-red-50" : "border-amber-300 bg-amber-50"
-                  }`}>
-                    <div className="flex items-start gap-3">
-                      <AlertTriangle className={`mt-0.5 h-6 w-6 flex-none ${
-                        hasEmergencyFlag ? "text-red-700" : "text-amber-700"
-                      }`} />
-                      <div>
-                        <h2 className="text-xl font-bold text-navy-900">
-                          {safetyDisposition?.title ?? "Medical assessment recommended"}
-                        </h2>
-                        <p className="mt-2 text-sm leading-6 text-navy-700">
-                          The checker has stopped before giving a musculoskeletal differential because one or more safety warnings were selected.
-                        </p>
-                      </div>
+                  <div className="sc-alert" data-level={hasEmergencyFlag ? "emergency" : "urgent"} role="alert">
+                    <AlertTriangle className="h-7 w-7" aria-hidden="true" />
+                    <div>
+                      <h3>{safetyDisposition?.title ?? "Medical assessment recommended"}</h3>
+                      <p>The checker has stopped before giving a musculoskeletal differential because one or more safety warnings were selected.</p>
                     </div>
-                    <ul className="mt-4 space-y-3">
-                      {selectedFlagObjects.map((flag) => (
-                        <li key={flag.id} className="rounded-xl bg-white/80 p-3 text-sm text-navy-700">
-                          <strong>{flag.label}</strong>
-                          <span className="mt-1 block">{flag.advice}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
-                  <button
-                    type="button"
-                    onClick={restart}
-                    className="mt-5 inline-flex items-center gap-2 rounded-md border border-grey-300 px-4 py-2.5 text-sm font-semibold text-navy-700 hover:bg-grey-50"
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                    Start again
-                  </button>
+                  <ul className="sc-flagged">
+                    {selectedFlagObjects.map((flag) => (
+                      <li key={flag.id}>
+                        <strong>{flag.label}</strong>
+                        <span>{flag.advice}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="sc-actions">
+                    <button type="button" onClick={copySummary} className="sc-btn sc-btn-ghost">
+                      <ClipboardCopy className="h-4 w-4" aria-hidden="true" /> {copied === "done" ? "Copied" : "Copy summary for a clinician"}
+                    </button>
+                    <button type="button" onClick={restart} className="sc-btn sc-btn-ghost">
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> Start again
+                    </button>
+                  </div>
+                  {copied === "failed" ? <SummaryBox text={summary} /> : null}
                 </div>
               ) : (
                 <div>
-                  <div className="grid items-center gap-5 rounded-3xl border border-cyan-100 bg-[linear-gradient(135deg,#f8fdfd_0%,#eef9fa_55%,#ffffff_100%)] p-5 shadow-sm sm:grid-cols-[150px_1fr] sm:p-6">
-                    <div className="relative mx-auto flex h-48 w-36 items-center justify-center overflow-hidden rounded-3xl border border-white bg-white/70 shadow-lg shadow-cyan-900/5 sm:mx-0">
-                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,184,166,0.09),transparent_66%)]" />
-                      <AnatomyRegionVisual region={region.id} className="relative h-44 w-auto" />
-                      <span className="absolute bottom-3 rounded-full border border-teal-100 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-700 shadow-sm">
-                        {region.label}
-                      </span>
+                  <div className="sc-result-head">
+                    <div className="sc-figure sc-figure-lg" aria-hidden="true">
+                      <AnatomyRegionVisual region={region.id} className="h-44 w-auto" />
+                      <i />
+                      <span className="sc-tag">{region.label}</span>
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-navy-900 text-teal-300 shadow-sm">
-                          <Stethoscope className="h-4 w-4" />
-                        </span>
-                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Your screening result</p>
-                      </div>
-                      <h2 className="mt-3 text-2xl font-bold text-navy-900 sm:text-3xl">Possible {region.label} patterns</h2>
-                      <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-600">
-                        These are ranked compatibility patterns from your answers — not confirmed diagnoses.
-                      </p>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-600">
-                          Visual pain-region locator
-                        </span>
-                        <span className="rounded-full border border-teal-100 bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
-                          Lightweight vector graphic
-                        </span>
-                      </div>
+                      <p className="sc-kicker"><Stethoscope className="inline h-4 w-4" aria-hidden="true" /> Your screening result</p>
+                      <h3 className="sc-h">Possible {region.label} patterns</h3>
+                      <p className="sc-lead">These are ranked compatibility patterns from your answers — not confirmed diagnoses.</p>
                     </div>
                   </div>
 
-                  <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-emerald-700" />
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-                          Next-step priority
-                        </p>
-                        <h3 className="mt-1 text-lg font-bold text-navy-900">{carePriority.label}</h3>
-                        <p className="mt-2 text-sm leading-6 text-navy-700">{carePriority.detail}</p>
-                      </div>
+                  <div className="sc-priority" data-level={priorityLevel}>
+                    <div className="sc-meter" role="img" aria-label={`Urgency level ${priorityLevel + 1} of 3`}>
+                      {["Monitor", "Assess", "Prompt"].map((name, index) => (
+                        <span key={name} data-on={index <= priorityLevel}>{name}</span>
+                      ))}
+                    </div>
+                    <div>
+                      <p className="sc-eyebrow">Next-step priority</p>
+                      <h4>{carePriority.label}</h4>
+                      <p>{carePriority.detail}</p>
                     </div>
                   </div>
 
                   {neurologicHint ? (
-                    <div className="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-5">
-                      <div className="flex items-start gap-3">
-                        <Info className="mt-0.5 h-5 w-5 flex-none text-sky-700" />
-                        <div>
-                          <p className="text-xs font-bold uppercase tracking-wider text-sky-700">
-                            Nerve distribution hint
-                          </p>
-                          <h3 className="mt-1 text-lg font-bold text-navy-900">{neurologicHint.label}</h3>
-                          <p className="mt-2 text-sm leading-6 text-navy-700">{neurologicHint.detail}</p>
-                        </div>
+                    <div className="sc-note" data-tone="info">
+                      <Info className="h-5 w-5" aria-hidden="true" />
+                      <div>
+                        <p className="sc-eyebrow">Nerve distribution hint</p>
+                        <h4>{neurologicHint.label}</h4>
+                        <p>{neurologicHint.detail}</p>
                       </div>
                     </div>
                   ) : null}
 
                   {imagingNotice ? (
-                    <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 p-5">
-                      <div className="flex items-start gap-3">
-                        <AlertTriangle className="mt-0.5 h-6 w-6 flex-none text-amber-700" />
-                        <div>
-                          <p className="text-xs font-bold uppercase tracking-wider text-amber-800">
-                            Fracture screening
-                          </p>
-                          <h3 className="mt-1 text-lg font-bold text-navy-900">{imagingNotice.title}</h3>
-                          <p className="mt-2 text-sm leading-6 text-navy-700">{imagingNotice.body}</p>
-                        </div>
-                      </div>
-                      <div className="mt-4 rounded-xl bg-white/80 p-4">
-                        <p className="text-xs font-bold uppercase tracking-wide text-navy-500">Matched criteria</p>
-                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-navy-700">
-                          {imagingNotice.criteria.map((criterion) => (
-                            <li key={criterion}>{criterion}</li>
-                          ))}
+                    <div className="sc-note" data-tone="warn">
+                      <AlertTriangle className="h-5 w-5" aria-hidden="true" />
+                      <div>
+                        <p className="sc-eyebrow">Fracture screening</p>
+                        <h4>{imagingNotice.title}</h4>
+                        <p>{imagingNotice.body}</p>
+                        <p className="sc-eyebrow sc-mt">Matched criteria</p>
+                        <ul>
+                          {imagingNotice.criteria.map((criterion) => <li key={criterion}>{criterion}</li>)}
                         </ul>
+                        <p className="sc-strong">The MSK possibilities below are secondary until a fracture is reasonably excluded.</p>
                       </div>
-                      <p className="mt-3 text-sm font-semibold text-amber-900">
-                        The MSK possibilities below are secondary until a fracture is reasonably excluded.
-                      </p>
                     </div>
                   ) : null}
 
+                  {overlapNote ? <p className="sc-overlap"><Info className="h-4 w-4" aria-hidden="true" /> {overlapNote}</p> : null}
+
                   {results.length > 0 ? (
-                    <div className="mt-6 space-y-4">
-                      {results.slice(0, 3).map((result, index) => (
-                        <article
-                          key={result.condition.id}
-                          className={`relative overflow-hidden rounded-2xl border p-5 transition-all ${
-                            index === 0
-                              ? "border-navy-800 bg-navy-900 text-white shadow-xl shadow-navy-900/10"
-                              : "border-slate-200 bg-white shadow-sm hover:border-slate-300 hover:shadow-md"
-                          }`}
-                        >
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                              <p className={`text-xs font-bold uppercase tracking-wider ${
-                                index === 0 ? "text-teal-300" : "text-teal-700"
-                              }`}>
-                                {index === 0 ? "Most compatible pattern" : "Alternative possibility"}
-                              </p>
-                              <h3 className={`mt-1 text-lg font-bold ${
-                                index === 0 ? "text-white" : "text-navy-900"
-                              }`}>{result.condition.plainName}</h3>
-                              <p className={`mt-1 text-sm font-semibold ${
-                                index === 0 ? "text-slate-300" : "text-navy-600"
-                              }`}>{result.condition.name}</p>
+                    <div className="sc-results">
+                      {results.slice(0, 3).map((result, index) => {
+                        const share = Math.round((result.matchedCount / Math.max(1, result.featureCount)) * 100);
+                        return (
+                          <article key={result.condition.id} className="sc-card" data-top={index === 0}>
+                            <div className="sc-card-top">
+                              <div>
+                                <p className="sc-eyebrow">{index === 0 ? "Most compatible pattern" : "Alternative possibility"}</p>
+                                <h4>{result.condition.plainName}</h4>
+                                <p className="sc-sub">{result.condition.name}</p>
+                              </div>
+                              <span className="sc-pill">{compatibilityLabel(result.score)}</span>
                             </div>
-                            <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                              index === 0
-                                ? "border border-teal-300/20 bg-teal-300/10 text-teal-200"
-                                : "bg-teal-50 text-teal-700"
-                            }`}>
-                              {compatibilityLabel(result.score)}
-                            </span>
-                          </div>
-                          <p className={`mt-3 text-sm leading-6 ${
-                            index === 0 ? "text-slate-300" : "text-navy-600"
-                          }`}>{result.condition.summary}</p>
-                          {result.matches.length > 0 ? (
-                            <div className="mt-4">
-                              <p className={`text-xs font-bold uppercase tracking-wide ${
-                                index === 0 ? "text-slate-400" : "text-navy-500"
-                              }`}>Why it matched</p>
-                              <ul className={`mt-2 list-disc space-y-1 pl-5 text-sm ${
-                                index === 0 ? "text-slate-300" : "text-navy-600"
-                              }`}>
-                                {result.matches.map((match) => <li key={match}>{match}</li>)}
-                              </ul>
+                            <p>{result.condition.summary}</p>
+                            <div className="sc-fit" role="img" aria-label={`You reported ${result.matchedCount} of ${result.featureCount} typical features`}>
+                              <div><i style={{ width: `${Math.max(6, share)}%` }} /></div>
+                              <span>You reported <b>{result.matchedCount}</b> of {result.featureCount} typical features</span>
                             </div>
-                          ) : null}
-                          {result.contradictions.length > 0 ? (
-                            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/70 p-3">
-                              <p className="text-xs font-bold uppercase tracking-wide text-amber-800">
-                                What argues against it
-                              </p>
-                              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
-                                {result.contradictions.map((item) => <li key={item}>{item}</li>)}
-                              </ul>
-                            </div>
-                          ) : null}
-                          <p className={`mt-4 text-sm font-medium ${
-                            index === 0 ? "text-slate-200" : "text-navy-700"
-                          }`}>{result.condition.advice}</p>
-                        </article>
-                      ))}
+                            {result.matches.length > 0 ? (
+                              <div className="sc-why">
+                                <p className="sc-eyebrow">Why it matched</p>
+                                <ul>{result.matches.map((match) => <li key={match}>{match}</li>)}</ul>
+                              </div>
+                            ) : null}
+                            {result.missing.length > 0 ? (
+                              <div className="sc-why">
+                                <p className="sc-eyebrow">Often also present — not reported</p>
+                                <ul>{result.missing.map((item) => <li key={item}>{item}</li>)}</ul>
+                              </div>
+                            ) : null}
+                            {result.contradictions.length > 0 ? (
+                              <div className="sc-against">
+                                <p className="sc-eyebrow">What argues against it</p>
+                                <ul>{result.contradictions.map((item) => <li key={item}>{item}</li>)}</ul>
+                              </div>
+                            ) : null}
+                            <p className="sc-advice">{result.condition.advice}</p>
+                          </article>
+                        );
+                      })}
                     </div>
                   ) : (
-                    <div className="mt-6 rounded-2xl border border-grey-200 bg-grey-50 p-5">
-                      <h3 className="font-bold text-navy-800">No single pattern stands out strongly</h3>
-                      <p className="mt-2 text-sm leading-6 text-navy-600">
-                        Your answers are not specific enough for a useful ranking. An in-person assessment can clarify the source of symptoms.
-                      </p>
+                    <div className="sc-note" data-tone="plain">
+                      <Info className="h-5 w-5" aria-hidden="true" />
+                      <div>
+                        <h4>No single pattern stands out strongly</h4>
+                        <p>Your answers are not specific enough for a useful ranking. An in-person assessment can clarify the source of symptoms.</p>
+                      </div>
                     </div>
                   )}
 
-                  <div className="mt-7 overflow-hidden rounded-2xl border border-navy-800 bg-gradient-to-br from-navy-900 to-navy-800 p-5 text-white shadow-xl shadow-navy-900/10">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-teal-700" />
-                      <div>
-                        <h3 className="font-bold text-white">Need a professional assessment?</h3>
-                        <p className="mt-1 text-sm leading-6 text-slate-300">
-                          Book with Physio Nexus Academy for examination, confirmation of the clinical pattern and an individualized management plan.
-                        </p>
-                      </div>
+                  <div className="sc-cta">
+                    <div>
+                      <h4><CheckCircle2 className="inline h-5 w-5" aria-hidden="true" /> Need a professional assessment?</h4>
+                      <p>Book with Physio Nexus Academy for examination, confirmation of the clinical pattern and an individualized management plan.</p>
                     </div>
-                    <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                      <a
-                        href={appointmentHref}
-                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-teal-400 px-5 py-3 text-sm font-bold text-navy-950 transition hover:-translate-y-0.5 hover:bg-teal-300"
-                      >
-                        <CalendarDays className="h-4 w-4" />
-                        Book Appointment
-                      </a>
-                      <a
-                        href="/home-visit"
-                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15"
-                      >
-                        <Home className="h-4 w-4" />
-                        Request Home Visit
-                      </a>
+                    <div className="sc-actions">
+                      <a href={appointmentHref} className="sc-btn sc-btn-primary"><CalendarDays className="h-4 w-4" aria-hidden="true" /> Book Appointment</a>
+                      <a href="/home-visit" className="sc-btn sc-btn-ghost"><Home className="h-4 w-4" aria-hidden="true" /> Request Home Visit</a>
                     </div>
                   </div>
 
-                  <div className="mt-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-                    <Info className="mt-0.5 h-5 w-5 flex-none" />
-                    <p>
-                      This screening result does not replace physical examination, neurologic/vascular testing, imaging when indicated, or medical diagnosis.
-                    </p>
+                  <div className="sc-actions">
+                    <button type="button" onClick={copySummary} className="sc-btn sc-btn-ghost">
+                      <ClipboardCopy className="h-4 w-4" aria-hidden="true" /> {copied === "done" ? "Copied" : "Copy summary for my clinician"}
+                    </button>
+                    <button type="button" onClick={restart} className="sc-btn sc-btn-ghost">
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> Check another problem
+                    </button>
                   </div>
+                  {copied === "failed" ? <SummaryBox text={summary} /> : null}
 
-                  <button
-                    type="button"
-                    onClick={restart}
-                    className="mt-5 inline-flex items-center gap-2 rounded-md border border-grey-300 px-4 py-2.5 text-sm font-semibold text-navy-700 hover:bg-grey-50"
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                    Check another problem
-                  </button>
+                  <p className="sc-disclaimer"><Info className="h-5 w-5" aria-hidden="true" /> This screening result does not replace physical examination, neurologic/vascular testing, imaging when indicated, or medical diagnosis. Your answers stay in this browser tab and are not saved.</p>
                 </div>
               )}
             </section>
           )}
 
-          {message ? (
-            <p className="mt-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
-              {message}
-            </p>
-          ) : null}
+          {message ? <p className="sc-error" role="alert">{message}</p> : null}
 
           {step > 0 && step < 5 ? (
-            <div className="mt-7 flex flex-col-reverse gap-3 border-t border-grey-200 pt-5 sm:flex-row sm:justify-between">
-              <button
-                type="button"
-                onClick={back}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-navy-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </button>
-              <button
-                type="button"
-                onClick={next}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-navy-900 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-navy-900/10 transition hover:-translate-y-0.5 hover:bg-navy-800"
-              >
-                {step === 4 ? "Show My Screening Result" : "Continue"}
-                <ArrowRight className="h-4 w-4" />
+            <div className="sc-nav">
+              <button type="button" onClick={back} className="sc-btn sc-btn-ghost"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back</button>
+              <button type="button" onClick={next} className="sc-btn sc-btn-primary">
+                {step === 4 ? "Show My Screening Result" : "Continue"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           ) : null}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function SummaryBox({ text }: { text: string }) {
+  return (
+    <label className="sc-summary">
+      <span>Your browser blocked copying. Select and copy the text below:</span>
+      <textarea readOnly rows={10} value={text} onFocus={(event) => event.currentTarget.select()} />
+    </label>
+  );
+}
+
+function PainSlider({ value, onChange }: { value: number | null; onChange: (value: number | null) => void }) {
+  const shown = value ?? 0;
+  const tone = value === null ? "none" : value >= 8 ? "high" : value >= 5 ? "mid" : "low";
+  return (
+    <div className="sc-group">
+      <p className="sc-group-title">
+        How strong is the pain right now? <small>(optional)</small>
+      </p>
+      <div className="sc-pain" data-tone={tone}>
+        <input
+          type="range"
+          min={0}
+          max={10}
+          step={1}
+          value={shown}
+          onChange={(event) => onChange(Number(event.target.value))}
+          aria-label="Pain right now from 0 (none) to 10 (worst imaginable)"
+          aria-valuetext={value === null ? "not set" : `${value} out of 10`}
+          style={{ ["--p" as string]: `${shown * 10}%` }}
+        />
+        <div className="sc-pain-scale" aria-hidden="true">
+          <span>0 none</span>
+          <span>5 moderate</span>
+          <span>10 worst</span>
+        </div>
+        <p className="sc-pain-read">
+          {value === null ? <span>Not set — slide to rate it, or skip.</span> : <span><b>{value}</b>/10</span>}
+          {value !== null ? <button type="button" onClick={() => onChange(null)}>Clear</button> : null}
+        </p>
       </div>
     </div>
   );
@@ -725,20 +621,11 @@ function ChoiceGroup({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="mt-7">
-      <p className="text-sm font-bold text-navy-900">{title}</p>
-      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-3">
+    <div className="sc-group" role="group" aria-label={title}>
+      <p className="sc-group-title">{title}</p>
+      <div className="sc-options">
         {options.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => onChange(item.id)}
-            className={`min-h-12 rounded-2xl border px-4 py-3.5 text-left text-sm transition-all duration-200 ${
-              value === item.id
-                ? "border-teal-400 bg-teal-50 font-semibold text-navy-900 shadow-sm ring-1 ring-teal-200"
-                : "border-slate-200 bg-white text-navy-600 shadow-sm hover:border-teal-300 hover:bg-slate-50/60"
-            }`}
-          >
+          <button key={item.id} type="button" aria-pressed={value === item.id} onClick={() => onChange(item.id)} className="sc-option" data-on={value === item.id}>
             {item.label}
           </button>
         ))}

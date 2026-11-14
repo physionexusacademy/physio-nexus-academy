@@ -583,17 +583,33 @@ export const featureLabels = new Map<string, string>([
   ...regions.flatMap((region) => [...region.locations, ...region.clues]),
 ].map((item) => [item.id, item.label] as const));
 
-export function scoreConditions(region: RegionId, selected: Set<string>) {
+const HISTORY_FEATURE = /^(age_|onset_|duration_|impact_)/;
+
+export type ScoredCondition = {
+  condition: ConditionRule;
+  score: number;
+  matches: string[];
+  contradictions: string[];
+  /** How many of this pattern's typical features the person reported, and how many the pattern has. */
+  matchedCount: number;
+  featureCount: number;
+  /** Typical features of the pattern that were NOT reported — what a clinician would ask about next. */
+  missing: string[];
+};
+
+export function scoreConditions(region: RegionId, selected: Set<string>): ScoredCondition[] {
   return allConditionRules
     .filter((condition) => condition.region === region)
     .map((condition) => {
       let score = 0;
       const matches: string[] = [];
       const contradictions: string[] = [];
+      let matchedCount = 0;
 
       for (const [feature, weight] of Object.entries(condition.weights)) {
         if (selected.has(feature)) {
           score += weight;
+          matchedCount += 1;
           const label = featureLabels.get(feature);
           if (label && !matches.includes(label)) matches.push(label);
         }
@@ -607,16 +623,32 @@ export function scoreConditions(region: RegionId, selected: Set<string>) {
         }
       }
 
+      // The strongest typical features (symptoms and locations, not age/onset/duration) the person did not tick.
+      const missing = Object.entries(condition.weights)
+        .filter(([feature, weight]) => !selected.has(feature) && weight >= 3 && !HISTORY_FEATURE.test(feature) && featureLabels.has(feature))
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([feature]) => featureLabels.get(feature) as string);
+
       return {
         condition,
         score,
         matches: matches.slice(0, 4),
         contradictions: contradictions.slice(0, 3),
+        matchedCount,
+        featureCount: Object.keys(condition.weights).length,
+        missing,
       };
     })
     .filter((result) => result.score >= 3)
     .sort((a, b) => b.score - a.score)
     .slice(0, 4);
+}
+
+/** When the top two patterns score within one point of each other, say so: they cannot be told apart from answers alone. */
+export function getOverlapNote(results: Pick<ScoredCondition, "score" | "condition">[]): string | null {
+  if (results.length < 2 || results[0].score - results[1].score > 1) return null;
+  return `${results[0].condition.plainName} and ${results[1].condition.plainName.toLowerCase()} look very similar from questions alone. A hands-on examination is what separates them.`;
 }
 
 export function compatibilityLabel(score: number) {
@@ -625,12 +657,13 @@ export function compatibilityLabel(score: number) {
   return "Possible";
 }
 
-export function getCarePriority(selected: Set<string>) {
-  if (selected.has("impact_high")) {
+/** `pain` is the optional 0–10 rating for how strong the symptom is right now; 8 or more is treated like a high functional impact. */
+export function getCarePriority(selected: Set<string>, pain?: number | null) {
+  if (selected.has("impact_high") || (typeof pain === "number" && pain >= 8)) {
     return {
       label: "Prompt professional assessment recommended",
       detail:
-        "Your symptoms are having a high functional impact. Even without an emergency warning, an in-person assessment is sensible rather than relying only on self-care.",
+        "Your symptoms are having a high impact (or the pain is very strong). Even without an emergency warning, an in-person assessment is sensible rather than relying only on self-care.",
     };
   }
 

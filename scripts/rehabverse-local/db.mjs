@@ -20,6 +20,8 @@ export async function createDb({ dataDir } = {}) {
   }
   const hasStudent = await db.query("select to_regclass('public.student_profiles') as t").then((r) => r.rows[0].t);
   if (!hasStudent) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261115120000_student_accounts.sql"), "utf8"));
+  const hasLeagues = await db.query("select to_regclass('public.league_entries') as t").then((r) => r.rows[0].t);
+  if (!hasLeagues) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261116120000_leagues_and_reminders.sql"), "utf8"));
   return db;
 }
 

@@ -183,3 +183,113 @@
   .dc-action-row p{order:1;text-align:center}
   .dc-continue{margin-top:22px}
 }
+
+/* ───────────────────────── futuristic mission console (2026-11) ─────────────────────────
+   Dark glass hero, play console and result; the leaderboard stays a light card on the page. */
+.dc-page{background:radial-gradient(circle at 95% 0,#e4f7f4 0,transparent 34%),linear-gradient(180deg,#f3f9fb,#fff 640px)}
+.dc-page .dc-hero{border:1px solid rgba(46,230,214,.28);border-radius:30px;background:radial-gradient(120% 130% at 0 0,#0c3a5c 0%,#071a33 55%,#050f22 100%);box-shadow:0 34px 80px -50px #031a2e,inset 0 1px 0 rgba(255,255,255,.08)}
+.dc-page .dc-hero:before{border-color:rgba(46,230,214,.18);box-shadow:0 0 0 35px rgba(46,230,214,.05),0 0 0 75px rgba(46,230,214,.035);animation:dc-orbit 26s linear infinite}
+.dc-page .dc-hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:linear-gradient(rgba(120,200,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(120,200,255,.07) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(70% 90% at 80% 20%,#000,transparent)}
+.dc-page .dc-hero p{color:#b9cde1}
+.dc-page .dc-hero-logo{background:rgba(46,230,214,.12);border-color:rgba(46,230,214,.45);color:#7ff5e8}
+.dc-page .dc-hero-heading{font-family:inherit;color:#fff;letter-spacing:-.035em;font-weight:800}
+.dc-page .dc-hero-heading span{background:linear-gradient(100deg,#2ee6d6,#7fb4ff 60%,#c98bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.dc-page .dc-hero-chip{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#e6f2ff;backdrop-filter:blur(6px)}
+.dc-page .dc-hero-chip svg{color:#2ee6d6}
+
+.dc-page .dc-play{border:1px solid rgba(46,230,214,.3);background:radial-gradient(130% 100% at 0 0,#0b3558 0%,#071a33 58%,#050f22 100%);color:#eaf6ff;box-shadow:0 34px 80px -50px #031a2e,inset 0 1px 0 rgba(255,255,255,.08);position:relative}
+.dc-page .dc-play:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 40%,rgba(46,230,214,.07) 50%,transparent 60%);background-size:260% 100%;animation:dc-sweep 7s ease-in-out infinite}
+.dc-page .dc-play > *{position:relative}
+.dc-ink{color:#fff}
+.dc-muted{color:#a9bfd6}
+.dc-accent{color:#2ee6d6}
+.dc-error{background:rgba(255,90,120,.14);border:1px solid rgba(255,122,162,.5);color:#ffd6e0}
+.dc-track{background:rgba(255,255,255,.1)}
+.dc-fill{background:linear-gradient(90deg,#2ee6d6,#7fb4ff)}
+.dc-rule{border-color:rgba(255,255,255,.12)}
+.dc-page .dc-play h2,.dc-page .dc-play h3{font-family:inherit;letter-spacing:-.02em}
+.dc-page .dc-mission-mast{background:radial-gradient(circle at 8% 100%,rgba(46,230,214,.16) 0,transparent 55%);border-right:1px solid rgba(255,255,255,.1)}
+.dc-page .dc-eyebrow{color:#2ee6d6}
+.dc-page .dc-mission-stamp{background:rgba(46,230,214,.12);border-color:rgba(46,230,214,.4);color:#7ff5e8}
+.dc-page .dc-mission-stat{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.dc-page .dc-mission-stat strong{color:#fff}
+.dc-page .dc-mission-stat span{color:#a9bfd6}
+.dc-page .dc-label{color:#cfe3f5}
+.dc-page .dc-input{background:rgba(255,255,255,.07);border-color:rgba(150,205,255,.3);color:#fff}
+.dc-page .dc-input::placeholder{color:#7f99b3}
+.dc-page .dc-input:focus{border-color:#2ee6d6;box-shadow:0 0 0 3px rgba(46,230,214,.22)}
+.dc-page .dc-signup label{color:#b9cde1}
+.dc-page .dc-primary{background:linear-gradient(110deg,#17d6c4,#2f8cff);color:#031a2a;box-shadow:0 14px 30px -18px #17d6c4}
+.dc-page .dc-primary:not(:disabled):hover{background:linear-gradient(110deg,#4cf0e0,#5aa5ff);box-shadow:0 18px 34px -16px #17d6c4}
+.dc-page .dc-secondary{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22);color:#e6f2ff}
+.dc-page .dc-secondary:hover{background:rgba(255,255,255,.14)}
+
+.dc-page .dc-question-panel{background:transparent}
+.dc-page .dc-live-banner{background:rgba(46,230,214,.1);border-color:rgba(46,230,214,.35);color:#9ff5ec}
+.dc-page .dc-live-dot{background:#2ee6d6;box-shadow:0 0 0 4px rgba(46,230,214,.25)}
+.dc-page .dc-live-head{border-bottom-color:rgba(255,255,255,.12)}
+.dc-timer{position:relative;display:inline-grid;grid-auto-flow:column;align-items:baseline;gap:1px;padding:0;border:0;background:transparent;width:64px;height:64px;place-content:center;color:#fff}
+.dc-timer svg{position:absolute;inset:0;width:100%;height:100%}
+.dc-ring-bg{fill:none;stroke:rgba(255,255,255,.14);stroke-width:4}
+.dc-ring-fg{fill:none;stroke:#2ee6d6;stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .25s linear,stroke .3s;filter:drop-shadow(0 0 6px rgba(46,230,214,.7))}
+.dc-timer b{position:relative;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.dc-timer small{position:relative;font-size:11px;font-weight:700;color:#a9bfd6}
+.dc-page .dc-question-panel .dc-timer{padding:0;background:transparent;border:0;box-shadow:none;font-size:inherit}
+.dc-page .dc-timer-urgent{background:transparent;border:0;color:#ff9db6;animation:none}
+.dc-timer-urgent .dc-ring-fg{stroke:#ff6b8f;filter:drop-shadow(0 0 7px rgba(255,107,143,.8))}
+.dc-timer-urgent b{animation:dc-tick 1s ease-in-out infinite}
+.dc-page .dc-progress-segment{background:rgba(255,255,255,.12)}
+.dc-page .dc-progress-on{background:linear-gradient(90deg,#2ee6d6,#7fb4ff);box-shadow:0 0 12px rgba(46,230,214,.55)}
+.dc-page .dc-question-title{font-family:inherit;font-weight:800;letter-spacing:-.02em}
+.dc-page .dc-question-panel .dc-option,.dc-page .dc-option{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);color:#e9f3fc;box-shadow:none;backdrop-filter:blur(6px)}
+.dc-page .dc-option:hover{border-color:rgba(46,230,214,.6);background:rgba(46,230,214,.1);transform:translateX(3px)}
+.dc-page .dc-question-panel .dc-option-selected,.dc-page .dc-option-selected{background:linear-gradient(110deg,rgba(46,230,214,.22),rgba(47,140,255,.14));border-color:#2ee6d6;box-shadow:0 0 0 1px rgba(46,230,214,.5),0 14px 34px -20px #2ee6d6}
+.dc-page .dc-option-letter{background:rgba(255,255,255,.1);color:#cfe9f7}
+.dc-page .dc-question-panel .dc-option-selected .dc-option-letter,.dc-page .dc-option-selected .dc-option-letter{background:#2ee6d6;color:#032a2a}
+.dc-page .dc-option svg{color:#2ee6d6}
+.dc-page .dc-action-row .dc-primary{box-shadow:0 14px 30px -18px #17d6c4}
+
+.dc-page .dc-result{background:transparent}
+.dc-score-ring{position:relative;width:200px;height:200px;margin:14px auto 4px;display:grid;place-items:center}
+.dc-score-ring svg{position:absolute;inset:0;width:100%;height:100%}
+.dc-score-bg{fill:none;stroke:rgba(255,255,255,.12);stroke-width:9}
+.dc-score-fg{fill:none;stroke:#2ee6d6;stroke-width:9;stroke-linecap:round;stroke-dasharray:var(--c);stroke-dashoffset:var(--off);filter:drop-shadow(0 0 10px rgba(46,230,214,.7));animation:dc-ring-in 1.4s cubic-bezier(.2,.8,.2,1) both}
+.dc-page .dc-score-number{margin:0;font-size:clamp(3.4rem,8vw,4.6rem);line-height:1;color:#fff;font-weight:800;letter-spacing:-.05em;text-shadow:0 0 28px rgba(46,230,214,.5)}
+.dc-page .dc-score-number span{color:#8aa3bd;font-size:16px}
+.dc-page .dc-review-item{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.dc-page .dc-review-item p,.dc-page .dc-review-item h3{color:#dbe9f6}
+.dc-page .dc-review-item .dc-accent{color:#2ee6d6}
+.dc-page .dc-share-label,.dc-page .dc-continue-label{color:#8aa3bd}
+.dc-page .dc-share-btn{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.2);color:#e6f2ff}
+.dc-page .dc-share-btn:hover{background:rgba(255,255,255,.14);border-color:rgba(46,230,214,.6)}
+.dc-page .dc-share-whatsapp{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:#a7f3d0}
+.dc-page .dc-continue-card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.dc-page .dc-continue-card:hover{background:rgba(46,230,214,.1);border-color:rgba(46,230,214,.5)}
+.dc-page .dc-continue-icon{background:rgba(46,230,214,.14);color:#2ee6d6}
+.dc-page .dc-continue-copy strong{color:#fff}
+.dc-page .dc-continue-copy span{color:#a9bfd6}
+.dc-page .dc-continue-arrow{color:#2ee6d6}
+
+.dc-extras{display:grid;gap:12px;margin:22px auto 0;max-width:620px;text-align:left}
+.dc-xp-chip{justify-self:center;display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 15px;font-size:12px;font-weight:800;color:#032a2a;background:linear-gradient(110deg,#2ee6d6,#7fe0ff);box-shadow:0 10px 28px -14px #2ee6d6;animation:dc-pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.dc-join{border:1px solid rgba(46,230,214,.35);border-radius:20px;padding:18px;background:rgba(46,230,214,.07)}
+.dc-join p{margin:0;font-size:13px;line-height:1.7;color:#b9cde1}
+.dc-join .dc-join-title{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:14px;font-weight:800;color:#fff}
+.dc-join b{color:#fff}
+.dc-join-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.dc-remind{display:grid;gap:8px;border-radius:18px;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#dbe9f6}
+.dc-remind-row{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;cursor:pointer}
+.dc-remind-row input{width:19px;height:19px;accent-color:#2ee6d6}
+.dc-remind-hour{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#a9bfd6}
+.dc-remind-hour select{border:1px solid rgba(150,205,255,.35);border-radius:9px;padding:6px 9px;font-size:13px;background:rgba(255,255,255,.08);color:#fff}
+.dc-remind-hour select option{color:#0b2a4a}
+.dc-remind p{margin:0;font-size:12px;color:#8aa3bd}
+
+@keyframes dc-orbit{to{transform:rotate(360deg)}}
+@keyframes dc-sweep{0%,100%{background-position:130% 0}50%{background-position:-30% 0}}
+@keyframes dc-ring-in{from{stroke-dashoffset:var(--c)}}
+@keyframes dc-tick{50%{transform:scale(1.18)}}
+@keyframes dc-pop{from{transform:scale(.6);opacity:0}}
+@media(max-width:860px){.dc-page .dc-mission-mast{border-right:0;border-bottom:1px solid rgba(255,255,255,.1)}}
+@media(max-width:480px){.dc-score-ring{width:170px;height:170px}.dc-timer{width:56px;height:56px}.dc-timer b{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.dc-page .dc-hero:before,.dc-page .dc-play:before,.dc-score-fg,.dc-xp-chip,.dc-timer-urgent b{animation:none!important}}

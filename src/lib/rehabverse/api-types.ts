@@ -107,3 +107,12 @@ export type PlanExercise = {
   exercise_id: string; exercise_title: string; sets?: number; reps?: number; hold_seconds?: number; rest_seconds?: number; duration_seconds?: number;
   side: "both" | "left" | "right" | "alternate"; frequency?: string; precautions?: string; notes?: string;
 };
+
+/** Reminder e-mail preferences and history for the signed-in patient (rehab_my_followup). */
+export type PatientFollowup = { remind_email: boolean; has_email: boolean; last_reminder_at: string | null };
+/** A patient on a live programme who has gone quiet (rehab_admin_followups). */
+export type AdminFollowup = {
+  patient_id: string; reference_code: string; full_name: string; phone: string | null;
+  reason: "open_day_waiting" | "checkin_missed"; since: string; day_number: number;
+  reminders: number; last_reminder_at: string | null; can_email: boolean;
+};
