@@ -22,6 +22,12 @@ export async function createDb({ dataDir } = {}) {
   if (!hasStudent) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261115120000_student_accounts.sql"), "utf8"));
   const hasLeagues = await db.query("select to_regclass('public.league_entries') as t").then((r) => r.rows[0].t);
   if (!hasLeagues) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261116120000_leagues_and_reminders.sql"), "utf8"));
+  const hasParticipants = await db.query("select to_regclass('public.daily_reminder_optouts') as t").then((r) => r.rows[0].t);
+  if (!hasParticipants) {
+    const hasDaily = await db.query("select to_regclass('public.daily_challenge_attempts') as t").then((r) => r.rows[0].t);
+    if (!hasDaily) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261009_pna_daily_challenge.sql"), "utf8"));
+    await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261117120000_daily_participant_reminders.sql"), "utf8"));
+  }
   return db;
 }
 

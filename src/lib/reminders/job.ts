@@ -45,18 +45,28 @@ export async function runReminderJob(env: ReminderEnv, io: Io = {}): Promise<Job
   const from = env.RESEND_FROM_EMAIL || DEFAULT_FROM;
 
   let due: ClaimedReminder[] = [];
+  const now = (io.now ?? new Date()).toISOString();
   try {
-    due = await callRpc<ClaimedReminder[]>(env, "pna_reminders_claim", { p_now: (io.now ?? new Date()).toISOString(), p_limit: 100 }, doFetch);
+    due = await callRpc<ClaimedReminder[]>(env, "pna_reminders_claim", { p_now: now, p_limit: 100 }, doFetch);
   } catch (error) {
     console.error("PNA reminders: claim failed", error instanceof Error ? error.message : error);
     return { ...empty, skipped: "claim failed" };
   }
+  // Past Daily Challenge participants are a separate claim; if that function is missing or fails, the others still go out.
+  let participantNote = "";
+  try {
+    due = due.concat(await callRpc<ClaimedReminder[]>(env, "pna_participant_reminders_claim", { p_now: now, p_limit: 100 }, doFetch));
+  } catch (error) {
+    participantNote = "participant claim failed";
+    console.error("PNA reminders: participant claim failed", error instanceof Error ? error.message : error);
+  }
 
   const results: { id: number; ok: boolean }[] = [];
   let note = due.length ? "" : "idle";
-  if (due.length) {
+  for (let offset = 0; offset < due.length; offset += 100) {
+    const chunk = due.slice(offset, offset + 100);
     try {
-      const payload = due.map((item) => {
+      const payload = chunk.map((item) => {
         const mail = buildReminderMail(item, origin);
         return { from, to: [item.to], subject: mail.subject, text: mail.text, html: mail.html, headers: mail.headers };
       });
@@ -65,19 +75,19 @@ export async function runReminderJob(env: ReminderEnv, io: Io = {}): Promise<Job
         headers: {
           Authorization: `Bearer ${env.RESEND_API_KEY}`,
           "Content-Type": "application/json",
-          "Idempotency-Key": `pna-reminders-${due[0].id}-${due[due.length - 1].id}-${due.length}`,
+          "Idempotency-Key": `pna-reminders-${chunk[0].id}-${chunk[chunk.length - 1].id}-${chunk.length}`,
         },
         body: JSON.stringify(payload),
       });
-      const ok = response.ok;
-      if (!ok) note = `resend HTTP ${response.status}`;
-      for (const item of due) results.push({ id: item.id, ok });
+      if (!response.ok) note = `resend HTTP ${response.status}`;
+      for (const item of chunk) results.push({ id: item.id, ok: response.ok });
     } catch (error) {
       note = "resend unreachable";
       console.error("PNA reminders: send failed", error instanceof Error ? error.message : error);
-      for (const item of due) results.push({ id: item.id, ok: false });
+      for (const item of chunk) results.push({ id: item.id, ok: false });
     }
   }
+  if (participantNote) note = note ? `${note}; ${participantNote}` : participantNote;
 
   try {
     await callRpc(env, "pna_reminders_finish", { p_results: results, p_note: note || null }, doFetch);

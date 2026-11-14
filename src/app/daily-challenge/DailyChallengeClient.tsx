@@ -283,7 +283,7 @@ export function DailyChallengeClient(){
     <input id="dc-email" autoComplete="email" type="email" required placeholder="you@gmail.com" className="dc-input" value={email} onChange={e=>setEmail(e.target.value)}/>
     <label className="mt-5 flex items-start gap-2 text-xs leading-6 dc-muted">
      <input type="checkbox" required checked={consent} onChange={e=>setConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-teal-700"/>
-     <span>I agree to publish my display name, earned score and completed challenge count on the public leaderboard. My email will not appear publicly.</span>
+     <span>I agree to publish my display name, earned score and completed challenge count on the public leaderboard. My email will not appear publicly. I also agree to receive a daily reminder e-mail from PNA; every e-mail has a one-click unsubscribe.</span>
     </label>
     <p className="mt-3 text-xs leading-6 dc-muted"><LockKeyhole className="mr-1 inline h-3.5 w-3.5"/> One attempt per Gmail per day. Once started, your timer runs and the challenge cannot be restarted. Email ownership is not verified in this version.</p>
     {error&&<p role="alert" className="mt-3 dc-error rounded-lg p-3 text-sm">{error}</p>}

@@ -33,6 +33,15 @@ export default function PrivacyPage() {
         may display a participant&apos;s name, score and completion time, but not their Gmail address.
       </p>
 
+      <h2>Daily Clinical Challenge Reminders</h2>
+      <p>
+        If you take part in the Daily Clinical Challenge, we may e-mail the Gmail address you
+        entered, addressed by the name you entered, with a short daily reminder that includes your
+        own challenge record (missions, points and best score). Every reminder has a one-click
+        unsubscribe link; once you use it we never send you a reminder again. We do not track
+        whether you open these e-mails, and we do not share your address with anyone.
+      </p>
+
       <h2>Student Accounts (My PNA)</h2>
       <p>
         If you create a free student account, we store your name, email address, study stage,
