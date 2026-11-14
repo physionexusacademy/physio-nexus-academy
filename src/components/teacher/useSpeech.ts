@@ -1,35 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { speakText, supportsSpeech, type Playback, type SpeechLang } from "@/lib/speech/voices";
 
 /**
- * Browser text-to-speech (no network, no cost). English only: Roman Urdu read
- * by an English voice sounds wrong, so the UI hides voice in Urdu mode.
+ * Browser text-to-speech (no network, no cost). English with an English voice; Roman Urdu with a Hindi or Urdu voice if the device has
+ * one (see lib/speech), otherwise `note` explains that only the text is shown.
  */
 export function useSpeech() {
   const [supported, setSupported] = useState(false);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
-  const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
+  const [note, setNote] = useState<string | null>(null);
+  const playback = useRef<Playback | null>(null);
+  const current = useRef<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return;
-    setSupported(true);
-    const synth = window.speechSynthesis;
-    const chooseVoice = () => {
-      const voices = synth.getVoices().filter((voice) => voice.lang.toLowerCase().startsWith("en"));
-      voiceRef.current =
-        voices.find((voice) => /en-(in|pk)/i.test(voice.lang)) ??
-        voices.find((voice) => /en-gb/i.test(voice.lang)) ??
-        voices.find((voice) => voice.default) ??
-        voices[0] ??
-        null;
-    };
-    chooseVoice();
-    synth.addEventListener?.("voiceschanged", chooseVoice);
+    setSupported(supportsSpeech());
     return () => {
-      synth.removeEventListener?.("voiceschanged", chooseVoice);
+      playback.current?.cancel();
       try {
-        synth.cancel();
+        window.speechSynthesis?.cancel();
       } catch {
         /* ignore */
       }
@@ -37,6 +27,9 @@ export function useSpeech() {
   }, []);
 
   const stop = useCallback(() => {
+    playback.current?.cancel();
+    playback.current = null;
+    current.current = null;
     try {
       window.speechSynthesis?.cancel();
     } catch {
@@ -46,33 +39,36 @@ export function useSpeech() {
   }, []);
 
   const speak = useCallback(
-    (id: string, text: string) => {
+    (id: string, text: string, lang: SpeechLang = "en") => {
       if (!supported) return;
-      const synth = window.speechSynthesis;
-      try {
-        synth.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        if (voiceRef.current) utterance.voice = voiceRef.current;
-        utterance.lang = voiceRef.current?.lang ?? "en-GB";
-        utterance.rate = 0.97;
-        utterance.onend = () => setSpeakingId((current) => (current === id ? null : current));
-        utterance.onerror = () => setSpeakingId((current) => (current === id ? null : current));
-        setSpeakingId(id);
-        synth.speak(utterance);
-      } catch {
-        setSpeakingId(null);
-      }
+      playback.current?.cancel();
+      current.current = id;
+      setSpeakingId(id);
+      void speakText(text, lang, {
+        onNote: setNote,
+        isCurrent: () => current.current === id,
+        onEnd: () => {
+          if (current.current === id) {
+            current.current = null;
+            setSpeakingId((now) => (now === id ? null : now));
+          }
+        },
+      }).then((p) => {
+        // A newer line may have started while the voice was being chosen.
+        if (current.current === id) playback.current = p;
+        else p?.cancel();
+      });
     },
     [supported],
   );
 
   const toggle = useCallback(
-    (id: string, text: string) => {
+    (id: string, text: string, lang: SpeechLang = "en") => {
       if (speakingId === id) stop();
-      else speak(id, text);
+      else speak(id, text, lang);
     },
     [speak, speakingId, stop],
   );
 
-  return { supported, speakingId, speak, stop, toggle };
+  return { supported, speakingId, speak, stop, toggle, note };
 }

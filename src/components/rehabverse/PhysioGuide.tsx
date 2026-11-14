@@ -17,6 +17,7 @@ import { P, type Parts } from "@/lib/virtual-patient/parts";
 import { blendPose } from "@/lib/rehabverse/motion";
 import type { Gesture, GuideBeat, GuideTopic } from "@/lib/rehabverse/guide";
 import type { Lang } from "./ExercisePlayer";
+import { speakText, supportsSpeech } from "@/lib/speech/voices";
 
 const IDLE: Parts = { shoulder: { flex: 4, abd: 8 }, "shoulder:o": { flex: 4, abd: 8 }, elbow: { flex: 18 }, "elbow:o": { flex: 18 } };
 
@@ -206,15 +207,16 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
       const text = current ? current.say[lang_.current] : "";
 
       if (current && playing && !r.finished) {
-        if (voice && lang_.current === "en" && r.spoken !== r.index && typeof window !== "undefined" && window.speechSynthesis) {
+        if (voice && r.spoken !== r.index && supportsSpeech()) {
           r.spoken = r.index;
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = 0.95;
-          utterance.onstart = () => (speaking.current = true);
-          utterance.onend = () => (speaking.current = false);
-          utterance.onerror = () => (speaking.current = false);
-          window.speechSynthesis.cancel();
-          window.speechSynthesis.speak(utterance);
+          const spokenIndex = r.index;
+          // English voice, or a Hindi/Urdu voice for Roman Urdu when the device has one; the subtitles always stay.
+          void speakText(text, lang_.current === "ru" ? "ur" : "en", {
+            rate: 0.98,
+            isCurrent: () => r.spoken === spokenIndex,
+            onStart: () => (speaking.current = true),
+            onEnd: () => (speaking.current = false),
+          });
         }
         if (reduced) r.revealed = text.length;
         else if (r.revealed < text.length) r.revealed = Math.min(text.length, r.revealed + (dt / 1000) * CHARS_PER_SECOND);
@@ -324,7 +326,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
             {status === "text" ? <Monitor className="h-4 w-4" aria-hidden="true" /> : <MonitorOff className="h-4 w-4" aria-hidden="true" />}
           </button>
           {lang === "en" ? (
-            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English)">
+            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English, or Urdu/Hindi voice if your device has one)">
               {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
             </button>
           ) : (

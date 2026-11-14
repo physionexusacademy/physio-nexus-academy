@@ -276,9 +276,9 @@ function LessonConversation({
       setSession((current) => ({ ...current, log: [...current.log, ...teacher] }));
       setTyping(false);
       const last = teacher[teacher.length - 1];
-      if (voiceOn && lang === "en" && speech.supported && last) {
+      if (voiceOn && speech.supported && last) {
         const text = plainText(entryText(last));
-        if (text) speech.speak("auto-" + Date.now(), text);
+        if (text) speech.speak("auto-" + Date.now(), text, lang);
       }
     }, delay);
   }
@@ -352,7 +352,7 @@ function LessonConversation({
     const meta = beatLabels[beat.type];
     const label = meta ? pick(meta.label, lang) : undefined;
     const tone = meta?.tone ?? "plain";
-    const listen = lang === "en" && speech.supported ? () => speech.toggle(key, plainText(entryText({ k: "beat", i: index }))) : undefined;
+    const listen = speech.supported ? () => speech.toggle(key, plainText(entryText({ k: "beat", i: index })), lang) : undefined;
     const common = { label, tone, onListen: listen, listening: speech.speakingId === key };
 
     switch (beat.type) {
@@ -535,7 +535,7 @@ function LessonConversation({
   function renderEntry(entry: Entry, index: number) {
     const key = `${entry.k}-${index}`;
     const listen = (text: string) =>
-      lang === "en" && speech.supported ? () => speech.toggle(key, plainText(text)) : undefined;
+      speech.supported ? () => speech.toggle(key, plainText(text), lang) : undefined;
 
     switch (entry.k) {
       case "intro": {
@@ -758,15 +758,14 @@ function LessonConversation({
               <button
                 type="button"
                 onClick={toggleVoice}
-                disabled={lang === "ur"}
-                aria-pressed={voiceOn && lang === "en"}
-                title={lang === "ur" ? "Voice is available in English" : voiceOn ? "Stop reading new messages aloud" : "Read new messages aloud"}
+                aria-pressed={voiceOn}
+                title={voiceOn ? "Stop reading new messages aloud" : lang === "ur" ? "Naye messages awaaz mein suniye (Urdu/Hindi voice jo device mein ho)" : "Read new messages aloud"}
                 className={cn(
                   "inline-flex h-9 w-9 items-center justify-center rounded-full border transition disabled:opacity-40",
-                  voiceOn && lang === "en" ? "border-teal-700 bg-teal-700 text-white" : "border-slate-200 bg-white text-slate-600 hover:text-teal-700",
+                  voiceOn ? "border-teal-700 bg-teal-700 text-white" : "border-slate-200 bg-white text-slate-600 hover:text-teal-700",
                 )}
               >
-                {voiceOn && lang === "en" ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                 <span className="sr-only">{t(lang, "Teacher voice", "Teacher ki awaaz")}</span>
               </button>
             ) : null}
@@ -781,6 +780,11 @@ function LessonConversation({
             </button>
           </div>
         </div>
+        {voiceOn && speech.note ? (
+          <p role="status" className="mt-2 rounded-lg bg-amber-50 px-3 py-1.5 text-xs leading-5 text-amber-900">
+            {speech.note}
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-5 space-y-4" role="log" aria-live="polite" aria-label={t(lang, "Lesson conversation", "Lesson ki guftagu")}>

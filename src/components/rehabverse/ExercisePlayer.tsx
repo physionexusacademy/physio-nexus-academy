@@ -8,6 +8,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { speakText, supportsSpeech } from "@/lib/speech/voices";
 import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
@@ -543,20 +544,27 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
     return () => cancelAnimationFrame(raf);
   }, [status, playing, speed, exercise, side, showMistake]);
 
-  // Optional spoken guidance (English voices only; Roman Urdu stays as subtitles).
+  // Optional spoken guidance: English voice, or a Hindi/Urdu voice for Roman Urdu when the device has one (subtitles always stay).
   useEffect(() => {
-    if (!voice || lang !== "en" || !line || typeof window === "undefined" || !window.speechSynthesis) {
+    if (!voice || !line || !supportsSpeech()) {
       speakingRef.current = false;
       return;
     }
-    const utterance = new SpeechSynthesisUtterance(line);
-    utterance.rate = 0.95;
-    utterance.onstart = () => (speakingRef.current = true);
-    utterance.onend = () => (speakingRef.current = false);
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    let cancelled = false;
+    let playback: { cancel: () => void } | null = null;
+    void speakText(line, lang === "ru" ? "ur" : "en", {
+      rate: 0.98,
+      isCurrent: () => !cancelled,
+      onStart: () => (speakingRef.current = true),
+      onEnd: () => (speakingRef.current = false),
+    }).then((p) => {
+      if (cancelled) p?.cancel();
+      else playback = p;
+    });
     return () => {
+      cancelled = true;
       speakingRef.current = false;
+      playback?.cancel();
       window.speechSynthesis.cancel();
     };
   }, [voice, line, lang]);
@@ -642,7 +650,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
             </button>
           ) : null}
           {lang === "en" ? (
-            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English)">
+            <button type="button" onClick={() => setVoice((v) => !v)} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (English, or Urdu/Hindi voice if your device has one)">
               {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
             </button>
           ) : null}

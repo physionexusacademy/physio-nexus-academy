@@ -1,11 +1,13 @@
 /**
- * Speaking for the teaching avatar (browser only). Voice is the browser's own free text-to-speech (English only — an English
- * voice reads Roman Urdu wrongly, so in Roman Urdu the lines are shown as subtitles while the mouth still moves). The mouth is
+ * Speaking for the teaching avatar (browser only). Voice is the browser's own free text-to-speech: English with an English voice;
+ * Roman Urdu is converted (lib/speech) for a Hindi or Urdu voice, with English terms kept on the English voice. When the device has no
+ * suitable voice the lines are still shown as subtitles and the mouth still moves. The mouth is
  * driven from the text on a timeline (vowel shapes, closed lips on b/m/p, pauses at punctuation) that starts when the voice starts and
  * is re-synchronised on every word-boundary event the browser reports. Where boundary events do not exist (most phones) the timeline
  * simply runs at the speaking rate. No microphone, no camera, no network.
  */
 import type { FaceAnimator, MouthShape } from "./face";
+import { planSpeech, readPrefs, speakPlan, supportsSpeech, type Playback } from "@/lib/speech/voices";
 import { CLOSED } from "./face";
 
 export type Lang = "en" | "ur";
@@ -51,24 +53,15 @@ function buildTimeline(text: string, charsPerSecond: number): Timeline {
   return { total: t, starts, text };
 }
 
-function pickVoice(): SpeechSynthesisVoice | null {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
-  const voices = window.speechSynthesis.getVoices().filter((voice) => voice.lang.toLowerCase().startsWith("en"));
-  return (
-    voices.find((voice) => /en-(in|pk)/i.test(voice.lang)) ??
-    voices.find((voice) => /en-gb/i.test(voice.lang)) ??
-    voices.find((voice) => voice.default) ??
-    voices[0] ??
-    null
-  );
-}
-
 export class Speaker {
   private timeline: Timeline | null = null;
   private clock = 0;
   private paused = false;
   private resolve: (() => void) | null = null;
-  private utterance: SpeechSynthesisUtterance | null = null;
+  private playback: Playback | null = null;
+  private token = 0;
+  /** Why the voice is silent (for example no Urdu voice on this device); shown next to the voice button. */
+  note: string | null = null;
   private voiceHeard = false;
   /** Mouth openness scale (reduced in light mode / reduced motion). */
   intensity = 1;
@@ -86,7 +79,7 @@ export class Speaker {
     return this.timeline ? Math.min(1, this.clock / Math.max(0.001, this.timeline.total)) : 0;
   }
 
-  /** Speaks (and/or lip-syncs) one line. Resolves when finished or cancelled. Voice only in English and only if `voice` is true. */
+  /** Speaks (and/or lip-syncs) one line. Resolves when finished or cancelled. The voice is only used when `voice` is true. */
   speak(raw: string, options: { lang: Lang; voice: boolean }): Promise<void> {
     this.cancel();
     const text = speakable(raw);
@@ -94,36 +87,34 @@ export class Speaker {
     this.timeline = buildTimeline(text, cps);
     this.clock = 0;
     this.voiceHeard = false;
+    const token = ++this.token;
     return new Promise<void>((resolve) => {
       this.resolve = resolve;
-      if (options.voice && options.lang === "en" && typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined") {
-        try {
-          const synth = window.speechSynthesis;
-          synth.cancel();
-          const utterance = new SpeechSynthesisUtterance(text);
-          const voice = pickVoice();
-          if (voice) utterance.voice = voice;
-          utterance.lang = voice?.lang ?? "en-GB";
-          utterance.rate = 0.97 * this.rate;
-          utterance.onstart = () => {
-            this.voiceHeard = true;
-            this.clock = 0;
-          };
-          utterance.onboundary = (event) => {
-            const tl = this.timeline;
-            if (!tl || event.name === "sentence") return;
-            const at = tl.starts[Math.min(event.charIndex, tl.text.length)] ?? this.clock;
-            // Re-sync the lips to the voice, but never jump backwards by more than a word.
-            if (Math.abs(at - this.clock) > 0.12) this.clock = at;
-          };
-          utterance.onend = () => this.finish();
-          utterance.onerror = () => this.finish();
-          this.utterance = utterance;
-          synth.speak(utterance);
-        } catch {
-          /* silent timeline only */
-        }
-      }
+      if (!options.voice || !supportsSpeech()) return;
+      void planSpeech(text, options.lang, { ...readPrefs(), gender: "male" })
+        .then((plan) => {
+          if (token !== this.token || !this.timeline) return; // cancelled or replaced while the plan was prepared
+          this.note = plan.note;
+          if (plan.mode === "none") return; // no suitable voice: subtitles and lips only
+          this.playback = speakPlan(plan, {
+            rate: this.rate,
+            onStart: () => {
+              this.voiceHeard = true;
+              this.clock = 0;
+            },
+            onBoundary: (charIndex) => {
+              const tl = this.timeline;
+              if (!tl) return;
+              const at = tl.starts[Math.min(charIndex, tl.text.length)] ?? this.clock;
+              // Re-sync the lips to the voice, but never jump backwards by more than a word.
+              if (Math.abs(at - this.clock) > 0.12) this.clock = at;
+            },
+          });
+          void this.playback.done.then(() => {
+            if (token === this.token) this.finish();
+          });
+        })
+        .catch(() => undefined);
     });
   }
 
@@ -152,7 +143,9 @@ export class Speaker {
     } catch {
       /* ignore */
     }
-    this.utterance = null;
+    this.token++;
+    this.playback?.cancel();
+    this.playback = null;
     this.finish();
   }
 
@@ -171,7 +164,7 @@ export class Speaker {
     this.clock += dt;
     if (this.clock >= tl.total + 0.15) {
       // A voice may run a little longer than the estimate: wait for it unless it never started.
-      if (!this.utterance || !this.voiceHeard || this.clock > tl.total + 4) this.finish();
+      if (!this.playback || !this.voiceHeard || this.clock > tl.total + 4) this.finish();
       else this.face.mouth = { ...CLOSED };
       return;
     }

@@ -50,3 +50,5 @@
 .av-ask-links span { display: block; font-size: 12px; color: #9fc6e8; }
 .av-ask-error { margin: 8px 0 0; font-size: 13px; font-weight: 700; color: #ffb4b4; }
 .av-ask-note { margin: 8px 0 6px; font-size: 11px; line-height: 1.4; color: #8fb5da; }
+
+.av-voice-note { margin: 0; padding: 7px 12px; font-size: 12px; line-height: 1.4; color: #ffe2a0; background: rgba(255, 207, 90, .08); border-top: 1px solid rgba(255, 207, 90, .25); }
