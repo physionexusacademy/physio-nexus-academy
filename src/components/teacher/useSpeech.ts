@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { speakText, supportsSpeech, type Playback, type SpeechLang } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, supportsSpeech, type Playback, type SpeechLang } from "@/lib/speech/voices";
 
 /**
  * Browser text-to-speech (no network, no cost). English with an English voice; Roman Urdu with a Hindi or Urdu voice if the device has
@@ -18,11 +18,7 @@ export function useSpeech() {
     setSupported(supportsSpeech());
     return () => {
       playback.current?.cancel();
-      try {
-        window.speechSynthesis?.cancel();
-      } catch {
-        /* ignore */
-      }
+      stopSpeaking();
     };
   }, []);
 
@@ -30,11 +26,7 @@ export function useSpeech() {
     playback.current?.cancel();
     playback.current = null;
     current.current = null;
-    try {
-      window.speechSynthesis?.cancel();
-    } catch {
-      /* ignore */
-    }
+    stopSpeaking();
     setSpeakingId(null);
   }, []);
 

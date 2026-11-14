@@ -15,7 +15,7 @@ import { resolvePoint } from "@/lib/skills/points3d";
 import { plain } from "@/lib/avatar/text";
 import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
-import { genderOf, onVoices, planSpeech, readPrefs, savePref, supportsSpeech, voicesFor } from "@/lib/speech/voices";
+import { BUILTIN_LABEL, BUILTIN_VOICE, builtinSupported, onVoices, planSpeech, readPrefs, savePref, supportsSpeech, unlockAudio, voicesFor, warmBuiltin } from "@/lib/speech/voices";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
@@ -53,6 +53,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const [voiceName, setVoiceName] = useState("");
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
   const [splitVoice, setSplitVoice] = useState(false);
+  const [builtinInUse, setBuiltinInUse] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [turn, setTurn] = useState(false);
   const [light, setLight] = useState<boolean | null>(null);
@@ -70,24 +71,29 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   // What this device can do.
   useEffect(() => {
     setVoiceOk(supportsSpeech());
+    // Start loading the built-in male voice (about 0.8 MB, once) while the stage builds, so the first line is spoken without waiting.
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    if (!saveData) warmBuiltin();
     setSplitVoice(readPrefs().split === true);
     setVoice(read("pna-avatar-voice") === "1");
     setSpeed(Number(read("pna-avatar-speed")) || 1);
     void import("@/lib/avatar/teacher").then((m) => setLight(m.detectLightMode()));
   }, []);
 
-  // Voices this device offers for the current language (browsers load them late), and what to tell the visitor when none fits.
+  // The voices to choose from: Dr. Sajjad's built-in male voice, then any male voice installed on this device (browsers load those
+  // late). A female voice, or one that is not known to be male, is never offered.
   useEffect(() => {
     if (!supportsSpeech()) return;
     const kinds = ur ? (["hi", "ur"] as const) : (["en"] as const);
     return onVoices(() => {
       const seen = new Set<string>();
       const list: { name: string; label: string }[] = [];
+      if (builtinSupported()) list.push({ name: BUILTIN_VOICE, label: `${BUILTIN_LABEL} ♂` });
       for (const kind of kinds) {
         for (const v of voicesFor(kind, "male")) {
           if (seen.has(v.name)) continue;
           seen.add(v.name);
-          list.push({ name: v.name, label: `${v.name} (${v.lang})${genderOf(v) === "male" ? " ♂" : genderOf(v) === "female" ? " ♀" : ""}` });
+          list.push({ name: v.name, label: `${v.name} (${v.lang}) ♂` });
         }
       }
       setVoiceList(list);
@@ -98,11 +104,14 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   useEffect(() => {
     if (!voice || !voiceOk) {
       setVoiceNote(null);
+      setBuiltinInUse(false);
       return;
     }
     let cancelled = false;
     void planSpeech("Test.", ur ? "ur" : "en", { ...readPrefs(), gender: "male" }).then((plan) => {
-      if (!cancelled) setVoiceNote(plan.note);
+      if (cancelled) return;
+      setVoiceNote(plan.note);
+      setBuiltinInUse(plan.engine === "builtin");
     });
     return () => {
       cancelled = true;
@@ -349,19 +358,19 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
             {SPEEDS.map((v) => <option key={v} value={v}>{v}×</option>)}
           </select>
         </label>
-        <button type="button" className="s3-btn" onClick={() => { const v = !voice; setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: Urdu/Hindi voice jo device mein ho" : "Voice: read aloud") : "Voice is not available in this browser"} aria-label="Voice">
+        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: Dr. Sajjad ki awaaz (mard ki)" : "Voice: Dr. Sajjad reads aloud (male voice)") : "Voice is not available in this browser"} aria-label="Voice">
           {voice && voiceOk ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
         </button>
         {voice && voiceOk && voiceList.length ? (
           <label className="av-ctl text-[11px] font-bold text-cyan-100/80">
             <span className="sr-only">Voice choice</span>
             <select className="max-w-[9.5rem] rounded-full border border-cyan-300/30 bg-[#06182f] px-2 py-1 text-xs font-bold text-cyan-100" value={voiceName} aria-label="Voice choice" onChange={(e) => { const v = e.target.value; setVoiceName(v); savePref(ur ? "ur" : "en", v || null); }}>
-              <option value="">{ur ? "Auto (behtareen awaaz)" : "Auto (best voice)"}</option>
+              <option value="">{ur ? "Auto (mard ki awaaz)" : "Auto (male voice)"}</option>
               {voiceList.map((v) => <option key={v.name} value={v.name}>{v.label}</option>)}
             </select>
           </label>
         ) : null}
-        {voice && voiceOk && ur && voicesFor("en").length ? (
+        {voice && voiceOk && ur && voiceName && voiceName !== BUILTIN_VOICE && voicesFor("en", "male").length ? (
           <label className="av-ctl text-[11px] font-bold text-cyan-100/80" title="Read English terms in the English voice (several short pieces) instead of one mixed line">
             <input type="checkbox" checked={splitVoice} onChange={(e) => { setSplitVoice(e.target.checked); savePref("split", e.target.checked ? "1" : null); }} />
             <span>English words: English voice</span>
@@ -373,6 +382,12 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
       </figcaption>
       {tour ? <AskPanel ur={ur} onAnswer={(text, answerLang, tag) => { if (status !== "active") activate(); stage()?.interject(text, answerLang, tag); }} /> : null}
       {voice && voiceNote ? <p className="av-voice-note" role="status">{voiceNote}</p> : null}
+      {voice && voiceOk && builtinInUse ? (
+        <p className="av-voice-note">
+          Built-in male voice: eSpeak NG (open source, GPL-3.0) — a clear computer voice, the same on every device, nothing is sent anywhere.{" "}
+          <a href="/teacher/espeak/README.txt" className="underline">Licence and source</a>
+        </p>
+      ) : null}
       <p className="av-foot">{AVATAR_LABEL}. {AVATAR_NOTICE}</p>
     </figure>
   );

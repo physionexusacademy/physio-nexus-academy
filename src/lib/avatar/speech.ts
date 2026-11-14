@@ -1,13 +1,14 @@
 /**
- * Speaking for the teaching avatar (browser only). Voice is the browser's own free text-to-speech: English with an English voice;
- * Roman Urdu is converted (lib/speech) for a Hindi or Urdu voice, with English terms kept on the English voice. When the device has no
- * suitable voice the lines are still shown as subtitles and the mouth still moves. The mouth is
+ * Speaking for the teaching avatar (browser only). The voice is always male (he is a man): a male voice installed on the device, or
+ * his own built-in male voice (lib/speech/builtin.ts), which works the same on every phone and computer. English is read with the
+ * English voice; Roman Urdu is converted (lib/speech) and read with the Hindi rules, English terms in the same line in English.
+ * When no voice can run the lines are still shown as subtitles and the mouth still moves. The mouth is
  * driven from the text on a timeline (vowel shapes, closed lips on b/m/p, pauses at punctuation) that starts when the voice starts and
  * is re-synchronised on every word-boundary event the browser reports. Where boundary events do not exist (most phones) the timeline
  * simply runs at the speaking rate. No microphone, no camera, no network.
  */
 import type { FaceAnimator, MouthShape } from "./face";
-import { planSpeech, readPrefs, speakPlan, supportsSpeech, type Playback } from "@/lib/speech/voices";
+import { planSpeech, readPrefs, speakPlan, stopSpeaking, supportsSpeech, type Playback } from "@/lib/speech/voices";
 import { CLOSED } from "./face";
 
 export type Lang = "en" | "ur";
@@ -98,6 +99,7 @@ export class Speaker {
           if (plan.mode === "none") return; // no suitable voice: subtitles and lips only
           this.playback = speakPlan(plan, {
             rate: this.rate,
+            onDuration: (seconds) => this.stretch(seconds),
             onStart: () => {
               this.voiceHeard = true;
               this.clock = 0;
@@ -121,7 +123,8 @@ export class Speaker {
   pause() {
     this.paused = true;
     try {
-      window.speechSynthesis?.pause();
+      if (this.playback?.pause) this.playback.pause();
+      else window.speechSynthesis?.pause();
     } catch {
       /* ignore */
     }
@@ -131,18 +134,23 @@ export class Speaker {
   resume() {
     this.paused = false;
     try {
-      window.speechSynthesis?.resume();
+      if (this.playback?.resume) this.playback.resume();
+      else window.speechSynthesis?.resume();
     } catch {
       /* ignore */
     }
   }
 
+  /** The built-in voice reports how long the line really is: spread the lip timeline over that length. */
+  private stretch(seconds: number) {
+    const tl = this.timeline;
+    if (!tl || seconds < 0.3) return;
+    const k = seconds / Math.max(0.001, tl.total);
+    this.timeline = { total: seconds, starts: tl.starts.map((value) => value * k), text: tl.text };
+  }
+
   cancel() {
-    try {
-      window.speechSynthesis?.cancel();
-    } catch {
-      /* ignore */
-    }
+    stopSpeaking();
     this.token++;
     this.playback?.cancel();
     this.playback = null;
