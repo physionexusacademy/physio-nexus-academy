@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { AlertTriangle, Bell, ClipboardList, Users } from "lucide-react";
-import { getInbox } from "@/lib/rehabverse/api";
+import { AlertTriangle, Bell, ClipboardList, MessageCircle, Phone, Users } from "lucide-react";
+import { getFollowups, getInbox } from "@/lib/rehabverse/api";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { MarkRead } from "./MarkRead";
 
@@ -21,7 +21,7 @@ function Card({ title, count, children, tone }: { title: string; count: number; 
 
 export default async function RehabVerseInbox() {
   await requireAdmin();
-  const inbox = await getInbox();
+  const [inbox, followups] = await Promise.all([getInbox(), getFollowups().catch(() => [])]); // follow-ups need the reminders migration; until then the list is simply empty
   const flagged = inbox.assessments.filter((a) => a.red_flag_level !== "none");
   const toReview = inbox.assessments.filter((a) => a.red_flag_level === "none");
   const empty = <p className="text-[13.5px] text-slate-500">Nothing here.</p>;
@@ -64,6 +64,32 @@ export default async function RehabVerseInbox() {
               <li key={r.session_id}><Link href={`/admin/rehabverse/patients/${r.patient_id}#days`} className="flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/50 px-3 py-2 text-[13.5px] hover:border-amber-400"><span><b>{r.full_name}</b> <span className="text-slate-500">{r.reference_code}</span> · Day {r.day_number} · pain after {r.pain_after ?? "–"}/10{r.programme_status !== "active" ? ` · ${r.programme_status}` : ""}</span><span className="text-[12px] text-slate-500">{dt(r.submitted_at)}</span></Link></li>
             ))}
             {inbox.awaiting_review.length === 0 ? empty : null}
+          </ul>
+        </Card>
+
+        <Card title="Needs a follow-up" count={followups.length}>
+          <ul className="space-y-1.5">
+            {followups.map((f) => {
+              const digits = (f.phone ?? "").replace(/[^0-9]/g, "");
+              return (
+                <li key={f.patient_id} className="flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/50 px-3 py-2 text-[13.5px]">
+                  <Link href={`/admin/rehabverse/patients/${f.patient_id}#days`} className="min-w-0 flex-1">
+                    <b className="block truncate">{f.full_name} <span className="font-normal text-slate-500">· {f.reference_code}</span></b>
+                    <span className="block text-[12px] text-slate-600">
+                      {f.reason === "open_day_waiting" ? `Day ${f.day_number} has been open since ${dt(f.since)} and not started` : `Day ${f.day_number} check-in window closed ${dt(f.since)} unanswered`}
+                      {" · "}{f.reminders ? `${f.reminders} reminder${f.reminders === 1 ? "" : "s"} e-mailed` : f.can_email ? "no reminder sent yet" : "no e-mail reminders (off or no address)"}
+                    </span>
+                  </Link>
+                  {digits ? (
+                    <span className="flex shrink-0 gap-1.5">
+                      <a href={`tel:+${digits}`} className="rv-btn rv-btn-ghost !min-h-[34px] !px-2.5" aria-label={`Call ${f.full_name}`}><Phone className="h-4 w-4" aria-hidden="true" /></a>
+                      <a href={`https://wa.me/${digits}`} target="_blank" rel="noopener noreferrer" className="rv-btn rv-btn-ghost !min-h-[34px] !px-2.5" aria-label={`WhatsApp ${f.full_name}`}><MessageCircle className="h-4 w-4" aria-hidden="true" /></a>
+                    </span>
+                  ) : null}
+                </li>
+              );
+            })}
+            {followups.length === 0 ? empty : null}
           </ul>
         </Card>
 

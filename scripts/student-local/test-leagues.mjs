@@ -213,6 +213,23 @@ assert.deepEqual(await rpc({ sub: uuid(701), role: "authenticated" }, "rehab_set
 assert.deepEqual((await asRole("service_role", "select public.pna_reminder_unsubscribe($1) as r", [rb.find((b) => b.name === "Patient 5").token]))[0].r, { ok: true, kind: "rehab_checkin" });
 assert.equal((await q("select remind_email from public.rehab_patients where id=$1", [checkin.id]))[0].remind_email, false); pass("patients can switch follow-up e-mails off in the dashboard or with the e-mail's own link");
 
+// clinician follow-up list
+await db.query("insert into auth.users (id, email) values ($1,'admin@example.test')", [uuid(900)]);
+await db.query("insert into public.profiles (id, full_name, role) values ($1,'Dr Test','owner')", [uuid(900)]);
+await fails(rpc({ sub: uuid(701), role: "authenticated" }, "rehab_admin_followups", {}), "not authorised"); pass("patients cannot read the clinician follow-up list");
+const stuck = await patient(7); await day(stuck.prog, 1, { availableHoursAgo: 70 });
+await db.query("insert into public.pna_reminder_log (kind, subject, ref, status, sent_at) values ('rehab_day', $1, 'seed:open1', 'sent', now() - interval '2 days')", [stuck.id]);
+const list = await rpc({ sub: uuid(900), role: "authenticated" }, "rehab_admin_followups", {});
+const byRef = Object.fromEntries(list.map((r) => [r.full_name, r.reason]));
+assert.equal(byRef["Patient 7"], "open_day_waiting"); assert.ok(!("Patient 2" in byRef) && !("Patient 6" in byRef) && !("Patient 3" in byRef && false));
+const seven = list.find((r) => r.full_name === "Patient 7");
+assert.equal(seven.reminders, 1); assert.equal(seven.can_email, true); assert.equal(seven.day_number, 1); pass("clinicians see who has gone quiet, why, and how many reminders were already sent");
+// a check-in window that closed without an answer
+const missedPt = await patient(8); const missedDay = await day(missedPt.prog, 1, { status: "reviewed", availableHoursAgo: 200 });
+await db.query("insert into public.rehab_feedback (session_id, patient_id, completion, submitted_at) values ($1,$2,'all', now() - interval '30 hours')", [missedDay, missedPt.id]);
+const list2 = await rpc({ sub: uuid(900), role: "authenticated" }, "rehab_admin_followups", {});
+assert.equal(list2.find((r) => r.full_name === "Patient 8")?.reason, "checkin_missed"); pass("a check-in that closed unanswered is listed as missed");
+
 // deleting a student's record removes the league and reminder rows too
 await rpc(user(R(1)), "student_league_my", {});
 await rpc(user(R(1)), "student_delete_my_data", {});

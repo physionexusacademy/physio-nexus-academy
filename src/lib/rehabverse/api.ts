@@ -1,7 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import type {
-  AdminPatient, AdminPatientRow, History, Inbox, Notification, Overview, SessionDetail,
+  AdminFollowup, AdminPatient, AdminPatientRow, History, Inbox, Notification, Overview, PatientFollowup, SessionDetail,
 } from "./api-types";
 
 /**
@@ -48,8 +48,10 @@ export const getOverview = () => rpc<Overview>("rehab_my_overview");
 export const getSession = (id: string) => rpc<SessionDetail>("rehab_my_session", { p_session_id: id });
 export const getHistory = () => rpc<History>("rehab_my_history");
 export const getNotifications = () => rpc<Notification[]>("rehab_my_notifications");
+export const getMyFollowup = () => rpc<PatientFollowup>("rehab_my_followup");
 
 // Staff
 export const getInbox = () => rpc<Inbox>("rehab_admin_inbox");
+export const getFollowups = () => rpc<AdminFollowup[]>("rehab_admin_followups");
 export const getPatients = () => rpc<AdminPatientRow[]>("rehab_admin_patients");
 export const getPatient = (id: string) => rpc<AdminPatient>("rehab_admin_patient", { p_patient_id: id });

@@ -5,18 +5,17 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, CalendarClock, CheckCircle2, ClipboardList, Clock, Download, HeartPulse, Lock, LogOut, PlayCircle, ShieldAlert, Sparkles, TrendingDown, Trash2 } from "lucide-react";
 import { exportMyDataAction, logoutAction, markNotificationsReadAction, requestDeletionAction } from "@/app/rehabverse/actions";
-import type { History, Notification, Overview, OverviewSession, PatientSummary } from "@/lib/rehabverse/api-types";
+import type { History, Notification, Overview, OverviewSession, PatientFollowup, PatientSummary } from "@/lib/rehabverse/api-types";
+import { WINDOWS, checkinStates } from "@/lib/rehabverse/followup";
 import { GUIDE, TOPIC_LOCKED, TOPIC_MISSED, type GuideBeat } from "@/lib/rehabverse/guide";
 import { INTAKE_REGIONS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { cleanDayTitle } from "@/lib/rehabverse/format";
 import { GuideStage } from "./GuideStage";
+import { AdherenceRing, FollowUpCard, PainTrendCard, type NextStep } from "./FollowUp";
 import { LineChart } from "./charts";
 import { T, useRvLang } from "./useLang";
 
 const OPEN_ASSESSMENT = ["submitted", "needs_clinical_assessment", "in_review", "cleared_for_programme", "programme_created"];
-
-/** When each recovery check-in can be answered (hours after the day's feedback). Mirrors the database rule. */
-const WINDOWS = { later_same_day: [2, 20], "24h": [18, 72], "48h": [40, 120] } as const;
 
 const fmtDate = (iso: string, lang: string) =>
   new Date(iso).toLocaleString(lang === "ru" ? "en-PK" : "en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
@@ -30,7 +29,7 @@ function StatusChip({ session }: { session: OverviewSession }) {
   return <span className="rv-chip"><T en="Locked" ru="Locked" /></span>;
 }
 
-export function PatientDashboard({ overview, history, notifications }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[] }) {
+export function PatientDashboard({ overview, history, notifications, followup = null }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[]; followup?: PatientFollowup | null }) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -80,6 +79,22 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
   const lastAfter = [...logged].reverse().map((d) => point(d, "immediately_after")).find((v) => v !== null) ?? null;
   const change = history?.baseline_pain !== null && history?.baseline_pain !== undefined && lastAfter !== null ? lastAfter - history.baseline_pain : null;
 
+  // The single most useful next thing for the follow-up card.
+  const nextStep: NextStep = (() => {
+    if (due.length) return { icon: "checkin", en: `A 1-minute check-in is open for Day ${due[0].day}.`, ru: `Din ${due[0].day} ka 1 minute ka check-in khula hai.` };
+    if (open) return { icon: "open", en: `Day ${open.day_number} is open — start your session whenever you are ready.`, ru: `Din ${open.day_number} khula hai — jab tayyar hon session shuru karein.` };
+    if (scheduled) return { icon: "scheduled", en: `Day ${scheduled.day_number} opens ${fmtDate(scheduled.available_from!, lang)}.`, ru: `Din ${scheduled.day_number} ${fmtDate(scheduled.available_from!, lang)} ko khulega.` };
+    if (awaiting) return { icon: "review", en: `Your physiotherapist is reviewing Day ${awaiting.day_number}. You will be notified.`, ru: `Aap ke physiotherapist Din ${awaiting.day_number} dekh rahe hain. Aap ko notification milegi.` };
+    if (programme && history) {
+      const soonest = history.days
+        .flatMap((d) => checkinStates(d, programme.errp_schedule, now))
+        .filter((c) => c.state === "soon")
+        .sort((a, b) => a.opensAt - b.opensAt)[0];
+      if (soonest) return { icon: "soon", en: `Your next check-in opens ${new Date(soonest.opensAt).toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" })}.`, ru: `Aap ka agla check-in ${new Date(soonest.opensAt).toLocaleString("en-PK", { weekday: "short", hour: "2-digit", minute: "2-digit" })} par khulega.` };
+    }
+    return { icon: "done", en: "You are all caught up. Nothing is waiting for you right now.", ru: "Aap sab kuch kar chuke hain. Abhi koi kaam baaqi nahi." };
+  })();
+
   const markRead = () =>
     startTransition(async () => {
       await markNotificationsReadAction();
@@ -89,15 +104,19 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
 
   return (
     <div className="container-content pb-20 pt-6 sm:pt-9">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="rv-h">PNA RehabVerse · <span className="normal-case tracking-normal">{patient.reference_code}</span></p>
-          <h1 className="mt-1 font-heading text-2xl font-extrabold text-navy-800 sm:text-4xl"><T en={`Hello, ${firstName}`} ru={`Assalam-o-alaikum, ${firstName}`} /></h1>
-          {programme ? <p className="mt-1 text-[15px] text-slate-600">{programme.title}{programme.goal ? ` — ${programme.goal}` : ""}</p> : null}
+      <header className="rv-hero">
+        <div className="rv-hero-text">
+          <p className="rv-hero-kicker">PNA RehabVerse · <span>{patient.reference_code}</span></p>
+          <h1><T en={`Hello, ${firstName}`} ru={`Assalam-o-alaikum, ${firstName}`} /></h1>
+          {programme ? <p className="rv-hero-sub">{programme.title}{programme.goal ? ` — ${programme.goal}` : ""}</p> : null}
+          {live && sessions.length ? <p className="rv-hero-day"><i aria-hidden="true" /> <T en={`Day ${Math.min(sessions.length, done.length + 1)} of ${sessions.length}`} ru={`Din ${Math.min(sessions.length, done.length + 1)} / ${sessions.length}`} /></p> : null}
         </div>
-        <button type="button" className="rv-btn rv-btn-ghost !min-h-[40px] !px-4 !text-[13px]" disabled={pending} onClick={() => startTransition(async () => { await logoutAction(); router.push("/rehabverse"); router.refresh(); })}>
-          <LogOut className="h-4 w-4" aria-hidden="true" /> <T en="Sign out" ru="Sign out" />
-        </button>
+        <div className="rv-hero-side">
+          {adherence !== null ? <div className="rv-hero-ring"><AdherenceRing percent={adherence} /><span><T en="adherence" ru="pabandi" /></span></div> : null}
+          <button type="button" className="rv-hero-out" disabled={pending} onClick={() => startTransition(async () => { await logoutAction(); router.push("/rehabverse"); router.refresh(); })}>
+            <LogOut className="h-4 w-4" aria-hidden="true" /> <T en="Sign out" ru="Sign out" />
+          </button>
+        </div>
       </header>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
@@ -118,6 +137,8 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
               {latest ? <p className="mt-2 text-xs text-slate-500">{latest.regions.map((r) => INTAKE_REGIONS.find((o) => o.id === r)?.label[lang] ?? r).join(", ")} · {fmtDate(latest.submitted_at, lang)}</p> : null}
             </section>
           ) : null}
+
+          {live && programme ? <FollowUpCard next={nextStep} history={history} schedule={programme.errp_schedule} followup={followup} /> : null}
 
           {state === "new" ? (
             <section className="rv-glass p-5">
@@ -223,6 +244,8 @@ export function PatientDashboard({ overview, history, notifications }: { overvie
               </ol>
             </section>
           ) : null}
+
+          {programme && logged.length ? <PainTrendCard history={history} /> : null}
 
           {/* Progress */}
           {logged.length ? (

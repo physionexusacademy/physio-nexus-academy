@@ -387,6 +387,47 @@ begin
   return jsonb_build_object('ok', true, 'kind', l.kind);
 end $$;
 
+-- Clinician view: patients on a live programme who have gone quiet. Phone is included because the follow-up is usually a call.
+create or replace function public.rehab_admin_followups()
+returns jsonb language plpgsql stable security definer set search_path = public, pg_temp as $$
+begin
+  perform public.rehab__require_admin();
+  return coalesce((
+    select jsonb_agg(x order by (x ->> 'since')) from (
+      select jsonb_build_object(
+        'patient_id', p.id, 'reference_code', p.reference_code, 'full_name', p.full_name, 'phone', p.phone,
+        'reason', w.reason, 'since', w.since, 'day_number', w.day_number,
+        'reminders', (select count(*) from public.pna_reminder_log l where l.subject = p.id and l.kind in ('rehab_checkin', 'rehab_day') and l.status = 'sent' and l.sent_at > now() - interval '14 days'),
+        'last_reminder_at', (select max(l.sent_at) from public.pna_reminder_log l where l.subject = p.id and l.kind in ('rehab_checkin', 'rehab_day') and l.status = 'sent'),
+        'can_email', (p.remind_email and p.email is not null)
+      ) as x
+      from public.rehab_patients p
+      join lateral (
+        select * from (
+          select 'open_day_waiting'::text as reason, coalesce(s.available_from, s.released_at) as since, s.day_number
+            from public.rehab_programmes pr
+            join public.rehab_sessions s on s.programme_id = pr.id and s.status = 'unlocked'
+           where pr.patient_id = p.id and pr.status = 'active'
+             and coalesce(s.available_from, s.released_at) <= now() - interval '48 hours'
+             and not exists (select 1 from public.rehab_feedback f where f.session_id = s.id)
+          union all
+          select 'checkin_missed'::text,
+                 f.submitted_at + (case t when 'later_same_day' then interval '20 hours' when '24h' then interval '72 hours' else interval '120 hours' end),
+                 s.day_number
+            from public.rehab_programmes pr
+            join public.rehab_sessions s on s.programme_id = pr.id
+            join public.rehab_feedback f on f.session_id = s.id and f.completion <> 'none'
+            cross join lateral unnest(pr.errp_schedule) as t
+           where pr.patient_id = p.id and pr.status = 'active'
+             and now() > f.submitted_at + (case t when 'later_same_day' then interval '20 hours' when '24h' then interval '72 hours' else interval '120 hours' end)
+             and now() <= f.submitted_at + (case t when 'later_same_day' then interval '20 hours' when '24h' then interval '72 hours' else interval '120 hours' end) + interval '7 days'
+             and not exists (select 1 from public.rehab_errp_observations o where o.session_id = s.id and o.timepoint = t)
+        ) r order by since limit 1
+      ) w on true
+      where p.status = 'active'
+    ) t), '[]'::jsonb);
+end $$;
+
 -- ─────────────────────────────── export / delete now include the league ─────────────
 create or replace function public.student_export_my_data()
 returns jsonb language sql stable security definer set search_path = public, pg_temp as $$
@@ -419,11 +460,11 @@ end $$;
 revoke all on function public.pna__week_start(timestamptz), public.pna__league_xp(uuid, date), public.pna__league_settle(date),
   public.pna__student_streak(uuid) from public, anon, authenticated;
 revoke all on function public.student_league_my(), public.student_set_league(boolean), public.student_set_reminders(boolean, int),
-  public.rehab_set_reminders(boolean), public.rehab_my_followup(),
+  public.rehab_set_reminders(boolean), public.rehab_my_followup(), public.rehab_admin_followups(),
   public.pna_reminders_claim(timestamptz, integer), public.pna_reminders_finish(jsonb, text), public.pna_reminder_unsubscribe(uuid)
   from public, anon;
 revoke all on function public.pna_reminders_claim(timestamptz, integer), public.pna_reminders_finish(jsonb, text), public.pna_reminder_unsubscribe(uuid)
   from authenticated;
 grant execute on function public.student_league_my(), public.student_set_league(boolean), public.student_set_reminders(boolean, int),
-  public.rehab_set_reminders(boolean), public.rehab_my_followup(), public.student_export_my_data(), public.student_delete_my_data() to authenticated;
+  public.rehab_set_reminders(boolean), public.rehab_my_followup(), public.rehab_admin_followups(), public.student_export_my_data(), public.student_delete_my_data() to authenticated;
 grant execute on function public.pna_reminders_claim(timestamptz, integer), public.pna_reminders_finish(jsonb, text), public.pna_reminder_unsubscribe(uuid) to service_role;

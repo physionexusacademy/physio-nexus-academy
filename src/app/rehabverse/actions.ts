@@ -290,3 +290,13 @@ export async function markNotificationsReadAction(): Promise<ActionResult> {
     return fail(e);
   }
 }
+
+/** Switches the follow-up reminder e-mails (a check-in is open, a day is waiting) on or off for the signed-in patient. */
+export async function setFollowupRemindersAction(enabled: boolean): Promise<ActionResult<{ remindEmail: boolean }>> {
+  try {
+    const result = await rpc<{ remind_email: boolean }>("rehab_set_reminders", { p_enabled: enabled === true });
+    return { ok: true, remindEmail: result.remind_email };
+  } catch (e) {
+    return fail(e);
+  }
+}

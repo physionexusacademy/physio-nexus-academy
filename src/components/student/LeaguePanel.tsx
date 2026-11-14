@@ -138,6 +138,7 @@ export function LeaguePanel({ compact = false }: { compact?: boolean }) {
   }
 
   if (state.status === "loading") return <div className="lg lg-state" role="status"><LoaderCircle className="h-6 w-6 animate-spin" aria-hidden="true" /> {t("Opening your league…", "Aap ki league khul rahi hai…")}</div>;
+  if (state.status === "error" && compact) return null; // a small card never shows an error: the full league page does
   if (state.status === "error") return <div className="lg lg-state" role="alert"><p>{t("We could not open your league", "Aap ki league nahi khul saki")}: {state.message}</p><button type="button" className="nx-btn nx-btn-primary" onClick={() => { setState({ status: "loading" }); void load(); }}>{t("Try again", "Dobara try karein")}</button></div>;
 
   const data = state.data;
