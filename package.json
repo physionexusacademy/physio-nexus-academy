@@ -14,7 +14,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "typecheck": "tsc --noEmit",
     "validate:unified-progress": "node --experimental-strip-types scripts/validate-unified-progress.ts",
-    "validate:student": "node --experimental-strip-types scripts/validate-student.ts && node scripts/student-local/test-db.mjs && node scripts/student-local/test-leagues.mjs && node --experimental-strip-types scripts/validate-reminders.ts && node --experimental-strip-types scripts/validate-league.ts && node --experimental-strip-types scripts/validate-rehabverse-followup.ts",
+    "validate:student": "node --experimental-strip-types scripts/validate-student.ts && node scripts/student-local/test-db.mjs && node scripts/student-local/test-leagues.mjs && node scripts/student-local/test-participants.mjs && node --experimental-strip-types scripts/validate-reminders.ts && node --experimental-strip-types scripts/validate-league.ts && node --experimental-strip-types scripts/validate-rehabverse-followup.ts",
     "validate:clinical-registry": "node scripts/validate-clinical-registry-integration.mjs",
     "validate:teacher": "node --experimental-strip-types scripts/validate-pna-teacher.ts",
     "build:teacher-data": "node --experimental-strip-types scripts/build-teacher-data.ts",
