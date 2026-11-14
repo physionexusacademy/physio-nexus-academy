@@ -337,15 +337,15 @@ function dressHair(figure: Figure, parts: THREE.Object3D[]) {
       const deg = (angleOf(p.x, p.z) * 180) / Math.PI;
       // Short, faded sides and back; fuller crown; a lifted, swept-back quiff rising from the front hairline.
       const fade = smooth(1.665, 1.72, p.y);
-      let d = 0.0022 + 0.0095 * fade + 0.004 * smooth(1.73, 1.75, p.y);
+      let d = 0.0022 + 0.011 * fade + 0.005 * smooth(1.72, 1.75, p.y);
       d += (noise3(p.x * 40, p.y * 40, p.z * 40) - 0.5) * 0.0035 * fade;
       const out = new THREE.Vector3(n.x, n.y, n.z).multiplyScalar(d);
       const front = smooth(-0.01, 0.1, p.z) * smooth(95, 40, deg);
       const f = field[i];
       // Volume rises from the hairline, peaks about 4 cm back, then eases into the crown; the edge itself pushes slightly forward.
       const bump = smooth(0.0, 0.04, f) * smooth(0.1, 0.05, f);
-      out.y += 0.019 * bump * front;
-      out.z += 0.005 * smooth(0.02, 0.0, f) * front + 0.008 * bump * front;
+      out.y += 0.028 * bump * front;
+      out.z += 0.007 * smooth(0.02, 0.0, f) * front + 0.012 * bump * front;
       return out;
     },
   });
@@ -376,7 +376,7 @@ function beardField(body: BodyData) {
     // The mouth opening stays clear.
     const ex = (x - mouth.x) / 0.029, ey = (y - mouth.y) / 0.0125;
     const inside = Math.hypot(ex, ey);
-    if (inside < 1.5) f = Math.min(f, (inside - 1.05) * 0.011);
+    if (inside < 1.22) f = Math.min(f, (inside - 1.0) * 0.012);
     f = Math.min(f, (earD(x, y, z) - 1.0) * 0.02);
     if (f > -0.02) field[i] = f;
   }
