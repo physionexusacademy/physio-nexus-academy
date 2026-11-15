@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, ArrowRight, BookOpenCheck, CheckCircle2, ChevronDown, ClipboardList, Printer, RefreshCw, Stethoscope, Target } from "lucide-react";
 import { areaLabel, depths, typeLabel, type DepthId } from "@/lib/conditions/taxonomy";
 import type { CatalogItem, ConditionDetail, Stage, TestFull } from "@/lib/conditions/types";
+import { REGION_COUNTS, REGION_PLAIN, libraryHref, regionForBodyArea } from "@/lib/rehabverse/area-map";
 
 const StoryExperience = dynamic(() => import("@/components/msk/MSKStoryExperience").then((m) => m.MSKStoryExperience), { ssr: false });
 
@@ -15,6 +16,7 @@ const isDepth = (v: string | null | undefined): v is DepthId => v === "quick" ||
 type Related = { slug: string; name: string; area: string };
 
 export function ConditionGuide({ item, related }: { item: CatalogItem; related: Related[] }) {
+  const exerciseRegion = regionForBodyArea(item.area);
   const [detail, setDetail] = useState<ConditionDetail | null>(null);
   const [failed, setFailed] = useState(false);
   const [depth, setDepth] = useState<DepthId>("quick");
@@ -140,6 +142,7 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
           <a href="/symptom-checker" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Symptom checker</a>
           <a href="/msk-special-tests" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Special tests library</a>
           <a href="/manual-therapy" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Manual therapy</a>
+          {exerciseRegion ? <a href={libraryHref(exerciseRegion, "condition")} className="rounded-xl border border-teal-300 bg-teal-50 px-4 py-2.5 text-teal-900 hover:border-teal-500">Watch {REGION_PLAIN[exerciseRegion].toLowerCase()} exercises in 3D ({REGION_COUNTS[exerciseRegion]})</a> : null}
           <a href="/rehabverse" className="rounded-xl bg-teal-700 px-4 py-2.5 text-white hover:bg-teal-800">Guided 3D home rehab</a>
           <button type="button" onClick={print} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300"><Printer className="h-4 w-4" aria-hidden="true" /> Print this guide</button>
         </div>

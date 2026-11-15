@@ -12,12 +12,14 @@ import {
   ClipboardCopy,
   Home,
   Info,
+  PersonStanding,
   RotateCcw,
   ShieldAlert,
   Siren,
   Stethoscope,
 } from "lucide-react";
 import { AnatomyRegionVisual } from "./AnatomyRegionVisual";
+import { REGION_COUNTS, REGION_PLAIN, libraryHref, regionForChecker } from "@/lib/rehabverse/area-map";
 import {
   commonHistoryOptions,
   compatibilityLabel,
@@ -222,6 +224,7 @@ export function SymptomCheckerClient() {
       : `${region?.label ?? "Musculoskeletal"} symptoms — completed PNA MSK symptom screening; professional assessment requested.`;
   const appointmentHref = `/appointment?reason=${encodeURIComponent(reason)}`;
   const priorityLevel = PRIORITY_LEVEL[carePriority.label] ?? 0;
+  const exerciseRegion = regionId ? regionForChecker(regionId) : null;
 
   return (
     <div className="sc-wrap" ref={consoleRef}>
@@ -522,6 +525,16 @@ export function SymptomCheckerClient() {
                       </div>
                     </div>
                   )}
+
+                  {exerciseRegion && priorityLevel < 2 && !imagingNotice ? (
+                    <div className="sc-bridge">
+                      <div>
+                        <h4><PersonStanding className="inline h-5 w-5" aria-hidden="true" /> See gentle {REGION_PLAIN[exerciseRegion].toLowerCase()} exercises in 3D</h4>
+                        <p>{REGION_COUNTS[exerciseRegion]} exercises performed step by step by the PNA virtual physiotherapist, in English or Roman Urdu. They are for learning, not a prescription: stop if pain increases, and have it assessed if it is not settling.</p>
+                      </div>
+                      <a href={libraryHref(exerciseRegion, "checker")} className="sc-btn sc-btn-ghost">Open the exercise library <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                    </div>
+                  ) : null}
 
                   <div className="sc-cta">
                     <div>

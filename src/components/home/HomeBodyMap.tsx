@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, MousePointerClick, ScanLine, Stethoscope } from "lucide-react";
+import { ArrowRight, MousePointerClick, PersonStanding, ScanLine, Stethoscope } from "lucide-react";
 import { areas, typeLabel, type AreaId, type TypeId } from "@/lib/conditions/taxonomy";
+import { REGION_COUNTS, libraryHref, regionForBodyArea } from "@/lib/rehabverse/area-map";
 import "./home-bodymap.css";
 
 type Item = { slug: string; name: string; area: AreaId; type: TypeId; stages: number };
@@ -47,6 +48,7 @@ export function HomeBodyMap({ items }: { items: Item[] }) {
   const [selected, setSelected] = useState<AreaId | null>(null);
   const active = selected ? areas.find((a) => a.id === selected) : null;
   const list = selected ? items.filter((i) => i.area === selected) : [];
+  const exerciseRegion = selected ? regionForBodyArea(selected) : null;
   const countFor = (id: AreaId) => items.filter((i) => i.area === id).length;
 
   return (
@@ -92,6 +94,7 @@ export function HomeBodyMap({ items }: { items: Item[] }) {
                   </ul>
                   <div className="hbm-actions">
                     <a href={`/conditions?area=${active.id}`} className="nx-btn nx-btn-primary">See all {list.length} in this area <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                    {exerciseRegion ? <a href={libraryHref(exerciseRegion, "bodymap")} className="nx-btn nx-btn-ghost"><PersonStanding className="h-4 w-4" aria-hidden="true" /> Watch {REGION_COUNTS[exerciseRegion]} exercises in 3D</a> : null}
                     <a href="/symptom-checker" className="nx-btn nx-btn-ghost"><Stethoscope className="h-4 w-4" aria-hidden="true" /> Symptom checker</a>
                   </div>
                 </>
