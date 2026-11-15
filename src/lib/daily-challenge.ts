@@ -1,11 +1,16 @@
-/** PNA Daily Clinical Challenge: refreshed 100-question educational bank.
+/** PNA Daily Clinical Challenge.
+ * Five questions per Pakistan calendar date, 20 points per correct answer, a fresh set at 12:00 AM Pakistan time.
+ * The questions are drawn from across the whole academy: the 100-question clinical bank below plus one question for every understanding check in
+ * the PNA Teacher lessons and manual therapy chapters (generated into daily-content/pool.generated.ts). Every question carries a link to the
+ * concept it tests, shown whenever an answer was wrong. Each cycle presents every question once, mixing subjects day by day.
  * Answer keys must never be included in the public question payload.
- * Five questions per Pakistan calendar date, 20 points per correct answer.
- * Each 20-day cycle presents every bank question once before the cycle repeats.
  */
+import {generatedDailyPool} from "./daily-content/pool.generated.ts";
 export type DailyChallengeQuestion={
  id:string;topic:string;question:string;
- options:[string,string,string,string];correct:0|1|2|3;explanation:string;
+ options:string[];correct:number;explanation:string;
+ /** Where to read about the concept (a lesson, a chapter or a hub page) and what to call the link. */
+ href?:string;linkTitle?:string;
 };
 export const dailyQuestionBank:DailyChallengeQuestion[]=[
   {id:"msk-001",topic:"MSK",question:"A patient with low-back pain reports new saddle numbness and urinary retention. What is the priority?",options:["Begin gentle lumbar mobility","Arrange emergency assessment for possible cauda equina syndrome","Try traction and review in one week","Reassure and continue routine care"],correct:1,explanation:"New saddle sensory change with urinary retention is a red-flag presentation requiring emergency assessment for possible cauda equina syndrome."},
@@ -114,12 +119,59 @@ export function pakistanChallengeDate(now=new Date()):string {
  const get=(type:string)=>parts.find(item=>item.type===type)?.value||"";
  return get("year")+"-"+get("month")+"-"+get("day");
 }
+/** Where each clinical-bank topic is taught on the site. */
+const topicLinks:Record<string,{href:string;linkTitle:string}>={
+ "MSK":{href:"/conditions",linkTitle:"Conditions & Treatment Guide"},
+ "Sports":{href:"/conditions",linkTitle:"Conditions & Treatment Guide"},
+ "Neurology":{href:"/learn/dermatomes-myotomes-reflexes",linkTitle:"Dermatomes, myotomes & reflexes"},
+ "Cardiopulmonary":{href:"/learn/airway-clearance-acbt",linkTitle:"Airway clearance (ACBT)"},
+ "Pediatrics":{href:"/conditions",linkTitle:"Conditions & Treatment Guide"},
+ "Manual Therapy":{href:"/manual-therapy",linkTitle:"Manual Therapy encyclopedia"},
+ "Vestibular":{href:"/conditions",linkTitle:"Conditions & Treatment Guide"},
+ "Geriatrics":{href:"/learn/balance-falls-assessment",linkTitle:"Balance & falls assessment"},
+ "Pelvic Health":{href:"/conditions",linkTitle:"Conditions & Treatment Guide"},
+ "Oncology":{href:"/conditions",linkTitle:"Conditions & Treatment Guide"},
+ "Critical Care":{href:"/learn",linkTitle:"PNA Teacher lessons"},
+ "Research":{href:"/learn",linkTitle:"PNA Teacher lessons"},
+ "Outcome Measures":{href:"/skills",linkTitle:"Clinical Skills Lab"},
+ "Pain Science":{href:"/learn",linkTitle:"PNA Teacher lessons"},
+ "Anatomy":{href:"/skills",linkTitle:"Clinical Skills Lab"},
+};
+const pool:DailyChallengeQuestion[]=[
+ ...generatedDailyPool,
+ ...dailyQuestionBank.map(q=>({...q,...(topicLinks[q.topic]??{href:"/learn",linkTitle:"PNA Teacher lessons"})})),
+];
+function seededRandom(seed:number){
+ let h=seed|0;
+ return ()=>{h=(h+0x6d2b79f5)|0;let t=Math.imul(h^(h>>>15),1|h);t=(t+Math.imul(t^(t>>>7),61|t))^t;return ((t^(t>>>14))>>>0)/4294967296;};
+}
+function shuffled<T>(items:T[],random:()=>number){
+ const out=items.slice();
+ for(let i=out.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
+ return out;
+}
+let sequenceCache:{cycle:number;order:DailyChallengeQuestion[]}|null=null;
+/** One cycle's order: every subject shuffled, then dealt round-robin so neighbouring questions come from different subjects. */
+function cycleOrder(cycle:number){
+ if(sequenceCache?.cycle===cycle)return sequenceCache.order;
+ const random=seededRandom(cycle*7919+13);
+ const groups=new Map<string,DailyChallengeQuestion[]>();
+ for(const q of pool)groups.set(q.topic,[...(groups.get(q.topic)??[]),q]);
+ const lists=shuffled([...groups.values()],random).map(list=>shuffled(list,random));
+ const order:DailyChallengeQuestion[]=[];
+ for(let round=0;order.length<pool.length;round++)for(const list of lists)if(list[round])order.push(list[round]);
+ sequenceCache={cycle,order};
+ return order;
+}
 export function challengeQuestions(date:string):DailyChallengeQuestion[]{
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error("Invalid date");
- const day=Math.floor(Date.parse(date+"T00:00:00Z")/86400000);
- // Five consecutive questions per day: no repeats within each 20-day cycle.
- const start=((day*5)%dailyQuestionBank.length+dailyQuestionBank.length)%dailyQuestionBank.length;
- return Array.from({length:5},(_,i)=>dailyQuestionBank[(start+i)%dailyQuestionBank.length]);
+ const dayNumber=Math.floor(Date.parse(date+"T00:00:00Z")/86400000);
+ // Five questions per day from the whole academy: no repeats within a cycle, a different mix of subjects every day.
+ const perCycle=Math.floor(pool.length/5);
+ const cycle=Math.floor(dayNumber/perCycle);
+ const day=dayNumber-cycle*perCycle;
+ const order=cycleOrder(cycle);
+ return Array.from({length:5},(_,i)=>order[day*5+i]);
 }
 export function publicDailyQuestions(date:string){
  return challengeQuestions(date).map(q=>({id:q.id,topic:q.topic,question:q.question,
