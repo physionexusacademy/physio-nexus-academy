@@ -15,6 +15,7 @@ import { GuideMe } from "@/components/avatar/GuideMe";
 import { HomeTestimonials } from "@/components/home/HomeTestimonials";
 import { HomeFounder } from "@/components/home/HomeFounder";
 import { conditionCatalog } from "@/lib/conditions/catalog";
+import { Ur } from "@/components/Ur";
 import "./daily-challenge/daily-challenge.css";
 import "./home-lobby.css";
 
@@ -147,9 +148,9 @@ export default function HomePage() {
             <div className="hdc-lead">
               <span className="hdc-flame" aria-hidden="true"><Flame className="h-6 w-6" /></span>
               <div className="min-w-0">
-                <p className="hdc-kicker">Daily Clinical Challenge <span className="nx-live" /></p>
-                <h2 id="pna-daily-flagship-title">Five questions. <span className="nx-gradient-text">One focused challenge.</span></h2>
-                <p className="hdc-facts">5 questions · 30 seconds each · up to 100 points</p>
+                <p className="hdc-kicker"><Ur en="Daily Clinical Challenge" ur="Rozana Clinical Challenge" /> <span className="nx-live" /></p>
+                <h2 id="pna-daily-flagship-title"><Ur en="Five questions." ur="Paanch sawal." /> <span className="nx-gradient-text"><Ur en="One focused challenge." ur="Ek focused challenge." /></span></h2>
+                <p className="hdc-facts"><Ur en="5 questions · 30 seconds each · up to 100 points" ur="5 sawal · har sawal 30 second · 100 points tak" /></p>
               </div>
             </div>
             <div className="hdc-time"><DailyChallengeCountdown /></div>
@@ -161,7 +162,7 @@ export default function HomePage() {
             </ol>
             <div className="hdc-actions">
               <a href="/daily-challenge#play-daily" className="nx-btn nx-btn-primary">
-                Take today&apos;s challenge <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <Ur en="Take today's challenge" ur="Aaj ka challenge dein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a href="/daily-challenge#hall-of-fame" className="nx-btn nx-btn-ghost">
                 <Medal className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Hall of Fame

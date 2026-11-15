@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowRight, BadgeCheck, GraduationCap, Mail } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
+import { Ur } from "@/components/Ur";
 import "./home-founder.css";
 
 /**
@@ -24,21 +25,23 @@ export function HomeFounder() {
             />
           </div>
           <div className="hfd-copy">
-            <p className="nx-kicker nx-kicker-light"><BadgeCheck className="h-4 w-4" aria-hidden="true" /> Meet the founder</p>
+            <p className="nx-kicker nx-kicker-light"><BadgeCheck className="h-4 w-4" aria-hidden="true" /> <Ur en="Meet the founder" ur="Founder se milein" /></p>
             <h2 id="hfd-title" className="hfd-title">{founder.name}</h2>
             <p className="hfd-role">{founder.role}</p>
             <p className="hfd-cred"><GraduationCap className="h-4 w-4" aria-hidden="true" /> {founder.credentialsShort}</p>
             <p className="hfd-text">
-              A physiotherapist and clinical educator who leads practical physiotherapy education, hands-on clinical workshops and
-              evidence-informed learning for students and professionals in Pakistan.
+              <Ur
+                en="A physiotherapist and clinical educator who leads practical physiotherapy education, hands-on clinical workshops and evidence-informed learning for students and professionals in Pakistan."
+                ur="Ek physiotherapist aur clinical educator jo Pakistan mein students aur professionals ke liye practical physiotherapy education, hands-on clinical workshops aur evidence par mabni learning ki rehnumai karte hain."
+              />
             </p>
             <blockquote className="hfd-quote">“{founder.message.body[0]}”</blockquote>
             <div className="hfd-actions">
               <a href="/founder" className="nx-btn nx-btn-primary">
-                Read the full profile <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <Ur en="Read the full profile" ur="Poori profile parhein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a href="/contact" className="nx-btn nx-btn-light">
-                <Mail className="h-4 w-4" aria-hidden="true" /> Contact
+                <Mail className="h-4 w-4" aria-hidden="true" /> <Ur en="Contact" ur="Rabta karein" />
               </a>
             </div>
           </div>

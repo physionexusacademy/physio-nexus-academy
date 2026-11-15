@@ -1,6 +1,7 @@
 import { ArrowRight, ClipboardCheck, GraduationCap, Hand, Languages, Play, Ruler, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
 import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
+import { Ur } from "@/components/Ur";
 import "./home-features.css";
 import "./home-flagships.css";
 import "./home-rehabverse.css";
@@ -14,9 +15,9 @@ export function HomeFeatures() {
   return (
     <section id="features" className="hf" aria-labelledby="hf-title">
       <div className="container-content">
-        <p className="nx-kicker nx-kicker-light">What you will find here</p>
-        <h2 id="hf-title" className="nx-title mt-2 text-3xl text-navy-800 sm:text-4xl">Learn, practise and recover</h2>
-        <p className="hf-lead">New here? Pick one. A good first week: learn a concept in <b>PNA Teacher</b>, practise it in the <b>Skills Lab</b> or on the <b>Virtual Patient</b>, then test yourself in the <b>Daily Challenge</b>.</p>
+        <p className="nx-kicker nx-kicker-light"><Ur en="What you will find here" ur="Yahan aap ko kya milega" /></p>
+        <h2 id="hf-title" className="nx-title mt-2 text-3xl text-navy-800 sm:text-4xl"><Ur en="Learn, practise and recover" ur="Seekhein, practice karein aur recover karein" /></h2>
+        <p className="hf-lead"><Ur en={<>New here? Pick one. A good first week: learn a concept in <b>PNA Teacher</b>, practise it in the <b>Skills Lab</b> or on the <b>Virtual Patient</b>, then test yourself in the <b>Daily Challenge</b>.</>} ur={<>Naye hain? Ek chun lein. Pehla hafta aise guzaarein: <b>PNA Teacher</b> mein ek concept seekhein, use <b>Skills Lab</b> ya <b>Virtual Patient</b> par practice karein, phir <b>Daily Challenge</b> mein khud ko test karein.</>} /></p>
 
         <ul className="hf-grid">
           <li className="hf-card hx hx-teacher">
@@ -31,16 +32,16 @@ export function HomeFeatures() {
                 <p className="hx-bubble hx-t-ans"><em>Sahi jawab ✓</em>Convex surface ulti taraf glide karti hai — isi liye inferior.<b className="hx-xp">+10 XP</b></p>
               </div>
               <div className="hx-body">
-                <span className="hx-badge"><GraduationCap className="h-3.5 w-3.5" aria-hidden="true" /> Learn · Free</span>
+                <span className="hx-badge"><GraduationCap className="h-3.5 w-3.5" aria-hidden="true" /> <Ur en="Learn · Free" ur="Seekhein · Free" /></span>
                 <h3>PNA Teacher</h3>
-                <p className="hx-tag">Hard concepts, explained like a great teacher would.</p>
+                <p className="hx-tag"><Ur en="Hard concepts, explained like a great teacher would." ur="Mushkil concepts, ek achhe teacher ki tarah samjhaye hue." /></p>
                 <ul className="hx-ticks">
-                  <li>One idea at a time, about 10 minutes</li>
-                  <li>English or Roman Urdu — switch anytime</li>
-                  <li>Quick checks, flashcards, spaced review</li>
+                  <li><Ur en="One idea at a time, about 10 minutes" ur="Ek waqt mein ek idea, takreeban 10 minute" /></li>
+                  <li><Ur en="English or Roman Urdu — switch anytime" ur="English ya Roman Urdu — jab chahein switch karein" /></li>
+                  <li><Ur en="Quick checks, flashcards, spaced review" ur="Jaldi checks, flashcards, spaced review" /></li>
                 </ul>
                 <span className="hx-meta">{lessonIndex.length} lessons · {manualLessonMetas.length} technique lessons</span>
-                <span className="hx-go">Start learning <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+                <span className="hx-go"><Ur en="Start learning" ur="Seekhna shuru karein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
               </div>
             </a>
           </li>
@@ -67,16 +68,16 @@ export function HomeFeatures() {
                 <div className="hx-levels"><span className="on">MMT</span><span>Goniometry</span><span>Neuro</span><span>OSCE</span></div>
               </div>
               <div className="hx-body">
-                <span className="hx-badge"><Ruler className="h-3.5 w-3.5" aria-hidden="true" /> Practise · Free</span>
+                <span className="hx-badge"><Ruler className="h-3.5 w-3.5" aria-hidden="true" /> <Ur en="Practise · Free" ur="Practice · Free" /></span>
                 <h3>Clinical Skills Lab</h3>
-                <p className="hx-tag">Measure, test and examine like a clinician.</p>
+                <p className="hx-tag"><Ur en="Measure, test and examine like a clinician." ur="Clinician ki tarah naapein, test karein aur examine karein." /></p>
                 <ul className="hx-ticks">
                   <li>Muscle testing, goniometry, neuro exam, balance</li>
-                  <li>3D demonstrations of every technique</li>
-                  <li>Skill tests and OSCE stations, taught at expert depth</li>
+                  <li><Ur en="3D demonstrations of every technique" ur="Har technique ki 3D demonstrations" /></li>
+                  <li><Ur en="Skill tests and OSCE stations, taught at expert depth" ur="Skill tests aur OSCE stations, expert depth par" /></li>
                 </ul>
                 <span className="hx-meta">Expert depth · free</span>
-                <span className="hx-go">Open the Skills Lab <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+                <span className="hx-go"><Ur en="Open the Skills Lab" ur="Skills Lab kholein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
               </div>
             </a>
           </li>
@@ -102,14 +103,14 @@ export function HomeFeatures() {
               <div className="hx-body">
                 <span className="hx-badge"><Stethoscope className="h-3.5 w-3.5" aria-hidden="true" /> Examine · Free</span>
                 <h3>Virtual Patient</h3>
-                <p className="hx-tag">A 3D patient. A hidden diagnosis. Your move.</p>
+                <p className="hx-tag"><Ur en="A 3D patient. A hidden diagnosis. Your move." ur="Ek 3D patient. Ek chhupi hui diagnosis. Ab aap ki baari." /></p>
                 <ul className="hx-ticks">
-                  <li>Take the history, then examine in 3D</li>
-                  <li>Find the diagnosis — red flags included</li>
-                  <li>Get an OSCE-style score and feedback</li>
+                  <li><Ur en="Take the history, then examine in 3D" ur="History lein, phir 3D mein examine karein" /></li>
+                  <li><Ur en="Find the diagnosis — red flags included" ur="Diagnosis dhoondein — red flags samet" /></li>
+                  <li><Ur en="Get an OSCE-style score and feedback" ur="OSCE-style score aur feedback hasil karein" /></li>
                 </ul>
                 <span className="hx-meta">{VP_CASE_COUNT} patients · guided or timed OSCE</span>
-                <span className="hx-go">Meet a patient <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+                <span className="hx-go"><Ur en="Meet a patient" ur="Ek patient se milein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
               </div>
             </a>
           </li>
@@ -117,20 +118,20 @@ export function HomeFeatures() {
           <li className="hf-card hf-rv rvx" data-pna-home-feature="rehabverse-v1">
             <div className="rvx-top">
               <div className="rvx-copy">
-                <span className="rvx-badge"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> New · for patients</span>
-                <h3>PNA RehabVerse <span className="rvx-sub">Guided rehab at home, with a 3D physio guide</span></h3>
-                <p className="rvx-lead">Your physiotherapist builds your exercise programme. A 3D guide then shows and tells you every exercise, step by step, in English or Roman Urdu — <i>ghar par rehab, bilkul saaf.</i></p>
+                <span className="rvx-badge"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> <Ur en="New · for patients" ur="Naya · patients ke liye" /></span>
+                <h3>PNA RehabVerse <span className="rvx-sub"><Ur en="Guided rehab at home, with a 3D physio guide" ur="Ghar par guided rehab, 3D physio guide ke saath" /></span></h3>
+                <p className="rvx-lead"><Ur en={<>Your physiotherapist builds your exercise programme. A 3D guide then shows and tells you every exercise, step by step, in English or Roman Urdu — <i>ghar par rehab, bilkul saaf.</i></>} ur={<>Aap ka physiotherapist aap ka exercise programme banata hai. Phir ek 3D guide har exercise step by step dikhata aur batata hai, English ya Roman Urdu mein — <i>ghar par rehab, bilkul saaf.</i></>} /></p>
                 <ul className="rvx-chips" aria-label="What you get">
-                  <li>3D demo of every exercise</li>
-                  <li>Voice in English + Roman Urdu</li>
-                  <li>Safety check first</li>
-                  <li>Progress and reminders</li>
+                  <li><Ur en="3D demo of every exercise" ur="Har exercise ki 3D demo" /></li>
+                  <li><Ur en="Voice in English + Roman Urdu" ur="English + Roman Urdu mein awaaz" /></li>
+                  <li><Ur en="Safety check first" ur="Pehle safety check" /></li>
+                  <li><Ur en="Progress and reminders" ur="Progress aur reminders" /></li>
                 </ul>
                 <div className="rvx-cta">
-                  <a href="/rehabverse/register" className="nx-btn nx-btn-primary">Create your account <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
-                  <a href="/rehabverse/login" className="nx-btn nx-btn-light">I already have an account</a>
+                  <a href="/rehabverse/register" className="nx-btn nx-btn-primary"><Ur en="Create your account" ur="Apna account banayein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                  <a href="/rehabverse/login" className="nx-btn nx-btn-light"><Ur en="I already have an account" ur="Mera account pehle se hai" /></a>
                 </div>
-                <a href="/rehabverse/library" className="rvx-link">Browse the 3D exercise library <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                <a href="/rehabverse/library" className="rvx-link"><Ur en="Browse the 3D exercise library" ur="3D exercise library dekhein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
               </div>
 
               <div className="rvx-stage" aria-hidden="true">
@@ -174,20 +175,20 @@ export function HomeFeatures() {
             </div>
 
             <ol className="rvx-flow" aria-label="How RehabVerse works">
-              <li><span className="rvx-ico"><UserPlus className="h-5 w-5" aria-hidden="true" /></span><b>1</b><strong>Create your account</strong><small>Free, takes a minute</small></li>
-              <li><span className="rvx-ico"><ShieldCheck className="h-5 w-5" aria-hidden="true" /></span><b>2</b><strong>Answer a few safety questions</strong><small>So your plan is safe for you</small></li>
-              <li><span className="rvx-ico"><ClipboardCheck className="h-5 w-5" aria-hidden="true" /></span><b>3</b><strong>Your physio builds your programme</strong><small>Reviewed and approved</small></li>
-              <li><span className="rvx-ico"><Play className="h-5 w-5" aria-hidden="true" /></span><b>4</b><strong>Follow it day by day in 3D</strong><small>Watch, listen, do, track</small></li>
+              <li><span className="rvx-ico"><UserPlus className="h-5 w-5" aria-hidden="true" /></span><b>1</b><strong><Ur en="Create your account" ur="Apna account banayein" /></strong><small><Ur en="Free, takes a minute" ur="Free, ek minute lagta hai" /></small></li>
+              <li><span className="rvx-ico"><ShieldCheck className="h-5 w-5" aria-hidden="true" /></span><b>2</b><strong><Ur en="Answer a few safety questions" ur="Chand safety sawalon ke jawab dein" /></strong><small><Ur en="So your plan is safe for you" ur="Taa ke aap ka plan aap ke liye mehfooz ho" /></small></li>
+              <li><span className="rvx-ico"><ClipboardCheck className="h-5 w-5" aria-hidden="true" /></span><b>3</b><strong><Ur en="Your physio builds your programme" ur="Aap ka physio aap ka programme banata hai" /></strong><small><Ur en="Reviewed and approved" ur="Review aur manzoor shuda" /></small></li>
+              <li><span className="rvx-ico"><Play className="h-5 w-5" aria-hidden="true" /></span><b>4</b><strong><Ur en="Follow it day by day in 3D" ur="Din ba din 3D mein follow karein" /></strong><small><Ur en="Watch, listen, do, track" ur="Dekhein, sunein, karein, track karein" /></small></li>
             </ol>
-            <p className="rvx-fine">Virtual guide — not a real clinician. Your physiotherapist reviews and approves everything. Not for emergencies.</p>
+            <p className="rvx-fine"><Ur en="Virtual guide — not a real clinician. Your physiotherapist reviews and approves everything. Not for emergencies." ur="Virtual guide — asal clinician nahin. Aap ka physiotherapist sab kuch review aur approve karta hai. Emergency ke liye nahin." /></p>
           </li>
         </ul>
 
         <p className="hf-foot">
           <Languages className="h-4 w-4" aria-hidden="true" /> Everything is in English and Roman Urdu.
           <a href="/manual-therapy"><Hand className="h-4 w-4" aria-hidden="true" /> Manual therapy techniques</a>
-          <a href="#explore-pna">Looking for something else? Browse by who you are</a>
-          <a href="/symptom-checker"><Stethoscope className="h-4 w-4" aria-hidden="true" /> Not sure what is wrong? Try the symptom checker</a>
+          <a href="#explore-pna"><Ur en="Looking for something else? Browse by who you are" ur="Kuch aur dhoond rahe hain? Apni pehchan ke hisaab se dekhein" /></a>
+          <a href="/symptom-checker"><Stethoscope className="h-4 w-4" aria-hidden="true" /> <Ur en="Not sure what is wrong? Try the symptom checker" ur="Pata nahin kya masla hai? Symptom checker try karein" /></a>
         </p>
       </div>
     </section>
