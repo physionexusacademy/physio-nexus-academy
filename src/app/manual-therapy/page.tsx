@@ -81,7 +81,7 @@ const libraryItems = [
     artFamily: "Specialized Manual Therapy",
     name: approach.title,
     summary: approach.summary,
-    tag: "World approach",
+    tag: getTechniqueDepth(approach.slug) ? "2D demo · expert depth" : "World approach",
     story: getMasteryGuide(approach.slug)?.oneLine ?? approach.headline,
     scene: approach.scene,
     closer: approach.aha,

@@ -306,7 +306,7 @@ jobs:
           check_url "https://physionexusacademy.com/case-lab/research/chronic-post-surgical-low-back-pain" "Limitations — what this case cannot tell us"
           check_url "https://physionexusacademy.com/clinical-registry" "Clinical Registry"
           check_url "https://physionexusacademy.com/clinical-registry/library" "Public Clinical Case Library"
-          check_url "https://physionexusacademy.com/conditions" "Choose how deep to go"
+          check_url "https://physionexusacademy.com/conditions" "Find the condition"
           check_url "https://physionexusacademy.com/conditions/lateral-ankle-sprain" "Lateral Ankle Sprain"
           check_url "https://physionexusacademy.com/conditions-data/lateral-ankle-sprain.json" '"clinical"'
           check_url "https://physionexusacademy.com/manual-therapy" 'data-pna-library="unified-35-v1"'

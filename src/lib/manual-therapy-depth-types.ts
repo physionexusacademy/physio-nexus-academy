@@ -3,7 +3,7 @@
  * `demo` picks the 2D animated demonstration (components/manual-therapy/TechniqueDemo2D). Parameters are the commonly taught ranges, not a
  * prescription: the clinician always adjusts them to the patient's irritability, and a supervisor signs off the protocol.
  */
-export type DemoKind = "glide" | "contract" | "fascia" | "friction" | "neural" | "fluid" | "thrust" | "position";
+export type DemoKind = "glide" | "contract" | "fascia" | "friction" | "neural" | "fluid" | "thrust" | "position" | "response" | "appraise";
 
 export type TechniqueDepth = {
   demo: DemoKind;

@@ -51,6 +51,18 @@ const STEPS: Record<DemoKind, Step[]> = {
     { title: "Small, fast thrust", detail: "A few millimetres at high speed and low force beyond the barrier. A sound is common and not required." },
     { title: "Re-test", detail: "Re-test the comparable sign and the neurological screen. Follow with active movement. Do not repeat a thrust that did not release." },
   ],
+  response: [
+    { title: "Mark where it hurts", detail: "Record the exact location of the symptoms, including the furthest point down the limb. The location, not only the intensity, is what you will track." },
+    { title: "Test one direction", detail: "Repeat one movement 10-15 times, or hold one position, and watch where the symptoms go during and after." },
+    { title: "Retreat toward the spine is the right sign", detail: "Symptoms moving up the limb toward the back (centralising) mean the direction helps, even if the back is briefly worse. Spreading away means stop that direction." },
+    { title: "Keep it and own it", detail: "Prescribe the direction in short, frequent bouts, progress only if the response stalls, and teach the patient to repeat it at the first sign of a recurrence." },
+  ],
+  appraise: [
+    { title: "State the claim", detail: "Write the claim in one sentence and the outcome it should change (pain, range, function). A mechanism that cannot be measured cannot be tested." },
+    { title: "Find the fair test", detail: "Look for randomised trials against a credible comparator (exercise, sham or usual care), measured on outcomes that matter to the patient." },
+    { title: "Read the size of the effect", detail: "Compare the difference with the smallest change a patient would notice. A small, statistically significant gap can still be clinically meaningless." },
+    { title: "Decide and protect", detail: "Rule out red flags first, offer evidence-based active care, and use the method only as an optional extra the patient knows is unproven." },
+  ],
   position: [
     { title: "Find the tender point", detail: "Locate a reproducible tender point and rate it with the patient (for example 10 out of 10 on the first contact)." },
     { title: "Shorten into ease", detail: "Slack the tissue and search for the position where the tenderness drops by about 70 percent or more." },
@@ -182,6 +194,72 @@ function Scene({ kind, s }: { kind: DemoKind; s: number }) {
         <line x1="350" y1="40" x2="350" y2="200" className="td-limit" />
         <text x="354" y="52" className="td-label">anatomical limit</text>
         <text x="60" y="238" className="td-label">{["position, consent, screening", "take up slack to the barrier", "small, fast thrust", "re-test and move actively"][s]}</text>
+      </g>
+    );
+  }
+  if (kind === "response") {
+    const y = [205, 170, 100, 58][s];
+    const ticks: [string, number][] = [["back", 58], ["buttock", 100], ["thigh", 135], ["calf", 170], ["foot", 205]];
+    return (
+      <g>
+        <line x1="150" y1="50" x2="150" y2="214" className="td-limb" style={{ strokeWidth: 8, stroke: "#12345a" }} />
+        {ticks.map(([label, ty]) => (
+          <g key={label}>
+            <line x1="138" y1={ty} x2="162" y2={ty} className="td-axis" />
+            <text x="172" y={ty + 4} className="td-label">{label}</text>
+          </g>
+        ))}
+        <circle cx="150" cy={y} r="13" className="td-lesion" style={{ transition: "cy 1.1s cubic-bezier(.4,.1,.2,1)" }} />
+        {s === 1 ? <path d="M286 90 V150 M286 90 l-8 10 M286 90 l8 10 M286 150 l-8 -10 M286 150 l8 -10" className="td-arrow td-rub" /> : null}
+        {s === 2 ? <path d="M300 170 V70" className="td-arrow td-arrow-v" markerEnd="url(#td-head)" /> : null}
+        <text x="268" y="238" className="td-label">{["symptoms mapped", "repeated movement, watch the location", "centralising: the right direction", "frequent bouts, self-managed"][s]}</text>
+      </g>
+    );
+  }
+  if (kind === "appraise") {
+    const base = 192;
+    const compare = 70;
+    const claim = s >= 2 ? 78 : 70;
+    return (
+      <g>
+        <line x1="60" y1={base} x2="440" y2={base} className="td-axis" />
+        {s === 0 ? (
+          <g>
+            <rect x="120" y="50" width="240" height="90" rx="22" className="td-bone" />
+            <text x="240" y="102" textAnchor="middle" className="td-label" style={{ fontSize: 16 }}>“It resets the body.”</text>
+            <text x="240" y="176" textAnchor="middle" className="td-label" style={{ fontSize: 30 }}>?</text>
+          </g>
+        ) : null}
+        {s === 1 || s === 2 ? (
+          <g>
+            <rect x="110" y={base - compare} width="64" height={compare} rx="10" className="td-bone" />
+            <rect x="220" y={base - claim} width="64" height={claim} rx="10" className="td-bone td-bone-b" style={{ transition: ease }} />
+            <text x="142" y={base + 16} textAnchor="middle" className="td-label">comparator</text>
+            <text x="252" y={base + 16} textAnchor="middle" className="td-label">the method</text>
+            <line x1="142" y1={base - compare - 10} x2="142" y2={base - compare + 8} className="td-barrier" />
+            <line x1="252" y1={base - claim - 10} x2="252" y2={base - claim + 8} className="td-barrier" />
+          </g>
+        ) : null}
+        {s === 2 ? (
+          <g>
+            <line x1="300" y1={base - 78} x2="320" y2={base - 78} className="td-limit" />
+            <line x1="300" y1={base - 70} x2="320" y2={base - 70} className="td-limit" />
+            <text x="326" y={base - 70} className="td-label">gap</text>
+            <rect x="380" y={base - 100} width="16" height="30" rx="4" fill="#ffb347" opacity=".85" />
+            <text x="352" y={base - 108} className="td-label">what matters</text>
+          </g>
+        ) : null}
+        {s === 3 ? (
+          <g>
+            <rect x="90" y="60" width="140" height="54" rx="16" className="td-bone" />
+            <text x="160" y="92" textAnchor="middle" className="td-label">red flags first</text>
+            <rect x="250" y="60" width="150" height="54" rx="16" className="td-bone" />
+            <text x="325" y="92" textAnchor="middle" className="td-label">active care first</text>
+            <path d="M240 130 V170" className="td-arrow" markerEnd="url(#td-head)" />
+            <text x="240" y="196" textAnchor="middle" className="td-label">optional extra, openly unproven</text>
+          </g>
+        ) : null}
+        <text x="60" y="238" className="td-label">{["claim written down", "a fair test against a comparator", "the gap is smaller than what matters", "decide, and protect the patient"][s]}</text>
       </g>
     );
   }
