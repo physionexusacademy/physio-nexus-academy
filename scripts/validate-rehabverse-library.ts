@@ -12,6 +12,7 @@ import { SOURCE, serializeRehabverseData } from "../src/lib/rehabverse/library/s
 import { REFERENCES } from "../src/lib/rehabverse/references.ts";
 import { TEMPLATES } from "../src/lib/rehabverse/templates.ts";
 import { buildCycle, maxAngle, paceForVoice } from "../src/lib/rehabverse/motion.ts";
+import { REGION_COUNTS } from "../src/lib/rehabverse/area-map.ts";
 
 const failures: string[] = [];
 const fail = (where: string, message: string) => failures.push(`${where}: ${message}`);
@@ -210,6 +211,8 @@ const total = all.length;
 const byRegion = Object.fromEntries(REGIONS.map((r) => [r, all.filter((e) => e.regions.includes(r)).length]));
 const byLevel = Object.fromEntries(LEVELS.map((l) => [l, all.filter((e) => e.level === l).length]));
 if (total < 60) fail("library", `only ${total} exercises`);
+// the counts shown on the body map, the symptom checker and the Conditions guide ("25 exercises") must be what the library shows
+for (const r of REGIONS) if (REGION_COUNTS[r] !== byRegion[r]) fail("src/lib/rehabverse/area-map.ts", `REGION_COUNTS.${r} is ${REGION_COUNTS[r]} but the library has ${byRegion[r]}`);
 
 if (failures.length) {
   console.error(`RehabVerse library: ${failures.length} problem(s)\n` + failures.map((f) => ` - ${f}`).join("\n"));

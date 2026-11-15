@@ -15,6 +15,7 @@ const { recordLearningActivity } = await import("../src/lib/unified-progress.ts"
 const { hasStudentSession, pendingCount } = await import("../src/lib/student/outbox.ts");
 const { levelFor, levels } = await import("../src/lib/student/levels.ts");
 const { buildInsights } = await import("../src/lib/student/insights.ts");
+const { weekStart, weekProgress, buildBadges, goalXp, GOALS, DEFAULT_GOAL } = await import("../src/lib/student/goals.ts");
 
 /* 1. Visitors queue nothing. */
 assert.equal(hasStudentSession(), false);
@@ -81,4 +82,40 @@ const stale = buildInsights({
 }, "2026-11-13");
 assert.ok(stale.some((i) => /Clinical Skills Lab: 12 days since/.test(i.title)), "the longest-neglected area is called out with its idle time");
 
-console.log("Student account checks passed (outbox gating and dedupe, levels, insights).");
+/* 5. Weekly goal (Monday to Sunday, like the leagues) and badges, from the record only. */
+assert.equal(weekStart("2026-11-13"), "2026-11-09", "Friday 13 November 2026 belongs to the week of Monday the 9th");
+assert.equal(weekStart("2026-11-09"), "2026-11-09");
+assert.equal(weekStart("2026-11-15"), "2026-11-09", "Sunday is the last day of the week");
+assert.equal(weekStart("2026-11-16"), "2026-11-16", "the next Monday starts a new week");
+assert.equal(goalXp(undefined), goalXp(DEFAULT_GOAL));
+assert.equal(goalXp("nonsense"), goalXp(DEFAULT_GOAL), "an unknown goal falls back to the default");
+assert.deepEqual(GOALS.map((g) => g.xp), [100, 250, 500]);
+const wk = weekProgress({ profile: null, by_day: [{ day: "2026-11-08", xp: 400, events: 5 }, { day: "2026-11-09", xp: 40, events: 2 }, { day: "2026-11-13", xp: 60, events: 3 }] }, "2026-11-13", 250);
+assert.equal(wk.xp, 100, "XP from before Monday does not count");
+assert.equal(wk.left, 150);
+assert.equal(wk.daysLeft, 3, "Friday, Saturday and Sunday are left");
+assert.equal(wk.perDay, 50);
+assert.equal(wk.percent, 40);
+assert.equal(wk.achieved, false);
+assert.equal(weekProgress({ profile: null, by_day: [{ day: "2026-11-13", xp: 300, events: 4 }] }, "2026-11-13", 250).achieved, true);
+const none = buildBadges({ profile: null }, "2026-11-13");
+assert.ok(none.every((b) => !b.earned), "an empty record earns no badge");
+assert.match(none.find((b) => b.id === "streak-3")!.progress, /0 of 3 days/);
+const some = buildBadges({
+  profile: null,
+  totals: { xp: 300, events: 9, active_days: 5, first_day: "2026-11-01" },
+  streak: { current: 2, best: 7 },
+  by_day: [{ day: "2026-11-13", xp: 60, events: 3 }],
+  by_source: [
+    { source: "pna-teacher", xp: 80, events: 6, xp_7d: 80, last_day: "2026-11-13", avg_score: 85 },
+    { source: "skills-lab", xp: 30, events: 1, xp_7d: 10, last_day: "2026-11-01", avg_score: 70 },
+  ],
+}, "2026-11-13");
+const earned = (id: string) => some.find((b) => b.id === id)!.earned;
+assert.ok(earned("first-step") && earned("streak-3") && earned("streak-7") && !earned("streak-14"), "the best streak counts, not only the current one");
+assert.ok(earned("sharp-mind"), "85% over six scored activities is sharp");
+assert.ok(!earned("all-rounder"), "two of four areas is not an all-rounder");
+assert.match(some.find((b) => b.id === "all-rounder")!.progress, /2 of 4 areas/);
+assert.ok(!earned("regular"), "one active day is not regular");
+
+console.log("Student account checks passed (outbox gating and dedupe, levels, insights, weekly goal and badges).");

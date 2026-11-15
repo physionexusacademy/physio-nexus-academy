@@ -9,6 +9,7 @@ import { pendingCount, OUTBOX_EVENT, SYNCED_EVENT } from "@/lib/student/outbox";
 import { flushStudentOutbox } from "@/lib/student/flush";
 import { levelFor, levels } from "@/lib/student/levels";
 import { buildInsights, mainSources, sourceInfo, type StudentSummary } from "@/lib/student/insights";
+import { GoalsPanel } from "./GoalsPanel";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
 
 const stages: Record<string, string> = { "year1-2": "DPT year 1–2", "year3-4": "DPT year 3–4", "final-intern": "Final year / intern", graduate: "Practising physiotherapist", other: "Learner" };
@@ -215,6 +216,7 @@ export function MyPna() {
       <section className="mp-league" aria-label="Weekly league"><LeaguePanel compact /></section>
 
       <div className="mp-grid">
+        <GoalsPanel summary={summary} today={today} />
         <section className="mp-panel" aria-labelledby="mp-insights">
           <h2 id="mp-insights"><Sparkles className="h-4 w-4" aria-hidden="true" /> What PNA noticed</h2>
           <ul className="mp-insights">

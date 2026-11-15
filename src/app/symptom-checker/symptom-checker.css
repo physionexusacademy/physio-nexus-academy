@@ -168,6 +168,10 @@
 .sc-against .sc-eyebrow { color: var(--warn); }
 .sc-against ul { color: #fff0c8; }
 .sc-advice { margin: 14px 0 0 !important; font-size: .9rem !important; font-weight: 600; color: #fff !important; }
+.sc-bridge { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; border-radius: 24px; padding: 16px 20px; background: linear-gradient(135deg, rgba(46, 230, 214, .10), rgba(111, 108, 255, .10)); border: 1px solid rgba(46, 230, 214, .3); }
+.sc-bridge > div { flex: 1 1 320px; }
+.sc-bridge h4 { margin: 0; font-size: 1.02rem; color: #fff; }
+.sc-bridge p { margin: 6px 0 0; font-size: .88rem; line-height: 1.6; color: #cfe3f5; }
 .sc-cta { margin-top: 20px; border-radius: 24px; padding: 18px 20px; background: linear-gradient(135deg, rgba(46, 230, 214, .16), rgba(111, 108, 255, .16)); border: 1px solid rgba(46, 230, 214, .45); }
 .sc-cta h4 { margin: 0; font-size: 1.1rem; color: #fff; }
 .sc-cta p { margin: 6px 0 0; font-size: .9rem; line-height: 1.6; color: #cfe3f5; }
