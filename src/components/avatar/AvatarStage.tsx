@@ -15,7 +15,7 @@ import { resolvePoint } from "@/lib/skills/points3d";
 import { plain } from "@/lib/avatar/text";
 import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
-import { NOTE_ROMAN_URDU, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
+import { supportsSpeech, unlockAudio } from "@/lib/speech/voices";
 import { recordedPacks, warmPack } from "@/lib/speech/recorded";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
@@ -73,22 +73,24 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
     void import("@/lib/avatar/teacher").then((m) => setLight(m.detectLightMode()));
   }, []);
 
-  // Whether this demonstration's lines are recorded (English only), and a head start on downloading them.
+  // Whether this demonstration's lines are recorded in the language shown, and a head start on downloading them.
   useEffect(() => {
     if (!voice || !voiceOk) {
       setVoiceNote(null);
       return;
     }
-    if (ur) {
-      setVoiceNote(NOTE_ROMAN_URDU);
-      return;
-    }
     let cancelled = false;
     void recordedPacks().then((packs) => {
       if (cancelled) return;
-      const pack = `avatar-${slug}`;
-      setVoiceNote(packs.includes(pack) ? null : "This demonstration has no recorded voice yet, so it plays with subtitles.");
-      if (packs.includes(pack)) warmPack(pack);
+      const pack = `${ur ? "ur-" : ""}avatar-${slug}`;
+      const english = packs.includes(`avatar-${slug}`);
+      if (packs.includes(pack)) {
+        setVoiceNote(null);
+        warmPack(pack);
+      } else if (ur && english) {
+        // some lines are read in English in this demonstration (technical wording), so its English recording is the one to warm
+        setVoiceNote("Is demonstration ki Roman Urdu awaaz abhi nahi hai, is liye subtitles chalenge.");
+      } else setVoiceNote(ur ? "Is demonstration ki awaaz abhi nahi hai, is liye subtitles chalenge." : "This demonstration has no recorded voice yet, so it plays with subtitles.");
     });
     return () => {
       cancelled = true;
@@ -335,7 +337,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
             {SPEEDS.map((v) => <option key={v} value={v}>{v}×</option>)}
           </select>
         </label>
-        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz abhi sirf English mein hai" : "Voice: the PNA Teacher reads aloud (recorded male voice)") : "Voice is not available in this browser"} aria-label="Voice">
+        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: PNA Teacher ki recorded male awaaz" : "Voice: the PNA Teacher reads aloud (recorded male voice)") : "Voice is not available in this browser"} aria-label="Voice">
           {voice && voiceOk ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
         </button>
         <button type="button" className="s3-btn" onClick={() => setTurn((v) => !v)} aria-pressed={turn} title="Turn the view" aria-label="Turn the view"><Rotate3d className="h-4 w-4" aria-hidden="true" /></button>
@@ -344,9 +346,9 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
       </figcaption>
       {tour ? <AskPanel ur={ur} onAnswer={(text, answerLang, tag) => { if (status !== "active") activate(); stage()?.interject(text, answerLang, tag); }} /> : null}
       {voice && voiceNote ? <p className="av-voice-note" role="status">{voiceNote}</p> : null}
-      {voice && voiceOk && !ur ? (
+      {voice && voiceOk ? (
         <p className="av-voice-note">
-          Voice: a recorded male voice (George), made offline with the free Kokoro model — nothing is generated on your device.{" "}
+          {ur ? "Awaaz: recorded male awaaz (Psi), free Kokoro model se pehle se bani hui — aap ke device par kuch generate nahi hota." : "Voice: a recorded male voice (George), made offline with the free Kokoro model — nothing is generated on your device."}{" "}
           <a href="/voice/george/README.txt" className="underline">Credit and licence</a>
         </p>
       ) : null}

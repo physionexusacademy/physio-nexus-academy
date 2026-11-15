@@ -43,12 +43,12 @@ removed on the owner's request, and the face was redesigned.)
 Limits: this is a clean stylised face, not a scan or a photoreal person; the lower face is wide because the head is fitted from a generic base. A scanned or sculpted GLB dropped into
 `public/teacher/pna-teacher.glb` replaces all of this (see "Swapping in a 3D artist's model").
 
-## The voice: recordings of a male voice ("George"), English only
+## The voice: recordings of male voices, English ("George") and Roman Urdu ("Psi")
 
 The site has **no speech synthesiser**: not the device's, not a built-in one. A synthetic voice (eSpeak NG, the device voices) sounded robotic and was removed;
 a neural voice is too heavy to run on a visitor's phone (measured: Kokoro-82M runs about 3x slower than real time on a laptop in WebAssembly, 92 MB download).
-So every fixed English line was **read once, offline** with a free neural voice (Kokoro, voice `bm_george`, Apache-2.0) and saved as small MP3 packs; the
-browser only plays them. Code: `src/lib/speech/` (`recorded.ts` plays, `clip-key.ts` finds, `voices.ts` is the entry the components use); how the recordings
+So every fixed line, in English and in Roman Urdu, was **read once, offline** with a free neural voice (Kokoro, Apache-2.0: `bm_george` for English, the Hindi/Urdu
+male voice `hm_psi` for Roman Urdu) and saved as small MP3 packs; the browser only plays them. Code: `src/lib/speech/` (`recorded.ts` plays, `clip-key.ts` finds, `voices.ts` is the entry the components use); how the recordings
 are made: `scripts/voice/README.md`; credit and licence: `public/voice/george/README.txt` (linked next to the voice button).
 
 * **How a line is spoken**: the text is made speakable (`spoken.ts`: symbols to words, markdown and list marks removed, a finished sentence), cut into sentences
@@ -56,14 +56,18 @@ are made: `scripts/voice/README.md`; credit and licence: `public/voice/george/RE
   device). It starts at once and costs the visitor a few hundred KB (a pack is about 100-700 KB, kept for a year; the first pack is fetched when the voice is
   switched on). Playback speed changes only a little (0.9-1.12x) so the pitch stays natural; the lips are spread over the real length of the recording.
 * **What is recorded**: the 3D demonstrations and the Guide-me tour (`avatar-*`), the RehabVerse guide and every exercise's spoken cues (`rehab-*`), and lessons
-  (`lesson-<slug>`) as they are recorded. A line spoken completely or not at all: if any sentence has no recording the line is shown as subtitles/text only
+  (`lesson-<slug>`) as they are recorded; the Roman Urdu packs are named `ur-*` (their sentence keys are kept apart from the English ones). A line spoken completely or not at all: if any sentence has no recording the line is shown as subtitles/text only
   (no robotic fallback). `npm run validate:speech` fails if a fixed line has no recording, so changing a line means re-recording it.
-* **Where the voice buttons appear**: the avatar stage (English only), the RehabVerse guide and exercise player (English), and the lesson player only for a lesson
-  that has a recording (`useSpeech("lesson-<slug>")`). **Roman Urdu is shown as text** (no Urdu recording yet; `roman-urdu.ts` and the word list
-  `public/teacher/ur-lexicon.json` are kept for a future Hindi recording). PNA AI answers are made on the fly, so they have no Listen button.
+* **Where the voice buttons appear**: the avatar stage, the RehabVerse guide and exercise player, and the lesson player only for a lesson that has a recording in the
+  language shown (`useSpeech("lesson-<slug>").has(lang)`). PNA AI answers are made on the fly, so they have no Listen button.
+* **Roman Urdu**: it has no standard spelling and does not write the long "a", so it is not read from the Latin letters. `scripts/voice/urdu.mts` writes each Urdu word in
+  Devanagari (a Hindi/Urdu voice reads that reliably) from a hand-checked word list (`scripts/voice/urdu-words.txt`, the most frequent ~700 words, with the Urdu sounds
+  q, kh, gh, z, f) or from rules for rarer words, and leaves English terms in English ("Shoulder ko posterior glide karein"). The pronunciation is Hindustani-style; a word read
+  wrongly is fixed by adding it to the word list and re-recording that sentence. In the 3D stage a line marked `urFallback` is read in English (technical wording).
 * **Lip-sync**: from the text on a timeline, stretched to the real length of the recording (`onDuration`).
 * Limits: a neural voice reads long medical terms and abbreviations as well as its text front end allows; wrong pronunciations are fixed by changing the
-  written text (a respelling) and re-recording that sentence. Not every lesson is recorded yet (see `docs/performance.md` and `scripts/voice/README.md`).
+  written text (a respelling, or an entry in `urdu-words.txt`) and re-recording that sentence. Lessons are recorded in batches (see `scripts/voice/README.md`); a lesson
+  shows the voice button only when it has its recording.
 
 ## Idle life in every 3D demonstration
 

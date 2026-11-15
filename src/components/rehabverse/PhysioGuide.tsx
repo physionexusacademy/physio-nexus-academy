@@ -322,16 +322,12 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
           <span className="ml-1 flex items-center gap-1" aria-hidden="true">
             {active.beats.map((_, i) => <span key={i} className={"h-1.5 rounded-full transition-all " + (i === index ? "w-5 bg-teal-500" : "w-1.5 bg-slate-300")} />)}
           </span>
-          <button type="button" className={"d3-btn " + (lang === "en" ? "ml-auto" : "ml-2")} onClick={() => setLite(status !== "text")} aria-label={status === "text" ? "Turn the 3D guide on" : "Switch to text only"} title={status === "text" ? "Turn the 3D guide on" : "Text only (lighter on your phone)"}>
+          <button type="button" className="d3-btn ml-auto" onClick={() => setLite(status !== "text")} aria-label={status === "text" ? "Turn the 3D guide on" : "Switch to text only"} title={status === "text" ? "Turn the 3D guide on" : "Text only (lighter on your phone)"}>
             {status === "text" ? <Monitor className="h-4 w-4" aria-hidden="true" /> : <MonitorOff className="h-4 w-4" aria-hidden="true" />}
           </button>
-          {lang === "en" ? (
-            <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (recorded male voice, English; Roman Urdu is shown as text)">
-              {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
-            </button>
-          ) : (
-            <span className="ml-1 text-[11px] font-semibold text-slate-500">{lang === "ru" ? "Awaaz sirf English mein; Roman Urdu subtitles ke saath." : ""}</span>
-          )}
+          <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title={lang === "ru" ? "Awaaz: recorded male awaaz (Roman Urdu)" : "Spoken guidance (recorded male voice)"}>
+            {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
+          </button>
         </div>
         {topics.length ? (
           <div className="flex flex-wrap gap-1.5" role="group" aria-label={lang === "ru" ? "Guide se poochein" : "Ask the guide"}>

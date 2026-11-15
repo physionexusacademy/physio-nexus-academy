@@ -2,18 +2,19 @@
  * Makes the recordings: reads every sentence listed by collect.mts with Kokoro (a free neural voice, Apache-2.0) in headless Chromium
  * (WASM, nothing leaves the machine) and saves each as raw 16-bit 24 kHz audio in <cache>/<key>.pcm. Resumable: finished sentences are skipped.
  *
- *   node scripts/voice/generate.cjs <sentences.json> <cache-dir> <web-root> [voice=bm_george] [workers=4]
+ *   node scripts/voice/generate.cjs <sentences.json> <cache-dir> <web-root> [voice=bm_george] [workers=4] [urdu-voice=hm_psi]
+ * English sentences use `voice`; Roman Urdu groups (lang "ur", with `segments`) use `urdu-voice` (see page.js).
  */
 const fs = require("fs");
 const path = require("path");
 const { chromium } = require("playwright");
-const [, , listFile, cacheDir, webRoot, voice = "bm_george", workersArg = "4"] = process.argv;
+const [, , listFile, cacheDir, webRoot, voice = "bm_george", workersArg = "4", urduVoice = "hm_psi"] = process.argv;
 if (!listFile || !cacheDir || !webRoot) throw new Error("usage: generate.cjs <sentences.json> <cache-dir> <web-root> [voice] [workers]");
 const PORT = Number(process.env.VOICE_PORT || 8799);
 fs.mkdirSync(cacheDir, { recursive: true });
 const groups = JSON.parse(fs.readFileSync(listFile, "utf8")).groups;
 const jobs = [];
-for (const g of groups) g.sentences.forEach((text, i) => { const key = g.keys[i]; if (!fs.existsSync(path.join(cacheDir, key + ".pcm"))) jobs.push({ key, text }); });
+for (const g of groups) g.sentences.forEach((text, i) => { const key = g.keys[i]; if (!fs.existsSync(path.join(cacheDir, key + ".pcm"))) jobs.push({ key, text, segments: g.lang === "ur" ? g.segments[i] : null }); });
 console.log(`${jobs.length} sentences to make (${groups.reduce((n, g) => n + g.sentences.length, 0) - jobs.length} already done)`);
 
 (async () => {
@@ -41,7 +42,7 @@ console.log(`${jobs.length} sentences to make (${groups.reduce((n, g) => n + g.s
     while (next < jobs.length) {
       const job = jobs[next++];
       try {
-        const b64 = await page.evaluate((t) => window.synth(t), job.text);
+        const b64 = job.segments ? await page.evaluate(([segs, v]) => window.synthMixed(segs, v, "en-us"), [job.segments, urduVoice]) : await page.evaluate((t) => window.synth(t), job.text);
         fs.writeFileSync(path.join(cacheDir, job.key + ".pcm"), Buffer.from(b64, "base64"));
       } catch (e) { fail++; console.log("FAILED", job.key, job.text.slice(0, 60), String(e).slice(0, 100)); }
       done++;

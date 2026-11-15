@@ -1,6 +1,6 @@
 // Entry bundled by scripts/validate-speech.mjs: checks how a line finds its recording (sentence keys, planning, missing recordings, Roman Urdu),
-// that every fixed English line of the site has a recording, and the spoken-style text and Roman Urdu preparation that remain.
-import { NOTE_NO_RECORDING, NOTE_ROMAN_URDU, planSpeech } from "../src/lib/speech/voices";
+// that every fixed English and Roman Urdu line of the site has a recording, and the spoken-style text and Roman Urdu conversion rules that remain.
+import { NOTE_NO_RECORDING, NOTE_NO_RECORDING_UR, planSpeech } from "../src/lib/speech/voices";
 import { clipKey, normalise, splitSentences } from "../src/lib/speech/clip-key";
 import { toSpoken } from "../src/lib/speech/spoken";
 import { convertRun, splitRuns, toDevanagari, toUrdu } from "../src/lib/speech/roman-urdu";
@@ -40,7 +40,7 @@ check(toSpoken("5-10 baar", "ur") === "5 se 10 baar.", "toSpoken: Roman Urdu ran
 // 3. The voice files and their index
 const packs: string[] = JSON.parse(fs.readFileSync(`${voiceDir}/packs.json`, "utf8"));
 const index = JSON.parse(fs.readFileSync(`${voiceDir}/clips.json`, "utf8")) as { packs: string[]; clips: Record<string, [number, number, number]>; rate: number };
-check(packs.length >= 11 && packs.includes("avatar-site-tour") && packs.includes("rehab-guide"), "packs.json lists the packs (got " + packs.length + ")");
+check(packs.length >= 22 && packs.includes("avatar-site-tour") && packs.includes("rehab-guide") && packs.includes("ur-avatar-site-tour") && packs.includes("ur-rehab-guide"), "packs.json lists the English and Roman Urdu packs (got " + packs.length + ")");
 check(index.packs.length === packs.length && index.packs.every((stem, i) => stem.startsWith(packs[i] + ".")), "clips.json packs match packs.json (name.hash)");
 for (const stem of index.packs) check(fs.existsSync(`${voiceDir}/${stem}.mp3`), `Pack file missing: ${stem}.mp3`);
 for (const [key, [pack, start, dur]] of Object.entries(index.clips)) {
@@ -49,10 +49,10 @@ for (const [key, [pack, start, dur]] of Object.entries(index.clips)) {
   if (!(dur > 200 && start >= 0 && (start + dur) / 1000 <= size / 4000 + 0.5)) failures.push(`Clip ${key} lies outside its pack (${start} + ${dur} ms, pack ${size} bytes)`);
 }
 check(fs.statSync(`${voiceDir}/clips.json`).size < 400_000, "clips.json must stay small (it is loaded when something is first spoken)");
-check(/Apache License|Kokoro/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")) && /hexgrad|Kokoro/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")), "The voice README credits the model");
+check(/Apache License/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")) && /hexgrad/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")) && /bm_george/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")) && /hm_psi/.test(fs.readFileSync(`${voiceDir}/README.txt`, "utf8")), "The voice README credits the model and both voices");
 
-// 4. Every fixed English line of the site (3D demonstrations, tour, RehabVerse guide and exercise cues) has a recording
-const groups = collectGroups(process.cwd());
+// 4. Every fixed line of the site (3D demonstrations, tour, RehabVerse guide and exercise cues), in English and in Roman Urdu, has a recording
+const groups = collectGroups(process.cwd(), false, true);
 let missing = 0;
 for (const group of groups) {
   for (let i = 0; i < group.keys.length; i++) {
@@ -67,6 +67,7 @@ if (missing > 5) failures.push(`... and ${missing - 5} more sentences without a 
 
 // 5. Planning a line: found, not found, Roman Urdu
 const first = groups.find((x) => x.name === "avatar-site-tour")!.sentences[0];
+const firstUr = groups.find((x) => x.name === "ur-avatar-site-tour")!.sentences[0];
 let plan = await planSpeech(first, "en");
 check(plan.mode === "english" && plan.engine === "recorded" && plan.parts.length >= 1 && plan.note === null, "A recorded line is planned for the recorded voice");
 check(plan.parts.every((part) => part.dur > 0.2 && /^[a-z0-9_-]+\.[0-9a-f]{8}$/.test(part.pack)), "Parts point at hashed pack files");
@@ -74,8 +75,12 @@ plan = await planSpeech("This sentence was never recorded anywhere.", "en");
 check(plan.mode === "none" && plan.engine === "none" && plan.note === NOTE_NO_RECORDING, "An unrecorded line is not spoken (no synthesiser takes over)");
 plan = await planSpeech(first + " This one was never recorded.", "en");
 check(plan.mode === "none", "A line is spoken completely or not at all");
-plan = await planSpeech("Shoulder ko posterior glide karein.", "ur");
-check(plan.mode === "none" && plan.note === NOTE_ROMAN_URDU, "Roman Urdu is not spoken");
+plan = await planSpeech(firstUr, "ur");
+check(plan.mode === "urdu" && plan.engine === "recorded" && plan.parts.length >= 1, "A recorded Roman Urdu line is planned for the Urdu voice");
+check(plan.parts.every((part) => /^ur-[a-z0-9_-]+\.[0-9a-f]{8}$/.test(part.pack)), "Roman Urdu parts point at ur-* packs");
+plan = await planSpeech("Shoulder ko posterior glide karein, ye line kabhi record nahi hui.", "ur");
+check(plan.mode === "none" && plan.note === NOTE_NO_RECORDING_UR, "An unrecorded Roman Urdu line is not spoken (no synthesiser takes over)");
+check((await planSpeech(first, "ur")).mode === "none", "English text is not read with the Urdu recordings (their keys are kept apart)");
 // two recorded sentences of one pack play as one piece
 const two = groups.find((x) => x.name === "rehab-guide")!.sentences.slice(0, 2).join(" ");
 plan = await planSpeech(two, "en");
@@ -97,4 +102,4 @@ if (failures.length) {
   process.exit(1);
 }
 const total = groups.reduce((n, x) => n + x.keys.length, 0);
-console.log(`Speech checks passed: sentence keys, spoken-style text, ${index.packs.length} voice packs and ${Object.keys(index.clips).length} clips consistent, all ${total} fixed English sentences recorded, planning (found / missing / Roman Urdu), ${cases.length} Roman Urdu conversion spot checks.`);
+console.log(`Speech checks passed: sentence keys, spoken-style text, ${index.packs.length} voice packs and ${Object.keys(index.clips).length} clips consistent, all ${total} fixed English and Roman Urdu sentences recorded, planning (found / missing, English / Roman Urdu), ${cases.length} Roman Urdu conversion spot checks.`);

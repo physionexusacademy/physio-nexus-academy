@@ -1,19 +1,20 @@
 /**
  * The PNA Teacher's voice: recordings, not a synthesiser (browser only).
  *
- * Every fixed English line the site can read aloud (the 3D guide and demonstrations, the RehabVerse guide and exercise cues, and
- * lessons as they are recorded) was read once, offline, with a free neural voice (Kokoro, "George", Apache-2.0; see
- * scripts/voice/README.md and public/voice/george/README.txt) and saved as small MP3 packs. Playing a line is only playing the
+ * Every fixed line the site can read aloud, in English and in Roman Urdu (the 3D guide and demonstrations, the RehabVerse guide and
+ * exercise cues, and lessons as they are recorded), was read once, offline, with a free neural voice (Kokoro: "George" for English,
+ * "Psi" for Urdu; Apache-2.0; see scripts/voice/README.md and public/voice/george/README.txt) and saved as small MP3 packs. Playing a line is only playing the
  * sentences' recordings one after another: nothing is generated on the visitor's device, so it starts at once on any phone, uses no
  * processor to speak of, and sounds the same everywhere. There is no robotic fallback: a line that has no recording is not spoken (the
- * subtitles are always shown), and Roman Urdu is not spoken.
+ * subtitles are always shown).
  *
  * Files (public/voice/george/): packs.json (the names of the packs, tiny), clips.json (every sentence's key -> pack, start, length in
  * ms; loaded the first time something is spoken) and <pack>.<hash>.mp3 (a pack is decoded once and kept for the next lines; its file
  * name carries a hash of its content, so a browser keeps it for ever).
- * Sentences are found by clipKey (clip-key.ts), the same function the script that makes the recordings uses.
+ * Sentences are found by sentenceKey (clip-key.ts), the same function the script that makes the recordings uses; Urdu sentences have
+ * their own keys and packs ("ur-<pack>").
  */
-import { clipKey, splitSentences } from "./clip-key";
+import { sentenceKey, splitSentences } from "./clip-key";
 
 export const VOICE_BASE = "/voice/george/";
 export const VOICE_NAME = "George";
@@ -65,14 +66,14 @@ function loadClips(): Promise<Clips | null> {
  * The recordings that make up a line of speakable text (see toSpoken), or null when any of its sentences has none (a line is spoken
  * completely or not at all: half a line would sound like a fault).
  */
-export async function findRecording(spoken: string): Promise<Part[] | null> {
+export async function findRecording(spoken: string, lang: "en" | "ur" = "en"): Promise<Part[] | null> {
   const sentences = splitSentences(spoken);
   if (!sentences.length) return null;
   const index = await loadClips();
   if (!index) return null;
   const parts: Part[] = [];
   for (const sentence of sentences) {
-    const clip = index.clips[clipKey(sentence)];
+    const clip = index.clips[sentenceKey(sentence, lang)];
     if (!clip) return null;
     const pack = index.packs[clip[0]];
     const part = { pack, start: clip[1] / 1000, dur: clip[2] / 1000 };

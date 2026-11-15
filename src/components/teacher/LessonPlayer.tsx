@@ -177,9 +177,9 @@ function LessonConversation({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userActed = useRef(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  // The recorded voice of this lesson (English only); the buttons appear only when the lesson has a recording.
+  // The recorded voice of this lesson (English and Roman Urdu); the buttons appear only when the lesson has a recording in the language shown.
   const speech = useSpeech(`lesson-${lesson.slug}`);
-  const canListen = speech.supported && lang === "en";
+  const canListen = speech.has(lang === "ur" ? "ur" : "en");
   const { beats } = lesson;
 
   useEffect(() => {
