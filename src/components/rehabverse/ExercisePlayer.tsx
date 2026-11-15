@@ -509,12 +509,22 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   const ownerRef = useRef<Owner>({ lost: () => undefined, reload: () => undefined, activate: () => undefined, isVisible: () => true, hasRoom: () => roomRef.current !== null });
   const lang_ = useRef(lang);
   lang_.current = lang;
+  // The callers pass an inline arrow function, a new one on every render. It must not be a dependency of `activate`: that effect releases and
+  // reclaims the whole 3D stage, so each re-render of the page (a language switch, a keystroke in the search box) used to rebuild the scene
+  // (shader compiling, geometry upload: seconds on a phone, with the model and the voice frozen).
+  const onFailRef = useRef(onFail);
+  onFailRef.current = onFail;
 
   useEffect(() => setSide(sideProp ?? "right"), [sideProp]);
 
   const activate = useCallback(() => {
     const host = hostRef.current;
     if (!host) return;
+    // (development only: the pose gate counts these, so that a re-render which rebuilds the 3D stage is caught)
+    if (process.env.NODE_ENV !== "production") {
+      const w = window as unknown as { __rvActivations?: number };
+      w.__rvActivations = (w.__rvActivations ?? 0) + 1;
+    }
     setStatus("loading");
     const listener = (p: number) => setProgress(p);
     shared.listeners.add(listener);
@@ -529,9 +539,9 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       })
       .catch(() => {
         shared.listeners.delete(listener);
-        onFail?.();
+        onFailRef.current?.();
       });
-  }, [onFail]);
+  }, []);
 
   ownerRef.current.lost = () => {
     rigRef.current?.dispose();
@@ -542,7 +552,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   ownerRef.current.reload = () => {
     rigRef.current = null;
     roomRef.current = null;
-    if (shared.losses > 2) onFail?.();
+    if (shared.losses > 2) onFailRef.current?.();
     else ownerRef.current.activate();
   };
   ownerRef.current.activate = activate;
@@ -579,7 +589,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       side: () => sideRef.current,
       setSide: (next: Side) => setSide(next),
       setMistake: (on: boolean) => setShowMistake(on),
-      state: () => ({ id: exercise.id, side: sideRef.current, mistake: showMistake, ready: Boolean(rigRef.current) }),
+      state: () => ({ id: exercise.id, side: sideRef.current, mistake: showMistake, ready: Boolean(rigRef.current), activations: (window as unknown as { __rvActivations?: number }).__rvActivations ?? 0 }),
       // The pose quality gate: poses the figure at many moments of the repetition and reports what looks wrong (pose-check.ts).
       check: async (samples = 48) => {
         const mod = await import("@/lib/rehabverse/pose-check");

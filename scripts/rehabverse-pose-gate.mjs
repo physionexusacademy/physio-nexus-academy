@@ -83,6 +83,28 @@ try {
     throw new Error("the figure was not ready");
   };
   const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 60)))));
+  // A re-render of the page (a language switch, a keystroke in the search box) must not rebuild the 3D stage: it froze phones for seconds
+  // (the model and the voice stopped). The player counts its activations in development; they must not change.
+  try {
+    const first = exercises[0];
+    await page.locator("ul button", { has: page.locator("strong", { hasText: new RegExp(`^${first.name.en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`) }) }).first().click({ timeout: 30000 });
+    await page.waitForFunction((id) => window.__rvPlayer && window.__rvPlayer.state().id === id && window.__rvPlayer.state().ready, first.id, { timeout: 120000 });
+    const before = await page.evaluate(() => window.__rvPlayer.state().activations);
+    const toggle = page.locator("[role=group][aria-label=Language]").first();
+    for (const name of ["English", "Roman Urdu", "English"]) {
+      await toggle.getByRole("button", { name, exact: true }).click();
+      await page.waitForTimeout(500);
+    }
+    const search = page.getByLabel("Search exercises");
+    await search.fill("zz");
+    await page.waitForTimeout(300);
+    await search.fill("");
+    await page.waitForTimeout(500);
+    const after = await page.evaluate(() => window.__rvPlayer.state().activations);
+    if (after !== before) problems.push(`library: a language switch or a search keystroke rebuilt the 3D stage (${after - before} time(s))`);
+  } catch (error) {
+    problems.push(`library: the language / search re-render check could not run (${String(error.message).split("\n")[0]})`);
+  }
   for (const exercise of exercises) {
     try {
       await page.locator("ul button", { has: page.locator("strong", { hasText: new RegExp(`^${exercise.name.en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`) }) }).first().click({ timeout: 30000 });
