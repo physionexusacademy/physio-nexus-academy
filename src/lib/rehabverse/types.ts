@@ -103,6 +103,10 @@ export type Motion = {
   raise?: number;
   /** Slides a lying demonstrator towards the foot end (metres), e.g. hips at the edge of the plinth. */
   shift?: number;
+  /** The pelvis also tips with the spine: degrees of extra head-up tilt (see Pose.pelvis) for each degree of trunk flexion, so a cat-camel keeps hands and knees planted. */
+  tiltWith?: number;
+  /** What the body tips about (Pose.pelvis): the hips (default) or the shoulders (a plank, where the forearms stay planted). */
+  tiltAbout?: "hips" | "shoulders";
   /** "start": rest on the surface once, then stay put (a leg may hang over the edge). Default: re-settle every frame. */
   settle?: "frame" | "start";
   /** Close-up: camera distance in metres, centred on `focus` (hands, neck). */

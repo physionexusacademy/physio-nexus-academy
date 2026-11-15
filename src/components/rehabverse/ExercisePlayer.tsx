@@ -8,13 +8,13 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { speakText, stopSpeaking, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
+import { planSpeech, speakText, stopSpeaking, supportsSpeech, unlockAudio, warmPlan } from "@/lib/speech/voices";
 import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
-import { buildCycle, sampleCycle, type Segment } from "@/lib/rehabverse/motion";
+import { buildCycle, paceForVoice, sampleCycle, type Segment } from "@/lib/rehabverse/motion";
 import type { ExerciseDef, Motion, View } from "@/lib/rehabverse/types";
-import { P } from "@/lib/virtual-patient/parts";
+import { P, type Parts } from "@/lib/virtual-patient/parts";
 
 export type Lang = "en" | "ru";
 
@@ -43,6 +43,11 @@ const DEFAULT_LINES = {
   hold: { en: "Hold it steady.", ru: "Is position ko stable rakhein." },
   return: { en: "Come back slowly — do not drop.", ru: "Aahista wapis aayein — jhatka na dein." },
   rest: { en: "Relax, then go again.", ru: "Thora relax karein, phir dobara." },
+};
+/** The line spoken (and shown) during a segment of the repetition. */
+const lineFor = (segment: Segment, lang: "en" | "ru") => {
+  const base = segment.say ?? (segment.kind === "move" ? DEFAULT_LINES.move : segment.kind === "hold" ? DEFAULT_LINES.hold : segment.kind === "return" ? DEFAULT_LINES.return : DEFAULT_LINES.rest);
+  return lang === "ru" ? base.ru : base.en;
 };
 const BREATH_LABEL = {
   in: { en: "Breathe in", ru: "Saans andar lein" },
@@ -80,8 +85,8 @@ function focusPoint(room: ExamRoom, spec: string | undefined, side: Side): THREE
 
 type Rig = {
   segments: Segment[];
-  /** Applies a pose and keeps the body planted / resting on its surface. */
-  apply: (pose: ReturnType<typeof sampleCycle>["pose"]) => void;
+  /** Applies a pose and keeps the body planted / resting on its surface. `tilt` (test builds) overrides the pelvis tilt. */
+  apply: (pose: ReturnType<typeof sampleCycle>["pose"], tilt?: number) => void;
   frame: (view: View) => void;
   /** Moves the props, glow and arrows for the current moment. */
   update: (kind: Segment["kind"], f: number) => void;
@@ -124,8 +129,26 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
   room.setPosition(engineMode, false, down ? { down } : {});
   const root = room.patientRoot;
   const pose0 = segments[0].from;
-  const apply = (pose: Rig["segments"][number]["from"]) => {
+  // Tilting the pelvis: the whole body turns head-up about the line through the hip joints (on all fours the shoulders are higher than the
+  // hips, and in a cat-camel the pelvis tips with the spine so that hands and knees stay where they are) or, in a plank, about the shoulders
+  // (the forearms stay planted while the hips and legs come down).
+  let tiltNow = 0;
+  const tiltTo = (deg: number) => {
+    if (Math.abs(deg - tiltNow) < 1e-4) return;
+    const angle = ((deg - tiltNow) * Math.PI) / 180;
+    root.updateMatrixWorld(true);
+    const hinge = motion.tiltAbout === "shoulders" ? "upperarm01" : "upperleg01";
+    const centre = room.boneWorld(hinge, "left").add(room.boneWorld(hinge, "right")).multiplyScalar(0.5);
+    const lateral = new THREE.Vector3(1, 0, 0);
+    root.position.sub(centre).applyAxisAngle(lateral, angle).add(centre);
+    root.rotateOnWorldAxis(lateral, angle);
+    root.updateMatrixWorld(true);
+    tiltNow = deg;
+  };
+  const tiltFor = (pose: Rig["segments"][number]["from"]) => (pose.pelvis?.flex ?? 0) + (motion.tiltWith ?? 0) * (pose.trunk?.flex ?? 0);
+  const apply = (pose: Rig["segments"][number]["from"], tilt?: number) => {
     room.setPose(pose, { animate: false, replace: true });
+    tiltTo(tilt ?? tiltFor(pose));
     solve();
   };
 
@@ -141,7 +164,8 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
   let a0: THREE.Vector3 | null = null;
   function settleY() {
     root.updateMatrixWorld(true);
-    const box = room.bounds();
+    // A tilted body's quick box is generous, so measure it properly (this runs once for those, not every frame: they settle at the start).
+    const box = tiltNow ? room.bounds(true) : room.bounds();
     root.position.y += surfaceY - box.min.y;
     root.updateMatrixWorld(true);
   }
@@ -158,6 +182,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
   }
 
   room.setPose(pose0, { animate: false, replace: true });
+  tiltTo(tiltFor(pose0));
   if (motion.shift) {
     root.position.addScaledVector(new THREE.Vector3(0, -1, 0).applyQuaternion(root.quaternion), motion.shift);
     root.updateMatrixWorld(true);
@@ -192,7 +217,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     } else if (prop.kind === "step") {
       const foot = room.boneWorld("foot", side);
       const height = prop.height > 0 ? prop.height : motion.raise ?? Math.max(0.04, foot.y - 0.068);
-      const box = mesh(new THREE.BoxGeometry(0.55, height, 0.32), "#b9c6d1", 0.8);
+      const box = mesh(new THREE.BoxGeometry(0.55, height, 0.32), "#7a93ab", 0.8);
       const centre = foot.clone().addScaledVector(front, 0.04 + (prop.gap ?? 0));
       if (prop.at === "side") centre.addScaledVector(lateral(1), -0.0);
       box.position.set(centre.x, height / 2, centre.z);
@@ -360,20 +385,20 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     const total = segments.reduce((sum, s) => sum + s.ms, 0);
     for (let i = 0; i <= samples; i++) {
       const state = sampleCycle(segments, (i / samples) * total * 0.999);
-      room.setPose(state.pose, { animate: false, replace: true });
-      solve();
+      apply(state.pose);
       box.union(room.bounds());
     }
-    room.setPose(pose0, { animate: false, replace: true });
-    solve();
+    apply(pose0);
     updaters.forEach((u) => u());
     const centre = box.getCenter(new THREE.Vector3());
-    const point = focusPoint(room, motion.focus, side);
+    // Test builds can ask for the whole body in view (window.__rvWide), to check that every pose rests properly on its surface.
+    const wide = process.env.NODE_ENV !== "production" && (window as unknown as { __rvWide?: boolean }).__rvWide === true;
+    const point = wide ? null : focusPoint(room, motion.focus, side);
     if (point) centre.lerp(point, motion.close ? 1 : 0.35);
     const radius = box.getBoundingSphere(new THREE.Sphere()).radius;
     const vfov = (room.camera.fov * Math.PI) / 180;
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * room.camera.aspect);
-    const distance = motion.close ?? Math.max(1.25, (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.02 * (motion.zoom ?? 1));
+    const distance = wide ? Math.max(1.6, (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.08) : motion.close ?? Math.max(1.25, (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.02 * (motion.zoom ?? 1));
     const dir = dirInPatientFrame(room, VIEW_DIRS[view], side);
     if (dir.y < 0.08) dir.setY(0.08).normalize();
     room.frameCamera(false, centre, distance, dir);
@@ -400,6 +425,8 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   const [status, setStatus] = useState<"idle" | "loading" | "active">("idle");
   const [progress, setProgress] = useState(shared.progress);
   const [side, setSide] = useState<Side>(sideProp ?? "right");
+  const sideRef = useRef(side);
+  sideRef.current = side;
   const [view, setView] = useState<View>(exercise.motion.view ?? "angle");
   const [playing, setPlaying] = useState(autoPlay);
   const [speed, setSpeed] = useState(1);
@@ -410,6 +437,10 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   const [rep, setRep] = useState(1);
   const clock = useRef({ elapsed: 0, last: 0 });
   const speakingRef = useRef(false);
+  /** The repetition paced to the voice (see paceForVoice); null while the voice is off. */
+  const pacedRef = useRef<Segment[] | null>(null);
+  const speedRef = useRef(1);
+  speedRef.current = speed;
   const ownerRef = useRef<Owner>({ lost: () => undefined, reload: () => undefined, activate: () => undefined, isVisible: () => true, hasRoom: () => roomRef.current !== null });
   const lang_ = useRef(lang);
   lang_.current = lang;
@@ -473,7 +504,17 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
         clock.current.elapsed = ms;
         setPlaying(false);
       },
-      cycle: () => (rigRef.current ? rigRef.current.segments.map((seg) => ({ kind: seg.kind, ms: seg.ms })) : []),
+      // Pose checks: puts the figure in a pose (parts as in the exercise data) and returns where some bones are, in metres.
+      probe: (parts: Parts, queries: [string, Side][], tilt?: number) => {
+        const r = rigRef.current;
+        if (!r || !roomRef.current) return [];
+        r.apply(P(sideRef.current, parts), tilt);
+        return queries.map(([bone, s]) => (bone.endsWith(":end") ? roomRef.current!.boneEnd(bone.slice(0, -4), s) : roomRef.current!.boneWorld(bone, s)).toArray());
+      },
+      side: () => sideRef.current,
+      lowest: () => (roomRef.current ? roomRef.current.bounds(true).min.y : null),
+      box: () => (roomRef.current ? (({ min, max }) => [min.toArray(), max.toArray()])(roomRef.current.bounds(true)) : null),
+      cycle: () => (rigRef.current ? (pacedRef.current ?? rigRef.current.segments).map((seg) => ({ kind: seg.kind, ms: seg.ms })) : []),
     };
   });
 
@@ -515,7 +556,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       const dt = now - clock.current.last;
       clock.current.last = now;
       if (playing) clock.current.elapsed += dt * speed;
-      const state = sampleCycle(rig.segments, clock.current.elapsed);
+      const state = sampleCycle(pacedRef.current ?? rig.segments, clock.current.elapsed);
       rig.apply(state.pose);
       rig.update(state.segment.kind, state.f);
       // Guide: breathing sway while idle, a nod and mouth movement when speaking.
@@ -524,8 +565,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       room.setFace({ jaw: speaking ? 0.22 + 0.22 * Math.abs(Math.sin(t * 11)) : 0, smile: speaking ? 0.5 : 0.28 });
       // Subtitle for the current stage.
       const segment = state.segment;
-      const base = segment.say ?? (segment.kind === "move" ? DEFAULT_LINES.move : segment.kind === "hold" ? DEFAULT_LINES.hold : segment.kind === "return" ? DEFAULT_LINES.return : DEFAULT_LINES.rest);
-      const nextLine = text(lang_.current, base);
+      const nextLine = lineFor(segment, lang_.current);
       if (nextLine !== lastLine) {
         lastLine = nextLine;
         setLine(nextLine);
@@ -544,9 +584,36 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
     return () => cancelAnimationFrame(raf);
   }, [status, playing, speed, exercise, side, showMistake]);
 
-  // Optional spoken guidance: the recorded male voice for the lines that were recorded, in English (subtitles always stay).
+  // With the voice on, the repetition is paced to the recordings: each line gets the time it needs, so it is never cut off by the next
+  // one (a move and its hold share a line; the extra time goes into the hold or the rest, or slows the movement a little).
   useEffect(() => {
-    if (!voice || !line || !supportsSpeech()) {
+    pacedRef.current = null;
+    const rig = rigRef.current;
+    if (!voice || status !== "active" || !rig || !supportsSpeech()) return;
+    let cancelled = false;
+    const language = lang === "ru" ? "ur" : "en";
+    const lines = [...new Set(rig.segments.map((segment) => lineFor(segment, lang)))];
+    void Promise.all(
+      lines.map(async (l) => {
+        const plan = await planSpeech(l, language);
+        warmPlan(plan); // download and decode its pack now, so that no line starts late
+        // the voice is played at 0.98x, so a line is a little longer than its recording
+        return [l, plan.parts.reduce((sum, part) => sum + part.dur, 0) * 1000 / 0.98] as const;
+      }),
+    ).then((entries) => {
+      if (cancelled || rigRef.current !== rig) return;
+      const lengths = new Map(entries);
+      pacedRef.current = paceForVoice(rig.segments, (segment) => lineFor(segment, lang), (l) => lengths.get(l) ?? 0, speed);
+      clock.current.elapsed = 0; // start the paced repetition from its beginning
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [voice, status, exercise, side, showMistake, lang, speed]);
+
+  // Optional spoken guidance: the recorded male voice for the lines that were recorded, in English or Roman Urdu (subtitles always stay).
+  useEffect(() => {
+    if (!voice || !line || !playing || !supportsSpeech()) {
       speakingRef.current = false;
       return;
     }
@@ -567,7 +634,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       playback?.cancel();
       stopSpeaking();
     };
-  }, [voice, line, lang]);
+  }, [voice, line, lang, playing]);
 
   const replay = () => {
     clock.current.elapsed = 0;

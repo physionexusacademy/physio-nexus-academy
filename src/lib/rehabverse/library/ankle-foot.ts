@@ -431,8 +431,9 @@ export const ankleFootExercises: ExerciseDef[] = [
     evidence: ["martin2021"],
     motion: {
       position: "standing", sided: true, anchor: { bone: "foot", stance: "tested" },
-      start: { knee: { flex: 12 }, shoulder: { flex: 6 }, "shoulder:o": { flex: 6 } },
-      moves: [{ to: { trunk: { flex: 48 }, knee: { flex: 22 }, "hip:o": { flex: -34 }, "knee:o": { flex: 4 }, shoulder: { flex: 70 }, "shoulder:o": { flex: 70 } }, ms: 2000, hold: 700, breath: "in", say: { en: "Reach forward as the other leg floats back.", ru: "Aage reach karein jab doosri taang peeche jaye." } }],
+      start: { hip: { flex: 6 }, knee: { flex: 12 }, shoulder: { flex: 6 }, "shoulder:o": { flex: 6 } },
+      // the stance hip bends half as much as the knee, so the hip stays right above the foot as the trunk leans and the other leg goes back
+      moves: [{ to: { trunk: { flex: 48 }, hip: { flex: 11 }, knee: { flex: 22 }, "hip:o": { flex: -34 }, "knee:o": { flex: 4 }, shoulder: { flex: 70 }, "shoulder:o": { flex: 70 } }, ms: 2000, hold: 700, breath: "in", say: { en: "Reach forward as the other leg floats back.", ru: "Aage reach karein jab doosri taang peeche jaye." } }],
       returnMs: 2000, view: "side", zoom: 0.95,
       glow: { bones: ["upperleg01"], sides: "tested" },
     },

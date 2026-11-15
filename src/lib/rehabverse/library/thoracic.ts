@@ -138,11 +138,13 @@ export const thoracicExercises: ExerciseDef[] = [
     regressions: ["Smaller range"],
     evidence: ["george2021"],
     motion: {
-      position: "quadruped", surface: "floor", sided: false,
+      position: "quadruped", surface: "floor", sided: false, settle: "start",
+      // The pelvis tips with the spine (tiltWith) and the arms and thighs follow it, so hands and knees stay where they are.
+      tiltWith: 0.65,
       start: { ...QUAD },
       moves: [
-        { to: { trunk: { flex: 24 }, neck: { flex: 28 } }, ms: 1900, hold: 700, breath: "out", say: { en: "Round your back up like a cat.", ru: "Peeth ko billi ki tarah upar ghol karein." } },
-        { to: { trunk: { flex: -22 }, neck: { flex: -24 } }, ms: 3600, hold: 700, breath: "in", say: { en: "Now sink the belly and lift your head.", ru: "Ab pait neeche karein aur sar uthayein." } },
+        { to: { trunk: { flex: 34 }, neck: { flex: 32 }, shoulder: { flex: 89 }, "shoulder:o": { flex: 89 }, hip: { flex: 55 }, "hip:o": { flex: 55 } }, ms: 2300, hold: 700, breath: "out", say: { en: "Tuck your chin and round your back up like a cat.", ru: "Chin andar karein aur peeth ko billi ki tarah upar ghol karein." } },
+        { to: { trunk: { flex: -28 }, neck: { flex: -26 }, shoulder: { flex: 67 }, "shoulder:o": { flex: 67 }, hip: { flex: 95 }, "hip:o": { flex: 95 } }, ms: 3400, hold: 700, breath: "in", say: { en: "Now let your belly sink and lift your head like a camel.", ru: "Ab pait neeche jane dein aur oont ki tarah sar uthayein." } },
       ],
       returnMs: 1800, view: "side", zoom: 0.8,
       glow: { bones: ["spine02", "spine03", "spine04"], sides: "both" },
@@ -176,9 +178,10 @@ export const thoracicExercises: ExerciseDef[] = [
     regressions: ["Open book in side-lying"],
     evidence: ["george2021"],
     motion: {
-      position: "quadruped", surface: "floor", sided: true,
-      start: { ...QUAD, shoulder: { flex: 80, abd: 60 }, elbow: { flex: 140 } },
-      moves: [{ to: { "trunk:t": { rot: 52 }, "neck:t": { rot: 30 } }, ms: 2300, hold: 1200, breath: "in", say: { en: "Rotate the elbow up to the ceiling and follow it with your eyes.", ru: "Kohni ko chhat ki taraf ghumayein aur nazar uske saath rakhein." } }],
+      position: "quadruped", surface: "floor", sided: true, settle: "start",
+      start: { ...QUAD, shoulder: { flex: 80, abd: 60 }, elbow: { flex: 140, rot: 0 }, wrist: { flex: 0 } },
+      // The chest turns 34° (a normal range); the supporting arm bends a little so that hand stays flat on the mat (solved on the model).
+      moves: [{ to: { "trunk:t": { rot: 34 }, "neck:t": { rot: 20 }, "shoulder:o": { flex: 32, abd: 36, rot: -19 }, "elbow:o": { flex: 54 } }, ms: 2500, hold: 1300, breath: "in", say: { en: "Keep one hand on the mat, and turn your chest to lift the other elbow up to the ceiling. Follow it with your eyes.", ru: "Ek haath mat par rakhein, seena ghuma kar doosri kohni chhat ki taraf uthayein. Nazar uske saath rakhein." } }],
       returnMs: 2200, view: "front", zoom: 0.85,
       glow: { bones: ["spine02", "spine03"], sides: "tested" },
     },
