@@ -9,7 +9,7 @@ export const revalidate = false;
 
 const url = "https://physionexusacademy.com/conditions";
 const title = "Conditions & Treatment Guide — Rehab Plans";
-const description = "Find physiotherapy conditions by body area. Choose quick, clinical or expert depth and follow a stage-by-stage rehab plan with doses and red flags.";
+const description = "Find physiotherapy conditions by body area. Each guide gives a plain summary, a stage-by-stage rehab plan with doses and red flags, and expert detail.";
 
 export const metadata: Metadata = {
   title,
@@ -53,7 +53,7 @@ export default function ConditionsPage() {
         stats={[
           { value: conditionCatalog.length, label: "conditions" },
           { value: areas.length, label: "body areas & systems" },
-          { value: 3, label: "depth levels" },
+          { value: 3, label: "parts in every guide" },
         ]}
       />
       <ConditionsExplorer items={items} />

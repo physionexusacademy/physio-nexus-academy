@@ -9,13 +9,6 @@ import { useExam, type ExamMode, type Lang } from "./ExamContext";
 
 /* ---------------- Case picker ---------------- */
 
-const LEVEL_TONE: Record<VirtualCase["level"], string> = {
-  Beginner: "bg-emerald-100 text-emerald-900",
-  Intermediate: "bg-sky-100 text-sky-900",
-  Advanced: "bg-amber-100 text-amber-900",
-  Expert: "bg-rose-100 text-rose-900",
-};
-
 export function CasePicker({ onStart, suggested }: { onStart: (c: VirtualCase, mode: ExamMode) => void; suggested?: string | null }) {
   const [mode, setMode] = useState<ExamMode>("guided");
   const [progress, setProgress] = useState<VpProgress>({ cases: {} });
@@ -65,9 +58,8 @@ export function CasePicker({ onStart, suggested }: { onStart: (c: VirtualCase, m
           return (
             <li key={c.id}>
               <button type="button" onClick={() => onStart(c, mode)} className="flex h-full w-full flex-col rounded-2xl bg-white p-4 text-left shadow-[0_20px_50px_-35px_rgba(0,0,0,0.8)] transition hover:-translate-y-0.5">
-                <span className="flex items-center justify-between gap-2">
-                  <span className={"rounded-full px-2.5 py-0.5 text-[11px] font-extrabold " + LEVEL_TONE[c.level]}>{c.level}</span>
-                  <span className="text-[11px] font-bold text-slate-500">{c.area}</span>
+                <span className="flex items-center gap-2">
+                  <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-[11px] font-extrabold text-teal-900">{c.area}</span>
                 </span>
                 <strong className="mt-2 text-[15px] text-navy-800">{c.patient.name}, {c.patient.age}</strong>
                 <span className="text-xs text-slate-500">{c.patient.job}</span>

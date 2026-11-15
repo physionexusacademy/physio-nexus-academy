@@ -84,12 +84,12 @@ export const siteGuide: SiteFeature[] = [
     hookUr: "Clinical Skills Lab mein aap MMT, goniometry, neuro exam, balance aur posture jaisi skills 3D demonstrations, quizzes aur OSCE stations ke saath practice karte hain.",
     points: [
       "Practise manual muscle testing, goniometry, dermatomes, reflexes, balance, posture and more",
-      "Four levels from Beginner to Expert, each with a level test",
+      "Every skill taught at expert depth, with one skill test and OSCE stations",
       "3D demonstrations, flashcards and OSCE stations",
     ],
     pointsUr: [
       "Manual muscle testing, goniometry, dermatomes, reflexes, balance, posture aur mazeed skills practice karein",
-      "Beginner se Expert tak chaar levels, har level ka apna test",
+      "Har skill expert depth par, ek skill test aur OSCE stations ke saath",
       "3D demonstrations, flashcards aur OSCE stations",
     ],
     tags: "skills lab clinical skills practise osce mmt goniometry practical",

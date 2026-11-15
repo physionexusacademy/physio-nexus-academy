@@ -6,7 +6,7 @@ import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 import { getPakistanDate, getUnifiedProgress } from "@/lib/unified-progress";
 import { getDeck, getDueCardIds, getTeacherProfile, getTeacherProgress, TEACHER_EVENT } from "@/lib/teacher/progress";
 import { getDueReviews } from "@/lib/clinical-review-queue";
-import { SKILLS_EVENT, dueSkillCards, getSkillsDeck, getSkillsProgress, passedLevelCount } from "@/lib/skills/progress";
+import { SKILLS_EVENT, dueSkillCards, getSkillsDeck, getSkillsProgress, passedSkillCount } from "@/lib/skills/progress";
 import { getVpProgress, VP_EVENT } from "@/lib/virtual-patient/session";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 
@@ -58,7 +58,7 @@ function readPass(): PassState {
   let dueSkill: string | null = null;
   try {
     const deck = getSkillsDeck();
-    skillLevels = passedLevelCount(getSkillsProgress());
+    skillLevels = passedSkillCount(getSkillsProgress());
     skillDue = dueSkillCards(deck);
     dueSkill = skillDue.length ? deck[skillDue[0]]?.skill ?? null : null;
   } catch {
@@ -226,8 +226,8 @@ export function StudentPass() {
                 <strong>Clinical Skills Lab</strong>
                 <small>
                   {pass?.skillLevels
-                    ? `${pass.skillLevels} skill level${pass.skillLevels === 1 ? "" : "s"} passed${pass.dueSkillCards ? ` · ${pass.dueSkillCards} card${pass.dueSkillCards === 1 ? "" : "s"} due` : ""}`
-                    : "MMT, goniometry, neuro exam & more — start at Beginner"}
+                    ? `${pass.skillLevels} skill${pass.skillLevels === 1 ? "" : "s"} passed${pass.dueSkillCards ? ` · ${pass.dueSkillCards} card${pass.dueSkillCards === 1 ? "" : "s"} due` : ""}`
+                    : "MMT, goniometry, neuro exam & more — open any skill"}
                 </small>
               </span>
               <ArrowRight className="h-4 w-4 flex-none text-[var(--nx-dim)]" aria-hidden="true" />

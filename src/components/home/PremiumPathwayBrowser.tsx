@@ -70,7 +70,7 @@ const groups: Group[] = [
     description: "Structured learning, real cases, quizzes and practical skills — designed for physiotherapy students.",
     links: [
       { title: "PNA Teacher", description: "Hard concepts explained step by step — with checks, visuals and Roman Urdu.", href: "/learn", icon: "teacher", featured: true },
-      { title: "Clinical Skills Lab", description: "MMT, goniometry, neuro exam and more — beginner to expert, with OSCE practice.", href: "/skills", icon: "skills" },
+      { title: "Clinical Skills Lab", description: "MMT, goniometry, neuro exam and more — expert-depth lessons, 3D demos and OSCE practice.", href: "/skills", icon: "skills" },
       { title: "Virtual Patient", description: "Examine a realistic 3D patient, make the diagnosis and get an OSCE score.", href: "/virtual-patient", icon: "patient" },
       { title: "Clinical Visual Atlas", description: "See clinical anatomy, pathology and rehabilitation visuals.", href: "/clinical-visual-atlas", icon: "eye" },
       { title: "Manual Therapy Mastery", description: "Approaches, hand placement, dosage, safety and reasoning.", href: "/manual-therapy", icon: "hand" },

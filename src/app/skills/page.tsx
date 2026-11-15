@@ -10,7 +10,7 @@ const url = "https://physionexusacademy.com/skills";
 export const metadata: Metadata = {
   title: "Clinical Skills Lab — MMT, Goniometry & OSCE",
   description:
-    "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — beginner to expert, free at Physio Nexus Academy.",
+    "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — taught at expert depth, free at Physio Nexus Academy.",
   keywords: [
     "clinical skills lab physiotherapy",
     "MMT practice",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Clinical Skills Lab — MMT, Goniometry & OSCE | PNA",
     description:
-      "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — beginner to expert, free at Physio Nexus Academy.",
+      "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — taught at expert depth, free at Physio Nexus Academy.",
     url,
     siteName: "Physio Nexus Academy",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Clinical Skills Lab — MMT, Goniometry & OSCE | PNA",
     description:
-      "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — beginner to expert, free at Physio Nexus Academy.",
+      "Practise MMT, goniometry, reflexes, dermatomes and more with 3D demos, quizzes and OSCE stations — taught at expert depth, free at Physio Nexus Academy.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   robots: {
@@ -70,7 +70,7 @@ export default function SkillsHubPage() {
     { icon: BookOpenCheck, title: "Learn", text: "Short lessons with animated demonstrations, in English with Roman Urdu notes." },
     { icon: Dumbbell, title: "Practise", text: "Simulators — drag a goniometer, grade a muscle, find a dermatome — plus quick drills." },
     { icon: Layers, title: "Remember", text: "Spaced-repetition flashcards bring back what you keep missing." },
-    { icon: Trophy, title: "Prove it", text: "Pass each level test at 80% to unlock the next: Beginner → Expert." },
+    { icon: Trophy, title: "Prove it", text: "Pass the skill test at 80% to earn XP and a badge on your student pass." },
     { icon: ClipboardCheck, title: "OSCE ready", text: "Timed stations with examiner checklists — practise with a partner." },
   ];
 
@@ -108,8 +108,8 @@ export default function SkillsHubPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }} />
       <NexusHero
         kicker="Practise wing · Clinical Skills Lab"
-        title={<>Clinical skills, <span className="nx-gradient-text">beginner to expert.</span></>}
-        lead="The hands-on skills every DPT student must master — taught step by step with demonstrations, simulators, flashcards, level tests and OSCE stations. Your progress is saved privately on this device."
+        title={<>Clinical skills, <span className="nx-gradient-text">at expert depth.</span></>}
+        lead="The hands-on skills every DPT student must master — taught step by step with demonstrations, simulators, flashcards, skill tests and OSCE stations. Your progress is saved privately on this device."
         crumbs={[{ label: "Practise", href: "/daily-challenge" }, { label: "Clinical Skills Lab" }]}
         actions={
           <>

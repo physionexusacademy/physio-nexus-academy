@@ -105,6 +105,24 @@ export function passedLevelCount(progress: SkillsProgress, skill?: string): numb
   return skills.reduce((total, slug) => total + SKILL_LEVELS.filter((level) => isLevelPassed(progress, slug, level.id)).length, 0);
 }
 
+/** Skills whose test has been passed (the one skill test records every level of the skill, so this is the expert record). */
+export function passedSkillCount(progress: SkillsProgress): number {
+  return Object.keys(progress.levels).filter((slug) => isLevelPassed(progress, slug, "expert")).length;
+}
+
+/**
+ * One test covers the whole skill, from the basics to clinical reasoning. Passing it marks every level of the skill passed, so the four
+ * stored level records (kept for progress made before levels were removed) stay consistent; XP is still awarded once per level.
+ */
+export function recordSkillTest(skill: string, skillTitle: string, score: number) {
+  let outcome = { passed: false, firstPass: false };
+  for (const level of SKILL_LEVELS) {
+    const result = recordLevelTest(skill, skillTitle, level.id, score);
+    if (level.id === "expert") outcome = result;
+  }
+  return outcome;
+}
+
 export function markStudied(skill: string, id: string) {
   const progress = getSkillsProgress();
   const list = progress.studied[skill] ?? [];

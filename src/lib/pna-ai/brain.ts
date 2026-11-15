@@ -379,7 +379,7 @@ const whyText: Record<Kind, { en: string; ur: string }> = {
   atlas: { en: "Visual anatomy & pathology", ur: "Visual anatomy aur pathology" },
   case: { en: "Real case to reason through", ur: "Asli case par reasoning" },
   practice: { en: "Practise & test yourself", ur: "Practice aur khud ko test karein" },
-  skill: { en: "Practical skill: learn, practise, test — beginner to expert", ur: "Practical skill: seekhein, practice, test — beginner se expert" },
+  skill: { en: "Practical skill: learn, practise, test — at expert depth", ur: "Practical skill: seekhein, practice, test — expert depth par" },
   service: { en: "PNA patient service", ur: "PNA patient service" },
   tool: { en: "Website tool (not a diagnosis)", ur: "Website tool (diagnosis nahi)" },
   policy: { en: "Policy", ur: "Policy" },
@@ -395,7 +395,7 @@ const navigationCatalog: Record<string, BrainResource> = {
   "/learn/review": { id: "study:flashcards", title: "My Flashcards (spaced review)", href: "/learn/review", category: "PNA Teacher", summary: "Review the flashcards from your PNA Teacher lessons at the right time.", keywords: "" },
   "/daily-challenge": { id: "quiz:daily-challenge", title: "Daily Clinical Challenge", href: "/daily-challenge", category: "Quiz and clinical practice", summary: "Five timed clinical questions every day, with explanations and a leaderboard.", keywords: "" },
   "/virtual-patient": { id: "browse:virtual-patient", title: "Virtual Patient — 3D examination practice", href: "/virtual-patient", category: "Practice", summary: "Examine a realistic 3D patient: history, positioning, goniometry, MMT, reflexes, sensation, palpation and special tests, then diagnose and get an OSCE-style score.", keywords: "" },
-  "/skills": { id: "skills-hub:skills", title: "Clinical Skills Lab", href: "/skills", category: "Clinical Skills Lab", summary: "MMT, goniometry, dermatomes, myotomes, reflexes, nerves, tone, muscle length, vitals, posture, balance, measurements and palpation — beginner to expert, with simulators, flashcards, level tests and OSCE stations.", keywords: "" },
+  "/skills": { id: "skills-hub:skills", title: "Clinical Skills Lab", href: "/skills", category: "Clinical Skills Lab", summary: "MMT, goniometry, dermatomes, myotomes, reflexes, nerves, tone, muscle length, vitals, posture, balance, measurements and palpation — at expert depth, with simulators, flashcards, skill tests and OSCE stations.", keywords: "" },
   "/learn": { id: "teacher-hub:learn", title: "PNA Teacher — step-by-step lessons", href: "/learn", category: "PNA Teacher", summary: "Hard concepts and all 35 manual therapy techniques taught as a conversation, with checks and flashcards.", keywords: "" },
   "/symptom-checker": { id: "tool:symptom-checker", title: "Symptom Checker", href: "/symptom-checker", category: "Website tool", summary: "Screen symptom patterns and safety warnings. It does not provide a diagnosis.", keywords: "" },
   "/resources": { id: "browse:resources", title: "Books & Learning Resources", href: "/resources", category: "Books and PDFs", summary: "Books, PDFs and study material available from PNA.", keywords: "" },
@@ -506,8 +506,8 @@ function compose(u: Understanding, top: Doc | undefined, picked: Doc[], confiden
     lines.push(`**${name}** — ${firstSentences(r.summary, 1)}`);
     lines.push(
       ur
-        ? "Skills Lab mein 4 levels hain (Beginner → Expert): Learn, Atlas, Practise (simulator), Flashcards, Level test (80% pass) aur OSCE stations."
-        : "The Skills Lab teaches it in 4 levels (Beginner → Expert): Learn, Atlas, Practise (simulator), Flashcards, a Level test (80% to pass) and OSCE stations.",
+        ? "Skills Lab mein har skill expert depth par hai: Learn, Atlas, Practise (simulator), Flashcards, Skill test (80% pass) aur OSCE stations."
+        : "The Skills Lab teaches it at expert depth: Learn, Atlas, Practise (simulator), Flashcards, a Skill test (80% to pass) and OSCE stations.",
     );
     suggestions.push(
       { label: ur ? "Level test shuru karein" : "Start the level test", href: `${r.href}?tab=test` },

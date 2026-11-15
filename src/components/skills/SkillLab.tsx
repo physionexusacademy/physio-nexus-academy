@@ -20,7 +20,7 @@ import { LangToggle, RichText } from "@/components/teacher/ui";
 import { useLang } from "@/lib/lang";
 import { LESSONS_FOR_SKILL } from "@/lib/skills/ur/lesson-links";
 import { SkillTeacher } from "./SkillTeacher";
-import { SKILL_LEVELS, levelRank, type SkillData, type SkillIndexEntry, type SkillLevelId, type SkillQuestion } from "@/lib/skills/types";
+import { SKILL_LEVELS, type SkillData, type SkillIndexEntry, type SkillLevelId, type SkillQuestion } from "@/lib/skills/types";
 import {
   PASS_MARK,
   SKILLS_EVENT,
@@ -28,10 +28,9 @@ import {
   getSkillsDeck,
   getSkillsProgress,
   isLevelPassed,
-  isLevelUnlocked,
   markStudied,
   recordDrillAnswer,
-  recordLevelTest,
+  recordSkillTest,
   reviewSkillCard,
   type SkillsProgress,
 } from "@/lib/skills/progress";
@@ -41,14 +40,14 @@ import { JointDemo } from "./JointDemo";
 import { BodyMapSim, GoniometerSim, GradeSim, VitalsTool } from "./Simulators";
 
 type Tab = "learn" | "atlas" | "practise" | "flashcards" | "test" | "osce";
-const TAB_UR: Record<Tab, string> = { learn: "Seekhein", atlas: "Atlas", practise: "Practice", flashcards: "Flashcards", test: "Level test", osce: "OSCE" };
+const TAB_UR: Record<Tab, string> = { learn: "Seekhein", atlas: "Atlas", practise: "Practice", flashcards: "Flashcards", test: "Skill test", osce: "OSCE" };
 
 const tabs: { id: Tab; label: string; icon: typeof BookOpenCheck }[] = [
   { id: "learn", label: "Learn", icon: BookOpenCheck },
   { id: "atlas", label: "Atlas", icon: Search },
   { id: "practise", label: "Practise", icon: Dumbbell },
   { id: "flashcards", label: "Flashcards", icon: Layers },
-  { id: "test", label: "Level test", icon: Trophy },
+  { id: "test", label: "Skill test", icon: Trophy },
   { id: "osce", label: "OSCE", icon: ClipboardCheck },
 ];
 
@@ -69,10 +68,12 @@ function useSkillsProgress() {
   return progress;
 }
 
+/** Everything about a skill is shown at once, at the deepest level: nothing is hidden behind a level, a lock or a test. */
+const FULL: SkillLevelId = "expert";
+
 export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
   const [data, setData] = useState<SkillData | null>(null);
   const [failed, setFailed] = useState(false);
-  const [level, setLevel] = useState<SkillLevelId>("beginner");
   const [tab, setTab] = useState<Tab>("learn");
   const progress = useSkillsProgress();
   const [lang, setLang] = useLang();
@@ -91,24 +92,16 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
 
   useEffect(() => load(), [load]);
 
-  // Open at the first level not yet passed (or the level in the URL).
+  // Open at the tab in the URL, if any.
   useEffect(() => {
-    if (!progress) return;
-    const params = new URLSearchParams(window.location.search);
-    const fromUrl = params.get("level");
-    const tabFromUrl = params.get("tab");
-    if (fromUrl && SKILL_LEVELS.some((item) => item.id === fromUrl)) setLevel(fromUrl as SkillLevelId);
-    else setLevel(SKILL_LEVELS.find((item) => !isLevelPassed(progress, entry.slug, item.id))?.id ?? "expert");
+    const tabFromUrl = new URLSearchParams(window.location.search).get("tab");
     if (tabFromUrl && tabs.some((item) => item.id === tabFromUrl)) setTab(tabFromUrl as Tab);
-    // Only on first load.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress === null]);
+  }, []);
 
-  const choose = (next: { level?: SkillLevelId; tab?: Tab }) => {
-    if (next.level) setLevel(next.level);
+  const choose = (next: { tab?: Tab }) => {
     if (next.tab) setTab(next.tab);
     const params = new URLSearchParams(window.location.search);
-    params.set("level", next.level ?? level);
+    params.delete("level");
     params.set("tab", next.tab ?? tab);
     window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
   };
@@ -116,7 +109,7 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
   return (
     <div className="container-content pb-16 pt-8" data-pna-skill={entry.slug}>
       <LangStrip slug={entry.slug} lang={lang} onLang={setLang} />
-      <LevelBar entry={entry} progress={progress} level={level} onChoose={(value) => choose({ level: value })} />
+      <SkillStrip data={data} progress={progress} slug={entry.slug} />
 
       <div role="tablist" aria-label="Skill sections" className="mt-5 flex gap-1.5 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-1.5" data-horizontal-scroll>
         {tabs.map((item) => {
@@ -153,15 +146,15 @@ export function SkillLab({ entry }: { entry: SkillIndexEntry }) {
             <p className="text-sm font-bold text-teal-800">Opening {entry.title}…</p>
           </div>
         ) : tab === "learn" ? (
-          <LearnTab data={data} level={level} progress={progress} onNext={() => choose({ tab: "practise" })} />
+          <LearnTab data={data} progress={progress} onNext={() => choose({ tab: "practise" })} />
         ) : tab === "atlas" ? (
-          <AtlasTab data={data} level={level} />
+          <AtlasTab data={data} />
         ) : tab === "practise" ? (
-          <PractiseTab data={data} level={level} />
+          <PractiseTab data={data} />
         ) : tab === "flashcards" ? (
-          <FlashcardsTab data={data} level={level} />
+          <FlashcardsTab data={data} />
         ) : tab === "test" ? (
-          <TestTab data={data} level={level} progress={progress} onLevel={(value) => choose({ level: value, tab: "learn" })} />
+          <TestTab data={data} progress={progress} />
         ) : (
           <OsceTab data={data} />
         )}
@@ -193,56 +186,58 @@ function LangStrip({ slug, lang, onLang }: { slug: string; lang: "en" | "ur"; on
   );
 }
 
-function LevelBar({ entry, progress, level, onChoose }: { entry: SkillIndexEntry; progress: SkillsProgress | null; level: SkillLevelId; onChoose: (level: SkillLevelId) => void }) {
+function SkillStrip({ data, progress, slug }: { data: SkillData | null; progress: SkillsProgress | null; slug: string }) {
+  const [lang] = useLang();
+  const ur = lang === "ur";
+  const total = data?.concepts.length ?? 0;
+  const studied = data && progress ? data.concepts.filter((concept) => (progress.studied[slug] ?? []).includes(concept.id)).length : 0;
+  const passed = progress ? isLevelPassed(progress, slug, "expert") : false;
+  const stats: [string, string][] = data
+    ? [
+        [String(total), ur ? "concepts, basics se clinical reasoning tak" : "concepts, from the basics to clinical reasoning"],
+        [String(data.atlas.length), ur ? `${data.atlasLabel.toLowerCase()} entries` : `${data.atlasLabel.toLowerCase()} entries`],
+        [String(data.cards.length), ur ? "flashcards" : "flashcards"],
+        [String(data.stations.length), ur ? "OSCE stations" : "OSCE stations"],
+      ]
+    : [];
   return (
-    <div className="grid grid-cols-2 gap-2 lg:grid-cols-4" role="group" aria-label="Levels">
-      {SKILL_LEVELS.map((item, index) => {
-        const passed = progress ? isLevelPassed(progress, entry.slug, item.id) : false;
-        const unlocked = progress ? isLevelUnlocked(progress, entry.slug, item.id) : index === 0;
-        const active = item.id === level;
-        return (
-          <button
-            key={item.id}
-            type="button"
-            aria-pressed={active}
-            onClick={() => onChoose(item.id)}
-            className={
-              "nx-holo relative rounded-2xl border p-3 text-left " +
-              (active ? "border-transparent bg-[#0a1f3d] text-white shadow-[0_18px_40px_-24px_rgba(10,31,61,0.9)]" : "border-slate-200 bg-white hover:border-teal-300")
-            }
-          >
-            <span className="flex items-center justify-between gap-2">
-              <span className={"text-[11px] font-extrabold uppercase tracking-[0.16em] " + (active ? "text-[#2ee6d6]" : "text-teal-700")}>
-                Level {index + 1}
-              </span>
-              {passed ? (
-                <CheckCircle2 className={"h-4 w-4 " + (active ? "text-[#2ee6d6]" : "text-emerald-600")} aria-label="Passed" />
-              ) : !unlocked ? (
-                <Lock className="h-3.5 w-3.5 opacity-60" aria-label="Test locked" />
-              ) : null}
-            </span>
-            <span className="mt-1 block text-base font-bold">{item.label}</span>
-            <span className={"mt-0.5 block text-xs leading-5 " + (active ? "text-[#a9bfd6]" : "text-slate-500")}>{entry.goals[item.id]}</span>
-          </button>
-        );
-      })}
+    <div className="nx-holo rounded-3xl bg-[#0a1f3d] p-4 text-white sm:p-5" role="group" aria-label={ur ? "Is skill ka khulasa" : "Everything in this skill"}>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm font-semibold text-[#a9bfd6]">
+          {ur ? "Poora skill ek jagah — koi lock ya level nahi." : "The whole skill in one place — no locks, no levels."}
+        </p>
+        <span className="inline-flex items-center gap-2 text-xs font-bold text-[#2ee6d6]">
+          {passed ? <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> : null}
+          {passed ? (ur ? "Skill test pass" : "Skill test passed") : total ? (ur ? `${studied}/${total} parh liye` : `${studied}/${total} studied`) : ""}
+        </span>
+      </div>
+      {stats.length ? (
+        <dl className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {stats.map(([value, label]) => (
+            <div key={label} className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+              <dt className="text-xl font-extrabold text-white">{value}</dt>
+              <dd className="text-[11px] font-semibold leading-4 text-[#a9bfd6]">{label}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
     </div>
   );
 }
 
 /* ---------------- Learn ---------------- */
 
-function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: SkillLevelId; progress: SkillsProgress; onNext: () => void }) {
+function LearnTab({ data, progress, onNext }: { data: SkillData; progress: SkillsProgress; onNext: () => void }) {
   const [lang, setLang] = useLang();
   const ur = lang === "ur";
-  const concepts = data.concepts.filter((concept) => concept.level === level);
+  const concepts = data.concepts;
   const studied = new Set(progress.studied[data.slug] ?? []);
   const done = concepts.filter((concept) => studied.has(concept.id)).length;
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-100 bg-teal-50/60 px-4 py-3">
         <p className="text-sm text-teal-900">
-          <strong>{SKILL_LEVELS.find((item) => item.id === level)?.label}:</strong> {data.goals[level]}
+          <strong>{data.title}:</strong> {data.goals[FULL]}
         </p>
         <span className="text-xs font-bold text-teal-800">
           {done}/{concepts.length} {ur ? "parh liye" : "studied"}
@@ -322,7 +317,7 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
         </article>
       ))}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-[#0a1f3d] p-5 text-white">
-        <p className="text-sm text-[#a9bfd6]">Next: practise with the simulators and quick drills, then take the level test.</p>
+        <p className="text-sm text-[#a9bfd6]">Next: practise with the simulators and quick drills, then take the skill test.</p>
         <button type="button" onClick={onNext} className="nx-btn nx-btn-primary">
           Start practising <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
@@ -355,11 +350,10 @@ function ConceptBody({ concept }: { concept: SkillData["concepts"][number] }) {
 
 /* ---------------- Atlas ---------------- */
 
-function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
+function AtlasTab({ data }: { data: SkillData }) {
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState("All");
   const groups = ["All", ...new Set(data.atlas.map((item) => item.group))];
-  const rank = levelRank(level);
   const items = data.atlas.filter(
     (item) =>
       (group === "All" || item.group === group) &&
@@ -380,13 +374,8 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
           ))}
         </div>
       </div>
-      <p className="mt-3 text-xs text-slate-500">
-        Showing details up to <strong>{SKILL_LEVELS[rank].label}</strong> level. Choose a higher level above to unlock advanced details.
-      </p>
       <div className="mt-4 grid items-start gap-3 lg:grid-cols-2">
         {items.map((item) => {
-          const visible = item.fields.filter((field) => levelRank(field.level) <= rank);
-          const hidden = item.fields.length - visible.length;
           return (
             <details key={item.id} id={item.id} className="group nx-cv scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-4 open:shadow-[0_24px_60px_-48px_rgba(10,60,90,0.6)] sm:p-5">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
@@ -408,9 +397,9 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
                     <BodyChart view={item.point.view} markers={[{ id: item.id, ...item.point, tone: "active", label: item.title }]} />
                   </div>
                 ) : null}
-                <SkillTeacher data={data} item={item} level={level} />
+                <SkillTeacher data={data} item={item} level={FULL} />
                 <dl className="grid gap-2">
-                  {visible.map((field) => (
+                  {item.fields.map((field) => (
                     <div key={field.label} className="rounded-2xl bg-slate-50 px-3 py-2">
                       <dt className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-500">{field.label}</dt>
                       <dd className="mt-0.5 text-sm leading-6 text-navy-800">
@@ -419,8 +408,7 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
                     </div>
                   ))}
                 </dl>
-                {item.tip && rank >= 1 ? <p className="rounded-2xl border border-teal-100 bg-teal-50 px-3 py-2 text-sm leading-6 text-teal-900"><strong>Clinical tip:</strong> {item.tip}</p> : null}
-                {hidden > 0 ? <p className="text-xs text-slate-500">{hidden} more detail{hidden === 1 ? "" : "s"} unlock at higher levels.</p> : null}
+                {item.tip ? <p className="rounded-2xl border border-teal-100 bg-teal-50 px-3 py-2 text-sm leading-6 text-teal-900"><strong>Clinical tip:</strong> {item.tip}</p> : null}
               </div>
             </details>
           );
@@ -433,10 +421,6 @@ function AtlasTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
 
 /* ---------------- Practise ---------------- */
 
-function questionPool(data: SkillData, level: SkillLevelId) {
-  const rank = levelRank(level);
-  return data.questions.filter((question) => levelRank(question.level) <= rank);
-}
 
 function QuestionCard({
   question,
@@ -506,15 +490,11 @@ function QuestionCard({
   );
 }
 
-function QuickDrill({ data, level }: { data: SkillData; level: SkillLevelId }) {
+function QuickDrill({ data }: { data: SkillData }) {
   const [lang] = useLang();
   const ur = lang === "ur";
-  const pool = useMemo(() => questionPool(data, level), [data, level]);
-  const preferred = useMemo(() => pool.filter((question) => question.level === level), [pool, level]);
-  const draw = useCallback(() => {
-    const source = preferred.length && Math.random() < 0.7 ? preferred : pool;
-    return source[Math.floor(Math.random() * source.length)];
-  }, [pool, preferred]);
+  const pool = data.questions;
+  const draw = useCallback(() => pool[Math.floor(Math.random() * pool.length)], [pool]);
   const [question, setQuestion] = useState<SkillQuestion | undefined>(() => draw());
   const [answered, setAnswered] = useState<number | null>(null);
   const [streak, setStreak] = useState(0);
@@ -557,39 +537,38 @@ function QuickDrill({ data, level }: { data: SkillData; level: SkillLevelId }) {
   );
 }
 
-function PractiseTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
+function PractiseTab({ data }: { data: SkillData }) {
   return (
     <div className="space-y-4">
       {data.simulators.includes("goniometer") ? <GoniometerSim data={data} /> : null}
-      {data.simulators.includes("mmt-grade") ? <GradeSim data={data} mode="mmt" level={level} /> : null}
-      {data.simulators.includes("reflex-grade") ? <GradeSim data={data} mode="reflex" level={level} /> : null}
-      {data.simulators.includes("mas-grade") ? <GradeSim data={data} mode="mas" level={level} /> : null}
+      {data.simulators.includes("mmt-grade") ? <GradeSim data={data} mode="mmt" level={FULL} /> : null}
+      {data.simulators.includes("reflex-grade") ? <GradeSim data={data} mode="reflex" level={FULL} /> : null}
+      {data.simulators.includes("mas-grade") ? <GradeSim data={data} mode="mas" level={FULL} /> : null}
       {data.simulators.includes("body-map") ? <BodyMapSim data={data} /> : null}
       {data.simulators.includes("vitals") ? <VitalsTool /> : null}
-      <QuickDrill data={data} level={level} />
+      <QuickDrill data={data} />
     </div>
   );
 }
 
 /* ---------------- Flashcards ---------------- */
 
-type CardMode = "review" | "level" | "mix";
+type CardMode = "review" | "mix";
 
-function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }) {
+function FlashcardsTab({ data }: { data: SkillData }) {
   const [lang] = useLang();
   const ur = lang === "ur";
-  // review = spaced repetition (due + new cards); level/mix = free practice that never runs dry.
+  // review = spaced repetition (due + new cards); mix = free practice that never runs dry.
   const [mode, setMode] = useState<CardMode>("review");
   const build = useCallback(() => {
-    if (mode === "level") return shuffled(data.cards.filter((card) => card.level === level)).slice(0, 12);
     if (mode === "mix") return shuffled(data.cards).slice(0, 12);
     const deck = getSkillsDeck();
     const due = dueSkillCards(deck, data.slug);
     const byId = new Map(data.cards.map((card) => [card.id, card]));
     const dueCards = due.map((id) => byId.get(id)).filter((card): card is NonNullable<typeof card> => Boolean(card)).slice(0, 20);
-    const fresh = shuffled(data.cards.filter((card) => card.level === level && !deck[card.id])).slice(0, 10);
+    const fresh = shuffled(data.cards.filter((card) => !deck[card.id])).slice(0, 10);
     return [...dueCards, ...fresh];
-  }, [data, level, mode]);
+  }, [data, mode]);
   const [session, setSession] = useState(build);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -601,7 +580,7 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
     setKnown(0);
   }, [build]);
 
-  const levelTotal = data.cards.filter((card) => card.level === level).length;
+  const levelTotal = data.cards.length;
   const card = session[index];
   const restart = (next: CardMode) => {
     if (next === mode) {
@@ -620,14 +599,11 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">
           {session.length
             ? `You knew ${known} of ${session.length}. Cards you missed come back tomorrow; the ones you knew return later.`
-            : `All ${levelTotal} cards at this level are scheduled for later. Keep practising below — it never runs out.`}
+            : `All ${levelTotal} cards are scheduled for later. Keep practising below — it never runs out.`}
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
-          <button type="button" className="nx-btn nx-btn-primary" onClick={() => restart("level")}>
-            <RotateCcw className="h-4 w-4" aria-hidden="true" /> Practise this level ({levelTotal} cards)
-          </button>
-          <button type="button" className="nx-btn nx-btn-light" onClick={() => restart("mix")}>
-            <Layers className="h-4 w-4" aria-hidden="true" /> Mix all levels ({data.cards.length})
+          <button type="button" className="nx-btn nx-btn-primary" onClick={() => restart("mix")}>
+            <RotateCcw className="h-4 w-4" aria-hidden="true" /> Practise all {levelTotal} cards
           </button>
           {mode !== "review" ? (
             <button type="button" className="nx-btn nx-btn-light" onClick={() => restart("review")}>
@@ -652,7 +628,7 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
         <span>
           Card {index + 1} of {session.length}
         </span>
-        <span>{mode === "review" ? `${levelTotal} cards at this level · spaced repetition` : mode === "level" ? "Free practice · this level" : "Free practice · all levels"}</span>
+        <span>{mode === "review" ? `${levelTotal} cards · spaced repetition` : "Free practice · all cards"}</span>
       </div>
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
         <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-sky-500" style={{ width: `${(index / session.length) * 100}%` }} />
@@ -683,62 +659,49 @@ function FlashcardsTab({ data, level }: { data: SkillData; level: SkillLevelId }
   );
 }
 
-/* ---------------- Level test ---------------- */
+/* ---------------- Skill test ---------------- */
 
-function buildTest(data: SkillData, level: SkillLevelId): SkillQuestion[] {
-  const current = shuffled(data.questions.filter((question) => question.level === level));
-  const earlier = shuffled(data.questions.filter((question) => levelRank(question.level) < levelRank(level)));
-  // 9 from this level + 3 revision questions; top up from either pool so a test is always 12 long.
-  const fromCurrent = current.slice(0, 9);
-  const fromEarlier = earlier.slice(0, 12 - fromCurrent.length);
-  const test = [...fromCurrent, ...fromEarlier];
-  if (test.length < 12) test.push(...current.slice(fromCurrent.length, fromCurrent.length + 12 - test.length));
-  return shuffled(test).slice(0, 12);
+/** 12 questions drawn evenly from every depth of the skill, from the basics to clinical reasoning. */
+function buildTest(data: SkillData): SkillQuestion[] {
+  const groups = SKILL_LEVELS.map((level) => shuffled(data.questions.filter((question) => question.level === level.id)));
+  const test: SkillQuestion[] = [];
+  for (let round = 0; test.length < 12; round++) {
+    let added = false;
+    for (const group of groups) {
+      if (group[round] && test.length < 12) {
+        test.push(group[round]);
+        added = true;
+      }
+    }
+    if (!added) break;
+  }
+  return shuffled(test);
 }
 
-function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: SkillLevelId; progress: SkillsProgress; onLevel: (level: SkillLevelId) => void }) {
+function TestTab({ data, progress }: { data: SkillData; progress: SkillsProgress }) {
   const [lang] = useLang();
   const ur = lang === "ur";
-  const unlocked = isLevelUnlocked(progress, data.slug, level);
   const [questions, setQuestions] = useState<SkillQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [result, setResult] = useState<null | { score: number; passed: boolean; firstPass: boolean }>(null);
   const start = () => {
-    setQuestions(buildTest(data, level));
+    setQuestions(buildTest(data));
     setAnswers({});
     setResult(null);
   };
-  useEffect(() => {
-    setQuestions([]);
-    setAnswers({});
-    setResult(null);
-  }, [level]);
-  const rank = levelRank(level);
-  const record = progress.levels[data.slug]?.[level];
-  const next = SKILL_LEVELS[rank + 1];
-
-  if (!unlocked) {
-    return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 text-center">
-        <Lock className="mx-auto h-8 w-8 text-slate-400" aria-hidden="true" />
-        <h3 className="mt-3 text-xl font-bold text-navy-800">Pass the {SKILL_LEVELS[rank - 1].label} test first</h3>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">You can still study and practise this level. The test unlocks when the previous level is passed.</p>
-        <button type="button" className="nx-btn nx-btn-primary mt-4" onClick={() => onLevel(SKILL_LEVELS[rank - 1].id)}>
-          Go to {SKILL_LEVELS[rank - 1].label}
-        </button>
-      </div>
-    );
-  }
+  const record = progress.levels[data.slug]?.[FULL];
 
   if (!questions.length) {
     return (
       <div className="rounded-3xl bg-[#0a1f3d] p-6 text-white sm:p-8">
         <p className="nx-kicker">
-          <Trophy className="h-4 w-4" aria-hidden="true" /> {SKILL_LEVELS[rank].label} level test
+          <Trophy className="h-4 w-4" aria-hidden="true" /> {ur ? "Skill test" : "Skill test"}
         </p>
         <h3 className="nx-title mt-3 text-2xl text-white sm:text-3xl">12 questions · pass mark {Math.round(PASS_MARK * 100)}%</h3>
         <p className="mt-2 max-w-xl text-sm leading-6 text-[#a9bfd6]">
-          Mostly {SKILL_LEVELS[rank].label.toLowerCase()} questions, plus a few from earlier levels. Passing earns XP, a badge on your student pass and unlocks the next level&apos;s test.
+          {ur
+            ? "Sawal poore skill se hain — basics se clinical reasoning tak. Pass karne par XP aur student pass par badge milta hai."
+            : "Questions come from the whole skill, from the basics to clinical reasoning. Passing earns XP and a badge on your student pass."}
         </p>
         {record ? (
           <p className="mt-3 text-sm text-[#2ee6d6]">
@@ -777,7 +740,7 @@ function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: S
           onClick={() => {
             const correct = questions.filter((question) => answers[question.id] === question.answer).length;
             const score = correct / questions.length;
-            const outcome = recordLevelTest(data.slug, data.title, level, score);
+            const outcome = recordSkillTest(data.slug, data.title, score);
             setResult({ score, ...outcome });
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
@@ -791,8 +754,8 @@ function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: S
             {result.passed
               ? result.firstPass
                 ? ur
-                  ? `Mubarak ho, pass! ${SKILL_LEVELS[rank].label} badge aap ke student pass mein add ho gaya.`
-                  : `Passed! ${SKILL_LEVELS[rank].label} badge added to your student pass.`
+                  ? "Mubarak ho, pass! Badge aap ke student pass mein add ho gaya."
+                  : "Passed! Badge added to your student pass."
                 : ur
                   ? "Phir se pass — shabash, revision acha raha."
                   : "Passed again — great revision."
@@ -804,11 +767,6 @@ function TestTab({ data, level, progress, onLevel }: { data: SkillData; level: S
             <button type="button" className="nx-btn nx-btn-ghost !min-h-[40px]" onClick={start}>
               <RotateCcw className="h-4 w-4" aria-hidden="true" /> {ur ? "Naya test" : "New test"}
             </button>
-            {result.passed && next ? (
-              <button type="button" className="nx-btn nx-btn-primary !min-h-[40px]" onClick={() => onLevel(next.id)}>
-                {ur ? "Agla level" : "Continue to"} {next.label} <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </button>
-            ) : null}
           </div>
         </div>
       )}

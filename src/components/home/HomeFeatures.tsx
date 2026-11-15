@@ -64,7 +64,7 @@ export function HomeFeatures() {
                   <circle className="hx-pivot" cx="70" cy="110" r="6" />
                 </svg>
                 <div className="hx-readout"><span>Shoulder flexion</span><b className="hx-deg" /></div>
-                <div className="hx-levels"><span className="on">Beginner</span><span>Intermediate</span><span>Advanced</span><span>Expert</span></div>
+                <div className="hx-levels"><span className="on">MMT</span><span>Goniometry</span><span>Neuro</span><span>OSCE</span></div>
               </div>
               <div className="hx-body">
                 <span className="hx-badge"><Ruler className="h-3.5 w-3.5" aria-hidden="true" /> Practise · Free</span>
@@ -73,9 +73,9 @@ export function HomeFeatures() {
                 <ul className="hx-ticks">
                   <li>Muscle testing, goniometry, neuro exam, balance</li>
                   <li>3D demonstrations of every technique</li>
-                  <li>Four levels, level tests and OSCE stations</li>
+                  <li>Skill tests and OSCE stations, taught at expert depth</li>
                 </ul>
-                <span className="hx-meta">Beginner to expert</span>
+                <span className="hx-meta">Expert depth · free</span>
                 <span className="hx-go">Open the Skills Lab <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
               </div>
             </a>
