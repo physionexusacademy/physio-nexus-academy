@@ -105,7 +105,10 @@ export function GuideMe() {
             <div className="gm-visual" aria-hidden="true">
               <span className="gm-ring gm-ring-a" />
               <span className="gm-ring gm-ring-b" />
+              <span className="gm-base" />
               <img src="/teacher/pna-teacher-poster.webp" alt="" width={410} height={547} loading="lazy" decoding="async" className="gm-poster" />
+              <span className="gm-scan" />
+              <span className="gm-tag"><i />AI Teaching Assistant</span>
               <span className="gm-badge gm-badge-a">3D demos</span>
               <span className="gm-badge gm-badge-b">English · Roman Urdu</span>
               <span className="gm-badge gm-badge-c">Ask anything</span>
