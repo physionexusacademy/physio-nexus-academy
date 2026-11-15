@@ -126,6 +126,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:language
 
+      - name: Validate Manual Therapy depth (every technique has expert depth and a 2D demonstration, no level labels)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:manual-depth
+
       - name: Validate Dr. Sajjad teaching data (every spoken line resolves in English and Roman Urdu, JSON is fresh)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:avatar

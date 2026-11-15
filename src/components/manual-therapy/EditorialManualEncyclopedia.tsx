@@ -36,7 +36,6 @@ function Card({ item, index, visualCovers }: { item: EncyclopediaItem; index: nu
   const artUrl = art
     ? getCloudinaryUrl(art.publicId, { width: 560, quality: 64, format: "auto" })
     : "";
-  const level = item.tag.toLowerCase();
   const tone = art?.tone === "teal" ? "teal" : "violet";
 
   return (
@@ -71,7 +70,7 @@ function Card({ item, index, visualCovers }: { item: EncyclopediaItem; index: nu
         {String(index + 1).padStart(2, "0")}
       </span>
       <div className="pna-editorial-card-content">
-        <span className="pna-editorial-level" data-level={level}>
+        <span className="pna-editorial-level">
           {item.tag}
         </span>
         <h4 className="pna-editorial-card-title">{item.name}</h4>
@@ -123,7 +122,7 @@ export function EditorialManualEncyclopedia({
         data-pna-editorial-design="anatomy-luxe-v1"
         data-pna-content-revision="storytelling-v1"
         data-pna-library="unified-35-v1"
-        className="pna-editorial-hero"
+        className="pna-editorial-hero nx-sky"
         aria-labelledby="pna-editorial-heading"
       >
         {heroUrl ? (
@@ -141,7 +140,7 @@ export function EditorialManualEncyclopedia({
             World Manual Therapy Encyclopedia
           </h1>
           <p className="pna-editorial-lead">
-            35 techniques explained step by step: what each one is, when to use it, how to do it, and how to check it worked.
+            Every technique explained with the reasoning of an expert: a 2D demonstration of what the hands and the tissue do, when to choose it, the dose, how to check it worked and when to stop.
           </p>
           <p className="pna-editorial-illustration-note">
             Cover art is illustrative only. The lesson inside each chapter explains the technique in full.

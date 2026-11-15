@@ -7,6 +7,7 @@ import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { getPublishedManualCoverMap } from "@/lib/manual-therapy-cover-publishing";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
+import { getTechniqueDepth } from "@/lib/manual-therapy-depth";
 
 /**
  * One clear group per purpose, in the order a learner should meet them.
@@ -67,7 +68,7 @@ const libraryItems = [
     artFamily: technique.family,
     name: technique.name,
     summary: technique.summary,
-    tag: technique.level,
+    tag: getTechniqueDepth(technique.slug) ? "2D demo · expert depth" : "Technique",
     story: getMasteryGuide(technique.slug)?.oneLine ?? getManualTherapyStory(technique.slug)?.headline ?? "",
     scene: getManualTherapyStory(technique.slug)?.scene ?? "",
     closer: manualTherapyLessonWeaves[technique.slug]?.closer ?? "",
