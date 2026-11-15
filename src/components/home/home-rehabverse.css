@@ -1,0 +1,116 @@
+/* Homepage — the RehabVerse card: dark and glowing like the three flagship cards, with a live 3D-guide demonstration (a bird-dog) and
+   the four steps in one row, so a visitor understands it at a glance. Everything decorative is plain markup and CSS; the animation uses
+   only transform and opacity. The resting state (no animation, or "reduce motion") is the finished picture: arm and leg reaching. */
+
+.hf-rv { grid-column: span 12; }
+.rvx { flex-direction: column; position: relative; color: #eaf6ff; background: radial-gradient(110% 120% at 0% 0%, #0d3a62 0%, #071a33 52%, #050f22 100%); border-color: rgba(46, 230, 214, .3); box-shadow: 0 34px 80px -42px rgba(8, 40, 90, .95), inset 0 0 0 1px rgba(255, 255, 255, .03); content-visibility: auto; contain-intrinsic-size: auto 640px; }
+.rvx:hover { transform: none; border-color: rgba(46, 230, 214, .6); box-shadow: 0 38px 90px -40px rgba(46, 230, 214, .5); }
+.rvx::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(120, 200, 255, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 200, 255, .06) 1px, transparent 1px); background-size: 28px 28px; mask-image: radial-gradient(80% 70% at 70% 20%, #000 20%, transparent 100%); }
+.rvx::after { content: ""; position: absolute; width: 360px; height: 360px; right: -90px; top: -120px; border-radius: 50%; background: radial-gradient(circle, rgba(143, 124, 255, .38), transparent 68%); filter: blur(10px); pointer-events: none; }
+.rvx > * { position: relative; z-index: 1; }
+
+.rvx-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); gap: 30px; align-items: center; padding: 32px 32px 8px; }
+.rvx-badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 13px; font-size: .7rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #ffd98a; background: rgba(255, 198, 92, .13); border: 1px solid rgba(255, 198, 92, .45); }
+.rvx h3 { margin: 14px 0 0; font-size: clamp(1.9rem, 3.6vw, 2.7rem); line-height: 1.06; font-weight: 800; letter-spacing: -.025em; color: #fff; }
+.rvx-sub { display: block; margin-top: 10px; font-size: clamp(1.02rem, 1.7vw, 1.3rem); line-height: 1.3; font-weight: 700; letter-spacing: 0; background: linear-gradient(100deg, #2ee6d6, #3cc8ff 55%, #a08dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.rvx-lead { margin: 14px 0 0; max-width: 34rem; font-size: 1rem; line-height: 1.65; color: #c4d6e8; }
+.rvx-lead i { color: #fff; font-style: normal; font-weight: 700; }
+.rvx-chips { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rvx-chips li { border-radius: 999px; padding: 5px 12px 5px 28px; font-size: .78rem; font-weight: 700; color: #d8e8f7; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .16); position: relative; }
+.rvx-chips li::before { content: ""; position: absolute; left: 11px; top: 50%; width: 9px; height: 5px; margin-top: -4px; border-left: 2px solid #2ee6d6; border-bottom: 2px solid #2ee6d6; transform: rotate(-45deg); }
+.rvx-cta { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.rvx-link { margin-top: 14px; display: inline-flex; align-items: center; gap: 7px; font-size: .9rem; font-weight: 800; color: #2ee6d6; text-decoration: none; }
+.rvx-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.rvx a:focus-visible { outline: 3px solid #2ee6d6; outline-offset: 3px; border-radius: 12px; }
+
+/* ---------- the stage: a glowing guide doing a bird-dog on a mat ---------- */
+.rvx-stage { position: relative; height: 310px; border-radius: 22px; overflow: hidden; background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .015)); border: 1px solid rgba(150, 225, 255, .26); box-shadow: inset 0 0 60px rgba(46, 230, 214, .08); }
+.rvx-floor { position: absolute; left: -10%; right: -10%; bottom: -8%; height: 62%; background-image: linear-gradient(rgba(120, 200, 255, .3) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 200, 255, .3) 1px, transparent 1px); background-size: 34px 34px; transform: perspective(280px) rotateX(64deg); transform-origin: 50% 100%; -webkit-mask-image: linear-gradient(to top, #000 8%, transparent 92%); mask-image: linear-gradient(to top, #000 8%, transparent 92%); opacity: .6; }
+.rvx-scan { position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0 47%, rgba(46, 230, 214, .2) 50%, transparent 53% 100%); transform: translateX(0); animation: rvx-scan 8s linear infinite; pointer-events: none; }
+.rvx-hud { position: absolute; top: 12px; font-size: .62rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #9db4cc; }
+.rvx-hud-live { left: 14px; display: inline-flex; align-items: center; gap: 7px; color: #bfeee9; }
+.rvx-hud-live i { width: 8px; height: 8px; border-radius: 50%; background: #2ee6d6; box-shadow: 0 0 10px 2px rgba(46, 230, 214, .8); animation: rvx-pulse 1.6s ease-in-out infinite; }
+.rvx-hud-lang { right: 14px; display: inline-flex; border-radius: 999px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .15); padding: 2px; letter-spacing: .02em; text-transform: none; font-size: .64rem; }
+.rvx-hud-lang b { border-radius: 999px; padding: 2px 9px; font-weight: 800; color: #9db4cc; }
+.rvx-hud-lang b:first-child { background: #2ee6d6; color: #03202a; animation: rvx-lang-en 12s steps(1) infinite; }
+.rvx-hud-lang b:last-child { animation: rvx-lang-ur 12s steps(1) infinite; }
+
+.rvx-fig { position: absolute; left: 3%; right: 3%; top: 8%; width: 94%; height: 76%; overflow: visible; }
+.rvx-fig line, .rvx-fig path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.rvx-mat { fill: rgba(46, 230, 214, .32); stroke: rgba(46, 230, 214, .85); stroke-width: 1.2; }
+.rvx-limbs-far line, .rvx-limbs-far path { stroke: rgba(150, 185, 235, .5); stroke-width: 9; }
+.rvx-glow line, .rvx-glow path { stroke: url(#rvxg); stroke-width: 9; }
+.rvx-glow .rvx-trunk { stroke-width: 16; }
+.rvx-glow circle { fill: #8f7cff; stroke: #fff; stroke-width: 1.5; }
+.rvx-joint { fill: #fff; stroke: #2ee6d6; stroke-width: 2.5; }
+.rvx-head { fill: #10294a; stroke: url(#rvxg); stroke-width: 4; }
+.rvx-neck { stroke: url(#rvxg); stroke-width: 8; }
+.rvx-level { stroke: rgba(46, 230, 214, .75); stroke-width: 1.4; stroke-dasharray: 4 7; opacity: .55; }
+/* finished pose at rest; the animation below moves between "all fours" and this */
+.rvx-arm, .rvx-leg, .rvx-shin { transform-box: view-box; }
+.rvx-arm { transform-origin: 240px 114px; transform: rotate(-90deg); animation: rvx-arm 9s ease-in-out infinite; }
+.rvx-leg { transform-origin: 136px 128px; transform: rotate(90deg); animation: rvx-leg 9s ease-in-out infinite; }
+.rvx-shin { transform-origin: 136px 188px; transform: rotate(-90deg); animation: rvx-shin 9s ease-in-out infinite; }
+
+.rvx-chip { position: absolute; border-radius: 999px; padding: 4px 11px; font-size: .68rem; font-weight: 800; color: #eaf6ff; background: rgba(7, 26, 51, .82); border: 1px solid rgba(46, 230, 214, .5); box-shadow: 0 0 16px rgba(46, 230, 214, .25); white-space: nowrap; }
+.rvx-chip-a { left: 14px; top: 46px; opacity: 0; animation: rvx-chip-a 9s ease-in-out infinite; }
+.rvx-chip-b { right: 14px; top: 88px; opacity: 1; color: #03202a; background: #2ee6d6; border-color: #2ee6d6; animation: rvx-chip-b 9s ease-in-out infinite; }
+.rvx-chip-c { left: 14px; bottom: 64px; color: #ffe2a3; border-color: rgba(255, 198, 92, .55); box-shadow: 0 0 16px rgba(255, 198, 92, .18); }
+.rvx-sub-bar { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 8px; min-height: 36px; border-radius: 12px; padding: 7px 12px; background: rgba(5, 15, 34, .86); border: 1px solid rgba(150, 225, 255, .2); font-size: .8rem; line-height: 1.3; color: #eaf6ff; overflow: hidden; }
+.rvx-sub-bar em { font-style: normal; font-size: .6rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #2ee6d6; flex: none; }
+.rvx-sub-bar span { flex: 1; min-width: 0; }
+.rvx-line-ur { position: absolute; left: 62px; right: 12px; opacity: 0; animation: rvx-line-ur 12s steps(1) infinite; }
+.rvx-line-en { animation: rvx-line-en 12s steps(1) infinite; }
+
+/* ---------- the four steps ---------- */
+.rvx-flow { list-style: none; margin: 0; padding: 22px 32px 6px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; counter-reset: rvx; }
+.rvx-flow li { position: relative; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; border-radius: 18px; padding: 14px 14px 14px 14px; background: linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .03)); border: 1px solid rgba(150, 225, 255, .2); }
+.rvx-flow li::after { content: ""; position: absolute; right: -11px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-top: 2px solid #2ee6d6; border-right: 2px solid #2ee6d6; transform: rotate(45deg); opacity: .8; }
+.rvx-flow li:last-child::after { display: none; }
+.rvx-ico { grid-row: span 2; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; color: #2ee6d6; background: rgba(46, 230, 214, .12); border: 1px solid rgba(46, 230, 214, .4); box-shadow: 0 0 18px rgba(46, 230, 214, .22); }
+.rvx-flow li:nth-child(2) .rvx-ico { color: #7fd8ff; background: rgba(60, 200, 255, .12); border-color: rgba(60, 200, 255, .42); }
+.rvx-flow li:nth-child(3) .rvx-ico { color: #b3a8ff; background: rgba(143, 124, 255, .14); border-color: rgba(143, 124, 255, .45); }
+.rvx-flow li:nth-child(4) .rvx-ico { color: #ffd98a; background: rgba(255, 198, 92, .13); border-color: rgba(255, 198, 92, .45); }
+.rvx-flow b { position: absolute; right: 12px; top: 8px; font-size: 1.5rem; line-height: 1; font-weight: 800; color: rgba(255, 255, 255, .13); }
+.rvx-flow strong { font-size: .92rem; line-height: 1.25; font-weight: 800; color: #fff; padding-right: 18px; }
+.rvx-flow small { font-size: .74rem; line-height: 1.3; color: #9db4cc; }
+.rvx-fine { margin: 6px 0 0; padding: 12px 32px 22px; font-size: .74rem; line-height: 1.5; color: #7690ad; }
+
+@keyframes rvx-scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes rvx-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
+@keyframes rvx-arm { 0%, 12% { transform: rotate(0deg); } 34%, 66% { transform: rotate(-90deg); } 86%, 100% { transform: rotate(0deg); } }
+@keyframes rvx-leg { 0%, 12% { transform: rotate(0deg); } 34%, 66% { transform: rotate(90deg); } 86%, 100% { transform: rotate(0deg); } }
+@keyframes rvx-shin { 0%, 12% { transform: rotate(0deg); } 34%, 66% { transform: rotate(-90deg); } 86%, 100% { transform: rotate(0deg); } }
+@keyframes rvx-chip-a { 0%, 10% { opacity: 0; } 18%, 30% { opacity: 1; } 38%, 100% { opacity: 0; } }
+@keyframes rvx-chip-b { 0%, 34% { opacity: 0; } 42%, 62% { opacity: 1; } 70%, 100% { opacity: 0; } }
+@keyframes rvx-line-en { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes rvx-line-ur { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes rvx-lang-en { 0% { background: #2ee6d6; color: #03202a; } 50% { background: transparent; color: #9db4cc; } 100% { background: #2ee6d6; color: #03202a; } }
+@keyframes rvx-lang-ur { 0% { background: transparent; color: #9db4cc; } 50% { background: #2ee6d6; color: #03202a; } 100% { background: transparent; color: #9db4cc; } }
+
+@media (max-width: 1100px) {
+  .rvx-top { grid-template-columns: 1fr; gap: 22px; padding: 26px 24px 6px; }
+  .rvx-stage { height: 300px; }
+  .rvx-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 20px 24px 6px; }
+  .rvx-flow li:nth-child(2)::after { display: none; }
+  .rvx-fine { padding: 12px 24px 20px; }
+}
+@media (max-width: 760px) {
+  .rvx-top { padding: 20px 16px 4px; gap: 18px; }
+  .rvx h3 { font-size: 1.7rem; }
+  .rvx-lead { font-size: .94rem; }
+  .rvx-stage { height: 250px; border-radius: 18px; }
+  .rvx-fig { top: 6%; height: 78%; }
+  .rvx-chip-c { display: none; }
+  .rvx-sub-bar { font-size: .74rem; }
+  .rvx-cta .nx-btn { flex: 1 1 100%; justify-content: center; }
+  .rvx-flow { grid-template-columns: 1fr; gap: 10px; padding: 16px 16px 4px; }
+  .rvx-flow li::after { display: none; }
+  .rvx-fine { padding: 10px 16px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rvx-scan, .rvx-hud-live i, .rvx-arm, .rvx-leg, .rvx-shin, .rvx-chip-a, .rvx-chip-b, .rvx-line-en, .rvx-line-ur, .rvx-hud-lang b { animation: none !important; }
+  .rvx-scan { display: none; }
+  .rvx-line-ur { display: none; }
+  .rvx-hud-lang b:first-child { background: #2ee6d6; color: #03202a; }
+}
