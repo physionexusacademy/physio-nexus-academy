@@ -216,7 +216,11 @@ export const hipExercises: ExerciseDef[] = [
     motion: {
       position: "supine", surface: "plinth", sided: true,
       start: { hip: { flex: 52 }, knee: { flex: 98 }, "hip:o": { flex: 52 }, "knee:o": { flex: 98 } },
-      moves: [{ to: { hip: { flex: 62, abd: 36, rot: -42 }, knee: { flex: 112 }, "hip:o": { flex: 98 }, "knee:o": { flex: 112 } }, ms: 2600, hold: 3200, breath: "out", say: { en: "Cross the ankle over the knee and draw the legs in gently.", ru: "Takhna ghutne par rakhein aur taangon ko aahista andar kheinchein." } }],
+      // The ankle of the tested leg rests on the opposite thigh just above the knee (solved on the model), its knee falls out to the side.
+      moves: [
+        { to: { hip: { flex: 96, abd: 25, rot: -53 }, knee: { flex: 116 } }, ms: 2400, hold: 600, breath: "out", say: { en: "Cross one ankle over the opposite knee and let the knee fall out to the side.", ru: "Ek takhna doosre ghutne ke upar rakhein aur ghutna side ki taraf girne dein." } },
+        { to: { hip: { flex: 118, abd: 25, rot: -53 }, knee: { flex: 114 }, "hip:o": { flex: 80 }, "knee:o": { flex: 105 } }, ms: 2200, hold: 3000, breath: "out", say: { en: "Now draw the bottom thigh gently towards your chest and feel the stretch in the buttock.", ru: "Ab neeche wali thigh ko aahista seene ki taraf kheinchein aur kulhe mein stretch mehsoos karein." } },
+      ],
       returnMs: 2300, view: "side", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "tested" },
     },

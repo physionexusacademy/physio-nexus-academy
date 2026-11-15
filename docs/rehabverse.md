@@ -62,6 +62,25 @@ physiotherapist should read and adopt (or change) them before patient use.
 * Supabase Auth: confirm sign-up / e-mail confirmation / SMTP settings, and enable leaked-password protection.
 * Confirm the emergency number text in the guide (1122 is used as an example for much of Pakistan).
 
+## How an exercise is shown (poses, contact, voice)
+
+* An exercise is data (`src/lib/rehabverse/library/*.ts`): a start pose and moves in clinical angles for the tested side (`hip`) and the
+  other side (`hip:o`), plus props. The player (`ExercisePlayer.tsx`) rests the body on its surface (plinth, mat or floor) and, for
+  standing exercises, keeps the feet planted (`anchor`).
+* **All fours and planks**: the body is tipped head-up about the hips (`pelvis` in the pose; `tiltAbout: "shoulders"` for a plank) so
+  hands and knees (or forearms and toes) both rest on the mat, and rests there once (`settle: "start"`). `QUAD` in
+  `library/shared.ts` is the base pose (hands flat under the shoulders, knees under the hips). A cat-camel adds `tiltWith`, so the pelvis
+  tips with the spine and the hands and knees stay where they are. The validator checks that every quadruped exercise sets `pelvis`
+  and `settle`.
+* Angles that put one body part on another (the ankle on the opposite knee in the figure-4) were solved on the real model with the
+  development hook below and stored as plain numbers.
+* **Voice**: with the voice on, `paceForVoice` (`motion.ts`) gives every spoken line the time its recording needs (extra time goes
+  into the hold or the rest), so a line is never cut off by the next one; the packs a cycle needs are decoded before it starts
+  (`warmPlan`). A line without a recording is not spoken.
+* **Development hooks** (not in production builds), in the browser console on `/rehabverse/library?id=<exercise>`:
+  `window.__rvWide = true` before loading shows the whole body from a distance (to check contact); `window.__rvPlayer` has `seek(ms)`,
+  `cycle()`, `probe(parts, [[bone, side]], tilt?)` (where bones are, in metres), `lowest()` and `box()`.
+
 ## Running it locally (no production access)
 
 ```bash

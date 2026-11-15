@@ -11,7 +11,7 @@ import { REGIONS, LEVELS, type Bi, type ExerciseDef, type Region } from "../src/
 import { SOURCE, serializeRehabverseData } from "../src/lib/rehabverse/library/source.ts";
 import { REFERENCES } from "../src/lib/rehabverse/references.ts";
 import { TEMPLATES } from "../src/lib/rehabverse/templates.ts";
-import { buildCycle, maxAngle } from "../src/lib/rehabverse/motion.ts";
+import { buildCycle, maxAngle, paceForVoice } from "../src/lib/rehabverse/motion.ts";
 
 const failures: string[] = [];
 const fail = (where: string, message: string) => failures.push(`${where}: ${message}`);
@@ -113,6 +113,11 @@ for (const e of all) {
     bi(at, "mistake.text", m.mistake.text, 3);
     if (m.mistake.moves.length < 1) fail(at, "mistake has no moves");
   }
+  // On all fours (or in a plank) the body is tipped (pelvis) and rests on the mat once, so hands and knees touch it instead of floating.
+  if (m.position === "quadruped") {
+    if (m.start.pelvis?.flex === undefined) fail(at, "a quadruped exercise needs start.pelvis (the head-up tilt that puts hands and knees on the mat)");
+    if (m.settle !== "start") fail(at, 'a quadruped exercise must settle once ("settle": "start")');
+  }
   for (const prop of m.props ?? []) if (!PROPS.has(prop.kind)) fail(at, `unknown prop ${prop.kind}`);
   const checkBone = (bone: string) => {
     const key = bone.toLowerCase();
@@ -121,6 +126,21 @@ for (const e of all) {
   m.glow?.bones.forEach(checkBone);
   m.arrows?.forEach((a) => checkBone(a.bone));
   if (m.anchor && typeof m.anchor === "object" && m.anchor.bone) checkBone(m.anchor.bone);
+}
+
+// Voice pacing: with the voice on, every spoken line gets the time its recording needs, so it is never cut off by the next one.
+{
+  const segments = buildCycle({ start: {}, moves: [{ to: { hip: { flex: 20 } }, ms: 1000, hold: 500, say: { en: "A long line", ru: "x" } }], returnMs: 1000, restMs: 500 }, "left");
+  const cue = (line: string) => (line === "A long line" ? 6000 : 1000);
+  const line = (segment: (typeof segments)[number]) => segment.say?.en ?? `(${segment.kind})`;
+  const paced = paceForVoice(segments, line, cue, 1);
+  const span = (kinds: string[]) => paced.filter((x) => kinds.includes(x.kind)).reduce((n, x) => n + x.ms, 0);
+  if (paced.length !== segments.length || paced.some((x, i) => x.kind !== segments[i].kind)) fail("paceForVoice", "must keep the segments and their order");
+  if (span(["move", "hold"]) < 6000 + 350) fail("paceForVoice", `a move and its hold must last as long as their line (${span(["move", "hold"])} ms)`);
+  if (span(["return"]) < 1000 + 350) fail("paceForVoice", "the return must last as long as its line");
+  if (span(["rest"]) < 1000 + 350) fail("paceForVoice", "the rest must last as long as its line");
+  if (paceForVoice(segments, line, () => 0, 1).some((x, i) => x.ms !== segments[i].ms)) fail("paceForVoice", "lines without a recording must not change the timing");
+  if (segments.some((x, i) => x.ms !== buildCycle({ start: {}, moves: [{ to: { hip: { flex: 20 } }, ms: 1000, hold: 500 }], returnMs: 1000, restMs: 500 }, "left")[i].ms)) fail("paceForVoice", "must not change the segments it is given");
 }
 
 // Starter programmes only use exercises that exist, with sensible doses.

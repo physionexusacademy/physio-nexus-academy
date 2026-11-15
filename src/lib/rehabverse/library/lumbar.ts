@@ -1,4 +1,5 @@
 import type { ExerciseDef } from "../types.ts";
+import { QUAD } from "./shared.ts";
 
 /** Low back, core and lumbopelvic control. DRAFT clinical content — to be reviewed by the supervising physiotherapist. */
 const HOOK = { hip: { flex: 52 }, knee: { flex: 98 }, "hip:o": { flex: 52 }, "knee:o": { flex: 98 } };
@@ -213,14 +214,15 @@ export const lumbarExercises: ExerciseDef[] = [
     regressions: ["Leg only or arm only", "Shorter hold"],
     evidence: ["george2021"],
     motion: {
-      position: "quadruped", surface: "floor", sided: true,
-      start: { shoulder: { flex: 90 }, "shoulder:o": { flex: 90 }, hip: { flex: 90 }, "hip:o": { flex: 90 }, knee: { flex: 90 }, "knee:o": { flex: 90 }, ankle: { flex: -20 }, "ankle:o": { flex: -20 } },
-      moves: [{ to: { shoulder: { flex: 172 }, "hip:o": { flex: 2 }, "knee:o": { flex: 2 } }, ms: 2000, hold: 2200, breath: "out", say: { en: "Reach the arm forward and the opposite leg back, hips level.", ru: "Bazu aage aur ulti taang peeche barhayein, kulhe barabar." } }],
-      returnMs: 2000, view: "side", zoom: 0.85,
+      position: "quadruped", surface: "floor", sided: true, settle: "start",
+      start: { ...QUAD },
+      // The body is tipped 13° head-up, so an arm at 167° and a leg at −12° from the trunk are both level with the floor.
+      moves: [{ to: { shoulder: { flex: 167 }, elbow: { flex: 0, rot: -20 }, wrist: { flex: 0 }, "hip:o": { flex: -12 }, "knee:o": { flex: 3 }, "ankle:o": { flex: 0 } }, ms: 2400, hold: 2600, breath: "out", say: { en: "Reach one arm forward and the opposite leg back, in line with your spine, hips level.", ru: "Ek bazu aage aur ulti taang peeche barhayein, reerh ki seedh mein, kulhe barabar." } }],
+      returnMs: 2200, view: "side", zoom: 0.85,
       glow: { bones: ["spine03", "spine04", "upperleg01"], sides: "other" },
       mistake: {
         text: { en: "Mistake: the back sags and the hips twist.", ru: "Ghalti: kamar jhuk jati hai aur kulhe mur jate hain." },
-        moves: [{ to: { shoulder: { flex: 172 }, "hip:o": { flex: -25, abd: 25 }, "knee:o": { flex: 2 }, trunk: { flex: -14, rot: 10 } }, ms: 2000, hold: 1500 }],
+        moves: [{ to: { shoulder: { flex: 167 }, elbow: { flex: 0, rot: -20 }, wrist: { flex: 0 }, "hip:o": { flex: -32, abd: 25 }, "knee:o": { flex: 3 }, "ankle:o": { flex: 0 }, trunk: { flex: -14, rot: 10 } }, ms: 2000, hold: 1500 }],
       },
     },
   },
@@ -252,9 +254,11 @@ export const lumbarExercises: ExerciseDef[] = [
     regressions: ["Knees on the mat", "Shorter holds"],
     evidence: ["george2021"],
     motion: {
-      position: "quadruped", surface: "floor", sided: false,
-      start: { shoulder: { flex: 90 }, "shoulder:o": { flex: 90 }, elbow: { flex: 90 }, "elbow:o": { flex: 90 }, hip: { flex: 0 }, "hip:o": { flex: 0 }, knee: { flex: 90 }, "knee:o": { flex: 90 }, ankle: { flex: -30 }, "ankle:o": { flex: -30 } },
-      moves: [{ to: { knee: { flex: 0 }, "knee:o": { flex: 0 }, ankle: { flex: -55 }, "ankle:o": { flex: -55 }, toe: { flex: 60 }, "toe:o": { flex: 60 } }, ms: 1500, hold: 3600, breath: "hold", say: { en: "Lift your knees off the mat and hold a straight line from head to heels.", ru: "Ghutne mat se uthayein aur sar se aerhi tak seedhi line mein hold karein." } }],
+      position: "quadruped", surface: "floor", sided: false, settle: "start", tiltAbout: "shoulders",
+      // Starts on the forearms and knees (shins up), body tipped 18° about the shoulders; the knees lift and the legs straighten as the hips
+      // come level (6°), so the forearms stay planted and the toes reach the mat (solved on the model).
+      start: { pelvis: { flex: 17.8 }, shoulder: { flex: 72 }, "shoulder:o": { flex: 72 }, elbow: { flex: 90 }, "elbow:o": { flex: 90 }, hip: { flex: 0 }, "hip:o": { flex: 0 }, knee: { flex: 90 }, "knee:o": { flex: 90 }, ankle: { flex: -30 }, "ankle:o": { flex: -30 } },
+      moves: [{ to: { pelvis: { flex: 6.5 }, shoulder: { flex: 83.5 }, "shoulder:o": { flex: 83.5 }, knee: { flex: 0 }, "knee:o": { flex: 0 }, ankle: { flex: -20 }, "ankle:o": { flex: -20 }, toe: { flex: 30 }, "toe:o": { flex: 30 } }, ms: 2000, hold: 4000, breath: "hold", say: { en: "Lift your knees off the mat and hold one straight line from your head to your heels.", ru: "Ghutne mat se uthayein aur sar se aerhi tak ek seedhi line mein hold karein." } }],
       returnMs: 1500, view: "side", zoom: 0.8,
       glow: { bones: ["spine02", "spine03", "spine04"], sides: "both" },
     },

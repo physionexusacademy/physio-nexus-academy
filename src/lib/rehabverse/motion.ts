@@ -52,6 +52,31 @@ export function buildCycle(motion: Pick<Motion, "start" | "moves" | "returnMs" |
   return segments;
 }
 
+/**
+ * Paces a repetition to the voice: every spoken line gets at least as long as the recording needs (plus a short gap), so a line is never
+ * cut off by the next one. Consecutive segments that share a line (a move and its hold) count together. The extra time goes into the
+ * hold or the rest (the body simply waits), or, when there is none, into slowing the movement down. `speed` is the player's speed
+ * multiplier (the clock runs at that rate, so the time the voice needs is scaled by it). Returns new segments; the input is not changed.
+ */
+export function paceForVoice(segments: Segment[], lineOf: (segment: Segment) => string, cueMs: (line: string) => number, speed = 1, gapMs = 350): Segment[] {
+  const out = segments.map((segment) => ({ ...segment }));
+  let i = 0;
+  while (i < out.length) {
+    const line = lineOf(out[i]);
+    let j = i;
+    while (j + 1 < out.length && lineOf(out[j + 1]) === line) j++;
+    const need = (cueMs(line) > 0 ? cueMs(line) + gapMs : 0) * speed;
+    const have = out.slice(i, j + 1).reduce((sum, segment) => sum + segment.ms, 0);
+    if (need > have) {
+      const waiting = out.slice(i, j + 1).reverse().find((segment) => segment.kind === "hold" || segment.kind === "rest");
+      if (waiting) waiting.ms += need - have;
+      else for (let k = i; k <= j; k++) out[k].ms *= need / have;
+    }
+    i = j + 1;
+  }
+  return out;
+}
+
 export const cycleLength = (segments: Segment[]) => segments.reduce((sum, s) => sum + s.ms, 0);
 
 /** The pose, segment and repetition number at time `ms` (looping). */

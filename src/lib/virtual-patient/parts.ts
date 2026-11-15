@@ -5,7 +5,7 @@
  */
 import type { JointAngles, JointId, Pose, Side } from "./engine.ts";
 
-type Axial = "neck" | "trunk" | "head";
+type Axial = "neck" | "trunk" | "head" | "pelvis";
 /** "trunk:t" / "neck:t" turn or bend towards the tested side; ":a" away from it (abd and rot flip with the side). */
 export type PartKey = JointId | `${JointId}:o` | Axial | `${Axial}:t` | `${Axial}:a`;
 export type Parts = Partial<Record<PartKey, JointAngles>>;
@@ -20,7 +20,7 @@ export function P(side: Side, parts: Parts): Pose {
   for (const [key, angles] of Object.entries(parts)) {
     if (!angles) continue;
     const [name, flag] = key.split(":");
-    if (name === "neck" || name === "trunk" || name === "head") {
+    if (name === "neck" || name === "trunk" || name === "head" || name === "pelvis") {
       const sign = flag === "t" ? toward(side) : flag === "a" ? -toward(side) : 1;
       const next: JointAngles = {};
       if (angles.flex !== undefined) next.flex = angles.flex;

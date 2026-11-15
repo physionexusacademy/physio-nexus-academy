@@ -7,7 +7,7 @@
  * Everything here is safe to import on the server: the helpers simply do nothing there.
  */
 import { toSpoken } from "./spoken";
-import { cancelRecorded, findRecording, playRecording, recordedSupported, unlockRecorded, type Part } from "./recorded";
+import { cancelRecorded, findRecording, playRecording, recordedSupported, unlockRecorded, warmParts, type Part } from "./recorded";
 
 export type SpeechLang = "en" | "ur";
 
@@ -35,6 +35,9 @@ export async function planSpeech(written: string, lang: SpeechLang): Promise<Voi
   if (parts) return { mode: lang === "ur" ? "urdu" : "english", engine: "recorded", parts, note: null };
   return none(lang === "ur" ? NOTE_NO_RECORDING_UR : NOTE_NO_RECORDING);
 }
+
+/** Gets the recordings of a planned line ready (downloaded and decoded), so that playing it does not start late. */
+export const warmPlan = (plan: VoicePlan) => warmParts(plan.parts);
 
 /** Stops all speech. */
 export function stopSpeaking() {

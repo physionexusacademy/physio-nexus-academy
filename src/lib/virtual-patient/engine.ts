@@ -34,6 +34,8 @@ export type Pose = Partial<Record<`${JointId}.${Side}`, JointAngles>> & {
   trunk?: JointAngles;
   /** The head on the neck (upper cervical): same axes as neck. Lets a chin tuck retract the head without tilting the gaze. */
   head?: JointAngles;
+  /** Not a joint: tips the whole body head-up about the hips (flex, degrees). The engine ignores it; the RehabVerse player applies it (all fours, planks). */
+  pelvis?: JointAngles;
 };
 
 type Anchor = { p: number[]; b: string[]; w: number[] };
@@ -937,8 +939,15 @@ export class ExamRoom {
     this.invalidate();
   }
 
-  /** World-space bounds of the body in the current pose. */
-  bounds() {
+  /**
+   * World-space bounds of the body in the current pose. The quick box is the posed mesh's own box turned with the body, which is
+   * generous when the body is tilted; `precise` measures every vertex in the world (a few milliseconds: use it once, not every frame).
+   */
+  bounds(precise = false) {
+    if (precise && this.skinned) {
+      this.skinned.updateWorldMatrix(true, true);
+      return new THREE.Box3().setFromObject(this.skinned, true);
+    }
     return this.bodyBox();
   }
 

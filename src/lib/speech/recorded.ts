@@ -138,6 +138,13 @@ function decodePack(pack: string, c: AudioContext): Promise<AudioBuffer> {
   return promise;
 }
 
+/** Starts downloading and decoding the packs a line needs (its parts), so that its first playing does not start late. Safe to call often. */
+export function warmParts(parts: Part[]) {
+  const c = audio();
+  if (!c) return;
+  for (const pack of new Set(parts.map((part) => part.pack))) void decodePack(pack, c).catch(() => undefined);
+}
+
 /** Starts downloading a pack in the background by its name (for example "avatar-site-tour", when the voice is switched on). Safe to call often. */
 export async function warmPack(name: string) {
   const c = audio();
