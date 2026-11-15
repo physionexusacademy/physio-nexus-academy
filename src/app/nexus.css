@@ -916,3 +916,12 @@ h2.font-serif {
 .nx-lang-notice p { margin: 0 auto; max-width: 1180px; padding: 8px 16px; font-size: 0.8rem; line-height: 1.5; color: #713f12; }
 .nx-lang-notice a { font-weight: 800; text-decoration: underline; color: #92400e; }
 .nx-lang-notice button { font-weight: 800; text-decoration: underline; color: #92400e; }
+
+/* narrow phones: the language switch needs room, so the brand keeps its name on one line and drops the small CPD line (it is in the menu and the footer) */
+@media (max-width: 479px) {
+  .nx-brand { gap: 0.5rem; }
+  .nx-brand-sub { display: none; }
+  .nx-brand-name { font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; }
+  .nx-bar-actions { gap: 0.35rem; }
+  .nx-lang button { min-width: 32px; padding: 0 0.4rem; }
+}

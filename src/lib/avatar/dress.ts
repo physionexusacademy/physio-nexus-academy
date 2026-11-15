@@ -7,15 +7,15 @@
 import * as THREE from "three";
 import type { Figure } from "./figure";
 import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyData } from "./mesh";
-import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT, applyHeadFit } from "./fit";
+import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT } from "./fit";
 
 /** A separate 3D beard layer on top of the painted beard (more volume, but a ragged edge). The painted short beard is cleaner. */
 const BEARD_VOLUME = false;
 
 export const LOOK = {
-  skin: "#c08b72",
+  skin: "#b9805f",
   hair: "#2a1b14",
-  beard: "#1f1612",
+  beard: "#4a3528",
   scrubs: "#14284a",
   scrubsTrim: "#1c3a66",
   teal: "#01828B",
@@ -456,7 +456,7 @@ function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElem
   const colourMap = photoMap ?? figure.own(hairColourMap());
   if (photoMap) strands.repeat.set(10, 10);
   // Low specular: strong rim light on thin hair edges otherwise shows as bright grey wisps at the temples.
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.0028), jitter: 0.6 });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.006, noiseCells: cellsFor(body, 0.005), jitter: 0.3 });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.015 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -527,7 +527,9 @@ function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Text
   // With his face on the skin, the beard layer wears the same picture (so it is the photographed beard standing out, not a separate black shape);
   // it only adds volume at the jaw and in profile.
   if (skinMap) strands.repeat.set(46, 46);
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : LOOK.beard, map: skinMap ?? undefined, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.03, noiseCells: cellsFor(body, 0.0016) });
+  // A short, soft beard: dense at the chin and jaw, thinning out towards the cheeks like real stubble. A hard-edged solid shape looked like a mask,
+  // and pure black looked dirty, so the colour is a dark brown.
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : LOOK.beard, map: skinMap ?? undefined, roughness: 0.8, metalness: 0, specularIntensity: 0.1, bumpMap: strands, bumpScale: 0.5 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.034, noiseCells: cellsFor(body, 0.0019), jitter: 0.9 });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.012 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -571,7 +573,7 @@ function dressBrows(figure: Figure, parts: THREE.Object3D[]) {
     const indices: number[] = [];
     pts.forEach((p, k) => {
       const t = k / steps;
-      const width = 0.0043 * (0.6 + 0.8 * Math.sin(Math.PI * (0.08 + 0.84 * t)) ** 0.7) * (1 - 0.4 * t * t);
+      const width = 0.0031 * (0.6 + 0.8 * Math.sin(Math.PI * (0.08 + 0.84 * t)) ** 0.7) * (1 - 0.45 * t * t);
       const local = p.clone().sub(origin);
       positions.push(local.x, local.y + width, local.z, local.x, local.y - width, local.z);
       uvs.push(t, 1, t, 0);
@@ -586,13 +588,13 @@ function dressBrows(figure: Figure, parts: THREE.Object3D[]) {
     const ctx = c.getContext("2d")!;
     const g = ctx.createLinearGradient(0, 0, 0, 16);
     g.addColorStop(0, "rgba(22,17,15,0)");
-    g.addColorStop(0.3, "rgba(22,17,15,0.95)");
-    g.addColorStop(0.7, "rgba(22,17,15,0.95)");
+    g.addColorStop(0.3, "rgba(34,25,20,0.82)");
+    g.addColorStop(0.7, "rgba(34,25,20,0.82)");
     g.addColorStop(1, "rgba(22,17,15,0)");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 64, 16);
     const tex = new THREE.CanvasTexture(c);
-    const material = new THREE.MeshStandardMaterial({ color: "#1b1512", map: tex, transparent: true, roughness: 0.7, side: THREE.DoubleSide, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+    const material = new THREE.MeshStandardMaterial({ color: "#2a1f19", map: tex, transparent: true, roughness: 0.7, side: THREE.DoubleSide, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
     const mesh = new THREE.Mesh(geo, material);
     mesh.frustumCulled = false;
     group.add(mesh);
@@ -689,22 +691,18 @@ export type DressOptions = { light?: boolean };
 
 export async function dressTeacher(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
   const parts: THREE.Object3D[] = [];
-  const [face, fitted, hairPhoto, bumpPhoto] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure), loadImage(LOOK.hairUrl), loadImage(LOOK.bumpUrl)]);
-  // His face is a photograph fitted to this head; without the fit the generic head would carry a stretched picture, so use both or neither.
-  const likeness = face && fitted ? face : null;
-  recolourSkin(figure, likeness, bumpPhoto, Boolean(options.light));
+  // The teacher wears the patient's own head (the one visitors already find natural and friendly): the earlier photograph-fitted head warp and
+  // painted face made a wide, heavy, staring face that many found strange. Only the skin relief image is loaded; hair, beard and brows are
+  // made here, short and neat.
+  const bumpPhoto = await loadImage(LOOK.bumpUrl);
+  recolourSkin(figure, null, bumpPhoto, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
-  dressHair(figure, parts, likeness ? hairPhoto : null);
-  if (!likeness || BEARD_VOLUME) dressBeard(figure, parts, likeness ? (figure.mesh.material as THREE.MeshPhysicalMaterial).map : null);
+  dressHair(figure, parts, null);
+  dressBeard(figure, parts, null);
   dressShoes(figure, parts);
   dressWatch(figure, parts);
   warmEyes(figure);
   const brows = dressBrows(figure, parts);
-  // His brows are part of the photographed face; the separate brow strips are only used when the face image is missing.
-  if (likeness) {
-    brows.left.visible = false;
-    brows.right.visible = false;
-  }
   // Embroidery as photographed: the name on the wearer's right chest (viewer's left, −x), the PNA logo on the left chest (+x).
   const name = figure.own(nameTexture());
   chestDecal(figure, shirt, [-0.092, 1.318], [0.118, 0.026], name, parts);
