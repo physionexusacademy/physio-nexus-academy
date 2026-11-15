@@ -118,6 +118,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student
 
+      - name: Validate the edge cache key (a new deploy never serves the previous build's pages)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:edge-cache
+
       - name: Validate the language switch (every menu place and Skills Lab concept has Roman Urdu)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:language

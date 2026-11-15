@@ -925,3 +925,7 @@ h2.font-serif {
   .nx-bar-actions { gap: 0.35rem; }
   .nx-lang button { min-width: 32px; padding: 0 0.4rem; }
 }
+
+/* phone-friendly tap targets in the footer (the contact rows and the legal links were 16-20 px high; 24 px is the minimum) */
+.nx-footer a.flex { min-height: 28px; }
+.nx-footer a[class*="nx-dim"] { display: inline-flex; align-items: center; min-height: 28px; }

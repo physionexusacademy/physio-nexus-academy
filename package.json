@@ -25,6 +25,7 @@
     "build:skills-data": "node --experimental-strip-types scripts/build-skills-data.ts",
     "validate:skills": "node --experimental-strip-types scripts/validate-skills.ts",
     "validate:language": "node --experimental-strip-types scripts/validate-language.ts",
+    "validate:edge-cache": "node scripts/validate-edge-cache.mjs",
     "validate:virtual-patient": "node scripts/validate-virtual-patient.mjs",
     "build:virtual-patient": "node scripts/build-virtual-patient.mjs",
     "build:conditions-data": "node --experimental-strip-types scripts/build-conditions-data.ts",
