@@ -275,7 +275,7 @@ export const toneCoordinationSkill: SkillDefinition = {
       level: "beginner",
       title: "What is muscle tone?",
       body: "Tone is the **resistance you feel when you move a relaxed limb**. Too little (hypotonia) feels floppy — LMN or cerebellar problems. Too much (hypertonia) is either **spasticity** or **rigidity**.",
-      ur: "Tone = rest par limb ko passively move karne par feel hone wali resistance.",
+      ur: "Tone woh resistance hai jo aap dheele chhore hue limb ko hilate waqt mehsoos karte hain. Kam tone (hypotonia) mein limb dheela-dhala lagta hai — LMN ya cerebellar masle mein. Zyada tone (hypertonia) ya to spasticity hoti hai ya rigidity.",
     },
     {
       id: "spasticity-vs-rigidity",

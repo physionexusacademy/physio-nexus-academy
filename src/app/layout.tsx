@@ -6,6 +6,7 @@ import "./nexus.css";
 import "./motion.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { LangNotice } from "@/components/nexus/LangNotice";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PwaRuntime } from "@/components/PwaRuntime";
@@ -325,6 +326,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <PwaRuntime />
         <Header atlasPublished={atlasPublished} />
+        <LangNotice />
         <main id="main-content" className="flex-1">
           {children}
         </main>

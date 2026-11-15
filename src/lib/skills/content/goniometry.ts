@@ -664,7 +664,7 @@ export const goniometrySkill: SkillDefinition = {
       level: "beginner",
       title: "The 0–180 system",
       body: "The anatomical position is **0°** for almost every joint; movement is measured away from it. Record the **start and end** values: “knee flexion 0–135°”. A knee that cannot fully straighten is recorded as “10–135°” — it lacks 10° of extension.",
-      ur: "Anatomical position = 0°. Start aur end dono likhein, jaise 0–135°.",
+      ur: "Zyada tar joints mein anatomical position hi 0° hoti hai, aur movement isi se door naapi jati hai. Hamesha start aur end dono value likhein: “knee flexion 0–135°”. Agar knee poori seedhi nahi hoti to “10–135°” likhein — iska matlab hai ke 10° extension kam hai.",
     },
     {
       id: "six-steps",

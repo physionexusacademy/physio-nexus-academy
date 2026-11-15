@@ -1,7 +1,7 @@
 [
  {
   "slug": "manual-muscle-testing",
-  "version": 4124528296,
+  "version": 2805542799,
   "title": "Manual Muscle Testing (MMT)",
   "short": "MMT",
   "phase": "measure",
@@ -98,7 +98,7 @@
  },
  {
   "slug": "goniometry",
-  "version": 2777687400,
+  "version": 510401088,
   "title": "Goniometry",
   "short": "Goniometry",
   "phase": "measure",
@@ -186,7 +186,7 @@
  },
  {
   "slug": "dermatomes",
-  "version": 1444916917,
+  "version": 1887845534,
   "title": "Dermatomes & Sensory Testing",
   "short": "Dermatomes",
   "phase": "neuro",
@@ -250,7 +250,7 @@
  },
  {
   "slug": "myotomes",
-  "version": 1963152087,
+  "version": 1566675100,
   "title": "Myotomes & Key Muscles",
   "short": "Myotomes",
   "phase": "neuro",
@@ -306,7 +306,7 @@
  },
  {
   "slug": "reflexes",
-  "version": 2412446916,
+  "version": 521324543,
   "title": "Reflexes & UMN Signs",
   "short": "Reflexes",
   "phase": "neuro",
@@ -417,7 +417,7 @@
  },
  {
   "slug": "tone-coordination",
-  "version": 2071221621,
+  "version": 733859377,
   "title": "Tone & Coordination",
   "short": "Tone & coordination",
   "phase": "neuro",

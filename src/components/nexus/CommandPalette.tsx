@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 import { Bot, CornerDownLeft, Search, X } from "lucide-react";
 import { popularLessons, searchAcademy, visibleWings, type AcademySearchHit } from "@/lib/academy-map";
 import { AcademyIcon } from "./AcademyIcon";
+import { useLang } from "@/lib/lang";
+import { PLACE_UR, WING_UR, localizePlace } from "@/lib/shell-ur";
 
 type Item =
   | { kind: "place"; hit: AcademySearchHit }
@@ -20,6 +22,8 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [lang] = useLang();
+  const ur = lang === "ur";
 
   useEffect(() => {
     if (!open) return;
@@ -40,14 +44,15 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
     const clean = query.trim();
     if (!clean) {
       const start = [
-        ...visibleWings(atlasPublished).flatMap((wing) => wing.places.slice(0, wing.id === "academy" ? 2 : 3).map((place) => ({ ...place, wing: wing.label }))),
+        ...visibleWings(atlasPublished).flatMap((wing) => wing.places.slice(0, wing.id === "academy" ? 2 : 3).map((place) => ({ ...place, wing: ur ? WING_UR[wing.id].label : wing.label }))),
         ...popularLessons.slice(0, 3).map((place) => ({ ...place, wing: "Lesson" })),
       ];
       return start.map((hit) => ({ kind: "place" as const, hit }));
     }
-    const hits = searchAcademy(clean, atlasPublished, 8).map((hit) => ({ kind: "place" as const, hit }));
+    const extra = ur ? (place: { href: string }) => { const u = PLACE_UR[place.href]; return u ? `${u.label ?? ""} ${u.description}` : ""; } : undefined;
+    const hits = searchAcademy(clean, atlasPublished, 8, extra).map((hit) => ({ kind: "place" as const, hit }));
     return [...hits, { kind: "ask" as const, query: clean }];
-  }, [query, atlasPublished]);
+  }, [query, atlasPublished, ur]);
 
   useEffect(() => setActive(0), [query]);
 
@@ -91,7 +96,7 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
 
   return createPortal(
     <div className="nx-cmdk-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <div className="nx-cmdk" role="dialog" aria-modal="true" aria-label="Search the academy" onKeyDown={onKeyDown}>
+      <div className="nx-cmdk" role="dialog" aria-modal="true" aria-label={ur ? "Academy mein dhoondein" : "Search the academy"} onKeyDown={onKeyDown}>
         <div className="nx-cmdk-input">
           <Search className="h-5 w-5 flex-none text-[var(--nx-aqua)]" aria-hidden="true" />
           <input
@@ -99,8 +104,8 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
             autoFocus
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search lessons, cases, services… or ask a question"
-            aria-label="Search the academy"
+            placeholder={ur ? "Lessons, cases, services dhoondein… ya sawal poochein" : "Search lessons, cases, services… or ask a question"}
+            aria-label={ur ? "Academy mein dhoondein" : "Search the academy"}
             role="combobox"
             aria-expanded="true"
             aria-controls="nx-cmdk-results"
@@ -108,13 +113,13 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
             autoComplete="off"
             spellCheck={false}
           />
-          <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-[var(--nx-dim)] hover:text-white" aria-label="Close search">
+          <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-[var(--nx-dim)] hover:text-white" aria-label={ur ? "Search band karein" : "Close search"}>
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
-        <div ref={listRef} id="nx-cmdk-results" role="listbox" aria-label="Results" className="nx-cmdk-list">
+        <div ref={listRef} id="nx-cmdk-results" role="listbox" aria-label={ur ? "Nateeje" : "Results"} className="nx-cmdk-list">
           {items.map((item, index) => {
-            const group = item.kind === "ask" ? "Physio Nexus AI" : query.trim() ? "Best matches" : item.hit.wing === "Lesson" ? "Popular lessons" : "Jump to";
+            const group = item.kind === "ask" ? "Physio Nexus AI" : query.trim() ? (ur ? "Behtareen nateeje" : "Best matches") : item.hit.wing === "Lesson" ? (ur ? "Mashhoor lessons" : "Popular lessons") : ur ? "Seedha jayein" : "Jump to";
             const heading = group !== lastGroup ? group : null;
             lastGroup = group;
             return (
@@ -135,16 +140,16 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
                     <>
                       <span className="nx-mega-icon"><Bot className="h-[18px] w-[18px]" aria-hidden="true" /></span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold">Ask Physio Nexus AI: “{item.query}”</span>
-                        <small>Grounded answer from PNA content, in English or Roman Urdu</small>
+                        <span className="block truncate font-semibold">{ur ? "Physio Nexus AI se poochein" : "Ask Physio Nexus AI"}: “{item.query}”</span>
+                        <small>{ur ? "PNA content par mabni jawab, English ya Roman Urdu mein" : "Grounded answer from PNA content, in English or Roman Urdu"}</small>
                       </span>
                     </>
                   ) : (
                     <>
                       <span className="nx-mega-icon"><AcademyIcon name={item.hit.icon} className="h-[18px] w-[18px]" /></span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold">{item.hit.label}</span>
-                        <small>{item.hit.wing} · {item.hit.description}</small>
+                        <span className="block truncate font-semibold">{localizePlace(item.hit, lang).label}</span>
+                        <small>{item.hit.wing} · {localizePlace(item.hit, lang).description}</small>
                       </span>
                     </>
                   )}
@@ -155,8 +160,8 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
           })}
         </div>
         <div className="nx-cmdk-foot">
-          <span>↑ ↓ to move · Enter to open · Esc to close</span>
-          <span className="hidden sm:inline">Tip: press Ctrl K or / anywhere</span>
+          <span>{ur ? "↑ ↓ chalne ke liye · Enter kholne ke liye · Esc band karne ke liye" : "↑ ↓ to move · Enter to open · Esc to close"}</span>
+          <span className="hidden sm:inline">{ur ? "Tip: kahin bhi Ctrl K ya / dabayein" : "Tip: press Ctrl K or / anywhere"}</span>
         </div>
       </div>
     </div>,

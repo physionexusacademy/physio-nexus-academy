@@ -370,6 +370,38 @@ button.nx-glass:hover {
   align-items: center;
   gap: 0.5rem;
 }
+.nx-lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 40px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--nx-line);
+  background: rgba(255, 255, 255, 0.05);
+}
+.nx-lang button {
+  height: 32px;
+  min-width: 36px;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: #b9cee3;
+}
+.nx-lang button:hover { color: #fff; }
+.nx-lang button[aria-pressed="true"] { color: #04121f; background: var(--nx-grad); }
+.nx-lang-long { display: none; }
+.nx-lang-wide { display: flex; width: 100%; height: 46px; }
+.nx-lang-wide button { flex: 1; height: 38px; font-size: 0.85rem; }
+.nx-lang-wide .nx-lang-long { display: inline; }
+.nx-lang-wide .nx-lang-short { display: none; }
+@media (min-width: 1180px) {
+  .nx-lang:not(.nx-lang-wide) .nx-lang-long { display: inline; }
+  .nx-lang:not(.nx-lang-wide) .nx-lang-short { display: none; }
+}
 .nx-search-btn {
   display: inline-flex;
   flex: none;
@@ -878,3 +910,9 @@ h2.font-serif {
   font-family: var(--font-heading);
   letter-spacing: -0.03em;
 }
+
+/* the note under the header when Roman Urdu is chosen on a page whose text is English only */
+.nx-lang-notice { background: #fff8e6; border-bottom: 1px solid #fde68a; }
+.nx-lang-notice p { margin: 0 auto; max-width: 1180px; padding: 8px 16px; font-size: 0.8rem; line-height: 1.5; color: #713f12; }
+.nx-lang-notice a { font-weight: 800; text-decoration: underline; color: #92400e; }
+.nx-lang-notice button { font-weight: 800; text-decoration: underline; color: #92400e; }

@@ -1,40 +1,23 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { useLang } from "@/lib/lang";
 import type { Lang } from "./ExercisePlayer";
 
-const KEY = "pna-rv-lang";
-type Ctx = readonly [Lang, (next: Lang) => void];
-const LangContext = createContext<Ctx | null>(null);
-
-function useLocalLang(initial: Lang): Ctx {
-  const [lang, setLangState] = useState<Lang>(initial);
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? window.localStorage.getItem(KEY) : null;
-    if (saved === "en" || saved === "ru") setLangState(saved);
-  }, []);
-  const setLang = useCallback((next: Lang) => {
-    setLangState(next);
-    try {
-      window.localStorage.setItem(KEY, next);
-    } catch {
-      // private mode: the choice just is not remembered
-    }
-  }, []);
+/**
+ * RehabVerse follows the one language switch of the whole site (src/lib/lang.ts): "ru" here is "ur" (Roman Urdu) there. A choice saved by the
+ * RehabVerse-only switch of the earlier versions is still honoured (see lang.ts).
+ */
+export function useRvLang(_initial: Lang = "en") {
+  const [site, setSite] = useLang();
+  const lang: Lang = site === "ur" ? "ru" : "en";
+  const setLang = useCallback((next: Lang) => setSite(next === "ru" ? "ur" : "en"), [setSite]);
   return useMemo(() => [lang, setLang] as const, [lang, setLang]);
 }
 
-/** One language choice for the whole RehabVerse area (English / Roman Urdu), remembered on this device. */
-export function RvLangProvider({ children, initial = "ru" }: { children: React.ReactNode; initial?: Lang }) {
-  const value = useLocalLang(initial);
-  return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
-}
-
-/** The shared choice when inside the provider; otherwise a local one (for standalone use). */
-export function useRvLang(initial: Lang = "ru") {
-  const shared = useContext(LangContext);
-  const local = useLocalLang(initial);
-  return shared ?? local;
+/** Kept so the layout needs no change: the language lives in the site-wide store, not in this provider. */
+export function RvLangProvider({ children }: { children: React.ReactNode; initial?: Lang }) {
+  return <>{children}</>;
 }
 
 /** Inline bilingual text: `<T en="Hello" ru="Assalam-o-alaikum" />`. */
