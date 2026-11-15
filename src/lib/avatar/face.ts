@@ -8,7 +8,8 @@ import type { Figure } from "./figure";
 import { REST } from "./mesh";
 
 export type MouthShape = { open: number; wide: number; round: number; smile: number };
-export const CLOSED: MouthShape = { open: 0, wide: 0, round: 0, smile: 0 };
+/** The resting mouth: closed, with a slight, friendly smile (a flat, serious mouth made the teacher look stern). */
+export const CLOSED: MouthShape = { open: 0, wide: 0, round: 0, smile: 0.32 };
 
 /** Bones nudged by each mouth shape: [bone, [dx, dy, dz] in metres at full strength, which control]. dx is mirrored for the right side. */
 const LIPS: [string, [number, number, number], keyof MouthShape][] = [

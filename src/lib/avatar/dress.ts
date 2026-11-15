@@ -7,15 +7,15 @@
 import * as THREE from "three";
 import type { Figure } from "./figure";
 import { REST, boneInfluence, makeShell, restHead, restTail, smooth, type BodyData } from "./mesh";
-import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT, applyHeadFit } from "./fit";
+import { HAIR_CROP, HEAD_PIVOT, HEAD_SCALE, PHOTO_FIT } from "./fit";
 
 /** A separate 3D beard layer on top of the painted beard (more volume, but a ragged edge). The painted short beard is cleaner. */
 const BEARD_VOLUME = false;
 
 export const LOOK = {
-  skin: "#c08b72",
-  hair: "#2a1b14",
-  beard: "#1f1612",
+  skin: "#b9805f",
+  hair: "#2e1d14",
+  beard: "#4a3528",
   scrubs: "#14284a",
   scrubsTrim: "#1c3a66",
   teal: "#01828B",
@@ -398,13 +398,13 @@ function strandTexture(color: string, warm = false) {
   const ctx = c.getContext("2d")!;
   ctx.fillStyle = "#808080";
   ctx.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 1400; i++) {
+  for (let i = 0; i < 3200; i++) {
     const x = Math.random() * 256;
     const y = Math.random() * 256;
     const len = 30 + Math.random() * 80;
-    const v = 70 + Math.random() * 130;
-    ctx.strokeStyle = `rgba(${v},${v},${v},0.55)`;
-    ctx.lineWidth = 0.8 + Math.random() * 1.2;
+    const v = 30 + Math.random() * 200;
+    ctx.strokeStyle = `rgba(${v},${v},${v},0.7)`;
+    ctx.lineWidth = 0.5 + Math.random() * 0.9;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.bezierCurveTo(x + (Math.random() - 0.5) * 10, y + len * 0.3, x + (Math.random() - 0.5) * 14, y + len * 0.7, x + (Math.random() - 0.5) * 8, y + len);
@@ -420,17 +420,17 @@ function strandTexture(color: string, warm = false) {
 function hairColourMap() {
   const c = canvas(256, 256);
   const ctx = c.getContext("2d")!;
-  ctx.fillStyle = "#e9e0da";
+  ctx.fillStyle = "#cdbfb6";
   ctx.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 900; i++) {
+  for (let i = 0; i < 1800; i++) {
     const x = Math.random() * 256;
     const y = Math.random() * 256;
     const len = 40 + Math.random() * 90;
     const warm = Math.random();
     // Mostly dark strands; some catch the light as warm brown.
-    const light = warm > 0.86 ? 255 : warm > 0.6 ? 210 : 150 + Math.random() * 60;
-    ctx.strokeStyle = warm > 0.86 ? `rgba(255,205,160,0.5)` : `rgba(${light},${light * 0.92},${light * 0.86},0.35)`;
-    ctx.lineWidth = 0.8 + Math.random() * 1.6;
+    const light = warm > 0.86 ? 255 : warm > 0.6 ? 190 : 110 + Math.random() * 70;
+    ctx.strokeStyle = warm > 0.86 ? `rgba(255,205,160,0.55)` : `rgba(${light},${light * 0.9},${light * 0.82},0.4)`;
+    ctx.lineWidth = 0.5 + Math.random() * 1.1;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.bezierCurveTo(x + (Math.random() - 0.5) * 8, y + len * 0.3, x + (Math.random() - 0.5) * 10, y + len * 0.7, x + (Math.random() - 0.5) * 6, y + len);
@@ -456,7 +456,7 @@ function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElem
   const colourMap = photoMap ?? figure.own(hairColourMap());
   if (photoMap) strands.repeat.set(10, 10);
   // Low specular: strong rim light on thin hair edges otherwise shows as bright grey wisps at the temples.
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.6, metalness: 0, specularIntensity: 0.18, bumpMap: strands, bumpScale: 1.0 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.012, noiseCells: cellsFor(body, 0.0028), jitter: 0.6 });
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: photoMap ? "#ffffff" : LOOK.hair, map: colourMap, roughness: 0.5, metalness: 0, specularIntensity: 0.3, sheen: 0.6, sheenRoughness: 0.5, sheenColor: new THREE.Color("#8a6a52"), bumpMap: strands, bumpScale: 1.1 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.006, noiseCells: cellsFor(body, 0.005), jitter: 0.3 });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.015 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -467,22 +467,24 @@ function dressHair(figure: Figure, parts: THREE.Object3D[], photo: HTMLImageElem
           const y = HEAD_PIVOT.y + (at.y - HEAD_PIVOT.y) / HEAD_SCALE;
           return [(PHOTO_FIT.mid + x * PHOTO_FIT.scale - HAIR_CROP.x0) / HAIR_CROP.w, (PHOTO_FIT.eyePy + (PHOTO_FIT.eyeY - y) * PHOTO_FIT.scale - HAIR_CROP.y0) / HAIR_CROP.h];
         } }
-      : { planarUv: { u: "x" as const, v: "z" as const, su: 9, sv: 9, ou: 0, ov: 0 } }),
+      // strands run front to back over the crown and down the forehead: v follows the surface (z on top, y on the steep front), so the front of the
+      // hair is not a stretched streak of one colour
+      : { uvFrom: (at: THREE.Vector3): [number, number] => [at.x * 9, (at.z + 0.9 * at.y) * 9] }),
     offset: (i, p, n) => {
       const deg = (angleOf(p.x, p.z) * 180) / Math.PI;
       // Short, faded sides and back; fuller crown; a lifted, swept-back quiff rising from the front hairline.
       const fade = smooth(1.665, 1.72, p.y);
       const edge = field[i];
       // The hair is thin along its lower edge so it hugs the head (a free edge thicker than that hangs off the head like a skirt).
-      let d = (0.0016 + 0.010 * fade + 0.011 * smooth(1.70, 1.76, p.y)) * (0.12 + 0.88 * smooth(0.0, 0.035, edge));
+      let d = (0.0016 + 0.008 * fade + 0.006 * smooth(1.70, 1.76, p.y)) * (0.04 + 0.96 * smooth(0.0, 0.05, edge));
       d += (noise3(p.x * 40, p.y * 40, p.z * 40) - 0.5) * 0.0035 * fade;
       const out = new THREE.Vector3(n.x, n.y, n.z).multiplyScalar(d);
       const front = smooth(-0.01, 0.1, p.z) * smooth(95, 40, deg);
       const f = field[i];
       // Volume rises from the hairline, peaks about 4 cm back, then eases into the crown; the edge itself pushes slightly forward.
       const bump = smooth(0.0, 0.035, f) * smooth(0.085, 0.045, f);
-      out.y += 0.012 * bump * front;
-      out.z += 0.004 * bump * front;
+      out.y += 0.004 * bump * front;
+      out.z += 0.001 * bump * front;
       return out;
     },
   });
@@ -504,9 +506,9 @@ function beardField(body: BodyData) {
     const ax = Math.abs(x);
     if (ax > 0.082) continue;
     // Upper edge: under the cheekbone, rising to the sideburn in front of the ear.
-    const top = 1.59 + 0.012 * smooth(0.025, 0.055, ax) + 0.05 * smooth(0.055, 0.074, ax);
+    const top = 1.582 + 0.012 * smooth(0.025, 0.055, ax) + 0.05 * smooth(0.055, 0.074, ax);
     // Lower edge: under the chin, a short way down the neck.
-    const bottom = 1.495 + 0.014 * smooth(0.0, 0.07, ax);
+    const bottom = 1.503 + 0.012 * smooth(0.0, 0.07, ax);
     let f = Math.min(top - y, y - bottom, (0.076 - ax) * 1.2, (z - 0.07) * 0.9);
     // The nostril / philtrum area stays clear above the moustache.
     if (y > 1.571 && ax < 0.03) f = Math.min(f, (1.585 - y) * 0.9);
@@ -527,7 +529,9 @@ function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Text
   // With his face on the skin, the beard layer wears the same picture (so it is the photographed beard standing out, not a separate black shape);
   // it only adds volume at the jaw and in profile.
   if (skinMap) strands.repeat.set(46, 46);
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : LOOK.beard, map: skinMap ?? undefined, roughness: 0.7, metalness: 0, specularIntensity: 0.2, bumpMap: strands, bumpScale: 0.8 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.03, noiseCells: cellsFor(body, 0.0016) });
+  // A short, soft beard: dense at the chin and jaw, thinning out towards the cheeks like real stubble. A hard-edged solid shape looked like a mask,
+  // and pure black looked dirty, so the colour is a dark brown.
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : LOOK.beard, map: skinMap ?? undefined, roughness: 0.8, metalness: 0, specularIntensity: 0.1, bumpMap: strands, bumpScale: 1.2 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.038, noiseCells: cellsFor(body, 0.0013), jitter: 0.8 });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.012 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -562,7 +566,7 @@ function dressBrows(figure: Figure, parts: THREE.Object3D[]) {
     const steps = 9;
     for (let k = 0; k <= steps; k++) {
       const t = k / steps; // 0 = inner end, 1 = outer end
-      const x = side * (0.013 + 0.05 * t);
+      const x = side * (0.013 + 0.045 * t);
       const y = eye.y + 0.0205 + 0.0075 * Math.sin(Math.PI * Math.min(1, t * 0.9 + 0.1)) - 0.004 * t * t;
       pts.push(new THREE.Vector3(x, y, surfaceZ(x, y) + 0.0022));
     }
@@ -571,7 +575,7 @@ function dressBrows(figure: Figure, parts: THREE.Object3D[]) {
     const indices: number[] = [];
     pts.forEach((p, k) => {
       const t = k / steps;
-      const width = 0.0043 * (0.6 + 0.8 * Math.sin(Math.PI * (0.08 + 0.84 * t)) ** 0.7) * (1 - 0.4 * t * t);
+      const width = 0.0024 * (0.6 + 0.8 * Math.sin(Math.PI * (0.08 + 0.84 * t)) ** 0.7) * (1 - 0.45 * t * t);
       const local = p.clone().sub(origin);
       positions.push(local.x, local.y + width, local.z, local.x, local.y - width, local.z);
       uvs.push(t, 1, t, 0);
@@ -586,13 +590,13 @@ function dressBrows(figure: Figure, parts: THREE.Object3D[]) {
     const ctx = c.getContext("2d")!;
     const g = ctx.createLinearGradient(0, 0, 0, 16);
     g.addColorStop(0, "rgba(22,17,15,0)");
-    g.addColorStop(0.3, "rgba(22,17,15,0.95)");
-    g.addColorStop(0.7, "rgba(22,17,15,0.95)");
+    g.addColorStop(0.3, "rgba(38,28,22,0.72)");
+    g.addColorStop(0.7, "rgba(38,28,22,0.72)");
     g.addColorStop(1, "rgba(22,17,15,0)");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 64, 16);
     const tex = new THREE.CanvasTexture(c);
-    const material = new THREE.MeshStandardMaterial({ color: "#1b1512", map: tex, transparent: true, roughness: 0.7, side: THREE.DoubleSide, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+    const material = new THREE.MeshStandardMaterial({ color: "#2a1f19", map: tex, transparent: true, roughness: 0.7, side: THREE.DoubleSide, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
     const mesh = new THREE.Mesh(geo, material);
     mesh.frustumCulled = false;
     group.add(mesh);
@@ -689,22 +693,18 @@ export type DressOptions = { light?: boolean };
 
 export async function dressTeacher(figure: Figure, options: DressOptions = {}): Promise<Dressed> {
   const parts: THREE.Object3D[] = [];
-  const [face, fitted, hairPhoto, bumpPhoto] = await Promise.all([loadImage(LOOK.faceUrl), applyHeadFit(figure), loadImage(LOOK.hairUrl), loadImage(LOOK.bumpUrl)]);
-  // His face is a photograph fitted to this head; without the fit the generic head would carry a stretched picture, so use both or neither.
-  const likeness = face && fitted ? face : null;
-  recolourSkin(figure, likeness, bumpPhoto, Boolean(options.light));
+  // The teacher wears the patient's own head (the one visitors already find natural and friendly): the earlier photograph-fitted head warp and
+  // painted face made a wide, heavy, staring face that many found strange. Only the skin relief image is loaded; hair, beard and brows are
+  // made here, short and neat.
+  const bumpPhoto = await loadImage(LOOK.bumpUrl);
+  recolourSkin(figure, null, bumpPhoto, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
-  dressHair(figure, parts, likeness ? hairPhoto : null);
-  if (!likeness || BEARD_VOLUME) dressBeard(figure, parts, likeness ? (figure.mesh.material as THREE.MeshPhysicalMaterial).map : null);
+  dressHair(figure, parts, null);
+  dressBeard(figure, parts, null);
   dressShoes(figure, parts);
   dressWatch(figure, parts);
   warmEyes(figure);
   const brows = dressBrows(figure, parts);
-  // His brows are part of the photographed face; the separate brow strips are only used when the face image is missing.
-  if (likeness) {
-    brows.left.visible = false;
-    brows.right.visible = false;
-  }
   // Embroidery as photographed: the name on the wearer's right chest (viewer's left, −x), the PNA logo on the left chest (+x).
   const name = figure.own(nameTexture());
   chestDecal(figure, shirt, [-0.092, 1.318], [0.118, 0.026], name, parts);

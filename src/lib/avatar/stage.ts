@@ -135,8 +135,8 @@ export class TeachingStage {
 
   private frameLight() {
     const room = this.room;
-    const target = new THREE.Vector3(0, 0.92, 0.2);
-    room.frameCamera(false, target, 3.5 * Math.max(1, 1.3 / (room.camera.aspect || 1.6)), new THREE.Vector3(0.25, 0.1, 1).normalize());
+    const target = new THREE.Vector3(0, 1.08, 0.2);
+    room.frameCamera(false, target, 2.5 * Math.max(1, 1.3 / (room.camera.aspect || 1.6)), new THREE.Vector3(0.25, 0.1, 1).normalize());
   }
 
   private frame(animate = false) {
@@ -149,7 +149,10 @@ export class TeachingStage {
     if (dir.y < 0.25) dir.setY(0.25).normalize();
     // Wider views fit with the same distance; a narrower one (a phone held upright) needs to back off.
     const aspect = room.camera.aspect || 1.6;
-    room.frameCamera(animate, centre, 3.6 * Math.max(1, 1.5 / aspect), dir);
+    // Closer than before (3.6) when the patient stands, so the teacher's face and hands read clearly instead of a small figure in a wide room; a patient
+    // lying on the plinth needs the wider view (the teacher stands behind the plinth and his head would leave the picture).
+    const distance = room.getPosition() === "standing" ? 3.0 : 3.7;
+    room.frameCamera(animate, centre, distance * Math.max(1, 1.5 / aspect), dir);
   }
 
   private cameraWorld() {

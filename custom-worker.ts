@@ -10,6 +10,9 @@
  *   the clinical registry, workshop portals, React Server Component requests, responses that
  *   set cookies, or visitors who are signed in (Supabase auth cookie).
  * - Deploy smoke tests add a unique query string, so they always see a fresh render.
+ * - The cache key carries the Worker's version (the CF_VERSION_METADATA binding), so a new deployment never serves a page rendered by the
+ *   previous one: its HTML points at that build's JavaScript and CSS files (named by hash), which no longer exist, and the page would load
+ *   unstyled and dead until the copy was replaced (the first visit of each listed page after every deploy).
  *
  * It also owns the hourly cron trigger that sends the opt-in reminder e-mails (src/lib/reminders/job.ts).
  */
@@ -28,6 +31,9 @@ const STALE_MS = 60 * 60_000;
 const STORE_SECONDS = 2 * 60 * 60;
 const CACHED_PATHS = new Set(["/resources", "/workshops", "/faq", "/about", "/founder", "/training", "/daily-challenge"]);
 const refreshing = new Set<string>();
+
+/** The id of the deployed Worker version ("v0" where the binding is missing, e.g. in local development: then the old behaviour is kept). */
+const versionOf = (env: unknown) => (env as { CF_VERSION_METADATA?: { id?: string } } | null)?.CF_VERSION_METADATA?.id ?? "v0";
 
 function cacheable(request: Request, url: URL) {
   if (request.method !== "GET") return false;
@@ -74,7 +80,7 @@ export default {
     const edgeCache = (globalThis as unknown as { caches?: { default?: Cache } }).caches?.default;
     if (!edgeCache || !cacheable(request, url)) return worker.fetch(request, env, ctx);
 
-    const key = new Request(`${url.origin}${url.pathname}${url.search}`, { method: "GET" });
+    const key = new Request(`${url.origin}${url.pathname}${url.search}${url.search ? "&" : "?"}__pna_v=${versionOf(env)}`, { method: "GET" });
     const hit = await edgeCache.match(key);
     if (hit) {
       const age = Date.now() - Number(hit.headers.get("x-pna-rendered-at") ?? 0);
