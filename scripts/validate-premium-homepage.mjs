@@ -9,6 +9,8 @@ const read=(path)=>fs.readFileSync(path,"utf8");
 const home=read("src/app/page.tsx");
 const hero=read("src/components/home/LobbyHero.tsx");
 const heroCss=read("src/components/home/home-hero.css");
+const leaguesHome=read("src/components/home/HomeLeagues.tsx");
+const leaguesCss=read("src/components/home/home-leagues.css");
 const search=read("src/components/home/LobbySearch.tsx");
 const pass=read("src/components/home/StudentPass.tsx");
 const browser=read("src/components/home/PremiumPathwayBrowser.tsx");
@@ -63,6 +65,8 @@ const tests={
   heroHasNoTeacherImage:!hero.includes("pna-teacher-poster")&&!hero.includes("pna-hero-photo")&&!hero.includes("<img")&&!hero.includes("lobby-teacher")&&!hero.includes("Sajjad")&&!hero.includes("founder-dr-sajjad")&&!lobbyCss.includes(".lobby-teacher"),
   // The hero has no feature slideshow any more (the features are shown in the sections below it, as cards); its code is gone.
   heroHasNoSlideshow:!hero.includes("HeroSlideshow")&&!hero.includes("carousel")&&!fs.existsSync("src/components/home/HeroSlideshow.tsx")&&!fs.existsSync("src/components/home/HeroShowController.tsx")&&!fs.existsSync("src/components/home/hero-scenes.ts")&&!heroCss.includes(".hs-")&&!lobbyCss.includes(".lobby-show"),
+  // The Weekly Leagues are visible on the homepage: a dark glowing panel with the seven tiers, an example league board, the four steps and a link to /leagues.
+  leaguesOnHome:home.includes("<HomeLeagues />")&&home.indexOf("<HomeLeagues />")>home.indexOf("daily-clinical-challenge-v2")&&home.indexOf("<HomeLeagues />")<home.indexOf("<HomeBooks />")&&leaguesHome.includes('data-pna-home-flagship="weekly-leagues-v1"')&&leaguesHome.includes('href="/leagues"')&&leaguesHome.includes("TIERS.map")&&leaguesHome.includes("Example, not real students")&&leaguesHome.includes("lgx-ladder")&&leaguesHome.includes("lgx-steps")&&leaguesCss.includes("prefers-reduced-motion: reduce")&&fs.existsSync("src/app/leagues/page.tsx")&&read("src/app/leagues/page.tsx").includes('id="how"'),
   founderOnlyInFounderSection:founderSection.includes("siteConfig.founder")&&founderSection.includes("founder.photo")&&founderSection.includes('href="/founder"')&&home.includes("<HomeFounder />")&&home.indexOf("<PremiumPathwayBrowser")<home.indexOf("<HomeFounder />")&&!read("src/components/Header.tsx").includes("Sajjad")&&!read("src/components/Header.tsx").includes("founder-dr-sajjad"),
   portraitNotDistorted:jpgSize&&jpgSize.w*5===jpgSize.h*4&&read("src/components/home/home-founder.css").includes("aspect-ratio: 4 / 5")&&read("src/components/home/home-founder.css").includes("object-fit: cover"),
   brandPreserved:header.includes('src="/images/pna-logo.png"')&&hero.includes("Physio Nexus"),

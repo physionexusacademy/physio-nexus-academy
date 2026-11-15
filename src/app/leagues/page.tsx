@@ -35,7 +35,7 @@ export default function LeaguesPage() {
       </section>
       <div className="container-content lgp-main">
         <LeagueGate />
-        <ol className="lgp-how" aria-label="How leagues work">
+        <ol id="how" className="lgp-how" aria-label="How leagues work">
           {steps.map((step) => <li key={step.title}><strong>{step.title}</strong><p>{step.text}</p></li>)}
         </ol>
         <p className="lgp-fine">Leagues are a learning game, not an exam or a certificate. XP comes only from activity recorded in your own PNA record (capped per activity and at 800 XP a day), so the same lesson cannot be farmed. Only your display name and weekly XP are visible to your league, and you can hide yourself from leagues at any time.</p>
