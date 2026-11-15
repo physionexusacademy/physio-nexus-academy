@@ -35,14 +35,12 @@
 }
 .lobby-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "top" "bottom";
-  row-gap: 26px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-areas: "top show" "bottom show";
+  align-items: center;
+  column-gap: clamp(24px, 4.5vw, 60px);
 }
-/* the copy keeps a readable width; the orbits fill the space on the right */
-.lobby-copy-top, .lobby-copy-bottom { max-width: min(100%, 44rem); }
-/* the animated welcome heading: components/home/home-hero.css */
+/* the animated welcome heading and the feature slideshow: components/home/home-hero.css */
 .lobby-title {
   margin-top: 18px;
   font-size: clamp(2.5rem, 5.6vw, 4.6rem);
@@ -893,7 +891,7 @@
   .lobby-stats .lobby-cpd { grid-column: span 2; }
 }
 @media (max-width: 900px) {
-  .lobby-hero-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "bottom"; row-gap: 22px; }
+  .lobby-hero-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "show" "bottom"; row-gap: 22px; }
   .lobby-copy-top, .lobby-copy-bottom { align-self: auto; }
   .lobby-orbit-a { width: 520px; height: 520px; right: -220px; top: -120px; }
   .lobby-orbit-b { display: none; }

@@ -41,16 +41,29 @@ leaderboard loads only when its fold is opened (`HomeDailyBoard`). **Opening the
 Real first byte from `curl` after the change: about 0.2 s (`x-opennext-cache: HIT`). Largest contentful paint is the founder photo (24 KB, already
 prioritised) and is unchanged at about 3 s on the throttled mobile profile; it is dominated by the simulated network, not by the server.
 
-## The hero: animated welcome
+## The hero: animated welcome and feature slideshow
 
-The top of the homepage (`src/components/home/LobbyHero.tsx`) is an animated "Welcome to Physio Nexus Academy" with the search and the first buttons.
-There is no feature slideshow in the hero any more (it was removed on the owner's request; what the academy offers is shown by the cards in the sections below).
-It is designed to cost almost nothing:
+The top of the homepage (`src/components/home/LobbyHero.tsx`) is an animated "Welcome to Physio Nexus Academy" beside a slideshow of what the academy offers.
+It was designed to cost almost nothing:
 
 - **The heading is plain text** (one `<h1>`, the full sentence is its `aria-label`). The letters rise into place one after another with CSS animations only
   (`.hw-ch`, `--i` sets each letter's delay), so nothing waits for JavaScript and search engines read normal text. The brand gradient is a colour per letter, not
   `background-clip`, so the letters can move freely. A light beam passes over the heading every few seconds; the tagline "types" in once.
-- **Only `transform` and `opacity` move**, and nothing moves for "reduce motion".
+- **The slideshow has no images, and it is one HTML string.** `HeroSlideshow.tsx` builds the whole slideshow (nine cards, about 450 elements) as a string
+  (`hero-scenes.ts` draws each card's small animated "screen" in markup and SVG, `hero-icons.ts` holds the few icons) and inserts it with
+  `dangerouslySetInnerHTML`. The browser parses it once and React never looks inside it. This matters: the first version rendered the same cards as React
+  elements, which the page then received a second time in its React data (`__next_f`, +40 KB) and walked again at start-up; on the live site that doubled the
+  start-up script work of the main chunk and raised mobile blocking time from about 80 ms to about 345 ms. The only script is `HeroShowController.tsx`
+  (renders nothing; it finds the markup by id). The first card is in the HTML, so the page is complete before script runs. Nothing in the string comes from a visitor.
+- **Only the card on screen animates** (`.hs-slide:not([data-pos="idle"])`), and only with `transform`, `opacity` and a few small SVG strokes. When the hero is
+  scrolled off screen or the tab is hidden everything pauses (`data-awake="0"`, `IntersectionObserver`, `visibilitychange`).
+- **The progress bar is the timer**: a CSS animation per card; when it ends (`onAnimationEnd`) the next card shows. Hover, keyboard focus, a touch, the pause
+  button, a hidden tab and "reduce motion" all stop it, with no timers to leak. Arrow keys, the dots, the buttons and a swipe move it by hand.
+- **Every card is one link to a real page** (`/learn`, `/skills`, `/virtual-patient`, `/rehabverse`, `/manual-therapy`, `/daily-challenge`, `/conditions`,
+  `/symptom-checker`, `/leagues`); `scripts/validate-premium-homepage.mjs` checks each exists. Counts on the cards (lessons, patients, guides) come from the data, not from typing.
+
+To add a card: add an entry to `slides` in `LobbyHero.tsx` and a `scene…` function in `hero-scenes.ts` (and an icon in `hero-icons.ts` if needed) (give its animation rule the
+`.hs-slide:not([data-pos="idle"])` prefix in `home-hero.css`).
 
 ## The recorded voice
 

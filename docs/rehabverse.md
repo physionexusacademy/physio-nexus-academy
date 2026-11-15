@@ -81,6 +81,24 @@ physiotherapist should read and adopt (or change) them before patient use.
   `window.__rvWide = true` before loading shows the whole body from a distance (to check contact); `window.__rvPlayer` has `seek(ms)`,
   `cycle()`, `probe(parts, [[bone, side]], tilt?)` (where bones are, in metres), `lowest()` and `box()`.
 
+## The pose quality gate (every exercise is checked on the real model)
+
+`npm run validate:rehabverse-poses` (and `.github/workflows/rehabverse-pose-gate.yml` on every pull request that touches the exercises, the player
+or the 3D model) opens the library in a browser, shows every exercise on the real patient model, **both sides and its "common mistake" version**,
+poses it at 48 moments of the repetition (`window.__rvPlayer.check`, `src/lib/rehabverse/pose-check.ts`) and fails on:
+
+* a body part sunk into the mat, bed or floor, or a body that floats (nothing touches its surface);
+* feet that should stay planted but lift (a step is understood);
+* a jump between two moments, or a repetition that does not come back to where it started;
+* a declared contact that does not happen (`motion.touch`, for example the ankle on the opposite knee, or the hands on the back of the thigh);
+* a left side that differs from the right (heights of every key joint are compared; this catches `trunk: {rot}` that should have been `"trunk:t"`).
+
+It also saves one picture of each exercise as a build artifact, for a person to look through. `npm run validate:rehabverse-library` additionally
+checks every joint angle against generous limits. To add an exercise: write it in `src/lib/rehabverse/library/` (batch 1 is `more.ts`), run
+`npm run build:rehabverse-data`, run the gate for it (`RV_URL=http://127.0.0.1:3100 RV_ONLY=<id> node --experimental-strip-types scripts/rehabverse-pose-gate.mjs`
+against a running dev server), then record its cues (`scripts/voice/README.md`). Angles that put one limb on another were solved on the model
+with `window.__rvPlayer.probe` and stored as plain numbers.
+
 ## Running it locally (no production access)
 
 ```bash
