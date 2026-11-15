@@ -16,8 +16,8 @@ export type Segment = ["hi" | "en", string];
 /** Urdu words that are also English words ("main", "tab", "do"): in Roman Urdu text they are Urdu. */
 const URDU_FUNCTION = new Set("main is to do par me he ho hi na ab ya ye wo ko ka ki ke se ne tha the thi hum tum in un us ek hai hain hoon hue hua hui tab gir mil kar bar mor tor dil sar kam jin".split(" "));
 /** English words the Urdu lines use that the site's English texts do not. */
-const EXTRA_ENGLISH = new Set("analogy character library setup approve approves".split(" "));
-const ENGLISH_ENDING = /(?:tion|sion|ment|ness|ity|ous|ive|ing|ly|ism|ology|ance|ence|ical|able|ible|ize|ise)$/;
+const EXTRA_ENGLISH = new Set("analogy character library setup approve approves guaranteed scenario segmental discomfort fictional symptomatic localized hematoma precautions".split(" "));
+const ENGLISH_ENDING = /(?:tions?|sions?|ments?|ness|ities|ity|ous|ive|ing|ly|ism|ology|ance|ence|ical|able|ible|ized?|ised?|ated|tional|mental|ics?|oma|ario)$/;
 
 export type Urdu = { words: Map<string, string>; english: Set<string> };
 
