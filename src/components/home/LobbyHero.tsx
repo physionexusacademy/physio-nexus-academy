@@ -1,17 +1,12 @@
 import { Fragment, type CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
-import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
-import { conditionCatalog } from "@/lib/conditions/catalog";
-import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { LobbySearch } from "./LobbySearch";
-import { HeroSlideshow, type HeroSlide } from "./HeroSlideshow";
-import { sceneConditions, sceneDaily, sceneLeagues, sceneManual, sceneRehab, sceneSkills, sceneSymptom, sceneTeacher, sceneVirtual } from "./hero-scenes";
 import "./home-hero.css";
 
 /**
- * The academy lobby: the first thing a visitor sees. A dark night-sky campus with an animated "Welcome to Physio Nexus Academy"
- * and a slideshow of what the academy offers, one animated card per feature (HeroSlideshow). The founder's portrait is in the
- * Founder section further down. (The CPD approval lives in the site header.)
+ * The academy lobby: the first thing a visitor sees. A dark night-sky campus with an animated "Welcome to Physio Nexus Academy",
+ * the search and the first buttons. What the academy offers is shown right below (HomeFeatures and the sections after it).
+ * The founder's portrait is in the Founder section further down. (The CPD approval lives in the site header.)
  *
  * Everything in the heading is plain text: the letters appear one after another with CSS only, and nothing waits for script.
  */
@@ -54,118 +49,6 @@ function Word({ text, from, tintStart, tintCount }: { text: string; from: number
 }
 
 export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
-  const guides = conditionCatalog.length;
-  const slides: HeroSlide[] = [
-    {
-      id: "teacher",
-      href: "/learn",
-      badge: "Learn · Free",
-      title: "PNA Teacher",
-      tag: "Hard concepts, explained like a great teacher would.",
-      chips: [`${lessonIndex.length} lessons`, "English + Roman Urdu", "Quick checks"],
-      cta: "Start learning",
-      accent: "46 230 214",
-      icon: "learn",
-      scene: sceneTeacher(),
-    },
-    {
-      id: "skills",
-      href: "/skills",
-      badge: "Practise · Free",
-      title: "Clinical Skills Lab",
-      tag: "Measure, test and examine like a clinician.",
-      chips: ["Goniometry", "Muscle testing", "Four levels"],
-      cta: "Open the Skills Lab",
-      accent: "143 124 255",
-      icon: "skills",
-      scene: sceneSkills(),
-    },
-    {
-      id: "virtual-patient",
-      href: "/virtual-patient",
-      badge: "Examine · Free",
-      title: "Virtual Patient",
-      tag: "A 3D patient. A hidden diagnosis. Your move.",
-      chips: [`${VP_CASE_COUNT} patients`, "Guided or timed OSCE", "Red flags included"],
-      cta: "Meet a patient",
-      accent: "60 200 255",
-      icon: "patient",
-      scene: sceneVirtual(),
-    },
-    {
-      id: "rehabverse",
-      href: "/rehabverse",
-      badge: "For patients · New",
-      title: "PNA RehabVerse",
-      tag: "Guided rehab at home, with a 3D physio guide.",
-      chips: ["3D exercise library", "English + Roman Urdu", "Home programme"],
-      cta: "Open RehabVerse",
-      accent: "59 229 157",
-      icon: "rehab",
-      scene: sceneRehab(),
-    },
-    {
-      id: "manual-therapy",
-      href: "/manual-therapy",
-      badge: "Technique · Free",
-      title: "Manual Therapy",
-      tag: `${manualLessonMetas.length} technique lessons, with 3D demonstrations.`,
-      chips: ["Step by step", "3D demonstrations", "English + Roman Urdu"],
-      cta: "Explore techniques",
-      accent: "255 198 92",
-      icon: "manual",
-      scene: sceneManual(),
-    },
-    {
-      id: "daily-challenge",
-      href: "/daily-challenge",
-      badge: "Every day · Free",
-      title: "Daily Clinical Challenge",
-      tag: "Five questions. One streak. A new challenge every day.",
-      chips: ["5 questions a day", "Live leaderboard", "Monthly champions"],
-      cta: "Take today's challenge",
-      accent: "255 122 162",
-      icon: "daily",
-      scene: sceneDaily(),
-    },
-    {
-      id: "conditions",
-      href: "/conditions",
-      badge: "Reference · Free",
-      title: "Conditions Guide",
-      tag: "Clear guides with red flags, first steps and stage-based plans.",
-      chips: [`${guides} guides`, "Three depth levels", "Stage-based plans"],
-      cta: "Browse conditions",
-      accent: "111 231 255",
-      icon: "conditions",
-      scene: sceneConditions(),
-    },
-    {
-      id: "symptom-checker",
-      href: "/symptom-checker",
-      badge: "For patients · Free",
-      title: "Symptom Checker",
-      tag: "Not sure what is wrong? Find your next step.",
-      chips: ["Neck to ankle", "Red-flag aware", "Plain language"],
-      cta: "Check my symptoms",
-      accent: "255 160 92",
-      icon: "symptom",
-      scene: sceneSymptom(),
-    },
-    {
-      id: "leagues",
-      href: "/leagues",
-      badge: "Compete · Free",
-      title: "Weekly Leagues",
-      tag: "Earn XP and climb seven tiers, from Bronze to Diamond.",
-      chips: ["Free weekly league", "XP from your learning", "Seven tiers"],
-      cta: "Join a league",
-      accent: "201 139 255",
-      icon: "leagues",
-      scene: sceneLeagues(),
-    },
-  ];
-
   const intro = "Welcome to".replace(" ", "").length; // letters that come first
   const letters = BRAND_WORDS.join("").length;
   let offset = intro;
@@ -207,8 +90,6 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
             clinician or patient needs, in English and Roman Urdu.
           </p>
         </div>
-
-        <HeroSlideshow slides={slides} />
 
         <div className="lobby-copy lobby-copy-bottom">
           <LobbySearch atlasPublished={atlasPublished} />
