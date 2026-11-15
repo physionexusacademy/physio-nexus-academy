@@ -351,6 +351,19 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
           tube.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.clone().normalize());
         });
       }
+    } else if (prop.kind === "strap") {
+      // a towel or strap looped round the ball of the tested foot, one end in each hand
+      const ball = () => room.boneWorld("foot", side).lerp(room.boneWorld("toe1-1", side), 0.6);
+      for (const s of [side, other]) {
+        const tube = mesh(new THREE.CylinderGeometry(0.009, 0.009, 1, 8), "#e0a82e", 0.7);
+        updaters.push(() => {
+          const from = ball();
+          const delta = room.boneWorld("wrist", s).lerp(room.boneWorld("finger3-1", s), 0.4).sub(from);
+          tube.position.copy(from).addScaledVector(delta, 0.5);
+          tube.scale.set(1, Math.max(0.01, delta.length()), 1);
+          tube.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.clone().normalize());
+        });
+      }
     } else if (prop.kind === "towel") {
       const towel = mesh(new THREE.BoxGeometry(0.34, 0.012, 0.5), "#f4f7fa", 0.95);
       const foot = room.boneWorld("foot", side);

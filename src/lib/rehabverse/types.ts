@@ -77,6 +77,7 @@ export type Prop =
   | { kind: "bolster" }                                                 // rolled towel under the tested knee
   | { kind: "roller"; along: "thoracic" | "lumbar" }                    // foam roller under the spine
   | { kind: "band"; from: "wrist" | "ankle" | "thigh" | "knee"; anchor: [number, number, number]; both?: boolean }
+  | { kind: "strap" }                                                   // a towel or strap looped round the tested foot, one end in each hand
   | { kind: "towel" };
 
 export type View = "front" | "side" | "back" | "angle" | "feet";

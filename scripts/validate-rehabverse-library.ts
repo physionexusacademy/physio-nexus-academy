@@ -37,7 +37,7 @@ const RANGE: Record<string, ReturnType<typeof R>> = {
 
 const POSITIONS = new Set(["standing", "supine", "prone", "sitting", "sidelying", "quadruped", "kneeling"]);
 const VIEWS = new Set(["front", "side", "back", "angle", "feet"]);
-const PROPS = new Set(["wall", "step", "chair", "weight", "ball", "table", "wand", "bolster", "roller", "band", "towel"]);
+const PROPS = new Set(["wall", "step", "chair", "weight", "ball", "table", "wand", "bolster", "roller", "band", "strap", "towel"]);
 const CATEGORIES = new Set(["mobility", "stretch", "strength", "stabilisation", "endurance", "balance", "functional", "postural", "tendon_gliding", "proprioception", "gait"]);
 const MIN_PER_REGION = 6;
 const URDU_SCRIPT = /[؀-ۿݐ-ݿ]/;

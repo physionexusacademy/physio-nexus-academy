@@ -41,6 +41,7 @@ export const lumbarExercises: ExerciseDef[] = [
       start: { ...HOOK },
       moves: [{ to: { hip: { flex: 118 }, knee: { flex: 125 }, shoulder: { flex: 40 }, elbow: { flex: 20 } }, ms: 2300, hold: 1800, breath: "out", say: { en: "Hug the knee in gently — only to a comfortable stretch.", ru: "Ghutne ko aahista andar layein — sirf aaram dah stretch tak." } }],
       returnMs: 2000, view: "side", zoom: 0.85,
+      touch: [{ a: ["wrist", "tested"], b: ["lowerleg01", "tested"], within: 0.05 }],
       glow: { bones: ["upperleg01"], sides: "tested" },
     },
   },

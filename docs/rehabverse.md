@@ -97,7 +97,9 @@ It also saves one picture of each exercise as a build artifact, for a person to 
 checks every joint angle against generous limits. To add an exercise: write it in `src/lib/rehabverse/library/` (batch 1 is `more.ts`), run
 `npm run build:rehabverse-data`, run the gate for it (`RV_URL=http://127.0.0.1:3100 RV_ONLY=<id> node --experimental-strip-types scripts/rehabverse-pose-gate.mjs`
 against a running dev server), then record its cues (`scripts/voice/README.md`). Angles that put one limb on another were solved on the model
-with `window.__rvPlayer.probe` and stored as plain numbers.
+with `window.__rvPlayer.probe` and stored as plain numbers. Every stretch in which a hand holds a limb (the knee hugged to the chest, the fingers
+drawn back, the arm pulled across) declares that contact, so a hand that floats in the air fails the gate; a towel or strap is drawn with
+`props: [{ kind: "strap" }]` (from the ball of the tested foot to both hands).
 
 ## Running it locally (no production access)
 
