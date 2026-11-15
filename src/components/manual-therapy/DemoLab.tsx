@@ -29,7 +29,7 @@ const TABS: { id: TabId; icon: typeof Hand; en: string; ur: string; enHint: stri
 ];
 
 /** Steps through a list on a timer while it is on screen (never when the visitor asked for reduced motion). */
-function useCycle(length: number, ms: number) {
+export function useCycle(length: number, ms: number) {
   const [i, setI] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -51,7 +51,7 @@ function useCycle(length: number, ms: number) {
   return { i, setI, playing, setPlaying, ref, reduced };
 }
 
-function Controls({ cycle, length, label }: { cycle: ReturnType<typeof useCycle>; length: number; label: string }) {
+export function Controls({ cycle, length, label }: { cycle: ReturnType<typeof useCycle>; length: number; label: string }) {
   return (
     <div className="dl-controls">
       <button type="button" onClick={() => cycle.setPlaying((value) => !value)} aria-pressed={cycle.playing} aria-label={cycle.playing ? "Pause" : "Play"}>
@@ -67,7 +67,7 @@ function Controls({ cycle, length, label }: { cycle: ReturnType<typeof useCycle>
 }
 
 /** A chain of events, lit one link at a time. */
-function Chain({ items, label }: { items: string[]; label: string }) {
+export function Chain({ items, label }: { items: string[]; label: string }) {
   const cycle = useCycle(items.length, 3200);
   return (
     <div ref={cycle.ref} className="dl-stage" data-reduced={cycle.reduced ? "1" : "0"}>
@@ -152,7 +152,7 @@ function Fork({ items, ur }: { items: string[]; ur: boolean }) {
 }
 
 /** Safety checks, passed one by one, then the common traps. */
-function Gate({ screen, pitfalls, ur }: { screen: string[]; pitfalls: string[]; ur: boolean }) {
+export function Gate({ screen, pitfalls, ur, prefix = true }: { screen: string[]; pitfalls: string[]; ur: boolean; prefix?: boolean }) {
   const cycle = useCycle(screen.length + 1, 2600);
   return (
     <div ref={cycle.ref} className="dl-stage">
@@ -160,25 +160,27 @@ function Gate({ screen, pitfalls, ur }: { screen: string[]; pitfalls: string[]; 
         {screen.map((text, n) => (
           <li key={n} data-s={cycle.reduced || n < cycle.i ? "pass" : n === cycle.i ? "scan" : "wait"}>
             <span className="dl-gate-ico">{n < cycle.i || cycle.reduced ? <Check className="h-4 w-4" aria-hidden="true" /> : <ShieldCheck className="h-4 w-4" aria-hidden="true" />}</span>
-            <span><b>{ur ? "Ruk jayein ya refer karein agar: " : "Stop or refer if: "}</b>{text}</span>
+            <span>{prefix ? <b>{ur ? "Ruk jayein ya refer karein agar: " : "Stop or refer if: "}</b> : null}{text}</span>
           </li>
         ))}
         <li className="dl-go" data-s={cycle.reduced || cycle.i === screen.length ? "pass" : "wait"}>
           <span className="dl-gate-ico"><Check className="h-4 w-4" aria-hidden="true" /></span>
-          <span><b>{ur ? "Sab checks pass: technique shuru kar sakte hain." : "All checks passed: you can begin."}</b></span>
+          <span><b>{prefix ? (ur ? "Sab checks pass: technique shuru kar sakte hain." : "All checks passed: you can begin.") : ur ? "Yeh sab yaad rakhein, phir aage barhein." : "Keep all of this in mind, then go on."}</b></span>
         </li>
       </ol>
       <Controls cycle={cycle} length={screen.length + 1} label={ur ? "Check" : "Check"} />
+      {pitfalls.length ? (<>
       <p className="dl-traps-title"><AlertTriangle className="h-4 w-4" aria-hidden="true" /> {ur ? "Aam ghaltiyan jo tajurbakaar bhi karte hain" : "Traps even experienced clinicians fall into"}</p>
       <div className="dl-traps">
         {pitfalls.map((text, n) => <p key={n} style={{ ["--n" as string]: n }}>{text}</p>)}
       </div>
+      </>) : null}
     </div>
   );
 }
 
 /** Regress and progress as a staircase. */
-function Ladder({ items, ur }: { items: string[]; ur: boolean }) {
+export function Ladder({ items, ur }: { items: string[]; ur: boolean }) {
   const cycle = useCycle(items.length, 3200);
   return (
     <div ref={cycle.ref} className="dl-stage">
