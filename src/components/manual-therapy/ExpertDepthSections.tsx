@@ -3,6 +3,7 @@ import { DEPTH_NOTE, getTechniqueDepth } from "@/lib/manual-therapy-depth";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import TechniqueDemo2D from "@/components/manual-therapy/TechniqueDemo2D";
 import { Ur } from "@/components/Ur";
+import { DemoLab } from "@/components/manual-therapy/DemoLab";
 import { ComponentsSection, demoCaptions } from "@/components/manual-therapy/ChapterExtras";
 
 /** "See it in 2D" and "Expert depth" for one technique or world approach (nothing is rendered for a slug without depth data). */
@@ -11,6 +12,10 @@ export function ExpertDepthSections({ slug, name }: { slug: string; name: string
   if (!depth) return null;
   const captions = demoCaptions(slug);
   const own = captions.en.length >= 3;
+  const sentences = (text: string) => text.split(/\.\s+/).map((part) => part.trim().replace(/\.$/, "")).filter((part) => part.length > 8).map((part) => part + ".");
+  const how = sentences(depth.why).slice(0, 6);
+  const ladder = sentences(depth.progress.replace(/;\s+/g, ". ")).slice(0, 5);
+  const labData = { how: how.length ? how : [depth.why], parameters: depth.parameters, measure: depth.measure, choose: depth.choose, screen: depth.screen, pitfalls: depth.pitfalls, ladder: ladder.length ? ladder : [depth.progress] };
   return (
     <>
       <ComponentsSection slug={slug} name={name} />
@@ -29,7 +34,8 @@ export function ExpertDepthSections({ slug, name }: { slug: string; name: string
             "Four steps, each with its reason. It plays by itself while you read, and you can pause it, step through it or tap a step."
           )}
         </p>
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
+        <DemoLab data={{ ...labData, doIt: (
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
           <TechniqueDemo2D kind={depth.demo} title={name} captions={own ? captions.en : undefined} captionsUr={own && captions.ur.length >= 3 ? captions.ur : undefined} />
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-700"><Ur en="Why it works · expert view" ur="Yeh kyun kaam karta hai · expert nazariya" /></p>
@@ -38,6 +44,7 @@ export function ExpertDepthSections({ slug, name }: { slug: string; name: string
             <p className="mt-2 text-[15px] leading-8 text-slate-700">{depth.evidence}</p>
           </div>
         </div>
+        ) }} />
       </section>
 
       <section id="expert-depth" className="mt-12 scroll-mt-28" aria-labelledby="expert-depth-heading">
