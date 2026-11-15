@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
+import { useLang } from "@/lib/lang";
 import type { DemoKind } from "@/lib/manual-therapy-depth-types";
 import "./technique-demo.css";
 
@@ -286,13 +287,18 @@ function Scene({ kind, s }: { kind: DemoKind; s: number }) {
  * A 2D animated demonstration of what the hands do and what the tissue does in answer, in four steps. It plays by itself while it is on screen
  * (and never when the visitor asks for reduced motion), can be paused, stepped and tapped, and works without sound.
  */
-export default function TechniqueDemo2D({ kind, title }: { kind: DemoKind; title: string }) {
-  const steps = STEPS[kind];
+export default function TechniqueDemo2D({ kind, title, captions, captionsUr }: { kind: DemoKind; title: string; captions?: Step[]; captionsUr?: Step[] }) {
+  const [lang] = useLang();
+  const own = lang === "ur" && captionsUr?.length ? captionsUr : captions?.length ? captions : null;
+  /** This technique's own steps when given (the picture follows them in four phases), otherwise the generic four. */
+  const steps = own ?? STEPS[kind];
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [visible, setVisible] = useState(false);
   const [reduced, setReduced] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+  const idx = Math.min(step, steps.length - 1);
+  const scene = own ? Math.min(3, Math.floor((idx * 4) / steps.length)) : idx;
 
   useEffect(() => {
     setReduced(Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches));
@@ -316,23 +322,23 @@ export default function TechniqueDemo2D({ kind, title }: { kind: DemoKind; title
 
   return (
     <div ref={box} className="td" data-reduced={reduced ? "1" : "0"}>
-      <svg viewBox="0 0 480 250" role="img" aria-label={`2D demonstration of ${title}: ${steps[step].title}`} className="td-stage">
+      <svg viewBox="0 0 480 250" role="img" aria-label={`2D demonstration of ${title}: ${steps[idx].title}`} className="td-stage">
         <defs>
           <marker id="td-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2ee6d6" /></marker>
         </defs>
-        <Scene kind={kind} s={step} />
+        <Scene kind={kind} s={scene} />
       </svg>
       <div className="td-caption" aria-live="polite">
-        <strong>{step + 1}. {steps[step].title}</strong>
-        <p>{steps[step].detail}</p>
+        <strong>{idx + 1}. {steps[idx].title}</strong>
+        <p>{steps[idx].detail}</p>
       </div>
       <div className="td-controls">
-        <button type="button" onClick={() => go(step - 1)} aria-label="Previous step"><SkipBack className="h-4 w-4" aria-hidden="true" /></button>
+        <button type="button" onClick={() => go(idx - 1)} aria-label="Previous step"><SkipBack className="h-4 w-4" aria-hidden="true" /></button>
         <button type="button" onClick={() => setPlaying((value) => !value)} aria-label={playing ? "Pause" : "Play"} aria-pressed={playing}>{playing ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}</button>
-        <button type="button" onClick={() => go(step + 1)} aria-label="Next step"><SkipForward className="h-4 w-4" aria-hidden="true" /></button>
+        <button type="button" onClick={() => go(idx + 1)} aria-label="Next step"><SkipForward className="h-4 w-4" aria-hidden="true" /></button>
         <ol className="td-dots" aria-label="Steps">
           {steps.map((item, i) => (
-            <li key={item.title}><button type="button" onClick={() => go(i)} aria-current={i === step} aria-label={`Step ${i + 1}: ${item.title}`}>{i + 1}</button></li>
+            <li key={item.title}><button type="button" onClick={() => go(i)} aria-current={i === idx} aria-label={`Step ${i + 1}: ${item.title}`}>{i + 1}</button></li>
           ))}
         </ol>
       </div>

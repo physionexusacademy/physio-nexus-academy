@@ -1,0 +1,47 @@
+/* Chapter reader: Roman Urdu theory, the technique explorer and the upgraded mastery guide. Dark, calm and easy to scan. */
+.cr-ur, .cr-comp { margin-top: 2.5rem; border-radius: 1.75rem; border: 1px solid rgba(46, 230, 214, 0.28); color: #e6f4ff; background: radial-gradient(900px 380px at 0% 0%, rgba(46, 230, 214, 0.13), transparent 60%), radial-gradient(800px 380px at 100% 100%, rgba(139, 92, 246, 0.16), transparent 60%), #071428; box-shadow: 0 20px 50px -26px rgba(7, 20, 40, 0.8); padding: clamp(1.25rem, 3vw, 2.25rem); }
+.cr-chip, .cr-kicker { display: inline-flex; align-items: center; gap: 0.45rem; border-radius: 999px; border: 1px solid rgba(46, 230, 214, 0.4); background: rgba(46, 230, 214, 0.1); color: #8ff3ea; padding: 0.3rem 0.8rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.cr-ur h2, .cr-comp h2 { margin-top: 0.9rem; font-family: var(--font-serif, Georgia, serif); font-size: clamp(1.5rem, 3.4vw, 2.2rem); font-weight: 800; line-height: 1.2; color: #fff; }
+.cr-lead { margin-top: 0.9rem; max-width: 62rem; font-size: 1.05rem; line-height: 1.85; color: #d8ecff; }
+.cr-toggle { margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.07); color: #fff; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.cr-toggle:hover { background: rgba(255, 255, 255, 0.14); }
+.cr-group { margin-top: 1.75rem; }
+.cr-group-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #8ff3ea; }
+.cr-grid { margin-top: 0.8rem; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.cr-card { border-radius: 1.1rem; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(6px); overflow: hidden; transition: border-color 0.2s, background 0.2s; }
+.cr-card[open] { border-color: rgba(46, 230, 214, 0.45); background: rgba(46, 230, 214, 0.07); }
+.cr-card summary { display: flex; align-items: center; gap: 0.7rem; padding: 0.85rem 1rem; cursor: pointer; list-style: none; }
+.cr-card summary::-webkit-details-marker { display: none; }
+.cr-num { display: inline-flex; height: 1.7rem; width: 1.7rem; flex: none; align-items: center; justify-content: center; border-radius: 0.6rem; background: linear-gradient(135deg, #2ee6d6, #7c6cff); color: #04101f; font-size: 0.8rem; font-weight: 900; }
+.cr-card-title { flex: 1; font-weight: 700; color: #fff; line-height: 1.35; }
+.cr-chev { flex: none; color: #8ff3ea; transition: transform 0.25s; }
+.cr-card[open] .cr-chev { transform: rotate(180deg); }
+.cr-text { padding: 0 1rem 1.05rem; font-size: 0.98rem; line-height: 1.9; color: #d3e7fb; white-space: pre-line; }
+.cr-steps { list-style: none; margin: 0; padding: 0.1rem 1rem 1.05rem; display: grid; gap: 0.55rem; }
+.cr-steps li { display: flex; gap: 0.7rem; align-items: flex-start; opacity: 0; transform: translateY(6px); animation: cr-in 0.45s ease forwards; animation-delay: calc(var(--i, 0) * 0.28s); }
+.cr-steps b { display: inline-flex; height: 1.55rem; width: 1.55rem; flex: none; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid rgba(46, 230, 214, 0.6); color: #8ff3ea; font-size: 0.75rem; font-weight: 800; margin-top: 0.12rem; }
+.cr-steps span { font-size: 0.98rem; line-height: 1.75; color: #e1f0ff; }
+.cr-quiz { padding: 0 1rem 1rem; display: grid; gap: 0.5rem; }
+.cr-quiz details { border-radius: 0.8rem; background: rgba(255, 255, 255, 0.06); padding: 0.65rem 0.85rem; }
+.cr-quiz summary { cursor: pointer; font-weight: 700; color: #fff; }
+.cr-quiz p { margin-top: 0.5rem; line-height: 1.75; color: #cfe4fa; }
+.cr-foot, .cr-comp-note { margin-top: 1.4rem; font-size: 0.78rem; line-height: 1.7; color: #9fb7d1; }
+
+.cr-comp-intro { margin-top: 0.8rem; max-width: 62rem; line-height: 1.85; color: #d3e7fb; }
+.cr-comp-body { margin-top: 1.4rem; display: grid; gap: 1rem; grid-template-columns: minmax(12rem, 17rem) 1fr; align-items: start; }
+.cr-tabs { display: grid; gap: 0.45rem; }
+.cr-tab { text-align: left; border-radius: 0.9rem; border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.05); color: #d3e7fb; padding: 0.7rem 0.9rem; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.cr-tab:hover { border-color: rgba(46, 230, 214, 0.5); }
+.cr-tab[aria-selected="true"] { border-color: #2ee6d6; background: linear-gradient(135deg, rgba(46, 230, 214, 0.22), rgba(124, 108, 255, 0.22)); color: #fff; box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.35) inset; }
+.cr-panel { border-radius: 1.3rem; border: 1px solid rgba(46, 230, 214, 0.3); background: rgba(255, 255, 255, 0.05); padding: clamp(1rem, 2.4vw, 1.6rem); animation: cr-in 0.4s ease both; }
+.cr-panel h3 { margin-top: 0.4rem; font-family: var(--font-serif, Georgia, serif); font-size: 1.45rem; font-weight: 800; color: #fff; }
+.cr-tag { display: inline-block; border-radius: 999px; background: rgba(255, 196, 77, 0.14); border: 1px solid rgba(255, 196, 77, 0.4); color: #ffd98a; padding: 0.2rem 0.7rem; font-size: 0.76rem; font-weight: 800; }
+.cr-what { margin-top: 0.7rem; line-height: 1.85; color: #e1f0ff; }
+.cr-perform-label { margin-top: 1.1rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #8ff3ea; }
+.cr-panel .cr-steps { padding: 0.7rem 0 0; }
+.cr-watch { margin-top: 1rem; border-left: 3px solid #fb7185; border-radius: 0.5rem; background: rgba(251, 113, 133, 0.1); padding: 0.7rem 0.9rem; font-size: 0.92rem; line-height: 1.7; color: #ffe1e6; }
+.cr-watch b { color: #fecdd3; }
+
+@keyframes cr-in { to { opacity: 1; transform: none; } }
+@media (max-width: 760px) { .cr-comp-body { grid-template-columns: 1fr; } .cr-tabs { display: flex; overflow-x: auto; padding-bottom: 0.3rem; } .cr-tab { white-space: nowrap; } }
+@media (prefers-reduced-motion: reduce) { .cr-steps li, .cr-panel { animation: none; opacity: 1; transform: none; } .cr-chev { transition: none; } }

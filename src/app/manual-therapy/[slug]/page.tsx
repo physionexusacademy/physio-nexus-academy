@@ -40,6 +40,7 @@ import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadin
 import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
 import { ExpertDepthSections } from "@/components/manual-therapy/ExpertDepthSections";
 import { getTechniqueDepth } from "@/lib/manual-therapy-depth";
+import { UrduGuideSection } from "@/components/manual-therapy/ChapterExtras";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -166,6 +167,9 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
 
       {/* PNA Teacher: the chapter taught as a step-by-step conversation */}
       <TechniqueTeacher slug={slug} />
+
+      {/* The whole chapter theory in Roman Urdu (only when the visitor picked Roman Urdu) */}
+      <UrduGuideSection slug={slug} name={technique.name} />
 
       {/* Sticky reading navigation */}
       <div className="mt-6">
