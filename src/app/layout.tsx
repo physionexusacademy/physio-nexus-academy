@@ -8,6 +8,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
+import { PublicChrome } from "@/components/PublicChrome";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { PhysioNexusAILauncher } from "@/components/PhysioNexusAILauncher";
 import { siteConfig } from "@/lib/site-config";
@@ -324,14 +325,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <PwaRuntime />
-        <Header atlasPublished={atlasPublished} />
+        <PublicChrome>
+          <Header atlasPublished={atlasPublished} />
+        </PublicChrome>
         <main id="main-content" className="flex-1">
           {children}
         </main>
-        <Footer />
-        <WhatsAppButton />
-        <PhysioNexusAILauncher />
-        <MobilePortalNav />
+        <PublicChrome>
+          <Footer />
+          <WhatsAppButton />
+          <PhysioNexusAILauncher />
+          <MobilePortalNav />
+        </PublicChrome>
         {/* Instant page opens: the browser fetches a page as soon as its link is touched or
             hovered (Chrome, Edge, Android). Never for APIs, admin, the registry or portals. */}
         <script
