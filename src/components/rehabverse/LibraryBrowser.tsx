@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import { loadAllExercises } from "@/lib/rehabverse/library";
-import { CATEGORY_LABEL, LEVELS, LEVEL_LABEL, REGIONS, REGION_LABEL, type ExerciseDef, type Level, type Region } from "@/lib/rehabverse/types";
+import { CATEGORY_LABEL, LEVELS, REGIONS, REGION_LABEL, type ExerciseDef, type Region } from "@/lib/rehabverse/types";
 import { ExerciseDetails } from "./ExerciseDetails";
 import { LangToggle, useRvLang } from "./useLang";
 
@@ -13,12 +13,11 @@ const ExercisePlayer = dynamic(() => import("./ExercisePlayer"), {
   loading: () => <div className="aspect-[4/3] w-full animate-pulse rounded-3xl bg-slate-200 sm:aspect-[16/10]" aria-hidden="true" />,
 });
 
-/** The public 3D exercise library: browse by region and level, watch the physio guide perform each exercise. */
+/** The public 3D exercise library: browse by region, watch the physio guide perform each exercise. */
 export function LibraryBrowser({ initialId, initialRegion }: { initialId?: string; initialRegion?: Region }) {
   const [lang, setLang] = useRvLang("en");
   const [all, setAll] = useState<ExerciseDef[] | null>(null);
   const [region, setRegion] = useState<Region | "all">(initialRegion ?? "all");
-  const [level, setLevel] = useState<Level | "all">("all");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(initialId ?? null);
   const [webgl, setWebgl] = useState(true);
@@ -30,10 +29,10 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (all ?? [])
-      .filter((e) => (region === "all" || e.regions.includes(region)) && (level === "all" || e.level === level))
+      .filter((e) => (region === "all" || e.regions.includes(region)))
       .filter((e) => !q || `${e.name.en} ${e.name.ru} ${e.summary.en} ${e.targets}`.toLowerCase().includes(q))
       .sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level) || a.name.en.localeCompare(b.name.en));
-  }, [all, region, level, query]);
+  }, [all, region, query]);
 
   const current = all?.find((e) => e.id === selected) ?? null;
   const t = (v: { en: string; ru: string }) => (lang === "ru" ? v.ru : v.en);
@@ -56,13 +55,6 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
           <Search className="h-4 w-4 text-slate-400" aria-hidden="true" />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={lang === "ru" ? "Exercise dhoondein…" : "Search exercises…"} aria-label="Search exercises" className="h-11 w-full bg-transparent text-sm outline-none" />
         </label>
-        <div className="flex gap-1.5" role="group" aria-label="Level">
-          {(["all", ...LEVELS] as (Level | "all")[]).map((l) => (
-            <button key={l} type="button" onClick={() => setLevel(l)} aria-pressed={level === l} className={"rv-pill " + (level === l ? "rv-pill-on" : "")}>
-              {l === "all" ? (lang === "ru" ? "Har level" : "All levels") : t(LEVEL_LABEL[l]).replace(/ \(.*\)/, "")}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
@@ -75,7 +67,6 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
                 <button type="button" onClick={() => { setSelected(e.id); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-current={selected === e.id} className={"rv-card w-full text-left " + (selected === e.id ? "rv-card-on" : "")}>
                   <span className="flex flex-wrap items-center gap-1.5">
                     <span className="rv-chip rv-chip-teal">{t(REGION_LABEL[e.regions[0]]).replace(/ \(.*\)/, "")}</span>
-                    <span className="rv-chip">{t(LEVEL_LABEL[e.level]).replace(/ \(.*\)/, "")}</span>
                   </span>
                   <strong className="mt-1.5 block text-[15px] leading-5 text-navy-800">{t(e.name)}</strong>
                   <span className="mt-0.5 block text-[13px] leading-5 text-slate-500">{t(CATEGORY_LABEL[e.category])}</span>

@@ -348,8 +348,8 @@ export function GradeSim({ data, mode, level }: { data: SkillData; mode: "mmt" |
   const hint =
     mode === "mmt"
       ? fine
-        ? "Advanced: includes + and − grades (Daniels & Worthingham convention)."
-        : "Choose the grade (0–5). Plus/minus grades unlock at Advanced."
+        ? "Includes + and − grades (Daniels & Worthingham convention)."
+        : "Choose the grade (0–5)."
       : mode === "reflex"
         ? "Grade the deep tendon reflex from 0 to 4+."
         : "Grade the resistance to fast passive stretch.";

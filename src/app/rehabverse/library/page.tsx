@@ -29,8 +29,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
       {region && source ? (
         <p className="mt-4 max-w-2xl rounded-2xl border border-teal-200 bg-teal-50/80 p-4 text-sm leading-6 text-teal-950">
           <T
-            en={<><strong>{REGION_PLAIN[region]} exercises ({REGION_COUNTS[region]})</strong>, chosen from {source.en}. Open one to watch it in 3D. Start with the beginner level, stop if pain increases, and have your problem assessed first if it is getting worse or comes with numbness, weakness or fever.</>}
-            ru={<><strong>{REGION_PLAIN[region]} exercises ({REGION_COUNTS[region]})</strong>, {source.ru} se chuni gayi hain. 3D mein dekhne ke liye koi kholein. Beginner level se shuru karein, dard barhe to ruk jayein, aur agar masla barh raha ho ya saath mein sunn hona, kamzori ya bukhar ho to pehle usay assess karwayein.</>}
+            en={<><strong>{REGION_PLAIN[region]} exercises ({REGION_COUNTS[region]})</strong>, chosen from {source.en}. Open one to watch it in 3D. Start gently, stop if pain increases, and have your problem assessed first if it is getting worse or comes with numbness, weakness or fever.</>}
+            ru={<><strong>{REGION_PLAIN[region]} exercises ({REGION_COUNTS[region]})</strong>, {source.ru} se chuni gayi hain. 3D mein dekhne ke liye koi kholein. Aahista shuru karein, dard barhe to ruk jayein, aur agar masla barh raha ho ya saath mein sunn hona, kamzori ya bukhar ho to pehle usay assess karwayein.</>}
           />
         </p>
       ) : null}

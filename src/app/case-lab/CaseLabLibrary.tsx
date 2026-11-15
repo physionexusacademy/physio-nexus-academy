@@ -13,7 +13,6 @@ import type {LabCaseCard} from "@/lib/case-lab-catalog";
 import {RomanUrduHelp} from "./RomanUrduHelp";
 
 type Props={cases:LabCaseCard[];categories:string[]};
-type Level="All levels"|"Clinical"|"Advanced";
 type Mode="All experiences"|"Case lessons"|"Deep dives";
 
 const icons:Record<string,LucideIcon>={
@@ -92,7 +91,7 @@ function PatientCard({patient,index}:{patient:LabCaseCard;index:number}){
 
    <div className={hasIdentity ? "mt-4" : "mt-5"}>
     <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-     {patient.focus} · {patient.difficulty}
+     {patient.focus}
     </p>
     <h4 className="mt-2 font-serif text-[1.15rem] font-bold leading-snug text-slate-900 group-hover:text-teal-800">
      {patient.hook}
@@ -124,7 +123,6 @@ export function CaseLabLibrary({cases,categories}:Props){
  const [hydrated,setHydrated]=useState(false);
  const [query,setQuery]=useState("");
  const [focus,setFocus]=useState("All focuses");
- const [level,setLevel]=useState<Level>("All levels");
  const [mode,setMode]=useState<Mode>("All experiences");
  const [limit,setLimit]=useState(12);
  const resultRef=useRef<HTMLElement|null>(null);
@@ -159,20 +157,19 @@ export function CaseLabLibrary({cases,categories}:Props){
   return cases.filter(c=>{
    if(!isInClinicalCategory(c,category))return false;
    if(focus!=="All focuses"&&c.focus!==focus)return false;
-   if(level!=="All levels"&&c.difficulty!==level)return false;
    if(mode==="Case lessons"&&c.kind!=="Interactive scenario")return false;
    if(mode==="Deep dives"&&c.kind!=="Clinical deep dive")return false;
    return !needle||[c.patient,c.patientName,c.lifeLine,c.hook,c.voiceUrdu,c.category,c.kind,c.keywords,c.focus]
     .filter(Boolean).join(" ").toLocaleLowerCase().includes(needle);
   });
- },[cases,category,query,focus,level,mode]);
+ },[cases,category,query,focus,mode]);
 
  const orderedMatches=useMemo(()=>{
-  if(query||focus!=="All focuses"||level!=="All levels"||mode!=="All experiences")return matches;
+  if(query||focus!=="All focuses"||mode!=="All experiences")return matches;
   const withName=matches.filter(c=>c.patientName);
   const without=matches.filter(c=>!c.patientName);
   return [...withName,...without];
- },[matches,query,focus,level,mode]);
+ },[matches,query,focus,mode]);
 
  const visible=orderedMatches.slice(0,limit);
  const deepDives=cases.filter(c=>c.kind==="Clinical deep dive").length;
@@ -184,7 +181,6 @@ export function CaseLabLibrary({cases,categories}:Props){
   try{window.sessionStorage.setItem("pna-case-lab-specialty-v4",next)}catch{}
   setQuery("");
   setFocus("All focuses");
-  setLevel("All levels");
   setMode("All experiences");
   setLimit(12);
   window.requestAnimationFrame(()=>{
@@ -199,7 +195,7 @@ export function CaseLabLibrary({cases,categories}:Props){
   });
  }
  function clearFilters(){
-  setQuery("");setFocus("All focuses");setLevel("All levels");
+  setQuery("");setFocus("All focuses");
   setMode("All experiences");setLimit(12);
  }
  function surprise(){
@@ -350,18 +346,13 @@ export function CaseLabLibrary({cases,categories}:Props){
               {focusOptions.map(item=><option key={item.name} value={item.name}>{item.name} ({item.count})</option>)}
              </select>
             </label>
-            <label className="text-xs font-bold text-slate-600">Clinical level
-             <select className="cl-select mt-2" value={level} onChange={e=>{setLevel(e.target.value as Level);setLimit(12)}}>
-              <option>All levels</option><option>Clinical</option><option>Advanced</option>
-             </select>
-            </label>
             <label className="text-xs font-bold text-slate-600">Learning format
              <select className="cl-select mt-2" value={mode} onChange={e=>{setMode(e.target.value as Mode);setLimit(12)}}>
               <option>All experiences</option><option>Case lessons</option><option>Deep dives</option>
              </select>
             </label>
            </div>
-           {(query || focus!=="All focuses" || level!=="All levels" || mode!=="All experiences") && (
+           {(query || focus!=="All focuses" || mode!=="All experiences") && (
             <button type="button" onClick={clearFilters} className="mt-3 text-xs font-bold text-teal-700 hover:underline">
              Clear filters
             </button>

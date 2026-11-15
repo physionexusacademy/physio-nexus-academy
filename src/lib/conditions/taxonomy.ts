@@ -1,7 +1,7 @@
 /**
  * Conditions & Treatment Guide — taxonomy.
  * Two ways to browse: WHERE it is (area) and WHAT KIND of problem it is (type).
- * Three depths: Quick (understand), Clinical (assess and plan), Expert (everything).
+ * Every guide has three parts on one page: At a glance (understand), Clinical plan (assess and plan), Expert detail (everything). Nothing is hidden behind a level.
  * Small on purpose: this file ships in the worker; the content is static JSON in /conditions-data/.
  */
 

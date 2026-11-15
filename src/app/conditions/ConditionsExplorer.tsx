@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, BookOpenCheck, ClipboardList, Search, Stethoscope, X } from "lucide-react";
-import { areas, depths, typeLabel, types, areaLabel, type AreaId, type DepthId, type TypeId } from "@/lib/conditions/taxonomy";
+import { ArrowRight, Search, X } from "lucide-react";
+import { areas, typeLabel, types, areaLabel, type AreaId, type TypeId } from "@/lib/conditions/taxonomy";
 
 export type ExplorerItem = {
   slug: string;
@@ -15,23 +15,13 @@ export type ExplorerItem = {
   aka: string;
 };
 
-const DEPTH_KEY = "pna-cond-depth";
-const depthIcons = { quick: BookOpenCheck, clinical: ClipboardList, expert: Stethoscope } as const;
-
-function isDepth(value: string | null): value is DepthId {
-  return value === "quick" || value === "clinical" || value === "expert";
-}
-
 export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
   const [query, setQuery] = useState("");
   const [area, setArea] = useState<AreaId | "all">("all");
   const [type, setType] = useState<TypeId | "all">("all");
-  const [depth, setDepth] = useState<DepthId>("quick");
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(DEPTH_KEY);
-      if (isDepth(saved)) setDepth(saved);
       const params = new URLSearchParams(window.location.search);
       const q = params.get("q");
       if (q) setQuery(q.slice(0, 80));
@@ -41,15 +31,6 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
       /* private mode: defaults are fine */
     }
   }, []);
-
-  const chooseDepth = (next: DepthId) => {
-    setDepth(next);
-    try {
-      localStorage.setItem(DEPTH_KEY, next);
-    } catch {
-      /* ignore */
-    }
-  };
 
   const counts = useMemo(() => {
     const byArea: Record<string, number> = {};
@@ -72,36 +53,8 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
 
   return (
     <div className="container-content section-padding !pt-8">
-      <section aria-labelledby="cg-depth-title" className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Step 1 · Choose how deep to go</p>
-        <h2 id="cg-depth-title" className="mt-1 text-xl font-bold text-navy-800 sm:text-2xl">Every condition has three levels. Pick yours — we remember it.</h2>
-        <div role="radiogroup" aria-labelledby="cg-depth-title" className="mt-4 grid gap-3 md:grid-cols-3">
-          {depths.map((d) => {
-            const Icon = depthIcons[d.id];
-            const on = depth === d.id;
-            return (
-              <button
-                key={d.id}
-                type="button"
-                role="radio"
-                aria-checked={on}
-                onClick={() => chooseDepth(d.id)}
-                className={"rounded-2xl border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 " + (on ? "border-teal-600 bg-teal-50 ring-2 ring-teal-600/30" : "border-slate-200 bg-white hover:border-teal-300")}
-              >
-                <span className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-2 text-base font-bold text-navy-800"><Icon className="h-5 w-5 text-teal-700" aria-hidden="true" /> {d.label}</span>
-                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600">{d.time}</span>
-                </span>
-                <span className="mt-1 block text-xs font-semibold text-teal-800">{d.for}</span>
-                <span className="mt-1.5 block text-sm leading-6 text-slate-600">{d.gives}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
       <section aria-labelledby="cg-find-title" className="mt-8">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Step 2 · Find the condition</p>
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Find the condition</p>
         <h2 id="cg-find-title" className="mt-1 text-xl font-bold text-navy-800 sm:text-2xl">Where is it, or what is it called?</h2>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -144,7 +97,7 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
         </div>
 
         <p className="mt-5 text-sm text-slate-600" role="status" aria-live="polite">
-          Showing {visible.length} of {items.length} conditions · opening at <strong className="text-navy-800">{depths.find((d) => d.id === depth)?.label}</strong>
+          Showing {visible.length} of {items.length} conditions
         </p>
 
         {visible.length === 0 ? (
@@ -156,7 +109,7 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((item) => (
               <li key={item.slug}>
-                <a href={`/conditions/${item.slug}#${depth}`} className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">
+                <a href={`/conditions/${item.slug}`} className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">
                   <span className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider">
                     <span className="rounded-full bg-teal-50 px-2 py-0.5 text-teal-800">{areaLabel(item.area)}</span>
                     <span className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600">{typeLabel(item.type)}</span>

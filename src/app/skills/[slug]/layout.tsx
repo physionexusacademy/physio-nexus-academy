@@ -15,7 +15,7 @@ export default async function Layout({ children, params }: { children: ReactNode
     url: `${siteUrl}/skills/${skill.slug}`,
     inLanguage: ["en", "ur-Latn"],
     isAccessibleForFree: true,
-    educationalLevel: "Beginner to expert",
+    educationalLevel: "Professional physiotherapy education",
     learningResourceType: ["Practice exercise", "Quiz", "Flashcards", "Simulation"],
     teaches: skill.title,
     audience: { "@type": "EducationalAudience", educationalRole: "physiotherapy student" },

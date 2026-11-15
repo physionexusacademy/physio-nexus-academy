@@ -3,15 +3,18 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, ArrowRight, BookOpenCheck, CheckCircle2, ChevronDown, ClipboardList, Printer, RefreshCw, Stethoscope, Target } from "lucide-react";
-import { areaLabel, depths, typeLabel, type DepthId } from "@/lib/conditions/taxonomy";
+import { areaLabel, typeLabel } from "@/lib/conditions/taxonomy";
 import type { CatalogItem, ConditionDetail, Stage, TestFull } from "@/lib/conditions/types";
 import { REGION_COUNTS, REGION_PLAIN, libraryHref, regionForBodyArea } from "@/lib/rehabverse/area-map";
 
 const StoryExperience = dynamic(() => import("@/components/msk/MSKStoryExperience").then((m) => m.MSKStoryExperience), { ssr: false });
 
-const DEPTH_KEY = "pna-cond-depth";
-const depthIcons = { quick: BookOpenCheck, clinical: ClipboardList, expert: Stethoscope } as const;
-const isDepth = (v: string | null | undefined): v is DepthId => v === "quick" || v === "clinical" || v === "expert";
+/** One complete guide, read top to bottom; the bar jumps between its three parts (nothing is hidden behind a level). */
+const SECTIONS = [
+  { id: "quick", label: "At a glance", icon: BookOpenCheck, lead: "What it is, what it can feel like, the warning signs and what usually helps first." },
+  { id: "clinical", label: "Clinical plan", icon: ClipboardList, lead: "How to assess it, the key tests and differentials, and a stage-by-stage plan with exercise doses and when to move on." },
+  { id: "expert", label: "Expert detail", icon: Stethoscope, lead: "Mechanism, classification, test technique, manual therapy, common mistakes, the evidence, return-to-play criteria and a case story." },
+] as const;
 
 type Related = { slug: string; name: string; area: string };
 
@@ -19,20 +22,7 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
   const exerciseRegion = regionForBodyArea(item.area);
   const [detail, setDetail] = useState<ConditionDetail | null>(null);
   const [failed, setFailed] = useState(false);
-  const [depth, setDepth] = useState<DepthId>("quick");
   const topRef = useRef<HTMLDivElement>(null);
-
-  // Depth: the link's #hash wins, then what the visitor chose last time.
-  useEffect(() => {
-    try {
-      const hash = window.location.hash.replace("#", "");
-      const saved = localStorage.getItem(DEPTH_KEY);
-      if (isDepth(hash)) setDepth(hash);
-      else if (isDepth(saved)) setDepth(saved);
-    } catch {
-      /* defaults are fine */
-    }
-  }, []);
 
   const load = useCallback(() => {
     setFailed(false);
@@ -43,15 +33,12 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
   }, [item.slug]);
   useEffect(load, [load]);
 
-  const chooseDepth = (next: DepthId) => {
-    setDepth(next);
-    try {
-      localStorage.setItem(DEPTH_KEY, next);
-      history.replaceState(null, "", `#${next}`);
-    } catch {
-      /* ignore */
-    }
-  };
+  // A link such as /conditions/<slug>#expert lands on that part once the guide has loaded.
+  useEffect(() => {
+    if (!detail) return;
+    const id = window.location.hash.replace("#", "");
+    if (id) document.getElementById(id)?.scrollIntoView();
+  }, [detail]);
 
   const print = () => {
     document.querySelectorAll("details").forEach((d) => d.setAttribute("open", ""));
@@ -75,50 +62,45 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
         <p className="mt-3 max-w-3xl text-base leading-7 text-teal-50 sm:text-lg">{item.summary}</p>
       </header>
 
-      <nav aria-label="Depth of knowledge" className="cg-noprint sticky top-[69px] z-20 -mx-4 mt-5 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-3 sm:shadow-sm">
-        <div role="tablist" aria-label="How deep do you want to go?" className="grid grid-cols-3 gap-2">
-          {depths.map((d) => {
-            const Icon = depthIcons[d.id];
-            const on = depth === d.id;
+      <nav aria-label="Parts of this guide" className="cg-noprint sticky top-[69px] z-20 -mx-4 mt-5 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-3 sm:shadow-sm">
+        <ul className="grid grid-cols-3 gap-2">
+          {SECTIONS.map((section) => {
+            const Icon = section.icon;
             return (
-              <button
-                key={d.id}
-                id={`tab-${d.id}`}
-                role="tab"
-                type="button"
-                aria-selected={on}
-                aria-controls={`panel-${d.id}`}
-                onClick={() => chooseDepth(d.id)}
-                className={"flex flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-2.5 text-center transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 sm:flex-row sm:gap-2 " + (on ? "bg-teal-700 text-white shadow" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}
-              >
-                <Icon className="h-4 w-4" aria-hidden="true" />
-                <span className="text-sm font-bold">{d.label}</span>
-                <span className={"hidden text-[11px] font-semibold sm:inline " + (on ? "text-teal-100" : "text-slate-500")}>{d.time}</span>
-              </button>
+              <li key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  className="flex flex-col items-center justify-center gap-0.5 rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center text-navy-800 transition hover:border-teal-400 hover:bg-teal-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 sm:flex-row sm:gap-2"
+                >
+                  <Icon className="h-4 w-4 text-teal-700" aria-hidden="true" />
+                  <span className="text-sm font-bold">{section.label}</span>
+                </a>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </nav>
 
-      {/* QUICK */}
-      <section id="panel-quick" role="tabpanel" aria-labelledby="tab-quick" hidden={depth !== "quick"} className="mt-6 space-y-5">
+      {/* AT A GLANCE */}
+      <section id="quick" aria-labelledby="quick-title" className="mt-8 scroll-mt-40 space-y-5">
+        <SectionHead id="quick-title" label={SECTIONS[0].label} lead={SECTIONS[0].lead} />
         <div className="grid gap-5 lg:grid-cols-2">
           <Card title={quick?.lookLabel ?? "What it can feel like"} items={quick?.looksLike ?? []} placeholder={!detail && !failed} />
           <Card title="Get medical help first if" items={redFlags} tone="red" icon={<AlertTriangle className="h-5 w-5 text-red-700" aria-hidden="true" />} />
           <Card title="What usually helps first" items={firstSteps} tone="teal" icon={<Target className="h-5 w-5 text-teal-700" aria-hidden="true" />} />
           <Card title="At home" items={quick?.selfCare ?? []} placeholder={!detail && !failed} hideIfEmpty />
         </div>
-        <GoDeeper onClinical={() => chooseDepth("clinical")} onExpert={() => chooseDepth("expert")} />
       </section>
 
-      {/* CLINICAL */}
-      <section id="panel-clinical" role="tabpanel" aria-labelledby="tab-clinical" hidden={depth !== "clinical"} className="mt-6 space-y-6">
+      {/* CLINICAL PLAN */}
+      <section id="clinical" aria-labelledby="clinical-title" className="mt-12 scroll-mt-40 space-y-6">
+        <SectionHead id="clinical-title" label={SECTIONS[1].label} lead={SECTIONS[1].lead} />
         {detail ? <ClinicalPanel d={detail} /> : <Loading failed={failed} retry={load} />}
-        <GoDeeper onExpert={() => chooseDepth("expert")} />
       </section>
 
-      {/* EXPERT */}
-      <section id="panel-expert" role="tabpanel" aria-labelledby="tab-expert" hidden={depth !== "expert"} className="mt-6 space-y-4">
+      {/* EXPERT DETAIL */}
+      <section id="expert" aria-labelledby="expert-title" className="mt-12 scroll-mt-40 space-y-4">
+        <SectionHead id="expert-title" label={SECTIONS[2].label} lead={SECTIONS[2].lead} />
         {detail ? <ExpertPanel d={detail} /> : <Loading failed={failed} retry={load} />}
       </section>
 
@@ -129,7 +111,7 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
             <ul className="mt-3 flex flex-wrap gap-2">
               {related.map((r) => (
                 <li key={r.slug}>
-                  <a href={`/conditions/${r.slug}#${depth}`} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-navy-800 hover:border-teal-400 hover:bg-teal-50">
+                  <a href={`/conditions/${r.slug}`} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-navy-800 hover:border-teal-400 hover:bg-teal-50">
                     {r.name} <ArrowRight className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
                   </a>
                 </li>
@@ -152,7 +134,7 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
         <p className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-sm leading-7 text-amber-950">
           <strong>Education notice:</strong> this guide supports learning and clinical reasoning. It does not replace an in-person assessment, and a test result is never a diagnosis on its own.
         </p>
-        <noscript>This guide needs JavaScript to show the clinical and expert levels.</noscript>
+        <noscript>This guide needs JavaScript to show the clinical plan and the expert detail.</noscript>
       </footer>
     </div>
   );
@@ -178,12 +160,11 @@ function Card({ title, items, tone = "plain", icon, placeholder, hideIfEmpty }: 
   );
 }
 
-function GoDeeper({ onClinical, onExpert }: { onClinical?: () => void; onExpert?: () => void }) {
+function SectionHead({ id, label, lead }: { id: string; label: string; lead: string }) {
   return (
-    <div className="cg-noprint flex flex-wrap items-center gap-3 rounded-2xl border border-teal-200 bg-teal-50 p-4">
-      <p className="flex-1 text-sm font-semibold text-teal-950">Want the full picture?</p>
-      {onClinical ? <button type="button" onClick={onClinical} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800">Open the clinical plan</button> : null}
-      {onExpert ? <button type="button" onClick={onExpert} className={"rounded-xl px-4 py-2.5 text-sm font-bold " + (onClinical ? "border border-teal-300 bg-white text-teal-900 hover:bg-teal-100" : "bg-teal-700 text-white hover:bg-teal-800")}>Open expert detail</button> : null}
+    <div>
+      <h2 id={id} className="font-serif text-2xl font-bold text-navy-800 sm:text-3xl">{label}</h2>
+      <p className="mt-1.5 max-w-3xl text-[15px] leading-7 text-slate-600">{lead}</p>
     </div>
   );
 }
@@ -191,7 +172,7 @@ function GoDeeper({ onClinical, onExpert }: { onClinical?: () => void; onExpert?
 function Loading({ failed, retry }: { failed: boolean; retry: () => void }) {
   return failed ? (
     <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center" role="alert">
-      <p className="font-bold text-red-900">We could not load this level.</p>
+      <p className="font-bold text-red-900">We could not load this part of the guide.</p>
       <p className="mt-1 text-sm text-red-800">Check your connection and try again.</p>
       <button type="button" onClick={retry} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-red-700 px-4 py-2 text-sm font-bold text-white"><RefreshCw className="h-4 w-4" aria-hidden="true" /> Try again</button>
     </div>
@@ -200,7 +181,7 @@ function Loading({ failed, retry }: { failed: boolean; retry: () => void }) {
   );
 }
 
-/* ───────────── Clinical level ───────────── */
+/* ───────────── Clinical plan ───────────── */
 
 function ClinicalPanel({ d }: { d: ConditionDetail }) {
   const c = d.clinical;
@@ -338,7 +319,7 @@ function Block({ title, items, tone = "plain" }: { title: string; items: string[
   );
 }
 
-/* ───────────── Expert level ───────────── */
+/* ───────────── Expert detail ───────────── */
 
 function ExpertPanel({ d }: { d: ConditionDetail }) {
   const e = d.expert;

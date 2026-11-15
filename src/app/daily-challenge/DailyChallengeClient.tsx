@@ -103,7 +103,7 @@ function ShareScoreButtons({score, correctCount, total}:{score:number; correctCo
 function ContinueLearning(){
   const items = [
     { href: "/case-lab", title: "Case Lab", desc: "Practise clinical reasoning with real cases", icon: FlaskConical },
-    { href: "/conditions", title: "Conditions & Treatment", desc: "Quick, clinical and expert guides with staged plans", icon: BookOpen },
+    { href: "/conditions", title: "Conditions & Treatment", desc: "Complete guides with staged plans and expert detail", icon: BookOpen },
     { href: "/stupid-intern-diaries", title: "Stupid Intern Diaries", desc: "Learn with a laugh — clinic lessons", icon: Laugh },
   ];
   return (

@@ -53,7 +53,7 @@ export function SkillsReviewPanel({ skills }: { skills: SkillRef[] }) {
             {rows === null
               ? "Checking your skills cards…"
               : rows.length === 0
-                ? "MMT, goniometry, dermatomes, reflexes and more — every skill has flashcards from Beginner to Expert."
+                ? "MMT, goniometry, dermatomes, reflexes and more — every skill has spaced-repetition flashcards."
                 : dueTotal > 0
                   ? `${dueTotal} skills card${dueTotal === 1 ? "" : "s"} due today.`
                   : "Nothing due today — open any skill to practise freely."}

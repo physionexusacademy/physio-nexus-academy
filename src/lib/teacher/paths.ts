@@ -305,8 +305,8 @@ export const teacherPaths: TeacherPath[] = [
         title: "Goniometry — Skills Lab",
         href: "/skills/goniometry",
         mission: {
-          en: "Pass the Beginner level test. Then measure shoulder external rotation on a friend and describe the end-feel you felt.",
-          ur: "Beginner level test pass karein. Phir kisi dost ka shoulder external rotation naapein aur jo end-feel mehsoos hua woh likhein.",
+          en: "Pass the Goniometry skill test. Then measure shoulder external rotation on a friend and describe the end-feel you felt.",
+          ur: "Goniometry skill test pass karein. Phir kisi dost ka shoulder external rotation naapein aur jo end-feel mehsoos hua woh likhein.",
         },
         minutes: 15,
       },
@@ -318,8 +318,8 @@ export const teacherPaths: TeacherPath[] = [
         title: "Virtual Patient",
         href: "/virtual-patient",
         mission: {
-          en: "Examine any Intermediate patient in Guided mode: introduce yourself, rate SIN from the history, then score 80% or more.",
-          ur: "Guided mode mein koi bhi Intermediate patient examine karein: apna taaruf karayein, history se SIN rate karein, phir 80% ya zyada score karein.",
+          en: "Examine any patient in Guided mode: introduce yourself, rate SIN from the history, then score 80% or more.",
+          ur: "Guided mode mein koi bhi patient examine karein: apna taaruf karayein, history se SIN rate karein, phir 80% ya zyada score karein.",
         },
         minutes: 15,
       },
@@ -353,8 +353,8 @@ export const teacherPaths: TeacherPath[] = [
         title: "Balance & Functional Tests — Skills Lab",
         href: "/skills/balance-function",
         mission: {
-          en: "Work through the Intermediate level, then time a family member on the Timed Up and Go and interpret the result.",
-          ur: "Intermediate level mukammal karein, phir ghar ke kisi fard ka Timed Up and Go time karein aur nateeja samjhayein.",
+          en: "Work through the whole skill, then time a family member on the Timed Up and Go and interpret the result.",
+          ur: "Poora skill mukammal karein, phir ghar ke kisi fard ka Timed Up and Go time karein aur nateeja samjhayein.",
         },
         minutes: 15,
       },
@@ -381,8 +381,8 @@ export const teacherPaths: TeacherPath[] = [
         title: "Vital Signs — Skills Lab",
         href: "/skills/vital-signs",
         mission: {
-          en: "Pass the Beginner level, then measure your own resting heart rate and breathing rate and compare them with the normal ranges.",
-          ur: "Beginner level pass karein, phir apni resting heart rate aur breathing rate naap kar normal ranges se compare karein.",
+          en: "Pass the Vital Signs skill test, then measure your own resting heart rate and breathing rate and compare them with the normal ranges.",
+          ur: "Vital Signs skill test pass karein, phir apni resting heart rate aur breathing rate naap kar normal ranges se compare karein.",
         },
         minutes: 12,
       },
@@ -491,11 +491,11 @@ export const teacherPaths: TeacherPath[] = [
       {
         id: "mp-14",
         kind: "mission",
-        title: "Skills Lab level test",
+        title: "Skills Lab skill test",
         href: "/skills/vital-signs",
         mission: {
-          en: "Open Vital Signs, take the Beginner level test and read the explanation for every question you miss.",
-          ur: "Vital Signs kholein, Beginner level test dein aur jo sawal ghalat ho us ki explanation zaroor parhein.",
+          en: "Open Vital Signs, take the skill test and read the explanation for every question you miss.",
+          ur: "Vital Signs kholein, skill test dein aur jo sawal ghalat ho us ki explanation zaroor parhein.",
         },
         minutes: 12,
       },

@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, BookOpen, ChevronDown, Wind } from "lucide-react";
-import { CATEGORY_LABEL, LEVEL_LABEL, REGION_LABEL, type Dosage, type ExerciseDef } from "@/lib/rehabverse/types";
+import { CATEGORY_LABEL, REGION_LABEL, type Dosage, type ExerciseDef } from "@/lib/rehabverse/types";
 import { REFERENCES } from "@/lib/rehabverse/references";
 import type { Lang } from "./ExercisePlayer";
 
@@ -49,7 +49,6 @@ export function ExerciseDetails({ exercise, lang, clinical = false, dose, compac
             {exercise.regions.map((r) => (
               <span key={r} className="rv-chip rv-chip-teal">{t(lang, REGION_LABEL[r])}</span>
             ))}
-            <span className="rv-chip">{t(lang, LEVEL_LABEL[exercise.level])}</span>
             <span className="rv-chip">{t(lang, CATEGORY_LABEL[exercise.category])}</span>
           </div>
           <h3 className="mt-2 font-heading text-xl font-bold text-navy-800">{t(lang, exercise.name)}</h3>

@@ -26,6 +26,7 @@
     "validate:skills": "node --experimental-strip-types scripts/validate-skills.ts",
     "validate:language": "node --experimental-strip-types scripts/validate-language.ts",
     "validate:manual-depth": "node --experimental-strip-types scripts/validate-manual-therapy-depth.ts",
+    "validate:no-levels": "node --experimental-strip-types scripts/validate-no-levels.ts",
     "validate:edge-cache": "node scripts/validate-edge-cache.mjs",
     "validate:virtual-patient": "node scripts/validate-virtual-patient.mjs",
     "build:virtual-patient": "node scripts/build-virtual-patient.mjs",

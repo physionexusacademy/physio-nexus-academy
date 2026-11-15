@@ -130,6 +130,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:manual-depth
 
+      - name: Validate no level barriers (skills, conditions, cases, exercises show full depth, nothing behind a level or lock)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:no-levels
+
       - name: Validate Dr. Sajjad teaching data (every spoken line resolves in English and Roman Urdu, JSON is fresh)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:avatar
