@@ -7,7 +7,7 @@ import {ArrowRight,BookOpen,CheckCircle2,ChevronDown,Clock3,Copy,Flame,FlaskConi
 
 type PublicQuestion={id:string;topic:string;question:string;options:{value:string;label:string}[]};
 type ActiveChallenge={attemptId:string;token:string;date:string;expiresAt:string;resetAt:string;questions:PublicQuestion[];timePerQuestionSeconds:number};
-type Completed={expired:boolean;score:number;correctCount:number;total:number;elapsedMs:number;explanations:{id:string;correctValue:string;explanation:string}[]};
+type Completed={expired:boolean;score:number;correctCount:number;total:number;elapsedMs:number;explanations:{id:string;correctValue:string;explanation:string;href?:string;linkTitle?:string}[]};
 type StartResponse={ok:true;challenge:ActiveChallenge}|{ok:false;error:string};
 async function dailyRequest<T>(action:"start"|"submit",payload:unknown):Promise<T>{
  const timeout=new AbortController();
@@ -303,6 +303,18 @@ export function DailyChallengeClient(){
    )}
    {!result.expired && <ResultExtras xp={10+result.correctCount*5}/>}
 
+   {(()=>{
+    const missed=active.questions.map(q=>({q,e:result.explanations.find(x=>x.id===q.id)})).filter(({q,e})=>e&&selected[q.id]!==e.correctValue&&e.href);
+    if(!missed.length)return null;
+    return <div className="dc-gap-panel" data-pna-daily-gaps="v1">
+     <p className="dc-gap-title">Fix your gaps · {missed.length} concept{missed.length>1?"s":""} to revisit</p>
+     <p className="dc-gap-sub">Open each lesson, read it once, and the same question will be easy next time.</p>
+     {missed.map(({q,e})=><a key={q.id} href={e!.href} className="dc-gap-item">
+      <span className="dc-gap-q">{q.question}</span>
+      <span className="dc-gap-link">Learn this concept: {e!.linkTitle||"Open the lesson"} →</span>
+     </a>)}
+    </div>;
+   })()}
    <div className="mt-6 flex flex-wrap justify-center gap-3">
     <button className="dc-primary" type="button" onClick={replayReview}>{reviewOpen?"Hide answers":"Review all answers"} <ChevronDown className="h-4 w-4"/></button>
     <a href="#full-leaderboard" className="dc-secondary">View my competition <Trophy className="h-4 w-4"/></a>
@@ -316,6 +328,7 @@ export function DailyChallengeClient(){
       <h3 className="text-sm font-bold leading-6 dc-ink">{q.question}</h3>
       <p className="mt-2 text-sm leading-6 dc-muted"><strong>Correct answer:</strong> {q.options.find(o=>o.value===explanation?.correctValue)?.label}</p>
       <p className="mt-2 text-sm leading-7 dc-muted">{explanation?.explanation}</p>
+      {!matched&&explanation?.href&&<a href={explanation.href} className="dc-gap-link mt-3 inline-block">Learn this concept: {explanation.linkTitle||"Open the lesson"} →</a>}
      </div>;
     })}
    </div>}

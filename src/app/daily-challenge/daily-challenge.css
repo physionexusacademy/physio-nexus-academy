@@ -293,3 +293,12 @@
 @media(max-width:860px){.dc-page .dc-mission-mast{border-right:0;border-bottom:1px solid rgba(255,255,255,.1)}}
 @media(max-width:480px){.dc-score-ring{width:170px;height:170px}.dc-timer{width:56px;height:56px}.dc-timer b{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.dc-page .dc-hero:before,.dc-page .dc-play:before,.dc-score-fg,.dc-xp-chip,.dc-timer-urgent b{animation:none!important}}
+
+/* Fix your gaps: a link to the concept for every question answered wrongly */
+.dc-gap-panel{margin-top:1.5rem;border-radius:1.25rem;border:1px solid rgba(251,191,36,.45);background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(124,108,255,.1));padding:1rem 1.1rem;text-align:left;display:grid;gap:.6rem}
+.dc-gap-title{font-size:.78rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#b45309}
+.dc-gap-sub{font-size:.9rem;line-height:1.6;color:inherit;opacity:.85}
+.dc-gap-item{display:grid;gap:.25rem;border-radius:.9rem;border:1px solid rgba(100,116,139,.35);background:rgba(255,255,255,.06);padding:.7rem .9rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s}
+.dc-gap-item:hover{border-color:#14b8a6;transform:translateY(-1px)}
+.dc-gap-q{font-size:.9rem;line-height:1.55;font-weight:600}
+.dc-gap-link{font-size:.85rem;font-weight:800;color:#0f766e;text-decoration:underline;text-underline-offset:3px}

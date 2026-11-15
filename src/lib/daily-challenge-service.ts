@@ -78,6 +78,6 @@ export async function submitDailyChallenge(input:{
  if(!updated)throw new Error("Your attempt was already saved or has expired.");
  return {expired,score,correctCount,total:QUESTIONS,elapsedMs:Math.min(elapsed,TOTAL_LIMIT_MS),
   explanations:questions.map(q=>({
-   id:q.id,correctValue:["A","B","C","D"][q.correct],explanation:q.explanation
+   id:q.id,correctValue:["A","B","C","D"][q.correct],explanation:q.explanation,href:q.href,linkTitle:q.linkTitle
   }))};
 }
