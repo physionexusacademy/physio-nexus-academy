@@ -10,6 +10,7 @@ import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadingNav";
 import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
+import { ExpertDepthSections } from "@/components/manual-therapy/ExpertDepthSections";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
@@ -24,7 +25,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       </a>
 
       {/* Hero */}
-      <header className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-violet-900 to-teal-900 p-7 text-white shadow-xl sm:p-10">
+      <header className="nx-sky nx-grid mt-5 overflow-hidden rounded-3xl border border-cyan-300/20 p-7 text-white shadow-xl sm:p-10">
         <div className="flex flex-wrap gap-2 text-xs font-bold">
           <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5">{lesson.category}</span>
           <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5">{lesson.kind}</span>
@@ -48,6 +49,9 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       <div id="mastery">
         <MasteryGuide slug={lesson.slug} />
       </div>
+
+      {/* 2D demonstration and expert depth */}
+      <ExpertDepthSections slug={lesson.slug} name={lesson.title} />
 
       {/* Optional story - collapsed */}
       <details data-pna-world-story="v1" className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/50">
