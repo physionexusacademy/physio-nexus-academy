@@ -4,7 +4,22 @@ import { useState } from "react";
 import { ChevronDown, Languages, ListChecks, Sparkles } from "lucide-react";
 import { useLang } from "@/lib/lang";
 import type { ChapterComponents } from "@/lib/manual-therapy-components";
+import TechniqueDemo2D from "@/components/manual-therapy/TechniqueDemo2D";
+import type { DemoKind } from "@/lib/manual-therapy-depth-types";
 import "./chapter-reader.css";
+
+/** Which drawing fits a named technique best (its own steps are the captions). */
+function kindFor(name: string, fallback: DemoKind): DemoKind {
+  const n = name.toLowerCase();
+  if (/slider|tensioner/.test(n)) return "neural";
+  if (/grade v\b|thrust/.test(n)) return "thrust";
+  if (/hold-relax|contract-relax|rhythmic|slow reversal|pir\b|reciprocal|isotonic|isometric/.test(n)) return "contract";
+  if (/triggerband|cylinder|folding|continuum|tectonic|herniated|release/.test(n)) return "fascia";
+  if (/friction/.test(n)) return "friction";
+  if (/derangement|dysfunction|postural/.test(n)) return "response";
+  if (/grade|glide|traction|snag|nag|extension|flexion|abduction|adduction|circumduction/.test(n)) return "glide";
+  return fallback;
+}
 
 export type UrduSection = { heading: string; text: string };
 
@@ -92,7 +107,7 @@ export function UrduChapterGuide({ name, short, sections, deeper }: { name: stri
 }
 
 /** The named techniques of a chapter, one by one: pick one, read what it is, then watch its steps appear in order. */
-export function ChapterComponentsView({ data, name }: { data: ChapterComponents; name: string }) {
+export function ChapterComponentsView({ data, name, defaultKind }: { data: ChapterComponents; name: string; defaultKind: DemoKind }) {
   const [lang] = useLang();
   const [index, setIndex] = useState(0);
   const ur = lang === "ur";
@@ -116,6 +131,15 @@ export function ChapterComponentsView({ data, name }: { data: ChapterComponents;
           <p className="cr-tag">{text(item.tag)}</p>
           <h3>{item.name}</h3>
           <p className="cr-what">{text(item.what)}</p>
+          <div className="cr-demo">
+            <TechniqueDemo2D
+              key={`${index}-${lang}`}
+              kind={kindFor(item.name, defaultKind)}
+              title={item.name}
+              captions={item.perform.en.map((detail, n) => ({ title: `Step ${n + 1}`, detail }))}
+              captionsUr={item.perform.ur.map((detail, n) => ({ title: `Qadam ${n + 1}`, detail }))}
+            />
+          </div>
           <p className="cr-perform-label">{ur ? "Kaise ki jati hai" : "How it is performed"}</p>
           <ol className="cr-steps">
             {list.map((line, i) => (

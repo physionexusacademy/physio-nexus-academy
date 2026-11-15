@@ -1,0 +1,87 @@
+/* Demo Lab: seven small animated demonstrations per technique. Dark stages, calm motion, no motion at all when reduced motion is asked for. */
+.dl { margin-top: 1.5rem; }
+.dl-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.4rem; scrollbar-width: thin; }
+.dl-tab { display: inline-flex; flex: none; align-items: center; gap: 0.45rem; border-radius: 999px; border: 1px solid #cbd5e1; background: #fff; color: #334155; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.dl-tab:hover { border-color: #14b8a6; }
+.dl-tab[aria-selected="true"] { border-color: transparent; background: linear-gradient(135deg, #0f766e, #4f46e5); color: #fff; box-shadow: 0 8px 20px -10px rgba(79, 70, 229, 0.7); }
+.dl-tab-n { display: inline-flex; height: 1.25rem; width: 1.25rem; align-items: center; justify-content: center; border-radius: 999px; background: rgba(148, 163, 184, 0.25); font-size: 0.7rem; font-weight: 800; }
+.dl-tab[aria-selected="true"] .dl-tab-n { background: rgba(255, 255, 255, 0.25); }
+.dl-hint { margin-top: 0.7rem; max-width: 52rem; font-size: 0.92rem; line-height: 1.7; color: #475569; }
+.dl-panel { margin-top: 1rem; animation: dl-in 0.4s ease both; }
+
+.dl-stage { position: relative; overflow: hidden; border-radius: 1.4rem; border: 1px solid rgba(46, 230, 214, 0.25); color: #e6f4ff; padding: clamp(1rem, 2.6vw, 1.7rem); background: radial-gradient(700px 300px at 0% 0%, rgba(46, 230, 214, 0.14), transparent 60%), radial-gradient(600px 300px at 100% 100%, rgba(139, 92, 246, 0.18), transparent 60%), #071428; }
+.dl-controls { margin-top: 1.1rem; display: flex; align-items: center; gap: 0.7rem; }
+.dl-controls > button { display: inline-flex; height: 2.1rem; width: 2.1rem; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer; }
+.dl-controls ol { display: flex; flex-wrap: wrap; gap: 0.35rem; list-style: none; margin: 0; padding: 0; }
+.dl-controls ol button { height: 1.9rem; min-width: 1.9rem; border-radius: 0.6rem; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.06); color: #cfe4fa; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+.dl-controls ol button[aria-current="true"] { border-color: #2ee6d6; background: rgba(46, 230, 214, 0.2); color: #fff; }
+
+/* chain and ladder */
+.dl-chain, .dl-ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; position: relative; }
+.dl-chain li, .dl-ladder li { position: relative; display: flex; gap: 0.8rem; align-items: flex-start; border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.04); padding: 0.85rem 1rem; cursor: pointer; transition: all 0.35s; opacity: 0.55; }
+.dl-chain li::after { content: ""; position: absolute; left: 1.75rem; top: 100%; height: 0.9rem; width: 2px; background: repeating-linear-gradient(to bottom, #2ee6d6 0 4px, transparent 4px 8px); background-size: 2px 8px; animation: dl-flow 0.9s linear infinite; }
+.dl-chain li:last-child::after { display: none; }
+.dl-dot { display: inline-flex; height: 1.9rem; width: 1.9rem; flex: none; align-items: center; justify-content: center; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: #cfe4fa; font-size: 0.8rem; font-weight: 900; transition: all 0.35s; }
+.dl-text { line-height: 1.75; color: #e1f0ff; font-size: 0.97rem; }
+li[data-s="done"] { opacity: 0.9; }
+li[data-s="done"] .dl-dot { background: #14b8a6; color: #04101f; }
+li[data-s="now"] { opacity: 1; border-color: #2ee6d6; background: rgba(46, 230, 214, 0.12); box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.3), 0 0 26px -6px rgba(46, 230, 214, 0.55); animation: dl-glow 1.6s ease-in-out infinite; }
+li[data-s="now"] .dl-dot { background: linear-gradient(135deg, #2ee6d6, #7c6cff); color: #04101f; transform: scale(1.12); }
+.dl-ladder li { margin-left: calc(var(--n, 0) * clamp(0.5rem, 3vw, 1.6rem)); }
+.dl-ladder-axis { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #8ff3ea; }
+
+/* dials */
+.dl-dials { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.dl-dial { text-align: center; border-radius: 1.1rem; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.05); padding: 1rem 0.9rem; animation: dl-in 0.5s ease both; animation-delay: calc(var(--n, 0) * 0.12s); }
+.dl-dial svg { height: 4.6rem; width: 4.6rem; }
+.dl-ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.14); stroke-width: 5; }
+.dl-ring { fill: none; stroke: #2ee6d6; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 60 104; transform-origin: 32px 32px; animation: dl-spin 3.2s linear infinite; filter: drop-shadow(0 0 4px rgba(46, 230, 214, 0.8)); }
+.dl-ring-dot { fill: #7c6cff; animation: dl-blink 1.6s ease-in-out infinite; }
+.dl-dial-label { margin-top: 0.4rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #8ff3ea; }
+.dl-dial-value { margin-top: 0.3rem; font-size: 0.97rem; font-weight: 700; line-height: 1.55; color: #fff; }
+
+/* retest */
+.dl-phases { list-style: none; margin: 0 0 1rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.dl-phases li { border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); padding: 0.35rem 0.85rem; font-size: 0.82rem; font-weight: 800; color: #9fb7d1; transition: all 0.3s; }
+.dl-phases li[data-on="1"] { border-color: #2ee6d6; background: rgba(46, 230, 214, 0.18); color: #fff; }
+.dl-ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.dl-ticks li { display: flex; gap: 0.7rem; align-items: flex-start; border-radius: 0.9rem; background: rgba(255, 255, 255, 0.05); padding: 0.65rem 0.9rem; line-height: 1.65; color: #e1f0ff; }
+.dl-tick { display: inline-flex; height: 1.5rem; width: 1.5rem; flex: none; align-items: center; justify-content: center; border-radius: 0.45rem; border: 1px solid rgba(255, 255, 255, 0.25); color: transparent; transition: all 0.3s; }
+.dl-ticks[data-phase="0"] .dl-tick, .dl-ticks[data-phase="2"] .dl-tick { border-color: #2ee6d6; background: #14b8a6; color: #04101f; animation: dl-pop 0.4s ease both; animation-delay: calc(var(--n, 0) * 0.35s); }
+.dl-ticks[data-phase="1"] li { opacity: 0.45; }
+.dl-banner { margin-top: 0.9rem; border-left: 3px solid #2ee6d6; border-radius: 0.5rem; background: rgba(46, 230, 214, 0.1); padding: 0.65rem 0.9rem; font-weight: 700; color: #d8fffb; }
+.dl-banner[data-phase="1"] { border-color: #fbbf24; background: rgba(251, 191, 36, 0.12); color: #ffe9a8; animation: dl-glow 1.4s ease-in-out infinite; }
+
+/* fork */
+.dl-root { display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 999px; background: rgba(124, 108, 255, 0.2); border: 1px solid rgba(124, 108, 255, 0.5); padding: 0.4rem 0.9rem; font-weight: 800; color: #fff; }
+.dl-lanes { margin-top: 1rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.dl-lane { border-radius: 1.1rem; padding: 0.9rem; border: 1px solid; display: grid; gap: 0.6rem; align-content: start; }
+.dl-yes { border-color: rgba(52, 211, 153, 0.5); background: rgba(52, 211, 153, 0.07); }
+.dl-no { border-color: rgba(251, 113, 133, 0.5); background: rgba(251, 113, 133, 0.07); }
+.dl-lane-title { font-size: 0.76rem; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; }
+.dl-yes .dl-lane-title { color: #6ee7b7; } .dl-no .dl-lane-title { color: #fda4af; }
+.dl-rule { border-radius: 0.8rem; background: rgba(255, 255, 255, 0.06); padding: 0.65rem 0.85rem; line-height: 1.7; color: #e8f3ff; animation: dl-in 0.5s ease both; animation-delay: calc(var(--n, 0) * 0.15s); }
+
+/* safety gate */
+.dl-gates { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.dl-gates li { display: flex; gap: 0.75rem; align-items: flex-start; border-radius: 0.9rem; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.04); padding: 0.7rem 0.9rem; line-height: 1.65; color: #e1f0ff; transition: all 0.35s; }
+.dl-gate-ico { display: inline-flex; height: 1.8rem; width: 1.8rem; flex: none; align-items: center; justify-content: center; border-radius: 0.55rem; background: rgba(255, 255, 255, 0.1); }
+.dl-gates li[data-s="scan"] { border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); animation: dl-glow 1.3s ease-in-out infinite; }
+.dl-gates li[data-s="scan"] .dl-gate-ico { background: #fbbf24; color: #3b2a00; }
+.dl-gates li[data-s="pass"] { border-color: rgba(52, 211, 153, 0.55); }
+.dl-gates li[data-s="pass"] .dl-gate-ico { background: #34d399; color: #04261a; }
+.dl-gates li[data-s="wait"] { opacity: 0.55; }
+.dl-traps-title { margin-top: 1.4rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.76rem; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: #fcd34d; }
+.dl-traps { margin-top: 0.7rem; display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.dl-traps p { border-radius: 0.9rem; border: 1px dashed rgba(251, 191, 36, 0.55); background: repeating-linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0 10px, transparent 10px 20px); padding: 0.7rem 0.9rem; line-height: 1.65; color: #fff1c9; animation: dl-in 0.5s ease both; animation-delay: calc(var(--n, 0) * 0.12s); }
+
+/* named techniques: each has its own demonstration */
+.cr-demo { margin: 1rem 0 0.4rem; max-width: 36rem; }
+
+@keyframes dl-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes dl-flow { to { background-position: 0 8px; } }
+@keyframes dl-spin { to { transform: rotate(360deg); } }
+@keyframes dl-blink { 50% { opacity: 0.35; } }
+@keyframes dl-glow { 50% { box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.4), 0 0 30px -4px rgba(46, 230, 214, 0.7); } }
+@keyframes dl-pop { from { transform: scale(0.4); } 60% { transform: scale(1.2); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .dl-panel, .dl-dial, .dl-rule, .dl-traps p, .dl-ring, .dl-ring-dot, .dl-chain li::after, li[data-s="now"], .dl-gates li[data-s="scan"], .dl-banner, .dl-tick { animation: none !important; } li[data-s] { opacity: 1; } }

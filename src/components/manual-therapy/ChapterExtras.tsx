@@ -1,6 +1,7 @@
 import { manualTherapyUrduContent } from "@/lib/manual-therapy-urdu-content";
 import { manualTherapyUrduDepth } from "@/lib/manual-therapy-urdu-depth";
 import { manualTherapyComponents } from "@/lib/manual-therapy-components";
+import { getTechniqueDepth } from "@/lib/manual-therapy-depth";
 import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { UrduChapterGuide, ChapterComponentsView } from "@/components/manual-therapy/ChapterClient";
 
@@ -16,7 +17,7 @@ export function UrduGuideSection({ slug, name }: { slug: string; name: string })
 /** The named techniques inside the chapter, explained one by one (FDM's six, Spencer's seven, the Maitland grades…). */
 export function ComponentsSection({ slug, name }: { slug: string; name: string }) {
   const data = manualTherapyComponents[slug];
-  return data ? <ChapterComponentsView data={data} name={name} /> : null;
+  return data ? <ChapterComponentsView data={data} name={name} defaultKind={getTechniqueDepth(slug)?.demo ?? "glide"} /> : null;
 }
 
 /** This technique's own steps for the 2D demonstration, in English and in Roman Urdu. */

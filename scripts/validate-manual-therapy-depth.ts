@@ -83,3 +83,15 @@ for (const slug of depthSlugs) assert(urduContent.includes('"' + slug + '": {'),
 assert(sections.includes("<ComponentsSection"), "the shared sections must render the named techniques");
 assert(detail.includes("<UrduGuideSection") && read("src/components/manual-therapy/WorldApproachChapter.tsx").includes("<UrduGuideSection"), "both chapter pages must offer the Roman Urdu theory");
 console.log("named techniques: " + Object.keys(manualTherapyComponents).length + " chapters explain their techniques one by one in English and Roman Urdu");
+
+/* 6. Every technique gets a Demo Lab: seven demonstrations, each fed by that technique's own data, and each named technique has its own demo. */
+const lab = read("src/components/manual-therapy/DemoLab.tsx");
+for (const id of ["do", "how", "dose", "test", "choose", "safety", "ladder"]) assert(lab.includes('id: "' + id + '"'), "Demo Lab is missing the " + id + " demonstration");
+assert(sections.includes("<DemoLab"), "the shared sections must render the Demo Lab");
+for (const slug of depthSlugs) {
+  const d = getTechniqueDepth(slug)!;
+  assert(d.why.length > 40 && d.parameters.length >= 2 && d.measure.length >= 2 && d.choose.length >= 2 && d.screen.length >= 2 && d.pitfalls.length >= 2 && d.progress.length > 20, slug + ": not enough depth data to feed all seven demonstrations");
+}
+assert(read("src/components/manual-therapy/ChapterClient.tsx").includes("<TechniqueDemo2D"), "each named technique must have its own demonstration");
+console.log("demo lab: seven demonstrations for each of " + depthSlugs.length + " techniques, plus one for every named technique");
+
