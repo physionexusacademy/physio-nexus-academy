@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpen } from "lucide-react";
 import { BOOKS, formatPkr } from "@/lib/books";
+import { Ur } from "@/components/Ur";
 
 /**
  * The three printed books in one dark, glowing row (three across, even on phones), each with a small cover, its price and an Order
@@ -15,11 +16,11 @@ export function HomeBooks() {
        <div className="hbk nx-sky nx-grid">
         <div className="hbk-head">
           <div>
-            <p className="hbk-kicker"><BookOpen className="h-4 w-4" aria-hidden="true" /> Books by Dr. Sajjad Raza PT</p>
-            <h2 id="home-books-title" className="hbk-title">Physiotherapy books</h2>
+            <p className="hbk-kicker"><BookOpen className="h-4 w-4" aria-hidden="true" /> <Ur en="Books by Dr. Sajjad Raza PT" ur="Dr. Sajjad Raza PT ki kitabein" /></p>
+            <h2 id="home-books-title" className="hbk-title"><Ur en="Physiotherapy books" ur="Physiotherapy ki kitabein" /></h2>
           </div>
           <a href="/resources" className="hbk-all">
-            All books &amp; details <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <Ur en="All books &amp; details" ur="Tamam kitabein aur tafseel" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
 
@@ -38,12 +39,12 @@ export function HomeBooks() {
                 />
                 <strong className="home-book-title">{book.title}</strong>
                 <span className="home-book-price">{formatPkr(book.price)}</span>
-                <span className="home-book-order">Order <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+                <span className="home-book-order"><Ur en="Order" ur="Order karein" /> <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
               </a>
             </li>
           ))}
         </ul>
-        <p className="hbk-note">Order online in a minute — every order gets its own Order ID and a delivery estimate.</p>
+        <p className="hbk-note"><Ur en="Order online in a minute — every order gets its own Order ID and a delivery estimate." ur="Online order ek minute mein — har order ko apna Order ID aur delivery ka andaza milta hai." /></p>
        </div>
       </div>
     </section>

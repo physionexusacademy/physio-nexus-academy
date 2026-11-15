@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpenCheck, Flame, Stethoscope, Trophy, Users } from "lucide-react";
 import { TIERS } from "@/lib/student/league";
+import { Ur } from "@/components/Ur";
 import "./home-leagues.css";
 
 /**
@@ -24,10 +25,10 @@ const ROWS: Row[] = [
 const initials = (name: string) => (name === "You" ? "YOU" : name.replace(".", "").split(" ").map((p) => p[0]).join(""));
 
 const STEPS = [
-  { icon: BookOpenCheck, title: "Learn", text: "Lessons, Skills Lab, Virtual Patient and the Daily Challenge." },
-  { icon: Flame, title: "Earn XP", text: "Counted by the server from your own record. Nothing can be typed in." },
-  { icon: Users, title: "Meet your league", text: "Up to 30 students at your tier, Monday to Sunday." },
-  { icon: Trophy, title: "Climb on Sunday", text: "The top 30 % move up a tier. Reach Diamond." },
+  { icon: BookOpenCheck, title: "Learn", text: "Lessons, Skills Lab, Virtual Patient and the Daily Challenge.", ur: { title: "Seekhein", text: "Lessons, Skills Lab, Virtual Patient aur Daily Challenge." } },
+  { icon: Flame, title: "Earn XP", text: "Counted by the server from your own record. Nothing can be typed in.", ur: { title: "XP kamayein", text: "Server aap ke apne record se count karta hai. Kuch bhi manually type nahin kiya ja sakta." } },
+  { icon: Users, title: "Meet your league", text: "Up to 30 students at your tier, Monday to Sunday.", ur: { title: "Apni league se milein", text: "Apne tier ke 30 tak students, Monday se Sunday." } },
+  { icon: Trophy, title: "Climb on Sunday", text: "The top 30 % move up a tier. Reach Diamond.", ur: { title: "Itwaar ko upar chadhein", text: "Top 30 % students ek tier upar jate hain. Diamond tak pahunchein." } },
 ];
 
 export function HomeLeagues() {
@@ -37,9 +38,9 @@ export function HomeLeagues() {
         <div className="lgx-card nx-sky nx-grid">
           <div className="lgx-top">
             <div className="lgx-copy">
-              <span className="lgx-badge"><Trophy className="h-3.5 w-3.5" aria-hidden="true" /> Compete · Free</span>
-              <h2 id="pna-leagues-title">Weekly Leagues <span className="lgx-sub">Earn XP. Rise a tier. Reach Diamond.</span></h2>
-              <p className="lgx-lead">Every week you join a league of students at your tier. Your XP comes from real learning, and on Sunday the top of each league moves up. Free, and it takes one tap to join.</p>
+              <span className="lgx-badge"><Trophy className="h-3.5 w-3.5" aria-hidden="true" /> <Ur en="Compete · Free" ur="Muqabla · Free" /></span>
+              <h2 id="pna-leagues-title"><Ur en="Weekly Leagues" ur="Haftawar Leagues" /> <span className="lgx-sub"><Ur en="Earn XP. Rise a tier. Reach Diamond." ur="XP kamayein. Tier mein aage barhein. Diamond tak pahunchein." /></span></h2>
+              <p className="lgx-lead"><Ur en="Every week you join a league of students at your tier. Your XP comes from real learning, and on Sunday the top of each league moves up. Free, and it takes one tap to join." ur="Har hafte aap apne tier ke students ki league mein shamil hote hain. Aap ka XP asal seekhne se aata hai, aur itwaar ko har league ke top students ek tier upar chale jate hain. Free hai, aur shamil hona sirf ek tap ka kaam hai." /></p>
               <ul className="lgx-chips" aria-label="Where the XP comes from">
                 <li>Lessons</li>
                 <li>Skills Lab</li>
@@ -47,15 +48,15 @@ export function HomeLeagues() {
                 <li>Daily Challenge</li>
               </ul>
               <div className="lgx-cta">
-                <a href="/leagues" className="nx-btn nx-btn-primary">Join a league <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
-                <a href="/leagues#how" className="nx-btn nx-btn-ghost">How it works</a>
+                <a href="/leagues" className="nx-btn nx-btn-primary"><Ur en="Join a league" ur="League join karein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                <a href="/leagues#how" className="nx-btn nx-btn-ghost"><Ur en="How it works" ur="Yeh kaise kaam karta hai" /></a>
               </div>
             </div>
 
             <div className="lgx-board" aria-hidden="true">
               <div className="lgx-board-top">
-                <span className="lgx-live"><i /> EXAMPLE LEAGUE</span>
-                <span className="lgx-week"><Stethoscope className="h-3.5 w-3.5" /> Gold · Week 12</span>
+                <span className="lgx-live"><i /> <Ur en="EXAMPLE LEAGUE" ur="MISAL KI LEAGUE" /></span>
+                <span className="lgx-week"><Stethoscope className="h-3.5 w-3.5" /> <Ur en="Gold · Week 12" ur="Gold · Hafta 12" /></span>
               </div>
               <div className="lgx-rows">
                 <span className="lgx-zone lgx-zone-up" />
@@ -70,9 +71,9 @@ export function HomeLeagues() {
                 ))}
               </div>
               <span className="lgx-pop">+120 XP</span>
-              <span className="lgx-gain">▲ In the promotion zone</span>
+              <span className="lgx-gain"><Ur en="▲ In the promotion zone" ur="▲ Promotion zone mein" /></span>
               <div className="lgx-legend"><span className="lgx-lg-up">▲ Promotion zone · top 30 %</span><span className="lgx-lg-down">▼ Demotion zone · bottom 20 %</span></div>
-              <div className="lgx-foot"><span>Week ends Sunday midnight · Pakistan time</span><span>Example, not real students</span></div>
+              <div className="lgx-foot"><span><Ur en="Week ends Sunday midnight · Pakistan time" ur="Hafta itwaar ki raat 12 baje khatam · Pakistan time" /></span><span><Ur en="Example, not real students" ur="Misal hai, asal students nahin" /></span></div>
             </div>
           </div>
 
@@ -95,12 +96,12 @@ export function HomeLeagues() {
               <li key={step.title}>
                 <span className="lgx-ico"><step.icon className="h-5 w-5" aria-hidden="true" /></span>
                 <b>{i + 1}</b>
-                <strong>{step.title}</strong>
-                <small>{step.text}</small>
+                <strong><Ur en={step.title} ur={step.ur.title} /></strong>
+                <small><Ur en={step.text} ur={step.ur.text} /></small>
               </li>
             ))}
           </ol>
-          <p className="lgx-fine">Leagues are a learning game, not an exam or a certificate. XP is capped per activity and at 800 XP a day.</p>
+          <p className="lgx-fine"><Ur en="Leagues are a learning game, not an exam or a certificate. XP is capped per activity and at 800 XP a day." ur="Leagues seekhne ka ek game hain, imtihan ya certificate nahin. XP har activity par aur din mein 800 XP tak limited hai." /></p>
         </div>
       </div>
     </section>
