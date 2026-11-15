@@ -27,7 +27,7 @@ leaderboard loads only when its fold is opened (`HomeDailyBoard`). **Opening the
 4. **No request on load that is not needed** (the homepage makes zero API calls).
    The RehabVerse landing page (`/rehabverse`) follows the same rule for its 3D welcome guide (`GuideOnDemand.tsx`): a capable device (at least 4 GB of
    memory and 4 cores, no "save data") starts the guide when the browser is idle; any other device shows a picture and a "Start the guide" button and loads
-   three.js and the 319 KB model only after a tap (or a hover or focus on the button, which warms the code). Lighthouse (mobile, 15 Nov 2026) had shown this page
+   three.js and the 319 KB model only after a tap. Lighthouse (mobile, 15 Nov 2026) had shown this page
    blocking the main thread for seconds because the scene started on load.
 5. **Worker size is the cold-start cost**: stay under 3072 KiB gzip (`docs/worker-size.md`). The static homepage made it slightly smaller.
 

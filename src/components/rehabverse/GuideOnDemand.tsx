@@ -10,6 +10,7 @@ import { useRvLang } from "./useLang";
  * The 3D welcome guide of the RehabVerse landing page, loaded with care for small phones: a capable device starts it when the browser is idle
  * (after the page is usable); a device with little memory, few cores or "save data" shows a picture and a button instead and loads the 3D
  * (three.js, the model) only after a tap. A visitor never waits for 3D before the page responds.
+ * (Do not import PhysioGuide here: a plain import() in a client component puts three.js into the server bundle, +200 KiB gzip in the Worker; GuideStage loads it with next/dynamic, ssr: false.)
  */
 function canAutoStart() {
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
@@ -36,7 +37,7 @@ export function GuideOnDemand({ beats, className }: { beats: GuideBeat[]; classN
       <span className="grid h-14 w-14 place-items-center rounded-2xl bg-teal-50 text-teal-700" aria-hidden="true"><PersonStanding className="h-8 w-8" /></span>
       <p className="font-heading text-lg font-bold text-navy-800">{lang === "ru" ? "Aap ka virtual physiotherapist guide" : "Your virtual physiotherapist guide"}</p>
       <p className="max-w-xs text-sm leading-6 text-slate-600">{lang === "ru" ? "Ye 3D guide aap ko RehabVerse samjhata hai. Shuru karne par hi load hota hai, taake page tez rahe." : "The 3D guide explains RehabVerse. It loads only when you start it, so the page stays fast."}</p>
-      <button type="button" className="rv-btn rv-btn-primary" onClick={() => setOn(true)} onPointerEnter={() => void import("./PhysioGuide")} onFocus={() => void import("./PhysioGuide")}>
+      <button type="button" className="rv-btn rv-btn-primary" onClick={() => setOn(true)}>
         {lang === "ru" ? "Guide ko shuru karein" : "Start the guide"}
       </button>
     </div>
