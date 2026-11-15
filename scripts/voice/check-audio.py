@@ -36,8 +36,9 @@ def main(list_file, cache):
             why = []
             if peak < 0.05:
                 why.append("silent (peak %.2f)" % peak)
-            if peak >= 0.999:
-                why.append("clipped")
+            clipped = float((np.abs(x) >= 0.999).mean())
+            if clipped > 0.0005:
+                why.append("clipped (%.2f%% of samples)" % (clipped * 100))
             per_word = dur / words
             if per_word < 0.2:
                 why.append("too short: %.2f s/word" % per_word)

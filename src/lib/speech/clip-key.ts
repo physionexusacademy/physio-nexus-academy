@@ -22,6 +22,9 @@ export function clipKey(sentence: string): string {
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
 
+/** The key of a sentence in a language: Roman Urdu sentences have their own recordings (a different voice), so their keys are kept apart. */
+export const sentenceKey = (sentence: string, lang: "en" | "ur"): string => clipKey(lang === "ur" ? "ur: " + normalise(sentence) : sentence);
+
 /** One space between words, nothing at the ends. */
 export function normalise(sentence: string): string {
   return sentence.replace(/\s+/g, " ").trim();

@@ -23,7 +23,7 @@ for (const f of walk("src").filter((f) => /\.(ts|tsx)$/.test(f))) {
 }
 assert(!fs.existsSync("src/lib/speech/builtin.ts") && !fs.existsSync("public/teacher/espeak"), "The old built-in synthesiser must stay removed");
 const readme = read("public/voice/george/README.txt");
-assert(/Kokoro/.test(readme) && /Apache/i.test(readme) && /github\.com\/hexgrad|huggingface\.co\/hexgrad/.test(readme), "The voice README must credit Kokoro, its licence and source");
+assert(/Kokoro/.test(readme) && /Apache/i.test(readme) && /huggingface\.co\/hexgrad/.test(readme) && /hm_psi/.test(readme) && /bm_george/.test(readme), "The voice README must credit Kokoro, its licence and source, and name both voices");
 assert(/\/voice\/george\/\*\.mp3\s*\n\s*Cache-Control: public,max-age=\d{7,},immutable/.test(read("public/_headers")), "The hashed voice packs must be cached for a long time");
 const recorded = read("src/lib/speech/recorded.ts");
 assert(recorded.includes("packs.json") && recorded.includes("clips.json") && recorded.includes("decodeAudioData"), "recorded.ts plays the packs through Web Audio");

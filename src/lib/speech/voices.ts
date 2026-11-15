@@ -3,7 +3,7 @@
  *
  * There is no speech synthesiser any more, neither the device's nor a built-in one: a synthetic voice sounded robotic, and a neural voice
  * is too heavy to run on a visitor's phone. So a line is spoken only when it was recorded (the 3D guide and demonstrations, the RehabVerse
- * guide and exercise cues, and lessons as they are recorded); otherwise it is shown as text. Roman Urdu is shown as text (no Urdu recording).
+ * guide and exercise cues, and lessons as they are recorded), in English (George) and in Roman Urdu (Psi); otherwise it is shown as text.
  * Everything here is safe to import on the server: the helpers simply do nothing there.
  */
 import { toSpoken } from "./spoken";
@@ -11,11 +11,11 @@ import { cancelRecorded, findRecording, playRecording, recordedSupported, unlock
 
 export type SpeechLang = "en" | "ur";
 
-export const NOTE_ROMAN_URDU = "The voice is in English for now. Roman Urdu is shown as text.";
 export const NOTE_NO_RECORDING = "This line has no recording yet, so it is shown as text.";
+export const NOTE_NO_RECORDING_UR = "Is line ki recording abhi nahi hai, is liye sirf text dikhaya ja raha hai.";
 
 export type VoicePlan = {
-  mode: "english" | "none";
+  mode: "english" | "urdu" | "none";
   engine: "recorded" | "none";
   parts: Part[];
   /** Plain-language note for the person when a line is not spoken (shown next to the voice button). */
@@ -29,11 +29,11 @@ export const unlockAudio = unlockRecorded;
 
 const none = (note: string | null): VoicePlan => ({ mode: "none", engine: "none", parts: [], note });
 
-/** Finds the recording of a line (English only). */
+/** Finds the recording of a line (English: George, Roman Urdu: Psi). */
 export async function planSpeech(written: string, lang: SpeechLang): Promise<VoicePlan> {
-  if (lang !== "en") return none(NOTE_ROMAN_URDU);
-  const parts = await findRecording(toSpoken(written, "en"));
-  return parts ? { mode: "english", engine: "recorded", parts, note: null } : none(NOTE_NO_RECORDING);
+  const parts = await findRecording(toSpoken(written, lang), lang);
+  if (parts) return { mode: lang === "ur" ? "urdu" : "english", engine: "recorded", parts, note: null };
+  return none(lang === "ur" ? NOTE_NO_RECORDING_UR : NOTE_NO_RECORDING);
 }
 
 /** Stops all speech. */

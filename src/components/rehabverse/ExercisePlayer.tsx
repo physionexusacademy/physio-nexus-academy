@@ -649,11 +649,9 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
               <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {lang === "ru" ? "Ghalti dekhein" : "Show mistake"}
             </button>
           ) : null}
-          {lang === "en" ? (
-            <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title="Spoken guidance (recorded male voice, English; Roman Urdu is shown as text)">
-              {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
-            </button>
-          ) : null}
+          <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title={lang === "ru" ? "Awaaz: recorded male awaaz (Roman Urdu)" : "Spoken guidance (recorded male voice)"}>
+            {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
+          </button>
         </div>
       </figcaption>
     </figure>

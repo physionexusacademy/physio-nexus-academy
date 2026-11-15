@@ -5,12 +5,12 @@ import { speakText, stopSpeaking, supportsSpeech, unlockAudio, type Playback, ty
 import { recordedPacks } from "@/lib/speech/recorded";
 
 /**
- * The PNA Teacher's recorded voice for a lesson (see lib/speech/recorded.ts). `supported` is true only when this browser can play it and
- * the lesson's recording exists (`pack`, for example "lesson-abpi-and-glucose-exercise-safety"), so no Listen button appears for a lesson
- * that has no recording. English only: the lesson player does not offer it in Roman Urdu. `note` says why a line was not spoken.
+ * The PNA Teacher's recorded voice for a lesson (see lib/speech/recorded.ts). `has(lang)` is true only when this browser can play it and
+ * the lesson's recording exists in that language (`pack`, for example "lesson-abpi-and-glucose-exercise-safety"; the Roman Urdu pack is
+ * "ur-" + pack), so no Listen button appears for a lesson that has no recording. `note` says why a line was not spoken.
  */
 export function useSpeech(pack?: string) {
-  const [supported, setSupported] = useState(false);
+  const [packs, setPacks] = useState<string[]>([]);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const playback = useRef<Playback | null>(null);
@@ -20,7 +20,7 @@ export function useSpeech(pack?: string) {
     let cancelled = false;
     if (!supportsSpeech()) return;
     void recordedPacks().then((packs) => {
-      if (!cancelled) setSupported(pack ? packs.includes(pack) : packs.length > 0);
+      if (!cancelled) setPacks(packs);
     });
     return () => {
       cancelled = true;
@@ -28,6 +28,12 @@ export function useSpeech(pack?: string) {
       stopSpeaking();
     };
   }, [pack]);
+
+  const has = useCallback(
+    (lang: SpeechLang) => (pack ? packs.includes(lang === "ur" ? `ur-${pack}` : pack) : packs.length > 0),
+    [pack, packs],
+  );
+  const supported = packs.length > 0 && (has("en") || has("ur"));
 
   const stop = useCallback(() => {
     playback.current?.cancel();
@@ -39,7 +45,7 @@ export function useSpeech(pack?: string) {
 
   const speak = useCallback(
     (id: string, text: string, lang: SpeechLang = "en") => {
-      if (!supported) return;
+      if (!has(lang)) return;
       playback.current?.cancel();
       current.current = id;
       setSpeakingId(id);
@@ -59,7 +65,7 @@ export function useSpeech(pack?: string) {
         else p?.cancel();
       });
     },
-    [supported],
+    [has],
   );
 
   const toggle = useCallback(
@@ -70,5 +76,5 @@ export function useSpeech(pack?: string) {
     [speak, speakingId, stop],
   );
 
-  return { supported, speakingId, speak, stop, toggle, note };
+  return { supported, has, speakingId, speak, stop, toggle, note };
 }
