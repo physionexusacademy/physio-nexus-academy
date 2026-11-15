@@ -39,4 +39,9 @@ assert(read("src/components/PublicChrome.tsx").includes('"/admin"'), "PublicChro
 assert(/prefers-reduced-motion/.test(read("src/components/admin/admin.css")), "admin motion must respect reduced motion");
 assert(read("src/components/admin/AdminShell.tsx").includes("aria-current"), "the sidebar must mark the current page for assistive technology");
 
+/* 5. The page filter only hides and shows what is already on the page: it never reads or writes data. */
+const filter = read("src/components/admin/PageFilter.tsx");
+assert(!/fetch\(|supabase|"use server"|action=/.test(filter), "the page filter must not read or write any data");
+assert(read("src/components/admin/AdminShell.tsx").includes("<PageFilter"), "the shell must offer the page filter on the list pages");
+
 console.log(`admin: ${sections.length} sections in the sidebar, access checks intact, service-role client kept out of the browser`);

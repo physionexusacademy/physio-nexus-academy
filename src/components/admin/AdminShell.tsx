@@ -7,9 +7,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Bell, ChevronRight, CornerDownLeft, ExternalLink, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, X } from "lucide-react";
 import { ADMIN_NAV, ADMIN_NAV_FLAT, totalWaiting, type AdminNavItem } from "@/lib/admin/nav";
 import type { AdminCounts } from "@/lib/admin/types";
+import { PageFilter } from "./PageFilter";
 import "./admin.css";
 
 const COLLAPSE_KEY = "pna-admin-collapsed";
+/** Pages whose records can be filtered on the spot. */
+const FILTERABLE = new Set(["/admin/appointments", "/admin/home-visits", "/admin/book-orders", "/admin/messages", "/admin/workshops", "/admin/certificates", "/admin/resources", "/admin/testimonials", "/admin/faqs"]);
 
 const isActive = (pathname: string, href: string) => (href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(href + "/"));
 
@@ -25,6 +28,7 @@ export function AdminShell({ email, counts, signOut, children }: { email: string
   const [drawer, setDrawer] = useState(false);
   const [palette, setPalette] = useState(false);
   const [now, setNow] = useState<string>("");
+  const scope = useRef<HTMLDivElement>(null);
   const waiting = totalWaiting(counts);
   const current = ADMIN_NAV_FLAT.find((item) => isActive(pathname, item.href) && item.href !== "/admin") ?? ADMIN_NAV_FLAT[0];
 
@@ -146,7 +150,10 @@ export function AdminShell({ email, counts, signOut, children }: { email: string
         </header>
 
         <div id="ad-content" className="ad-main" tabIndex={-1}>
-          <div className="ad-content" key={pathname}>{children}</div>
+          <div className="ad-content" key={pathname} ref={scope}>
+            {FILTERABLE.has(pathname) ? <PageFilter scope={scope} /> : null}
+            {children}
+          </div>
         </div>
       </div>
 

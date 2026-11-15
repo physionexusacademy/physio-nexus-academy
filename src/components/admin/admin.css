@@ -87,7 +87,7 @@
 .ad-main { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; color: var(--ad-ink); scroll-behavior: smooth;
   background: radial-gradient(900px 460px at 8% -8%, rgba(46, 230, 214, 0.17), transparent 62%), radial-gradient(800px 440px at 96% -6%, rgba(143, 124, 255, 0.17), transparent 62%), radial-gradient(700px 420px at 50% 120%, rgba(60, 200, 255, 0.1), transparent 62%), #eef4fa; }
 .ad-main:focus { outline: none; }
-.ad-content { max-width: 1480px; margin: 0 auto; padding: clamp(16px, 2.6vw, 34px); animation: ad-rise 0.4s ease both; }
+.ad-content { position: relative; max-width: 1480px; margin: 0 auto; padding: clamp(16px, 2.6vw, 34px); animation: ad-rise 0.4s ease both; }
 
 /* ---------------------------------------------------------------- command palette */
 .ad-pal-wrap { position: fixed; inset: 0; z-index: 90; display: flex; align-items: flex-start; justify-content: center; padding: 12vh 16px 16px; background: rgba(2, 8, 18, 0.66); backdrop-filter: blur(6px); animation: ad-fade 0.15s ease both; }
@@ -198,6 +198,15 @@
 .ad-content :is(button, a)[class*="border-grey-200"][class*="px-3"] { border-radius: 12px; }
 .ad-content ::-webkit-scrollbar { width: 10px; height: 10px; }
 .ad-content ::-webkit-scrollbar-thumb { background: rgba(7, 26, 51, 0.18); border-radius: 10px; }
+
+.ad-filter { position: absolute; right: clamp(16px, 2.6vw, 34px); top: clamp(16px, 2.6vw, 34px); z-index: 5; display: flex; align-items: center; gap: 8px; min-width: min(320px, 100%); padding: 0 12px; height: 44px; border-radius: 14px; color: #01828b; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(1, 130, 139, 0.28); box-shadow: 0 16px 34px -22px rgba(7, 26, 51, 0.5); }
+.ad-filter:focus-within { border-color: #01828b; box-shadow: 0 0 0 4px rgba(46, 230, 214, 0.22), 0 16px 34px -22px rgba(7, 26, 51, 0.5); }
+.ad-filter input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: var(--ad-ink); font-size: 0.9rem; font-weight: 600; }
+.ad-filter input::placeholder { color: #7d90a8; }
+.ad-filter span { flex: none; font-size: 0.74rem; font-weight: 800; color: #587089; }
+.ad-filter button { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 8px; background: rgba(7, 26, 51, 0.07); color: #3a5068; cursor: pointer; }
+.ad-filter button:hover { background: rgba(255, 122, 162, 0.2); }
+@media (max-width: 760px) { .ad-filter { position: static; margin-bottom: 14px; min-width: 0; width: 100%; } }
 
 /* ---------------------------------------------------------------- login */
 .al-root { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; padding: 20px; overflow: auto; color: #eaf6ff; background: #040d1c; }
