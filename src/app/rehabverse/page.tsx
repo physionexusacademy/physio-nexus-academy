@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BellRing, Lock, ShieldCheck, Stethoscope, TrendingUp, UserCheck, UserPlus, Video } from "lucide-react";
-import { GuideStage } from "@/components/rehabverse/GuideStage";
+import { GuideOnDemand } from "@/components/rehabverse/GuideOnDemand";
 import { EnglishNote } from "@/components/rehabverse/EnglishNote";
 import { T } from "@/components/rehabverse/useLang";
 import { GUIDE } from "@/lib/rehabverse/guide";
@@ -86,7 +86,7 @@ export default function RehabVerseHome() {
             ))}
           </ul>
         </div>
-        <GuideStage beats={GUIDE.welcome} className="rv-fade-up" />
+        <GuideOnDemand beats={GUIDE.welcome} className="rv-fade-up" />
       </section>
 
       <section className="mt-16" aria-labelledby="how">

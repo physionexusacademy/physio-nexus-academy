@@ -26,7 +26,7 @@ export function HomeBooks() {
         <ul className="home-books-row">
           {BOOKS.slice(0, HOME_BOOK_COUNT).map((book) => (
             <li key={book.id}>
-              <a href={`/resources?book=${book.id}#order-book`} className="home-book" aria-label={`${book.title} — ${formatPkr(book.price)}. Order now`}>
+              <a href={`/resources?book=${book.id}#order-book`} className="home-book" aria-label={`${book.title} ${formatPkr(book.price)} Order now`}>
                 <img
                   src={`/images/books/thumbs/${book.id}.webp`}
                   alt={book.cover.alt}

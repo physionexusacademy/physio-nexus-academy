@@ -151,7 +151,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
   return (
     <header ref={headerRef} className="nx-bar" onMouseLeave={() => { hoverCancel(); setOpenWing(null); }}>
       <div className="container-content nx-bar-inner">
-        <a href="/" className="nx-brand" onClick={closeAll} aria-label="Physio Nexus Academy — home">
+        <a href="/" className="nx-brand" onClick={closeAll} aria-label="Physio Nexus Academy, CPD Provider #791052 — home">
           <Image src="/images/pna-logo.png" alt="Physio Nexus Academy logo" width={40} height={40} className="nx-brand-logo" priority />
           <span className="min-w-0">
             <span className="nx-brand-name">Physio Nexus Academy</span>
