@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import { ArrowRight, Lock, Mail, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import "@/components/admin/admin.css";
 
 async function login(formData: FormData) {
   "use server";
@@ -28,45 +30,39 @@ export default async function AdminLoginPage({
       : params.error;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy-800 px-4">
-      <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-xl">
-        <div className="flex flex-col items-center">
-          <Image
-            src="/images/pna-logo.png"
-            alt="Physio Nexus Academy"
-            width={56}
-            height={56}
-            className="h-14 w-14 object-contain"
-          />
-          <h1 className="mt-4 font-heading text-lg font-bold text-navy-800">
-            Admin Dashboard
-          </h1>
-          <p className="text-sm text-navy-400">Physio Nexus Academy</p>
+    <div className="al-root">
+      <div className="al-bg" aria-hidden="true" />
+      <div className="al-grid" aria-hidden="true" />
+      <span className="al-orb al-orb-a" aria-hidden="true" />
+      <span className="al-orb al-orb-b" aria-hidden="true" />
+      <div className="al-card" role="region" aria-label="Admin sign in">
+        <div className="al-head">
+          <span className="al-logo"><Image src="/images/pna-logo.png" alt="Physio Nexus Academy" width={52} height={52} priority /></span>
+          <h1>Admin Dashboard</h1>
+          <p>Physio Nexus Academy</p>
         </div>
 
-        <form action={login} className="mt-6 space-y-4">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-navy-700">
-              Email
-            </label>
-            <input name="email" type="email" required className="input" />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-navy-700">
-              Password
-            </label>
-            <input name="password" type="password" required className="input" />
-          </div>
-          {errorMessage && (
-            <p className="text-sm text-red-600">{errorMessage}</p>
-          )}
-          <button
-            type="submit"
-            className="w-full rounded-md bg-teal-500 py-2.5 text-sm font-semibold text-white hover:bg-teal-600"
-          >
-            Sign in
+        <form action={login} className="al-form">
+          <label className="al-field">
+            <span>Email</span>
+            <span className="al-input">
+              <Mail className="h-[18px] w-[18px]" aria-hidden="true" />
+              <input name="email" type="email" required autoComplete="email" placeholder="Your email" />
+            </span>
+          </label>
+          <label className="al-field">
+            <span>Password</span>
+            <span className="al-input">
+              <Lock className="h-[18px] w-[18px]" aria-hidden="true" />
+              <input name="password" type="password" required autoComplete="current-password" placeholder="Your password" />
+            </span>
+          </label>
+          {errorMessage && <p className="al-error" role="alert">{errorMessage}</p>}
+          <button type="submit" className="al-submit">
+            Sign in <ArrowRight className="h-[18px] w-[18px]" aria-hidden="true" />
           </button>
         </form>
+        <p className="al-foot"><ShieldCheck className="h-4 w-4" aria-hidden="true" /> Authorised academy staff only. Every action is private and secure.</p>
       </div>
     </div>
   );

@@ -134,6 +134,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:no-levels
 
+      - name: Validate the admin workspace (access checks intact, service-role client kept out of the browser, every section reachable)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:admin
+
       - name: Validate Dr. Sajjad teaching data (every spoken line resolves in English and Roman Urdu, JSON is fresh)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:avatar
