@@ -838,7 +838,7 @@ export const mmtSkill: SkillDefinition = {
       level: "beginner",
       title: "Make test vs break test",
       body: "In a **break test** (the usual MMT method) the patient holds the end of the test range and you gradually push to 'break' the hold: “Hold — don't let me move you.” In a **make test** the patient pushes into your still hand. Break tests give higher, more discriminating grades; whichever you use, use it consistently and document it.",
-      ur: "Break test mein patient hold karta hai aur aap dheere dheere push karte hain; make test mein patient aap ke hand ko push karta hai.",
+      ur: "Break test (MMT ka aam tareeqa) mein patient test range ke end par muscle ko hold karta hai aur aap dheere dheere push karke us hold ko “break” karte hain: “Hold karein — mujhe hilne na dein.” Make test mein patient aap ke ruke hue haath ko push karta hai. Break test se grades zyada aur zyada farq karne wale milte hain. Jo bhi tareeqa use karein, hamesha wahi use karein aur report mein likhein.",
     },
     {
       id: "universal-sequence",

@@ -146,7 +146,7 @@ export const dermatomesSkill: SkillDefinition = {
       level: "expert",
       title: "Never skip S3–S5",
       body: "Ask about saddle numbness and bladder or bowel change in every patient with back pain and leg symptoms. Reduced perianal sensation with urinary retention or incontinence is **cauda equina syndrome** — same-day emergency referral. In spinal cord injury, preserved **S4–S5** sensation (sacral sparing) means the injury is incomplete — a better prognosis.",
-      ur: "Back pain ke saath saddle numbness ya bladder/bowel mein change = emergency (cauda equina). Foran refer karein.",
+      ur: "Back pain aur tangon ki symptoms wale har patient se saddle numbness aur bladder ya bowel ki tabdeeli zaroor poochein. Perianal sensation kam ho aur saath peshab ruk jaye ya control na rahe to ye cauda equina syndrome hai — usi din emergency refer karein. Spinal cord injury mein agar S4–S5 sensation bachi ho (sacral sparing) to injury incomplete hai, yaani prognosis behtar.",
     },
     {
       id: "overlap-variation",
@@ -356,7 +356,7 @@ export const myotomesSkill: SkillDefinition = {
       level: "intermediate",
       title: "ISNCSCI key muscles",
       body: "For spinal cord injury the international standard grades **10 key muscles** per side (0–5, supine): C5 elbow flexors, C6 wrist extensors, C7 elbow extensors, C8 finger flexors, T1 little-finger abductors, L2 hip flexors, L3 knee extensors, L4 ankle dorsiflexors, L5 long toe extensors, S1 ankle plantarflexors.",
-      ur: "Spinal cord injury mein har side ke 10 key muscles ko 0–5 grade kiya jata hai.",
+      ur: "Spinal cord injury mein international standard har side ke 10 key muscles ko 0–5 grade karta hai (supine position mein): C5 elbow flexors, C6 wrist extensors, C7 elbow extensors, C8 finger flexors, T1 little-finger abductors, L2 hip flexors, L3 knee extensors, L4 ankle dorsiflexors, L5 long toe extensors aur S1 ankle plantarflexors.",
     },
     {
       id: "pitfalls",
@@ -536,7 +536,7 @@ export const reflexesSkill: SkillDefinition = {
       level: "beginner",
       title: "The reflex arc in one breath",
       body: "Tapping the tendon stretches the muscle spindle → sensory signal enters the cord → synapses with the motor neuron → the muscle contracts. Damage anywhere in the arc (root, nerve, muscle) **reduces** the reflex; loss of the brain's inhibition from above (UMN lesion) makes it **brisk**.",
-      ur: "LMN/root lesion = reflex kam; UMN (brain/cord) lesion = reflex brisk.",
+      ur: "Reflex arc ek saans mein: tendon par tap karne se muscle spindle khinchta hai → sensory signal cord mein jata hai → motor neuron se synapse hota hai → muscle contract hota hai. Arc mein kahin bhi nuqsan (root, nerve ya muscle) ho to reflex kam ho jata hai (LMN/root lesion). Agar upar se brain ki inhibition khatam ho jaye (UMN lesion) to reflex brisk ho jata hai.",
     },
     {
       id: "reflex-roots",

@@ -233,6 +233,8 @@ function LevelBar({ entry, progress, level, onChoose }: { entry: SkillIndexEntry
 /* ---------------- Learn ---------------- */
 
 function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: SkillLevelId; progress: SkillsProgress; onNext: () => void }) {
+  const [lang, setLang] = useLang();
+  const ur = lang === "ur";
   const concepts = data.concepts.filter((concept) => concept.level === level);
   const studied = new Set(progress.studied[data.slug] ?? []);
   const done = concepts.filter((concept) => studied.has(concept.id)).length;
@@ -243,7 +245,7 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
           <strong>{SKILL_LEVELS.find((item) => item.id === level)?.label}:</strong> {data.goals[level]}
         </p>
         <span className="text-xs font-bold text-teal-800">
-          {done}/{concepts.length} studied
+          {done}/{concepts.length} {ur ? "parh liye" : "studied"}
         </span>
       </div>
       {concepts.map((concept, index) => (
@@ -251,25 +253,29 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
           <div className={concept.demo ? "grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : ""}>
             <div>
               <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-teal-700">
-                Step {index + 1} of {concepts.length}
+                {ur ? `Step ${index + 1} / ${concepts.length}` : `Step ${index + 1} of ${concepts.length}`}
               </p>
               <h3 className="mt-1.5 text-xl font-bold text-navy-800 sm:text-2xl">{concept.title}</h3>
-              <p className="mt-3 text-[15px] leading-7 text-slate-700">
-                <RichText text={concept.body} />
-              </p>
-              {concept.bullets?.length ? (
-                <ul className="mt-3 space-y-2">
-                  {concept.bullets.map((bullet) => (
-                    <li key={bullet} className="flex gap-2.5 text-[15px] leading-7 text-slate-700">
-                      <span className="mt-2.5 h-1.5 w-1.5 flex-none rounded-full bg-teal-500" aria-hidden="true" />
-                      <span>
-                        <RichText text={bullet} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-              {concept.ur ? <UrduNote text={concept.ur} /> : null}
+              {ur && concept.ur ? (
+                <>
+                  <p className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] leading-7 text-amber-950">
+                    <strong>PNA Teacher:</strong> {concept.ur}
+                  </p>
+                  <details className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2">
+                    <summary className="cursor-pointer py-1 text-sm font-bold text-slate-700">English detail aur bullets dekhein</summary>
+                    <ConceptBody concept={concept} />
+                  </details>
+                </>
+              ) : (
+                <>
+                  <ConceptBody concept={concept} />
+                  {concept.ur ? (
+                    <button type="button" onClick={() => setLang("ur")} className="mt-4 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1.5 text-xs font-extrabold text-amber-950 hover:border-amber-500">
+                      Roman Urdu mein samjhein
+                    </button>
+                  ) : null}
+                </>
+              )}
             </div>
             {concept.demo3d ? (
               <Demo3D demoKey={`${data.slug}/concept:${concept.id}`} title={concept.title} fallback={concept.demo ? <JointDemo spec={concept.demo} /> : undefined} />
@@ -325,21 +331,25 @@ function LearnTab({ data, level, progress, onNext }: { data: SkillData; level: S
   );
 }
 
-function UrduNote({ text }: { text: string }) {
-  const [lang] = useLang();
-  const [forced, setForced] = useState(false);
-  const show = lang === "ur" || forced;
-  if (!show) {
-    return (
-      <button type="button" onClick={() => setForced(true)} className="mt-4 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1.5 text-xs font-extrabold text-amber-950 hover:border-amber-500">
-        Roman Urdu mein samjhein
-      </button>
-    );
-  }
+function ConceptBody({ concept }: { concept: SkillData["concepts"][number] }) {
   return (
-    <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] leading-7 text-amber-950">
-      <strong>PNA Teacher (Roman Urdu mein):</strong> {text}
-    </p>
+    <>
+      <p className="mt-3 text-[15px] leading-7 text-slate-700">
+        <RichText text={concept.body} />
+      </p>
+      {concept.bullets?.length ? (
+        <ul className="mt-3 space-y-2">
+          {concept.bullets.map((bullet) => (
+            <li key={bullet} className="flex gap-2.5 text-[15px] leading-7 text-slate-700">
+              <span className="mt-2.5 h-1.5 w-1.5 flex-none rounded-full bg-teal-500" aria-hidden="true" />
+              <span>
+                <RichText text={bullet} />
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </>
   );
 }
 

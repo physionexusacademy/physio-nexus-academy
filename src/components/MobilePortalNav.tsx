@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import { GraduationCap, Trophy, CalendarDays, HeartPulse, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLang } from "@/lib/lang";
+import { shellText } from "@/lib/shell-ur";
 
 const items = [
   { label: "Home", href: "/", icon: Home },
@@ -14,10 +16,12 @@ const items = [
 
 export function MobilePortalNav() {
   const pathname = usePathname();
+  const [lang] = useLang();
+  const labelOf = (label: string) => (label === "Learn" ? shellText("dockLearn", lang) : label === "Care" ? shellText("dockCare", lang) : label);
 
   return (
     <nav
-      aria-label="Mobile quick navigation"
+      aria-label={lang === "ur" ? "Mobile quick navigation (jaldi rasta)" : "Mobile quick navigation"}
       className="pna-mobile-dock lg:hidden"
     >
       <div className="pna-mobile-dock-grid mx-auto grid max-w-lg grid-cols-5">
@@ -41,7 +45,7 @@ export function MobilePortalNav() {
               )}
             >
               <Icon className="pna-mobile-dock-icon h-5 w-5" aria-hidden="true" />
-              <span className="pna-mobile-dock-label">{item.label}</span>
+              <span className="pna-mobile-dock-label">{labelOf(item.label)}</span>
             </a>
           );
         })}

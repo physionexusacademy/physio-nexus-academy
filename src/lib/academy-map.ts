@@ -148,7 +148,7 @@ export function wingForPath(pathname: string): AcademyWing["id"] | null {
 export type AcademySearchHit = AcademyPlace & { wing: string };
 
 /** Small, forgiving search over the campus map (whole words and prefixes). */
-export function searchAcademy(query: string, atlasPublished = true, limit = 8): AcademySearchHit[] {
+export function searchAcademy(query: string, atlasPublished = true, limit = 8, extraText?: (place: AcademyPlace) => string): AcademySearchHit[] {
   const words = query
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, " ")
@@ -162,7 +162,8 @@ export function searchAcademy(query: string, atlasPublished = true, limit = 8): 
   if (!words.length) return [];
   return all
     .map((place) => {
-      const title = place.label.toLowerCase();
+      const extra = (extraText?.(place) ?? "").toLowerCase();
+      const title = `${place.label.toLowerCase()} ${extra}`;
       const haystack = `${title} ${place.description.toLowerCase()} ${place.keywords ?? ""}`;
       let score = 0;
       for (const word of words) {

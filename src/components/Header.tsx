@@ -5,6 +5,9 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { ArrowRight, CalendarDays, ChevronDown, Flame, Home, Menu, Search, Trophy, X, Zap } from "lucide-react";
 import { visibleWings, wingForPath, type AcademyWing } from "@/lib/academy-map";
+import { useLang } from "@/lib/lang";
+import { localizeWing, shellText } from "@/lib/shell-ur";
+import { SiteLangSwitch } from "@/components/nexus/SiteLangSwitch";
 import { getUnifiedProgress } from "@/lib/unified-progress";
 import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 import { InstallApp } from "@/components/InstallApp";
@@ -39,7 +42,9 @@ function useStudentPass() {
 
 export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) {
   const pathname = usePathname() ?? "/";
-  const wings = visibleWings(atlasPublished);
+  const [lang] = useLang();
+  const t = (key: Parameters<typeof shellText>[0]) => shellText(key, lang);
+  const wings = visibleWings(atlasPublished).map((wing) => localizeWing(wing, lang));
   const activeWing = wingForPath(pathname);
   const [open, setOpen] = useState(false);
   const [openWing, setOpenWing] = useState<AcademyWing["id"] | null>(null);
@@ -163,7 +168,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
         <button
           type="button"
           className="nx-menu-btn order-last"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t("closeMenu") : t("openMenu")}
           aria-expanded={open}
           aria-controls="nx-mobile-drawer"
           onClick={() => setOpen((value) => !value)}
@@ -171,7 +176,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
           {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
         </button>
 
-        <nav className="nx-wings" aria-label="Main navigation">
+        <nav className="nx-wings" aria-label={lang === "ur" ? "Mukhya navigation" : "Main navigation"}>
           {wings.map((wing) => (
             <button
               key={wing.id}
@@ -190,15 +195,16 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
         </nav>
 
         <div className="nx-bar-actions">
-          <button type="button" className="nx-search-btn" onClick={() => setSearchOpen(true)} aria-label="Search the academy (Ctrl K)" aria-haspopup="dialog">
+          <SiteLangSwitch />
+          <button type="button" className="nx-search-btn" onClick={() => setSearchOpen(true)} aria-label={t("searchAria")} aria-haspopup="dialog">
             <Search className="h-4 w-4" aria-hidden="true" />
-            <span className="nx-search-label">Search academy</span>
+            <span className="nx-search-label">{t("searchAcademy")}</span>
             <kbd>Ctrl K</kbd>
           </button>
           <a href="/daily-challenge" className="nx-pill-challenge">
             <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
           </a>
-          <a href={passHref} className="nx-pass" aria-label={pass && pass.xp > 0 ? `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak` : signedIn ? "Open My PNA" : "Open your free student pass"}>
+          <a href={passHref} className="nx-pass" aria-label={pass && pass.xp > 0 ? (lang === "ur" ? `Aap ka student pass: ${pass.xp} XP, ${pass.streak} din ka streak` : `Your student pass: ${pass.xp} XP, ${pass.streak}-day streak`) : signedIn ? (lang === "ur" ? "My PNA kholein" : "Open My PNA") : lang === "ur" ? "Apna free student pass kholein" : "Open your free student pass"}>
             <span className="nx-pass-orb">{pass && pass.xp > 0 ? <Zap className="h-3.5 w-3.5" aria-hidden="true" /> : "PNA"}</span>
             {pass && pass.xp > 0 ? (
               <span className="flex items-center gap-2">
@@ -211,7 +217,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
                 ) : null}
               </span>
             ) : (
-              <span>Student pass</span>
+              <span>{t("studentPass")}</span>
             )}
           </a>
         </div>
@@ -221,7 +227,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
         <div id="nx-mega" className="nx-mega" onMouseEnter={hoverCancel}>
           <div className="container-content nx-mega-grid">
             <div className="nx-mega-intro">
-              <p className="nx-kicker"><span className="nx-live" /> {megaWing.label} wing</p>
+              <p className="nx-kicker"><span className="nx-live" /> {megaWing.label} {t("wingSuffix")}</p>
               <p className="nx-title mt-3 text-2xl text-white">{megaWing.tagline}</p>
               <p className="mt-2 text-sm leading-6 text-[var(--nx-mute)]">{megaWing.intro}</p>
               {megaWing.id === "academy" ? (
@@ -257,8 +263,10 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
             className="flex w-full items-center gap-3 rounded-2xl border border-[var(--nx-line-strong)] bg-white/5 px-4 py-3.5 text-left text-sm text-[var(--nx-mute)]"
           >
             <Search className="h-5 w-5 text-[var(--nx-aqua)]" aria-hidden="true" />
-            Search lessons, cases, services…
+            {t("searchDrawer")}
           </button>
+
+          <div className="mt-3"><SiteLangSwitch variant="drawer" /></div>
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--nx-line)] bg-white/5 px-4 py-3">
             <a href="https://thecpdregister.com" target="_blank" rel="noopener noreferrer" className="min-w-0" tabIndex={open ? 0 : -1}>
@@ -273,12 +281,12 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
               <Trophy className="h-4 w-4" aria-hidden="true" /> Daily Challenge
             </a>
             <a href={passHref} className="nx-btn nx-btn-ghost !min-h-[40px] !text-[0.85rem]" onClick={closeAll}>
-              {signedIn ? "My PNA" : "Student pass"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              {signedIn ? "My PNA" : t("studentPass")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </div>
 
           {wings.map((wing) => (
-            <section key={wing.id} className="nx-drawer-wing" aria-label={`${wing.label} wing`}>
+            <section key={wing.id} className="nx-drawer-wing" aria-label={`${wing.label} ${t("wingSuffix")}`}>
               <p className="nx-kicker">{wing.label} · <span className="normal-case tracking-normal text-[var(--nx-dim)]">{wing.tagline}</span></p>
               <div className="nx-drawer-grid">
                 {wing.places.map((place) => (
@@ -293,10 +301,10 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
 
           <div className="mt-6 grid gap-2 sm:grid-cols-2">
             <a href="/appointment" className="nx-btn nx-btn-primary" tabIndex={open ? 0 : -1} onClick={closeAll}>
-              <CalendarDays className="h-4 w-4" aria-hidden="true" /> Book Appointment
+              <CalendarDays className="h-4 w-4" aria-hidden="true" /> {t("bookAppointment")}
             </a>
             <a href="/home-visit" className="nx-btn nx-btn-ghost" tabIndex={open ? 0 : -1} onClick={closeAll}>
-              <Home className="h-4 w-4" aria-hidden="true" /> Request Home Visit
+              <Home className="h-4 w-4" aria-hidden="true" /> {t("requestHomeVisit")}
             </a>
           </div>
         </nav>
