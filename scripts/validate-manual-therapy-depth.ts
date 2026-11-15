@@ -65,3 +65,21 @@ assert(!/data-level|\.level\b/.test(hub), "the hub cards must not carry a level"
 assert(/id: "demo"/.test(read("src/components/manual-therapy/TechniqueReadingNav.tsx")), "the reading navigation must link to the demonstration");
 
 console.log("manual therapy depth: " + depthSlugs.length + " techniques with expert depth and a 2D demonstration, no level labels");
+
+/* 5. Named techniques are explained one by one (English and Roman Urdu), and the Roman Urdu theory reaches every chapter page. */
+import { manualTherapyComponents } from "../src/lib/manual-therapy-components.ts";
+assert.equal(manualTherapyComponents["fascial-distortion-model"]?.items.length, 6, "the Fascial Distortion Model must explain all six of its techniques");
+assert.equal(manualTherapyComponents["spencer-shoulder-sequence"]?.items.length, 7, "the Spencer sequence must explain all seven movements");
+for (const [slug, chapter] of Object.entries(manualTherapyComponents)) {
+  assert(depthSlugs.includes(slug), slug + ": components belong to a real chapter");
+  assert(chapter.heading.en && chapter.heading.ur && chapter.intro.en.length > 80 && chapter.intro.ur.length > 80, slug + ": heading and intro in both languages");
+  for (const item of chapter.items) {
+    assert(item.name && item.tag.en && item.tag.ur && item.what.en.length > 15 && item.what.ur.length > 15, slug + " / " + item.name + ": explain what it is in both languages");
+    assert(item.perform.en.length >= 3 && item.perform.en.length === item.perform.ur.length, slug + " / " + item.name + ": at least three steps, the same number in both languages");
+  }
+}
+const urduContent = read("src/lib/manual-therapy-urdu-content.ts");
+for (const slug of depthSlugs) assert(urduContent.includes('"' + slug + '": {'), slug + ": no Roman Urdu theory");
+assert(sections.includes("<ComponentsSection"), "the shared sections must render the named techniques");
+assert(detail.includes("<UrduGuideSection") && read("src/components/manual-therapy/WorldApproachChapter.tsx").includes("<UrduGuideSection"), "both chapter pages must offer the Roman Urdu theory");
+console.log("named techniques: " + Object.keys(manualTherapyComponents).length + " chapters explain their techniques one by one in English and Roman Urdu");

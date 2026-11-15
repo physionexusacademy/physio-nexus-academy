@@ -11,6 +11,7 @@ import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadingNav";
 import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
 import { ExpertDepthSections } from "@/components/manual-therapy/ExpertDepthSections";
+import { UrduGuideSection } from "@/components/manual-therapy/ChapterExtras";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
 export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
@@ -39,6 +40,9 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
 
       {/* PNA Teacher: the chapter taught as a step-by-step conversation */}
       <TechniqueTeacher slug={lesson.slug} />
+
+      {/* The whole chapter theory in Roman Urdu (only when the visitor picked Roman Urdu) */}
+      <UrduGuideSection slug={lesson.slug} name={lesson.title} />
 
       {/* Sticky nav */}
       <div className="mt-6">
