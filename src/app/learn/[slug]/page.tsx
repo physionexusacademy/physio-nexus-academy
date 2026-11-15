@@ -5,6 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Clock3, GraduationCap, Layers, Target } from "lucide-react";
 import { conceptLessonMetas, getLessonMeta } from "@/lib/teacher/lesson-index";
 import { LessonPlayer } from "@/components/teacher/LessonPlayer";
+import { ConceptLab } from "@/components/teacher/ConceptLab";
 
 const siteUrl = "https://physionexusacademy.com";
 
@@ -83,7 +84,9 @@ export default async function TeacherLessonPage({ params }: { params: Promise<{ 
         </header>
       </div>
 
-      <div className="mt-4">
+      <ConceptLab slug={lesson.slug} />
+
+      <div className="mt-6">
         <LessonPlayer meta={lesson} />
       </div>
     </div>

@@ -95,3 +95,18 @@ for (const slug of depthSlugs) {
 assert(read("src/components/manual-therapy/ChapterClient.tsx").includes("<TechniqueDemo2D"), "each named technique must have its own demonstration");
 console.log("demo lab: seven demonstrations for each of " + depthSlugs.length + " techniques, plus one for every named technique");
 
+/* 7. PNA Teacher concept lessons get the same kind of Concept Lab (built from their own bilingual beats). */
+import { readdirSync } from "node:fs";
+import { labData, labTabs } from "../src/lib/teacher/concept-lab.ts";
+const lessonDir = new URL("../public/teacher-data/lessons/", import.meta.url);
+let conceptCount = 0;
+for (const file of readdirSync(lessonDir)) {
+  const lesson = JSON.parse(readFileSync(new URL(file, lessonDir), "utf8"));
+  if (String(lesson.area).startsWith("Manual Therapy")) continue;
+  conceptCount++;
+  assert(labTabs(labData(lesson)).length >= 3, lesson.slug + ": the Concept Lab needs at least three demonstrations");
+}
+assert(conceptCount >= 50, "the concept lessons are missing");
+assert(read("src/app/learn/[slug]/page.tsx").includes("<ConceptLab"), "the lesson page must show the Concept Lab");
+console.log("concept lab: " + conceptCount + " PNA Teacher concept lessons each have at least three demonstrations");
+
