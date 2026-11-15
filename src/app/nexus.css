@@ -910,22 +910,3 @@ h2.font-serif {
   font-family: var(--font-heading);
   letter-spacing: -0.03em;
 }
-
-/* the note under the header when Roman Urdu is chosen on a page whose text is English only */
-.nx-lang-notice { background: #fff8e6; border-bottom: 1px solid #fde68a; }
-.nx-lang-notice p { margin: 0 auto; max-width: 1180px; padding: 8px 16px; font-size: 0.8rem; line-height: 1.5; color: #713f12; }
-.nx-lang-notice a { font-weight: 800; text-decoration: underline; color: #92400e; }
-.nx-lang-notice button { font-weight: 800; text-decoration: underline; color: #92400e; }
-
-/* narrow phones: the language switch needs room, so the brand keeps its name on one line and drops the small CPD line (it is in the menu and the footer) */
-@media (max-width: 479px) {
-  .nx-brand { gap: 0.5rem; }
-  .nx-brand-sub { display: none; }
-  .nx-brand-name { font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; }
-  .nx-bar-actions { gap: 0.35rem; }
-  .nx-lang button { min-width: 32px; padding: 0 0.4rem; }
-}
-
-/* phone-friendly tap targets in the footer (the contact rows and the legal links were 16-20 px high; 24 px is the minimum) */
-.nx-footer a.flex { min-height: 28px; }
-.nx-footer a[class*="nx-dim"] { display: inline-flex; align-items: center; min-height: 28px; }
