@@ -32,6 +32,7 @@
     "validate:rehabverse-db": "node scripts/validate-rehabverse-db.mjs",
     "validate:rehabverse-rules": "node --experimental-strip-types scripts/validate-rehabverse-rules.ts",
     "validate:rehabverse-library": "node --experimental-strip-types scripts/validate-rehabverse-library.ts",
+    "validate:rehabverse-poses": "node --experimental-strip-types scripts/rehabverse-pose-gate.mjs",
     "rehabverse:backend": "REHAB_DEV_SQL=1 node scripts/rehabverse-local/server.mjs",
     "validate:speech": "node scripts/validate-speech.mjs",
     "build:ur-lexicon": "node scripts/build-ur-lexicon.mjs"

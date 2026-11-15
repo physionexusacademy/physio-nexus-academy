@@ -12,16 +12,19 @@ import { elbowHandExercises } from "./elbow-hand.ts";
 import { hipExercises } from "./hip.ts";
 import { kneeExercises } from "./knee.ts";
 import { ankleFootExercises } from "./ankle-foot.ts";
+import { moreExercises } from "./more.ts";
+
+const plus = (region: Region, list: ExerciseDef[]) => [...list, ...(moreExercises[region] ?? [])];
 
 export const SOURCE: Record<Region, ExerciseDef[]> = {
-  cervical: cervicalExercises,
-  thoracic: thoracicExercises,
-  lumbar: lumbarExercises,
-  shoulder: shoulderExercises,
-  elbow_hand: elbowHandExercises,
-  hip: hipExercises,
-  knee: kneeExercises,
-  ankle_foot: ankleFootExercises,
+  cervical: plus("cervical", cervicalExercises),
+  thoracic: plus("thoracic", thoracicExercises),
+  lumbar: plus("lumbar", lumbarExercises),
+  shoulder: plus("shoulder", shoulderExercises),
+  elbow_hand: plus("elbow_hand", elbowHandExercises),
+  hip: plus("hip", hipExercises),
+  knee: plus("knee", kneeExercises),
+  ankle_foot: plus("ankle_foot", ankleFootExercises),
 };
 
 /** file path (relative to repo root) → file content */

@@ -1,0 +1,57 @@
+name: RehabVerse pose gate
+
+# Poses every RehabVerse exercise on the real 3D model (both sides, and its "common mistake") at 48 moments and fails when a body part sinks
+# into the mat / bed / floor, the body floats, planted feet lift, the movement jumps or does not come back, a declared contact does not
+# happen, or the left side differs from the right (scripts/rehabverse-pose-gate.mjs, src/lib/rehabverse/pose-check.ts).
+# It also saves one picture of every exercise, for a person to look through.
+
+on:
+  pull_request:
+    branches: [cloudflare-deploy]
+    paths:
+      - "src/lib/rehabverse/**"
+      - "public/rehabverse-data/**"
+      - "src/components/rehabverse/ExercisePlayer.tsx"
+      - "src/lib/virtual-patient/**"
+      - "scripts/rehabverse-pose-gate.mjs"
+      - ".github/workflows/rehabverse-pose-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rehabverse-pose-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  poses:
+    name: Every exercise rests, touches and moves correctly
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PNA_BROWSER_QA_DIR: /tmp/pna-browser-qa
+      RV_SHOTS: artifacts/rehabverse-poses
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install isolated browser tooling
+        run: |
+          npm install --prefix "$PNA_BROWSER_QA_DIR" --no-package-lock playwright@1.56.1
+          "$PNA_BROWSER_QA_DIR/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Check that the exercise files are fresh
+        run: npm run validate:rehabverse-library
+      - name: Pose every exercise on the 3D model
+        run: node --experimental-strip-types scripts/rehabverse-pose-gate.mjs
+      - name: Save the pictures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rehabverse-poses-${{ github.sha }}
+          path: artifacts/rehabverse-poses
+          if-no-files-found: ignore
+          retention-days: 14

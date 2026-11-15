@@ -112,6 +112,8 @@ export type Motion = {
   /** Close-up: camera distance in metres, centred on `focus` (hands, neck). */
   close?: number;
   props?: Prop[];
+  /** Contacts the pose must make while held (checked by the pose quality gate): a bone of one limb touches a bone of another. */
+  touch?: { a: [string, "tested" | "other" | "mid"]; b: [string, "tested" | "other" | "mid"]; within: number; when?: "hold" | "all" }[];
   /** Muscles worked: bones that glow while the muscle works (e.g. "upperleg01" for the quadriceps). */
   glow?: { bones: string[]; sides?: "tested" | "other" | "both" };
   /** Force or resistance arrows (direction in the patient's frame: [towards the tested side, up, front]). */

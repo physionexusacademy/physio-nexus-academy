@@ -180,8 +180,8 @@ export const thoracicExercises: ExerciseDef[] = [
     motion: {
       position: "quadruped", surface: "floor", sided: true, settle: "start",
       start: { ...QUAD, shoulder: { flex: 80, abd: 60 }, elbow: { flex: 140, rot: 0 }, wrist: { flex: 0 } },
-      // The chest turns 34° (a normal range); the supporting arm bends a little so that hand stays flat on the mat (solved on the model).
-      moves: [{ to: { "trunk:t": { rot: 34 }, "neck:t": { rot: 20 }, "shoulder:o": { flex: 32, abd: 36, rot: -19 }, "elbow:o": { flex: 54 } }, ms: 2500, hold: 1300, breath: "in", say: { en: "Keep one hand on the mat, and turn your chest to lift the other elbow up to the ceiling. Follow it with your eyes.", ru: "Ek haath mat par rakhein, seena ghuma kar doosri kohni chhat ki taraf uthayein. Nazar uske saath rakhein." } }],
+      // The chest turns 28° (a normal range); the supporting arm bends a little so that hand stays flat on the mat, exactly where it was (solved on the model).
+      moves: [{ to: { "trunk:t": { rot: 28 }, "neck:t": { rot: 16 }, "shoulder:o": { flex: 48, abd: 7, rot: -53 }, "elbow:o": { flex: 66 }, "wrist:o": { flex: -68 } }, ms: 2500, hold: 1300, breath: "in", say: { en: "Keep one hand on the mat, and turn your chest to lift the other elbow up to the ceiling. Follow it with your eyes.", ru: "Ek haath mat par rakhein, seena ghuma kar doosri kohni chhat ki taraf uthayein. Nazar uske saath rakhein." } }],
       returnMs: 2200, view: "front", zoom: 0.85,
       glow: { bones: ["spine02", "spine03"], sides: "tested" },
     },
