@@ -41,6 +41,7 @@ export const lumbarExercises: ExerciseDef[] = [
       start: { ...HOOK },
       moves: [{ to: { hip: { flex: 118 }, knee: { flex: 125 }, shoulder: { flex: 40 }, elbow: { flex: 20 } }, ms: 2300, hold: 1800, breath: "out", say: { en: "Hug the knee in gently — only to a comfortable stretch.", ru: "Ghutne ko aahista andar layein — sirf aaram dah stretch tak." } }],
       returnMs: 2000, view: "side", zoom: 0.85,
+      touch: [{ a: ["wrist", "tested"], b: ["lowerleg01", "tested"], within: 0.05 }],
       glow: { bones: ["upperleg01"], sides: "tested" },
     },
   },
@@ -73,7 +74,7 @@ export const lumbarExercises: ExerciseDef[] = [
     motion: {
       position: "supine", surface: "plinth", sided: true,
       start: { ...HOOK, shoulder: { abd: 80 }, "shoulder:o": { abd: 80 } },
-      moves: [{ to: { hip: { flex: 55, abd: 30, rot: -10 }, "hip:o": { flex: 55, abd: -30, rot: 10 }, trunk: { rot: 4 } }, ms: 2200, hold: 600, breath: "out", say: { en: "Let both knees fall slowly to the side.", ru: "Dono ghutne aahista side par girne dein." } }],
+      moves: [{ to: { hip: { flex: 55, abd: 30, rot: -10 }, "hip:o": { flex: 55, abd: -30, rot: 10 }, "trunk:a": { rot: 4 } }, ms: 2200, hold: 600, breath: "out", say: { en: "Let both knees fall slowly to the side.", ru: "Dono ghutne aahista side par girne dein." } }],
       returnMs: 2200, view: "feet", zoom: 0.8,
     },
   },
@@ -113,7 +114,7 @@ export const lumbarExercises: ExerciseDef[] = [
       glow: { bones: ["upperleg01"], sides: "both" },
       mistake: {
         text: { en: "Mistake: arching the lower back instead of using the buttocks.", ru: "Ghalti: kulhon ki jagah kamar ko arch karna." },
-        moves: [{ to: { hip: { flex: 40 }, "hip:o": { flex: 40 }, trunk: { flex: -42 } }, ms: 1900, hold: 1200 }],
+        moves: [{ to: { hip: { flex: 44 }, "hip:o": { flex: 44 }, trunk: { flex: -16 } }, ms: 1900, hold: 1200 }],
       },
     },
   },

@@ -60,7 +60,8 @@ const FACE_RIG: [string, [number, number, number], keyof FaceState][] = [
 const sideKey = (side: Side) => (side === "left" ? "L" : "R");
 const sideSign = (side: Side) => (side === "left" ? 1 : -1);
 
-export const PLINTH = { length: 1.95, width: 0.68, height: 0.66 };
+import { PLINTH } from "./plinth";
+export { PLINTH };
 
 /** A small tileable noise used as a bump map for skin pores (generated, nothing is downloaded). */
 function skinPoreBump(): THREE.Texture {

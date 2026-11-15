@@ -16,9 +16,28 @@ import { buildCycle, maxAngle, paceForVoice } from "../src/lib/rehabverse/motion
 const failures: string[] = [];
 const fail = (where: string, message: string) => failures.push(`${where}: ${message}`);
 
+/** Joint limits (degrees) a prescribed movement may use: [lowest, highest] for flexion, abduction and rotation (the model has no limits of its own). */
+const R = (flex: [number, number], abd: [number, number], rot: [number, number]) => ({ flex, abd, rot });
+const RANGE: Record<string, ReturnType<typeof R>> = {
+  shoulder: R([-70, 180], [-50, 180], [-100, 100]),
+  elbow: R([-10, 155], [-10, 10], [-100, 100]),
+  wrist: R([-115, 90], [-40, 40], [-10, 10]),
+  hand: R([0, 100], [0, 100], [0, 0]),
+  fingers: R([-30, 100], [0, 110], [0, 90]),
+  thumb: R([-20, 90], [-10, 70], [-20, 90]),
+  hip: R([-40, 130], [-50, 60], [-70, 60]),
+  knee: R([-8, 160], [-25, 25], [-10, 10]),
+  ankle: R([-80, 40], [-10, 10], [-40, 40]),
+  toe: R([-60, 90], [0, 0], [0, 0]),
+  trunk: R([-50, 70], [-45, 45], [-60, 60]),
+  neck: R([-60, 70], [-50, 50], [-85, 85]),
+  head: R([-30, 40], [-30, 30], [-50, 50]),
+  pelvis: R([-30, 45], [0, 0], [0, 0]),
+};
+
 const POSITIONS = new Set(["standing", "supine", "prone", "sitting", "sidelying", "quadruped", "kneeling"]);
 const VIEWS = new Set(["front", "side", "back", "angle", "feet"]);
-const PROPS = new Set(["wall", "step", "chair", "weight", "ball", "table", "wand", "bolster", "roller", "band", "towel"]);
+const PROPS = new Set(["wall", "step", "chair", "weight", "ball", "table", "wand", "bolster", "roller", "band", "strap", "towel"]);
 const CATEGORIES = new Set(["mobility", "stretch", "strength", "stabilisation", "endurance", "balance", "functional", "postural", "tendon_gliding", "proprioception", "gait"]);
 const MIN_PER_REGION = 6;
 const URDU_SCRIPT = /[؀-ۿݐ-ݿ]/;
@@ -94,6 +113,25 @@ for (const e of all) {
   if (m.moves.length < 1) fail(at, "motion has no moves");
   if (m.zoom !== undefined && !(m.zoom > 0.3 && m.zoom < 3)) fail(at, `zoom ${m.zoom} out of range`);
   if (maxAngle(m) > 175) fail(at, `joint angle ${maxAngle(m)}° is not plausible`);
+  // every joint stays within what a body can do (generous limits; the 3D gate checks where the body ends up)
+  const checkRange = (parts: Record<string, { flex?: number; abd?: number; rot?: number } | undefined>, where: string) => {
+    for (const [key, angles] of Object.entries(parts)) {
+      const range = RANGE[key.split(":")[0]];
+      if (!range || !angles) {
+        if (!range) fail(at, `${where}: unknown joint "${key}"`);
+        continue;
+      }
+      for (const axis of ["flex", "abd", "rot"] as const) {
+        const value = angles[axis];
+        if (value === undefined) continue;
+        const [lo, hi] = range[axis];
+        if (value < lo || value > hi) fail(at, `${where}: ${key}.${axis} = ${value}° is outside ${lo}…${hi}°`);
+      }
+    }
+  };
+  checkRange(m.start, "start");
+  m.moves.forEach((move, i) => checkRange(move.to, `moves[${i}]`));
+  m.mistake?.moves.forEach((move, i) => checkRange(move.to, `mistake.moves[${i}]`));
   for (const [i, move] of m.moves.entries()) {
     if (!(move.ms >= 200 && move.ms <= 8000)) fail(at, `moves[${i}].ms ${move.ms} out of range`);
     if (move.hold !== undefined && !(move.hold >= 0 && move.hold <= 12000)) fail(at, `moves[${i}].hold out of range`);

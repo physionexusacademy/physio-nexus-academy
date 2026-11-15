@@ -12,7 +12,7 @@ import { planSpeech, speakText, stopSpeaking, supportsSpeech, unlockAudio, warmP
 import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
-import { buildCycle, paceForVoice, sampleCycle, type Segment } from "@/lib/rehabverse/motion";
+import { blendPose, buildCycle, ease, paceForVoice, sampleCycle, type Segment } from "@/lib/rehabverse/motion";
 import type { ExerciseDef, Motion, View } from "@/lib/rehabverse/types";
 import { P, type Parts } from "@/lib/virtual-patient/parts";
 
@@ -85,8 +85,10 @@ function focusPoint(room: ExamRoom, spec: string | undefined, side: Side): THREE
 
 type Rig = {
   segments: Segment[];
+  /** What the body rests on, for the pose quality gate (see lib/rehabverse/pose-check.ts). */
+  info: { supportY: number; surface: "plinth" | "mat" | "floor"; resting: boolean; plant?: "both" | "tested" | "other"; position: Motion["position"]; stepTop?: number };
   /** Applies a pose and keeps the body planted / resting on its surface. `tilt` (test builds) overrides the pelvis tilt. */
-  apply: (pose: ReturnType<typeof sampleCycle>["pose"], tilt?: number) => void;
+  apply: (pose: ReturnType<typeof sampleCycle>["pose"], tilt?: number, at?: { index: number; f: number }) => void;
   frame: (view: View) => void;
   /** Moves the props, glow and arrows for the current moment. */
   update: (kind: Segment["kind"], f: number) => void;
@@ -146,10 +148,10 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     tiltNow = deg;
   };
   const tiltFor = (pose: Rig["segments"][number]["from"]) => (pose.pelvis?.flex ?? 0) + (motion.tiltWith ?? 0) * (pose.trunk?.flex ?? 0);
-  const apply = (pose: Rig["segments"][number]["from"], tilt?: number) => {
+  const apply = (pose: Rig["segments"][number]["from"], tilt?: number, at?: { index: number; f: number }) => {
     room.setPose(pose, { animate: false, replace: true });
     tiltTo(tilt ?? tiltFor(pose));
-    solve();
+    solve(at);
   };
 
   const anchorSpec = motion.anchor === false ? null : motion.anchor ?? (pos === "standing" ? { bone: "foot", stance: "both" as const } : null);
@@ -169,7 +171,28 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     root.position.y += surfaceY - box.min.y;
     root.updateMatrixWorld(true);
   }
-  function solve() {
+  /**
+   * Where the root must be (height) so that the body's lowest vertex rests on the surface, at each stage of the repetition, measured
+   * on the real mesh (the quick box can be fooled by an extreme pose, e.g. a head sinking into the bed). Made once when the set is
+   * built, then looked up by time: [segment][step] for 6 steps through a movement, 1 for a hold or rest.
+   */
+  let settleTable: number[][] | null = null;
+  function buildSettleTable() {
+    settleTable = segments.map((segment) => {
+      const moving = segment.kind === "move" || segment.kind === "return";
+      const steps = moving ? 6 : 0;
+      const ys: number[] = [];
+      for (let k = 0; k <= steps; k++) {
+        const pose = moving ? blendPose(segment.from, segment.to, ease(k / steps)) : segment.to;
+        room.setPose(pose, { animate: false, replace: true });
+        tiltTo(tiltFor(pose));
+        root.updateMatrixWorld(true);
+        ys.push(root.position.y + surfaceY - room.bounds(true).min.y);
+      }
+      return ys;
+    });
+  }
+  function solve(at?: { index: number; f: number }) {
     if (a0 && anchorSides.length) {
       const p = anchorPoint();
       root.position.x += a0.x - p.x;
@@ -177,7 +200,18 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
       root.position.y += a0.y - p.y;
       root.updateMatrixWorld(true);
     } else if ((lying || pos === "kneeling") && motion.settle !== "start") {
-      settleY();
+      const row = at && settleTable?.[at.index];
+      if (row && row.length > 1) {
+        const u = ease(at!.f) * (row.length - 1);
+        const k = Math.min(row.length - 2, Math.floor(u));
+        root.position.y = row[k] + (row[k + 1] - row[k]) * (u - k);
+        root.updateMatrixWorld(true);
+      } else if (row) {
+        root.position.y = row[0];
+        root.updateMatrixWorld(true);
+      } else {
+        settleY();
+      }
     }
   }
 
@@ -207,6 +241,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     const mat = mesh(new THREE.BoxGeometry(0.62, 0.016, 0.9), "#0db3aa", 0.7);
     mat.position.set(rootPos.x, 0.008, rootPos.z);
   }
+  let stepTop = 0;
   for (const prop of motion.props ?? []) {
     if (prop.kind === "wall") {
       const wall = mesh(new THREE.BoxGeometry(2.4, 2.4, 0.05), "#dbe5ec", 0.95);
@@ -217,6 +252,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     } else if (prop.kind === "step") {
       const foot = room.boneWorld("foot", side);
       const height = prop.height > 0 ? prop.height : motion.raise ?? Math.max(0.04, foot.y - 0.068);
+      stepTop = height;
       const box = mesh(new THREE.BoxGeometry(0.55, height, 0.32), "#7a93ab", 0.8);
       const centre = foot.clone().addScaledVector(front, 0.04 + (prop.gap ?? 0));
       if (prop.at === "side") centre.addScaledVector(lateral(1), -0.0);
@@ -315,6 +351,19 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
           tube.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.clone().normalize());
         });
       }
+    } else if (prop.kind === "strap") {
+      // a towel or strap looped round the ball of the tested foot, one end in each hand
+      const ball = () => room.boneWorld("foot", side).lerp(room.boneWorld("toe1-1", side), 0.6);
+      for (const s of [side, other]) {
+        const tube = mesh(new THREE.CylinderGeometry(0.009, 0.009, 1, 8), "#e0a82e", 0.7);
+        updaters.push(() => {
+          const from = ball();
+          const delta = room.boneWorld("wrist", s).lerp(room.boneWorld("finger3-1", s), 0.4).sub(from);
+          tube.position.copy(from).addScaledVector(delta, 0.5);
+          tube.scale.set(1, Math.max(0.01, delta.length()), 1);
+          tube.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.clone().normalize());
+        });
+      }
     } else if (prop.kind === "towel") {
       const towel = mesh(new THREE.BoxGeometry(0.34, 0.012, 0.5), "#f4f7fa", 0.95);
       const foot = room.boneWorld("foot", side);
@@ -404,7 +453,23 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     room.frameCamera(false, centre, distance, dir);
   };
 
-  return { segments, apply, frame, update, dispose };
+  // Lying and kneeling exercises that settle every frame: measure the resting height once for every stage of the repetition.
+  if ((lying || pos === "kneeling") && motion.settle !== "start" && !anchorSides.length) {
+    buildSettleTable();
+    room.setPose(pose0, { animate: false, replace: true });
+    tiltTo(tiltFor(pose0));
+    settleY();
+  }
+
+  const info: Rig["info"] = {
+    supportY: pos === "standing" || pos === "sitting" ? motion.raise ?? 0 : surfaceY,
+    surface: onPlinth ? "plinth" : lying || pos === "kneeling" ? "mat" : "floor",
+    resting: lying || pos === "kneeling",
+    plant: anchorSpec ? anchorSpec.stance ?? "both" : undefined,
+    position: pos,
+    stepTop: stepTop || undefined,
+  };
+  return { segments, apply, frame, update, dispose, info };
 }
 
 export type ExercisePlayerProps = {
@@ -498,8 +563,8 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
 
   // Development hook for visual checks: freeze the movement at any moment.
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    (window as unknown as Record<string, unknown>).__rvPlayer = {
+    // (an `if` on a build-time constant, so none of this is in the production build, nor the pose-check module it loads)
+    if (process.env.NODE_ENV !== "production") (window as unknown as Record<string, unknown>).__rvPlayer = {
       seek: (ms: number) => {
         clock.current.elapsed = ms;
         setPlaying(false);
@@ -512,6 +577,38 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
         return queries.map(([bone, s]) => (bone.endsWith(":end") ? roomRef.current!.boneEnd(bone.slice(0, -4), s) : roomRef.current!.boneWorld(bone, s)).toArray());
       },
       side: () => sideRef.current,
+      setSide: (next: Side) => setSide(next),
+      setMistake: (on: boolean) => setShowMistake(on),
+      state: () => ({ id: exercise.id, side: sideRef.current, mistake: showMistake, ready: Boolean(rigRef.current) }),
+      // The pose quality gate: poses the figure at many moments of the repetition and reports what looks wrong (pose-check.ts).
+      check: async (samples = 48) => {
+        const mod = await import("@/lib/rehabverse/pose-check");
+        const r = rigRef.current;
+        const room = roomRef.current;
+        if (!r || !room) return null;
+        const tested = sideRef.current;
+        const other: Side = tested === "left" ? "right" : "left";
+        const total = r.segments.reduce((sum, seg) => sum + seg.ms, 0);
+        const grab = (): import("@/lib/rehabverse/pose-check").Seg[] =>
+          mod.BODY.flatMap((b) =>
+            (b.sided ? ([["tested", tested], ["other", other]] as const) : ([["mid", undefined]] as const)).map(([label, s]) => ({
+              id: b.bone,
+              side: label,
+              a: room.boneWorld(b.bone, s).toArray() as [number, number, number],
+              b: (b.to ? room.boneWorld(b.to, s) : room.boneEnd(b.bone, s)).toArray() as [number, number, number],
+              r: b.r,
+            })),
+          );
+        const snaps: import("@/lib/rehabverse/pose-check").Snapshot[] = [];
+        for (let i = 0; i <= samples; i++) {
+          const t = (i / samples) * total * 0.9999;
+          const state = sampleCycle(r.segments, t);
+          r.apply(state.pose, undefined, { index: state.index, f: state.f });
+          snaps.push({ kind: state.segment.kind, t, segs: grab(), floor: room.bounds(true).min.y });
+        }
+        r.apply(r.segments[0].from);
+        return { id: exercise.id, side: tested, mistake: showMistake, violations: mod.analyse(snaps, { ...r.info, trunkR: r.info.position === "supine" ? mod.SUPINE_TRUNK : 0.12 }, exercise.motion.touch), heights: mod.heights(snaps) };
+      },
       lowest: () => (roomRef.current ? roomRef.current.bounds(true).min.y : null),
       box: () => (roomRef.current ? (({ min, max }) => [min.toArray(), max.toArray()])(roomRef.current.bounds(true)) : null),
       cycle: () => (rigRef.current ? (pacedRef.current ?? rigRef.current.segments).map((seg) => ({ kind: seg.kind, ms: seg.ms })) : []),
@@ -557,7 +654,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       clock.current.last = now;
       if (playing) clock.current.elapsed += dt * speed;
       const state = sampleCycle(pacedRef.current ?? rig.segments, clock.current.elapsed);
-      rig.apply(state.pose);
+      rig.apply(state.pose, undefined, { index: state.index, f: state.f });
       rig.update(state.segment.kind, state.f);
       // Guide: breathing sway while idle, a nod and mouth movement when speaking.
       const t = now / 1000;

@@ -110,8 +110,11 @@ export const ankleFootExercises: ExerciseDef[] = [
     motion: {
       position: "supine", surface: "plinth", sided: true,
       start: { hip: { flex: 0 }, knee: { flex: 0 }, "hip:o": { flex: 0 }, "knee:o": { flex: 0 }, ankle: { flex: 0 } },
-      moves: [{ to: { hip: { flex: 72 }, knee: { flex: 0 }, ankle: { flex: 22 }, shoulder: { flex: 80 }, elbow: { flex: 30 } }, ms: 2400, hold: 3200, breath: "out", say: { en: "Keep the knee straight and gently pull the foot towards you.", ru: "Ghutna seedha rakhein aur paon ko aahista apni taraf kheinchein." } }],
+      moves: [{ to: { hip: { flex: 72 }, knee: { flex: 0 }, ankle: { flex: 22 }, shoulder: { flex: 43.6, abd: -5, rot: 5.5 }, elbow: { flex: 8 }, "shoulder:o": { flex: 43.7, abd: -20, rot: -16.6 }, "elbow:o": { flex: 8.6 } }, ms: 2400, hold: 3200, breath: "out", say: { en: "Keep the knee straight and gently pull the foot towards you.", ru: "Ghutna seedha rakhein aur paon ko aahista apni taraf kheinchein." } }],
       returnMs: 2200, view: "side", zoom: 0.85,
+      props: [{ kind: "strap" }],
+      // the hands hold the ends of the towel, a little over half a metre from the foot
+      touch: [{ a: ["wrist", "tested"], b: ["foot", "tested"], within: 0.55 }, { a: ["wrist", "other"], b: ["foot", "tested"], within: 0.6 }],
       glow: { bones: ["lowerleg01"], sides: "tested" },
     },
   },

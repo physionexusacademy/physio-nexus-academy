@@ -62,6 +62,14 @@ export const REFERENCES: Record<string, Reference> = {
     key: "wehbe1985",
     text: "Wehbé MA, Hunter JM. Flexor tendon gliding in the hand. Part I. In vivo excursions. J Hand Surg Am. 1985;10(4):570–574.",
   },
+  basson2017: {
+    key: "basson2017",
+    text: "Basson A, et al. The Effectiveness of Neural Mobilization for Neuromusculoskeletal Conditions: A Systematic Review and Meta-analysis. J Orthop Sports Phys Ther. 2017;47(9):593–615.",
+  },
+  mcgill2001: {
+    key: "mcgill2001",
+    text: "McGill SM. Low back stability: from formal description to issues for performance and rehabilitation. Exerc Sport Sci Rev. 2001;29(1):26–31.",
+  },
   acsm2009: {
     key: "acsm2009",
     text: "American College of Sports Medicine. Position stand: Progression models in resistance training for healthy adults. Med Sci Sports Exerc. 2009;41(3):687–708.",

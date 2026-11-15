@@ -222,6 +222,7 @@ export const hipExercises: ExerciseDef[] = [
         { to: { hip: { flex: 118, abd: 25, rot: -53 }, knee: { flex: 114 }, "hip:o": { flex: 80 }, "knee:o": { flex: 105 } }, ms: 2200, hold: 3000, breath: "out", say: { en: "Now draw the bottom thigh gently towards your chest and feel the stretch in the buttock.", ru: "Ab neeche wali thigh ko aahista seene ki taraf kheinchein aur kulhe mein stretch mehsoos karein." } },
       ],
       returnMs: 2300, view: "side", zoom: 0.85,
+      touch: [{ a: ["foot", "tested"], b: ["upperleg01", "other"], within: 0.05 }],
       glow: { bones: ["upperleg01"], sides: "tested" },
     },
   },
@@ -255,8 +256,9 @@ export const hipExercises: ExerciseDef[] = [
     motion: {
       position: "supine", surface: "plinth", sided: true, shift: 0.92, settle: "start",
       start: { hip: { flex: 0 }, knee: { flex: 0 }, "hip:o": { flex: 0 }, "knee:o": { flex: 0 } },
-      moves: [{ to: { hip: { flex: -14 }, knee: { flex: 62 }, "hip:o": { flex: 118 }, "knee:o": { flex: 125 }, shoulder: { flex: 40 }, "shoulder:o": { flex: 40 } }, ms: 2600, hold: 3200, breath: "out", say: { en: "Hug one knee in and let the other leg hang — feel the front of the hip stretch.", ru: "Ek ghutna andar lagayein aur doosri taang latkne dein — kulhe ke samne stretch mehsoos karein." } }],
+      moves: [{ to: { hip: { flex: -14 }, knee: { flex: 62 }, "hip:o": { flex: 118 }, "knee:o": { flex: 125 }, shoulder: { flex: 38.4, abd: -27.9, rot: 6.3 }, elbow: { flex: 25.5 }, "shoulder:o": { flex: 25, abd: -0.9, rot: 0.1 }, "elbow:o": { flex: 55.5 } }, ms: 2600, hold: 3200, breath: "out", say: { en: "Hug one knee in and let the other leg hang — feel the front of the hip stretch.", ru: "Ek ghutna andar lagayein aur doosri taang latkne dein — kulhe ke samne stretch mehsoos karein." } }],
       returnMs: 2500, view: "side", zoom: 0.9,
+      touch: [{ a: ["wrist", "tested"], b: ["lowerleg01", "other"], within: 0.05 }, { a: ["wrist", "other"], b: ["lowerleg01", "other"], within: 0.05 }],
       glow: { bones: ["upperleg01"], sides: "tested" },
     },
   },

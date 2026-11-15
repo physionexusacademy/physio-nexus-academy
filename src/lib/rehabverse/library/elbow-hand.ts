@@ -217,9 +217,10 @@ export const elbowHandExercises: ExerciseDef[] = [
     evidence: ["tyler2010"],
     motion: {
       position: "standing", sided: true,
-      start: { shoulder: { flex: 84 }, elbow: { flex: 4, rot: 90 }, "shoulder:o": { flex: 70 }, "elbow:o": { flex: 95 } },
+      start: { shoulder: { flex: 80, abd: -30 }, elbow: { flex: 14, rot: 90 }, "shoulder:o": { flex: 70.9, abd: -10.4, rot: 2.6 }, "elbow:o": { flex: 13.7 } },
       moves: [{ to: { wrist: { flex: -66 } }, ms: 1900, hold: 3300, breath: "out", say: { en: "Draw the hand back gently — feel the forearm stretch.", ru: "Haath ko aahista peeche kheinchein — forearm mein stretch mehsoos karein." } }],
       returnMs: 1600, view: "side", zoom: 0.85, focus: "wrist",
+      touch: [{ a: ["wrist", "other"], b: ["finger3-1", "tested"], within: 0.05 }],
       glow: { bones: ["lowerarm01"], sides: "tested" },
     },
   },
@@ -250,9 +251,10 @@ export const elbowHandExercises: ExerciseDef[] = [
     evidence: ["tyler2010"],
     motion: {
       position: "standing", sided: true,
-      start: { shoulder: { flex: 84 }, elbow: { flex: 4, rot: -90 }, "shoulder:o": { flex: 70 }, "elbow:o": { flex: 95 } },
+      start: { shoulder: { flex: 80, abd: -30 }, elbow: { flex: 14, rot: -90 }, "shoulder:o": { flex: 70.9, abd: -10.4, rot: 2.6 }, "elbow:o": { flex: 13.7 } },
       moves: [{ to: { wrist: { flex: 66 } }, ms: 1900, hold: 3300, breath: "out", say: { en: "Bend the wrist down gently — feel the top of the forearm stretch.", ru: "Kalai ko aahista neeche morein — forearm ke upar stretch mehsoos karein." } }],
       returnMs: 1600, view: "side", zoom: 0.85, focus: "wrist",
+      touch: [{ a: ["wrist", "other"], b: ["finger3-1", "tested"], within: 0.05 }],
       glow: { bones: ["lowerarm01"], sides: "tested" },
     },
   },

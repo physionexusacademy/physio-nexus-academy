@@ -1044,3 +1044,8 @@ seedh सीध
 oont ऊँट
 ghuma घुमा
 ghumaiye घुमाइए
+door दूर
+jab जब
+thore थोड़े
+chhod छोड़
+dhalne ढलने

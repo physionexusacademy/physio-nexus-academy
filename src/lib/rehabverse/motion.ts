@@ -19,7 +19,7 @@ export type Segment = {
 
 /** Later poses replace whole joints of earlier ones. */
 const merge = (base: Pose, over: Pose): Pose => ({ ...base, ...over });
-const ease = (t: number) => t * t * (3 - 2 * t);
+export const ease = (t: number) => t * t * (3 - 2 * t);
 
 export function blendPose(a: Pose, b: Pose, t: number): Pose {
   const out: Pose = {};

@@ -360,8 +360,9 @@ export const shoulderExercises: ExerciseDef[] = [
     motion: {
       position: "standing", sided: true,
       start: { shoulder: { flex: 6 }, "shoulder:o": { flex: 6 }, elbow: { flex: 12 }, "elbow:o": { flex: 12 } },
-      moves: [{ to: { shoulder: { flex: 88, abd: -42 }, elbow: { flex: 6 }, "shoulder:o": { flex: 62, abd: -34 }, "elbow:o": { flex: 118 } }, ms: 2400, hold: 3400, breath: "out", say: { en: "Draw the arm across and hold — feel the back of the shoulder stretch.", ru: "Bazu ko samne se guzar kar hold karein — kandhe ke peeche stretch mehsoos hoga." } }],
+      moves: [{ to: { shoulder: { flex: 88, abd: -42 }, elbow: { flex: 6 }, "shoulder:o": { flex: 26.7, abd: -19.6, rot: 35.2 }, "elbow:o": { flex: 105.3 } }, ms: 2400, hold: 3400, breath: "out", say: { en: "Draw the arm across and hold — feel the back of the shoulder stretch.", ru: "Bazu ko samne se guzar kar hold karein — kandhe ke peeche stretch mehsoos hoga." } }],
       returnMs: 2000, view: "front", zoom: 0.9,
+      touch: [{ a: ["wrist", "other"], b: ["upperarm01", "tested"], within: 0.05 }],
       glow: { bones: ["upperarm01"], sides: "tested" },
     },
   },

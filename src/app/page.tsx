@@ -7,6 +7,7 @@ import { LobbyHero } from "@/components/home/LobbyHero";
 import { StudentPass } from "@/components/home/StudentPass";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { HomeBooks } from "@/components/home/HomeBooks";
+import { HomeLeagues } from "@/components/home/HomeLeagues";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeNeedHelp } from "@/components/home/HomeNeedHelp";
 import { HomeBodyMap } from "@/components/home/HomeBodyMap";
@@ -170,6 +171,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <HomeLeagues />
 
       <HomeBooks />
 
