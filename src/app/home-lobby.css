@@ -890,6 +890,24 @@
   .lobby-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lobby-stats .lobby-cpd { grid-column: span 2; }
 }
+/* Phase 1: Intermediate laptop / small desktop (901–1280px) – better hero balance + 3-col pathways */
+@media (min-width: 901px) and (max-width: 1280px) {
+  .lobby-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    column-gap: clamp(18px, 2.8vw, 36px);
+  }
+  .pna-vision-pathways {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .pna-vision-pathway {
+    min-height: 280px;
+    padding-bottom: 132px;
+  }
+  .pna-vision-pathway-photo {
+    width: min(100%, 200px);
+  }
+}
+
 @media (max-width: 900px) {
   .lobby-hero-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "show" "bottom"; row-gap: 22px; }
   .lobby-copy-top, .lobby-copy-bottom { align-self: auto; }
