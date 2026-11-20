@@ -84,14 +84,22 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   /* 2. The pilot page: status, limit, no sign-off yet. */
   await pad.goto(`${BASE}/admin/rehabverse/ai-pilot`);
   await pad.locator("[data-ai-pilot-page]").waitFor({ timeout: 90000 });
-  check("2a The pilot page says 0 of 5 patients have AI on", /Pilot:\s*0 of 5/.test(await pad.locator("[data-pilot-status]").innerText()));
+  check("2a The pilot page says 0 patients have AI on, limit 5", /Pilot:\s*0 patients have AI on \(limit 5\)/.test(await pad.locator("[data-pilot-status]").innerText()));
   check("2b With no sign-off it says so, and 'Open to all patients' is disabled", /No sign-off yet/.test(await pad.locator("[data-pilot-signoff]").innerText()) && (await pad.getByRole("button", { name: "Open to all patients" }).isDisabled()));
-  await pad.getByLabel("Pilot limit").fill("1");
-  await pad.getByRole("button", { name: "Save limit" }).click();
+  // no limit (the default for research): tick the box, save, and the page says so; then back to a limit of 1 for the rest of the test
+  await pad.locator("[data-pilot-nolimit]").check();
+  await pad.getByRole("button", { name: "Save", exact: true }).click();
   await pad.getByText("Saved.").waitFor({ timeout: 30000 });
   await pad.reload();
   await pad.locator("[data-pilot-status]").waitFor();
-  check("2c The limit can be lowered to 1 (the page now says 0 of 1)", /Pilot:\s*0 of 1/.test(await pad.locator("[data-pilot-status]").innerText()));
+  check("2c 'No limit on patients' removes the limit (the page says no limit, and the saved value is 100000)", /\(no limit\)/.test(await pad.locator("[data-pilot-status]").innerText()) && (await rows("select max_patients from public.rehab_ai_pilot"))[0].max_patients === 100000);
+  await pad.locator("[data-pilot-nolimit]").uncheck();
+  await pad.getByLabel("Pilot limit").fill("1");
+  await pad.getByRole("button", { name: "Save", exact: true }).click();
+  await pad.getByText("Saved.").waitFor({ timeout: 30000 });
+  await pad.reload();
+  await pad.locator("[data-pilot-status]").waitFor();
+  check("2d A limit can still be set (the page now says limit 1)", /Pilot:\s*0 patients have AI on \(limit 1\)/.test(await pad.locator("[data-pilot-status]").innerText()));
 
   /* 3. The limit on the AI switch. */
   await pad.goto(`${BASE}/admin/rehabverse/patients/${ida}`);

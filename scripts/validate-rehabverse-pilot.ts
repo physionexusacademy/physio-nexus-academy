@@ -132,6 +132,13 @@ const again = await buildReviewPack();
   ok(!/\bdrop (table|function|column)\b/i.test(code), "the migration drops nothing");
   ok(/rehab__require_admin/.test(code.slice(code.indexOf("rehab_admin_ai_pilot()"))), "every pilot function checks the admin role itself");
   ok(src("scripts/rehabverse-local/db.mjs").includes("20261124120000_rehab_ai_pilot.sql"), "the local test database runs the migration");
+  // the pilot has no patient limit by default (research needs more than 5): "no limit" is stored as 100000, in the database and in the screen
+  const noLimit = src("supabase/migrations/20261125120000_rehab_ai_pilot_no_limit.sql").replace(/--.*$/gm, "");
+  ok(/alter column max_patients set default 100000/.test(noLimit) && /max_patients between 1 and 100000/.test(noLimit) && /set max_patients = 100000 where max_patients = 5/.test(noLimit), "the pilot has no limit by default: the old default of 5 becomes 'no limit' and a limit set on purpose is left alone");
+  ok(/p_max not between 1 and 100000/.test(noLimit) && !/\bdrop (table|function|column)\b/i.test(noLimit), "a limit can still be set (1 to 99,999) and the migration drops no table, function or column");
+  ok(src("scripts/rehabverse-local/db.mjs").includes("20261125120000_rehab_ai_pilot_no_limit.sql"), "the local test database runs the no-limit migration too");
+  const limit = src("src/lib/rehabverse/ai/pilot-limit.ts");
+  ok(/PILOT_NO_LIMIT = 100000/.test(limit) && src("src/components/rehabverse/admin/PilotControls.tsx").includes("data-pilot-nolimit") && src("src/app/admin/(dashboard)/rehabverse/ai-pilot/dashboard.tsx").includes("isNoLimit"), "the pilot screen shows and sets 'no limit'");
 }
 
 console.log(`RehabVerse AI pilot and sign-off: ${checks} checks passed (review pack complete and stable, notices in one place, safety behaviour on ${PROBES.length} sample sentences plus denials and bladder control, sample conversations, wiring).`);
