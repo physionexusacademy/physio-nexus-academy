@@ -91,6 +91,44 @@ The library is read from the static assets (not bundled into the worker), only t
 `npm run validate:rehabverse-coach` (2,000+ checks, including **every library exercise x 2 languages x 5 quick questions**, so an exercise name
 can never set off an alarm or be misread) and `scripts/rehabverse-local/e2e-coach.cjs` (24 browser steps against the local backend).
 
+## The recovery check-in chat (AI assistant, Phase E)
+
+When a recovery check-in is open (for example the **24 h** one, the day after a session; the windows are the database's own, `checkin-shared.ts`
+`CHECKIN_WINDOWS`), a patient whose physiotherapist switched AI on sees **"Answer by chat instead"** above the normal check-in form
+(`components/rehabverse/CheckinChat.tsx`, text only). The assistant asks the check-in questions one at a time and **fills in the form below as the
+patient answers**. It never saves anything: the patient reads the form, **ticks the safety list themselves** (the chat never ticks "None of these"),
+and presses Save, so the saved check-in (`rehab_submit_followup`) is always the patient's own. Without the switch, or when the patient prefers it,
+the form works exactly as before.
+
+How a turn works (`lib/rehabverse/ai/checkin-turn.ts`):
+
+1. **Safety first** (`checkin-safety.ts`): the same alert rules as the coach, after removing **plain denials**: the chat itself asks about warning
+   signs, so "no chest pain, no dizziness or numbness" is the normal answer and the shared screen has no idea about negation. Only a negator directly
+   followed by the symptom ("no chest pain", "chakkar nahi aaya", "not swollen") is removed; "no feeling in my foot", "no but my knee gave way" and
+   "no chest pain, sharp pain at night" still alarm. A hit stops the chat (the model is never called), says what to do (1122 when it is an emergency),
+   **pre-ticks the matching warning sign** of the form's own list, and alerts the physiotherapist (urgent). The chat then stays quiet for that
+   check-in for 24 h; the pre-ticked form is still there.
+2. **The safety question is asked and read by code** (second question, so it is never at the end of a chat that stops early). A "yes", even a bare
+   one, stops the chat. An answer it cannot read is asked again once, then left for the patient's own tick-list.
+3. **Pain, daily activities, comparison with before, new symptoms and a note** are read by code first (a 0 to 10 number, better/same/worse in
+   English and Roman Urdu, yes/no, skip). **The model never sets a number**: it only helps with free wording of the comparison and new symptoms (code
+   wins on conflict) and writes **one short acknowledgement sentence**, which `checkin-guard.ts` checks: no diagnosis, reassurance, prediction, advice,
+   medicine, question, claim to be a person, speculation about a cause, or a number the patient did not say. Otherwise a scripted sentence is used.
+   What is asked next, and when the chat is finished, is decided by code (`checkin-spec.ts`).
+4. **Routing**: a question only the physiotherapist can answer (medicine, scans, "should I stop") and a pain of 8 or more are noted for them
+   (attention), at most once per conversation. The model can add a note for the physiotherapist (`needs_therapist`) but can never remove one.
+
+Stored like the other conversations (`rehab_ai_conversations`, kind `feedback`, the draft holds the day, the check-in and the chat's own answers).
+On the physiotherapist's day review, next to the recovery results, an **"AI check-in chat"** line says whether the chat was used, whether the patient
+**changed an answer on the form after the chat** (for example pain chat 3, form 4), or whether it **stopped on a warning sign**, with a link to the
+transcript. Alerts reach the admin inbox as `ai_checkin_safety` (urgent) and `ai_checkin_question` (attention).
+Database: `20261123120000_rehab_ai_checkin.sql` (`rehab_ai_coach_notify` now serves both coach and check-in conversations; new
+`rehab_ai_checkin_held`; both server-only).
+
+`npm run validate:rehabverse-checkin` (400+ checks: about 90 denials and warning-sign phrases in English and Roman Urdu, readers, whole
+conversations, guard, routing, privacy, windows, wiring), `scripts/rehabverse-local/e2e-checkin.cjs` (34 browser steps against the local backend), and
+`/api/rehabverse/ai/selftest?kind=checkin` (admin only) to judge the real models' acknowledgements.
+
 ## Data protection
 
 * RLS on every table; API roles have read-only grants where reads are needed and **no write grants**.

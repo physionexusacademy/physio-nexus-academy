@@ -9,6 +9,13 @@ import { applyUpdates, EMPTY_DRAFT, MAX_PATIENT_MESSAGE, progress, type IntakeDr
 import { GREETING } from "@/lib/rehabverse/ai/questions";
 import { buildCoachContext, COACH_GREETING, MAX_COACH_MESSAGE, type CoachContext, type CoachDef, type PlanLine } from "@/lib/rehabverse/ai/coach-spec";
 import { runCoachTurn } from "@/lib/rehabverse/ai/coach-turn";
+import { checkinPending, MAX_CHECKIN_MESSAGE, readCheckinDraft, type CheckinDraft } from "@/lib/rehabverse/ai/checkin-shared";
+import { checkinGreeting } from "@/lib/rehabverse/ai/checkin-spec";
+import { runCheckinTurn } from "@/lib/rehabverse/ai/checkin-turn";
+import type { CheckinContext } from "@/lib/rehabverse/ai/checkin-prompts";
+import type { FollowupPoint } from "@/lib/rehabverse/api-types";
+import { cleanDayTitle } from "@/lib/rehabverse/format";
+import { TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { coachLibrary } from "@/lib/rehabverse/ai/library-server";
 import type { Bi } from "@/lib/rehabverse/types";
 
@@ -219,4 +226,108 @@ export async function coachChatTurnAction(input: { conversationId: string; sessi
 
 export async function closeCoachChatAction(conversationId: string): Promise<void> {
   await closeIntakeChatAction(conversationId, "completed");
+}
+
+
+/* ───────────────────────── the recovery check-in chat (Phase E) ───────────────────────── */
+
+const POINTS: string[] = ["later_same_day", "24h", "48h"];
+
+/** The day's own details for a check-in that can be answered right now, read from the database for the signed-in patient (never from the browser). */
+async function pendingCheckin(sessionId: string, point: string): Promise<CheckinContext | null> {
+  if (!UUID.test(sessionId) || !POINTS.includes(point)) return null;
+  let data;
+  try {
+    data = await getSession(sessionId);
+  } catch {
+    return null;
+  }
+  const timepoint = point as FollowupPoint;
+  if (!data.feedback || !checkinPending(data, timepoint).ok) return null;
+  return {
+    dayNumber: data.session.day_number, title: cleanDayTitle(data.session.title), point: timepoint, pointLabel: TIMEPOINT_LABEL[timepoint].en,
+    session: { painBefore: data.feedback.pain_before, painDuring: data.feedback.pain_during, painAfter: data.feedback.pain_after, difficulty: data.feedback.difficulty },
+  };
+}
+
+type CheckinStored = { session_id?: string; timepoint?: string; day_number?: number; answers?: unknown } & Record<string, unknown>;
+export type CheckinState = { conversationId: string; messages: ChatMessageOut[]; answers: CheckinDraft; language: Lang; status: string; held: boolean };
+
+/** Opens (or resumes) the check-in conversation for this check-in, after the patient has accepted the AI notice. After a safety stop it returns that conversation instead (held). */
+export async function startCheckinChatAction(input: { sessionId: string; timepoint: string; lang: Lang; accepted: boolean }): Promise<ChatResult<CheckinState>> {
+  try {
+    if (!input.accepted) return { ok: false, error: "bad_request" };
+    const context = await patientContext();
+    if (!context) return { ok: false, error: "ai_off" };
+    if (!(await pendingCheckin(input.sessionId, input.timepoint))) return { ok: false, error: "bad_request" };
+    const db = createAdminClient();
+    const held = await db.rpc("rehab_ai_checkin_held", { p_patient_id: context.patientId, p_session_id: input.sessionId, p_timepoint: input.timepoint });
+    const stopped = held.data as { id: string; language: Lang; messages: unknown; draft: CheckinStored } | null;
+    if (stopped?.id) return { ok: true, conversationId: stopped.id, messages: asMessages(stopped.messages), answers: readCheckinDraft(stopped.draft?.answers), language: stopped.language === "en" ? "en" : "ru", status: "safety_stop", held: true };
+    const lang: Lang = input.lang === "en" ? "en" : "ru";
+    const open = () => db.rpc("rehab_ai_open_conversation", { p_patient_id: context.patientId, p_kind: "feedback", p_language: lang, p_consent_version: "ai-v1", p_greeting: checkinGreeting(lang) });
+    let { data, error } = await open();
+    // an open check-in conversation about another day or another check-in is set aside: each check-in gets its own record
+    const stored = (data as (OpenedConversation & { draft: CheckinStored }) | null)?.draft;
+    if (!error && stored?.session_id && (stored.session_id !== input.sessionId || stored.timepoint !== input.timepoint)) {
+      await db.rpc("rehab_ai_close_conversation", { p_patient_id: context.patientId, p_conversation_id: (data as OpenedConversation).id, p_status: "abandoned" });
+      ({ data, error } = await open());
+    }
+    if (error) return { ok: false, error: /not enabled/i.test(error.message) ? "ai_off" : /too many/i.test(error.message) ? "rate_limited" : "failed" };
+    const conversation = data as OpenedConversation & { draft: CheckinStored };
+    return { ok: true, conversationId: conversation.id, messages: asMessages(conversation.messages), answers: readCheckinDraft(conversation.draft?.answers), language: conversation.language, status: conversation.status, held: false };
+  } catch (error) {
+    console.error("REHAB_CHECKIN_START", error instanceof Error ? error.message : String(error));
+    return { ok: false, error: "failed" };
+  }
+}
+
+/** One patient message in, one reply out, and the answers recorded so far. The chat never saves the check-in: only the patient's own form does. */
+export async function checkinChatTurnAction(input: { conversationId: string; sessionId: string; timepoint: string; text: string }): Promise<
+  ChatResult<{ reply: string; status: "open" | "completed" | "safety_stop"; answers: CheckinDraft; done: boolean; safety: string | null; routed: boolean }>
+> {
+  try {
+    const text = typeof input.text === "string" ? input.text.trim() : "";
+    if (!UUID.test(input.conversationId) || !UUID.test(input.sessionId) || text.length < 1 || text.length > MAX_CHECKIN_MESSAGE) return { ok: false, error: "bad_request" };
+    const context = await patientContext();
+    if (!context) return { ok: false, error: "ai_off" };
+    if (limited(context.patientId)) return { ok: false, error: "rate_limited" };
+
+    const ctx = await pendingCheckin(input.sessionId, input.timepoint);
+    if (!ctx) return { ok: false, error: "bad_request" };
+    const db = createAdminClient();
+    const { data } = await db.rpc("rehab_ai_get_conversation", { p_patient_id: context.patientId, p_conversation_id: input.conversationId });
+    const conversation = data as (OpenedConversation & { draft: CheckinStored }) | null;
+    if (!conversation || conversation.status !== "open") return { ok: false, error: "bad_request" };
+    const stored = conversation.draft ?? {};
+    if ((stored.session_id && stored.session_id !== input.sessionId) || (stored.timepoint && stored.timepoint !== input.timepoint)) return { ok: false, error: "bad_request" };
+    const answers = readCheckinDraft(stored.answers);
+    if (answers.done) return { ok: false, error: "bad_request" };
+
+    const lang: Lang = conversation.language === "en" ? "en" : "ru";
+    const result = await runCheckinTurn(
+      { lang, history: asMessages(conversation.messages), draft: answers, patientText: text, turnNumber: Number(conversation.turns ?? 0) + 1, ctx },
+      { callModel: (messages) => callChat(messages, { maxTokens: 200, temperature: 0.4, timeoutMs: 12000 }) },
+    );
+    const draft: CheckinStored = { ...stored, session_id: input.sessionId, timepoint: input.timepoint, day_number: ctx.dayNumber, answers: result.draft };
+    const { error } = await db.rpc("rehab_ai_append_turn", {
+      p_patient_id: context.patientId, p_conversation_id: input.conversationId, p_patient_text: text, p_assistant_text: result.reply,
+      p_draft: draft, p_model: result.model, p_fallback: result.fallback, p_status: result.status, p_safety: result.safety?.kind ?? null,
+    });
+    if (error) return { ok: false, error: /not enabled/i.test(error.message) ? "ai_off" : "failed" };
+    if (result.notify) {
+      // best effort: the turn itself is already saved
+      const told = await db.rpc("rehab_ai_coach_notify", { p_patient_id: context.patientId, p_conversation_id: input.conversationId, p_kind: result.notify, p_alert: result.alert ?? "question", p_excerpt: text });
+      if (told.error) console.error("REHAB_CHECKIN_NOTIFY", told.error.message);
+    }
+    return { ok: true, reply: result.reply, status: result.status, answers: result.draft, done: result.draft.done, safety: result.safety?.kind ?? null, routed: result.notify !== null };
+  } catch (error) {
+    console.error("REHAB_CHECKIN_TURN", error instanceof Error ? error.message : String(error));
+    return { ok: false, error: "failed" };
+  }
+}
+
+/** The patient saved their check-in ("completed") or chose to answer again ("abandoned"): close the conversation record. */
+export async function closeCheckinChatAction(conversationId: string, status: "completed" | "abandoned"): Promise<void> {
+  await closeIntakeChatAction(conversationId, status);
 }

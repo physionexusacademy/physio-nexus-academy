@@ -224,9 +224,9 @@ const turn = (text: string, over: Partial<Parameters<typeof runCoachTurn>[0]> = 
   ok(/data\.access !== "open"/.test(actions) && actions.includes("getSession(sessionId)"), "the coach works only on a day that is open to the signed-in patient");
   ok(actions.includes("await patientContext()") && actions.includes("rehab_ai_coach_notify") && actions.includes("rehab_ai_coach_hold"), "every coach call checks the switch on the server, and routing and holds go through the database functions");
   ok(/session_id/.test(actions) && /owner && owner !== input\.sessionId/.test(actions), "a conversation belongs to one day");
-  ok(src("src/app/rehabverse/me/day/[id]/page.tsx").includes("coach={await aiAssistAllowed()}"), "the day page offers the coach only when the admin switched AI on");
+  ok(src("src/app/rehabverse/me/day/[id]/page.tsx").includes("ai={await aiAssistAllowed()}"), "the day page offers the coach only when the admin switched AI on");
   const session = src("src/components/rehabverse/DaySession.tsx");
-  ok(session.includes('coach && access === "open"') && session.includes("<CoachChat"), "the coach is shown only on an open day and only when offered");
+  ok(session.includes('ai && access === "open"') && session.includes("<CoachChat"), "the coach is shown only on an open day and only when offered");
   ok(src("src/components/rehabverse/DaySessionLoader.tsx").includes("ssr: false"), "the day screen loads in the browser only (the worker does not grow)");
   ok(!/dangerouslySetInnerHTML/.test(src("src/components/rehabverse/CoachChat.tsx")), "coach text is never rendered as HTML");
   const migration = src("supabase/migrations/20261122120000_rehab_ai_coach.sql");

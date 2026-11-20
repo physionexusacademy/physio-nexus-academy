@@ -1,17 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronRight, Clock, Lock, Send, ShieldAlert, Stethoscope } from "lucide-react";
 import { submitFeedbackAction, submitFollowupAction } from "@/app/rehabverse/actions";
+import { closeCheckinChatAction } from "@/app/rehabverse/ai-actions";
+import { checkinPending } from "@/lib/rehabverse/ai/checkin-shared";
 import type { FollowupPoint, SessionDetail, SessionExercise } from "@/lib/rehabverse/api-types";
 import { GUIDE } from "@/lib/rehabverse/guide";
 import { cleanDayTitle } from "@/lib/rehabverse/format";
 import { DIFFICULTY_WORDS, FEEDBACK_FLAGS, PAIN_WORDS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { loadExercises } from "@/lib/rehabverse/library";
 import type { ExerciseDef } from "@/lib/rehabverse/types";
+import { CheckinChat, type FormPatch } from "./CheckinChat";
 import { CoachChat } from "./CoachChat";
 import { ExerciseDetails, } from "./ExerciseDetails";
 import { T, useRvLang } from "./useLang";
@@ -20,7 +23,6 @@ import type { Lang } from "./ExercisePlayer";
 const ExercisePlayer = dynamic(() => import("./ExercisePlayer"), { ssr: false, loading: () => <div className="aspect-[4/3] animate-pulse rounded-3xl bg-slate-100 sm:aspect-[16/10]" aria-hidden="true" /> });
 
 const scaleColour = (n: number) => (n <= 3 ? "#0db3aa" : n <= 6 ? "#d99a00" : "#d6293a");
-const WINDOWS: Record<FollowupPoint, [number, number]> = { later_same_day: [2, 20], "24h": [18, 72], "48h": [40, 120] };
 
 function Scale({ label, value, onChange, words, required }: { label: React.ReactNode; value: number | null; onChange: (n: number) => void; words: { en: string; ru: string }[]; required?: boolean }) {
   const [lang] = useRvLang();
@@ -193,7 +195,8 @@ function FeedbackForm({ data, exercises }: { data: SessionDetail; exercises: Ses
 
 /* ───────────────────────── recovery check-in ───────────────────────── */
 
-function Checkin({ sessionId, point }: { sessionId: string; point: FollowupPoint }) {
+/** `ai`: the check-in assistant is offered (the admin switched AI on for this patient; the server checks again on every message). */
+function Checkin({ sessionId, point, ai }: { sessionId: string; point: FollowupPoint; ai: boolean }) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -207,13 +210,25 @@ function Checkin({ sessionId, point }: { sessionId: string; point: FollowupPoint
   const [error, setError] = useState<string | null>(null);
   const [flagLevel, setFlagLevel] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  const [chatId, setChatId] = useState("");
+  const chatNote = useRef("");
   const ready = pain !== null && response !== "" && (noFlags || flags.length > 0);
+  // what the chat learned goes into the form; "None of these" is never ticked by the chat (the patient does that), and a warning sign it was told about is ticked
+  const fill = (patch: FormPatch) => {
+    if (patch.pain !== undefined) setPain(patch.pain);
+    if (patch.fn !== undefined) setFn(patch.fn);
+    if (patch.response) setResponse(patch.response);
+    if (patch.newSymptoms !== undefined) setNewSymptoms(patch.newSymptoms);
+    if (patch.flags?.length) { setNoFlags(false); setFlags((f) => [...new Set([...f, ...(patch.flags ?? [])])]); }
+    if (patch.note !== undefined) { const written = patch.note; setNote((n) => (n === "" || n === chatNote.current ? written : n)); chatNote.current = written; }
+  };
   if (sent) {
     return flagLevel && flagLevel !== "none" ? <Urgent level={flagLevel} /> : <p className="rounded-xl bg-teal-50 px-3 py-2 text-[14px] font-bold text-teal-900" role="status"><T en="Thank you — recorded." ru="Shukriya — record ho gaya." /></p>;
   }
   return (
     <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
       <h3 className="font-bold text-navy-800">{TIMEPOINT_LABEL[point][lang]}</h3>
+      {ai ? <CheckinChat sessionId={sessionId} point={point} onFill={fill} onConversation={setChatId} /> : null}
       <Scale required label={<T en="Pain right now (0–10)" ru="Abhi dard (0–10)" />} value={pain} onChange={setPain} words={PAIN_WORDS} />
       <Scale label={<T en="How well can you do daily activities? (10 = normal)" ru="Rozmarra ke kaam kitne aasani se hote hain? (10 = normal)" />} value={fn} onChange={setFn} words={FUNCTION_WORDS} />
       <fieldset>
@@ -236,6 +251,7 @@ function Checkin({ sessionId, point }: { sessionId: string; point: FollowupPoint
         if (!r.ok) return setError(r.code ?? "failed");
         setFlagLevel(r.flagLevel);
         setSent(true);
+        if (chatId) void closeCheckinChatAction(chatId, "completed");
         router.refresh();
       })}><Send className="h-4 w-4" aria-hidden="true" /> <T en="Save check-in" ru="Check-in save karein" /></button>
     </div>
@@ -244,8 +260,8 @@ function Checkin({ sessionId, point }: { sessionId: string; point: FollowupPoint
 
 /* ───────────────────────── page ───────────────────────── */
 
-/** `coach`: the exercise coach is offered (the admin switched AI on for this patient; the server checks again on every message). */
-export function DaySession({ data, coach = false }: { data: SessionDetail; coach?: boolean }) {
+/** `ai`: the AI assistants (exercise coach, check-in assistant) are offered because the admin switched AI on for this patient; the server checks again on every message. */
+export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boolean }) {
   const [lang] = useRvLang();
   const [defs, setDefs] = useState<Map<string, ExerciseDef> | null>(null);
   const [selected, setSelected] = useState(0);
@@ -263,12 +279,8 @@ export function DaySession({ data, coach = false }: { data: SessionDetail; coach
     };
   }, [exercises]);
 
-  // Check-ins that can be answered now.
-  const pendingCheckins = useMemo(() => {
-    if (!feedback || feedback.completion === "none") return [] as FollowupPoint[];
-    const hours = (Date.now() - new Date(feedback.submitted_at).getTime()) / 3_600_000;
-    return data.programme.errp_schedule.filter((p) => !data.followups.some((f) => f.timepoint === p) && hours >= WINDOWS[p][0] && hours <= WINDOWS[p][1]);
-  }, [feedback, data]);
+  // Check-ins that can be answered now (the same rules as the server and the database).
+  const pendingCheckins = useMemo(() => data.programme.errp_schedule.filter((p) => checkinPending(data, p).ok), [data]);
   const upcoming = data.programme.errp_schedule.filter((p) => feedback && !data.followups.some((f) => f.timepoint === p) && !pendingCheckins.includes(p));
 
   const exerciseList = (
@@ -331,7 +343,7 @@ export function DaySession({ data, coach = false }: { data: SessionDetail; coach
                     {exercise.notes ? <p className="mt-2 text-[13.5px] leading-6 text-slate-700">{exercise.notes}</p> : null}
                     {def ? <div className="mt-3"><ExerciseDetails compact exercise={def} lang={lang as Lang} dose={{ sets: exercise.sets, reps: exercise.reps, hold: exercise.hold_seconds, rest: exercise.rest_seconds, duration: exercise.duration_seconds, frequency: exercise.frequency, side: exercise.side }} /></div> : null}
                   </div>
-                  {coach && access === "open" ? <CoachChat sessionId={session.id} selected={selected} names={exercises.map((e) => defs?.get(e.exercise_id)?.name ?? { en: e.exercise_title, ru: e.exercise_title })} /> : null}
+                  {ai && access === "open" ? <CoachChat sessionId={session.id} selected={selected} names={exercises.map((e) => defs?.get(e.exercise_id)?.name ?? { en: e.exercise_title, ru: e.exercise_title })} /> : null}
                 </>
               ) : (
                 <p className="rv-glass p-5 text-sm text-slate-600"><T en="No exercises in this day." ru="Is din mein koi exercise nahi." /></p>
@@ -364,7 +376,7 @@ export function DaySession({ data, coach = false }: { data: SessionDetail; coach
               {feedback && (pendingCheckins.length || upcoming.length) ? (
                 <section id="checkin" className="rv-glass space-y-3 p-5" aria-labelledby="ci">
                   <h2 id="ci" className="font-heading text-lg font-bold text-navy-800"><T en="Recovery check-ins" ru="Recovery check-ins" /></h2>
-                  {pendingCheckins.map((p) => <Checkin key={p} sessionId={session.id} point={p} />)}
+                  {pendingCheckins.map((p) => <Checkin key={p} sessionId={session.id} point={p} ai={ai} />)}
                   {upcoming.length ? <p className="text-[12.5px] leading-5 text-slate-500"><T en="Coming up:" ru="Aage aane wale:" /> {upcoming.map((p) => TIMEPOINT_LABEL[p][lang]).join(", ")}</p> : null}
                 </section>
               ) : null}
