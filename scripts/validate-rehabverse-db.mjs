@@ -166,6 +166,43 @@ await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1"
 await fails(admin, "rehab_admin_set_ai_assist", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_enabled: true }, /patient not found/, "unknown patient");
 await fails(null, "rehab_ai_enabled", {}, /permission denied|not authorised/i, "anonymous cannot ask whether AI is on");
 
+/* ----------------------------- 1d. the exercise coach: telling the physiotherapist, and staying quiet after a safety problem ----------------------------- */
+const coachDay = "22222222-2222-4222-8222-222222222222";
+const coach = await open(aliceReg.id, "coach", "Hello, I am your exercise coach.");
+await turn(aliceReg.id, coach.id, { draft: { session_id: coachDay, day_number: 3 }, p: "how do I do it", a: "Here is how." });
+const tell = (patient, conv, kind, alert = "physio", excerpt = "Can I do more reps?") =>
+  sql("select public.rehab_ai_coach_notify($1, $2, $3, $4, $5)", [patient, conv, kind, alert, excerpt]);
+const coachInbox = () => rows(admin, "select kind, severity, title, body, link from rehab_notifications where audience = 'admin' and kind like 'ai_coach_%' order by created_at, kind");
+eq((await coachInbox()).length, 0, "no coach notification before the coach routes anything");
+await tell(aliceReg.id, coach.id, "question", "physio", "Can I do\nmore reps?\tplease");
+let told = await coachInbox();
+ok(told.length === 1 && told[0].kind === "ai_coach_question" && told[0].severity === "attention", "a question for the physiotherapist reaches the admin inbox, as 'attention'");
+ok(told[0].body.includes("(day 3)") && told[0].body.includes("Can I do more reps? please") && told[0].body.startsWith(aliceReg.reference_code), "it carries the reference code, the day and the patient's words (line breaks tidied)");
+eq(told[0].link, `/admin/rehabverse/patients/${aliceReg.id}`, "...and links to the patient's record");
+await tell(aliceReg.id, coach.id, "question");
+eq((await coachInbox()).length, 1, "the same kind is sent at most once per conversation, so a chatty patient cannot flood the inbox");
+await tell(aliceReg.id, coach.id, "safety", "pop-or-tear", "I felt a pop in my knee");
+told = await coachInbox();
+ok(told.length === 2 && told.find((n) => n.kind === "ai_coach_safety").severity === "urgent", "a safety problem is sent as 'urgent'");
+ok((await sql("select action from rehab_audit_log where patient_id = $1 and action like 'ai_coach_%' order by id", [aliceReg.id])).map((r) => r.action).join() === "ai_coach_question,ai_coach_safety", "both are in the audit trail");
+eq((await rows(alice, "select id from rehab_notifications where audience = 'admin'")).length, 0, "a patient never sees the admin's notifications");
+await assert.rejects(() => tell(aliceReg.id, coach.id, "bogus"), /bad notification kind/);
+await assert.rejects(() => tell(aliceReg.id, conv1.id, "question"), /conversation not found/); // an intake conversation is not a coach conversation
+await assert.rejects(() => tell(bobReg.id, coach.id, "question"), /AI assistance is not enabled/);
+checks += 3;
+const hold = (patient, day) => sql("select public.rehab_ai_coach_hold($1, $2) as h", [patient, day]).then((r) => r[0].h);
+eq(await hold(aliceReg.id, coachDay), false, "the coach is not on hold before a safety stop");
+await turn(aliceReg.id, coach.id, { draft: { session_id: coachDay, day_number: 3 }, p: "I felt a pop in my knee", a: "Please stop.", status: "safety_stop", safety: "pop-or-tear" });
+eq([await hold(aliceReg.id, coachDay), await hold(aliceReg.id, "33333333-3333-4333-8333-333333333333"), await hold(bobReg.id, coachDay)], [true, false, false], "after a safety stop the coach stays quiet for that day only, for that patient only");
+const coachFns = await sql(`select p.proname, has_function_privilege('authenticated', p.oid, 'execute') as auth, has_function_privilege('anon', p.oid, 'execute') as anon, has_function_privilege('service_role', p.oid, 'execute') as service
+   from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ('rehab_ai_coach_notify', 'rehab_ai_coach_hold') order by 1`);
+eq(coachFns.map((f) => [f.auth, f.anon, f.service]), [[false, false, true], [false, false, true]], "only the server (service role) can use the coach helpers");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: false });
+await assert.rejects(() => tell(aliceReg.id, coach.id, "question"), /AI assistance is not enabled/);
+checks += 1;
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true });
+await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1", [coach.id]);
+
 /* ----------------------------- 2. who can call what ----------------------------- */
 for (const fn of ["rehab_my_overview", "rehab_admin_inbox", "rehab_admin_patients", "rehab_my_history"]) {
   await fails(null, fn, {}, /permission denied|not authorised/i, `anonymous cannot call ${fn}`);

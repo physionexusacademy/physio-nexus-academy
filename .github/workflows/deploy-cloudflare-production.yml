@@ -114,6 +114,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-ai
 
+      - name: Validate the RehabVerse exercise coach (safety screen, plan-grounded answers, physiotherapist routing, guard, every library exercise)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-coach
+
       - name: Validate the RehabVerse history brief (nothing invented, no diagnosis, quotes exact, missed safety wording surfaced)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-brief

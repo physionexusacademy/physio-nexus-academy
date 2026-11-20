@@ -62,6 +62,35 @@ that nothing is invented (every number comes from the assessment), the output co
 quotes are exact (including Roman Urdu), corrections and missed safety wording are surfaced, and the library
 never calls a model or the network.
 
+## The exercise coach (AI assistant, Phase D)
+
+On an **open exercise day**, a patient whose physiotherapist switched AI on sees an **exercise coach** under the exercise details
+(`components/rehabverse/CoachChat.tsx`, text only). It explains today's prescribed exercises; it does **not** change them.
+
+How it answers (`lib/rehabverse/ai/coach-turn.ts`, in this order; the model is called only at step 4):
+
+1. **Safety first** (`coach-safety.ts`): the site-wide English and Roman Urdu alert rules plus what matters mid-exercise (a pop or tear, a joint
+   giving way, sharp or worsening pain, dizziness, new numbness or weakness, a swollen or hot limb, a fall, a racing heart). The coach stops, says so
+   with 1122, and the **physiotherapist is alerted** (urgent). The coach then stays quiet for that day (the feedback form still works).
+2. **Questions only the physiotherapist can answer** (changing the plan, skipping or swapping, medicines, ice or heat, diagnosis, outcome): routed to
+   them, noted for them (attention), not answered.
+3. **Everyday questions** (how to do it, how many, breathing, common mistakes, equipment, what if it hurts, what is in today's plan): answered from the
+   physiotherapist's prescription and the reviewed library text (`coach-spec.ts`): exact, instant, free, identical every time. Quick-question buttons
+   for the open exercise send these. "What if it hurts?" reuses the guide's own wording and states no pain score.
+4. **A free-form technique question** goes to the model (the same free Workers AI chain as the intake assistant), grounded in today's plan and library
+   text (never the clinician-only fields), and its reply is used only if the guard passes it (`coach-guard.ts`): no diagnosis, medicines, heat or
+   ice, reassurance, claim to be a person, link or identifier, **no change to the prescription** (no extra, fewer, harder or swapped exercises, no
+   amount that is not in the plan, no exercise outside today's, no "push through the pain", no pain threshold). Otherwise the scripted menu answers.
+
+Every call checks the admin's switch on the server, the day must be open for the signed-in patient, and the conversation belongs to one day. Stored
+like the intake conversations (`rehab_ai_conversations`, kind `coach`): the admin reads them on the patient's record, scripted replies are marked, and
+alerts appear in the admin inbox (`ai_coach_safety` urgent, `ai_coach_question` attention; at most one of each per conversation).
+Database: `20261122120000_rehab_ai_coach.sql` (two server-only functions, `rehab_ai_coach_notify` and `rehab_ai_coach_hold`).
+The library is read from the static assets (not bundled into the worker), only the patient-facing fields.
+
+`npm run validate:rehabverse-coach` (2,000+ checks, including **every library exercise x 2 languages x 5 quick questions**, so an exercise name
+can never set off an alarm or be misread) and `scripts/rehabverse-local/e2e-coach.cjs` (24 browser steps against the local backend).
+
 ## Data protection
 
 * RLS on every table; API roles have read-only grants where reads are needed and **no write grants**.

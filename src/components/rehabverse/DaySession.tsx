@@ -12,6 +12,7 @@ import { cleanDayTitle } from "@/lib/rehabverse/format";
 import { DIFFICULTY_WORDS, FEEDBACK_FLAGS, PAIN_WORDS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { loadExercises } from "@/lib/rehabverse/library";
 import type { ExerciseDef } from "@/lib/rehabverse/types";
+import { CoachChat } from "./CoachChat";
 import { ExerciseDetails, } from "./ExerciseDetails";
 import { T, useRvLang } from "./useLang";
 import type { Lang } from "./ExercisePlayer";
@@ -243,7 +244,8 @@ function Checkin({ sessionId, point }: { sessionId: string; point: FollowupPoint
 
 /* ───────────────────────── page ───────────────────────── */
 
-export function DaySession({ data }: { data: SessionDetail }) {
+/** `coach`: the exercise coach is offered (the admin switched AI on for this patient; the server checks again on every message). */
+export function DaySession({ data, coach = false }: { data: SessionDetail; coach?: boolean }) {
   const [lang] = useRvLang();
   const [defs, setDefs] = useState<Map<string, ExerciseDef> | null>(null);
   const [selected, setSelected] = useState(0);
@@ -329,6 +331,7 @@ export function DaySession({ data }: { data: SessionDetail }) {
                     {exercise.notes ? <p className="mt-2 text-[13.5px] leading-6 text-slate-700">{exercise.notes}</p> : null}
                     {def ? <div className="mt-3"><ExerciseDetails compact exercise={def} lang={lang as Lang} dose={{ sets: exercise.sets, reps: exercise.reps, hold: exercise.hold_seconds, rest: exercise.rest_seconds, duration: exercise.duration_seconds, frequency: exercise.frequency, side: exercise.side }} /></div> : null}
                   </div>
+                  {coach && access === "open" ? <CoachChat sessionId={session.id} selected={selected} names={exercises.map((e) => defs?.get(e.exercise_id)?.name ?? { en: e.exercise_title, ru: e.exercise_title })} /> : null}
                 </>
               ) : (
                 <p className="rv-glass p-5 text-sm text-slate-600"><T en="No exercises in this day." ru="Is din mein koi exercise nahi." /></p>

@@ -7,7 +7,9 @@ export type GuardResult = { ok: true; text: string } | { ok: false; reason: stri
 
 const CONDITIONS = "slipped disc|slip disc|herniat\\w*|disc (?:prolapse|bulge|problem|issue)|sciatica|arthritis|osteoarthritis|tendin\\w+|bursitis|sprain\\w*|strain\\w*|tear|torn|fracture\\w*|frozen shoulder|carpal tunnel|cauda equina|pinched nerve|nerve (?:compression|damage|entrapment|pain)|spondyl\\w+|stenosis|gout|ligament (?:tear|injury)|meniscus";
 
-const RULES: { reason: string; test: (text: string) => boolean }[] = [
+export type GuardRule = { reason: string; test: (text: string) => boolean };
+/** The rules, exported so the exercise coach (coach-guard.ts) can reuse the ones that apply to it. */
+export const RULES: GuardRule[] = [
   { reason: "claims to be a person or clinician", test: (t) => /\b(i am|i'm|im|as)\s+(a |an |your |the )?(real |licensed |qualified |human )?(doctor|physician|physiotherapist|physio|surgeon|nurse|clinician|human|person)\b/i.test(t) || /\bmain\s+(aap\s+ka\s+|ek\s+)?(doctor|physiotherapist|physio|insaan)\s+hoon\b/i.test(t) },
   { reason: "diagnosis", test: (t) => new RegExp(`\\b(you (?:probably |likely |may |might |could |seem to )?have|you've got|youve got|it'?s|it is|this is|that is|sounds like|looks like|could be|might be|may be|probably|likely)\\s+(?:a |an |some )?(?:${CONDITIONS})`, "i").test(t) },
   { reason: "diagnosis", test: (t) => /\byou (are suffering from|suffer from|are diagnosed|were diagnosed)\b/i.test(t) || /\b(your|the) diagnosis (is|would be)\b/i.test(t) },
