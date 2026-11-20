@@ -8,11 +8,10 @@ import type { AiAssist } from "@/lib/rehabverse/api-types";
 
 const STATE: Record<AiAssist, { text: string; chip: string }> = {
   off: { text: "Off", chip: "rv-chip" },
-  requested: { text: "Patient asked for it. Your decision.", chip: "rv-chip rv-chip-amber" },
   on: { text: "On", chip: "rv-chip rv-chip-teal" },
 };
 
-/** The admin's switch: does this patient get AI assistance? Only an admin can turn it on; the patient can ask for it or withdraw. */
+/** The admin's switch: does this patient get AI assistance? Only the admin can change it. Patients never see a control, so allocation stays in your hands (research design). */
 export function AiAssistSwitch({ patientId, value }: { patientId: string; value: AiAssist }) {
   const router = useRouter();
   const [current, setCurrent] = useState<AiAssist>(value);
@@ -40,11 +39,13 @@ export function AiAssistSwitch({ patientId, value }: { patientId: string; value:
           ) : (
             <button type="button" role="switch" aria-checked="true" disabled={pending} onClick={() => decide(false)} className="rv-btn rv-btn-ghost">Turn AI off</button>
           )}
-          {current === "requested" ? <button type="button" disabled={pending} onClick={() => decide(false)} className="rv-btn rv-btn-ghost">Decline</button> : null}
         </span>
       </div>
       <p className="mt-1.5 text-[12px] leading-5 text-slate-500">
-        Only you can turn this on. When it is off, this patient sees no AI feature at all and RehabVerse works as usual. The patient can withdraw at any time, and every change is recorded in the audit trail.
+        Only you can change this: the patient has no control over it. When it is off, this patient sees no AI feature at all and RehabVerse works as usual. When it is on, the patient can talk with the AI assistant when filling in the assessment, and the conversation is saved for you below. Every change is recorded in the audit trail.
+      </p>
+      <p className="mt-1.5 text-[12px] text-slate-500">
+        Check the assistant yourself first: <a href="/api/rehabverse/ai/selftest" target="_blank" rel="noopener noreferrer" className="font-bold text-teal-700 underline">run the AI self-test</a> (admin only, about a minute).
       </p>
       {error ? <p className="mt-1 text-[12.5px] font-bold text-rose-700" role="alert">{error}</p> : null}
     </section>

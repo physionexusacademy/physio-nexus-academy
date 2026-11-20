@@ -117,6 +117,9 @@ async function readJson(req) {
     return {};
   }
 }
+/** The server's own calls (the app's service-role key). LOCAL ONLY. */
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "local-service-role-key";
+const serviceClaims = (req) => (String(req.headers.authorization ?? "") === `Bearer ${SERVICE_KEY}` ? { role: "service_role" } : null);
 const bearerClaims = (req) => {
   const header = String(req.headers.authorization ?? "");
   const payload = header.startsWith("Bearer ") ? verify(header.slice(7)) : null;
@@ -226,7 +229,7 @@ const server = http.createServer(async (req, res) => {
 
     const rpc = url.pathname.match(/^\/rest\/v1\/rpc\/([a-z_][a-z0-9_]*)$/);
     if (rpc && req.method === "POST") {
-      const claims = bearerClaims(req);
+      const claims = bearerClaims(req) ?? serviceClaims(req);
       try {
         const { value, returns } = await callRpc(db, claims, rpc[1], await readJson(req));
         return returns === "void" ? send(res, 204) : send(res, 200, value);

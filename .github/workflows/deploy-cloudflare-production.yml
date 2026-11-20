@@ -110,6 +110,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-rules
 
+      - name: Validate the RehabVerse AI assistant (safety screen, reply guard, fallback, privacy, admin-only switch)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-ai
+
       - name: Validate RehabVerse database (RLS, roles, unlock rules, audit trail)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-db

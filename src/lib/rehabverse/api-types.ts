@@ -10,8 +10,8 @@ export type Timepoint = "before" | "during" | "immediately_after" | "later_same_
 export type FollowupPoint = "later_same_day" | "24h" | "48h";
 export type ReviewDecision = "progress" | "maintain" | "regress" | "modify" | "reassess" | "pause" | "discontinue" | "auto_continue";
 
-/** The AI-assistance switch: only the admin can turn it on; a patient can ask for it or withdraw. */
-export type AiAssist = "off" | "requested" | "on";
+/** The AI-assistance switch. Only the admin can change it (research design): a patient can neither turn it on nor off. */
+export type AiAssist = "off" | "on";
 export type PatientSummary = { id: string; reference_code: string; full_name: string; preferred_language: "en" | "ru"; age_years: number; ai_assist: AiAssist };
 
 export type OverviewSession = {
@@ -91,12 +91,19 @@ export type AdminProgramme = {
   };
   sessions: AdminSessionBundle[];
 };
+export type AdminAiConversation = {
+  id: string; kind: "intake" | "coach" | "feedback"; language: "en" | "ru"; status: "open" | "completed" | "abandoned" | "safety_stop";
+  messages: { role: "assistant" | "patient"; text: string; at?: string; model?: string; fallback?: boolean }[];
+  draft: Record<string, unknown>; consent_version: string; consented_at: string; models: string[]; turns: number; fallback_turns: number;
+  safety_alert: string | null; assessment_id: string | null; created_at: string; updated_at: string;
+};
 export type AdminPatient = {
   patient: { id: string; reference_code: string; full_name: string; email: string | null; age_years: number; sex: string | null; phone: string | null; city: string | null; preferred_language: "en" | "ru"; created_at: string; ai_assist: AiAssist; ai_assist_changed_at: string | null };
   assessments: AdminAssessment[];
   programmes: AdminProgramme[];
   adverse_events: { id: string; severity: "mild" | "moderate" | "severe"; status: "open" | "reviewed" | "closed"; source: string; description: string; action_taken: string | null; flag_ids: string[]; created_at: string; session_id: string | null }[];
   audit: { id: number; at: string; action: string; entity: string; details: Record<string, unknown> | null; actor_role: string | null }[];
+  ai_conversations?: AdminAiConversation[];
 };
 export type AdminPatientRow = { id: string; reference_code: string; full_name: string; city: string | null; created_at: string; ai_assist: AiAssist; programme_status: ProgrammeStatus | null };
 

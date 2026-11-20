@@ -30,12 +30,14 @@ export async function createDb({ dataDir } = {}) {
   }
   const hasAiAssist = await db.query("select 1 from information_schema.columns where table_schema = 'public' and table_name = 'rehab_patients' and column_name = 'ai_assist'").then((r) => r.rows.length > 0);
   if (!hasAiAssist) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261120120000_rehab_ai_assist.sql"), "utf8"));
+  const hasAiChat = await db.query("select to_regclass('public.rehab_ai_conversations') as t").then((r) => r.rows[0].t);
+  if (!hasAiChat) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261121120000_rehab_ai_chat.sql"), "utf8"));
   return db;
 }
 
 /** Runs SQL as a Supabase API role ("anon" | "authenticated") with the given JWT claims. */
 export async function withRole(db, claims, fn) {
-  const role = claims ? "authenticated" : "anon";
+  const role = claims?.role === "service_role" ? "service_role" : claims ? "authenticated" : "anon";
   return db.transaction(async (tx) => {
     await tx.exec(`set local role ${role}`);
     await tx.query("select set_config('request.jwt.claims', $1, true), set_config('request.jwt.claim.sub', $2, true)", [
