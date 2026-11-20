@@ -662,7 +662,8 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       if (!rig) return;
       const dt = now - clock.current.last;
       clock.current.last = now;
-      if (playing) clock.current.elapsed += dt * speed;
+      // A long frame (a hitch, a busy moment, a tab coming back) advances the movement by at most 50 ms, so it never jumps ahead.
+      if (playing) clock.current.elapsed += Math.min(dt, 50) * speed;
       const state = sampleCycle(pacedRef.current ?? rig.segments, clock.current.elapsed);
       rig.apply(state.pose, undefined, { index: state.index, f: state.f });
       rig.update(state.segment.kind, state.f);

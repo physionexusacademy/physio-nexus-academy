@@ -41,6 +41,7 @@
     "validate:rehabverse-poses": "node --experimental-strip-types scripts/rehabverse-pose-gate.mjs",
     "rehabverse:backend": "REHAB_DEV_SQL=1 node scripts/rehabverse-local/server.mjs",
     "validate:speech": "node scripts/validate-speech.mjs",
+    "validate:worker-stubs": "node scripts/validate-worker-stubs.mjs",
     "build:ur-lexicon": "node scripts/build-ur-lexicon.mjs"
   },
   "dependencies": {

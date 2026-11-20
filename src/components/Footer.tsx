@@ -4,6 +4,7 @@ import { footerLinks, siteConfig, whatsappLink } from "@/lib/site-config";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 import { visibleWings } from "@/lib/academy-map";
 import { BackToTop } from "@/components/BackToTop";
+import { FxToggle } from "@/components/PerfGovernor";
 import { FooterWings } from "@/components/FooterWings";
 import { Ur } from "@/components/Ur";
 import { SHELL_TEXT } from "@/lib/shell-ur";
@@ -75,6 +76,7 @@ export function Footer() {
                 {link.label}
               </a>
             ))}
+            <FxToggle />
             <BackToTop />
           </div>
         </div>

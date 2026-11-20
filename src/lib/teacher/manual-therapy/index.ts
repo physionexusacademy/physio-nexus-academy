@@ -323,7 +323,7 @@ function buildLesson(guide: MasteryGuide, meta: Meta): TeacherLesson {
   const goDeeper = meta.world
     ? [
         { title: "Full chapter (below)", href: `/manual-therapy/${slug}`, note: { en: "Story, deep dive and evidence position.", ur: "Kahani, deep dive aur evidence position." } },
-        { title: "World approaches overview", href: "/manual-therapy/world-approaches", note: { en: "Compare this approach with the others.", ur: "Is approach ka doosron se muqabla karein." } },
+        { title: "World approaches overview", href: "/manual-therapy", note: { en: "Compare this approach with the others.", ur: "Is approach ka doosron se muqabla karein." } },
         { title: "All 35 techniques", href: "/manual-therapy", note: { en: "Pick your next technique.", ur: "Agli technique chunein." } },
       ]
     : [

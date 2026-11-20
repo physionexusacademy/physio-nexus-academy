@@ -7,8 +7,30 @@ const DEFAULT_LIMITED_BOTS =
   '[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight';
 const SEARCH_AND_AI_BOTS = 'Googlebot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-SearchBot|Claude-User|PerplexityBot|Perplexity-User|Amazonbot|CCBot';
 
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /**
+   * Keeps the worker small: the server and edge builds swap the parts of the Supabase client we never use there (realtime,
+   * passkeys, and in the middleware storage and edge functions) for tiny stand-ins. The browser build is not touched.
+   * See scripts/worker-stubs/README.md.
+   */
+  webpack(config, { webpack, isServer, nextRuntime }) {
+    if (!isServer) return config;
+    const stub = (name) => path.resolve(__dirname, 'scripts/worker-stubs', name);
+    config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^@supabase\/realtime-js$/, stub('realtime-js.mjs')));
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^\.\/lib\/webauthn$/, (resource) => {
+        if (/@supabase[\\/]auth-js/.test(resource.context || '')) resource.request = stub('auth-webauthn.mjs');
+      }),
+    );
+    if (nextRuntime === 'edge') {
+      config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^@supabase\/storage-js$/, stub('storage-js.mjs')));
+      config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^@supabase\/functions-js$/, stub('functions-js.mjs')));
+    }
+    return config;
+  },
   htmlLimitedBots: new RegExp(`${DEFAULT_LIMITED_BOTS}|${SEARCH_AND_AI_BOTS}`, 'i'),
   // A harmless build-time flag; the Preview password itself is a Worker secret.
   env: {

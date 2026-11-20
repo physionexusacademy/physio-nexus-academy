@@ -75,3 +75,22 @@ To add a card: add an entry to `slides` in `LobbyHero.tsx` and a `scene…` func
 small JSON files. Nothing is loaded until the voice is used: `packs.json` (a few hundred bytes) tells a page whether its lines are recorded, `clips.json`
 (about 20 KB for the avatar and RehabVerse lines) is fetched when something is first spoken, and a pack is fetched and decoded when needed (at most two are
 kept in memory). Playing a recording uses no processor to speak of, so it is the same on a cheap phone as on a laptop. See `scripts/voice/README.md`.
+
+
+## Smooth on every device (Nov 2026)
+The site had been tuned on phones (solid surfaces, no live blur) but a laptop or desktop got everything: live blur, 100+ GPU layers on the
+Learn page, decorative loops that ran even when scrolled away, and a 3D stage that always drew at full quality. What is in place now:
+
+| What | Where | Why |
+|------|-------|-----|
+| No permanent `will-change: transform` on cards | `globals.css` | it made every card its own compositor layer (111 on `/learn`); now only while hovered |
+| Only `transform` / `opacity` animate | `guide-me.css`, `symptom-checker.css`, `daily-challenge.css` | `top` and `background-position` repaint every frame. The symptom scan also shared the keyframe name `sc-scan` with the homepage slideshow |
+| Sections scrolled out of view pause their animations | `PerfGovernor.tsx` + `motion.css` (`[data-offscreen]`) | nothing animates what nobody sees |
+| **Light mode** (`<html data-fx="lite">`) | `lib/perf-mode.ts`, `PerfGovernor.tsx`, `motion.css` | no live blur, no decorative loops, cheaper 3D. Set automatically when real frame times are poor (idle and while scrolling), by the visitor ("Smooth mode" in the footer) or with `?fx=lite` / `?fx=full`. It is applied before the first paint, so a slow device never shows the heavy version first |
+| 3D engine quality tiers | `lib/virtual-patient/engine.ts` | pixel ratio capped at 1.5; a run of slow drawn frames lowers resolution, then shadows and skin sheen (one step at a time, never back up in the same visit); nothing is drawn while the stage is scrolled away; light mode starts one tier lower |
+| Flowing movements | `lib/rehabverse/motion.ts` (`flowingPose`) | stages chained without a hold (ankle circles, pendulum, sit-to-stand) pass through their waypoints instead of stopping at each; no overshoot (checked) |
+| Short screens | `motion.css` | a laptop at 125-150% zoom is ~500-600 px tall: the phone-style dock and round buttons shrink |
+
+Measure with the scripts' method: `Performance.getMetrics` over an idle window, `document.getAnimations()` (which properties animate, how many
+loop), counts of `backdrop-filter` / `will-change` elements, and `requestAnimationFrame` callback timings. Software GL (as in CI) cannot
+judge GPU speed: compare ratios, and test on a real laptop with `?fx=lite` against `?fx=full`.

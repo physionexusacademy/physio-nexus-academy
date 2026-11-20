@@ -103,6 +103,13 @@ button {
     transform var(--pna-duration) var(--pna-ease),
     box-shadow var(--pna-duration) var(--pna-ease),
     border-color var(--pna-duration) var(--pna-ease);
+}
+/* A card gets its own compositor layer only while the pointer is on it. (It used to be permanent: on a page with 100 cards that
+   was 100 extra GPU layers, which is what made scrolling heavy on laptops.) */
+.group.rounded-3xl:hover,
+.group.rounded-2xl:hover,
+.rounded-2xl.border:hover,
+.rounded-3xl.border:hover {
   will-change: transform;
 }
 

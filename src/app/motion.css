@@ -273,3 +273,105 @@ button.nx-glass:active,
     transform: none;
   }
 }
+
+/* ==========================================================================
+   Smooth on every device
+   ========================================================================== */
+
+/* ---------- sections scrolled out of view do not animate (PerfGovernor marks them with data-offscreen) ---------- */
+[data-offscreen],
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
+/* ---------- "lite" effects: no live blur and no purely decorative loops ----------
+   data-fx="lite" is set before the first paint (lib/perf-mode.ts): automatically on a device that cannot keep up, by the visitor in the
+   footer ("Smooth mode"), or with ?fx=lite in the link. Content, layout and colours do not change; the mini feature demos keep running. */
+html[data-fx="lite"] *,
+html[data-fx="lite"] *::before,
+html[data-fx="lite"] *::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-fx="lite"] .nx-bar {
+  background: rgba(3, 10, 23, 0.97);
+}
+html[data-fx="lite"] .lobby-orbit-a,
+html[data-fx="lite"] .lobby-orbit-b,
+html[data-fx="lite"] .lobby-copy-top::before,
+html[data-fx="lite"] .hw-beam,
+html[data-fx="lite"] .nx-bar::after,
+html[data-fx="lite"] .nx-glow-bar::after,
+html[data-fx="lite"] .nx-live::after,
+html[data-fx="lite"] .nx-ping::after,
+html[data-fx="lite"] .gm-ring-b,
+html[data-fx="lite"] .gm-scan::after,
+html[data-fx="lite"] .gm-tag i,
+html[data-fx="lite"] .gm-badge,
+html[data-fx="lite"] .hbm-scan,
+html[data-fx="lite"] .hbm-dot::before,
+html[data-fx="lite"] .hx-scan,
+html[data-fx="lite"] .hx-hot-ring,
+html[data-fx="lite"] .hdc-card::after,
+html[data-fx="lite"] .rvx-scan,
+html[data-fx="lite"] .rvx-hud-live i,
+html[data-fx="lite"] .lgx-live i,
+html[data-fx="lite"] .lg::before,
+html[data-fx="lite"] .lg-medal,
+html[data-fx="lite"] .lg-medal-ring,
+html[data-fx="lite"] .dc-page .dc-hero::before,
+html[data-fx="lite"] .dc-page .dc-play::before,
+html[data-fx="lite"] .dc-live-dot,
+html[data-fx="lite"] .sc-figure i,
+html[data-fx="lite"] .sc-emergency svg,
+html[data-fx="lite"] .rv-hero::before,
+html[data-fx="lite"] .rv-hero-day i,
+html[data-fx="lite"] .cl-card::before,
+html[data-fx="lite"] .s3-scan {
+  animation: none !important;
+}
+
+/* ---------- short screens: a laptop at 125-150% zoom is only about 500-600 px tall ----------
+   The phone-style dock and the two round buttons would cover a third of it, so they get smaller. */
+@media (max-height: 620px) {
+  .pna-mobile-dock {
+    bottom: 4px;
+    padding: 3px;
+    border-radius: 18px;
+  }
+  .pna-mobile-dock-item {
+    min-height: 40px !important;
+  }
+  .pna-mobile-dock-label {
+    display: none;
+  }
+  body {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+  }
+  a[aria-label="Chat with Physio Nexus Academy on WhatsApp"] {
+    width: 40px;
+    height: 40px;
+    bottom: 64px;
+  }
+  a[aria-label="Chat with Physio Nexus Academy on WhatsApp"] svg {
+    width: 22px;
+    height: 22px;
+  }
+  button[aria-label*="Physio Nexus AI" i],
+  a[aria-label*="Physio Nexus AI" i] {
+    width: 40px;
+    height: 40px;
+    bottom: 112px;
+  }
+}
+@media (min-width: 1024px) and (max-height: 620px) {
+  a[aria-label="Chat with Physio Nexus Academy on WhatsApp"] {
+    bottom: 12px;
+  }
+  button[aria-label*="Physio Nexus AI" i],
+  a[aria-label*="Physio Nexus AI" i] {
+    bottom: 60px;
+  }
+}
