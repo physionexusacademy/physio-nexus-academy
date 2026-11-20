@@ -103,6 +103,8 @@ async function say(page, text) {
   await pa.getByRole("checkbox", { name: "None of these apply to me" }).click();
   await pa.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click();
   check("2h The last step keeps what the patient said in their own words", /children/i.test(await pa.locator("#own").inputValue()));
+  // the patient adds a sentence the chat did not have: the clinician's brief must show it as a change after the chat
+  await pa.locator("#own").fill((await pa.locator("#own").inputValue()) + " I also take tablets for high blood pressure.");
   await pa.getByRole("button", { name: /Send to my physiotherapist/ }).click();
   await pa.getByText("Thank you — your physiotherapist will review it.").waitFor({ timeout: 60000 });
   check("2i The assessment was submitted by the patient after checking it", true);
@@ -172,6 +174,21 @@ async function say(page, text) {
   check("6a The admin sees the AI conversation on the patient's record, word for word", /My lower back hurts/.test(transcript) && /RehabVerse assistant/.test(transcript) && /children/.test(transcript));
   check("6b ...with the turns, the models used and the linked assessment", /13 turns/.test(transcript) && /produced the assessment above/.test(transcript));
   await pad.screenshot({ path: path.join(OUT, "05-admin-transcript.png"), fullPage: true });
+
+  /* 7. The history brief the treating physiotherapist reads first. */
+  const brief = await pad.locator("#brief").innerText();
+  check("7a The record opens with a History brief section and a link to it", (await pad.locator('nav a[href="#brief"]').count()) === 1 && /History brief/.test(brief));
+  check("7b The headline and the story are built from the patient's answers", /lower back/i.test(brief) && /pain 7\/10/.test(brief) && /Pain is 7\/10 now/i.test(brief) && /“sitting and bending forward”/.test(brief));
+  check("7c It says the history came from the AI chat and was submitted by the patient", /Collected in a conversation with the AI assistant \(13 turns, 13 scripted\)/.test(brief) && /checked and submitted by the patient/.test(brief));
+  check("7d It lists what the patient changed after the chat", /Changed by the patient after the chat/i.test(brief) && /Own words/i.test(brief) && /high blood pressure/i.test(brief));
+  check("7e It points out what was mentioned (high blood pressure) and what to ask next", /Mentioned in the history:.*High blood pressure/is.test(brief) && /Worth asking at the first visit/i.test(brief) && /tingling/i.test(brief));
+  check("7f It states the red-flag screening result and says it is not a diagnosis", /Red-flag screening: nothing ticked/i.test(brief) && /not a diagnosis/i.test(brief));
+  await pad.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: BASE }).catch(() => {});
+  await pad.locator("#brief").getByRole("button", { name: /Copy as text/ }).click();
+  await pad.locator("#brief").getByText("Copied").waitFor({ timeout: 10000 });
+  const copied = await pad.evaluate(() => navigator.clipboard.readText()).catch(() => "");
+  check("7g 'Copy as text' puts the brief on the clipboard for the clinical notes", /^HISTORY BRIEF · /.test(copied) && /STORY/.test(copied) && /not written by AI/.test(copied), copied.slice(0, 80));
+  await pad.locator("#brief").screenshot({ path: path.join(OUT, "06-admin-brief.png") });
 
   await browser.close();
   const failed = results.filter((ok) => !ok).length;

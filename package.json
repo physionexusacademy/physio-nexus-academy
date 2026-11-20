@@ -36,6 +36,7 @@
     "build:rehabverse-data": "node --experimental-strip-types scripts/build-rehabverse-data.ts",
     "validate:rehabverse-db": "node scripts/validate-rehabverse-db.mjs",
     "validate:rehabverse-ai": "node --experimental-strip-types scripts/validate-rehabverse-ai.ts",
+    "validate:rehabverse-brief": "node --experimental-strip-types scripts/validate-rehabverse-brief.ts",
     "validate:rehabverse-rules": "node --experimental-strip-types scripts/validate-rehabverse-rules.ts",
     "validate:rehabverse-library": "node --experimental-strip-types scripts/validate-rehabverse-library.ts",
     "validate:rehabverse-poses": "node --experimental-strip-types scripts/rehabverse-pose-gate.mjs",
