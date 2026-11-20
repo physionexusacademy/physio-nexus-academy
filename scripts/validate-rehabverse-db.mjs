@@ -88,6 +88,41 @@ eq(again.id, aliceReg.id, "registering twice does not create a duplicate patient
 eq((await sql("select count(*)::int n from rehab_patients where user_id = $1", [alice.sub]))[0].n, 1, "one patient row per account");
 const bobReg = await rpc(bob, "rehab_register_patient", { p_payload: { full_name: "Bob Ali", age_years: 45, consent: true } });
 
+/* ----------------------------- 1b. the AI-assistance switch (default off, admin decides) ----------------------------- */
+const myAi = async (claims) => (await rpc(claims, "rehab_my_overview", {})).patient.ai_assist;
+eq(await myAi(alice), "off", "AI assistance is OFF by default");
+eq(await rpc(alice, "rehab_ai_enabled", {}), false, "the server check says no while it is off");
+eq(await rpc(stranger, "rehab_ai_enabled", {}), false, "an unregistered account never gets AI");
+const carol = await makeUser("carol@pna.test");
+await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, consent: true, ai_requested: true } });
+eq(await myAi(carol), "requested", "ticking the box at sign-up only REQUESTS AI assistance");
+eq(await rpc(carol, "rehab_ai_enabled", {}), false, "a request does not switch it on");
+ok((await sql("select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'ai_requested'"))[0].n === 1, "the admin is told about the request");
+await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, consent: true } });
+eq(await myAi(carol), "requested", "registering again does not change the switch");
+await fails(alice, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true }, /not authorised/, "a patient cannot turn the switch on for herself");
+await rowsFail(alice, `update rehab_patients set ai_assist = 'on' where id = '${aliceReg.id}'`, /permission denied/, "patients cannot write the switch directly");
+eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: true }), { ai_assist: "requested" }, "a patient can ask for AI assistance");
+eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: true }), { ai_assist: "requested" }, "asking twice changes nothing");
+const listed = await rpc(admin, "rehab_admin_patients", {});
+eq(listed.find((p) => p.id === aliceReg.id).ai_assist, "requested", "the admin sees the request in the patient list");
+eq(await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true }), { ai_assist: "on" }, "the admin turns it on");
+eq(await rpc(alice, "rehab_ai_enabled", {}), true, "the server check now says yes");
+eq(await rpc(bob, "rehab_ai_enabled", {}), false, "other patients are unaffected");
+eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: true }), { ai_assist: "on" }, "a patient asking again cannot change an enabled switch");
+await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice K. Khan", age_years: 30, consent: true } });
+eq(await myAi(alice), "on", "updating the profile never touches the switch");
+ok((await rows(alice, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'ai_assist'"))[0].n === 1, "the patient is told it was switched on");
+eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: false }), { ai_assist: "off" }, "a patient can withdraw");
+eq(await rpc(alice, "rehab_ai_enabled", {}), false, "withdrawing stops AI at once");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true });
+eq(await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: false }), { ai_assist: "off" }, "the admin can turn it off at any time");
+eq(await rpc(alice, "rehab_ai_enabled", {}), false, "off means off");
+const aiAudit = (await sql("select action from rehab_audit_log where patient_id = $1 and action like 'ai_assist_%' order by id", [aliceReg.id])).map((r) => r.action);
+eq(aiAudit, ["ai_assist_requested", "ai_assist_enabled", "ai_assist_withdrawn", "ai_assist_enabled", "ai_assist_disabled"], "every change is in the audit trail, in order");
+await fails(admin, "rehab_admin_set_ai_assist", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_enabled: true }, /patient not found/, "unknown patient");
+await fails(null, "rehab_patient_ai_choice", { p_want: true }, /permission denied|not authorised/i, "anonymous cannot use the switch");
+
 /* ----------------------------- 2. who can call what ----------------------------- */
 for (const fn of ["rehab_my_overview", "rehab_admin_inbox", "rehab_admin_patients", "rehab_my_history"]) {
   await fails(null, fn, {}, /permission denied|not authorised/i, `anonymous cannot call ${fn}`);
@@ -294,7 +329,7 @@ ok(Array.isArray(inbox.awaiting_review) && inbox.awaiting_review.some((x) => x.f
 const record = await rpc(admin, "rehab_admin_patient", { p_patient_id: aliceReg.id });
 ok(record.programmes[0].sessions.length >= 4 && record.adverse_events.length >= 2 && record.audit.length > 5, "admin sees the full record");
 ok(!("user_id" in record.patient), "internal account ids are not exposed to the UI");
-ok((await rpc(admin, "rehab_admin_patients", {})).length === 2, "admin patient list");
+ok((await rpc(admin, "rehab_admin_patients", {})).length === 3, "admin patient list");
 
 /* ----------------------------- 16. safety net: nothing in the public schema is open to anon ----------------------------- */
 const anonCan = await sql(`select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -317,6 +352,19 @@ eq(internalOpen, [], "internal helpers are not executable by signed-in users");
 const definerNoPath = await sql(`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.proname like 'rehab%' and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`);
 eq(definerNoPath, [], "every security-definer function pins its search_path");
+
+/* ----------------------------- 17. the AI-assistance switch in the app (code-level) ----------------------------- */
+import fs from "node:fs";
+const src = (file) => fs.readFileSync(new URL("../" + file, import.meta.url), "utf8");
+const gate = src("src/lib/rehabverse/ai-access.ts");
+ok(gate.includes('import "server-only"') && gate.includes("REHAB_AI_ENABLED") && gate.includes("rehab_ai_enabled"), "the server gate checks the global kill switch and the patient's own switch");
+ok(src("src/components/rehabverse/admin/AiAssistSwitch.tsx").includes("setAiAssistAction") && src("src/components/rehabverse/admin/AdminPatientRecord.tsx").includes("<AiAssistSwitch"), "the admin record has the switch");
+ok(src("src/components/rehabverse/admin/PatientList.tsx").includes("AI requested"), "the patient list shows who asked for AI");
+ok(src("src/components/rehabverse/AiAssistCard.tsx").includes("aiChoiceAction") && src("src/components/rehabverse/PatientDashboard.tsx").includes("<AiAssistCard"), "the patient dashboard explains the switch and lets the patient ask or withdraw");
+ok(src("src/components/rehabverse/AuthForm.tsx").includes('name="ai_requested"') && src("src/app/rehabverse/actions.ts").includes("ai_requested"), "sign-up carries the optional request");
+const adminActions = src("src/app/admin/(dashboard)/rehabverse/actions.ts");
+ok(adminActions.includes("rehab_admin_set_ai_assist") && !src("src/app/rehabverse/actions.ts").includes("rehab_admin_set_ai_assist"), "only the admin actions can call the admin function");
+for (const file of ["src/components/rehabverse/AiAssistCard.tsx", "src/components/rehabverse/admin/AiAssistSwitch.tsx"]) ok(!src(file).includes("ai-access"), file + " never imports the server-only gate");
 
 console.log(`RehabVerse database OK — ${checks} checks passed (real migration on Postgres ${(await sql("show server_version"))[0].server_version}).`);
 await db.close();

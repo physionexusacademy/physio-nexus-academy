@@ -10,7 +10,9 @@ export type Timepoint = "before" | "during" | "immediately_after" | "later_same_
 export type FollowupPoint = "later_same_day" | "24h" | "48h";
 export type ReviewDecision = "progress" | "maintain" | "regress" | "modify" | "reassess" | "pause" | "discontinue" | "auto_continue";
 
-export type PatientSummary = { id: string; reference_code: string; full_name: string; preferred_language: "en" | "ru"; age_years: number };
+/** The AI-assistance switch: only the admin can turn it on; a patient can ask for it or withdraw. */
+export type AiAssist = "off" | "requested" | "on";
+export type PatientSummary = { id: string; reference_code: string; full_name: string; preferred_language: "en" | "ru"; age_years: number; ai_assist: AiAssist };
 
 export type OverviewSession = {
   id: string; day_number: number; title: string; status: SessionStatus;
@@ -90,13 +92,13 @@ export type AdminProgramme = {
   sessions: AdminSessionBundle[];
 };
 export type AdminPatient = {
-  patient: { id: string; reference_code: string; full_name: string; email: string | null; age_years: number; sex: string | null; phone: string | null; city: string | null; preferred_language: "en" | "ru"; created_at: string };
+  patient: { id: string; reference_code: string; full_name: string; email: string | null; age_years: number; sex: string | null; phone: string | null; city: string | null; preferred_language: "en" | "ru"; created_at: string; ai_assist: AiAssist; ai_assist_changed_at: string | null };
   assessments: AdminAssessment[];
   programmes: AdminProgramme[];
   adverse_events: { id: string; severity: "mild" | "moderate" | "severe"; status: "open" | "reviewed" | "closed"; source: string; description: string; action_taken: string | null; flag_ids: string[]; created_at: string; session_id: string | null }[];
   audit: { id: number; at: string; action: string; entity: string; details: Record<string, unknown> | null; actor_role: string | null }[];
 };
-export type AdminPatientRow = { id: string; reference_code: string; full_name: string; city: string | null; created_at: string; programme_status: ProgrammeStatus | null };
+export type AdminPatientRow = { id: string; reference_code: string; full_name: string; city: string | null; created_at: string; ai_assist: AiAssist; programme_status: ProgrammeStatus | null };
 
 /** What the programme builder sends to rehab_admin_save_plan. */
 export type PlanPayload = {

@@ -12,6 +12,8 @@ const FILTERS = [
   { id: "draft", label: "Draft" },
   { id: "none", label: "No programme" },
   { id: "done", label: "Completed / stopped" },
+  { id: "ai_requested", label: "AI requested" },
+  { id: "ai_on", label: "AI on" },
 ];
 
 /** Find a patient by name, reference or city, and filter by programme state. */
@@ -22,7 +24,9 @@ export function PatientList({ patients }: { patients: AdminPatientRow[] }) {
     const q = query.trim().toLowerCase();
     return patients.filter((p) => {
       const state = p.programme_status;
-      const matchesFilter = filter === "all" || (filter === "none" ? !state : filter === "done" ? state === "completed" || state === "discontinued" : state === filter);
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "ai_requested" ? p.ai_assist === "requested" : filter === "ai_on" ? p.ai_assist === "on" : filter === "none" ? !state : filter === "done" ? state === "completed" || state === "discontinued" : state === filter);
       return matchesFilter && (!q || p.full_name.toLowerCase().includes(q) || p.reference_code.toLowerCase().includes(q) || (p.city ?? "").toLowerCase().includes(q));
     });
   }, [patients, query, filter]);
@@ -43,7 +47,10 @@ export function PatientList({ patients }: { patients: AdminPatientRow[] }) {
           <li key={p.id}>
             <Link href={`/admin/rehabverse/patients/${p.id}`} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] hover:border-teal-400">
               <span><b className="text-navy-800">{p.full_name}</b> <span className="text-slate-500">{p.reference_code}{p.city ? ` · ${p.city}` : ""}</span></span>
-              <span className={"rv-chip " + (p.programme_status === "active" ? "rv-chip-teal" : p.programme_status === "paused" ? "rv-chip-amber" : "")}>{p.programme_status ?? "no programme"}</span>
+              <span className="flex flex-wrap items-center justify-end gap-1">
+                {p.ai_assist === "requested" ? <span className="rv-chip rv-chip-amber">AI requested</span> : p.ai_assist === "on" ? <span className="rv-chip rv-chip-navy">AI on</span> : null}
+                <span className={"rv-chip " + (p.programme_status === "active" ? "rv-chip-teal" : p.programme_status === "paused" ? "rv-chip-amber" : "")}>{p.programme_status ?? "no programme"}</span>
+              </span>
             </Link>
           </li>
         ))}

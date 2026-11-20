@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isPublicFormRateLimited } from "@/lib/security/public-form-protection";
 import { RehabError, currentUser, getHistory, getNotifications, getOverview, getSession, isStaff, rpc } from "@/lib/rehabverse/api";
-import type { FollowupPoint } from "@/lib/rehabverse/api-types";
+import type { AiAssist, FollowupPoint } from "@/lib/rehabverse/api-types";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
@@ -63,6 +63,7 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ nee
     city: text(form, "city") || undefined,
     preferred_language: text(form, "preferred_language") === "en" ? "en" : "ru",
     consent: text(form, "consent") === "on",
+    ai_requested: text(form, "ai_requested") === "on",
   };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return { ok: false, error: "bad_email" };
   if (password.length < 10) return { ok: false, error: "weak_password" };
@@ -85,13 +86,14 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ nee
   if (!data.session) return { ok: true, needsEmailConfirmation: true };
   try {
     await rpc("rehab_register_patient", { p_payload: { ...profile, consent_version: "v2" } });
+    if (profile.ai_requested) await alertClinic("RehabVerse: AI assistance requested", "A new RehabVerse patient asked for AI assistance. Open the admin to turn it on or leave it off.");
   } catch (e) {
     return fail(e);
   }
   return { ok: true, needsEmailConfirmation: false };
 }
 
-type SignedProfile = { full_name?: string; age_years?: number; sex?: string; phone?: string; city?: string; preferred_language?: string; consent?: boolean };
+type SignedProfile = { full_name?: string; age_years?: number; sex?: string; phone?: string; city?: string; preferred_language?: string; consent?: boolean; ai_requested?: boolean };
 
 export async function loginAction(form: FormData): Promise<ActionResult<{ staff: boolean }>> {
   if (isPublicFormRateLimited(`rv-login:${await clientIp()}`)) return { ok: false, error: "rate_limited" };
@@ -109,6 +111,7 @@ export async function loginAction(form: FormData): Promise<ActionResult<{ staff:
       const profile = (data.user.user_metadata?.rehabverse_profile ?? null) as SignedProfile | null;
       if (profile?.consent && profile.full_name) {
         await rpc("rehab_register_patient", { p_payload: { ...profile, consent_version: "v2" } });
+        if (profile.ai_requested) await alertClinic("RehabVerse: AI assistance requested", "A new RehabVerse patient asked for AI assistance. Open the admin to turn it on or leave it off.");
       }
     }
   } catch (e) {
@@ -296,6 +299,18 @@ export async function setFollowupRemindersAction(enabled: boolean): Promise<Acti
   try {
     const result = await rpc<{ remind_email: boolean }>("rehab_set_reminders", { p_enabled: enabled === true });
     return { ok: true, remindEmail: result.remind_email };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/** The patient's own choice about AI assistance: ask for it or withdraw. It can never switch it on: only the clinician can. */
+export async function aiChoiceAction(want: boolean): Promise<ActionResult<{ ai_assist: AiAssist }>> {
+  if (isPublicFormRateLimited(`rv-ai-choice:${await clientIp()}`)) return { ok: false, error: "rate_limited" };
+  try {
+    const result = await rpc<{ ai_assist: AiAssist }>("rehab_patient_ai_choice", { p_want: want });
+    if (want && result.ai_assist === "requested") await alertClinic("RehabVerse: AI assistance requested", "A RehabVerse patient asked for AI assistance. Open the admin to turn it on or leave it off.");
+    return { ok: true, ai_assist: result.ai_assist };
   } catch (e) {
     return fail(e);
   }
