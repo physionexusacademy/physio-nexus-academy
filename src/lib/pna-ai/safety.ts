@@ -183,3 +183,8 @@ export function screenForSafety(normalizedText: string): SafetyAlert | null {
   }
   return null;
 }
+
+/** An alert built from its kind (for callers, like RehabVerse, that add their own triggers but want the same wording and level). */
+export function alertFor(kind: SafetyAlert["kind"], level: SafetyLevel): SafetyAlert {
+  return { level, kind, ...messages[kind] };
+}

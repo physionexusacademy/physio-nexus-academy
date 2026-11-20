@@ -1,7 +1,8 @@
 "use server";
 
 import { RehabError, rpc } from "@/lib/rehabverse/api";
-import type { AiAssist, PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
+import type { AiAssist, AiSignoffDecision, PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
+import { buildReviewPack } from "@/lib/rehabverse/ai/review-pack";
 import { emailPatient, type PatientEmailKind } from "@/lib/rehabverse/notify";
 
 /**
@@ -90,5 +91,29 @@ export async function setAiAssistAction(patientId: string, enabled: boolean): Pr
   try {
     const r = await rpc<{ ai_assist: AiAssist }>("rehab_admin_set_ai_assist", { p_patient_id: patientId, p_enabled: enabled });
     return { ok: true, ai_assist: r.ai_assist };
+  } catch (e) { return fail(e); }
+}
+
+/* ───────────────────────── AI pilot and sign-off (Phase F) ───────────────────────── */
+
+/**
+ * Records the physiotherapist's review of the AI review pack. The version it covers is worked out here, on the server, from the code that is live
+ * right now; if the pack changed since the page was opened (`seenVersion`), the review is refused so nobody signs off text they did not read.
+ */
+export async function signoffAiAction(input: { reviewer: string; decision: AiSignoffDecision; notes: string; seenVersion: string }): Promise<Result<{ version: string }>> {
+  try {
+    const pack = await buildReviewPack();
+    if (input.seenVersion !== pack.version) return { ok: false, error: "pack_changed" };
+    await rpc("rehab_admin_ai_signoff", { p_reviewer: input.reviewer, p_decision: input.decision, p_notes: input.notes || null, p_pack_version: pack.version });
+    return { ok: true, version: pack.version };
+  } catch (e) { return fail(e); }
+}
+
+/** The pilot limit, and "open to all patients" (which the database allows only after an 'approved' sign-off for the CURRENT pack version). */
+export async function setAiPilotAction(input: { maxPatients: number; openToAll: boolean }): Promise<Result> {
+  try {
+    const pack = await buildReviewPack();
+    await rpc("rehab_admin_set_ai_pilot", { p_max: Math.trunc(input.maxPatients), p_open_to_all: input.openToAll, p_pack_version: pack.version });
+    return { ok: true };
   } catch (e) { return fail(e); }
 }

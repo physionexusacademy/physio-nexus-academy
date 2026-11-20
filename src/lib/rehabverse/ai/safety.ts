@@ -1,5 +1,6 @@
 import { fromUrduScript } from "../../pna-ai/language.ts";
-import { screenForSafety, type SafetyAlert } from "../../pna-ai/safety.ts";
+import { alertFor, screenForSafety, type SafetyAlert } from "../../pna-ai/safety.ts";
+import { stripDenials } from "./denials.ts";
 import type { Bi } from "../types";
 
 /**
@@ -23,8 +24,23 @@ const FLAGS: Record<SafetyAlert["kind"], string[]> = {
 const normalise = (text: string) =>
   fromUrduScript(text).toLowerCase().replace(/[’'`]/g, "").replace(/[^a-z0-9+\s]/g, " ").replace(/\s+/g, " ").trim();
 
+/**
+ * Loss of bladder or bowel control, on its own, is a red flag inside RehabVerse (the site-wide screen wants it together with back or leg symptoms,
+ * which suits a public study chat but not a patient in a rehabilitation programme). Found by the physiotherapist's review pack.
+ */
+const BLADDER_LOSS: RegExp[] = [
+  /\b(lost|lose|losing|loss of|no|cant|cannot|unable to|trouble|difficulty|problem|problems|issues?|struggl\w+)\b.{0,30}\b(control|controlling|holding|hold)\b.{0,25}\b(bladder|bowels?|urine|stool|pee|wee)\b/,
+  /\b(bladder|bowels?)\b.{0,25}\b(control|accidents?|leak\w*|incontinen\w*)\b/,
+  /\bincontinen\w*\b/,
+  /\b(wet|wetting|soil\w*)\b.{0,20}\b(myself|my pants|my bed|the bed)\b/,
+  /\b(peshab|pishab|pakhana|pakhane|paikhana)\b.{0,30}\b(control|rok\w*|ruk\w*|nikal\w*|lag\w*|khud ba khud|bina)\b/,
+  /\bcontrol\b.{0,15}\b(peshab|pishab|pakhana|pakhane)\b/,
+];
+
 export function screenPatientText(text: string): IntakeSafety | null {
-  const alert = screenForSafety(normalise(text));
+  // plain denials ("no chest pain") are not a report: the assistants ask about these things, so "no" is a normal answer
+  const cleaned = normalise(stripDenials(text));
+  const alert = screenForSafety(cleaned) ?? (BLADDER_LOSS.some((pattern) => pattern.test(cleaned)) ? alertFor("cauda-equina", "emergency") : null);
   if (!alert) return null;
   const plain = (value: string) => value.replace(/\*\*/g, "");
   return { level: alert.level, kind: alert.kind, message: { en: plain(alert.text.en), ru: plain(alert.text.ur) }, suggestedFlags: FLAGS[alert.kind] ?? [] };

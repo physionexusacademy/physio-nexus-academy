@@ -1,6 +1,7 @@
 import { fromUrduScript } from "../../pna-ai/language.ts";
 import type { Bi } from "../types.ts";
 import { screenPatientText } from "./safety.ts";
+import { stripDenials } from "./denials.ts";
 import { COACH_STOP } from "./coach-spec.ts";
 
 /**
@@ -65,7 +66,7 @@ const RULES: { kind: string; test: RegExp[] }[] = [
   },
   {
     kind: "heart",
-    test: [/\b(heart (is |was |feels? |keeps? |has been |started )?(racing|pounding|fluttering|skipping|beating (too )?fast)|palpitation\w*|dil (tez|zor se|bohat) dhadak\w*)\b/],
+    test: [/\b(heart (is |was |feels? |keeps? |has been |started )?(racing|pounding|fluttering|skipping|beating (too )?fast)|palpitation\w*|dil\s+(?:(?:bohat|bahut|zor|se|tez|zyada|bahot)\s+)*dhadak\w*)\b/],
   },
 ];
 
@@ -73,7 +74,7 @@ export function screenCoachText(text: string): CoachSafety | null {
   // the same alert rules as everywhere else on the site first: they carry their own, more specific, emergency wording
   const common = screenPatientText(text);
   if (common) return { level: common.level === "emergency" ? "emergency" : "urgent", kind: common.kind, message: common.message };
-  const t = normalise(text);
+  const t = normalise(stripDenials(text)); // a plain denial ("no dizziness") is not a report
   for (const rule of RULES) if (rule.test.some((pattern) => pattern.test(t))) return { level: rule.kind === "heart" || rule.kind === "dizziness" ? "emergency" : "urgent", kind: rule.kind, message: COACH_STOP };
   return null;
 }

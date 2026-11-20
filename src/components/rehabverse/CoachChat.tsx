@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, ChevronDown, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { ChevronDown, Send, Sparkles } from "lucide-react";
 import { coachChatTurnAction, startCoachChatAction, type ChatMessageOut } from "@/app/rehabverse/ai-actions";
 import { MAX_COACH_MESSAGE, QUICK_QUESTIONS } from "@/lib/rehabverse/ai/coach-spec";
 import type { Bi } from "@/lib/rehabverse/types";
+import { AI_NOTICES } from "@/lib/rehabverse/ai/notices";
+import { AiNoticeList } from "./AiNoticeList";
 import { T, useRvLang } from "./useLang";
 
 type Phase = "closed" | "notice" | "starting" | "chat" | "gone";
@@ -83,11 +85,7 @@ export function CoachChat({ sessionId, names, selected }: { sessionId: string; n
     return (
       <section className="rv-glass space-y-3 p-4 sm:p-5" aria-label="Exercise coach" data-rv-coach="notice">
         <h2 className="font-heading text-lg font-bold text-navy-800"><T en="Before we start" ru="Shuru karne se pehle" /></h2>
-        <ul className="space-y-2 text-[14px] leading-6 text-slate-700">
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="I am an AI coach, not a doctor or a physiotherapist. I explain the exercises your physiotherapist chose; I cannot change them, diagnose, or advise on medicines." ru="Main AI coach hoon, doctor ya physiotherapist nahi. Main wohi exercises samjhata hoon jo aap ke physiotherapist ne chunin; main unhein badal nahi sakta, diagnose nahi kar sakta aur dawai ka mashwara nahi de sakta." /></span></li>
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="Your physiotherapist can read this chat, and it may be used, without your name, to study how AI can help in physiotherapy. Please do not type your name or phone number." ru="Aap ka physiotherapist ye baat-cheet parh sakta hai, aur aap ka naam hataye baghair ye tehqeeq mein istemal ho sakti hai ke AI physiotherapy mein kaise madad kar sakta hai. Apna naam ya phone number na likhein." /></span></li>
-          <li className="flex gap-2.5"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" /><span><T en="If something hurts sharply, you feel dizzy, or you have chest pain, trouble breathing or sudden weakness, stop and call 1122." ru="Agar tez dard ho, chakkar aaye, ya seene mein dard, saans mein mushkil ya achanak kamzori ho to ruk jayein aur 1122 par call karein." /></span></li>
-        </ul>
+        <AiNoticeList items={AI_NOTICES.coach.items} className="space-y-2 text-[14px] leading-6 text-slate-700" />
         {error ? <p className="rv-error" role="alert">{error === "limit" ? <T en="You have started several conversations today. Please try again tomorrow." ru="Aaj aap ne kai baat-cheet shuru kar li hain. Kal koshish karein." /> : <T en="That did not work. Please try again." ru="Ye nahi hua. Dobara koshish karein." />}</p> : null}
         <div className="flex flex-wrap gap-2">
           <button type="button" className="rv-btn rv-btn-primary" disabled={phase === "starting"} onClick={start}>{phase === "starting" ? <T en="Starting…" ru="Shuru ho raha hai…" /> : <T en="I understand, start" ru="Main samajh gaya/gayi, shuru karein" />}</button>

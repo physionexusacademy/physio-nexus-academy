@@ -22,7 +22,7 @@ export function AiAssistSwitch({ patientId, value }: { patientId: string; value:
     start(async () => {
       setError(null);
       const result = await setAiAssistAction(patientId, enabled);
-      if (!result.ok) return setError("Could not change the switch. Please try again.");
+      if (!result.ok) return setError(result.error === "pilot_limit" ? "Pilot limit reached: AI is already on for as many patients as the pilot allows. Raise the limit on the AI pilot page (or turn AI off for another patient first)." : "Could not change the switch. Please try again.");
       setCurrent(result.ai_assist);
       router.refresh();
     });
@@ -45,7 +45,7 @@ export function AiAssistSwitch({ patientId, value }: { patientId: string; value:
         Only you can change this: the patient has no control over it. When it is off, this patient sees no AI feature at all and RehabVerse works as usual. When it is on, the patient can talk with the AI assistant when filling in the assessment, and the conversation is saved for you below. Every change is recorded in the audit trail.
       </p>
       <p className="mt-1.5 text-[12px] text-slate-500">
-        Check the assistant yourself first: <a href="/api/rehabverse/ai/selftest" target="_blank" rel="noopener noreferrer" className="font-bold text-teal-700 underline">run the AI self-test</a> (admin only, about a minute).
+        Check the assistant yourself first: <a href="/api/rehabverse/ai/selftest" target="_blank" rel="noopener noreferrer" className="font-bold text-teal-700 underline">run the AI self-test</a> (admin only, about a minute). <a href="/admin/rehabverse/ai-pilot" className="font-bold text-teal-700 underline">AI pilot, review pack and sign-off</a>.
       </p>
       {error ? <p className="mt-1 text-[12.5px] font-bold text-rose-700" role="alert">{error}</p> : null}
     </section>
