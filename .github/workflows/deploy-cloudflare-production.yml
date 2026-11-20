@@ -126,6 +126,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-pilot
 
+      - name: Validate the guide and Teacher gestures (hello is a wave, presenting palms, natural talking, same gestures everywhere)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-guide-motion
+
+      - name: Validate the lying exercises' resting poses (hands on the bed, legs supported, an exercise's own joints left alone)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-resting
+
       - name: Validate the RehabVerse history brief (nothing invented, no diagnosis, quotes exact, missed safety wording surfaced)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-brief

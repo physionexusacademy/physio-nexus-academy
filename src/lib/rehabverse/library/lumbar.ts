@@ -1,5 +1,5 @@
 import type { ExerciseDef } from "../types.ts";
-import { QUAD } from "./shared.ts";
+import { BRIDGE_TOP, QUAD, SUPINE_ARMS } from "./shared.ts";
 
 /** Low back, core and lumbopelvic control. DRAFT clinical content — to be reviewed by the supervising physiotherapist. */
 const HOOK = { hip: { flex: 52 }, knee: { flex: 98 }, "hip:o": { flex: 52 }, "knee:o": { flex: 98 } };
@@ -107,9 +107,9 @@ export const lumbarExercises: ExerciseDef[] = [
     evidence: ["george2021", "cibulka2017"],
     motion: {
       position: "supine", surface: "plinth", sided: false,
-      start: { ...HOOK, shoulder: { flex: 0 }, "shoulder:o": { flex: 0 } },
-      anchor: { bone: "foot", stance: "both" },
-      moves: [{ to: { hip: { flex: 22 }, "hip:o": { flex: 22 }, trunk: { flex: -26 } }, ms: 1900, hold: 1500, breath: "out", say: { en: "Squeeze and lift until you make a straight line.", ru: "Kulhe tight karke uthayein jab tak seedhi line na ban jaye." } }],
+      start: { ...HOOK, ...SUPINE_ARMS },
+      anchor: { bone: "foot", stance: "both" }, tiltAbout: "shoulders",
+      moves: [{ to: { ...BRIDGE_TOP }, ms: 1900, hold: 1500, breath: "out", say: { en: "Squeeze and lift until you make a straight line.", ru: "Kulhe tight karke uthayein jab tak seedhi line na ban jaye." } }],
       returnMs: 2100, view: "side", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "both" },
       mistake: {
@@ -146,9 +146,10 @@ export const lumbarExercises: ExerciseDef[] = [
     evidence: ["george2021"],
     motion: {
       position: "supine", surface: "plinth", sided: true,
-      start: { ...HOOK, "hip:o": { flex: 88 }, "knee:o": { flex: 92 } },
-      anchor: { bone: "foot", stance: "tested" },
-      moves: [{ to: { hip: { flex: 22 }, trunk: { flex: -26 } }, ms: 2000, hold: 1500, breath: "out", say: { en: "Lift on one leg and keep your hips level.", ru: "Ek taang par uthayein aur kulhe barabar rakhein." } }],
+      start: { ...HOOK, ...SUPINE_ARMS, "hip:o": { flex: 88 }, "knee:o": { flex: 92 } },
+      anchor: { bone: "foot", stance: "tested" }, tiltAbout: "shoulders",
+      // (the lifted leg keeps its own bend: only the standing leg takes the bridge's hip and knee)
+      moves: [{ to: { pelvis: BRIDGE_TOP.pelvis, neck: BRIDGE_TOP.neck, hip: BRIDGE_TOP.hip, knee: BRIDGE_TOP.knee, shoulder: BRIDGE_TOP.shoulder, "shoulder:o": BRIDGE_TOP["shoulder:o"] }, ms: 2000, hold: 1500, breath: "out", say: { en: "Lift on one leg and keep your hips level.", ru: "Ek taang par uthayein aur kulhe barabar rakhein." } }],
       returnMs: 2200, view: "side", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "tested" },
     },

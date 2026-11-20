@@ -31,7 +31,8 @@ export const hipExercises: ExerciseDef[] = [
     evidence: ["cibulka2017", "willy2019"],
     motion: {
       position: "sidelying", surface: "plinth", sided: true,
-      start: { hip: { flex: 45 }, knee: { flex: 90 }, "hip:o": { flex: 45 }, "knee:o": { flex: 90 }, shoulder: { flex: 12 }, "shoulder:o": { flex: 78 }, elbow: { flex: 70 } },
+      // the top leg lies on the bottom one (a little adducted and turned in, solved on the model): knee, shin and heel rest on it, not in the air
+      start: { hip: { flex: 45, abd: -5, rot: -17 }, knee: { flex: 90 }, "hip:o": { flex: 45 }, "knee:o": { flex: 90 }, shoulder: { flex: 12 }, "shoulder:o": { flex: 78 }, elbow: { flex: 70 } },
       moves: [{ to: { hip: { flex: 45, abd: 30, rot: -24 } }, ms: 1500, hold: 700, breath: "out", say: { en: "Lift the top knee like a clam opening — heels stay together.", ru: "Upar wala ghutna seep ki tarah kholein — aerhiyan jore rahein." } }],
       returnMs: 2000, view: "front", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "tested" },
@@ -70,8 +71,9 @@ export const hipExercises: ExerciseDef[] = [
     evidence: ["cibulka2017"],
     motion: {
       position: "sidelying", surface: "plinth", sided: true,
-      start: { hip: { flex: -4, abd: 2 }, knee: { flex: 0 }, "hip:o": { flex: 40 }, "knee:o": { flex: 85 }, shoulder: { flex: 12 }, "shoulder:o": { flex: 78 }, elbow: { flex: 70 } },
-      moves: [{ to: { hip: { flex: -8, abd: 38 } }, ms: 1800, hold: 700, breath: "out", say: { en: "Lift the straight leg up and slightly back.", ru: "Seedhi taang upar aur thori peeche uthayein." } }],
+      // the straight top leg rests on the bent bottom leg at the start (hip adducted 10°), then lifts to 34° of abduction
+      start: { hip: { flex: -4, abd: -10 }, knee: { flex: 0 }, "hip:o": { flex: 40 }, "knee:o": { flex: 85 }, shoulder: { flex: 12 }, "shoulder:o": { flex: 78 }, elbow: { flex: 70 } },
+      moves: [{ to: { hip: { flex: -8, abd: 34 } }, ms: 1800, hold: 700, breath: "out", say: { en: "Lift the straight leg up and slightly back.", ru: "Seedhi taang upar aur thori peeche uthayein." } }],
       returnMs: 2400, view: "front", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "tested" },
       mistake: {
@@ -109,8 +111,9 @@ export const hipExercises: ExerciseDef[] = [
     evidence: ["cibulka2017", "george2021"],
     motion: {
       position: "prone", surface: "floor", sided: true,
-      start: { hip: { flex: 0 }, knee: { flex: 90 }, "hip:o": { flex: 0 }, "knee:o": { flex: 0 }, shoulder: { abd: 14, flex: -6 }, "shoulder:o": { abd: 14, flex: -6 }, elbow: { flex: 4 }, "elbow:o": { flex: 4 } },
-      moves: [{ to: { hip: { flex: -17 } }, ms: 1700, hold: 1500, breath: "out", say: { en: "Squeeze the buttock and lift the thigh a little.", ru: "Kulha tight karein aur thigh thora uthayein." } }],
+      // the thigh starts lying on the mat (hip 7° flexed, as the resting pose has it) and lifts 17° from there; the free arm and leg rest
+      start: { hip: { flex: 7 }, knee: { flex: 90 }, "knee:o": { flex: 0 } },
+      moves: [{ to: { hip: { flex: -10 } }, ms: 1700, hold: 1500, breath: "out", say: { en: "Squeeze the buttock and lift the thigh a little.", ru: "Kulha tight karein aur thigh thora uthayein." } }],
       returnMs: 2100, view: "side", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "tested" },
     },

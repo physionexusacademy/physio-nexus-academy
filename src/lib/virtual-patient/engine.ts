@@ -45,6 +45,8 @@ type RigData = {
   height: number;
 };
 const RIG = rig as RigData;
+/** How far (m) the shoulder lying underneath may sink into the bed (see lowestY). */
+export const SHOULDER_SINK = 0.07;
 const DEG = Math.PI / 180;
 const V = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
 const sanitize = (name: string) => THREE.PropertyBinding.sanitizeNodeName(name);
@@ -1025,6 +1027,86 @@ export class ExamRoom {
       return new THREE.Box3().setFromObject(this.skinned, true);
     }
     return this.bodyBox();
+  }
+
+  /** Which limb segment each vertex belongs to (by its strongest bone): kind * 2 + side, 12 = trunk and head. Built once. */
+  private vertexLimb: Uint8Array | null = null;
+  private limbOfVertices(mesh: THREE.SkinnedMesh) {
+    const geometry = mesh.geometry;
+    const count = geometry.getAttribute("position").count;
+    if (this.vertexLimb && this.vertexLimb.length === count) return this.vertexLimb;
+    const index = geometry.getAttribute("skinIndex");
+    const weight = geometry.getAttribute("skinWeight");
+    const tag = mesh.skeleton.bones.map((bone) => {
+      const m = /^(shoulder|upperarm|lowerarm|wrist|finger|thumb|metacarpal|upperleg|lowerleg|foot|toe)[\w-]*?([LR])$/.exec(bone.name);
+      if (!m) return 12;
+      const kind = m[1] === "shoulder" || m[1] === "upperarm" ? 0 : m[1] === "lowerarm" ? 1 : m[1] === "upperleg" ? 3 : m[1] === "lowerleg" ? 4 : m[1] === "foot" || m[1] === "toe" ? 5 : 2;
+      return kind * 2 + (m[2] === "L" ? 0 : 1);
+    });
+    const out = new Uint8Array(count);
+    for (let i = 0; i < count; i++) {
+      let best = 0;
+      let bestWeight = -1;
+      for (let k = 0; k < 4; k++) {
+        const w = weight.getComponent(i, k);
+        if (w > bestWeight) {
+          bestWeight = w;
+          best = index.getComponent(i, k);
+        }
+      }
+      out[i] = tag[best] ?? 12;
+    }
+    this.vertexLimb = out;
+    return out;
+  }
+
+  /**
+   * Height (m) of the lowest vertex of the body in the world, measured on the real mesh (a few milliseconds: use it once, not every frame).
+   * `skipArm` lets one whole arm sink into the support a little: lying on the side, the point of that shoulder is the widest part of the
+   * body, and on a real bed it sinks into the mattress while the ribs, hip and legs rest on it. Counting it would hold the rest of the body
+   * 6 cm in the air. It may sink SHOULDER_SINK at most, so a body that rolls does not bury the arm.
+   */
+  lowestY(skipArm?: Side) {
+    const mesh = this.skinned;
+    if (!mesh || !skipArm) return this.bounds(true).min.y;
+    mesh.updateWorldMatrix(true, true);
+    mesh.skeleton.update();
+    const limb = this.limbOfVertices(mesh);
+    const skip = skipArm === "left" ? 0 : 1;
+    const v = new THREE.Vector3();
+    let rest = Infinity; // lowest vertex of everything but that arm
+    let arm = Infinity; // lowest vertex of that arm
+    for (let i = 0; i < limb.length; i++) {
+      const y = mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld).y;
+      if (limb[i] < 6 && limb[i] % 2 === skip) {
+        if (y < arm) arm = y;
+      } else if (y < rest) rest = y;
+    }
+    return Math.min(rest, arm + SHOULDER_SINK);
+  }
+
+  /**
+   * The lowest and highest height (m) of each limb segment on the real mesh, for the pose quality gate: "upperArm.left", "foreArm.right",
+   * "hand.left", "thigh.right", "shin.left", "foot.right". (A few milliseconds: for tests, not for every frame.)
+   */
+  limbBounds(): Record<string, { min: number; max: number }> {
+    const mesh = this.skinned;
+    const out: Record<string, { min: number; max: number }> = {};
+    if (!mesh) return out;
+    mesh.updateWorldMatrix(true, true);
+    mesh.skeleton.update();
+    const limb = this.limbOfVertices(mesh);
+    const names = ["upperArm", "foreArm", "hand", "thigh", "shin", "foot"];
+    const v = new THREE.Vector3();
+    for (let i = 0; i < limb.length; i++) {
+      if (limb[i] === 12) continue;
+      const key = `${names[limb[i] >> 1]}.${limb[i] % 2 === 0 ? "left" : "right"}`;
+      const y = mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld).y;
+      const e = out[key] ?? (out[key] = { min: Infinity, max: -Infinity });
+      if (y < e.min) e.min = y;
+      if (y > e.max) e.max = y;
+    }
+    return out;
   }
 
   private bodyBox() {

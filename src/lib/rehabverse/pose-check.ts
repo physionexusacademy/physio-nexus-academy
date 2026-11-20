@@ -13,7 +13,14 @@ export type Vec = [number, number, number];
 /** One bone as a capsule: from its head to its end, with a radius (metres) a little under the skin. */
 export type Seg = { id: string; side: "tested" | "other" | "mid"; a: Vec; b: Vec; r: number };
 /** `floor`: the height of the body's lowest vertex (measured on the real mesh), when known. */
-export type Snapshot = { kind: string; t: number; segs: Seg[]; floor?: number };
+export type Snapshot = {
+  kind: string;
+  t: number;
+  segs: Seg[];
+  floor?: number;
+  /** Lowest and highest height (m) of each limb segment on the real mesh: "upperArm.tested", "foreArm.other", "hand.tested", "thigh.other", "shin.tested", "foot.other". */
+  limbs?: Record<string, { min: number; max: number }>;
+};
 export type Env = {
   /** Height of what the body rests on (mat, plinth top, the floor, the step the person stands on). */
   supportY: number;
@@ -29,12 +36,16 @@ export type Env = {
    * surface: a few cm lying on the back, about 12 cm lying face down or on the side. A number applies to every trunk bone.
    */
   trunkR?: number | Record<string, number>;
+  /** The body position (lying on the side is special: the top leg may rest on the leg below instead of the bed). */
+  position?: string;
+  /** Limbs that lie still on what is under them (see lib/rehabverse/resting.ts): each must touch it. "arm"/"leg" = tested side, ":o" = other. */
+  rest?: ("arm" | "arm:o" | "leg" | "leg:o")[];
 };
 
 /** Measured on the model lying on its back: the pelvis is 3 cm above the bed, the upper back 6 cm. */
 export const SUPINE_TRUNK: Record<string, number> = { root: 0.03, spine01: 0.04, spine02: 0.04, spine03: 0.06, spine04: 0.065, spine05: 0.065 };
 export type Touch = { a: [string, "tested" | "other" | "mid"]; b: [string, "tested" | "other" | "mid"]; within: number; when?: "hold" | "all" };
-export type Violation = { kind: "penetrates" | "floats" | "feet-lift" | "jumps" | "no-return" | "touch" | "asymmetry"; at: string; detail: string };
+export type Violation = { kind: "penetrates" | "floats" | "limb-floats" | "feet-lift" | "jumps" | "no-return" | "touch" | "asymmetry"; at: string; detail: string };
 
 /** Body bones and their radius (m): enough of the skeleton to see every limb, the trunk and the head. */
 export const BODY: { bone: string; r: number; sided: boolean; /** the bone whose head is where this segment ends (the bones are short pieces of the limb) */ to?: string }[] = [
@@ -57,6 +68,9 @@ export const BODY: { bone: string; r: number; sided: boolean; /** the bone whose
 ];
 
 const FOOT = new Set(["foot", "toe1-1"]);
+const ARM_IDS = ["upperarm01", "lowerarm01", "wrist", "finger3-1"];
+const ARM_PARTS = ["upperArm", "foreArm", "hand"];
+const LEG_PARTS = ["thigh", "shin", "foot"];
 const TRUNK = new Set(["root", "spine01", "spine02", "spine03", "spine04", "spine05"]);
 /** The head and neck rest on a pillow or are held up: not part of the contact checks. */
 const SKIP = new Set(["head", "neck01"]);
@@ -91,6 +105,12 @@ export const TOLERANCE = {
   closure: 0.04,
   /** left and right sides must agree to this (m) */
   symmetry: 0.025,
+  /** an arm that lies still must touch what is under it: its lowest part may be at most this far (m) above it */
+  limb: 0.04,
+  /** a leg that lies still rests along its whole length (thigh, shin and foot each): none may be more than this far (m) above what is under it */
+  leg: 0.05,
+  /** lying on the side, the shoulder underneath may sink this far (m) into the mattress (the widest part of the body) */
+  shoulder: 0.11,
 };
 
 export function analyse(snaps: Snapshot[], env: Env, touches: Touch[] = []): Violation[] {
@@ -106,7 +126,9 @@ export function analyse(snaps: Snapshot[], env: Env, touches: Touch[] = []): Vio
     // 1. nothing sunk into its surface (and, over a bed, nothing through the floor)
     for (const s of supported) {
       const down = env.supportY - lowest(s, env);
-      if (down > TOLERANCE.sink) add("penetrates", at, `${s.id} (${s.side}) is ${(down * 100).toFixed(1)} cm into the ${env.surface}`);
+      // lying on the side, the shoulder underneath sinks into the mattress a little (see lowestY in the 3D engine)
+      const allowed = env.position === "sidelying" && s.side === "other" && ARM_IDS.includes(s.id) ? TOLERANCE.shoulder : TOLERANCE.sink;
+      if (down > allowed) add("penetrates", at, `${s.id} (${s.side}) is ${(down * 100).toFixed(1)} cm into the ${env.surface}`);
     }
     if (env.surface === "plinth") for (const s of body) if (lowest(s, env) < -TOLERANCE.sink) add("penetrates", at, `${s.id} (${s.side}) is through the floor`);
     // 2. something touches: a lying / kneeling body rests on its surface; a standing one on its feet
@@ -118,6 +140,26 @@ export function analyse(snaps: Snapshot[], env: Env, touches: Touch[] = []): Vio
       const low = Math.min(...pool.map((s) => lowest(s, env)));
       const off = env.resting ? low - env.supportY : Math.min(...pool.map((s) => rests(lowest(s, env))));
       if (off > TOLERANCE.float) add("floats", at, `the lowest ${env.resting ? "body part" : "foot"} is ${(off * 100).toFixed(1)} cm above the ${env.surface}`);
+    }
+    // 2b. a limb that lies still must touch what is under it (the bed or mat; on the side, the top leg may lie on the leg below).
+    // Measured on the real mesh (the skin a viewer sees: the fingertips and the soft tissue the bone capsules cannot see).
+    for (const limb of env.rest ?? []) {
+      if (!snap.limbs) continue;
+      const side = limb.endsWith(":o") ? "other" : "tested";
+      const gaps = (limb.startsWith("arm") ? ARM_PARTS : LEG_PARTS).map((name) => {
+        const seg = snap.limbs![`${name}.${side}`];
+        if (!seg) return Infinity;
+        let under = env.supportY;
+        if (env.position === "sidelying" && limb === "leg") {
+          const below = snap.limbs![`${name}.other`];
+          if (below) under = Math.max(under, below.max);
+        }
+        return seg.min - under;
+      });
+      // an arm touches with its hand or forearm; a leg lies along its whole length (a top leg hanging in the air with only the thigh on the other one fails)
+      const isLeg = limb.startsWith("leg");
+      const worst = isLeg ? Math.max(...gaps.filter(Number.isFinite)) : Math.min(...gaps);
+      if (worst > (isLeg ? TOLERANCE.leg : TOLERANCE.limb)) add("limb-floats", at, `the ${limb === "arm" ? "tested arm" : limb === "arm:o" ? "other arm" : limb === "leg" ? "tested leg" : "other leg"} should rest on the ${env.position === "sidelying" && limb === "leg" ? "leg below" : env.surface} but ${isLeg ? "part of it is" : "is"} ${(worst * 100).toFixed(1)} cm above it`);
     }
     // 3. feet that should stay planted
     if (env.plant) {
