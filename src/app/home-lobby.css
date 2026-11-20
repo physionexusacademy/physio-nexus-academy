@@ -874,17 +874,6 @@
   color: var(--nx-aqua);
 }
 
-/* ---------- clinical registry band ---------- */
-.lobby-registry {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: clamp(22px, 3.5vw, 36px);
-  border-radius: 30px;
-}
-
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
   .lobby-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }

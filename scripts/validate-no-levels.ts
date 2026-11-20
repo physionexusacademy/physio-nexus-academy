@@ -18,9 +18,8 @@ forbid("src/app/conditions/ConditionsExplorer.tsx", [/Choose how deep/, /radiogr
 forbid("src/components/virtual-patient/Panels.tsx", [/LEVEL_TONE/, /\{c\.level\}/], "Virtual Patient cases must not show a level");
 forbid("src/components/rehabverse/LibraryBrowser.tsx", [/All levels/, /Har level/, /LEVEL_LABEL/], "the exercise library must not filter or label by level");
 forbid("src/components/rehabverse/ExerciseDetails.tsx", [/LEVEL_LABEL/], "an exercise must not show a level chip");
-forbid("src/app/case-lab/CaseLabLibrary.tsx", [/Clinical level/, /All levels/, /patient\.difficulty/], "Case Lab must not filter or label by level");
 forbid("src/app/skills/page.tsx", [/beginner to expert/i, /Beginner → Expert/, /level test/i], "the Skills hub must not describe levels");
 forbid("src/components/home/HomeFeatures.tsx", [/Beginner/, /Intermediate/, /Advanced/, /Four levels/], "the homepage feature cards must not show levels");
 forbid("src/components/home/StudentPass.tsx", [/start at Beginner/i], "the student pass must not mention levels");
 
-console.log("no levels: skills, conditions, virtual patient, exercise library, case lab and homepage cards show full depth");
+console.log("no levels: skills, conditions, virtual patient, exercise library and homepage cards show full depth");

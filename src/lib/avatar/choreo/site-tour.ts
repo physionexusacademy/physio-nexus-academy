@@ -76,7 +76,6 @@ export const siteTour: Choreo = {
       gesture: "point",
       look: "patient",
     }),
-    talk("case-lab", "Case Lab", { gesture: "care", look: "patient", overlays: [] }),
     talk("daily-challenge", "Daily Challenge", { gesture: "point", look: "camera" }),
     talk("leagues", "Leagues"),
     // The books stop uses the guide's key points (no author name: the tour is the PNA Teacher's).

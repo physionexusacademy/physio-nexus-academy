@@ -39,7 +39,6 @@ const featureNav = [
   ["MSK Symptom Checker", "/symptom-checker"],
   ["Daily Clinical Challenge", "/daily-challenge"],
   ["Weekly Leagues", "/leagues"],
-  ["Case Lab", "/case-lab"],
   ["Manual Therapy Encyclopedia", "/manual-therapy"],
   ["MSK Special Tests", "/msk-special-tests"],
   ["Clinical Visual Atlas", "/clinical-visual-atlas"],
@@ -219,7 +218,7 @@ export const metadata: Metadata = {
     template: "%s | PNA",
   },
   description:
-    "Physio Nexus Academy offers evidence-based physiotherapy education, MSK & manual therapy resources, clinical case labs, daily challenges, hands-on workshops and patient physiotherapy services across Pakistan. Founded by Dr. Sajjad Raza PT.",
+    "Physio Nexus Academy offers evidence-based physiotherapy education, MSK & manual therapy resources, a 3D virtual patient, daily challenges, hands-on workshops and patient physiotherapy services across Pakistan. Founded by Dr. Sajjad Raza PT.",
   keywords: [
     "Physio Nexus Academy",
     "physiotherapy education Pakistan",
@@ -284,7 +283,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Physio Nexus Academy | Physiotherapy Education & Workshops",
     description:
-      "Practical physiotherapy education, clinical resources, case labs and hands-on workshops from Physio Nexus Academy in Pakistan.",
+      "Practical physiotherapy education, clinical resources, virtual patients and hands-on workshops from Physio Nexus Academy in Pakistan.",
     images: ["https://physionexusacademy.com/images/founder-dr-sajjad.jpg"],
   },
   alternates: {
@@ -358,7 +357,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       { not: { href_matches: "/api/*" } },
                       { not: { href_matches: "/admin" } },
                       { not: { href_matches: "/admin/*" } },
-                      { not: { href_matches: "/clinical-registry*" } },
                       { not: { href_matches: "/rehabverse/me*" } },
                       { not: { href_matches: "/rehabverse/start" } },
                       { not: { href_matches: "/workshops/*/portal*" } },

@@ -592,7 +592,6 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: false,
     relatedLinks: [
       { label: "Treatment Plans", href: "/conditions" },
-      { label: "Clinical Case Lab", href: "/case-lab" },
     ],
   },
   {

@@ -13,7 +13,6 @@ Learning content is educational and is not a substitute for clinical assessment.
 - [Regional Manual Therapy](https://physionexusacademy.com/manual-therapy/regions): techniques organised by body area.
 - [MSK Special Tests](https://physionexusacademy.com/msk-special-tests): patient position, hand placement and interpretation.
 - [Clinical Visual Atlas](https://physionexusacademy.com/clinical-visual-atlas): 3D visuals connecting anatomy with musculoskeletal pathology.
-- [Case Lab](https://physionexusacademy.com/case-lab): published physiotherapy case reports summarised in plain English.
 - [Daily Clinical Challenge](https://physionexusacademy.com/daily-challenge): five timed physiotherapy questions every day with a public leaderboard.
 - [Weekly Leagues](https://physionexusacademy.com/leagues): seven tiers from Bronze to Diamond, ranked by XP earned from learning.
 - [My PNA](https://physionexusacademy.com/account): a free student account that records learning activity and shows progress and insights.

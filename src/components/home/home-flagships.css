@@ -166,19 +166,6 @@
 .lobby-pass-panel .container-content { padding-left: 0; padding-right: 0; }
 .lobby-pass-panel .lobby-pass { border-radius: 26px; }
 
-/* ---------- Clinical Registry card inside the "I'm a Physiotherapist" pathway ---------- */
-.pna-reg { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; margin: 0 0 14px; border-radius: 22px; padding: 18px 20px; color: #eaf6ff; background: radial-gradient(120% 140% at 0% 0%, #0c3358 0%, #071a33 60%, #050f22 100%); border: 1px solid rgba(46, 230, 214, .35); box-shadow: 0 24px 50px -34px rgba(8, 40, 90, .9); position: relative; overflow: hidden; }
-.pna-reg::after { content: ""; position: absolute; right: -50px; top: -60px; width: 190px; height: 190px; border-radius: 50%; background: radial-gradient(circle, rgba(143, 124, 255, .4), transparent 70%); pointer-events: none; }
-.pna-reg-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 18px; color: #2ee6d6; background: rgba(46, 230, 214, .12); border: 1px solid rgba(46, 230, 214, .4); box-shadow: 0 0 24px rgba(46, 230, 214, .3); }
-.pna-reg-copy { min-width: 0; position: relative; z-index: 1; }
-.pna-reg-kicker { margin: 0 !important; font-size: .66rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #2ee6d6 !important; }
-.pna-reg-copy > strong { display: block; margin-top: 2px; font-size: 1.25rem; font-weight: 800; color: #fff; }
-.pna-reg-copy > p:not(.pna-reg-kicker) { margin: 4px 0 0; font-size: .9rem; line-height: 1.55; color: #b9cde1; }
-.pna-reg-points { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
-.pna-reg-points li { position: relative; padding-left: 16px; font-size: .78rem; font-weight: 600; color: #cfe3f5; }
-.pna-reg-points li::before { content: ""; position: absolute; left: 0; top: .5em; width: 8px; height: 8px; border-radius: 50%; background: #2ee6d6; box-shadow: 0 0 8px #2ee6d6; }
-.pna-reg-cta { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1; }
-@media (max-width: 900px) { .pna-reg { grid-template-columns: 1fr; padding: 16px; } .pna-reg-icon { width: 46px; height: 46px; } .pna-reg-cta { flex-direction: row; flex-wrap: wrap; } }
 
 /* the hero no longer has a stats strip: give its buttons room to breathe */
 .nx-sky.lobby-hero { padding-bottom: clamp(36px, 5vw, 64px); }

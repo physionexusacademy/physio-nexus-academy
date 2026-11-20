@@ -40,5 +40,5 @@ for three times:
   Before adding a route that only redirects, add it to `redirects()` instead.
 - Worker: 2,988.9 KiB before, **2,931.1 KiB** after (limit 3,072).
 
-Largest remaining items (raw KB in the worker): `case-report-library.ts` 177, `teacher/lesson-index.ts` 168 (keywords 36, goal 33, summary 29,
+Largest remaining items (raw KB in the worker): `teacher/lesson-index.ts` 168 (keywords 36, goal 33, summary 29,
 hook 29), `daily-content/pool.generated.ts` 134, the manual-therapy data files (~700 together), zod (2 copies, ~170), `tailwind-merge` (2 copies, ~38).

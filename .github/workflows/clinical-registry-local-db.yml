@@ -11,10 +11,7 @@ on:
       - "supabase/migrations/*_clinical_registry_*.sql"
       - ".github/workflows/clinical-registry-local-db.yml"
       - ".env.example"
-      - "src/app/clinical-registry/**"
-      - "src/lib/clinical-registry/**"
       - "package.json"
-      - "scripts/validate-clinical-registry-integration.mjs"
   pull_request:
     paths:
       - "supabase/clinical-registry/**"
@@ -24,11 +21,8 @@ on:
       - ".github/workflows/clinical-registry-local-db.yml"
       - ".github/workflows/deploy-cloudflare-production.yml"
       - ".env.example"
-      - "src/app/clinical-registry/**"
-      - "src/lib/clinical-registry/**"
       - "supabase/clinical-registry/**"
       - "package.json"
-      - "scripts/validate-clinical-registry-integration.mjs"
   workflow_dispatch:
 
 permissions:
@@ -74,9 +68,6 @@ jobs:
 
       - name: Type-check website and Registry integration
         run: npm run typecheck
-
-      - name: Validate secure Registry frontend integration
-        run: npm run validate:clinical-registry
 
 
       - name: Set up Deno for Registry Edge Functions

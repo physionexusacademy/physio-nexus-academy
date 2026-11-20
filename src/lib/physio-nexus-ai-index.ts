@@ -6,7 +6,6 @@ import { clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import { areaLabel, typeLabel } from "@/lib/conditions/taxonomy";
 import conditionKeywords from "@/lib/conditions/generated/keywords.json";
-import { clinicalCases } from "@/lib/all-clinical-cases";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
@@ -142,16 +141,6 @@ const assessmentResources: PnaLearningResource[] = [
     keywords: [item.title, item.slug, item.region, item.category, item.summary, ...item.learningPoints].join(" "),
   })),
 ];
-
-const caseResources: PnaLearningResource[] = clinicalCases.map((item) => ({
-  id: `case:${item.slug}`,
-  title: item.title,
-  href: `/case-lab/${encodeURIComponent(item.slug)}`,
-  category: item.specialty,
-  summary: item.summary,
-  level: item.difficulty,
-  keywords: [item.title, item.slug, item.specialty, item.summary, ...item.learningPoints].join(" "),
-}));
 
 const browseResources: PnaLearningResource[] = [
   {
@@ -383,7 +372,7 @@ const browseResources: PnaLearningResource[] = [
 ];
 
 const uniqueResources = new Map<string, PnaLearningResource>();
-for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...caseResources, ...browseResources]) {
+for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...browseResources]) {
   if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
 }
 

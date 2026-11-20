@@ -68,7 +68,7 @@ const tests={
   mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
   desktopChallengeHighlight:desktop.includes('className="nx-pill-challenge"') && read("src/app/nexus.css").includes(".nx-pill-challenge {"),
   midnightCounter:countdown.includes('timeZone: "Asia/Karachi"') && countdown.includes('Date.UTC('),
-  retainedKnowledgeSections:home.includes("<PremiumPathwayBrowser") && ["/conditions","/symptom-checker","/case-lab"].every(url=>pathwayBrowser.includes('href: "'+url+'"')),
+  retainedKnowledgeSections:home.includes("<PremiumPathwayBrowser") && ["/conditions","/symptom-checker"].every(url=>pathwayBrowser.includes('href: "'+url+'"')),
   themedResponsiveFlagship:css.includes(".dc-flagship-stage") && css.includes("@media(max-width:560px)"),
   stableApiStart:quiz.includes('dailyRequest<StartResponse>("start"') && startEndpoint.includes('startDailyChallenge('),
   stableApiSubmit:quiz.includes('dailyRequest<Completed>("submit"') && submitEndpoint.includes('submitDailyChallenge('),

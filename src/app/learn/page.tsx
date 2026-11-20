@@ -147,7 +147,6 @@ export default function LearnPage() {
             {[
               { label: "Conditions & Treatment Guide", href: "/conditions" },
               { label: "MSK Special Tests", href: "/msk-special-tests" },
-              { label: "Clinical Case Lab", href: "/case-lab" },
               { label: "Daily Challenge", href: "/daily-challenge" },
               { label: "Weekly Leagues", href: "/leagues" },
             ].map((link) => (
