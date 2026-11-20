@@ -88,40 +88,83 @@ eq(again.id, aliceReg.id, "registering twice does not create a duplicate patient
 eq((await sql("select count(*)::int n from rehab_patients where user_id = $1", [alice.sub]))[0].n, 1, "one patient row per account");
 const bobReg = await rpc(bob, "rehab_register_patient", { p_payload: { full_name: "Bob Ali", age_years: 45, consent: true } });
 
-/* ----------------------------- 1b. the AI-assistance switch (default off, admin decides) ----------------------------- */
+/* ----------------------------- 1b. the AI-assistance switch (default off, ONLY the admin decides) ----------------------------- */
 const myAi = async (claims) => (await rpc(claims, "rehab_my_overview", {})).patient.ai_assist;
 eq(await myAi(alice), "off", "AI assistance is OFF by default");
 eq(await rpc(alice, "rehab_ai_enabled", {}), false, "the server check says no while it is off");
 eq(await rpc(stranger, "rehab_ai_enabled", {}), false, "an unregistered account never gets AI");
 const carol = await makeUser("carol@pna.test");
-await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, consent: true, ai_requested: true } });
-eq(await myAi(carol), "requested", "ticking the box at sign-up only REQUESTS AI assistance");
-eq(await rpc(carol, "rehab_ai_enabled", {}), false, "a request does not switch it on");
-ok((await sql("select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'ai_requested'"))[0].n === 1, "the admin is told about the request");
-await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, consent: true } });
-eq(await myAi(carol), "requested", "registering again does not change the switch");
+await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, consent: true, ai_requested: true, ai_assist: "on" } });
+eq(await myAi(carol), "off", "nothing a patient sends at sign-up can switch AI on or request it");
+ok((await sql("select count(*)::int n from rehab_notifications where kind = 'ai_requested'"))[0].n === 0, "there is no patient request to answer");
+await fails(alice, "rehab_patient_ai_choice", { p_want: true }, /Could not find|does not exist|permission denied/i, "patients have no function to ask for, turn on or turn off AI");
 await fails(alice, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true }, /not authorised/, "a patient cannot turn the switch on for herself");
 await rowsFail(alice, `update rehab_patients set ai_assist = 'on' where id = '${aliceReg.id}'`, /permission denied/, "patients cannot write the switch directly");
-eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: true }), { ai_assist: "requested" }, "a patient can ask for AI assistance");
-eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: true }), { ai_assist: "requested" }, "asking twice changes nothing");
+await rowsFail(alice, `update rehab_patients set ai_assist = 'off' where id = '${aliceReg.id}'`, /permission denied/, "patients cannot turn it off directly either");
+await sql("select 1"); // (the check constraint no longer allows a 'requested' state)
+await assert.rejects(() => sql(`update rehab_patients set ai_assist = 'requested' where id = '${aliceReg.id}'`), /check constraint|violates/i);
+checks += 1;
 const listed = await rpc(admin, "rehab_admin_patients", {});
-eq(listed.find((p) => p.id === aliceReg.id).ai_assist, "requested", "the admin sees the request in the patient list");
+eq(listed.find((p) => p.id === aliceReg.id).ai_assist, "off", "the admin sees the switch in the patient list");
 eq(await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true }), { ai_assist: "on" }, "the admin turns it on");
 eq(await rpc(alice, "rehab_ai_enabled", {}), true, "the server check now says yes");
 eq(await rpc(bob, "rehab_ai_enabled", {}), false, "other patients are unaffected");
-eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: true }), { ai_assist: "on" }, "a patient asking again cannot change an enabled switch");
 await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice K. Khan", age_years: 30, consent: true } });
 eq(await myAi(alice), "on", "updating the profile never touches the switch");
 ok((await rows(alice, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'ai_assist'"))[0].n === 1, "the patient is told it was switched on");
-eq(await rpc(alice, "rehab_patient_ai_choice", { p_want: false }), { ai_assist: "off" }, "a patient can withdraw");
-eq(await rpc(alice, "rehab_ai_enabled", {}), false, "withdrawing stops AI at once");
+
+/* ----------------------------- 1c. stored AI conversations (server-only writes, only while the switch is on) ----------------------------- */
+const open = (patient, kind = "intake", greeting = "Hello, I am the RehabVerse assistant.") =>
+  sql("select public.rehab_ai_open_conversation($1, $2, 'en', 'ai-v1', $3) as r", [patient, kind, greeting]).then((r) => r[0].r);
+const turn = (patient, conv, over = {}) =>
+  sql("select public.rehab_ai_append_turn($1, $2, $3, $4, $5::jsonb, $6, $7, $8, $9) as r", [
+    patient, conv, over.p ?? "my back hurts", over.a ?? "I am sorry to hear that. Where exactly?", JSON.stringify(over.draft ?? { regions: ["lumbar"] }),
+    over.model ?? "model-a", over.fallback ?? false, over.status ?? "open", over.safety ?? null,
+  ]).then((r) => r[0].r);
+await assert.rejects(() => open(bobReg.id), /AI assistance is not enabled/);
+checks += 1;
+const conv1 = await open(aliceReg.id);
+ok(conv1.id && conv1.messages.length === 1 && conv1.messages[0].role === "assistant", "a conversation opens with the assistant's greeting");
+eq((await open(aliceReg.id)).id, conv1.id, "opening again resumes the same open conversation");
+await assert.rejects(() => open(aliceReg.id, "nonsense"), /unknown conversation kind/);
+checks += 1;
+const t1 = await turn(aliceReg.id, conv1.id);
+eq([t1.status, t1.turns], ["open", 1], "a turn is recorded");
+const t2 = await turn(aliceReg.id, conv1.id, { fallback: true, model: "model-b" });
+eq(t2.turns, 2, "a second turn is recorded");
+const stored = (await sql("select messages, draft, models, fallback_turns, turns from rehab_ai_conversations where id = $1", [conv1.id]))[0];
+eq([stored.messages.length, stored.models, stored.fallback_turns, stored.draft.regions], [5, ["model-a", "model-b"], 1, ["lumbar"]], "transcript, models used and fallbacks are kept");
+await assert.rejects(() => turn(bobReg.id, conv1.id), /AI assistance is not enabled/);
+checks += 1;
+eq((await sql("select (public.rehab_ai_get_conversation($1, $2) ->> 'id') as id", [aliceReg.id, conv1.id]))[0].id, conv1.id, "the server can load a patient's own conversation");
+eq((await sql("select public.rehab_ai_get_conversation($1, $2) as r", [bobReg.id, conv1.id]))[0].r, null, "and never another patient's");
+ok((await rows(alice, "select id from rehab_ai_conversations")).length === 1, "a patient can read her own conversation");
+eq((await rows(bob, "select id from rehab_ai_conversations")).length, 0, "another patient cannot");
+ok((await rows(admin, "select id from rehab_ai_conversations")).length === 1, "the admin can read it");
+const aiFnPrivileges = await sql(`select p.proname, has_function_privilege('authenticated', p.oid, 'execute') as auth, has_function_privilege('anon', p.oid, 'execute') as anon, has_function_privilege('service_role', p.oid, 'execute') as service
+   from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ('rehab_ai_open_conversation', 'rehab_ai_append_turn', 'rehab_ai_close_conversation', 'rehab_ai_link_conversation', 'rehab_ai_get_conversation') order by 1`);
+eq(aiFnPrivileges.map((f) => [f.auth, f.anon, f.service]), [[false, false, true], [false, false, true], [false, false, true], [false, false, true], [false, false, true]], "only the server (service role) can write AI conversations");
+await rowsFail(alice, `update rehab_ai_conversations set messages = '[]'::jsonb where id = '${conv1.id}'`, /permission denied/, "a patient cannot edit a transcript");
+await rowsFail(alice, `insert into rehab_ai_conversations (patient_id, kind, consent_version) values ('${aliceReg.id}', 'intake', 'x')`, /permission denied/, "a patient cannot write a conversation");
+await assert.rejects(() => turn(aliceReg.id, conv1.id, { p: "" }), /message length/);
+await assert.rejects(() => turn(aliceReg.id, conv1.id, { status: "weird" }), /bad status/);
+checks += 2;
+for (let i = 0; i < 57; i++) await turn(aliceReg.id, conv1.id);
+await assert.rejects(() => turn(aliceReg.id, conv1.id), /too long/);
+checks += 1;
+eq((await sql("select jsonb_array_length(messages)::int n from rehab_ai_conversations where id = $1", [conv1.id]))[0].n, 119, "a conversation is capped");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: false });
+await assert.rejects(() => turn(aliceReg.id, conv1.id), /AI assistance is not enabled/);
+checks += 1;
+await assert.rejects(() => open(aliceReg.id), /AI assistance is not enabled/);
+checks += 1;
+eq(await rpc(alice, "rehab_ai_enabled", {}), false, "switching it off stops AI at once");
 await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true });
-eq(await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: false }), { ai_assist: "off" }, "the admin can turn it off at any time");
-eq(await rpc(alice, "rehab_ai_enabled", {}), false, "off means off");
-const aiAudit = (await sql("select action from rehab_audit_log where patient_id = $1 and action like 'ai_assist_%' order by id", [aliceReg.id])).map((r) => r.action);
-eq(aiAudit, ["ai_assist_requested", "ai_assist_enabled", "ai_assist_withdrawn", "ai_assist_enabled", "ai_assist_disabled"], "every change is in the audit trail, in order");
+const aiAudit = (await sql("select action from rehab_audit_log where patient_id = $1 and action like 'ai_%' order by id", [aliceReg.id])).map((r) => r.action);
+eq(aiAudit, ["ai_assist_enabled", "ai_conversation_started", "ai_assist_disabled", "ai_assist_enabled"], "every switch change and conversation start is in the audit trail, in order");
+await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1", [conv1.id]);
 await fails(admin, "rehab_admin_set_ai_assist", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_enabled: true }, /patient not found/, "unknown patient");
-await fails(null, "rehab_patient_ai_choice", { p_want: true }, /permission denied|not authorised/i, "anonymous cannot use the switch");
+await fails(null, "rehab_ai_enabled", {}, /permission denied|not authorised/i, "anonymous cannot ask whether AI is on");
 
 /* ----------------------------- 2. who can call what ----------------------------- */
 for (const fn of ["rehab_my_overview", "rehab_admin_inbox", "rehab_admin_patients", "rehab_my_history"]) {
@@ -359,11 +402,13 @@ const src = (file) => fs.readFileSync(new URL("../" + file, import.meta.url), "u
 const gate = src("src/lib/rehabverse/ai-access.ts");
 ok(gate.includes('import "server-only"') && gate.includes("REHAB_AI_ENABLED") && gate.includes("rehab_ai_enabled"), "the server gate checks the global kill switch and the patient's own switch");
 ok(src("src/components/rehabverse/admin/AiAssistSwitch.tsx").includes("setAiAssistAction") && src("src/components/rehabverse/admin/AdminPatientRecord.tsx").includes("<AiAssistSwitch"), "the admin record has the switch");
-ok(src("src/components/rehabverse/admin/PatientList.tsx").includes("AI requested"), "the patient list shows who asked for AI");
-ok(src("src/components/rehabverse/AiAssistCard.tsx").includes("aiChoiceAction") && src("src/components/rehabverse/PatientDashboard.tsx").includes("<AiAssistCard"), "the patient dashboard explains the switch and lets the patient ask or withdraw");
-ok(src("src/components/rehabverse/AuthForm.tsx").includes('name="ai_requested"') && src("src/app/rehabverse/actions.ts").includes("ai_requested"), "sign-up carries the optional request");
+const patientActions = src("src/app/rehabverse/actions.ts");
+ok(!patientActions.includes("rehab_patient_ai_choice") && !patientActions.includes("aiChoiceAction") && !patientActions.includes("ai_requested"), "patients have no action to ask for, turn on or turn off AI");
+ok(!src("src/components/rehabverse/AuthForm.tsx").includes("ai_requested"), "sign-up has no AI request box");
+const card = src("src/components/rehabverse/AiAssistCard.tsx");
+ok(!card.includes("onClick") && !card.includes("<button"), "the patient's AI card has no controls");
 const adminActions = src("src/app/admin/(dashboard)/rehabverse/actions.ts");
-ok(adminActions.includes("rehab_admin_set_ai_assist") && !src("src/app/rehabverse/actions.ts").includes("rehab_admin_set_ai_assist"), "only the admin actions can call the admin function");
+ok(adminActions.includes("rehab_admin_set_ai_assist") && !patientActions.includes("rehab_admin_set_ai_assist"), "only the admin actions can call the admin function");
 for (const file of ["src/components/rehabverse/AiAssistCard.tsx", "src/components/rehabverse/admin/AiAssistSwitch.tsx"]) ok(!src(file).includes("ai-access"), file + " never imports the server-only gate");
 
 console.log(`RehabVerse database OK — ${checks} checks passed (real migration on Postgres ${(await sql("show server_version"))[0].server_version}).`);

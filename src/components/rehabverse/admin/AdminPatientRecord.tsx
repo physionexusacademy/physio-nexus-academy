@@ -7,6 +7,7 @@ import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAct
 import type { AdminAssessment, AdminPatient } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
+import { AiConversations } from "./AiConversations";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
 import { SessionReview } from "./SessionReview";
 
@@ -129,6 +130,7 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
 
 export function AdminPatientRecord({ data }: { data: AdminPatient }) {
   const { patient, assessments, programmes, adverse_events, audit } = data;
+  const aiConversations = data.ai_conversations ?? [];
   const live = programmes.find((p) => LIVE.includes(p.programme.status));
   const latest = assessments[0];
   const openAdverse = adverse_events.filter((e) => e.status === "open").length;
@@ -152,7 +154,7 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
         </div>
         <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />
         <nav className="mt-3 flex flex-wrap gap-1.5 text-[12.5px] font-bold" aria-label="Sections">
-          {[["#assessment", "Assessment"], ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
+          {[["#assessment", "Assessment"], ...(aiConversations.length ? [["#ai", "AI conversations"]] : []), ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
         </nav>
       </header>
 
@@ -164,6 +166,13 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
           </details>
         ) : null}
       </Section>
+
+      {aiConversations.length ? (
+        <Section id="ai" title="AI conversations" aside={<span className="rv-chip rv-chip-navy">{aiConversations.length}</span>}>
+          <p className="mb-3 text-[13px] leading-5 text-slate-600">What the patient told the AI assistant, exactly as written, and how the assistant answered. The assessment above was checked and submitted by the patient.</p>
+          <AiConversations conversations={aiConversations} />
+        </Section>
+      ) : null}
 
       <Section id="programme" title={live ? "Programme" : "Build a programme"}>
         <ProgrammeBuilder

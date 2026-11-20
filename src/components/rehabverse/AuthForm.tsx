@@ -265,13 +265,6 @@ function RegisterForm() {
         </div>
       </div>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
-      <label className="flex items-start gap-3 rounded-2xl border border-teal-200 bg-teal-50/60 p-3 text-[13px] leading-5 text-slate-700">
-        <input type="checkbox" name="ai_requested" className="mt-1 h-4 w-4 accent-teal-600" />
-        <span>
-          <T en="I would like AI assistance (optional). It is a new assistant that can help with forms and exercises. My physiotherapist decides whether to switch it on for me, and RehabVerse works the same without it."
-             ru="Mujhe AI assistance chahiye (optional). Ye ek naya assistant hai jo forms aur exercises mein madad karta hai. Mere physiotherapist faisla karenge ke ise mere liye on karna hai ya nahi, aur iske baghair RehabVerse waisa hi chalta hai." />
-        </span>
-      </label>
       <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-[13px] leading-5 text-slate-700">
         <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-teal-600" />
         <span>

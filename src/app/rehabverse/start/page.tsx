@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { IntakeAssistantLoader } from "@/components/rehabverse/IntakeAssistantLoader";
 import { IntakeWizardLoader } from "@/components/rehabverse/IntakeWizardLoader";
+import { aiAssistAllowed } from "@/lib/rehabverse/ai-access";
 import { requirePatient } from "@/lib/rehabverse/guard";
 
 export const metadata: Metadata = { title: "Symptom assessment", robots: { index: false, follow: false } };
@@ -15,9 +17,11 @@ export default async function StartPage() {
   const live = overview.programme && ["active", "paused"].includes(overview.programme.status);
   const drafting = !overview.programme && assessments[0]?.status === "programme_created"; // programme being prepared
   if (live || drafting || assessments.some((a) => OPEN.includes(a.status))) redirect("/rehabverse/me");
+  // A patient whose physiotherapist switched the AI assistant on talks with it (and can always choose the normal form); everyone else sees the form, unchanged.
+  const assistant = await aiAssistAllowed();
   return (
     <div className="container-content pb-16 pt-6 sm:pt-10">
-      <IntakeWizardLoader />
+      {assistant ? <IntakeAssistantLoader /> : <IntakeWizardLoader />}
     </div>
   );
 }

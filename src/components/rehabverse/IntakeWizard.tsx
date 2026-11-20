@@ -72,12 +72,16 @@ function Area({ id, label, value, onChange, hint, rows = 3, max = 600 }: { id: s
   );
 }
 
-export function IntakeWizard() {
+export type IntakeForm = Form;
+export type IntakeStep = Step;
+
+/** The assessment questionnaire. It can start empty, or pre-filled from the AI conversation (the patient always checks and can change every answer). */
+export function IntakeWizard({ initial, startStep, aiConversationId, notice }: { initial?: Partial<Form>; startStep?: Step; aiConversationId?: string; notice?: React.ReactNode } = {}) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [stepIndex, setStepIndex] = useState(0);
-  const [form, setForm] = useState<Form>(EMPTY);
+  const [stepIndex, setStepIndex] = useState(startStep ? Math.max(0, STEPS.indexOf(startStep)) : 0);
+  const [form, setForm] = useState<Form>({ ...EMPTY, ...(initial ?? {}) });
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<IntakeResult | null>(null);
   const token = useRef<string>("");
@@ -117,7 +121,7 @@ export function IntakeWizard() {
         medical_conditions: form.medical_conditions || undefined, medications: form.medications || undefined,
         other_symptoms: form.other_symptoms || undefined, own_words: form.own_words || undefined,
         red_flags: form.red_flags,
-      });
+      }, aiConversationId);
       if (!r.ok) {
         if (r.code === "open_assessment_exists") return router.replace("/rehabverse/me");
         return setError(r.code === "too many submissions" ? "rate" : "failed");
@@ -173,6 +177,7 @@ export function IntakeWizard() {
   return (
     <div ref={top} className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
       <div className="rv-glass p-5 sm:p-7">
+        {notice}
         <div className="mb-4 flex items-center gap-3">
           <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={stepIndex + 1}>
             <div className="h-full rounded-full bg-gradient-to-r from-[#0a1f3d] to-[#0db3aa] transition-[width] duration-300" style={{ width: `${((stepIndex + 1) / STEPS.length) * 100}%` }} />

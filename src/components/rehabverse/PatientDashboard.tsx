@@ -120,7 +120,7 @@ export function PatientDashboard({ overview, history, notifications, followup = 
         </div>
       </header>
 
-      <div className="mt-4"><AiAssistCard value={patient.ai_assist ?? "off"} /></div>
+      {patient.ai_assist === "on" ? <div className="mt-4"><AiAssistCard value="on" /></div> : null}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div className="order-2 space-y-5 lg:order-1">
