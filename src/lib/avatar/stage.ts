@@ -368,6 +368,7 @@ export class TeachingStage {
     // everything the rig does still advances in small steps.
     const timeDt = this.opt.light ? Math.min(0.5, realDt) : dt;
     this.doc.face.update(dt);
+    this.rig.talk = this.doc.speaker.speaking ? 1 : 0;
     if (this.extra) {
       this.doc.speaker.tick(timeDt);
       this.clock += timeDt;

@@ -28,7 +28,7 @@ export const siteTour: Choreo = {
   enter: { away: 1.6, towardFeet: 0.4 },
   review: { status: "reviewed", by: "Interface text only (site guide wording)", date: "2026-11-14" },
   steps: [
-    talk("overview", "PNA", { stand: STAND, position: "standing" }),
+    talk("overview", "PNA", { stand: STAND, position: "standing", gesture: "wave" }),
     talk("teacher", "Teacher", { gesture: "nod" }),
     talk("skills", "Skills Lab", {
       patient: { "shoulder.left": { flex: 0 } },

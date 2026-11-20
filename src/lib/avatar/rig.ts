@@ -4,17 +4,23 @@
  * the shared pose system), then lets arm IK put the hands on their targets.
  */
 import * as THREE from "three";
-import type { Pose } from "@/lib/virtual-patient/engine";
+import type { JointAngles, Pose } from "@/lib/virtual-patient/engine";
+import { P } from "@/lib/virtual-patient/parts";
+import { gestureParts } from "@/lib/rehabverse/guide-motion";
 import type { PnaTeacher } from "./teacher";
 import { ARM_REACH, bonePosition, solveArm, type ArmGoal, type Side } from "./ik";
 import { restHead } from "./mesh";
 
-export type Gesture = "none" | "open" | "point" | "care" | "nod";
+export type Gesture = "none" | "open" | "point" | "care" | "nod" | "wave";
 export type HandShape = "flat" | "relaxed" | "cupped";
 const GRIP: Record<HandShape, number> = { flat: 2, relaxed: 14, cupped: 30 };
 
 /** A hand target in WORLD space; the rig converts it. `from` etc. are re-evaluated every frame by the caller. */
 export type WorldHand = { point: THREE.Vector3; palm: THREE.Vector3; fingers: THREE.Vector3; shape: HandShape };
+
+/** The Teacher's gestures are the guide's natural ones (lib/rehabverse/guide-motion.ts), so the whole site moves like the same kind of person. */
+const NATURAL = { none: "calm", open: "open", point: "point_left", care: "care", nod: "calm", wave: "wave" } as const;
+const ARM_KEYS = ["shoulder.left", "shoulder.right", "elbow.left", "elbow.right", "wrist.left", "wrist.right", "hand.left", "hand.right"] as const;
 
 const DEG = Math.PI / 180;
 const damp = (current: number, target: number, rate: number, dt: number) => current + (target - current) * (1 - Math.exp(-rate * dt));
@@ -36,6 +42,12 @@ export class DoctorRig {
   crouch = 0;
   crouchTarget = 0;
   gesture: Gesture = "none";
+  /** 1 while he is speaking: the hands drift a little and the head moves, as a person's do. */
+  talk = 0;
+  private gestureSeen: Gesture = "none";
+  private gestureStart = 0;
+  /** The arms as they were drawn last frame, so a change of gesture glides instead of jumping. */
+  private armPose: Pose = {};
   /** Where he looks (world point) or null = straight ahead. */
   lookAt: THREE.Vector3 | null = null;
   /** Hands on the patient: world targets (or null) and how strongly IK holds them. */
@@ -116,7 +128,7 @@ export class DoctorRig {
   }
 
   /** The pose before IK: stance (knees), lean, gesture and gait. */
-  private basePose(crouch: number, lean: number, gesture: Gesture, t: number, walking: boolean): Pose {
+  private basePose(crouch: number, lean: number, gesture: Gesture, t: number, walking: boolean, since = 0): Pose {
     const pose: Pose = {};
     const swing = walking ? Math.sin(this.phase) : 0;
     const hipFlex = (side: 1 | -1) => (walking ? 26 * swing * side : 0) + 46 * crouch;
@@ -128,34 +140,41 @@ export class DoctorRig {
     pose["ankle.left"] = { flex: 24 * crouch };
     pose["ankle.right"] = { flex: 24 * crouch };
     const armSwing = walking ? 14 * swing : 0;
-    let shoulderL: Pose["shoulder.left"] = { flex: 3 + armSwing, abd: 7 };
-    let shoulderR: Pose["shoulder.right"] = { flex: 3 - armSwing, abd: 7 };
-    let elbowL: Pose["elbow.left"] = { flex: 16 };
-    let elbowR: Pose["elbow.right"] = { flex: 16 };
-    if (gesture === "open") {
-      const b = 4 * Math.sin(t * 2.2);
-      shoulderL = { flex: 30 + b, abd: 24 };
-      shoulderR = { flex: 30 - b, abd: 24 };
-      elbowL = { flex: 86 + 6 * Math.sin(t * 2.6) };
-      elbowR = { flex: 86 + 6 * Math.sin(t * 2.6 + 0.8) };
-    } else if (gesture === "care") {
-      shoulderL = { flex: 38, abd: -2 };
-      shoulderR = { flex: 38, abd: -2 };
-      elbowL = { flex: 104 };
-      elbowR = { flex: 104 };
-    } else if (gesture === "point") {
-      shoulderR = { flex: 62, abd: 14 };
-      elbowR = { flex: 14 };
+    // arms: the natural gesture for what he is doing (calm, open hands, care, a presenting palm, a wave), with the walking swing added
+    const arms = P("right", gestureParts(NATURAL[gesture], t, this.talk, since));
+    for (const key of ARM_KEYS) {
+      const angles = arms[key] as JointAngles | undefined;
+      if (angles) pose[key] = { ...angles };
     }
-    pose["shoulder.left"] = shoulderL;
-    pose["shoulder.right"] = shoulderR;
-    pose["elbow.left"] = elbowL;
-    pose["elbow.right"] = elbowR;
-    pose["hand.left"] = { flex: this.hands.L ? GRIP[this.hands.L.shape] : 12 };
-    pose["hand.right"] = { flex: this.hands.R ? GRIP[this.hands.R.shape] : 12 };
+    if (walking) {
+      pose["shoulder.left"] = { ...pose["shoulder.left"], flex: (pose["shoulder.left"]?.flex ?? 3) + armSwing };
+      pose["shoulder.right"] = { ...pose["shoulder.right"], flex: (pose["shoulder.right"]?.flex ?? 3) - armSwing };
+    }
+    pose["hand.left"] = { flex: this.hands.L ? GRIP[this.hands.L.shape] : arms["hand.left"]?.flex ?? 12 };
+    pose["hand.right"] = { flex: this.hands.R ? GRIP[this.hands.R.shape] : arms["hand.right"]?.flex ?? 12 };
     pose.trunk = { flex: lean + (walking ? 1.5 : 0.8 * Math.sin(t * 1.4)), rot: walking ? 3 * swing : 0 };
     pose.neck = { flex: 0 };
     return { ...pose, ...this.extra };
+  }
+
+  /** Eases the arms from where they were to where the gesture wants them (about a seventh of a second), so a new gesture never snaps. */
+  private smoothArms(pose: Pose, dt: number): Pose {
+    const k = dt <= 0.002 ? 1 : 1 - Math.exp(-dt / 0.14);
+    const out: Pose = { ...pose };
+    for (const key of ARM_KEYS) {
+      const target = pose[key] as JointAngles | undefined;
+      if (!target) continue;
+      const previous = this.armPose[key] as JointAngles | undefined;
+      const next: JointAngles = {};
+      for (const axis of ["flex", "abd", "rot"] as const) {
+        const to = target[axis] ?? 0;
+        const from = previous ? previous[axis] ?? 0 : to;
+        next[axis] = from + (to - from) * k;
+      }
+      (this.armPose as Record<string, JointAngles>)[key] = next;
+      (out as Record<string, JointAngles>)[key] = next;
+    }
+    return out;
   }
 
   /** Skeleton-space shoulder position for a candidate lean/crouch, to decide how far he must lean to reach. */
@@ -258,7 +277,8 @@ export class DoctorRig {
       this.nodClock += dt;
       face.headPitch += 9 * Math.abs(Math.sin(this.nodClock * 3.2));
     }
-    f.setPose(this.basePose(this.crouch, this.lean, this.gesture, t, this.walking));
+    if (this.gesture !== this.gestureSeen) { this.gestureSeen = this.gesture; this.gestureStart = t; }
+    f.setPose(this.smoothArms(this.basePose(this.crouch, this.lean, this.gesture, t, this.walking, t - this.gestureStart), dt));
 
     // Hands on the patient.
     this.reachError = 0;
