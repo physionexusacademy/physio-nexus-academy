@@ -79,6 +79,60 @@ export function paceForVoice(segments: Segment[], lineOf: (segment: Segment) => 
 
 export const cycleLength = (segments: Segment[]) => segments.reduce((sum, s) => sum + s.ms, 0);
 
+const blended = (segment: Segment | undefined): segment is Segment => segment !== undefined && (segment.kind === "move" || segment.kind === "return");
+
+/**
+ * The pose part-way through a movement that flows straight into the next (a circle drawn with the ankle, a pendulum swing): the joints
+ * keep moving through each waypoint instead of stopping at it. A cubic curve per joint angle with the tangent at a waypoint taken from
+ * the stages either side of it (Catmull-Rom for uneven times), and no tangent where the angle turns round (so it never overshoots a
+ * waypoint). A movement next to a hold or rest still starts and ends at rest, exactly as before.
+ */
+function flowingPose(segments: Segment[], index: number, f: number): Pose {
+  const segment = segments[index];
+  const before = blended(segments[index - 1]) ? segments[index - 1] : undefined;
+  const after = blended(segments[index + 1]) ? segments[index + 1] : undefined;
+  const d = segment.ms;
+  const f2 = f * f;
+  const f3 = f2 * f;
+  const h00 = 2 * f3 - 3 * f2 + 1;
+  const h10 = f3 - 2 * f2 + f;
+  const h01 = -2 * f3 + 3 * f2;
+  const h11 = f3 - f2;
+  const keys = new Set<keyof Pose>([...Object.keys(segment.from), ...Object.keys(segment.to)] as (keyof Pose)[]);
+  const out: Pose = {};
+  const AXES = ["flex", "abd", "rot"] as const;
+  for (const key of keys) {
+    const a = (segment.from[key] ?? {}) as JointAngles;
+    const b = (segment.to[key] ?? {}) as JointAngles;
+    const before0 = before ? ((before.from[key] ?? {}) as JointAngles) : undefined;
+    const after1 = after ? ((after.to[key] ?? {}) as JointAngles) : undefined;
+    const value: Required<JointAngles> = { flex: 0, abd: 0, rot: 0 };
+    for (const axis of AXES) {
+      const p0 = a[axis] ?? 0;
+      const p1 = b[axis] ?? 0;
+      const delta = p1 - p0;
+      // slope (angle per ms) at each end, from the neighbours; zero at rest, at a turning point, or where this joint does not move
+      let m0 = 0;
+      let m1 = 0;
+      if (before0 && delta !== 0) {
+        const lead = p0 - (before0[axis] ?? 0);
+        if (lead * delta >= 0) m0 = (p1 - (before0[axis] ?? 0)) / (before!.ms + d);
+      }
+      if (after1 && delta !== 0) {
+        const trail = (after1[axis] ?? 0) - p1;
+        if (trail * delta >= 0) m1 = ((after1[axis] ?? 0) - p0) / (d + after!.ms);
+      }
+      // never faster than three times the average slope of this stage, so the curve cannot run past either end
+      const limit = 3 * Math.abs(delta) / d;
+      m0 = Math.max(-limit, Math.min(limit, m0));
+      m1 = Math.max(-limit, Math.min(limit, m1));
+      value[axis] = h00 * p0 + h10 * d * m0 + h01 * p1 + h11 * d * m1;
+    }
+    (out as Record<string, JointAngles>)[key] = value;
+  }
+  return out;
+}
+
 /** The pose, segment and repetition number at time `ms` (looping). */
 export function sampleCycle(segments: Segment[], ms: number) {
   const total = cycleLength(segments);
@@ -88,7 +142,8 @@ export function sampleCycle(segments: Segment[], ms: number) {
     const segment = segments[index];
     if (t <= segment.ms || index === segments.length - 1) {
       const f = segment.ms ? Math.min(1, Math.max(0, t / segment.ms)) : 1;
-      const pose = segment.kind === "move" || segment.kind === "return" ? blendPose(segment.from, segment.to, ease(f)) : segment.to;
+      const joined = (segment.kind === "move" || segment.kind === "return") && (blended(segments[index - 1]) || blended(segments[index + 1]));
+      const pose = joined ? flowingPose(segments, index, f) : segment.kind === "move" || segment.kind === "return" ? blendPose(segment.from, segment.to, ease(f)) : segment.to;
       return { pose, segment, index, f, rep };
     }
     t -= segment.ms;

@@ -11,7 +11,7 @@
 .hx-link { position: relative; z-index: 1; display: flex; flex-direction: column; width: 100%; color: inherit; text-decoration: none; }
 .hx-link:focus-visible { outline: 3px solid #2ee6d6; outline-offset: -3px; border-radius: 22px; }
 
-.hx-stage { position: relative; margin: 14px 14px 0; height: 218px; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02)); border: 1px solid rgba(150, 225, 255, .22); backdrop-filter: blur(4px); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.hx-stage { position: relative; margin: 14px 14px 0; height: 218px; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02)); border: 1px solid rgba(150, 225, 255, .22); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
 
 .hx-body { display: flex; flex-direction: column; flex: 1; padding: 16px 20px 20px; }
 .hx-badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 12px; font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #2ee6d6; background: rgba(46, 230, 214, .12); border: 1px solid rgba(46, 230, 214, .35); }

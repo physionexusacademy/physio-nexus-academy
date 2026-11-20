@@ -335,7 +335,22 @@ export class ExamRoom {
   private idleBlinkT = -1;
   private idleBlinkAt = 2.4;
   private inView = true;
+  private outAt = 0;
   private viewObserver: IntersectionObserver | null = null;
+
+  /* ---------------- quality (keeps the picture smooth on weak or very high-resolution screens) ---------------- */
+
+  /** 0 = full, 1 = reduced (lighter shadows, lower resolution), 2 = minimal (no shadows, plain skin shading, 1x resolution). */
+  private qualityTier: 0 | 1 | 2 = 0;
+  private keyLight: THREE.DirectionalLight | null = null;
+  private lastTick = 0;
+  private drewLast = false;
+  private frameEma = 16.7;
+  private slowFrames = 0;
+  private onFxChange = () => {
+    const lite = typeof document !== "undefined" && document.documentElement.getAttribute("data-fx") === "lite";
+    if (lite && this.qualityTier < 1) this.applyQuality(1);
+  };
 
   private idleAllowed(): boolean {
     if (typeof window === "undefined") return false;
@@ -391,7 +406,7 @@ export class ExamRoom {
 
   constructor(private container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
@@ -414,12 +429,17 @@ export class ExamRoom {
 
     this.buildRoom();
     this.scene.add(this.patientRoot, this.extras);
+    if (document.documentElement.getAttribute("data-fx") === "lite") this.applyQuality(1);
+    window.addEventListener("pna-fx-change", this.onFxChange);
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
     this.idleOn = this.idleAllowed();
     if (typeof IntersectionObserver !== "undefined") {
       this.viewObserver = new IntersectionObserver((entries) => {
-        this.inView = entries.some((entry) => entry.isIntersecting);
+        const visible = entries.some((entry) => entry.isIntersecting);
+        if (!visible && this.inView) this.outAt = performance.now();
+        this.inView = visible;
+        if (visible) this.invalidate();
       });
       this.viewObserver.observe(container);
     }
@@ -439,6 +459,7 @@ export class ExamRoom {
 
     const hemi = new THREE.HemisphereLight("#ffffff", "#c9d3dc", 0.55);
     const key = new THREE.DirectionalLight("#fff6ee", 1.55);
+    this.keyLight = key;
     key.position.set(2.2, 3.6, 2.4);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -598,15 +619,69 @@ export class ExamRoom {
     const controlsMoved = this.controls.update();
     if (this.tween) this.stepTween(now);
     else if (this.idleOn && this.inView && !this.needsRender && now - this.idleLast > 90 && typeof document !== "undefined" && document.visibilityState === "visible") this.tickIdle(now);
-    if (this.needsRender || controlsMoved) {
+    // Nothing is drawn while the stage is scrolled out of view (for more than a moment, so scrolling back never shows an old frame).
+    const hidden = !this.inView && now - this.outAt > 300;
+    const gap = now - this.lastTick;
+    this.lastTick = now;
+    let drew = false;
+    if ((this.needsRender || controlsMoved) && !hidden) {
       this.needsRender = false;
       this.renderer.render(this.scene, this.camera);
       this.listeners.forEach((listener) => listener());
+      drew = true;
     }
+    // Only back-to-back drawn frames say how fast the picture is (a pause, or a tab that was away, says nothing).
+    if (drew && this.drewLast && gap > 0 && gap < 1000) this.watchFrameTime(gap);
+    this.drewLast = drew;
+  }
+
+  /** While the picture is animating, a run of slow frames lowers the quality one step (never back up in the same visit). */
+  private watchFrameTime(gap: number) {
+    if (this.qualityTier >= 2) return;
+    this.frameEma = this.frameEma * 0.88 + gap * 0.12;
+    if (this.frameEma > 27) this.slowFrames += 1;
+    else this.slowFrames = Math.max(0, this.slowFrames - 2);
+    if (this.slowFrames > 50) {
+      this.slowFrames = 0;
+      this.frameEma = 16.7;
+      this.applyQuality((this.qualityTier + 1) as 1 | 2);
+    }
+  }
+
+  private applyQuality(tier: 0 | 1 | 2) {
+    this.qualityTier = tier;
+    const device = window.devicePixelRatio || 1;
+    const ratio = tier === 0 ? Math.min(device, 1.5) : tier === 1 ? Math.min(device, 1.15) : 1;
+    if (Math.abs(ratio - this.renderer.getPixelRatio()) > 0.01) {
+      this.renderer.setPixelRatio(ratio);
+      this.resize();
+    }
+    const light = this.keyLight;
+    if (light) {
+      const shadows = tier < 2;
+      const size = tier === 0 ? 1024 : 512;
+      light.castShadow = shadows;
+      this.renderer.shadowMap.enabled = shadows;
+      this.renderer.shadowMap.type = tier === 0 ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+      if (light.shadow.mapSize.x !== size) {
+        light.shadow.mapSize.set(size, size);
+        light.shadow.map?.dispose();
+        light.shadow.map = null;
+      }
+    }
+    const skin = this.skinned?.material as THREE.MeshPhysicalMaterial | undefined;
+    if (skin && "sheen" in skin) skin.sheen = tier === 2 ? 0 : 0.35;
+    // shading programs depend on these settings: rebuild them once
+    this.scene.traverse((object) => {
+      const material = (object as THREE.Mesh).material;
+      if (material) (Array.isArray(material) ? material : [material]).forEach((m) => (m.needsUpdate = true));
+    });
+    this.invalidate();
   }
   private originalMaterials: THREE.Material[] = [];
   dispose() {
     this.disposed = true;
+    window.removeEventListener("pna-fx-change", this.onFxChange);
     cancelAnimationFrame(this.frame);
     this.resizeObserver.disconnect();
     this.viewObserver?.disconnect();
