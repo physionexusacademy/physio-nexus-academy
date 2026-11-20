@@ -63,6 +63,8 @@ const rules: Rule[] = [
       any(
         t,
         /\b(chest|seena|seene|sina|chhati|chati)\b.*\b(pain|dard|pressure|tight\w*|heavy|bhari|squeez\w*|jakran)\b/,
+        // "my chest hurts" is how most people say it
+        /\b(chest|seena|seene|sina|chhati|chati)\b.{0,20}\b(hurt|hurts|hurting|ache|aches|aching|burn|burns|burning|discomfort|jal (raha|rahi)|jalan)\b/,
         /\bheart attack\b/,
       ),
   },
