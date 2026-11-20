@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { worldManualApproaches } from "../src/lib/manual-therapy-world.ts";
 
 const expected = 13;
@@ -69,12 +69,15 @@ assert(content("src/components/manual-therapy/WorldApproachChallenge.tsx").inclu
   "Clinical quiz should link to the visible research evidence section");
 assert(chapter.includes('data-pna-world-story="v1"') && chapter.includes("lesson.stop")
   && chapter.includes("lesson.evidence"), "Worldwide chapters need narrative, safety and evidence sections");
-assert(content("src/app/manual-therapy/world-approaches/page.tsx").includes('redirect("/manual-therapy")'),
+// The legacy URLs are redirected by next.config.js (before any page runs), so they have no page files: a redirect-only page costs
+// about 12 KiB of worker for nothing.
+assert(!existsSync(new URL("../src/app/manual-therapy/world-approaches/page.tsx", import.meta.url)) &&
+  !existsSync(new URL("../src/app/manual-therapy/world-approaches/[slug]/page.tsx", import.meta.url)),
+  "Legacy world-approaches routes are redirects in next.config.js, not pages");
+assert(nextConfig.includes("source: '/manual-therapy/world-approaches',") && nextConfig.includes("destination: '/manual-therapy',"),
   "Legacy collection must redirect home");
-assert(content("src/app/manual-therapy/world-approaches/[slug]/page.tsx").includes('redirect("/manual-therapy/" + slug)'),
-  "Legacy chapter URLs must redirect to unified root");
-assert(nextConfig.includes("source: '/manual-therapy/world-approaches/:slug'"),
-  "Legacy chapter links need an SEO-preserving redirect");
+assert(nextConfig.includes("source: '/manual-therapy/world-approaches/:slug'") && nextConfig.includes("destination: '/manual-therapy/:slug'"),
+  "Legacy chapter links need an SEO-preserving redirect to the unified root");
 assert(content("src/components/manual-therapy/WorldApproachChallenge.tsx").includes("lesson.explanation"),
   "Challenges must reveal clinical reasoning");
 

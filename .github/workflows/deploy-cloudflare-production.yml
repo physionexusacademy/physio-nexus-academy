@@ -114,6 +114,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-ai
 
+      - name: Validate the worker stubs (nothing reaches for the Supabase parts the server build removes)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:worker-stubs
+
       - name: Validate RehabVerse database (RLS, roles, unlock rules, audit trail)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-db
