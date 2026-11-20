@@ -44,7 +44,7 @@ const jpgSize=(()=>{for(let i=2;i<founderJpg.length;){if(founderJpg[i]!==0xff)br
 const hrefs=[...browser.matchAll(/href:\s*"(\/[a-z0-9/-]+)"/g)].map(match=>match[1]);
 const mandatoryPaths=[
   "/learn","/conditions","/clinical-visual-atlas","/manual-therapy",
-  "/resources","/case-lab","/daily-challenge",
+  "/resources","/daily-challenge",
   "/workshops","/research","/training","/faculty","/symptom-checker",
   "/patient-services","/verify","/appointment","/home-visit"
 ];
@@ -106,7 +106,7 @@ const tests={
   guideOnHome:home.includes('import { GuideMe } from "@/components/avatar/GuideMe"')&&guide.includes("data-guide-me")&&guide.includes("ssr: false")&&guide.includes('demoKey="avatar/site-tour"')&&guide.includes("loading=\"lazy\"")&&guideCss.includes(".gm-card")&&!learnPage.includes("GuideMe")&&!skillsPage.includes("GuideMe")&&fs.existsSync("public/teacher/pna-teacher-poster.webp")&&fs.statSync("public/teacher/pna-teacher-poster.webp").size<60000,
   // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
   // The page stays short: no stats strip in the hero, no news block, the Registry sits in the physiotherapist pathway, Student Pass is one button.
-  calmerHome:!hero.includes("lobby-stats")&&!home.includes("lobby-news")&&!home.includes("clinical-registry-v1")&&browser.includes('data-pna-home-feature="clinical-registry-v1"')&&pass.includes("aria-expanded={open}")&&dailyBoard.includes('className="hdc-board"'),
+  calmerHome:!hero.includes("lobby-stats")&&!home.includes("lobby-news")&&!home.includes("clinical-registry-v1")&&!browser.includes("clinical-registry-v1")&&pass.includes("aria-expanded={open}")&&dailyBoard.includes('className="hdc-board"'),
   booksRowOnHome:home.includes("<HomeBooks />")&&booksRow.includes("BOOKS.slice(0, HOME_BOOK_COUNT).map(")&&booksRow.includes("const HOME_BOOK_COUNT = 3;")&&lobbyCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")&&bookIds.length>=3&&bookIds.every(id=>fs.existsSync(`public/images/books/thumbs/${id}.webp`))
 };
 for(const [name,okay] of Object.entries(tests)){

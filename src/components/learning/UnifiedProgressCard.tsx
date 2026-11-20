@@ -10,8 +10,12 @@ const levels = [
   { name: "Clinical Master", min: 1000 },
   { name: "Clinical Legend", min: 2500 },
 ];
+const EMPTY_PROGRESS: UnifiedProgress = { version: 1, totalXP: 0, currentStreak: 0, longestStreak: 0, lastActiveDate: null, activeDates: [], eventIds: [], lastActivityLabel: null };
 export function UnifiedProgressCard() {
-  const [progress, setProgress] = useState<UnifiedProgress | null>(null);
+  // Until the saved record is read (right after the page opens) the card is drawn from an empty record, so it is already its full height:
+  // a small placeholder replaced by this tall card pushed everything below it down by 800 px on a phone.
+  const [saved, setProgress] = useState<UnifiedProgress | null>(null);
+  const progress: UnifiedProgress = saved ?? EMPTY_PROGRESS;
   const refresh = useCallback(() => setProgress(getUnifiedProgress()), []);
   useEffect(() => {
     refresh();
@@ -24,7 +28,6 @@ export function UnifiedProgressCard() {
       window.removeEventListener("pna-daily-score-saved", refresh);
     };
   }, [refresh]);
-  if (!progress) return <section aria-label="Your learning progress" className="container-content py-5"><div className="rounded-2xl border border-teal-100 bg-white p-5 text-sm text-slate-500">Preparing your learning progress…</div></section>;
 
   const today = getPakistanDate();
   const activeToday = progress.activeDates.includes(today);
@@ -41,10 +44,10 @@ export function UnifiedProgressCard() {
         <div>
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-teal-700"><Activity className="h-4 w-4"/> Your PNA learning journey</p>
           <h2 id="pna-progress-title" className="mt-2 text-2xl font-bold tracking-tight text-[#183c4d] sm:text-3xl">Small steps. Stronger clinical thinking.</h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Your streak grows when you finish a PNA Teacher lesson, complete a Daily Clinical Challenge or work through a Case Lab case. Your progress stays on this browser and device.</p>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Your streak grows when you finish a PNA Teacher lesson, complete a Daily Clinical Challenge or examine a Virtual Patient. Your progress stays on this browser and device.</p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/daily-challenge#play-daily" className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800">Today's challenge <ArrowRight className="h-4 w-4"/></Link>
-            <Link href="/case-lab" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Solve a case <ArrowRight className="h-4 w-4"/></Link>
+            <Link href="/virtual-patient" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-100">Examine a patient <ArrowRight className="h-4 w-4"/></Link>
             <Link href="/learn" className="inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-white px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:bg-teal-50">Learn with PNA Teacher <ArrowRight className="h-4 w-4"/></Link>
           </div>
         </div>

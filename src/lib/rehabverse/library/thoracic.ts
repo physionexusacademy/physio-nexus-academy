@@ -1,5 +1,9 @@
 import type { ExerciseDef } from "../types.ts";
+import { restingParts } from "../resting.ts";
 import { CHAIR, QUAD, SIT } from "./shared.ts";
+
+/** Face down, arms by the sides on the mat (the resting pose); when the chest lifts the arms are eased back by the same angle so the hands do not dig into the mat. */
+const PRONE_ARM = restingParts("prone").shoulder!;
 
 /** Mid-back mobility, extension, rotation and stabilisation. DRAFT clinical content — to be reviewed by the supervising physiotherapist. */
 export const thoracicExercises: ExerciseDef[] = [
@@ -215,8 +219,9 @@ export const thoracicExercises: ExerciseDef[] = [
     evidence: ["george2021"],
     motion: {
       position: "prone", surface: "floor", sided: false,
-      start: { shoulder: { abd: 14, flex: -6 }, "shoulder:o": { abd: 14, flex: -6 }, elbow: { flex: 4 }, "elbow:o": { flex: 4 } },
-      moves: [{ to: { trunk: { flex: -16 }, neck: { flex: -3 } }, ms: 1800, hold: 2500, breath: "out", say: { en: "Lift the chest a little — keep the neck long.", ru: "Seena thora uthayein — gardan lambi rakhein." } }],
+      // the legs rest on the mat (the resting pose, lib/rehabverse/resting.ts); the arms are the exercise's own, as the chest lift tips the shoulders
+      start: { shoulder: PRONE_ARM, "shoulder:o": PRONE_ARM },
+      moves: [{ to: { trunk: { flex: -16 }, neck: { flex: -3 }, shoulder: { ...PRONE_ARM, flex: (PRONE_ARM.flex ?? 0) - 16 }, "shoulder:o": { ...PRONE_ARM, flex: (PRONE_ARM.flex ?? 0) - 16 } }, ms: 1800, hold: 2500, breath: "out", say: { en: "Lift the chest a little — keep the neck long.", ru: "Seena thora uthayein — gardan lambi rakhein." } }],
       returnMs: 1900, view: "side", zoom: 0.8,
       glow: { bones: ["spine02", "spine03", "spine04"], sides: "both" },
     },

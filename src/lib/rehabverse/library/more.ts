@@ -1,5 +1,5 @@
 import type { ExerciseDef, Region } from "../types.ts";
-import { CHAIR, HOOK, QUAD, SIT } from "./shared.ts";
+import { BRIDGE_TOP, CHAIR, HOOK, QUAD, SIT, SUPINE_ARMS } from "./shared.ts";
 
 /** Both hands rest on the back of the raised thigh; the arms are almost straight (solved on the model). */
 const HAMSTRING_ARMS = { shoulder: { flex: 12, abd: -7 }, "shoulder:o": { flex: 15, abd: -29 }, elbow: { flex: 6 }, "elbow:o": { flex: 5 } };
@@ -110,10 +110,10 @@ const lumbar: ExerciseDef[] = [
     evidence: ["george2021", "cibulka2017"],
     motion: {
       position: "supine", surface: "plinth", sided: false,
-      start: { ...HOOK, "hip:o": { flex: 52, abd: -9 }, hip: { flex: 52, abd: -9 }, shoulder: { flex: 0 }, "shoulder:o": { flex: 0 } },
-      anchor: { bone: "foot", stance: "both" },
+      start: { ...HOOK, ...SUPINE_ARMS, "hip:o": { flex: 52, abd: -9 }, hip: { flex: 52, abd: -9 } },
+      anchor: { bone: "foot", stance: "both" }, tiltAbout: "shoulders",
       props: [{ kind: "ball", at: "knees" }],
-      moves: [{ to: { hip: { flex: 22, abd: -9 }, "hip:o": { flex: 22, abd: -9 }, trunk: { flex: -26 } }, ms: 1900, hold: 1500, breath: "out", say: { en: "Squeeze the ball and lift your hips into a straight line.", ru: "Ball dabayein aur kulhe uthayein jab tak seedhi line ban jaye." } }],
+      moves: [{ to: { ...BRIDGE_TOP, hip: { ...BRIDGE_TOP.hip, abd: -9 }, "hip:o": { ...BRIDGE_TOP["hip:o"], abd: -9 } }, ms: 1900, hold: 1500, breath: "out", say: { en: "Squeeze the ball and lift your hips into a straight line.", ru: "Ball dabayein aur kulhe uthayein jab tak seedhi line ban jaye." } }],
       returnMs: 2100, view: "side", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "both" },
     },
@@ -184,7 +184,7 @@ const lumbar: ExerciseDef[] = [
       position: "quadruped", surface: "floor", sided: false, settle: "start", tiltAbout: "hips",
       // Face down on the mat, tipped 19° head-up about the hips: the thighs stay flat, the upper arms stand upright and the forearms lie on the mat
       // (solved on the model, like the plank). The repetition starts propped up, and the back then relaxes into a little more extension.
-      start: { pelvis: { flex: 19 }, shoulder: { flex: 71 }, "shoulder:o": { flex: 71 }, elbow: { flex: 90 }, "elbow:o": { flex: 90 }, hip: { flex: -19 }, "hip:o": { flex: -19 }, knee: { flex: 0 }, "knee:o": { flex: 0 }, ankle: { flex: -35 }, "ankle:o": { flex: -35 } },
+      start: { pelvis: { flex: 19 }, shoulder: { flex: 71 }, "shoulder:o": { flex: 71 }, elbow: { flex: 90 }, "elbow:o": { flex: 90 }, hip: { flex: -12 }, "hip:o": { flex: -12 }, knee: { flex: 0 }, "knee:o": { flex: 0 }, ankle: { flex: -75 }, "ankle:o": { flex: -75 } }, // (legs and feet lie on the mat: hip -12 and pointed feet, solved on the model; -19 and -35 held them 6-14 cm up)
       moves: [{ to: { trunk: { flex: -3 }, neck: { flex: -4 } }, ms: 2600, hold: 3600, breath: "out", say: { en: "Let your back relax and sag gently towards the bed.", ru: "Kamar ko dheela chhod dein aur aahista bed ki taraf dhalne dein." } }],
       returnMs: 2400, view: "side", zoom: 0.8,
       glow: { bones: ["spine01", "spine02"], sides: "both" },
@@ -299,7 +299,8 @@ const hip: ExerciseDef[] = [
     evidence: ["cibulka2017"],
     motion: {
       position: "sidelying", surface: "plinth", sided: true,
-      start: { hip: { flex: 70 }, knee: { flex: 75 }, "hip:o": { flex: 0 }, "knee:o": { flex: 0 }, shoulder: { flex: 12 }, "shoulder:o": { flex: 78 }, "elbow:o": { flex: 70 } },
+      // the top leg rests in front on the bottom leg (hip adducted 12° and turned in 8°, solved on the model)
+      start: { hip: { flex: 70, abd: -12, rot: -8 }, knee: { flex: 75 }, "hip:o": { flex: 0 }, "knee:o": { flex: 0 }, shoulder: { flex: 12 }, "shoulder:o": { flex: 78 }, "elbow:o": { flex: 70 } },
       moves: [{ to: { "hip:o": { flex: 0, abd: -22 } }, ms: 1500, hold: 1000, breath: "out", say: { en: "Lift your bottom leg straight up, then lower slowly.", ru: "Neeche wali taang seedhi uthayein, phir aahista neeche layein." } }],
       returnMs: 1800, view: "front", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "other" },

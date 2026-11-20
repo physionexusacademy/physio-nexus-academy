@@ -1,3 +1,7 @@
+> **Retired (2026-11):** the Clinical Registry website pages (`/clinical-registry`), the public case library, the Case Lab and the research case reports
+> were removed from the site to free Cloudflare Worker space; their addresses redirect (`/case-lab` to the Virtual Patient, `/clinical-registry` to the Learn hub).
+> The database definitions in `supabase/clinical-registry/` and any data already stored were left untouched. This runbook is kept for reference only.
+
 # PNA Clinical Registry — operator and technical runbook
 
 ## Current status

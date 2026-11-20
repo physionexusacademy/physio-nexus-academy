@@ -56,7 +56,7 @@ export type Move = { kind: "glide"; dir: V3; amplitudeMm: number; hz: number };
  */
 export type LabeledOverlay = Overlay & { note?: { tag: string; ref: TextRef } };
 
-export type Gesture = "none" | "open" | "point" | "care" | "nod";
+export type Gesture = "none" | "open" | "point" | "care" | "nod" | "wave";
 
 /** A patient movement repeated while the step plays (a goniometry sweep, an exercise): the pose eases between the step's pose and `to` every `seconds`. */
 export type Cycle = { to: Pose; seconds: number };

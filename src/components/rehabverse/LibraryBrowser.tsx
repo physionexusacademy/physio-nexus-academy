@@ -41,7 +41,7 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Body region">
-          <button type="button" onClick={() => setRegion("all")} aria-pressed={region === "all"} className={"rv-pill " + (region === "all" ? "rv-pill-on" : "")}>{lang === "ru" ? "Sab" : "All"}{all ? ` (${all.length})` : ""}</button>
+          <button type="button" onClick={() => setRegion("all")} aria-pressed={region === "all"} className={"rv-pill " + (region === "all" ? "rv-pill-on" : "")}>{lang === "ru" ? "Sab" : "All"} <span className={all ? "" : "invisible"}>({all ? all.length : "00"})</span></button>
           {REGIONS.map((r) => (
             <button key={r} type="button" onClick={() => setRegion(r)} aria-pressed={region === r} className={"rv-pill " + (region === r ? "rv-pill-on" : "")}>
               {t(REGION_LABEL[r]).replace(/ \(.*\)/, "")}

@@ -143,7 +143,7 @@ Before the assistants are opened to everyone, a physiotherapist reviews them and
 - **Sign-off record** (`rehab_ai_signoffs`, append-only): reviewer, decision (approved / approved with changes / not approved), notes, and the
   **version** of the pack that was read (a hash of the whole pack). Any later change to a prompt, sentence, rule or sample changes the version, so a
   sign-off never silently covers text nobody read; the server builds the version itself and refuses a sign-off made on a page that has gone stale.
-- **Pilot limit** (`rehab_ai_pilot`, default 5 patients): the database refuses to switch AI on for one more patient once the limit is reached
+- **Pilot limit** (`rehab_ai_pilot`, default **no limit**, stored as 100000; the physiotherapist can set 1–99,999 on the AI pilot page): when a limit is set, the database refuses to switch AI on for one more patient once the limit is reached
   (switching off is never refused; patients who have it keep it). **Open to all patients** is allowed only when the *latest* sign-off is "approved"
   for the *current* pack version. You still switch AI on patient by patient.
 - **Dashboard**: patients with AI on, chats per assistant, scripted-reply share (a warning at 50% or more: the model is often unavailable or refused
@@ -201,6 +201,14 @@ physiotherapist should read and adopt (or change) them before patient use.
   and `settle`.
 * Angles that put one body part on another (the ankle on the opposite knee in the figure-4) were solved on the real model with the
   development hook below and stored as plain numbers.
+* **A lying body rests on what is under it** (`lib/rehabverse/resting.ts`). Every lying exercise starts from a resting pose and its own
+  movements are laid on top: on the back both arms lie behind the body with the palms down and the hands on the bed (not "in the
+  fundamental position", 12 cm above it); face down the arms and legs rest on the mat (feet pointing); on the side the top leg lies on the bottom
+  leg (adducted and turned so the knee, shin and heel rest on it). A joint is the exercise's own, and left exactly as written, when any
+  movement (or the faulty version) mentions it or its start pose sets it more than 25° from neutral; a small start angle only meant "by the
+  sides" and is replaced. On the side the body is placed on its ribs, hip and legs: the shoulder underneath, the widest part of the body, may
+  sink a few cm into the mattress (`lowestY(skipArm)` in the 3D engine); counting it held the bottom leg 8 cm in the air. The numbers were
+  solved on the real model by measuring the lowest vertex of every limb against the bed.
 * **Voice**: with the voice on, `paceForVoice` (`motion.ts`) gives every spoken line the time its recording needs (extra time goes
   into the hold or the rest), so a line is never cut off by the next one; the packs a cycle needs are decoded before it starts
   (`warmPlan`). A line without a recording is not spoken.
@@ -215,6 +223,8 @@ or the 3D model) opens the library in a browser, shows every exercise on the rea
 poses it at 48 moments of the repetition (`window.__rvPlayer.check`, `src/lib/rehabverse/pose-check.ts`) and fails on:
 
 * a body part sunk into the mat, bed or floor, or a body that floats (nothing touches its surface);
+* a limb that should lie still on what is under it but hovers (`limb-floats`: the hands in the air on the back, the top leg hanging over the bottom
+  leg on the side; `restingLimbs` in `resting.ts` decides which limbs, namely those the exercise neither moves nor holds);
 * feet that should stay planted but lift (a step is understood);
 * a jump between two moments, or a repetition that does not come back to where it started;
 * a declared contact that does not happen (`motion.touch`, for example the ankle on the opposite knee, or the hands on the back of the thigh);

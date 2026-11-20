@@ -15,7 +15,7 @@ export const sourceInfo: Record<string, { name: string; short: string; href: str
   "skills-lab": { name: "Clinical Skills Lab", short: "Practise", href: "/skills", verb: "practise a skill" },
   "virtual-patient": { name: "Virtual Patient", short: "Examine", href: "/virtual-patient", verb: "examine a patient" },
   "daily-challenge": { name: "Daily Challenge", short: "Challenge", href: "/daily-challenge", verb: "take today's challenge" },
-  "clinical-arena": { name: "Clinical Arena", short: "Arena", href: "/case-lab", verb: "work through a case" },
+  "clinical-arena": { name: "Clinical Arena", short: "Arena", href: "/virtual-patient", verb: "examine a patient" },
 };
 export const mainSources = ["pna-teacher", "skills-lab", "virtual-patient", "daily-challenge"] as const;
 

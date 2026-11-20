@@ -10,7 +10,7 @@ const BASE = (process.env.SEO_BASE ?? "https://physionexusacademy.com").replace(
 const PUBLIC = "https://physionexusacademy.com";
 
 const HUBS = ["/", "/learn", "/skills", "/virtual-patient", "/rehabverse", "/rehabverse/library", "/conditions", "/symptom-checker", "/daily-challenge", "/leagues", "/account",
-  "/case-lab", "/manual-therapy", "/manual-therapy/regions", "/msk-special-tests", "/clinical-visual-atlas", "/workshops", "/training", "/resources", "/about", "/founder", "/faculty",
+  "/manual-therapy", "/manual-therapy/regions", "/msk-special-tests", "/clinical-visual-atlas", "/workshops", "/training", "/resources", "/about", "/founder", "/faculty",
   "/contact", "/appointment", "/home-visit", "/patient-services", "/reviews", "/faq", "/research", "/stupid-intern-diaries", "/locations/karachi", "/locations/hyderabad"];
 // pages that legitimately have no Breadcrumb/entity block of their own beyond the site-wide graph
 const NO_PAGE_SCHEMA = new Set(["/"]);

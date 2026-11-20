@@ -78,10 +78,6 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-manual-visuals.mjs
 
-      - name: Validate premium PNA Case Lab and all patient-story links
-        if: steps.auth.outputs.ready == 'true'
-        run: node scripts/validate-case-lab-premium.mjs
-
       - name: Validate PNA Daily Challenge question bank, scoring, privacy and midnight rankings
         if: steps.auth.outputs.ready == 'true'
         run: node scripts/validate-daily-challenge.mjs
@@ -125,6 +121,14 @@ jobs:
       - name: Validate the RehabVerse AI pilot and review pack (safety behaviour on sample sentences, stable version, sign-off wiring)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-pilot
+
+      - name: Validate the guide and Teacher gestures (hello is a wave, presenting palms, natural talking, same gestures everywhere)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-guide-motion
+
+      - name: Validate the lying exercises' resting poses (hands on the bed, legs supported, an exercise's own joints left alone)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-resting
 
       - name: Validate the RehabVerse history brief (nothing invented, no diagnosis, quotes exact, missed safety wording surfaced)
         if: steps.auth.outputs.ready == 'true'
@@ -287,13 +291,6 @@ jobs:
           check_url "https://physionexusacademy.com/manifest.webmanifest" '"name": "Physio Nexus Academy"'
           check_url "https://physionexusacademy.com/sw.js" "PNA update-first service worker."
           check_url "https://physionexusacademy.com/symptom-checker" "PNA Clinical Screening"
-          # Case Lab currently ships the real-patients-v1 library signature.
-          check_url "https://physionexusacademy.com/case-lab" "PNA · RESEARCH CASE LIBRARY"
-          check_url "https://physionexusacademy.com/case-lab" "Physiotherapy Care for the Long-Term Sequelae of Electrical Thermal Injury With 12-Month Follow-Up: A Case Report"
-          check_url "https://physionexusacademy.com/case-lab" "Utilising Xsens Gait Analysis to Improve Functional Outcomes in Chronic Ankle Instability: A Multifaceted Physiotherapy Approach"
-          check_url "https://physionexusacademy.com/case-lab/research/xsens-chronic-ankle-instability-rehabilitation" "THE CASE IN PLAIN ENGLISH"
-          check_url "https://physionexusacademy.com/case-lab/research/electrical-injury-long-term-physiotherapy" "THE CASE IN PLAIN ENGLISH"
-          check_url "https://physionexusacademy.com/case-lab/research/plantar-fasciitis-rehabilitation" "THE CASE IN PLAIN ENGLISH"
           check_url "https://physionexusacademy.com/daily-challenge" 'data-pna-daily-challenge="v1"'
           # PNA Teacher: hub, one lesson and one path must render on the Worker (not only prerender locally).
           check_url "https://physionexusacademy.com/learn" 'data-pna-teacher-hub="v1"'
@@ -331,9 +328,6 @@ jobs:
           # Keep production verification intentionally small. The local validation
           # scripts above already validate the full content library; crawling every
           # large SSR page after deploy can overload Workers and create false failures.
-          check_url "https://physionexusacademy.com/case-lab/research/chronic-post-surgical-low-back-pain" "Limitations — what this case cannot tell us"
-          check_url "https://physionexusacademy.com/clinical-registry" "Clinical Registry"
-          check_url "https://physionexusacademy.com/clinical-registry/library" "Public Clinical Case Library"
           check_url "https://physionexusacademy.com/conditions" "Find the condition"
           check_url "https://physionexusacademy.com/conditions/lateral-ankle-sprain" "Lateral Ankle Sprain"
           check_url "https://physionexusacademy.com/conditions-data/lateral-ankle-sprain.json" '"clinical"'

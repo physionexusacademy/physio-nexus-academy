@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight, BookOpen, BrainCircuit, CalendarDays, ChevronRight,
   ClipboardList, Eye, FileBadge2, FlaskConical, GraduationCap, Hand, HeartPulse,
-  Home, LibraryBig, PersonStanding, Ruler, ShieldCheck, Stethoscope, Trophy, Users, BookMarked } from "lucide-react";
+  Home, LibraryBig, PersonStanding, Ruler, ShieldCheck, Stethoscope, Trophy, Users } from "lucide-react";
 import { PnaPathwayArtwork } from "./PnaPathwayArtwork";
 
 const icons = {
@@ -33,7 +33,6 @@ const featureVisuals: Record<string, { file: string; width: number }> = {
   "/conditions": { file: "treatment-plans", width: 384 },
   "/resources": { file: "books-resources", width: 384 },
   "/daily-challenge": { file: "daily-challenge", width: 384 },
-  "/case-lab": { file: "clinical-case-lab", width: 384 },
   "/workshops": { file: "workshops-cpd", width: 384 },
   "/training": { file: "training-archive", width: 384 },
   "/research": { file: "research-support", width: 384 },
@@ -77,7 +76,6 @@ const groups: Group[] = [
       { title: "Conditions & Treatment", description: "Find a condition, choose your depth, follow a staged plan.", href: "/conditions", icon: "clipboard" },
       { title: "Books & Resources", description: "Practical physiotherapy books, PDFs and study materials.", href: "/resources", icon: "book" },
       { title: "Daily Clinical Challenge", description: "Practice with five clinical questions every day.", href: "/daily-challenge", icon: "trophy" },
-      { title: "Clinical Case Lab", description: "Reason through realistic patient scenarios.", href: "/case-lab", icon: "clipboard" },
     ],
   },
   {
@@ -90,7 +88,6 @@ const groups: Group[] = [
       { title: "Conditions & Treatment", description: "Assessment, staged rehab plans and when to progress.", href: "/conditions", icon: "clipboard" },
       { title: "Clinical Skills Lab", description: "Sharpen assessment skills — MMT, ROM, neuro exam, balance and outcome measures.", href: "/skills", icon: "skills" },
       { title: "Virtual Patient", description: "Work up 3D patients with hidden diagnoses — red flags included.", href: "/virtual-patient", icon: "patient" },
-      { title: "Clinical Case Lab", description: "Work through symptoms and clinical reasoning step by step.", href: "/case-lab", icon: "clipboard" },
       { title: "Daily Clinical Challenge", description: "Five questions daily, points and public leaderboards.", href: "/daily-challenge", icon: "trophy" },
     ],
   },
@@ -206,25 +203,6 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
             </div>
             <PnaPathwayArtwork kind={active.id} className="pna-sig-detail-art" />
           </div>
-          {active.id === "practice" ? (
-            <div className="pna-reg" data-pna-home-feature="clinical-registry-v1">
-              <span className="pna-reg-icon" aria-hidden="true"><BookMarked size={28} /></span>
-              <div className="pna-reg-copy">
-                <p className="pna-reg-kicker">For physiotherapists</p>
-                <strong>PNA Clinical Registry</strong>
-                <p>Learn from real cases — reviewed and de-identified — and, as a verified physiotherapist, share your own through a secure, consent-first workspace.</p>
-                <ul className="pna-reg-points">
-                  <li>Public case library — open to read, no login</li>
-                  <li>Verified therapist portal to submit cases</li>
-                  <li>Consent-first, de-identified, reviewed</li>
-                </ul>
-              </div>
-              <div className="pna-reg-cta">
-                <a href="/clinical-registry" className="nx-btn nx-btn-primary">Explore Registry <ArrowRight size={16} aria-hidden="true" /></a>
-                <a href="/clinical-registry/therapist" className="nx-btn nx-btn-ghost">Therapist portal</a>
-              </div>
-            </div>
-          ) : null}
           <div className="pna-sig-detail-grid">
             {active.links.filter(link => showAtlas || link.href !== "/clinical-visual-atlas").map(link => {
               const Icon = icons[link.icon];

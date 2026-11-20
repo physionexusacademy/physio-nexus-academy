@@ -13,6 +13,7 @@ import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
 import { blendPose, buildCycle, ease, paceForVoice, sampleCycle, type Segment } from "@/lib/rehabverse/motion";
+import { restingLimbs, withResting, type RestLimb } from "@/lib/rehabverse/resting";
 import type { ExerciseDef, Motion, View } from "@/lib/rehabverse/types";
 import { P, type Parts } from "@/lib/virtual-patient/parts";
 
@@ -86,7 +87,7 @@ function focusPoint(room: ExamRoom, spec: string | undefined, side: Side): THREE
 type Rig = {
   segments: Segment[];
   /** What the body rests on, for the pose quality gate (see lib/rehabverse/pose-check.ts). */
-  info: { supportY: number; surface: "plinth" | "mat" | "floor"; resting: boolean; plant?: "both" | "tested" | "other"; position: Motion["position"]; stepTop?: number };
+  info: { supportY: number; surface: "plinth" | "mat" | "floor"; resting: boolean; plant?: "both" | "tested" | "other"; position: Motion["position"]; stepTop?: number; rest: RestLimb[] };
   /** Applies a pose and keeps the body planted / resting on its surface. `tilt` (test builds) overrides the pelvis tilt. */
   apply: (pose: ReturnType<typeof sampleCycle>["pose"], tilt?: number, at?: { index: number; f: number }) => void;
   frame: (view: View) => void;
@@ -99,7 +100,9 @@ type Rig = {
 function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boolean): Rig {
   const motion: Motion = exercise.motion;
   const moves = faulty && motion.mistake ? motion.mistake.moves : motion.moves;
-  const startParts = faulty && motion.mistake?.start ? { ...motion.start, ...motion.mistake.start } : motion.start;
+  // Lying: every limb the exercise does not use rests on what is under it (see lib/rehabverse/resting.ts).
+  const ownStart = faulty && motion.mistake?.start ? { ...motion.start, ...motion.mistake.start } : motion.start;
+  const startParts = withResting(motion, ownStart);
   const segments = buildCycle({ ...motion, start: startParts }, side, moves);
   const pos = motion.position;
   const lying = pos === "supine" || pos === "prone" || pos === "sidelying" || pos === "quadruped";
@@ -167,8 +170,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
   function settleY() {
     root.updateMatrixWorld(true);
     // A tilted body's quick box is generous, so measure it properly (this runs once for those, not every frame: they settle at the start).
-    const box = tiltNow ? room.bounds(true) : room.bounds();
-    root.position.y += surfaceY - box.min.y;
+    root.position.y += surfaceY - (down ? room.lowestY(down) : (tiltNow ? room.bounds(true) : room.bounds()).min.y);
     root.updateMatrixWorld(true);
   }
   /**
@@ -187,7 +189,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
         room.setPose(pose, { animate: false, replace: true });
         tiltTo(tiltFor(pose));
         root.updateMatrixWorld(true);
-        ys.push(root.position.y + surfaceY - room.bounds(true).min.y);
+        ys.push(root.position.y + surfaceY - (down ? room.lowestY(down) : room.bounds(true).min.y));
       }
       return ys;
     });
@@ -468,6 +470,7 @@ function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boo
     plant: anchorSpec ? anchorSpec.stance ?? "both" : undefined,
     position: pos,
     stepTop: stepTop || undefined,
+    rest: restingLimbs(motion, ownStart),
   };
   return { segments, apply, frame, update, dispose, info };
 }
@@ -614,12 +617,15 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
           const t = (i / samples) * total * 0.9999;
           const state = sampleCycle(r.segments, t);
           r.apply(state.pose, undefined, { index: state.index, f: state.f });
-          snaps.push({ kind: state.segment.kind, t, segs: grab(), floor: room.bounds(true).min.y });
+          // (the mesh heights of each limb segment, for "a limb that lies still must touch what is under it")
+          const limbs = Object.fromEntries(Object.entries(room.limbBounds()).map(([key, value]) => { const [name, s] = key.split("."); return [`${name}.${s === tested ? "tested" : "other"}`, value]; }));
+          snaps.push({ kind: state.segment.kind, t, segs: grab(), floor: room.bounds(true).min.y, limbs });
         }
         r.apply(r.segments[0].from);
         return { id: exercise.id, side: tested, mistake: showMistake, violations: mod.analyse(snaps, { ...r.info, trunkR: r.info.position === "supine" ? mod.SUPINE_TRUNK : 0.12 }, exercise.motion.touch), heights: mod.heights(snaps) };
       },
       lowest: () => (roomRef.current ? roomRef.current.bounds(true).min.y : null),
+      limbs: () => (roomRef.current ? roomRef.current.limbBounds() : null),
       box: () => (roomRef.current ? (({ min, max }) => [min.toArray(), max.toArray()])(roomRef.current.bounds(true)) : null),
       cycle: () => (rigRef.current ? (pacedRef.current ?? rigRef.current.segments).map((seg) => ({ kind: seg.kind, ms: seg.ms })) : []),
     };

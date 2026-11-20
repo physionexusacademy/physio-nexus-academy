@@ -61,7 +61,12 @@ const nextConfig = {
       { source: '/msk-injuries', destination: '/conditions', permanent: true },
       { source: '/knowledge-hub/:path*', destination: '/conditions', permanent: true },
       { source: '/knowledge-hub', destination: '/conditions', permanent: true },
-      { source: '/clinical-arena', destination: '/case-lab', permanent: true },
+      { source: '/clinical-arena', destination: '/virtual-patient', permanent: true },
+      // Case Lab, research case reports and the Clinical Registry retired (2026-11): the closest live sections take over.
+      { source: '/case-lab', destination: '/virtual-patient', permanent: true },
+      { source: '/case-lab/:path*', destination: '/virtual-patient', permanent: true },
+      { source: '/clinical-registry', destination: '/learn', permanent: true },
+      { source: '/clinical-registry/:path*', destination: '/learn', permanent: true },
       { source: '/gallery', destination: '/workshops', permanent: true },
       { source: '/updates', destination: '/workshops', permanent: true },
       { source: '/visual-lab', destination: '/clinical-visual-atlas', permanent: true },

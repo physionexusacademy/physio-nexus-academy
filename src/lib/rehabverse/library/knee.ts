@@ -45,9 +45,11 @@ export const kneeExercises: ExerciseDef[] = [
       position: "supine",
       surface: "plinth",
       sided: true,
-      start: { knee: { flex: 14 }, hip: { flex: 0 }, ankle: { flex: 0 }, "knee:o": { flex: 0 } },
+      // the knee is slightly bent over a towel roll (hip 6° and knee 14°, solved on the model so the back and the heel both rest on the bed; with the
+      // hip straight the knee stayed bent and the whole upper body floated 10 cm above the bed on the heel)
+      start: { knee: { flex: 14 }, hip: { flex: 6 }, ankle: { flex: 0 }, "knee:o": { flex: 0 } },
       moves: [
-        { to: { knee: { flex: 3 }, ankle: { flex: 12 } }, ms: 900, hold: 2600, breath: "out", say: { en: "Tighten the thigh and press the knee down.", ru: "Thigh tight karein aur ghutna neeche dabayein." } },
+        { to: { knee: { flex: 3 }, hip: { flex: 0 }, ankle: { flex: 12 } }, ms: 900, hold: 2600, breath: "out", say: { en: "Tighten the thigh and press the knee down.", ru: "Thigh tight karein aur ghutna neeche dabayein." } },
       ],
       returnMs: 1100,
       view: "side",
@@ -486,7 +488,7 @@ export const kneeExercises: ExerciseDef[] = [
     evidence: ["logerstedt2018"],
     motion: {
       position: "prone", surface: "floor", sided: true,
-      start: { hip: { flex: 0 }, knee: { flex: 0 }, "hip:o": { flex: 0 }, "knee:o": { flex: 0 }, shoulder: { abd: 14, flex: -6 }, "shoulder:o": { abd: 14, flex: -6 }, elbow: { flex: 4 }, "elbow:o": { flex: 4 } },
+      start: { knee: { flex: 0 }, "knee:o": { flex: 0 } }, // legs and arms rest on the mat (the resting pose, lib/rehabverse/resting.ts)
       moves: [{ to: { knee: { flex: 105 } }, ms: 1700, hold: 1200, breath: "out", say: { en: "Bend the knee and bring the heel towards the buttock.", ru: "Ghutna modein aur aerhi kulhe ki taraf layein." } }],
       returnMs: 2200, view: "side", zoom: 0.85,
       glow: { bones: ["upperleg01"], sides: "tested" },

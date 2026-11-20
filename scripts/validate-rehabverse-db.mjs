@@ -243,7 +243,10 @@ await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1"
 /* ----------------------------- 1f. the AI pilot: limit, sign-off record, dashboard numbers ----------------------------- */
 const pilotOf = () => rpc(admin, "rehab_admin_ai_pilot", {});
 let pilot = await pilotOf();
-eq([pilot.settings.max_patients, pilot.settings.open_to_all], [5, false], "by default the pilot is limited to 5 patients and not open to all");
+eq([pilot.settings.max_patients, pilot.settings.open_to_all], [100000, false], "by default the pilot has no limit on patients (100000 = no limit) and is not open to all");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_enabled: true });
+eq((await sql("select ai_assist from rehab_patients where id = $1", [bobReg.id]))[0].ai_assist, "on", "with no limit, a second patient can have AI switched on");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_enabled: false });
 const enabledNow = pilot.enabled_patients;
 ok(enabledNow >= 1, "(setup) at least one patient has AI on");
 await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: false, p_pack_version: "none" });
@@ -251,7 +254,9 @@ await fails(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_ena
 eq((await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true })).ai_assist, "on", "...but a patient who already has AI on is not affected");
 eq((await sql("select ai_assist from rehab_patients where id = $1", [bobReg.id]))[0].ai_assist, "off", "...and the refused patient stayed off");
 await fails(admin, "rehab_admin_set_ai_pilot", { p_max: 0, p_open_to_all: false, p_pack_version: "x" }, /invalid_limit/, "a limit below 1 is refused");
-await fails(admin, "rehab_admin_set_ai_pilot", { p_max: 501, p_open_to_all: false, p_pack_version: "x" }, /invalid_limit/, "a limit above 500 is refused");
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: 100001, p_open_to_all: false, p_pack_version: "x" }, /invalid_limit/, "a limit above 100000 is refused");
+eq((await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: 500, p_open_to_all: false, p_pack_version: "none" })).max_patients, 500, "a limit of several hundred is accepted (the old cap was 500 at most, and 5 by default)");
+await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: false, p_pack_version: "none" });
 await fails(alice, "rehab_admin_ai_pilot", {}, /not authorised/, "a patient cannot read the pilot dashboard");
 await fails(alice, "rehab_admin_set_ai_pilot", { p_max: 500, p_open_to_all: false, p_pack_version: "x" }, /not authorised/, "a patient cannot change the pilot limit");
 await fails(alice, "rehab_admin_ai_signoff", { p_reviewer: "Me", p_decision: "approved", p_notes: null, p_pack_version: "abcdef123456" }, /not authorised/, "a patient cannot record a sign-off");
@@ -271,7 +276,8 @@ eq((await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_e
 await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_enabled: false });
 await rpc(admin, "rehab_admin_ai_signoff", { p_reviewer: "Dr Test", p_decision: "not_approved", p_notes: "Not yet.", p_pack_version: "abcdef123456" });
 await fails(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: true, p_pack_version: "abcdef123456" }, /signoff_required/, "a later 'not approved' takes the approval back (the latest sign-off counts)");
-await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: 5, p_open_to_all: false, p_pack_version: "none" });
+await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: 100000, p_open_to_all: false, p_pack_version: "none" });
+eq((await rpc(admin, "rehab_admin_ai_pilot", {})).settings.max_patients, 100000, "setting the limit back to 100000 means no limit again");
 checks += 0;
 await assert.rejects(() => sql("update rehab_ai_signoffs set notes = 'changed'"), /cannot be changed or deleted/);
 await assert.rejects(() => sql("delete from rehab_ai_signoffs"), /cannot be changed or deleted/);

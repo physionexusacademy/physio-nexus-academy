@@ -16,41 +16,9 @@ import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patien
 import { P, type Parts } from "@/lib/virtual-patient/parts";
 import { blendPose } from "@/lib/rehabverse/motion";
 import type { Gesture, GuideBeat, GuideTopic } from "@/lib/rehabverse/guide";
+import { gestureParts, IDLE } from "@/lib/rehabverse/guide-motion";
 import type { Lang } from "./ExercisePlayer";
 import { speakText, stopSpeaking, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
-
-const IDLE: Parts = { shoulder: { flex: 4, abd: 8 }, "shoulder:o": { flex: 4, abd: 8 }, elbow: { flex: 18 }, "elbow:o": { flex: 18 } };
-
-/** Target pose (guide's right arm = "shoulder", so it appears on the viewer's left) for a gesture at time t. */
-function gestureParts(gesture: Gesture, t: number, talk: number): Parts {
-  const base: Parts = {
-    ...IDLE,
-    trunk: { flex: 1 + 0.8 * Math.sin(t * 1.4) },
-    neck: { flex: 1.5 * talk * Math.sin(t * 2.4), rot: 3 * Math.sin(t * 0.55) },
-  };
-  switch (gesture) {
-    case "wave":
-      return { ...base, shoulder: { abd: 104, flex: 10, rot: 22 * Math.sin(t * 7) }, elbow: { flex: 98 } };
-    case "open":
-      return {
-        ...base,
-        shoulder: { flex: 30 + 4 * Math.sin(t * 2.2), abd: 24 }, "shoulder:o": { flex: 30 + 4 * Math.sin(t * 2.2 + 1), abd: 24 },
-        elbow: { flex: 86 + 6 * Math.sin(t * 2.6) }, "elbow:o": { flex: 86 + 6 * Math.sin(t * 2.6 + 0.8) },
-      };
-    case "care":
-      return { ...base, shoulder: { flex: 40, abd: -2 }, "shoulder:o": { flex: 40, abd: -2 }, elbow: { flex: 108 }, "elbow:o": { flex: 108 } };
-    case "nod":
-      return { ...base, neck: { flex: 11 * Math.abs(Math.sin(t * 3.2)), rot: 0 } };
-    case "point_left":
-      return { ...base, shoulder: { flex: 18, abd: 76 }, elbow: { flex: 6 } };
-    case "point_right":
-      return { ...base, "shoulder:o": { flex: 18, abd: 76 }, "elbow:o": { flex: 6 } };
-    case "point_down":
-      return { ...base, shoulder: { flex: 62, abd: 14 }, elbow: { flex: 14 } };
-    default:
-      return base;
-  }
-}
 
 const CHARS_PER_SECOND = 26;
 const BLINK_EVERY = 3600;
@@ -79,6 +47,8 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
   const [reduced, setReduced] = useState(false);
   const run = useRef({ index: 0, revealed: 0, holdLeft: 0, finished: false, spoken: -1 });
   const speaking = useRef(false);
+  const gestureSeen = useRef<Gesture>("calm");
+  const gestureStart = useRef(0);
   const visible = useRef(true);
   const lang_ = useRef(lang);
   lang_.current = lang;
@@ -249,7 +219,8 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
       lastDraw = now;
       const t = now / 1000;
       const gesture: Gesture = reduced ? "calm" : r.finished || !playing ? "calm" : current?.gesture ?? "calm";
-      cur = blendPose(cur, P("right", gestureParts(gesture, t, talking)), 1 - Math.exp(-drawDt / 130));
+      if (gesture !== gestureSeen.current) { gestureSeen.current = gesture; gestureStart.current = t; }
+      cur = blendPose(cur, P("right", gestureParts(gesture, t, talking, t - gestureStart.current)), 1 - Math.exp(-drawDt / 150));
       room.setPose(cur, { animate: false, replace: true });
       // Face: mouth follows speech, soft smile, a blink every few seconds.
       if (now > nextBlink) {

@@ -8,7 +8,6 @@ import { conditionCatalog } from "@/lib/conditions/catalog";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
-import { canonicalCaseReports } from "@/lib/case-report-library";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
@@ -32,7 +31,6 @@ const routes = [
   "/manual-therapy",
   "/manual-therapy/regions",
   "/msk-special-tests",
-  "/case-lab",
   "/stupid-intern-diaries",
   "/daily-challenge",
   "/leagues",
@@ -63,12 +61,12 @@ const EXACT_UPDATED: Record<string, Date> = {
   "/about": day("2026-11-12"), "/founder": day("2026-11-12"), "/faq": day("2026-11-12"), "/workshops": day("2026-11-12"), "/manual-therapy": day("2026-11-12"),
   "/legal/privacy": day("2026-11-14"), "/legal/terms": day("2026-11-07"), "/legal/disclaimer": day("2026-11-07"),
   "/reviews": day("2026-11-08"), "/patient-services": day("2026-11-07"), "/training": day("2026-11-07"), "/verify": day("2026-11-07"),
-  "/case-lab": day("2026-11-06"), "/stupid-intern-diaries": day("2026-11-06"), "/faculty": day("2026-11-03"), "/clinical-visual-atlas": day("2026-11-13"),
+  "/stupid-intern-diaries": day("2026-11-06"), "/faculty": day("2026-11-03"), "/clinical-visual-atlas": day("2026-11-13"),
   "/manual-therapy/regions": day("2026-11-03"),
 };
 const SECTION_UPDATED: [string, Date][] = [
   ["/learn/", day("2026-11-14")], ["/skills/", day("2026-11-14")], ["/conditions/", day("2026-11-13")], ["/clinical-visual-atlas/", day("2026-11-13")],
-  ["/case-lab/", day("2026-11-07")], ["/manual-therapy/", day("2026-11-03")], ["/locations/", day("2026-11-03")], ["/faculty/", day("2026-11-03")], ["/training/", day("2026-11-03")],
+  ["/manual-therapy/", day("2026-11-03")], ["/locations/", day("2026-11-03")], ["/faculty/", day("2026-11-03")], ["/training/", day("2026-11-03")],
 ];
 function lastModifiedFor(url: string): Date | undefined {
   const path = url.replace(base, "");
@@ -79,7 +77,7 @@ function lastModifiedFor(url: string): Date | undefined {
 function getRoutePriority(route: string): number {
   if (route === "") return 1;
   if (route === "/home-visit" || route === "/appointment") return 0.9;
-  if (route === "/case-lab" || route === "/stupid-intern-diaries") return 0.88;
+  if (route === "/stupid-intern-diaries") return 0.88;
   if (route === "/learn" || route === "/skills" || route === "/virtual-patient") return 0.95;
   return 0.7;
 }
@@ -121,15 +119,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${base}/training/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
     priority: 0.7,
-  }));
-
-  // Legacy /case-lab/<slug> pages permanently redirect to /case-lab, so they are not listed.
-
-  // Published evidence-based research case reports (new Case Lab content)
-  const researchCaseRoutes: MetadataRoute.Sitemap = canonicalCaseReports.map((report) => ({
-    url: `${base}/case-lab/research/${encodeURIComponent(report.slug)}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.86,
   }));
 
   const manualTherapyRoutes: MetadataRoute.Sitemap = [
@@ -196,7 +185,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...workshopRoutes,
     ...trainingRoutes,
     ...conditionRoutes,
-    ...researchCaseRoutes,
     ...manualTherapyRoutes,
     ...regionalManualRoutes,
     ...facultyRoutes,

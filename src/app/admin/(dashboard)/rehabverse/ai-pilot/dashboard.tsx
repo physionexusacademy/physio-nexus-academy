@@ -4,6 +4,7 @@ import { buildReviewPack } from "@/lib/rehabverse/ai/review-pack";
 import { getAiPilot } from "@/lib/rehabverse/api";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { PilotControls } from "@/components/rehabverse/admin/PilotControls";
+import { isNoLimit } from "@/lib/rehabverse/ai/pilot-limit";
 
 const dt = (iso: string | null) => (iso ? new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—");
 const KIND: Record<string, string> = { intake: "Intake assistant", coach: "Exercise coach", feedback: "Check-in assistant" };
@@ -54,7 +55,7 @@ export async function DashboardView() {
           <p data-pilot-status>
             {pilot.settings.open_to_all
               ? <>AI is <b>open to all patients</b>. {pilot.enabled_patients} patient{pilot.enabled_patients === 1 ? " has" : "s have"} it switched on.</>
-              : <>Pilot: <b>{pilot.enabled_patients} of {pilot.settings.max_patients}</b> patients have AI on.</>}
+              : <>Pilot: <b>{pilot.enabled_patients}</b> patient{pilot.enabled_patients === 1 ? " has" : "s have"} AI on{isNoLimit(pilot.settings.max_patients) ? " (no limit)" : <> (limit <b>{pilot.settings.max_patients}</b>)</>}.</>}
           </p>
           <p data-pilot-signoff>
             {last ? (
@@ -124,7 +125,7 @@ export async function DashboardView() {
         <ol className="list-decimal space-y-1 pl-5">
           <li>Read the <Link href="/admin/rehabverse/ai-pilot?view=review" className="font-bold text-teal-800 underline">review pack</Link> and record your decision. Run both self-tests to hear the real models.</li>
           <li>Switch AI on for one test patient (yourself or a colleague) and try each assistant in English and Roman Urdu.</li>
-          <li>Then switch it on for a few real patients, up to the pilot limit. Read their conversations on the patient&apos;s record (AI conversations) every day at first.</li>
+          <li>Then switch it on for real patients, one at a time (there is no patient limit unless you set one). Read their conversations on the patient&apos;s record (AI conversations) every day at first.</li>
           <li>Watch the numbers above: scripted replies, safety stops, notes routed to you, and check-in answers changed after the chat.</li>
           <li>If anything worries you: turn AI off for that patient (immediate), or ask the developer to set <code>REHAB_AI_ENABLED=0</code> to stop every assistant at once. Patients can always use the normal forms.</li>
           <li>When you are satisfied, sign off the pack as &ldquo;approved&rdquo; and open AI to all patients. Any later change to the wording needs a new sign-off.</li>

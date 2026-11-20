@@ -83,22 +83,22 @@ export const teacherPaths: TeacherPath[] = [
       {
         id: "cr-5",
         kind: "mission",
-        title: "Clinical Case Lab",
-        href: "/case-lab",
+        title: "Virtual Patient",
+        href: "/virtual-patient",
         mission: {
-          en: "Open one Case Lab case. Before choosing an answer, say out loud: which finding rules something IN, and which rules something OUT?",
-          ur: "Case Lab ka ek case kholein. Jawab chunne se pehle zor se kahein: kaun si finding kuch rule IN karti hai aur kaun si rule OUT?",
+          en: "Open one Virtual Patient case. Before choosing a diagnosis, say out loud: which finding rules something IN, and which rules something OUT?",
+          ur: "Virtual Patient ka ek case kholein. Diagnosis chunne se pehle zor se kahein: kaun si finding kuch rule IN karti hai aur kaun si rule OUT?",
         },
         minutes: 10,
       },
       {
         id: "cr-6",
         kind: "mission",
-        title: "Clinical Case Lab",
-        href: "/case-lab",
+        title: "Conditions & Treatment Guide",
+        href: "/conditions",
         mission: {
-          en: "Read one published case report. Find three things: what was tested, what was ruled out, and what the clinicians did when the patient didn't improve.",
-          ur: "Ek published case report parhein. Teen cheezein dhoondein: kya test hua, kya rule out hua, aur jab patient behtar na hua to clinicians ne kya kiya.",
+          en: "Open one condition and read its case story. Find three things: what was tested, what was ruled out, and what changed when the patient didn't improve.",
+          ur: "Ek condition kholein aur uski case story parhein. Teen cheezein dhoondein: kya test hua, kya rule out hua, aur jab patient behtar na hua to kya badla.",
         },
         minutes: 12,
       },
@@ -238,8 +238,8 @@ export const teacherPaths: TeacherPath[] = [
       {
         id: "sa-6",
         kind: "mission",
-        title: "Clinical Case Lab",
-        href: "/case-lab",
+        title: "Virtual Patient",
+        href: "/virtual-patient",
         mission: {
           en: "Open one case, and before you choose a diagnosis, list the red flags you screened for and the neuro findings you'd check.",
           ur: "Ek case kholein, aur diagnosis chunne se pehle woh red flags likhein jo aap ne screen kiye aur woh neuro findings jo aap check karenge.",

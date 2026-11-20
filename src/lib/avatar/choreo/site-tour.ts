@@ -28,7 +28,7 @@ export const siteTour: Choreo = {
   enter: { away: 1.6, towardFeet: 0.4 },
   review: { status: "reviewed", by: "Interface text only (site guide wording)", date: "2026-11-14" },
   steps: [
-    talk("overview", "PNA", { stand: STAND, position: "standing" }),
+    talk("overview", "PNA", { stand: STAND, position: "standing", gesture: "wave" }),
     talk("teacher", "Teacher", { gesture: "nod" }),
     talk("skills", "Skills Lab", {
       patient: { "shoulder.left": { flex: 0 } },
@@ -76,7 +76,6 @@ export const siteTour: Choreo = {
       gesture: "point",
       look: "patient",
     }),
-    talk("case-lab", "Case Lab", { gesture: "care", look: "patient", overlays: [] }),
     talk("daily-challenge", "Daily Challenge", { gesture: "point", look: "camera" }),
     talk("leagues", "Leagues"),
     // The books stop uses the guide's key points (no author name: the tour is the PNA Teacher's).

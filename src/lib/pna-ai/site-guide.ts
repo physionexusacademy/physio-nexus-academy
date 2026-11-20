@@ -236,27 +236,6 @@ export const siteGuide: SiteFeature[] = [
     keywords: "conditions and treatment guide what is treatment plans by body area stages rehab",
   },
   {
-    href: "/case-lab",
-    id: "case-lab",
-    create: true,
-    title: "Clinical Case Lab",
-    category: "Practise",
-    summary: "Real, reasoned physiotherapy cases to work through step by step — history, findings, differentials and a plan.",
-    hookUr: "Case Lab mein asli-style physiotherapy cases hain jin par aap qadam ba qadam reasoning karte hain — history, findings, differentials aur plan.",
-    points: [
-      "Work through a case: history, findings, differential diagnosis and plan",
-      "Reading-first, with clear limits on what each case can and cannot tell us",
-      "Great for building clinical reasoning for exams and practice",
-    ],
-    pointsUr: [
-      "Case par kaam karein: history, findings, differential diagnosis aur plan",
-      "Pehle parhna, phir sochna — har case ki hadood bhi wazeh hain",
-      "Exams aur practice ke liye clinical reasoning banane ka behtareen tareeqa",
-    ],
-    tags: "case lab cases clinical reasoning case studies reports",
-    keywords: "case lab what is cases clinical reasoning differential",
-  },
-  {
     href: "/daily-challenge",
     id: "daily-challenge",
     title: "Daily Clinical Challenge",
