@@ -36,6 +36,8 @@ export async function createDb({ dataDir } = {}) {
   if (!hasCoach) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261122120000_rehab_ai_coach.sql"), "utf8"));
   const hasCheckin = await db.query("select to_regprocedure('public.rehab_ai_checkin_held(uuid, uuid, text)') as f").then((r) => r.rows[0].f);
   if (!hasCheckin) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261123120000_rehab_ai_checkin.sql"), "utf8"));
+  const hasPilot = await db.query("select to_regclass('public.rehab_ai_pilot') as t").then((r) => r.rows[0].t);
+  if (!hasPilot) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261124120000_rehab_ai_pilot.sql"), "utf8"));
   return db;
 }
 

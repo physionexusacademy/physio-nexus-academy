@@ -129,6 +129,40 @@ Database: `20261123120000_rehab_ai_checkin.sql` (`rehab_ai_coach_notify` now ser
 conversations, guard, routing, privacy, windows, wiring), `scripts/rehabverse-local/e2e-checkin.cjs` (34 browser steps against the local backend), and
 `/api/rehabverse/ai/selftest?kind=checkin` (admin only) to judge the real models' acknowledgements.
 
+## AI pilot and sign-off (AI assistant, Phase F)
+
+Before the assistants are opened to everyone, a physiotherapist reviews them and a small pilot runs. Admin → RehabVerse → **AI pilot**
+(`/admin/rehabverse/ai-pilot`, admin only) has:
+
+- **Review pack** (`/admin/rehabverse/ai-pilot?view=review`, built by `lib/rehabverse/ai/review-pack.ts` from the live code, so it cannot drift from what
+  patients meet): the notices patients are told (one file, `lib/rehabverse/ai/notices.ts`, shared by the three chats), what stops each assistant
+  (30 sample sentences in English and Roman Urdu put through the three safety screens, plus the exact wording shown when one stops), sample
+  conversations of each assistant (run **without** the model, so they show the prepared wording that carries a chat when the model is down), all fixed
+  wording, the exact instructions sent to the model, and the rules a model reply must pass. It can be printed or saved as PDF. The self-tests
+  (`/api/rehabverse/ai/selftest`, `?kind=checkin`) let the reviewer hear the real models.
+- **Sign-off record** (`rehab_ai_signoffs`, append-only): reviewer, decision (approved / approved with changes / not approved), notes, and the
+  **version** of the pack that was read (a hash of the whole pack). Any later change to a prompt, sentence, rule or sample changes the version, so a
+  sign-off never silently covers text nobody read; the server builds the version itself and refuses a sign-off made on a page that has gone stale.
+- **Pilot limit** (`rehab_ai_pilot`, default 5 patients): the database refuses to switch AI on for one more patient once the limit is reached
+  (switching off is never refused; patients who have it keep it). **Open to all patients** is allowed only when the *latest* sign-off is "approved"
+  for the *current* pack version. You still switch AI on patient by patient.
+- **Dashboard**: patients with AI on, chats per assistant, scripted-reply share (a warning at 50% or more: the model is often unavailable or refused
+  by the guard), safety stops, notices routed to the physiotherapist, models used, and how often a patient changed a check-in answer on the form after the
+  chat.
+
+What the review pack itself found (fixed in this phase): **loss of bladder or bowel control on its own** stopped no assistant (the site-wide screen wants
+it together with back or leg symptoms; inside RehabVerse it is a red flag by itself, in English and Roman Urdu, with the cauda equina wording and the
+bladder red flag pre-ticked); **"no chest pain" or "no heart problems"** falsely stopped the intake and the coach (plain denials are now removed before
+screening, `ai/denials.ts`, in all three assistants); a Roman Urdu racing heart ("dil bohat tez dhadak raha hai") was missed; and the check-in's safety
+question left out bladder or bowel control, which the form's own list has.
+
+Database: `20261124120000_rehab_ai_pilot.sql` (two admin-only tables, three admin functions, and a replaced `rehab_admin_set_ai_assist` with the limit).
+`npm run validate:rehabverse-pilot` (139 checks), the DB validator (258 checks) and `scripts/rehabverse-local/e2e-pilot.cjs` (26 browser steps).
+
+How to run the pilot: read the pack and record your decision; run both self-tests; switch AI on for one test patient and try each assistant in both
+languages; then a few real patients up to the limit, reading their conversations every day at first; watch the dashboard; turn AI off for a patient
+(immediate) or set `REHAB_AI_ENABLED=0` (every assistant at once) if anything worries you; when satisfied, sign off as approved and open to all.
+
 ## Data protection
 
 * RLS on every table; API roles have read-only grants where reads are needed and **no write grants**.

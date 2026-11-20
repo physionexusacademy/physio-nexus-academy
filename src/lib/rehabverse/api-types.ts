@@ -125,3 +125,16 @@ export type AdminFollowup = {
   reason: "open_day_waiting" | "checkin_missed"; since: string; day_number: number;
   reminders: number; last_reminder_at: string | null; can_email: boolean;
 };
+
+/** The AI pilot dashboard (rehab_admin_ai_pilot): settings, who has AI on, usage per assistant, sign-offs. */
+export type AiSignoffDecision = "approved" | "approved_with_changes" | "not_approved";
+export type AiPilot = {
+  settings: { max_patients: number; open_to_all: boolean; updated_at: string | null };
+  enabled_patients: number;
+  patients: { id: string; reference_code: string; enabled_at: string | null; conversations: number; last_at: string | null }[];
+  signoffs: { id: string; reviewer_name: string; decision: AiSignoffDecision; notes: string | null; pack_version: string; created_at: string }[];
+  kinds: { kind: "intake" | "coach" | "feedback"; conversations: number; completed: number; abandoned: number; open: number; safety_stops: number; turns: number; fallback_turns: number; patients: number }[];
+  models: { model: string; conversations: number }[];
+  routed: Record<string, number>;
+  checkin: { saved: number; changed: number };
+};

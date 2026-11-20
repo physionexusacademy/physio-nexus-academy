@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, ArrowRight, FileText, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, FileText, Send, Sparkles } from "lucide-react";
 import { closeIntakeChatAction, intakeChatTurnAction, startIntakeChatAction, type ChatMessageOut } from "@/app/rehabverse/ai-actions";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, PAIN_WORDS } from "@/lib/rehabverse/intake";
 import { EMPTY_DRAFT, MAX_PATIENT_MESSAGE, progress, type IntakeDraft } from "@/lib/rehabverse/ai/intake-spec";
 import { IntakeWizard, type IntakeStep } from "./IntakeWizard";
+import { AI_NOTICES } from "@/lib/rehabverse/ai/notices";
+import { AiNoticeList } from "./AiNoticeList";
 import { T, useRvLang } from "./useLang";
 
 type Phase = "notice" | "starting" | "chat" | "summary" | "form";
@@ -109,13 +111,7 @@ export function IntakeChat() {
       <div className="mx-auto max-w-2xl rv-glass space-y-4 p-5 sm:p-7 rv-fade-up">
         <span className="rv-chip rv-chip-teal inline-flex items-center gap-1.5 text-xs"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> <T en="Your physiotherapist has made this available to you" ru="Aap ke physiotherapist ne ye aap ke liye faraham kiya hai" /></span>
         <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="Before we start" ru="Shuru karne se pehle" /></h1>
-        <ul className="space-y-2.5 text-[14.5px] leading-6 text-slate-700">
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="I am an AI assistant, not a doctor or a physiotherapist. I cannot diagnose or give treatment advice." ru="Main AI assistant hoon, doctor ya physiotherapist nahi. Main diagnose ya ilaaj ka mashwara nahi de sakta." /></span></li>
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="I will ask about your problem so your physiotherapist has a clear picture. They read everything and make every decision about your care." ru="Main aap ki takleef ke baare mein poochunga taake aap ke physiotherapist ko saaf tasveer mile. Woh sab kuch parhte hain aur aap ke ilaaj ka har faisla wohi karte hain." /></span></li>
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="Please do not type your name, phone number or address. I do not need them." ru="Barah-e-karam apna naam, phone number ya pata na likhein. Mujhe in ki zaroorat nahi." /></span></li>
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="Our conversation is saved in your RehabVerse record. Your physiotherapist can read it, and it may also be used, without your name, to study how AI can help in physiotherapy." ru="Hamari baat-cheet aap ke RehabVerse record mein mehfooz hoti hai. Aap ka physiotherapist ise parh sakta hai, aur aap ka naam hataye baghair ye is tehqeeq mein bhi istemal ho sakti hai ke AI physiotherapy mein kaise madad kar sakta hai." /></span></li>
-          <li className="flex gap-2.5"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" /><span><T en="In an emergency, such as chest pain, trouble breathing, loss of bladder or bowel control or sudden weakness, call 1122 straight away." ru="Emergency mein, jaise seene mein dard, saans mein mushkil, peshab/pakhane par control khona ya achanak kamzori, foran 1122 par call karein." /></span></li>
-        </ul>
+        <AiNoticeList items={AI_NOTICES.intake.items} className="space-y-2.5 text-[14.5px] leading-6 text-slate-700" />
         {error ? <p className="rv-error" role="alert">{error === "limit" ? <T en="You have started several conversations today. Please use the form or try again tomorrow." ru="Aaj aap ne kai baat-cheet shuru kar li hain. Form istemal karein ya kal koshish karein." /> : <T en="That did not work. Please try again, or use the form." ru="Ye nahi hua. Dobara koshish karein, ya form istemal karein." />}</p> : null}
         <div className="flex flex-wrap gap-2">
           <button type="button" className="rv-btn rv-btn-primary" disabled={phase === "starting"} onClick={accept}>

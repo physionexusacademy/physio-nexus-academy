@@ -58,3 +58,9 @@ export function guardCoachReply(raw: unknown, ctx: CoachContext, catalogue: Bi[]
   }
   return { ok: true, text };
 }
+
+/** The reasons a coach reply can be refused, in plain words (for the physiotherapist's review pack). */
+export const COACH_GUARD_REASONS: string[] = [
+  ...new Set([...RULES.filter((rule) => SHARED.has(rule.reason)).map((rule) => rule.reason), ...COACH_RULES.map((rule) => rule.reason)]),
+  "an amount that is not in today's plan (sets, reps, seconds, minutes)", "an exercise that is not in today's plan", "asks several questions", "too long",
+];

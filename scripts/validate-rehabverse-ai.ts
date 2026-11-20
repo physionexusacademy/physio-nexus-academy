@@ -158,7 +158,8 @@ ok(actions.includes("rehab_ai_open_conversation") && actions.includes("rehab_ai_
 ok(actions.indexOf("runIntakeTurn") > actions.indexOf("aiAssistAllowed"), "the model is only reached after the switch check");
 const chat = src("src/components/rehabverse/IntakeChat.tsx");
 ok(chat.includes("Use the normal form") && chat.includes("closeIntakeChatAction") && chat.includes("IntakeWizard"), "the chat can always be left for the normal form, and ends in the normal questionnaire");
-ok(chat.includes("I am an AI assistant") && chat.includes("1122"), "the notice says it is an AI and gives the emergency number");
+const notices = src("src/lib/rehabverse/ai/notices.ts");
+ok(chat.includes("AI_NOTICES.intake") && notices.includes("I am an AI assistant") && notices.includes("1122"), "the notice (kept in one file, notices.ts, which the review pack reads too) says it is an AI and gives the emergency number");
 ok(!/(dangerouslySetInnerHTML)/.test(chat), "chat text is never rendered as HTML");
 ok(src("src/app/rehabverse/start/page.tsx").includes("aiAssistAllowed()") && src("src/app/rehabverse/start/page.tsx").includes("IntakeWizardLoader"), "the start page shows the normal form to everyone without the switch");
 const wizard = src("src/components/rehabverse/IntakeWizard.tsx");

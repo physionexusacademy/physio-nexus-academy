@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, ChevronDown, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronDown, Send, Sparkles } from "lucide-react";
 import { checkinChatTurnAction, closeCheckinChatAction, startCheckinChatAction, type ChatMessageOut } from "@/app/rehabverse/ai-actions";
 import { checkinProgress, EMPTY_CHECKIN, MAX_CHECKIN_MESSAGE, type CheckinDraft } from "@/lib/rehabverse/ai/checkin-shared";
+import { AI_NOTICES } from "@/lib/rehabverse/ai/notices";
+import { AiNoticeList } from "./AiNoticeList";
 import { T, useRvLang } from "./useLang";
 
 type Phase = "closed" | "notice" | "starting" | "chat" | "gone";
@@ -117,11 +119,7 @@ export function CheckinChat({ sessionId, point, onFill, onConversation }: { sess
     return (
       <section className="rv-glass space-y-3 p-4" aria-label="Check-in assistant" data-rv-checkin="notice">
         <h4 className="font-heading text-base font-bold text-navy-800"><T en="Before we start" ru="Shuru karne se pehle" /></h4>
-        <ul className="space-y-2 text-[14px] leading-6 text-slate-700">
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="I am an AI assistant, not a doctor or a physiotherapist. I only ask the check-in questions and fill in the form below; you check it and save it yourself. I cannot diagnose or change your plan." ru="Main AI assistant hoon, doctor ya physiotherapist nahi. Main sirf check-in ke sawal poochta hoon aur neeche ka form bharta hoon; aap use check karke khud save karte hain. Main diagnose nahi kar sakta aur na plan badal sakta hoon." /></span></li>
-          <li className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="Your physiotherapist can read this chat, and it may be used, without your name, to study how AI can help in physiotherapy. Please do not type your name or phone number." ru="Aap ka physiotherapist ye baat-cheet parh sakta hai, aur aap ka naam hataye baghair ye tehqeeq mein istemal ho sakti hai ke AI physiotherapy mein kaise madad kar sakta hai. Apna naam ya phone number na likhein." /></span></li>
-          <li className="flex gap-2.5"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" /><span><T en="If you have chest pain, trouble breathing, fainting or sudden weakness, call 1122 now." ru="Agar seene mein dard, saans mein mushkil, behoshi ya achanak kamzori ho to abhi 1122 par call karein." /></span></li>
-        </ul>
+        <AiNoticeList items={AI_NOTICES.checkin.items} className="space-y-2 text-[14px] leading-6 text-slate-700" />
         {error ? <p className="rv-error" role="alert">{error === "limit" ? <T en="You have started several conversations today. Please use the form below, or try again tomorrow." ru="Aaj aap ne kai baat-cheet shuru kar li hain. Neeche form istemal karein, ya kal koshish karein." /> : <T en="That did not work. Please try again, or use the form below." ru="Ye nahi hua. Dobara koshish karein, ya neeche form istemal karein." />}</p> : null}
         <div className="flex flex-wrap gap-2">
           <button type="button" className="rv-btn rv-btn-primary" disabled={phase === "starting"} onClick={start}>{phase === "starting" ? <T en="Starting…" ru="Shuru ho raha hai…" /> : <T en="I understand, start" ru="Main samajh gaya/gayi, shuru karein" />}</button>

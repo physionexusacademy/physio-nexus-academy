@@ -79,9 +79,10 @@ const radio = async (page, label) => (await page.getByRole("radio", { name: labe
 const box = async (page, text) => (await page.getByRole("checkbox", { name: text }).first().getAttribute("aria-checked")) === "true";
 async function openChat(page) {
   await page.locator('[data-rv-checkin="closed"]').waitFor({ timeout: 30000 });
-  await page.locator('[data-rv-checkin="closed"]').click();
-  await page.getByRole("button", { name: "I understand, start" }).click();
-  await page.locator('[data-rv-checkin="chat"]').waitFor({ timeout: 30000 });
+  // seven 3D pages are open by the end of the run: the software renderer can be slow, so these clicks wait longer
+  await page.locator('[data-rv-checkin="closed"]').click({ timeout: 120000 });
+  await page.getByRole("button", { name: "I understand, start" }).click({ timeout: 120000 });
+  await page.locator('[data-rv-checkin="chat"]').waitFor({ timeout: 60000 });
 }
 const inbox = (patientId, like) => rows("select kind, severity, title, body from public.rehab_notifications where audience = 'admin' and patient_id = $1 and kind like $2 order by kind", [patientId, like]);
 
@@ -172,6 +173,7 @@ const inbox = (patientId, like) => rows("select kind, severity, title, body from
   const [obsB] = await rows("select flag_ids, pain, symptom_response from public.rehab_errp_observations where patient_id = $1", [dayB.patientId]);
   check("5f Saving the pre-ticked form records the warning sign and the programme's own safety response runs", obsB.flag_ids.includes("fb_calf") && obsB.pain === 5, JSON.stringify(obsB));
 
+  await pa.context().close(); await pb.context().close(); // finished with these two: free the software renderer
   /* 6. A bare "yes" to the safety question stops the chat too, and nothing is ticked for the patient. */
   const c = person("carol"); const pc = await newPage(browser);
   await register(pc, c);

@@ -1,7 +1,9 @@
-import { fromUrduScript } from "../../pna-ai/language.ts";
 import { COACH_STOP } from "./coach-spec.ts";
 import { screenCoachText, type CoachSafety } from "./coach-safety.ts";
+import { stripDenials } from "./denials.ts";
 import { CHECKIN_STOP, norm } from "./checkin-spec.ts";
+
+export { stripDenials };
 
 /**
  * The safety side of the recovery check-in chat. Two things make it different from the exercise coach:
@@ -12,34 +14,6 @@ import { CHECKIN_STOP, norm } from "./checkin-spec.ts";
  *   - what the patient reports is turned into the ids of the check-in form's own warning-sign list, so the form can be pre-ticked for them.
  *     The chat never ticks "None of these": a negative answer is something the patient confirms themselves on the form.
  */
-/** A symptom word a denial may start with, and the plain nouns it may continue with ("no chest pain, dizziness or numbness"). Qualified ones ("sharp pain") only count right after the negator. */
-const EN_FIRST =
-  "(?:chest\\s+(?:pain|pains|tightness|pressure|discomfort)|calf\\s+(?:pain|swelling)|(?:sharp|severe|bad)(?:\\s+(?:or|and)\\s+(?:sharp|severe|bad))?\\s+pain|pains?|dizziness|dizzy\\s+spells?|fainting|blackouts?|numbness|tingling|weakness|swelling|locking|falls?|pops?|tears?|twists?|breathlessness|shortness\\s+of\\s+breath|(?:trouble|difficulty|problems?|issues?)\\s+(?:in\\s+|with\\s+)?breathing|breathing\\s+(?:trouble|difficulty|problems?|issues?)|injur(?:y|ies)|problems?|issues?|symptoms?|warning\\s+signs?)";
-const EN_MORE = "(?:chest\\s+pain|calf\\s+pain|calf\\s+swelling|pains?|dizziness|fainting|blackouts?|numbness|tingling|weakness|swelling|locking|falls?|pops?|tears?|twists?|breathlessness)";
-const EN_LIST = `(?:(?:\\s*[,;]\\s*(?:(?:or|nor|and)\\s+)?|\\s+(?:or|nor|and)\\s+)(?:(?:no|any)\\s+)?${EN_MORE})*`;
-const UR_FIRST =
-  "(?:seene\\s+(?:mein|me|main)\\s+dard|seene\\s+ka\\s+dard|dard|chakkar|behoshi|sunn\\s*pan|sunnpan|jhunjhun\\w*|kamzori|sooj\\w*|soojan|sujan|saans\\s+(?:ki|mein|me|main)\\s+(?:takleef|mushkil|dikkat)|chot|girna|phisalna|takleef)";
-const UR_MORE = "(?:seene\\s+(?:mein|me|main)\\s+dard|dard|chakkar|behoshi|sunn\\s*pan|sunnpan|jhunjhun\\w*|kamzori|sooj\\w*|soojan|sujan)";
-const UR_LIST = `(?:${UR_MORE}(?:\\s*[,;]\\s*|\\s+(?:ya|aur)\\s+))*`;
-
-const DENIALS: RegExp[] = [
-  new RegExp(`\\b(?:no|nope|not\\s+any|never\\s+any|without(?:\\s+any)?)\\s+(?:new\\s+|more\\s+|real\\s+|such\\s+)?${EN_FIRST}${EN_LIST}(?![a-z])`, "g"),
-  /\b(?:not|never|isnt|arent|wasnt|am not|is not|are not|was not)\s+(?:at all\s+|really\s+|very\s+|that\s+)?(?:dizzy|swollen|numb|weak|locked|faint|breathless)(?![a-z])/g,
-  new RegExp(`\\b(?:didnt|did not|dont|do not|havent|have not|hasnt|has not|never)\\s+(?:have|had|get|got|feel|felt|notice|noticed|experience|experienced|see|saw|hear|heard)\\s+(?:any\\s+|a\\s+)?${EN_FIRST}${EN_LIST}(?![a-z])`, "g"),
-  /\b(?:didnt|did not|never)\s+(?:fall|fell|slip|slipped|trip|tripped|twist|twisted)(?![a-z])/g,
-  new RegExp(`\\b(?:koi\\s+)?${UR_LIST}${UR_FIRST}\\s+(?:bilkul\\s+|koi\\s+|abhi tak\\s+|kabhi\\s+)?(?:nahi|nahin|nai|nhi)(?![a-z])(?:\\s+(?:hai|hain|hua|hui|huwa|aaya|aayi|aya|hoti|hota|mila|mili|tha|thi)(?![a-z]))*`, "g"),
-];
-
-/** Keeps commas (they tell a list of denials from a denial followed by a report); everything else is normalised like the rest of the chat. */
-const light = (text: string) => fromUrduScript(text).toLowerCase().replace(/[’'`]/g, "").replace(/[^a-z0-9+/.,;\s]/g, " ").replace(/\s+/g, " ").trim();
-
-/** The text without the plain denials ("no chest pain", "no chest pain, dizziness or numbness", "chakkar nahi aaya"). Used only to decide what to screen and read as a warning sign. */
-export function stripDenials(text: string): string {
-  let t = light(text);
-  for (const pattern of DENIALS) t = t.replace(pattern, " , ");
-  return norm(t);
-}
-
 /** What the screen says about a message, with the wording of this chat (the exercise coach's "do not carry on with today's session" is replaced). */
 export function screenCheckinText(text: string): CoachSafety | null {
   const hit = screenCoachText(stripDenials(text));

@@ -33,3 +33,9 @@ export function guardAck(raw: unknown, patientText: string): AckResult {
   for (const match of text.matchAll(/\d+/g)) if (!said.has(Number(match[0]))) return { ok: false, reason: `a number the patient did not say (${match[0]})` };
   return { ok: true, text };
 }
+
+/** The reasons an acknowledgement can be refused, in plain words (for the physiotherapist's review pack). */
+export const ACK_GUARD_REASONS: string[] = [
+  ...new Set([...RULES.filter((rule) => SHARED.has(rule.reason)).map((rule) => rule.reason), ...ACK_RULES.map((rule) => rule.reason)]),
+  "a number the patient did not say", "more than one sentence", "too long",
+];

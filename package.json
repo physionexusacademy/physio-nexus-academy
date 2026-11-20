@@ -39,6 +39,7 @@
     "validate:rehabverse-brief": "node --experimental-strip-types scripts/validate-rehabverse-brief.ts",
     "validate:rehabverse-coach": "node --experimental-strip-types scripts/validate-rehabverse-coach.ts",
     "validate:rehabverse-checkin": "node --experimental-strip-types scripts/validate-rehabverse-checkin.ts",
+    "validate:rehabverse-pilot": "node --experimental-strip-types scripts/validate-rehabverse-pilot.ts",
     "validate:rehabverse-rules": "node --experimental-strip-types scripts/validate-rehabverse-rules.ts",
     "validate:rehabverse-library": "node --experimental-strip-types scripts/validate-rehabverse-library.ts",
     "validate:rehabverse-poses": "node --experimental-strip-types scripts/rehabverse-pose-gate.mjs",

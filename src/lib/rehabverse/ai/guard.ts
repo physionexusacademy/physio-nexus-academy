@@ -38,3 +38,6 @@ export function guardReply(raw: unknown): GuardResult {
   for (const rule of RULES) if (rule.test(text)) return { ok: false, reason: rule.reason };
   return { ok: true, text };
 }
+
+/** The reasons a reply can be refused, in plain words (for the physiotherapist's review pack). */
+export const GUARD_REASONS: string[] = [...new Set(RULES.map((rule) => rule.reason)), "asks several questions", "too long"];

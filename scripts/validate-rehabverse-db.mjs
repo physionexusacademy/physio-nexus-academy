@@ -240,6 +240,61 @@ checks += 1;
 await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true });
 await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1", [checkin.id]);
 
+/* ----------------------------- 1f. the AI pilot: limit, sign-off record, dashboard numbers ----------------------------- */
+const pilotOf = () => rpc(admin, "rehab_admin_ai_pilot", {});
+let pilot = await pilotOf();
+eq([pilot.settings.max_patients, pilot.settings.open_to_all], [5, false], "by default the pilot is limited to 5 patients and not open to all");
+const enabledNow = pilot.enabled_patients;
+ok(enabledNow >= 1, "(setup) at least one patient has AI on");
+await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: false, p_pack_version: "none" });
+await fails(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_enabled: true }, /pilot_limit/, "one more patient is refused once the pilot limit is reached");
+eq((await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true })).ai_assist, "on", "...but a patient who already has AI on is not affected");
+eq((await sql("select ai_assist from rehab_patients where id = $1", [bobReg.id]))[0].ai_assist, "off", "...and the refused patient stayed off");
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: 0, p_open_to_all: false, p_pack_version: "x" }, /invalid_limit/, "a limit below 1 is refused");
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: 501, p_open_to_all: false, p_pack_version: "x" }, /invalid_limit/, "a limit above 500 is refused");
+await fails(alice, "rehab_admin_ai_pilot", {}, /not authorised/, "a patient cannot read the pilot dashboard");
+await fails(alice, "rehab_admin_set_ai_pilot", { p_max: 500, p_open_to_all: false, p_pack_version: "x" }, /not authorised/, "a patient cannot change the pilot limit");
+await fails(alice, "rehab_admin_ai_signoff", { p_reviewer: "Me", p_decision: "approved", p_notes: null, p_pack_version: "abcdef123456" }, /not authorised/, "a patient cannot record a sign-off");
+await fails(null, "rehab_admin_ai_pilot", {}, /permission denied|not authorised/i, "anonymous cannot read the pilot dashboard");
+
+// opening to everyone needs the latest sign-off to be 'approved' for the current pack version
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: true, p_pack_version: "abcdef123456" }, /signoff_required/, "open to all is refused with no sign-off");
+await fails(admin, "rehab_admin_ai_signoff", { p_reviewer: "A", p_decision: "approved", p_notes: null, p_pack_version: "abcdef123456" }, /reviewer name required/, "a sign-off needs a reviewer name");
+await fails(admin, "rehab_admin_ai_signoff", { p_reviewer: "Dr Test", p_decision: "maybe", p_notes: null, p_pack_version: "abcdef123456" }, /invalid decision/, "a sign-off needs a real decision");
+await fails(admin, "rehab_admin_ai_signoff", { p_reviewer: "Dr Test", p_decision: "approved", p_notes: null, p_pack_version: "x" }, /pack version required/, "a sign-off needs the version it covers");
+await rpc(admin, "rehab_admin_ai_signoff", { p_reviewer: "Dr Test", p_decision: "approved_with_changes", p_notes: "Reword the notice.", p_pack_version: "abcdef123456" });
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: true, p_pack_version: "abcdef123456" }, /signoff_required/, "'approved with changes' does not open AI to everyone");
+await rpc(admin, "rehab_admin_ai_signoff", { p_reviewer: "Dr Test", p_decision: "approved", p_notes: null, p_pack_version: "abcdef123456" });
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: true, p_pack_version: "ffffffffffff" }, /signoff_required/, "a sign-off for another version of the pack does not count (the wording changed since it was reviewed)");
+eq((await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: true, p_pack_version: "abcdef123456" })).open_to_all, true, "an 'approved' sign-off for the current version opens AI to everyone");
+eq((await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_enabled: true })).ai_assist, "on", "...and then the limit no longer applies");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: bobReg.id, p_enabled: false });
+await rpc(admin, "rehab_admin_ai_signoff", { p_reviewer: "Dr Test", p_decision: "not_approved", p_notes: "Not yet.", p_pack_version: "abcdef123456" });
+await fails(admin, "rehab_admin_set_ai_pilot", { p_max: enabledNow, p_open_to_all: true, p_pack_version: "abcdef123456" }, /signoff_required/, "a later 'not approved' takes the approval back (the latest sign-off counts)");
+await rpc(admin, "rehab_admin_set_ai_pilot", { p_max: 5, p_open_to_all: false, p_pack_version: "none" });
+checks += 0;
+await assert.rejects(() => sql("update rehab_ai_signoffs set notes = 'changed'"), /cannot be changed or deleted/);
+await assert.rejects(() => sql("delete from rehab_ai_signoffs"), /cannot be changed or deleted/);
+checks += 2;
+pilot = await pilotOf();
+eq(pilot.signoffs.map((x) => x.decision), ["not_approved", "approved", "approved_with_changes"], "the sign-off history is kept, newest first");
+eq(pilot.signoffs[2].notes, "Reword the notice.", "...with the reviewer's notes");
+const pilotKinds = Object.fromEntries(pilot.kinds.map((k) => [k.kind, k]));
+const pilotReal = Object.fromEntries((await sql("select kind, count(*)::int n, coalesce(sum(turns),0)::int t, coalesce(sum(fallback_turns),0)::int f, count(*) filter (where status = 'safety_stop')::int s from rehab_ai_conversations group by kind")).map((r) => [r.kind, r]));
+ok(Object.keys(pilotReal).every((k) => pilotKinds[k] && pilotKinds[k].conversations === pilotReal[k].n && pilotKinds[k].turns === pilotReal[k].t && pilotKinds[k].fallback_turns === pilotReal[k].f), "the dashboard's conversation, turn and scripted-reply counts match the stored conversations");
+ok(Object.keys(pilotReal).every((k) => pilotKinds[k].safety_stops === pilotReal[k].s), "safety stops are counted per assistant");
+await sql("update rehab_ai_conversations set status = 'safety_stop' where id = (select id from rehab_ai_conversations where kind = 'feedback' order by created_at limit 1)");
+ok((await pilotOf()).kinds.find((k) => k.kind === "feedback").safety_stops === pilotKinds.feedback.safety_stops + 1, "...and a new safety stop shows up at once");
+ok(pilot.routed.ai_coach_safety >= 1 && pilot.routed.ai_checkin_safety >= 1 && pilot.routed.ai_coach_question >= 1, "notices routed to the physiotherapist are counted per kind");
+ok(Array.isArray(pilot.models) && typeof pilot.checkin.saved === "number" && typeof pilot.checkin.changed === "number", "model usage and the check-in agreement numbers are present");
+ok(pilot.patients.every((p) => p.reference_code && typeof p.conversations === "number") && pilot.patients.length === pilot.enabled_patients, "the list of AI patients matches the count");
+const pilotFns = await sql(`select p.proname, has_function_privilege('authenticated', p.oid, 'execute') as auth, has_function_privilege('anon', p.oid, 'execute') as anon
+   from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ('rehab_admin_ai_pilot', 'rehab_admin_ai_signoff', 'rehab_admin_set_ai_pilot') order by 1`);
+eq(pilotFns.map((f) => [f.auth, f.anon]), [[true, false], [true, false], [true, false]], "the pilot functions are for signed-in admins only (the database checks the admin role itself)");
+const tablePriv = await sql("select has_table_privilege('authenticated', 'public.rehab_ai_signoffs', 'select') as a, has_table_privilege('authenticated', 'public.rehab_ai_pilot', 'select') as b, has_table_privilege('anon', 'public.rehab_ai_signoffs', 'select') as c");
+eq([tablePriv[0].a, tablePriv[0].b, tablePriv[0].c], [false, false, false], "the pilot tables cannot be read directly from a browser");
+ok((await sql("select action from rehab_audit_log where action in ('ai_pack_signoff', 'ai_pilot_settings')")).length >= 5, "sign-offs and limit changes are in the audit trail");
+
 /* ----------------------------- 2. who can call what ----------------------------- */
 for (const fn of ["rehab_my_overview", "rehab_admin_inbox", "rehab_admin_patients", "rehab_my_history"]) {
   await fails(null, fn, {}, /permission denied|not authorised/i, `anonymous cannot call ${fn}`);

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, Bell, ClipboardList, MessageCircle, Phone, Users } from "lucide-react";
+import { AlertTriangle, Bell, ClipboardList, MessageCircle, Phone, Sparkles, Users } from "lucide-react";
 import { getFollowups, getInbox } from "@/lib/rehabverse/api";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { MarkRead } from "./MarkRead";
@@ -33,7 +33,10 @@ export default async function RehabVerseInbox() {
           <h1 className="font-heading text-2xl font-bold text-navy-800">Clinician inbox</h1>
           <p className="text-[13.5px] text-slate-600">Assessments, feedback awaiting your decision, programmes and safety events.</p>
         </div>
-        <Link href="/admin/rehabverse/patients" className="rv-btn rv-btn-ghost !min-h-[40px]"><Users className="h-4 w-4" aria-hidden="true" /> All patients</Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/rehabverse/ai-pilot" className="rv-btn rv-btn-ghost !min-h-[40px]"><Sparkles className="h-4 w-4" aria-hidden="true" /> AI pilot</Link>
+          <Link href="/admin/rehabverse/patients" className="rv-btn rv-btn-ghost !min-h-[40px]"><Users className="h-4 w-4" aria-hidden="true" /> All patients</Link>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
