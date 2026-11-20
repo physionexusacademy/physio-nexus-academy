@@ -10,8 +10,12 @@ const levels = [
   { name: "Clinical Master", min: 1000 },
   { name: "Clinical Legend", min: 2500 },
 ];
+const EMPTY_PROGRESS: UnifiedProgress = { version: 1, totalXP: 0, currentStreak: 0, longestStreak: 0, lastActiveDate: null, activeDates: [], eventIds: [], lastActivityLabel: null };
 export function UnifiedProgressCard() {
-  const [progress, setProgress] = useState<UnifiedProgress | null>(null);
+  // Until the saved record is read (right after the page opens) the card is drawn from an empty record, so it is already its full height:
+  // a small placeholder replaced by this tall card pushed everything below it down by 800 px on a phone.
+  const [saved, setProgress] = useState<UnifiedProgress | null>(null);
+  const progress: UnifiedProgress = saved ?? EMPTY_PROGRESS;
   const refresh = useCallback(() => setProgress(getUnifiedProgress()), []);
   useEffect(() => {
     refresh();
@@ -24,7 +28,6 @@ export function UnifiedProgressCard() {
       window.removeEventListener("pna-daily-score-saved", refresh);
     };
   }, [refresh]);
-  if (!progress) return <section aria-label="Your learning progress" className="container-content py-5"><div className="rounded-2xl border border-teal-100 bg-white p-5 text-sm text-slate-500">Preparing your learning progress…</div></section>;
 
   const today = getPakistanDate();
   const activeToday = progress.activeDates.includes(today);

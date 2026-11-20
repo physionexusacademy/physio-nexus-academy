@@ -563,7 +563,9 @@ export class ExamRoom {
         }
       }
     });
-    // The three primitives (skin, eyes) share one skeleton; the skin is the pick target.
+    // The three primitives (skin, eyes) share one skeleton; the skin is the pick target. (Hidden until the posture is set, so the figure never
+    // shows for a moment in its raw pose while the loading below is spread over a few frames.)
+    gltf.scene.visible = false;
     this.patientRoot.add(gltf.scene);
     this.originalMaterials = originals;
     if (this.skinned) {
@@ -574,12 +576,18 @@ export class ExamRoom {
         .multiply(skeleton.boneInverses[0])
         .multiply(this.skinned.bindMatrix);
     }
+    // Loading the patient is a few hundred milliseconds of work on a phone: hand the page back between its phases, so scrolling and taps stay smooth.
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    if (this.disposed) return;
     for (const site of SOFT_SITES) {
       const left = this.findSkin(site.probe);
       const right = this.findSkin(mirrorProbe(site.probe));
       if (left >= 0 && right >= 0) this.landmarks[site.id] = { left: this.vertexAnchor(left), right: this.vertexAnchor(right) };
     }
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    if (this.disposed) return;
     this.setPosition("standing", false);
+    gltf.scene.visible = true;
     this.invalidate();
   }
 
