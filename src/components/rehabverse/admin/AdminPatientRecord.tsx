@@ -8,6 +8,7 @@ import type { AdminAssessment, AdminPatient } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
 import { AiConversations } from "./AiConversations";
+import { HistoryBrief } from "./HistoryBrief";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
 import { SessionReview } from "./SessionReview";
 
@@ -133,6 +134,8 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
   const aiConversations = data.ai_conversations ?? [];
   const live = programmes.find((p) => LIVE.includes(p.programme.status));
   const latest = assessments[0];
+  // the AI conversation that produced the latest assessment (or, failing that, the most recent intake chat)
+  const intakeChat = latest ? aiConversations.find((c) => c.assessment_id === latest.id) ?? null : null;
   const openAdverse = adverse_events.filter((e) => e.status === "open").length;
   const canCreate = !!latest && !live && ["submitted", "in_review", "cleared_for_programme"].includes(latest.status);
   const shown = live ?? programmes[0];
@@ -154,9 +157,15 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
         </div>
         <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />
         <nav className="mt-3 flex flex-wrap gap-1.5 text-[12.5px] font-bold" aria-label="Sections">
-          {[["#assessment", "Assessment"], ...(aiConversations.length ? [["#ai", "AI conversations"]] : []), ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
+          {[...(latest ? [["#brief", "History brief"]] : []), ["#assessment", "Assessment"], ...(aiConversations.length ? [["#ai", "AI conversations"]] : []), ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
         </nav>
       </header>
+
+      {latest ? (
+        <Section id="brief" title="History brief" aside={<span className="rv-chip rv-chip-navy">for the first visit</span>}>
+          <HistoryBrief patient={patient} assessment={latest} conversation={intakeChat} />
+        </Section>
+      ) : null}
 
       <Section id="assessment" title="Initial assessment" aside={latest ? <span className="rv-chip">{latest.status.replace(/_/g, " ")}</span> : null}>
         {latest ? <AssessmentPanel a={latest} /> : <p className="text-[13.5px] text-slate-500">No assessment submitted yet.</p>}

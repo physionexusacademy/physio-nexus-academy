@@ -36,6 +36,32 @@ Supabase Auth + RLS, the admin shell, Resend e-mail). No new paid services, APIs
   guide. Decision support is a fixed, listed set of rules the reviewer can inspect.
 * **Audit.** Every clinical action writes to an append-only log (updates and deletes are blocked).
 
+## The history brief (AI assistant, Phase C)
+
+The first thing the treating physiotherapist sees on a patient's record is the **History brief**
+(`src/lib/rehabverse/brief.ts`, shown by `admin/HistoryBrief.tsx`). It is built by fixed rules from the
+submitted assessment and, when there is one, the AI intake conversation that produced it. **No model writes
+any of it**: every sentence is a template filled with the patient's own answers, free text is quoted exactly,
+and it never diagnoses or suggests treatment. It shows, in order:
+
+1. **Safety**: the ticked red flags, any safety stop in the AI conversation, and **wording the screening tick
+   missed** (the patient's own text, and what they typed in the chat, is run through the same English and
+   Roman Urdu alert rules as PNA AI; a hit is listed when its screening question was not ticked).
+2. **The story**: age, sex, areas, symptoms, duration, pain now / worst / best, onset, and the patient's
+   quoted answers (cause, worse with, eased by, what it limits, treatment so far, conditions, medicines).
+3. **Mentioned in the history**: conditions and medicines that matter when choosing exercise or hands-on
+   techniques (diabetes, blood thinners, steroids, osteoporosis, pregnancy, ...), found by words.
+4. **Changed by the patient after the chat**: the assistant's last draft against what the patient finally
+   submitted, field by field (also a direct measure of how accurate the AI intake was).
+5. **Check these answers** (scores that do not fit together) and **Worth asking at the first visit**: each gap
+   or trigger becomes a question with its reason (rules H1-H12, listed in `brief.ts`).
+
+"Copy as text" puts the whole brief on the clipboard for the clinical notes. It is shown for every patient's
+latest assessment, AI or not (it is plain code, not AI). `npm run validate:rehabverse-brief` (79 checks) tests
+that nothing is invented (every number comes from the assessment), the output contains no diagnosis wording,
+quotes are exact (including Roman Urdu), corrections and missed safety wording are surfaced, and the library
+never calls a model or the network.
+
 ## Data protection
 
 * RLS on every table; API roles have read-only grants where reads are needed and **no write grants**.
