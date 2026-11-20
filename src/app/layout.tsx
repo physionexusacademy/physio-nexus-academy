@@ -11,6 +11,7 @@ import { MobilePortalNav } from "@/components/MobilePortalNav";
 import { PublicChrome } from "@/components/PublicChrome";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { PerfGovernor } from "@/components/PerfGovernor";
+import { NavProgress } from "@/components/NavProgress";
 import { FX_INIT_SCRIPT } from "@/lib/perf-mode";
 import { PhysioNexusAILauncher } from "@/components/PhysioNexusAILauncher";
 import { siteConfig } from "@/lib/site-config";
@@ -330,6 +331,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <PwaRuntime />
         <PerfGovernor />
+        <NavProgress />
         <PublicChrome>
           <Header atlasPublished={atlasPublished} />
         </PublicChrome>
