@@ -14,6 +14,7 @@ import { GuideStage } from "./GuideStage";
 import { AdherenceRing, FollowUpCard, PainTrendCard, type NextStep } from "./FollowUp";
 import { LineChart } from "./charts";
 import { T, useRvLang } from "./useLang";
+import { AiAssistCard } from "./AiAssistCard";
 
 const OPEN_ASSESSMENT = ["submitted", "needs_clinical_assessment", "in_review", "cleared_for_programme", "programme_created"];
 
@@ -118,6 +119,8 @@ export function PatientDashboard({ overview, history, notifications, followup = 
           </button>
         </div>
       </header>
+
+      <div className="mt-4"><AiAssistCard value={patient.ai_assist ?? "off"} /></div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div className="order-2 space-y-5 lg:order-1">

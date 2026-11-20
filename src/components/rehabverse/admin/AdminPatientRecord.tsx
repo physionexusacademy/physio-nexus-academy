@@ -6,6 +6,7 @@ import { AlertTriangle, ClipboardCheck, FileClock, ShieldAlert } from "lucide-re
 import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
 import type { AdminAssessment, AdminPatient } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
+import { AiAssistSwitch } from "./AiAssistSwitch";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
 import { SessionReview } from "./SessionReview";
 
@@ -149,6 +150,7 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
             {openAdverse ? <span className="rv-chip rv-chip-rose">{openAdverse} open adverse event(s)</span> : null}
           </div>
         </div>
+        <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />
         <nav className="mt-3 flex flex-wrap gap-1.5 text-[12.5px] font-bold" aria-label="Sections">
           {[["#assessment", "Assessment"], ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
         </nav>

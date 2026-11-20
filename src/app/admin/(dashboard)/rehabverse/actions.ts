@@ -1,7 +1,7 @@
 "use server";
 
 import { RehabError, rpc } from "@/lib/rehabverse/api";
-import type { PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
+import type { AiAssist, PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
 import { emailPatient, type PatientEmailKind } from "@/lib/rehabverse/notify";
 
 /**
@@ -82,5 +82,13 @@ export async function markAdminNotificationsReadAction(): Promise<Result> {
   try {
     await rpc("rehab_admin_mark_notifications_read");
     return { ok: true };
+  } catch (e) { return fail(e); }
+}
+
+/** The admin's decision on AI assistance for one patient. Only the admin can turn it on; the database refuses anyone else. */
+export async function setAiAssistAction(patientId: string, enabled: boolean): Promise<Result<{ ai_assist: AiAssist }>> {
+  try {
+    const r = await rpc<{ ai_assist: AiAssist }>("rehab_admin_set_ai_assist", { p_patient_id: patientId, p_enabled: enabled });
+    return { ok: true, ai_assist: r.ai_assist };
   } catch (e) { return fail(e); }
 }

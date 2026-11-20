@@ -28,6 +28,8 @@ export async function createDb({ dataDir } = {}) {
     if (!hasDaily) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261009_pna_daily_challenge.sql"), "utf8"));
     await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261117120000_daily_participant_reminders.sql"), "utf8"));
   }
+  const hasAiAssist = await db.query("select 1 from information_schema.columns where table_schema = 'public' and table_name = 'rehab_patients' and column_name = 'ai_assist'").then((r) => r.rows.length > 0);
+  if (!hasAiAssist) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261120120000_rehab_ai_assist.sql"), "utf8"));
   return db;
 }
 
