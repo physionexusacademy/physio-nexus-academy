@@ -203,6 +203,43 @@ checks += 1;
 await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true });
 await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1", [coach.id]);
 
+/* ----------------------------- 1e. the recovery check-in chat: same helpers, for conversations of kind 'feedback' ----------------------------- */
+const ciDay = "44444444-4444-4444-8444-444444444444";
+const checkin = await open(aliceReg.id, "feedback", "Hello, I am the check-in assistant.");
+await turn(aliceReg.id, checkin.id, { draft: { session_id: ciDay, timepoint: "24h", day_number: 4, answers: { pain: 3 } }, p: "3", a: "Thanks." });
+const ciInbox = () => rows(admin, "select kind, severity, title, body, data, link from rehab_notifications where audience = 'admin' and kind like 'ai_checkin_%' order by created_at, kind");
+eq((await ciInbox()).length, 0, "no check-in notification before the check-in assistant routes anything");
+await tell(aliceReg.id, checkin.id, "question", "high-pain", "pain is 9\nand rising");
+let ciTold = await ciInbox();
+ok(ciTold.length === 1 && ciTold[0].kind === "ai_checkin_question" && ciTold[0].severity === "attention" && ciTold[0].title.startsWith("Check-in assistant:"), "a note for the physiotherapist reaches the admin inbox as 'attention', from the check-in assistant");
+ok(ciTold[0].body.includes("(day 4, 24h check-in)") && ciTold[0].body.includes("pain is 9 and rising") && ciTold[0].body.startsWith(aliceReg.reference_code), "it carries the reference code, the day, which check-in and the patient's words");
+eq([ciTold[0].data.timepoint, ciTold[0].link], ["24h", `/admin/rehabverse/patients/${aliceReg.id}`], "...with the check-in in its data, and a link to the patient's record");
+await tell(aliceReg.id, checkin.id, "question");
+eq((await ciInbox()).length, 1, "the same kind is sent at most once per conversation");
+await tell(aliceReg.id, checkin.id, "safety", "reported-sign", "yes");
+ciTold = await ciInbox();
+ok(ciTold.length === 2 && ciTold.find((n) => n.kind === "ai_checkin_safety").severity === "urgent" && /reported a warning sign/.test(ciTold.find((n) => n.kind === "ai_checkin_safety").title), "a warning sign is sent as 'urgent'");
+eq((await coachInbox()).length, 2, "the exercise coach's notifications are unchanged and separate");
+ok((await sql("select action from rehab_audit_log where patient_id = $1 and action like 'ai_checkin_%' order by id", [aliceReg.id])).map((r) => r.action).join() === "ai_checkin_question,ai_checkin_safety", "both are in the audit trail");
+await assert.rejects(() => tell(aliceReg.id, checkin.id, "bogus"), /bad notification kind/);
+await assert.rejects(() => tell(aliceReg.id, conv1.id, "question"), /conversation not found/); // an intake conversation still cannot be used
+await assert.rejects(() => tell(bobReg.id, checkin.id, "question"), /AI assistance is not enabled/);
+checks += 3;
+const ciHeld = (patient, day, tp) => sql("select public.rehab_ai_checkin_held($1, $2, $3) as h", [patient, day, tp]).then((r) => r[0].h);
+eq(await ciHeld(aliceReg.id, ciDay, "24h"), null, "a check-in is not on hold before a safety stop");
+await turn(aliceReg.id, checkin.id, { draft: { session_id: ciDay, timepoint: "24h", day_number: 4, answers: { pain: 3, signs: "reported", flags: ["fb_calf"] } }, p: "my calf is swollen", a: "Please stop.", status: "safety_stop", safety: "swelling" });
+const held = await ciHeld(aliceReg.id, ciDay, "24h");
+ok(held && held.id === checkin.id && held.draft.answers.flags[0] === "fb_calf" && held.messages.length >= 3, "after a safety stop the held conversation (with the warning signs to pre-tick) can be found");
+eq([await ciHeld(aliceReg.id, ciDay, "48h"), await ciHeld(aliceReg.id, "55555555-5555-4555-8555-555555555555", "24h"), await ciHeld(bobReg.id, ciDay, "24h")], [null, null, null], "it holds for that check-in only, for that patient only");
+const ciFns = await sql(`select p.proname, has_function_privilege('authenticated', p.oid, 'execute') as auth, has_function_privilege('anon', p.oid, 'execute') as anon, has_function_privilege('service_role', p.oid, 'execute') as service
+   from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ('rehab_ai_coach_notify', 'rehab_ai_checkin_held') order by 1`);
+eq(ciFns.map((f) => [f.auth, f.anon, f.service]), [[false, false, true], [false, false, true]], "only the server (service role) can use the check-in helpers");
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: false });
+await assert.rejects(() => tell(aliceReg.id, checkin.id, "question"), /AI assistance is not enabled/);
+checks += 1;
+await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true });
+await sql("update rehab_ai_conversations set status = 'abandoned' where id = $1", [checkin.id]);
+
 /* ----------------------------- 2. who can call what ----------------------------- */
 for (const fn of ["rehab_my_overview", "rehab_admin_inbox", "rehab_admin_patients", "rehab_my_history"]) {
   await fails(null, fn, {}, /permission denied|not authorised/i, `anonymous cannot call ${fn}`);

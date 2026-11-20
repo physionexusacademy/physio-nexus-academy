@@ -17,8 +17,8 @@ export default async function DayPage({ params }: { params: Promise<{ id: string
   try {
     // The database only returns a day that belongs to the signed-in patient.
     const data = await getSession(id);
-    // the exercise coach is offered only when the admin has switched AI on for this patient (checked again on the server for every message)
-    return <DaySessionLoader data={data} coach={await aiAssistAllowed()} />;
+    // the exercise coach and the check-in assistant are offered only when the admin has switched AI on for this patient (checked again on the server for every message)
+    return <DaySessionLoader data={data} ai={await aiAssistAllowed()} />;
   } catch (error) {
     if (error instanceof RehabError) notFound();
     throw error;

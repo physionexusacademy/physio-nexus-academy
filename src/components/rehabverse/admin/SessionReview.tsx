@@ -4,7 +4,8 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, CheckCircle2, ChevronDown, Info, ShieldAlert, Unlock } from "lucide-react";
 import { overrideUnlockAction, reviewSessionAction } from "@/app/admin/(dashboard)/rehabverse/actions";
-import type { AdminSessionBundle, ProgrammeStatus, ReviewDecision } from "@/lib/rehabverse/api-types";
+import type { AdminAiConversation, AdminSessionBundle, ProgrammeStatus, ReviewDecision } from "@/lib/rehabverse/api-types";
+import { chatVersusForm, readCheckinDraft } from "@/lib/rehabverse/ai/checkin-shared";
 import { flagLabel, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { REFERENCES } from "@/lib/rehabverse/references";
 import { decisionSupport, type Suggestion } from "@/lib/rehabverse/rules";
@@ -25,11 +26,13 @@ const TONE: Record<Suggestion, string> = {
 };
 const dt = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
-export function SessionReview({ bundle, previous, programmeStatus, patientId }: { bundle: AdminSessionBundle; previous: AdminSessionBundle[]; programmeStatus: ProgrammeStatus; patientId: string }) {
+/** `chats`: the patient's check-in assistant conversations (any day); the ones for this day are shown next to the recovery results. */
+export function SessionReview({ bundle, previous, programmeStatus, patientId, chats = [] }: { bundle: AdminSessionBundle; previous: AdminSessionBundle[]; programmeStatus: ProgrammeStatus; patientId: string; chats?: AdminAiConversation[] }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const { session, feedback, exercises, completions, observations, reviews } = bundle;
   const support = useMemo(() => decisionSupport(bundle, previous), [bundle, previous]);
+  const dayChats = chats.filter((c) => c.kind === "feedback" && c.draft.session_id === bundle.session.id);
   const reviewable = session.status === "awaiting_review";
   const [open, setOpen] = useState(reviewable);
   const [decision, setDecision] = useState<Exclude<ReviewDecision, "auto_continue">>(support.decision as Exclude<ReviewDecision, "auto_continue">);
@@ -102,6 +105,27 @@ export function SessionReview({ bundle, previous, programmeStatus, patientId }: 
                     return <li key={t} className={o ? "" : "text-slate-400"}>{TIMEPOINT_LABEL[t].en}: {o ? <b>{o.pain ?? "–"}/10{o.symptom_response ? ` · ${o.symptom_response}` : ""}{o.function_score !== null && o.function_score !== undefined ? ` · function ${o.function_score}/10` : ""}{o.new_symptoms ? " · NEW SYMPTOMS" : ""}{o.flag_ids.length ? " · WARNING" : ""}</b> : "not yet"}</li>;
                   })}
                 </ul>
+                {dayChats.length ? (
+                  <div className="mt-2 space-y-1 border-t border-slate-200 pt-2 text-[12.5px] leading-5" data-admin-checkin-chats>
+                    {dayChats.map((c) => {
+                      const tp = String(c.draft.timepoint);
+                      const answers = readCheckinDraft(c.draft.answers);
+                      const saved = observations.find((x) => x.timepoint === tp);
+                      const changed = saved ? chatVersusForm(answers, { pain: saved.pain, function_score: saved.function_score, symptom_response: saved.symptom_response, new_symptoms: saved.new_symptoms, flag_ids: saved.flag_ids }) : [];
+                      return (
+                        <p key={c.id}>
+                          <span className="rv-chip rv-chip-navy mr-1 text-[11px]">AI check-in chat</span>
+                          <b>{TIMEPOINT_LABEL[tp]?.en ?? tp}:</b>{" "}
+                          {c.status === "safety_stop" ? <span className="font-bold text-rose-800">stopped on a warning sign{answers.flags.length ? ` (${answers.flags.map((f) => flagLabel(f)?.en ?? f).join("; ")})` : ""}</span>
+                            : !saved ? <span className="text-slate-600">chat {answers.done ? "finished" : "started"}, the form is not saved yet</span>
+                            : changed.length ? <span className="text-amber-900">the patient changed {changed.map((d) => `${d.field.toLowerCase()} (chat ${d.chat}, form ${d.form})`).join("; ")} on the form</span>
+                            : <span className="text-slate-600">the saved form matches what the chat understood</span>}
+                          {" "}<a className="font-bold text-teal-800 underline-offset-2 hover:underline" href="#ai">transcript</a>
+                        </p>
+                      );
+                    })}
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : <p className="text-[13px] text-slate-500">No feedback yet for this day.</p>}

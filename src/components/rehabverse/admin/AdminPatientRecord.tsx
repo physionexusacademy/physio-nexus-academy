@@ -198,7 +198,7 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
       <Section id="days" title="Days, feedback & review">
         {shown && shown.sessions.length ? (
           <div className="space-y-2.5">
-            {shown.sessions.map((s, i) => <SessionReview key={s.session.id} bundle={s} previous={shown.sessions.slice(0, i)} programmeStatus={shown.programme.status} patientId={patient.id} />)}
+            {shown.sessions.map((s, i) => <SessionReview key={s.session.id} bundle={s} previous={shown.sessions.slice(0, i)} programmeStatus={shown.programme.status} patientId={patient.id} chats={aiConversations} />)}
           </div>
         ) : <p className="text-[13.5px] text-slate-500">No days yet.</p>}
         {programmes.length > 1 ? <p className="mt-3 text-[12.5px] text-slate-500">{programmes.length - 1} earlier programme(s) are kept in the audit trail.</p> : null}
