@@ -147,3 +147,29 @@ jobs:
           out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:500,filter:{datetime_geq:$s,datetime_leq:$u,clientCountryName:"PK"},orderBy:[datetimeHour_ASC]){count dimensions{datetimeHour edgeResponseStatus}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
           printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.datetimeHour)\t\(.dimensions.edgeResponseStatus)\t\(.count)")'
 
+      - name: Workers subdomain, every Worker script of the account, and Cloudflare's own Git builds (read-only)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set +e
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then echo "::warning::No CLOUDFLARE_API_TOKEN secret."; exit 0; fi
+          api() { curl -sS -m 40 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          base="https://api.cloudflare.com/client/v4"
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1")"
+          acct_id="$(printf '%s' "$zone_json" | jq -r '.result[0].account.id // empty')"
+
+          echo "=== the account's workers.dev subdomain"
+          api "$base/accounts/$acct_id/workers/subdomain" | jq -c '{success, subdomain: .result.subdomain, errors}'
+
+          echo; echo "=== every Worker script in the account (name, modified, whether it is on workers.dev)"
+          api "$base/accounts/$acct_id/workers/scripts" | jq -r '.result[]? | "\(.id)\tmodified=\(.modified_on)\tcreated=\(.created_on)\tlast_deployed_from=\(.last_deployed_from // "-")"'
+          echo "-- workers.dev switch of the production script"
+          api "$base/accounts/$acct_id/workers/scripts/physio-nexus-academy/subdomain" | jq -c '{success, result, errors}'
+
+          echo; echo "=== Cloudflare Workers Builds (Git integration) for the production Worker"
+          for path in "builds/workers/physio-nexus-academy/triggers" "builds/triggers" "builds/workers/physio-nexus-academy/builds"; do
+            echo "-- $path"
+            api "$base/accounts/$acct_id/$path" | jq -c 'if .success then (.result | if type=="array" then map({id:(.trigger_uuid // .build_uuid // .id), branch:(.branch_includes // .build_trigger_metadata.branch // null), build_command:.build_command, deploy_command:.deploy_command, root:.root_directory, repo:(.repo_connection.repo_name // null), status:(.status // null), outcome:(.build_outcome // null), created:(.created_on // null)}) | .[:8] else . end) else {success, errors} end' | head -c 2500; echo
+          done
+
