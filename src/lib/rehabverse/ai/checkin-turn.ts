@@ -7,6 +7,7 @@ import type { CoachSafety } from "./coach-safety.ts";
 import type { ModelCall } from "./intake-turn.ts";
 import type { Lang } from "./intake-spec.ts";
 import type { Turn } from "./prompts.ts";
+import { LANGUAGE_REMINDER, replyLanguage, replyMatchesLanguage } from "./reply-lang.ts";
 
 /**
  * One turn of the recovery check-in chat. The order of the steps is the safety design:
@@ -16,6 +17,7 @@ import type { Turn } from "./prompts.ts";
  *   3. the other answers are read by code first; the model only helps with free wording and writes one short acknowledgement, which a guard checks;
  *   4. what is asked next, and whether the chat is finished, is decided by code. The patient's own form is what gets saved.
  * The model call is injected, so every path is tested without a model.
+ * Every reply is in the language the patient WRITES in (reply-lang.ts), not the language switch of the page.
  */
 export type CheckinTurnInput = { lang: Lang; history: Turn[]; draft: CheckinDraft; patientText: string; turnNumber: number; ctx: CheckinContext };
 export type CheckinTurnResult = {
@@ -49,7 +51,7 @@ export function parseCheckinJson(text: string): Parsed | null {
 
 export async function runCheckinTurn(input: CheckinTurnInput, deps: { callModel: ModelCall }): Promise<CheckinTurnResult> {
   const text = input.patientText.trim().slice(0, MAX_CHECKIN_MESSAGE);
-  const lang = input.lang;
+  const lang = replyLanguage(text, input.history, input.lang);
   let draft: CheckinDraft = applyReading(input.draft, "note", null);
   const base = { safety: null, model: "script", fallback: false, notify: null, alert: null, step: nextStep(draft) } as const;
 
@@ -82,7 +84,7 @@ export async function runCheckinTurn(input: CheckinTurnInput, deps: { callModel:
     else if (tries >= 2) draft = { ...draft, signs: "unclear", tries: { ...draft.tries, signs: tries } };
     else draft = { ...draft, tries: { ...draft.tries, signs: tries } };
     if (draft.signs === null) return { ...base, draft, reply: `${TRY_AGAIN[lang]} ${HELP.signs[lang]}`, status: "open", notify, alert: alertKind, how: "script", step: "signs" };
-    return finish(input, draft, notify, alertKind, { ack: draft.signs === "unclear" ? UNCLEAR_SIGNS[lang] : scriptedAck({ pain: null, response: null }, lang, input.turnNumber), model: "script", fallback: false, how: "script" });
+    return finish(input, lang, draft, notify, alertKind, { ack: draft.signs === "unclear" ? UNCLEAR_SIGNS[lang] : scriptedAck({ pain: null, response: null }, lang, input.turnNumber), model: "script", fallback: false, how: "script" });
   }
 
   // 3. read the answer in plain code, then ask the model to help and to write the acknowledgement
@@ -100,10 +102,13 @@ export async function runCheckinTurn(input: CheckinTurnInput, deps: { callModel:
   let model = "script";
   const messages = buildCheckinMessages({ lang, history: input.history, ctx: input.ctx, draft, step, patientText: text });
   for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
-    const answer = await deps.callModel(attempt === 0 ? messages : [...messages, { role: "user", content: "Reply again with ONLY the JSON object described in the instructions, nothing else." }]);
+    const answer = await deps.callModel(attempt === 0 ? messages : [...messages, { role: "user", content: `Reply again with ONLY the JSON object described in the instructions, nothing else. ${LANGUAGE_REMINDER[lang]}` }]);
     if (!answer) break;
     model = answer.model;
-    parsed = parseCheckinJson(answer.text);
+    const candidate = parseCheckinJson(answer.text);
+    // an acknowledgement in the wrong language (English to someone writing Roman Urdu) is not used: ask once more, then the scripted one is in the right language
+    if (candidate && typeof candidate.ack === "string" && !replyMatchesLanguage(candidate.ack, lang)) continue;
+    parsed = candidate;
   }
   if (parsed) {
     const updates = parsed.updates && typeof parsed.updates === "object" ? (parsed.updates as Record<string, unknown>) : {};
@@ -124,15 +129,14 @@ export async function runCheckinTurn(input: CheckinTurnInput, deps: { callModel:
   const learned = { pain: before.pain === null ? draft.pain : null, response: before.symptom_response === null ? draft.symptom_response : null };
   const guarded = parsed ? guardAck(parsed.ack, text) : null;
   const ack = guarded?.ok ? guarded.text : scriptedAck(learned, lang, input.turnNumber);
-  return finish(input, draft, notify, alertKind, { ack, model, fallback: !(guarded?.ok), how: guarded?.ok ? "model" : "script", highPain });
+  return finish(input, lang, draft, notify, alertKind, { ack, model, fallback: !(guarded?.ok), how: guarded?.ok ? "model" : "script", highPain });
 }
 
 /** Puts the acknowledgement together with the next question (or the summary when every question is answered). */
 function finish(
-  input: CheckinTurnInput, draft: CheckinDraft, notify: "question" | null, alertKind: string | null,
+  input: CheckinTurnInput, lang: Lang, draft: CheckinDraft, notify: "question" | null, alertKind: string | null,
   said: { ack: string; model: string; fallback: boolean; how: "script" | "model"; highPain?: boolean },
 ): CheckinTurnResult {
-  const lang = input.lang;
   const next = nextStep(draft);
   const extras = [notify === "question" && alertKind === "question" ? FOR_PHYSIO[lang] : "", said.highPain ? HIGH_PAIN[lang] : ""].filter(Boolean);
   const done = next === null;

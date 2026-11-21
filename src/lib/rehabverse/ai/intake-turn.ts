@@ -3,6 +3,7 @@ import { guardReply } from "./guard.ts";
 import { buildIntakeMessages, type ChatMessage, type Turn } from "./prompts.ts";
 import { CLOSING, extractFromAnswer, QUESTIONS, scriptedReply, TRY_AGAIN } from "./questions.ts";
 import { screenPatientText, type IntakeSafety } from "./safety.ts";
+import { LANGUAGE_REMINDER, replyLanguage, replyMatchesLanguage } from "./reply-lang.ts";
 
 /**
  * One turn of the intake conversation. The order of the steps is the safety design:
@@ -11,6 +12,7 @@ import { screenPatientText, type IntakeSafety } from "./safety.ts";
  *   3. whether the interview is finished is decided by code (every required field known), never by the model;
  *   4. if the model is unavailable, breaks a rule or returns nonsense, a scripted warm question carries the conversation on.
  * The model call is injected, so every one of these paths is tested without a model.
+ * Every reply is in the language the patient WRITES in (reply-lang.ts), not the language switch of the page.
  */
 export type ModelCall = (messages: ChatMessage[]) => Promise<{ text: string; model: string } | null>;
 export type TurnInput = { lang: Lang; history: Turn[]; draft: IntakeDraft; patientText: string; turnNumber: number };
@@ -43,24 +45,28 @@ export function parseModelJson(text: string): Parsed | null {
 export async function runIntakeTurn(input: TurnInput, deps: { callModel: ModelCall }): Promise<TurnResult> {
   const text = input.patientText.trim().slice(0, MAX_PATIENT_MESSAGE);
   const focus = nextFocus(input.draft);
+  const lang = replyLanguage(text, input.history, input.lang);
 
   // 1. Safety first: the model is not consulted.
   const safety = screenPatientText(text);
   if (safety) {
-    return { reply: safety.message[input.lang], draft: input.draft, ready: false, status: "safety_stop", safety, model: "safety", fallback: false, focus };
+    return { reply: safety.message[lang], draft: input.draft, ready: false, status: "safety_stop", safety, model: "safety", fallback: false, focus };
   }
 
   // 2. Ask the model (one repair attempt if it does not return the JSON we asked for).
-  const messages = buildIntakeMessages({ lang: input.lang, history: input.history, draft: input.draft, focus, patientText: text });
+  const messages = buildIntakeMessages({ lang, history: input.history, draft: input.draft, focus, patientText: text });
   let parsed: Parsed | null = null;
   let model = "script";
   for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
     const answer = await deps.callModel(
-      attempt === 0 ? messages : [...messages, { role: "user", content: "Reply again with ONLY the JSON object described in the instructions, nothing else." }],
+      attempt === 0 ? messages : [...messages, { role: "user", content: `Reply again with ONLY the JSON object described in the instructions, nothing else. ${LANGUAGE_REMINDER[lang]}` }],
     );
     if (!answer) break;
     model = answer.model;
-    parsed = parseModelJson(answer.text);
+    const candidate = parseModelJson(answer.text);
+    // a reply in the wrong language (English to someone writing Roman Urdu) is not used: ask once more, then the scripted question answers in the right one
+    if (candidate && typeof candidate.reply === "string" && !replyMatchesLanguage(candidate.reply, lang)) continue;
+    parsed = candidate;
   }
 
   // 3. What did we learn? The model's notes are validated; without a model, plain code reads the answer to the question that was just asked.
@@ -80,9 +86,9 @@ export async function runIntakeTurn(input: TurnInput, deps: { callModel: ModelCa
   }
   if (!reply) {
     const question = next ? QUESTIONS[next] : undefined;
-    if (ready) reply = CLOSING[input.lang];
-    else if (!parsed && !changed && question) reply = `${TRY_AGAIN[input.lang]} ${question[input.lang]}`;
-    else reply = scriptedReply(draft, next, input.lang, input.turnNumber);
+    if (ready) reply = CLOSING[lang];
+    else if (!parsed && !changed && question) reply = `${TRY_AGAIN[lang]} ${question[lang]}`;
+    else reply = scriptedReply(draft, next, lang, input.turnNumber);
   }
   return { reply, draft, ready, status: ready ? "completed" : "open", safety: null, model, fallback, focus: next };
 }

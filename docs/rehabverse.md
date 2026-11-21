@@ -77,7 +77,7 @@ How it answers (`lib/rehabverse/ai/coach-turn.ts`, in this order; the model is c
 3. **Everyday questions** (how to do it, how many, breathing, common mistakes, equipment, what if it hurts, what is in today's plan): answered from the
    physiotherapist's prescription and the reviewed library text (`coach-spec.ts`): exact, instant, free, identical every time. Quick-question buttons
    for the open exercise send these. "What if it hurts?" reuses the guide's own wording and states no pain score.
-4. **A free-form technique question** goes to the model (the same free Workers AI chain as the intake assistant), grounded in today's plan and library
+4. **A free-form technique question** goes to the model (the same chain as the intake assistant: Claude Haiku when its key is set, then the free Workers AI chain), grounded in today's plan and library
    text (never the clinician-only fields), and its reply is used only if the guard passes it (`coach-guard.ts`): no diagnosis, medicines, heat or
    ice, reassurance, claim to be a person, link or identifier, **no change to the prescription** (no extra, fewer, harder or swapped exercises, no
    amount that is not in the plan, no exercise outside today's, no "push through the pain", no pain threshold). Otherwise the scripted menu answers.
@@ -172,6 +172,27 @@ languages; then a few real patients up to the limit, reading their conversations
 * Public pages (home, library) contain no patient data. Private pages are `noindex`, excluded from
   prefetching and the sitemap. Alert e-mails contain no patient details.
 * Patients must be 18+ and tick a consent statement; the consent version is stored.
+
+### The AI model behind the chats (Claude Haiku, pay-as-you-go)
+
+The three chats (intake, exercise coach, recovery check-in) and the site assistant's Roman Urdu retelling use **two routes, in order** (`src/lib/rehabverse/ai/model.ts`):
+
+1. **Claude Haiku 5.5** (`claude-haiku-5-5`, Anthropic's API on a pay-as-you-go account) when the Worker secret `ANTHROPIC_API_KEY` exists. Far more natural replies, and much better Roman Urdu than the free models. One plain `fetch` to `https://api.anthropic.com/v1/messages` (`claude-request.ts` builds the request, `claude.ts` is the server-only wrapper); the official SDK is not used because the Worker has a hard size limit (it would add about 100 KiB gzip and Node-only modules).
+2. **Cloudflare Workers AI** (the free daily allowance), the models in `DEFAULT_MODELS`, as before.
+
+If neither answers (timeout, outage, no credit, a refusal) the scripted conversation carries on, so a patient is never left without a reply. A rejected key (wrong, revoked, or no credit left) pauses Claude for 10 minutes so a dead key is not called on every message; the free chain answers meanwhile.
+
+| Setting | What it does |
+|---|---|
+| `ANTHROPIC_API_KEY` (Worker secret) | Switches Claude on. Set once as the GitHub repository secret `ANTHROPIC_API_KEY`; the deploy workflow puts it into the Worker (`wrangler secret put`). Never in the repository, never in a `NEXT_PUBLIC_` variable, never in the browser. |
+| `CLAUDE_CHAT_MODEL` | Optional model id (default `claude-haiku-5-5`). |
+| `REHAB_AI_PROVIDER` | `auto` (default: Claude, then the free chain), `claude` (Claude only: nothing goes to Workers AI) or `workers-ai` (the free chain only: Claude off, useful as a switch). |
+
+Cost and safety: replies are short (the prompts ask for 2 to 5 sentences; `max_tokens` is 1024 to 4096 because the model may think first), conversations and message lengths are capped as before, no sampling parameters are sent (the API rejects them), and the logs carry only sizes (`CLAUDE_AI_USAGE <model> <input tokens> <output tokens>`) and failure types, never text or keys. Set a **monthly spend limit in the Anthropic Console** (Settings, Limits) so the postpaid bill has a ceiling. Every safety rule above still holds: the plain-code safety screen runs first and the model is not consulted on a hit, a reply must pass the guard (no diagnosis, no medicine, no new numbers) and the language check (a reply in the wrong language is never shown), and the model never sets a number in the check-in form.
+
+**Privacy:** with Claude switched on, the chat text (without the patient's name, e-mail or phone number, which are never sent; phone numbers and e-mails typed into the chat are removed first) goes to Anthropic to write the reply. The three patient notices (`notices.ts`) say so in plain words. Anthropic's API terms apply; review them and, if the research use needs it, the data-processing terms, before the pilot grows. The review pack in Admin reads the same notice text.
+
+Check the live quality after a deploy with `/api/rehabverse/ai/selftest` (it now lists the Claude model first and runs the same scenarios on it).
 
 ## Decision-support rules (starting point — review before use)
 
