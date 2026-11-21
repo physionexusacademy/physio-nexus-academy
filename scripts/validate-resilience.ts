@@ -46,6 +46,8 @@ ok(/We can't reach the site right now/.test(offline) && /Dobara koshish/.test(of
 ok(/fetch\("\/offline\?ping=/.test(offline) && !/fetch\("\/offline\.html/.test(offline), "offline page: asks /offline (not the redirecting /offline.html) whether the connection is back");
 ok(/automatic DNS/i.test(offline) && /one\.one\.one\.one/.test(offline) && /Private DNS/.test(offline) && /DNS over HTTPS/i.test(offline), "offline page: names the usual cause (the network's automatic DNS) and how to change it on Android, iPhone, Chrome and Windows");
 ok(/https:\/\/physio-nexus-academy\.physionexusacademypk\.workers\.dev/.test(offline) && /secure DNS/i.test(offline) && /1\.1\.1\.1/.test(offline) && /https:\/\//.test(offline), "offline page: names the backup address, Secure DNS, 1.1.1.1 and typing https://");
+ok(/mode: "no-cors"/.test(offline) && /location\.replace\(target\)/.test(offline) && /var onBackup = \/\\\.workers\\\.dev\$\/i\.test\(location\.hostname\)/.test(offline) && /SIGNED_IN = \/\^\\\/\(\?:account\|admin\|api\|rehabverse/.test(offline), "offline page: when the backup address answers it opens a public page there by itself (never from the backup address itself, never a signed-in page) and a button lets the visitor stay; and only when the main address really does not answer");
+ok(/fetch\("\/offline\?check=/.test(offline), "offline page: asks the main address first, so a page opened on purpose while the connection works stays put");
 ok(!/<(?:script|img|link)[^>]+(?:src|href)="https?:\/\/(?!physionexusacademy)/.test(offline), "offline page: loads nothing from other sites");
 const config = read("src/lib/site-config.ts");
 const phone = /phoneDisplay: "([^"]+)"/.exec(config)?.[1] ?? "";
