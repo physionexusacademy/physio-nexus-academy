@@ -382,14 +382,15 @@ jobs:
           done
           echo "::warning::Always Use HTTPS is on but port 80 did not answer with a redirect within 2 minutes; check: curl -sI http://physionexusacademy.com/"
 
-      - name: Encrypted Client Hello - keep the zone at the chosen state (off while Chrome on a provider's automatic DNS is tested; set DESIRED_ECH to on to go back)
+      - name: "Encrypted Client Hello - keep it OFF (confirmed 21 Nov 2026 - with it on, Chrome could not open the site on the owner's provider network; every other browser could, and the site opened at once when it was switched off)"
         if: steps.auth.outputs.ready == 'true'
         continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           # Chrome (and other Chromium browsers) use Encrypted Client Hello whenever the site's DNS HTTPS record carries it, and do not fall back to a plain
           # handshake if that attempt is cut on the way; browsers that do not read the record (Firefox without DNS over HTTPS) connect the ordinary way.
-          # The owner's Chrome (PC and phone) fails on the provider's automatic DNS while other browsers open the site, so ECH is switched off to test this.
+          # CONFIRMED: the owner's Chrome (PC and phone) failed on the provider's automatic DNS while other browsers opened the site, and the site opened perfectly in
+          # Chrome as soon as ECH was switched off. Keep it off; switching it on again brings the problem back for Chrome users on such networks.
           DESIRED_ECH: "off"
         shell: bash
         run: |
