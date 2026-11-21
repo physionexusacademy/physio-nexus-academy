@@ -17,7 +17,7 @@
 
 .hf-chat, .hf-patient { border-radius: 14px; background: #fff; border: 1px solid #d3e4ec; padding: 10px 12px; box-shadow: 0 8px 20px -16px rgba(7, 38, 64, 0.6); display: grid; gap: 3px; font-size: 0.8rem; color: #334155; }
 .hf-chat strong, .hf-patient strong { font-size: 0.95rem; color: #0b2a4a; }
-.hf-chat-label { display: inline-flex; align-items: center; gap: 5px; font-size: 0.66rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #01828b; }
+.hf-chat-label { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #01828b; }
 .hf-chat-line { color: #64748b; font-size: 0.76rem; }
 .hf-pills { display: flex; gap: 6px; }
 .hf-pill { border-radius: 999px; padding: 3px 11px; font-size: 0.72rem; font-weight: 700; background: #fff; border: 1px solid #cfe0ea; color: #475569; }
@@ -26,7 +26,7 @@
 .hf-level { display: inline-flex; align-items: center; gap: 5px; border-radius: 10px; padding: 6px 9px; font-size: 0.74rem; font-weight: 700; background: #fff; border: 1px solid #d3deea; color: #475569; }
 .hf-level-on { background: #0a2a4a; border-color: #0a2a4a; color: #fff; }
 .hf-stat { font-size: 0.74rem; font-weight: 700; color: #4f46e5; }
-.hf-patient-top { display: flex; justify-content: space-between; font-size: 0.66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #059669; }
+.hf-patient-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #059669; }
 .hf-patient-top span:last-child { color: #64748b; }
 .hf-steps { display: flex; flex-wrap: wrap; gap: 6px; }
 .hf-steps span { border-radius: 999px; padding: 3px 10px; font-size: 0.7rem; font-weight: 700; background: rgba(255, 255, 255, .85); border: 1px solid #cfe0ea; color: #334155; }

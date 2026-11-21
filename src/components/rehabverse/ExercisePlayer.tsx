@@ -767,7 +767,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
         ) : (
           <>
             <div className="pointer-events-none absolute left-2.5 top-2.5 max-w-[68%] rounded-2xl bg-white/90 px-3 py-1.5 shadow-sm">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-teal-700">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-teal-700">
                 {showMistake && hasMistake ? (lang === "ru" ? "Aam ghalti" : "Common mistake") : lang === "ru" ? "Sahi tareeqa" : "Correct technique"}
               </p>
               <p className="text-sm font-bold leading-5 text-navy-800">{title}</p>

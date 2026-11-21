@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, FileText, Send, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, FileText, Sparkles } from "lucide-react";
 import { closeIntakeChatAction, intakeChatTurnAction, startIntakeChatAction, type ChatMessageOut } from "@/app/rehabverse/ai-actions";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, PAIN_WORDS } from "@/lib/rehabverse/intake";
 import { EMPTY_DRAFT, MAX_PATIENT_MESSAGE, progress, type IntakeDraft } from "@/lib/rehabverse/ai/intake-spec";
 import { IntakeWizard, type IntakeStep } from "./IntakeWizard";
 import { AI_NOTICES } from "@/lib/rehabverse/ai/notices";
 import { AiNoticeList } from "./AiNoticeList";
+import { intakePrompt } from "@/lib/rehabverse/ai/chat-quick";
+import { ChatLog, ChatTop, DoneBar, HowItWorks, Progress, toChips, YourTurn } from "./ChatKit";
 import { T, useRvLang } from "./useLang";
 
 type Phase = "notice" | "starting" | "chat" | "summary" | "form";
@@ -33,13 +35,7 @@ export function IntakeChat() {
   const [ready, setReady] = useState(false);
   const [safety, setSafety] = useState<{ kind: string; flags: string[] } | null>(null);
   const [formStep, setFormStep] = useState<IntakeStep>("area");
-  const list = useRef<HTMLDivElement>(null);
   const prog = progress(draft);
-
-  useEffect(() => {
-    const node = list.current;
-    if (node) node.scrollTo({ top: node.scrollHeight, behavior: "smooth" });
-  }, [messages, sending]);
 
   const toForm = (step: IntakeStep, close?: "completed" | "abandoned") => {
     if (close && conversationId) void closeIntakeChatAction(conversationId, close);
@@ -63,8 +59,8 @@ export function IntakeChat() {
     setPhase("chat");
   };
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (value: string) => {
+    const text = value.trim();
     if (!text || sending || ready || safety) return;
     setError(null);
     setSending(true);
@@ -110,14 +106,16 @@ export function IntakeChat() {
     return (
       <div className="mx-auto max-w-2xl rv-glass space-y-4 p-5 sm:p-7 rv-fade-up">
         <span className="rv-chip rv-chip-teal inline-flex items-center gap-1.5 text-xs"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> <T en="Your physiotherapist has made this available to you" ru="Aap ke physiotherapist ne ye aap ke liye faraham kiya hai" /></span>
+        <p className="ck-lead"><T en="Answer a few simple questions, one at a time. You can tap an answer, so you do not have to write. It takes about 3 minutes." ru="Chand aasaan sawalon ke jawab dein, ek ek karke. Jawab dabane se bhi ho jata hai, likhna zaroori nahi. Taqreeban 3 minute lagte hain." /></p>
+        <HowItWorks />
         <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="Before we start" ru="Shuru karne se pehle" /></h1>
-        <AiNoticeList items={AI_NOTICES.intake.items} className="space-y-2.5 text-[14.5px] leading-6 text-slate-700" />
+        <AiNoticeList items={AI_NOTICES.intake.items} className="ck-notice space-y-2.5 text-slate-700" />
         {error ? <p className="rv-error" role="alert">{error === "limit" ? <T en="You have started several conversations today. Please use the form or try again tomorrow." ru="Aaj aap ne kai baat-cheet shuru kar li hain. Form istemal karein ya kal koshish karein." /> : <T en="That did not work. Please try again, or use the form." ru="Ye nahi hua. Dobara koshish karein, ya form istemal karein." />}</p> : null}
         <div className="flex flex-wrap gap-2">
-          <button type="button" className="rv-btn rv-btn-primary" disabled={phase === "starting"} onClick={accept}>
+          <button type="button" className="rv-btn rv-btn-primary ck-big" disabled={phase === "starting"} onClick={accept}>
             {phase === "starting" ? <T en="Starting…" ru="Shuru ho raha hai…" /> : <><T en="I understand, let's talk" ru="Main samajh gaya/gayi, baat karte hain" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></>}
           </button>
-          <button type="button" className="rv-btn rv-btn-ghost" onClick={() => toForm("area")}><FileText className="h-4 w-4" aria-hidden="true" /> <T en="Use the normal form instead" ru="Normal form istemal karein" /></button>
+          <button type="button" className="rv-btn rv-btn-ghost ck-big" onClick={() => toForm("area")}><FileText className="h-4 w-4" aria-hidden="true" /> <T en="Use the normal form instead" ru="Normal form istemal karein" /></button>
         </div>
       </div>
     );
@@ -159,39 +157,32 @@ export function IntakeChat() {
 
   /* ───────────── the conversation ───────────── */
   const finished = ready || !!safety;
+  const prompt = intakePrompt(draft);
+  const answered = messages.some((m) => m.role === "patient");
   return (
     <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.3fr_0.7fr] lg:items-start">
-      <section className="rv-glass flex h-[min(78vh,40rem)] flex-col p-3 sm:p-4" aria-label="Conversation with the RehabVerse assistant">
-        <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-1 pb-2">
-          <p className="flex items-center gap-2 text-[14px] font-extrabold text-navy-800"><span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[#0a1f3d] to-[#0db3aa] text-white"><Sparkles className="h-4 w-4" aria-hidden="true" /></span> <T en="RehabVerse assistant" ru="RehabVerse assistant" /> <span className="rv-chip text-[11px]">AI</span></p>
-          <button type="button" className="text-[12.5px] font-bold text-teal-800 underline-offset-2 hover:underline" onClick={() => toForm("area", "abandoned")}><T en="Use the normal form" ru="Normal form istemal karein" /></button>
-        </div>
-        <div ref={list} className="flex-1 space-y-3 overflow-y-auto px-1 py-3" role="log" aria-live="polite">
-          {messages.map((m, i) => (
-            <div key={i} className={"flex " + (m.role === "patient" ? "justify-end" : "justify-start")}>
-              <p className={"max-w-[88%] whitespace-pre-line rounded-2xl px-3.5 py-2.5 text-[14.5px] leading-6 " + (m.role === "patient" ? "rounded-br-md bg-[#0a1f3d] text-white" : "rounded-bl-md border border-slate-200 bg-white text-slate-800 shadow-sm")}>{m.text}</p>
-            </div>
-          ))}
-          {sending ? <div className="flex justify-start"><p className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3.5 py-3 text-slate-400 shadow-sm" aria-label="The assistant is typing"><span className="inline-flex gap-1"><i className="h-2 w-2 animate-pulse rounded-full bg-slate-400" /><i className="h-2 w-2 animate-pulse rounded-full bg-slate-400 [animation-delay:150ms]" /><i className="h-2 w-2 animate-pulse rounded-full bg-slate-400 [animation-delay:300ms]" /></span></p></div> : null}
-        </div>
-        {error ? <p className="rv-error mx-1 mb-2" role="alert">{error === "slow" ? <T en="Please wait a moment before sending again." ru="Dobara bhejne se pehle zara intezar karein." /> : <T en="I could not reply just now. Please send it again, or use the normal form." ru="Main abhi jawab nahi de saka/saki. Dobara bhejein, ya normal form istemal karein." />}</p> : null}
+      <section className="rv-glass ck-card ck-card--fixed" aria-label="Conversation with the RehabVerse assistant">
+        <ChatTop title={<T en="RehabVerse assistant" ru="RehabVerse assistant" />} onAction={() => toForm("area", "abandoned")} actionLabel={<T en="Use the normal form" ru="Normal form istemal karein" />} />
+        {!answered ? <HowItWorks /> : null}
+        <Progress done={prog.done} total={prog.total} />
+        <ChatLog messages={messages} sending={sending} typingLabel="The assistant is typing" highlightLast={!finished} />
+        {error ? <p className="rv-error mx-1 mb-2 text-[14px]" role="alert">{error === "slow" ? <T en="Please wait a moment before sending again." ru="Dobara bhejne se pehle zara intezar karein." /> : <T en="I could not reply just now. Please send it again, or use the normal form." ru="Main abhi jawab nahi de saka/saki. Dobara bhejein, ya normal form istemal karein." />}</p> : null}
         {safety ? (
           <div className="mx-1 mb-1 flex flex-wrap items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-3">
-            <p className="flex-1 text-[13.5px] font-semibold leading-5 text-[#a1121f]"><T en="Please get help first. When you are able, continue with the safety questions so your physiotherapist is told." ru="Pehle madad hasil karein. Jab aap kar sakein to safety sawalaat jari rakhein taake aap ke physiotherapist ko khabar ho." /></p>
-            <button type="button" className="rv-btn rv-btn-primary" onClick={() => toForm("safety")}><T en="Continue" ru="Aage barhein" /></button>
+            <p className="flex-1 text-[14.5px] font-semibold leading-5 text-[#a1121f]"><T en="Please get help first. When you are able, continue with the safety questions so your physiotherapist is told." ru="Pehle madad hasil karein. Jab aap kar sakein to safety sawalaat jari rakhein taake aap ke physiotherapist ko khabar ho." /></p>
+            <button type="button" className="rv-btn rv-btn-primary ck-big" onClick={() => toForm("safety")}><T en="Continue" ru="Aage barhein" /></button>
           </div>
         ) : ready ? (
-          <div className="mx-1 mb-1 flex justify-end"><button type="button" className="rv-btn rv-btn-primary" onClick={() => setPhase("summary")}><FileText className="h-4 w-4" aria-hidden="true" /> <T en="Check what I noted" ru="Jo note hua use dekhein" /></button></div>
+          <DoneBar text={<T en={prompt.title.en} ru={prompt.title.ru} />}>
+            <button type="button" className="rv-btn rv-btn-primary" onClick={() => setPhase("summary")}><FileText className="h-4 w-4" aria-hidden="true" /> <T en="Check what I noted" ru="Jo note hua use dekhein" /></button>
+          </DoneBar>
         ) : (
-          <form className="flex items-end gap-2 border-t border-slate-100 pt-2" onSubmit={(e) => { e.preventDefault(); void send(); }}>
-            <textarea
-              value={input} onChange={(e) => setInput(e.target.value)} rows={2} maxLength={MAX_PATIENT_MESSAGE} disabled={sending || finished}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
-              placeholder={lang === "ru" ? "Yahan likhein (English ya Roman Urdu mein)…" : "Type here, in English or Roman Urdu…"}
-              aria-label={lang === "ru" ? "Aap ka paigham" : "Your message"} className="rv-input min-h-[3.25rem] flex-1 resize-none"
-            />
-            <button type="submit" className="rv-btn rv-btn-primary" disabled={!input.trim() || sending || finished} aria-label={lang === "ru" ? "Bhejein" : "Send"}><Send className="h-4 w-4" aria-hidden="true" /></button>
-          </form>
+          <YourTurn
+            title={<T en={prompt.title.en} ru={prompt.title.ru} />} example={prompt.example[lang] || undefined} chips={toChips(prompt.quick, lang)}
+            value={input} onChange={setInput} onSend={(text) => void send(text)} sending={sending} max={MAX_PATIENT_MESSAGE}
+            inputLabel={lang === "ru" ? "Aap ka paigham" : "Your message"}
+            tip={<T en="You can write in English or Roman Urdu. Press Enter or the Send button." ru="English ya Roman Urdu mein likh sakte hain. Enter ya Bhejein dabayein." />}
+          />
         )}
       </section>
 

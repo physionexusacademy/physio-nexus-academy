@@ -67,3 +67,14 @@ Both Vercel's and Supabase's free tiers comfortably cover a single-clinic/academ
 this (low thousands of monthly visitors, a handful of admin users). You'll only need to
 upgrade if traffic or storage grows significantly — Supabase's dashboard shows current usage
 against the free-tier limits at any time.
+
+## "This site can't be reached" / ERR_QUIC_PROTOCOL_ERROR in Chrome
+
+Cloudflare tells browsers to use HTTP/3 (QUIC, over UDP) with an `alt-svc: h3` header. On networks, VPNs or security software that mishandle QUIC, Chrome then
+cannot connect and shows `ERR_QUIC_PROTOCOL_ERROR`, often on the first visit of the day. HTTP/2 over TCP works everywhere, so every deploy switches HTTP/3 **off**
+for the zone (workflow step "Turn off HTTP/3 (QUIC) …", through the Cloudflare API, idempotent, never blocks a deploy).
+
+- If the deploy log says the token may not edit zone settings: give the API token `Zone > Zone Settings > Edit` (and `Zone > Zone > Read`) for physionexusacademy.com, or switch it off by
+  hand: Cloudflare dashboard > physionexusacademy.com > Speed > Settings (older menu: Network) > HTTP/3 (with QUIC) > Off.
+- Check: `curl -sI https://physionexusacademy.com/ | grep -i alt-svc` prints nothing once it is off.
+- A visitor who still sees the error right now can open `chrome://flags/#enable-quic`, set it to Disabled and restart Chrome; Chrome also forgets the old advice after 24 hours.

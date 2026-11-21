@@ -3,7 +3,7 @@ import Link from "next/link";
 import {ArrowLeft,ArrowRight,CalendarClock,BarChart3,Flame,Trophy} from "lucide-react";
 import {DailyChallengeClient} from "./DailyChallengeClient";
 import { UnifiedProgressCard } from "@/components/learning/UnifiedProgressCard";
-import {DailyHallOfFame,DailyLeaderboard} from "@/components/daily-challenge/DailyLeaderboard";
+import {ChampionBoards} from "@/components/daily-challenge/ChampionBoards";
 import "./daily-challenge.css";
 
 export const dynamic="force-dynamic";
@@ -88,12 +88,9 @@ export default function DailyChallengePage(){
      </div>
     </div>
    </header>
+   <ChampionBoards/>
    <UnifiedProgressCard />
-   <section className="mt-6 grid items-start gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,.8fr)]">
-    <div id="play-daily"><DailyChallengeClient/></div>
-    <div id="full-leaderboard" className="scroll-mt-28"><DailyLeaderboard title="Public leaderboard"/></div>
-   </section>
-   <DailyHallOfFame/>
+   <section id="play-daily" className="mt-6 scroll-mt-28"><DailyChallengeClient/></section>
    <p className="dc-footnote mt-6 text-center">
     One attempt per day · Answers scored on the server · Learning activity only (not certification) · PKT timezone
     {" · "}

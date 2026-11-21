@@ -60,7 +60,7 @@ export default function OnDemand3DAnatomy({
             <ImageIcon className="h-5 w-5" />
           </span>
           <span>
-            <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600">
+            <span className="block text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-600">
               PNA 3D Anatomy Atlas
             </span>
             <span className="mt-0.5 block text-sm font-bold text-navy-900">

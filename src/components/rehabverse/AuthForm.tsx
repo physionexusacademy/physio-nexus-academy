@@ -93,7 +93,7 @@ function Guidance({ active }: { active: "register" | "login" }) {
       <ol className="mt-4 space-y-3">
         {STEPS.map((s, i) => (
           <li key={i} className="flex gap-3">
-            <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#0a1f3d] to-[#0db3aa] text-white"><s.icon className="h-4.5 w-4.5" aria-hidden="true" /><span className="absolute -right-1.5 -top-1.5 grid h-4 w-4 place-items-center rounded-full bg-white text-[10px] font-extrabold text-navy-800 shadow">{i + 1}</span></span>
+            <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#0a1f3d] to-[#0db3aa] text-white"><s.icon className="h-4.5 w-4.5" aria-hidden="true" /><span className="absolute -right-1.5 -top-1.5 grid h-4 w-4 place-items-center rounded-full bg-white text-[11px] font-extrabold text-navy-800 shadow">{i + 1}</span></span>
             <span><b className="block text-[14px] text-navy-800"><T en={s.en[0]} ru={s.ru[0]} /></b><span className="block text-[13px] leading-5 text-slate-600"><T en={s.en[1]} ru={s.ru[1]} /></span></span>
           </li>
         ))}

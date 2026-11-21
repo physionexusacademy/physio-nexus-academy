@@ -101,14 +101,14 @@ function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanatio
         <div className="text-slate-800"><AnswerText text={explanation.intro} /></div>
         {explanation.urSummary ? (
           <p className="rounded-lg border border-teal-200 bg-white p-2.5 text-slate-800">
-            <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-teal-700">Aasan lafzon mein (AI, PNA guide se)</span>
+            <span className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-teal-700">Aasan lafzon mein (AI, PNA guide se)</span>
             {explanation.urSummary}
           </p>
         ) : null}
         <ol className="space-y-2">
           {explanation.steps.map((step, index) => (
             <li key={step.label + index} className="rounded-lg bg-white/80 p-2.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-teal-700">{step.label}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-teal-700">{step.label}</p>
               {step.text ? <div className="mt-0.5"><AnswerText text={step.text} /></div> : null}
               {step.list?.length ? (
                 <ul className="mt-1 space-y-1">
@@ -122,7 +122,7 @@ function ExplanationCard({ explanation, defaultOpen }: { explanation: Explanatio
         </ol>
         {explanation.check ? (
           <p className="rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-amber-950">
-            <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-wider text-amber-800">{ur ? "Khud ko parkhein" : "Try it yourself"}</span>
+            <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-wider text-amber-800">{ur ? "Khud ko parkhein" : "Try it yourself"}</span>
             {explanation.check}
           </p>
         ) : null}
@@ -423,7 +423,7 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
                             <span className="min-w-0 flex-1">
                               <span className="block text-sm font-semibold leading-snug">{resource.title}</span>
                               {resource.why ? (
-                                <span className={"mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold " + (kindTone[resource.kind ?? ""] ?? "bg-slate-100 text-slate-700")}>
+                                <span className={"mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-bold " + (kindTone[resource.kind ?? ""] ?? "bg-slate-100 text-slate-700")}>
                                   {resource.why}
                                 </span>
                               ) : (
@@ -539,7 +539,7 @@ export function PhysioNexusAI({ initialOpen = false, initialQuestion }: { initia
             </button>
           </form>
           {voiceNote ? <p role="status" className="bg-white px-3 pb-2 text-[11px] text-rose-700">{voiceNote}</p> : null}
-          <p className="bg-white px-3 pb-3 text-[10px] leading-relaxed text-slate-500">
+          <p className="bg-white px-3 pb-3 text-[11px] leading-relaxed text-slate-500">
             Answers come from PNA&apos;s educational content and do not replace a clinical assessment. Don&apos;t enter names or other identifying details. Messages are not saved.
           </p>
         </section>

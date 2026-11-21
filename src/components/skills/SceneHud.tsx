@@ -62,7 +62,7 @@ function Bar({ h, c }: { h: Extract<Hud, { t: "bar" }>; c: Ctx }) {
         <span className="absolute top-0 h-2 rounded-full" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${TONE.cyan}, ${good ? TONE.green : "#6f9bff"})`, boxShadow: `0 0 10px ${TONE.cyan}` }} />
         {(h.marks ?? []).map((m) => <span key={m.label} className="absolute top-[-3px] h-[14px] w-px bg-white/50" style={{ left: `${((m.at - h.min) / (h.max - h.min)) * 100}%` }} />)}
       </div>
-      {h.marks?.length ? <div className="relative mt-1 h-3 text-[9px] font-semibold text-cyan-100/70">{h.marks.map((m) => <span key={m.label} className="absolute -translate-x-1/2" style={{ left: `${((m.at - h.min) / (h.max - h.min)) * 100}%` }}>{m.label}</span>)}</div> : null}
+      {h.marks?.length ? <div className="relative mt-1 h-3 text-[11px] font-semibold text-cyan-100/70">{h.marks.map((m) => <span key={m.label} className="absolute -translate-x-1/2" style={{ left: `${((m.at - h.min) / (h.max - h.min)) * 100}%` }}>{m.label}</span>)}</div> : null}
     </div>
   );
 }
@@ -91,7 +91,7 @@ function Timer({ h, c }: { h: Extract<Hud, { t: "timer" }>; c: Ctx }) {
   const over = h.target !== undefined && !h.reach && s > h.target;
   const reached = h.target !== undefined && Boolean(h.reach) && s >= h.target;
   return (
-    <div className="s3-card"><div className="s3-card-head"><span>{h.label}</span><strong style={{ color: over ? TONE.red : reached ? TONE.green : TONE.cyan, fontVariantNumeric: "tabular-nums" }}>{s.toFixed(1)}<small> s</small></strong></div>{h.target !== undefined ? <p className="mt-0.5 text-[10px] font-semibold text-cyan-100/70">{h.reach ? `aim for ${h.target} s or more` : `cut-off ${h.target} s`}</p> : null}</div>
+    <div className="s3-card"><div className="s3-card-head"><span>{h.label}</span><strong style={{ color: over ? TONE.red : reached ? TONE.green : TONE.cyan, fontVariantNumeric: "tabular-nums" }}>{s.toFixed(1)}<small> s</small></strong></div>{h.target !== undefined ? <p className="mt-0.5 text-[11px] font-semibold text-cyan-100/70">{h.reach ? `aim for ${h.target} s or more` : `cut-off ${h.target} s`}</p> : null}</div>
   );
 }
 
@@ -108,7 +108,7 @@ function Curve({ h, c }: { h: Extract<Hud, { t: "curve" }>; c: Ctx }) {
         <circle cx={a * W} cy={H - 6 - r * (H - 14)} r="4.5" fill="#fff" />
         <line x1="0" x2={W} y1={H - 3} y2={H - 3} stroke="rgba(255,255,255,.25)" />
       </svg>
-      <p className="flex justify-between text-[9px] font-semibold text-cyan-100/70"><span>start of range</span><span>end of range</span></p>
+      <p className="flex justify-between text-[11px] font-semibold text-cyan-100/70"><span>start of range</span><span>end of range</span></p>
     </div>
   );
 }

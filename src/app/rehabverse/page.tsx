@@ -74,7 +74,7 @@ export default function RehabVerseHome() {
               <UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="Create your account" ru="Apna account banayein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link href="/rehabverse/login" className="rv-btn rv-btn-ghost"><T en="Sign in" ru="Sign in" /></Link>
-            <Link href="/rehabverse/library" className="text-[14px] font-bold text-teal-700 underline-offset-2 hover:underline"><T en="Browse the 3D exercise library" ru="3D exercise library dekhein" /></Link>
+            <Link href="/rehabverse/library" className="inline-flex min-h-[44px] items-center text-[14px] font-bold text-teal-700 underline-offset-2 hover:underline"><T en="Browse the 3D exercise library" ru="3D exercise library dekhein" /></Link>
           </div>
           <div className="mt-5 max-w-xl rounded-2xl border border-teal-200/70 bg-white/70 p-3.5 text-[13px] leading-5 text-slate-700" aria-label="Getting started">
             <b className="text-navy-800"><T en="New here? It takes three steps:" ru="Naye hain? Sirf teen qadam:" /></b>{" "}

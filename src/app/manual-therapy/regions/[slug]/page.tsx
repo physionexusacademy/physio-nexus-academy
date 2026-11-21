@@ -116,10 +116,10 @@ function DeepTechniqueCard({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600">
+              <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-slate-600">
                 {region}
               </span>
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-700">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-teal-700">
                 {sub.target}
               </span>
             </div>
@@ -188,7 +188,7 @@ function DeepTechniqueCard({
           <div className="flex items-start gap-3">
             <Sparkles className="mt-0.5 h-5 w-5 flex-none text-teal-700" />
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-600">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-600">
                 Success signal
               </p>
               <p className="mt-1 text-sm font-semibold leading-6 text-slate-800">

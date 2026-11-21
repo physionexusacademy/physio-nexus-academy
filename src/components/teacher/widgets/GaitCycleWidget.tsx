@@ -114,7 +114,7 @@ export function GaitCycleWidget({ lang }: { lang: TeacherLang }) {
             <div
               key={item.name}
               className={cn(
-                "flex items-center justify-center border-r border-white/70 text-[10px] font-extrabold transition",
+                "flex items-center justify-center border-r border-white/70 text-[11px] font-extrabold transition",
                 item.stance ? "bg-teal-200 text-teal-900" : "bg-amber-200 text-amber-900",
                 item === phase && (item.stance ? "bg-teal-600 text-white" : "bg-amber-500 text-white"),
               )}

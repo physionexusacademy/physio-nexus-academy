@@ -262,7 +262,7 @@ function StagePlanner({ stages, name }: { stages: Stage[]; name: string }) {
               >
                 <span className="flex items-center justify-between gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
                   Stage {i + 1}
-                  {isCurrent ? <span className="rounded-full bg-teal-700 px-2 py-0.5 text-[10px] text-white">You are here</span> : i < current ? <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">Done</span> : null}
+                  {isCurrent ? <span className="rounded-full bg-teal-700 px-2 py-0.5 text-[11px] text-white">You are here</span> : i < current ? <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">Done</span> : null}
                 </span>
                 <span className="mt-1 text-sm font-bold leading-snug text-navy-800">{s.label}</span>
               </button>

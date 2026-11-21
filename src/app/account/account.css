@@ -105,13 +105,13 @@
 .mp-radar-grid { fill: none; stroke: #cbd5e1; stroke-width: 1; }
 .mp-radar-shape { fill: rgba(13, 179, 170, .28); stroke: #0db3aa; stroke-width: 2; }
 .mp-radar-dot { fill: #6f6cff; }
-.mp-radar-label { font-size: 9.5px; font-weight: 700; fill: #475569; }
+.mp-radar-label { font-size: 11px; font-weight: 700; fill: #475569; }
 .mp-legend { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
 .mp-legend li { display: flex; justify-content: space-between; font-size: .85rem; color: #475569; }
 .mp-legend b { color: #0b2a4a; }
 .mp-heat-wrap { display: grid; gap: 6px; width: max-content; max-width: 100%; }
 .mp-heat-days, .mp-heat { display: grid; grid-template-columns: repeat(7, 34px); gap: 6px; }
-.mp-heat-days span { text-align: center; font-size: .68rem; font-weight: 700; color: #94a3b8; }
+.mp-heat-days span { text-align: center; font-size: 11px; font-weight: 700; color: #94a3b8; }
 .mp-heat span { height: 34px; border-radius: 9px; background: #eef2f7; }
 .mp-heat span[data-future="true"] { background: transparent; border: 1px dashed #e2e8f0; }
 .mp-heat span[data-today="true"] { outline: 2px solid #6f6cff; outline-offset: 1px; }

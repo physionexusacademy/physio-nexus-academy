@@ -61,7 +61,7 @@ export function ExerciseDetails({ exercise, lang, clinical = false, dose, compac
         <div className="mt-2 flex flex-wrap gap-2">
           {chips.map((c) => (
             <span key={c.label} className="rounded-2xl bg-[#0a1f3d] px-3 py-1.5 text-center text-white">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-teal-300">{c.label}</span>
+              <span className="block text-[11px] font-bold uppercase tracking-wider text-teal-300">{c.label}</span>
               <span className="block text-sm font-extrabold">{c.value}</span>
             </span>
           ))}

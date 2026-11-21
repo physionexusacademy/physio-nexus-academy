@@ -66,7 +66,7 @@ export function LobbySearch({ atlasPublished }: { atlasPublished: boolean }) {
               <span className="nx-mega-icon"><Bot className="h-[18px] w-[18px]" aria-hidden="true" /></span>
               <span className="min-w-0">
                 <strong>Ask Physio Nexus AI</strong>
-                <small className="block truncate">“{query.trim()}” — answered from PNA content</small>
+                <small className="block truncate">“{query.trim()}” — ask in English or Roman Urdu</small>
               </span>
             </button>
           </li>

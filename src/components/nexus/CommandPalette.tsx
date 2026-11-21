@@ -141,7 +141,7 @@ export function CommandPalette({ open, onClose, atlasPublished }: { open: boolea
                       <span className="nx-mega-icon"><Bot className="h-[18px] w-[18px]" aria-hidden="true" /></span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-semibold">{ur ? "Physio Nexus AI se poochein" : "Ask Physio Nexus AI"}: “{item.query}”</span>
-                        <small>{ur ? "PNA content par mabni jawab, English ya Roman Urdu mein" : "Grounded answer from PNA content, in English or Roman Urdu"}</small>
+                        <small>{ur ? "English ya Roman Urdu mein poochein" : "Ask in English or Roman Urdu"}</small>
                       </span>
                     </>
                   ) : (

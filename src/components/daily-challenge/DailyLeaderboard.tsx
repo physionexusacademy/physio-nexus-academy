@@ -119,15 +119,3 @@ export function DailyLeaderboard({compact=false,initialPeriod="today",title,prev
   </div>}
  </section>;
 }
-export function DailyHallOfFame(){
- return <section className="mt-8" id="hall-of-fame">
-  <div className="mb-4"><p className="dc-eyebrow">THE RECORD BOOK</p>
-   <h2 className="font-serif text-2xl font-bold text-[#163446] sm:text-3xl">Hall of Fame</h2>
-   <p className="mt-2 text-sm leading-7 text-slate-600">Current monthly and annual Top 5, plus previous periods using the arrows. All scores are accumulated from daily submissions.</p>
-  </div>
-  <div className="grid gap-5 lg:grid-cols-2">
-   <DailyLeaderboard preview initialPeriod="month" title="Monthly Top 5"/>
-   <DailyLeaderboard preview initialPeriod="year" title="Yearly Top 5"/>
-  </div>
- </section>
-}

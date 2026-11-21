@@ -68,8 +68,8 @@ export function PathJourney({ path, lessons }: { path: TeacherPath; lessons: Tea
                 <p className="flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-teal-700">
                   {step.kind === "lesson" ? <BookOpen className="h-3.5 w-3.5" aria-hidden="true" /> : <Target className="h-3.5 w-3.5" aria-hidden="true" />}
                   {t(lang, `Step ${index + 1}`, `Qadam ${index + 1}`)} · {step.kind === "lesson" ? t(lang, "Lesson with PNA Teacher", "PNA Teacher ke saath lesson") : t(lang, "Mission", "Mission")} · {minutes} min
-                  {isNext ? <span className="rounded-full bg-teal-700 px-2 py-0.5 text-[10px] text-white">{t(lang, "Next up", "Agla")}</span> : null}
-                  {done ? <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">{t(lang, "Done", "Mukammal")}</span> : null}
+                  {isNext ? <span className="rounded-full bg-teal-700 px-2 py-0.5 text-[11px] text-white">{t(lang, "Next up", "Agla")}</span> : null}
+                  {done ? <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">{t(lang, "Done", "Mukammal")}</span> : null}
                 </p>
                 <h3 className="mt-2 text-lg font-bold text-navy-800">{title}</h3>
                 <p className="mt-1 text-sm leading-6 text-slate-600">

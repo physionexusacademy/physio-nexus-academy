@@ -129,7 +129,7 @@ function LookTool() {
         <dl className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
           {[["Heart rate", `${vitals.hr} bpm`], ["Blood pressure", `${vitals.bp} mmHg`], ["Resp. rate", `${vitals.rr} /min`], ["SpO₂", `${vitals.spo2}%`], ["Temperature", `${vitals.temp} °C`]].map(([label, value]) => (
             <div key={label} className="rounded-2xl bg-[#0a1f3d] p-3 text-white">
-              <dt className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#7fe8de]">{label}</dt>
+              <dt className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#7fe8de]">{label}</dt>
               <dd className="mt-0.5 text-base font-extrabold">{value}</dd>
             </div>
           ))}
