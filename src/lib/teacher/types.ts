@@ -24,7 +24,14 @@ export type TeacherWidgetKey =
   | "pain-inputs"
   | "lesion-locator"
   | "gait-cycle"
-  | "rpe-scale";
+  | "rpe-scale"
+  | "cord-lesion-lab"
+  | "stroke-territories"
+  | "bppv-epley"
+  | "tardieu-catch"
+  | "milestone-timeline"
+  | "primitive-reflexes"
+  | "gmfcs-explorer";
 
 export type CheckOption = {
   text: BiText;
@@ -111,6 +118,7 @@ export type TeacherArea =
   | "Manual Therapy"
   | "Clinical Reasoning"
   | "Neurology"
+  | "Paediatrics"
   | "Tissue Healing"
   | "Pain Science"
   | "Electrotherapy"

@@ -501,6 +501,92 @@ export const teacherPaths: TeacherPath[] = [
       },
     ],
   },
+  {
+    slug: "neuro-rehab-essentials",
+    title: "Neuro Rehab Essentials",
+    tagline: {
+      en: "Locate the lesion, read the stroke, treat the dizzy patient and measure tone properly.",
+      ur: "Lesion ki jagah pehchanein, stroke ko parhein, chakkar wale mareez ka ilaaj karein aur tone ko sahi tareeqe se naapein.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Predict which side is weak and which is numb in a spinal cord lesion", ur: "Spinal cord lesion mein andaza lagana ke kaunsi side kamzor aur kaunsi sunn hai" },
+      { en: "Link a stroke pattern to its artery and plan around it", ur: "Stroke ke pattern ko us ki artery se jorna aur us ke mutabiq plan banana" },
+      { en: "Test and treat posterior-canal BPPV, and know when to refer", ur: "Posterior-canal BPPV ko test aur treat karna, aur refer karna kab hai yeh jaanna" },
+      { en: "Separate spasticity from rigidity and contracture with the Tardieu method", ur: "Tardieu tareeqe se spasticity ko rigidity aur contracture se alag karna" },
+    ],
+    steps: [
+      { id: "nr-1", kind: "lesson", lesson: "umn-vs-lmn" },
+      { id: "nr-2", kind: "lesson", lesson: "spinal-cord-syndromes-brown-sequard" },
+      { id: "nr-3", kind: "lesson", lesson: "stroke-syndromes-by-territory" },
+      {
+        id: "nr-4",
+        kind: "mission",
+        title: "Stroke rehabilitation guide",
+        href: "/conditions/stroke-rehabilitation",
+        mission: {
+          en: "Open the guide and find the stage plan for the first weeks. Write down one thing you would change for a patient with neglect and one for a patient with aphasia.",
+          ur: "Guide kholein aur pehle hafton ka stage plan dhoondein. Neglect wale mareez ke liye ek cheez aur aphasia wale mareez ke liye ek cheez jo aap badlenge likhein.",
+        },
+        minutes: 10,
+      },
+      { id: "nr-5", kind: "lesson", lesson: "bppv-dix-hallpike-epley" },
+      { id: "nr-6", kind: "lesson", lesson: "spasticity-tardieu-catch-lab" },
+      {
+        id: "nr-7",
+        kind: "mission",
+        title: "Skills Lab: tone and coordination",
+        href: "/skills/tone-coordination",
+        mission: {
+          en: "Open Tone and Coordination, take the skill test and read the explanation for every question you miss.",
+          ur: "Tone aur Coordination kholein, skill test dein aur jo sawal ghalat ho us ki explanation zaroor parhein.",
+        },
+        minutes: 12,
+      },
+    ],
+  },
+  {
+    slug: "paediatric-physio-foundations",
+    title: "Paediatric Physio Foundations",
+    tagline: {
+      en: "What is typical, what is a flag, and how cerebral palsy changes the plan.",
+      ur: "Kya typical hai, kya flag hai, aur cerebral palsy plan ko kaise badalta hai.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Name the milestones from 2 months to 5 years and correct the age of a preterm baby", ur: "2 mahine se 5 saal tak ke milestones batana aur qabl-az-waqt bachay ki umar correct karna" },
+      { en: "Test primitive reflexes and postural reactions and read their timing", ur: "Primitive reflexes aur postural reactions test karna aur un ki timing parhna" },
+      { en: "Classify a child on the GMFCS and link it to hip risk and goals", ur: "Bachay ko GMFCS par classify karna aur hip risk aur goals se jorna" },
+    ],
+    steps: [
+      { id: "pf-1", kind: "lesson", lesson: "developmental-milestones-0-5-years" },
+      { id: "pf-2", kind: "lesson", lesson: "primitive-reflexes-postural-reactions" },
+      { id: "pf-3", kind: "lesson", lesson: "cerebral-palsy-gmfcs" },
+      { id: "pf-3t", kind: "lesson", lesson: "spasticity-tardieu-catch-lab" },
+      {
+        id: "pf-4",
+        kind: "mission",
+        title: "Cerebral palsy guide",
+        href: "/conditions/cerebral-palsy",
+        mission: {
+          en: "Open the guide and find the surveillance advice for hips. Write down what you would tell a family about why standing and positioning matter.",
+          ur: "Guide kholein aur hips ki surveillance ka mashwara dhoondein. Likhein ke aap family ko kya batayenge ke standing aur positioning kyun aham hain.",
+        },
+        minutes: 10,
+      },
+      {
+        id: "pf-5",
+        kind: "mission",
+        title: "Daily Clinical Challenge",
+        href: "/daily-challenge",
+        mission: {
+          en: "Checkpoint: take today's 5-question challenge. Whatever your score, read every explanation — that's where the learning is.",
+          ur: "Checkpoint: aaj ka 5 sawalon wala challenge dein. Score jo bhi ho, har explanation zaroor parhein — asal seekhna wahin hai.",
+        },
+        minutes: 5,
+      },
+    ],
+  },
 ];
 
 export function getTeacherPath(slug: string): TeacherPath | undefined {

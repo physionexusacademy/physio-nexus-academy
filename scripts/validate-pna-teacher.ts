@@ -131,7 +131,8 @@ for (const lesson of allTeacherLessons) {
         bi(beat.intro, where);
         check(
           fs.readdirSync(path.join(root, "src/components/teacher/widgets")).some((file) =>
-            fs.readFileSync(path.join(root, "src/components/teacher/widgets", file), "utf8").includes(`data-pna-widget="${beat.widget}"`),
+            // a widget either writes data-pna-widget="<key>" itself or uses the shared frame: <WidgetFrame id="<key>">
+            ((source) => source.includes(`data-pna-widget="${beat.widget}"`) || source.includes(`<WidgetFrame id="${beat.widget}">`))(fs.readFileSync(path.join(root, "src/components/teacher/widgets", file), "utf8")),
           ),
           `${where}: widget "${beat.widget}" has no component`,
         );

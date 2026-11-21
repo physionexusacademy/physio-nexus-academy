@@ -46,6 +46,34 @@ function tokenize(text: string): Line[] {
   return lines;
 }
 
+/**
+ * Authors write the correct option first (`ok:` before `no:`), which would let a learner pass every check by tapping the first answer.
+ * So the options of every check are put in a fixed pseudo-random order, seeded by the lesson and the question, so every build gives the same order.
+ */
+function seeded(seed: string) {
+  let h = 2166136261;
+  for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return () => {
+    h = (h + 0x6d2b79f5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffleCheckOptions(beats: TeacherBeat[], slug: string): TeacherBeat[] {
+  return beats.map((beat, index) => {
+    if (beat.type !== "check" || beat.options.length < 2) return beat;
+    const random = seeded(`${slug}:${index}`);
+    const options = [...beat.options];
+    for (let k = options.length - 1; k > 0; k--) {
+      const j = Math.floor(random() * (k + 1));
+      [options[k], options[j]] = [options[j], options[k]];
+    }
+    return { ...beat, options };
+  });
+}
+
 export function parseLesson(text: string, file: string): TeacherLesson {
   const lines = tokenize(text);
   const head: Record<string, string> = {};
@@ -177,7 +205,7 @@ export function parseLesson(text: string, file: string): TeacherLesson {
     bestFor: need("best"),
     minutes: Number(need("minutes")),
     goal: pair(need("goal"), `${file} goal`),
-    beats,
+    beats: shuffleCheckOptions(beats, need("slug")),
     summary,
     flashcards,
     goDeeper,

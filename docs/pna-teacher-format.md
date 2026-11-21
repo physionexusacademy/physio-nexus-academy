@@ -15,7 +15,7 @@ build (`npm run build:teacher-data`) and the same validator (`npm run validate:t
 | --- | --- |
 | `say:`, `analogy:`, `memory:`, `mistake:`, `clinic:`, `safety:`, `evidence:` | `EN \|\| UR` text. `simpler:` after a `say` or `analogy` adds the simpler re-explanation. |
 | `demo:` | `skill/item :: Title :: EN \|\| UR`. Plays a Skills Lab 3D demonstration (key must exist in `scenes.ts` or `demo3d.ts`) inside the lesson. |
-| `widget:` | `widget-key :: EN \|\| UR`. One of the existing interactive widgets. |
+| `widget:` | `widget-key :: EN \|\| UR`. One of the interactive widgets in `src/components/teacher/widgets/` (register the key in `TeacherWidgetKey` and in `widgets/index.tsx`; new widgets load with `next/dynamic`, `ssr: false`, and wrap their root in `<WidgetFrame id="widget-key">` from `widgets/kit.tsx`, which writes the `data-pna-widget` attribute the validator looks for). |
 | `check:` + `ok:` / `no:` lines (+ optional `hint:`) | Question `EN \|\| UR`; each option `option EN \|\| option UR \|\| feedback EN \|\| feedback UR`. Exactly one `ok:`. |
 | `reveal:` | `Q EN \|\| Q UR \|\| A EN \|\| A UR`. |
 | `steps:` + `step:` lines (+ optional `stepsur:`) | Title `EN \|\| UR`; each step `title :: detail` (English; `stepsur` replaces the list in Urdu). |

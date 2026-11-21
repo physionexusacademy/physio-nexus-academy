@@ -14,6 +14,7 @@ const areaTone: Record<string, string> = {
   "Manual Therapy": "bg-amber-100 text-amber-800",
   "Clinical Reasoning": "bg-violet-100 text-violet-800",
   Neurology: "bg-fuchsia-100 text-fuchsia-800",
+  Paediatrics: "bg-pink-100 text-pink-800",
   "Tissue Healing": "bg-emerald-100 text-emerald-800",
   "Pain Science": "bg-rose-100 text-rose-800",
   "Exercise Prescription": "bg-lime-100 text-lime-800",
