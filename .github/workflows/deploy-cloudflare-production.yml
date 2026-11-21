@@ -154,6 +154,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:3d-governor
 
+      - name: Validate stability (public pages are saved for a cut connection and nothing private is, the offline page helps, the backup address is never indexed, the real address is untouched)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:resilience
+
       - name: Validate easy touch (44px tap targets, 16px form text, no text under 11px, easy-touch layer loads last)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:easy-touch
@@ -488,6 +492,44 @@ jobs:
 
           # Exercise the read-only PNA AI resource navigator. These requests do not submit forms or create records.
           node scripts/validate-pna-ai-production.mjs
+
+      - name: Check the backup address (workers.dev) answers, is never indexed, and the offline page is live
+        if: steps.auth.outputs.ready == 'true'
+        # A problem here must not mark a healthy deployment of the real address as failed: it is reported as a warning.
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -uo pipefail
+          backup="https://physio-nexus-academy.physionexusacademypk.workers.dev"
+          pass=0
+          for attempt in 1 2 3 4 5 6; do
+            headers="$(curl -sS --connect-timeout 10 --max-time 25 -D - -o /tmp/backup-learn.html "$backup/learn/gait-cycle?deploy=${GITHUB_SHA}" 2>&1)" || headers=""
+            robots="$(curl -sS --connect-timeout 10 --max-time 25 "$backup/robots.txt" 2>&1)" || robots=""
+            if echo "$headers" | head -1 | grep -q ' 200' \
+              && echo "$headers" | grep -iq '^x-robots-tag: noindex, nofollow' \
+              && echo "$headers" | grep -iq '^link: <https://physionexusacademy.com/learn/gait-cycle>; rel="canonical"' \
+              && grep -Fq 'data-pna-teacher-lesson="gait-cycle"' /tmp/backup-learn.html \
+              && echo "$robots" | grep -Fq 'Disallow: /'; then
+              pass=1
+              break
+            fi
+            echo "Backup address attempt $attempt not ready yet"
+            sleep "$((attempt * 5))"
+          done
+          if [ "$pass" != "1" ]; then
+            echo "::warning::The backup address $backup did not answer as expected (200, noindex header, canonical link, robots.txt Disallow). The real address is not affected. Check Cloudflare dashboard > Workers & Pages > physio-nexus-academy > Settings > Domains & Routes > workers.dev is enabled."
+            exit 1
+          fi
+          echo "The backup address answers, is marked noindex and points to the real page as canonical."
+          primary_robots="$(curl -sS --connect-timeout 10 --max-time 25 https://physionexusacademy.com/robots.txt)"
+          if echo "$primary_robots" | grep -Eq '^Disallow: /$'; then
+            echo "::error::The real address's robots.txt disallows everything. The backup policy must never reach it."
+            exit 1
+          fi
+          echo "The real address's robots.txt is untouched."
+          offline="$(curl -fsS --connect-timeout 10 --max-time 25 "https://physionexusacademy.com/offline.html?deploy=${GITHUB_SHA}")"
+          echo "$offline" | grep -Fq "We can't reach the site right now" || { echo "::warning::/offline.html did not contain the connection-problem page"; exit 1; }
+          echo "The offline page is live."
 
   seo-live:
     name: Verify live SEO (titles, canonicals, structured data, sitemap)

@@ -1,1 +1,86 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#102A43"><title>Offline | Physio Nexus Academy</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#102a43;color:white;font:16px system-ui;text-align:center;padding:24px;box-sizing:border-box}main{max-width:420px}img{width:80px;height:80px;object-fit:contain;background:white;border-radius:16px;padding:8px}a{display:inline-block;background:#008b8b;color:white;padding:12px 24px;border-radius:10px;text-decoration:none}</style><main><img src="/images/pna-logo.png" alt=""><h1>You're offline</h1><p>Connect to the internet to see workshops, resources and appointments.</p><a href="/">Try again</a></main></html>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102A43">
+<meta name="robots" content="noindex">
+<title>Connection problem | Physio Nexus Academy</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:#102a43;color:#fff;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px;display:grid;place-items:start center}
+  main{width:100%;max-width:560px;padding-top:4vh}
+  img{width:72px;height:72px;object-fit:contain;background:#fff;border-radius:16px;padding:8px}
+  h1{font-size:1.55rem;line-height:1.25;margin:18px 0 4px}
+  h2{font-size:1.05rem;margin:26px 0 8px;color:#7fe6dc}
+  p{margin:8px 0}
+  .ur{color:#b9d3e6}
+  .buttons{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 4px}
+  button,.btn{font:inherit;font-weight:700;min-height:46px;padding:0 22px;border-radius:12px;border:0;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+  button{background:#00a3a3;color:#fff}
+  .btn{background:transparent;color:#fff;border:2px solid #4f7da0}
+  ol,ul{margin:8px 0;padding-left:22px}
+  li{margin:7px 0}
+  a{color:#7fe6dc}
+  code{background:#17395a;padding:2px 6px;border-radius:6px;word-break:break-all}
+  small{color:#9db8cc}
+</style>
+<main>
+  <img src="/images/pna-logo.png" alt="">
+  <h1>We can't reach the site right now</h1>
+  <p class="ur">Abhi site tak connection nahi ban raha.</p>
+  <p>Your internet may be fine: on some Wi-Fi and mobile networks the connection to our site is cut on the way. It usually works again within minutes, and this page tries again by itself.</p>
+  <p class="ur">Aap ka internet theek ho sakta hai. Kuch Wi-Fi aur mobile networks par site tak ka connection raaste mein toot jata hai. Ye aksar chand minute mein theek ho jata hai, aur ye page khud dobara koshish karta hai.</p>
+  <div class="buttons">
+    <button id="retry" type="button">Try again / Dobara koshish</button>
+    <a class="btn" href="/">Home (saved copy)</a>
+  </div>
+
+  <h2>What to try / Ye karein</h2>
+  <ol>
+    <li>Type the address with <b>https://</b> at the start: <code>https://physionexusacademy.com</code><br><span class="ur">Address ke shuru mein <b>https://</b> likhein.</span></li>
+    <li>Switch between Wi-Fi and mobile data.<br><span class="ur">Wi-Fi se mobile data par (ya ulta) badal kar dekhein.</span></li>
+    <li>Turn on <b>Secure DNS</b>: Chrome &rarr; Settings &rarr; Privacy and security &rarr; Security &rarr; Use secure DNS &rarr; Cloudflare. Or install the free <b>1.1.1.1</b> app.<br><span class="ur">Chrome mein <b>Use secure DNS</b> on karein, ya free <b>1.1.1.1</b> app lagayein.</span></li>
+    <li>Use the backup address: <a href="https://physio-nexus-academy.physionexusacademypk.workers.dev">physio-nexus-academy.physionexusacademypk.workers.dev</a><br><span class="ur">Backup address istemal karein (upar link).</span></li>
+  </ol>
+
+  <div id="savedBox" hidden>
+    <h2>Pages saved on this device / Is device par saved pages</h2>
+    <ul id="saved"></ul>
+  </div>
+  <p><small>Physio Nexus Academy &middot; WhatsApp 0348 900 9028 (if the problem stays)</small></p>
+</main>
+<script>
+(function () {
+  function probe() {
+    // the page itself is not answered by the network while the connection is cut: when this request succeeds, the connection is back
+    fetch("/offline.html?ping=" + Date.now(), { cache: "no-store" }).then(function (r) { if (r.ok) location.reload(); }).catch(function () {});
+  }
+  document.getElementById("retry").onclick = function () { location.reload(); };
+  window.addEventListener("online", probe);
+  setInterval(function () { if (!document.hidden) probe(); }, 15000);
+
+  // list the public pages that are saved in this browser (the worker's saved copies)
+  if (window.caches && caches.keys) {
+    caches.keys().then(function (names) {
+      var pages = names.filter(function (n) { return n.indexOf("pna-pages-") === 0; })[0];
+      if (!pages) return;
+      return caches.open(pages).then(function (cache) { return cache.keys(); }).then(function (requests) {
+        var list = document.getElementById("saved");
+        var shown = 0;
+        requests.forEach(function (request) {
+          var path = new URL(request.url).pathname;
+          if (path === "/offline.html" || shown >= 14) return;
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = path;
+          a.textContent = path === "/" ? "Home" : path;
+          li.appendChild(a);
+          list.appendChild(li);
+          shown++;
+        });
+        if (shown) document.getElementById("savedBox").hidden = false;
+      });
+    }).catch(function () {});
+  }
+})();
+</script>

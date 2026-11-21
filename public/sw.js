@@ -1,13 +1,174 @@
 // PNA update-first service worker.
-// Intentionally does not cache navigations or assets: every request follows the
-// browser's normal network/cache policy, avoiding stale app pages after deploy.
-// skipWaiting + clients.claim let a new worker take over without waiting for
-// every old PNA tab to close.
+//
+// While the connection to the site works, every page and file follows the browser's normal cache and network rules exactly as it always did: a new
+// deployment is never hidden behind an old copy (navigations and data files ask the network first; the only thing served before the network is the
+// immutable, hash-named /_next/static files and the pictures, which cannot be out of date). What this worker adds is a safety net for the moments when the connection to the site is CUT on
+// the way (a router or an ISP filter resetting it, a weak signal): a person who has opened a public page before sees that saved page (and the data it
+// needs) instead of the browser's "This site can't be reached", and anything not saved shows /offline.html with what to try.
+//
+// Privacy: only public pages (SAVEABLE_PAGE) are ever saved, never a page of a signed-in person (account, RehabVerse patient pages, admin, API), never a
+// response that says `private` or `no-store`, never a URL with a query (sign-in links carry codes), and the saved copies live in this browser only.
+//
+// skipWaiting + clients.claim let a new worker take over without waiting for every old PNA tab to close. Change VERSION when this file or
+// /offline.html changes: the old caches are deleted when the new worker activates.
 
-self.addEventListener("install", () => {
+const VERSION = "2026-11-21-1";
+const PAGES = "pna-pages-" + VERSION;
+const STATIC = "pna-static-" + VERSION;
+const DATA = "pna-data-" + VERSION;
+const KEEP = [PAGES, STATIC, DATA];
+const LIMIT = { [PAGES]: 40, [STATIC]: 400, [DATA]: 150 };
+const OFFLINE = "/offline.html";
+/** With a saved copy at hand, a page that has not answered within this time is replaced by the saved copy (a connection that hangs instead of resetting). */
+const SAVED_COPY_WAIT_MS = 8000;
+
+// Public pages whose saved copy may be shown when the connection is cut. Not here on purpose: /account, /admin, /api, /rehabverse/me and the other RehabVerse
+// patient pages, the Daily Challenge and the leagues (live scores).
+const SAVEABLE_PAGE = new RegExp(
+  "^/(?:$" +
+    "|learn(?:/|$)|skills(?:/|$)|manual-therapy(?:/|$)|conditions(?:/|$)|msk-special-tests(?:/|$)|health-calculators(?:/|$)" +
+    "|virtual-patient/?$|rehabverse(?:/library)?/?$|symptom-checker/?$" +
+    "|resources/?$|research/?$|workshops(?:/|$)|training(?:/|$)|faq/?$|about/?$|founder/?$|faculty/?$|contact/?$|reviews/?$" +
+    "|home-visit/?$|appointment/?$|patient-services(?:/|$)|locations(?:/|$)|clinical-visual-atlas(?:/|$)|stupid-intern-diaries(?:/|$))",
+);
+// Data files a saved page needs (changed on deploy: network first) and pictures (long-lived: stale while revalidating).
+const DATA_FILE = /^\/(?:(?:teacher-data|skills-data|conditions-data|rehabverse-data|teacher)\/.+\.json|virtual-patient\/.+\.(?:glb|json))$/;
+const IMAGE_FILE = /^\/(?:images|icons)\/.+\.(?:png|jpe?g|webp|avif|svg|ico)$/;
+
+const isHtml = (response) => /text\/html/i.test(response.headers.get("content-type") || "");
+/** A normal, successful answer from this site. */
+const ok = (response) => Boolean(response) && response.status === 200 && response.type === "basic";
+/** ...that may be kept: nothing marked private or no-store. */
+const keepable = (response) => ok(response) && !/(?:^|,)\s*(?:no-store|private)\b/i.test(response.headers.get("cache-control") || "");
+const pageKey = (url) => url.origin + url.pathname;
+
+async function put(cacheName, key, response) {
+  try {
+    const cache = await caches.open(cacheName);
+    await cache.put(key, response);
+    const keys = await cache.keys();
+    for (let i = 0; i < keys.length - LIMIT[cacheName]; i++) await cache.delete(keys[i]);
+  } catch {
+    // no room, or a blocked cache: the site simply works as it did without a saved copy
+  }
+}
+
+function withTimeout(promise, ms) {
+  if (!ms) return promise;
+  return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("slow")), ms))]);
+}
+
+async function navigate(event) {
+  const request = event.request;
+  const url = new URL(request.url);
+  const saveable = SAVEABLE_PAGE.test(url.pathname);
+  const key = pageKey(url);
+  const saved = saveable ? await caches.match(key, { cacheName: PAGES }) : undefined;
+  try {
+    const response = await withTimeout(fetch(request), saved ? SAVED_COPY_WAIT_MS : 0);
+    // a server error is no better than a connection that failed: a saved copy is kinder
+    if (saved && response.status >= 500) return saved;
+    if (saveable && !url.search && keepable(response) && !response.redirected && isHtml(response)) event.waitUntil(put(PAGES, key, response.clone()));
+    return response;
+  } catch (error) {
+    if (saved) return saved;
+    const offline = await caches.match(OFFLINE, { cacheName: PAGES });
+    if (offline) return offline;
+    throw error; // the browser shows its own error page, as before
+  }
+}
+
+async function cacheFirst(event, cacheName) {
+  const cache = await caches.open(cacheName);
+  const hit = await cache.match(event.request);
+  if (hit) return hit;
+  const response = await fetch(event.request);
+  if (ok(response)) event.waitUntil(put(cacheName, event.request, response.clone()));
+  return response;
+}
+
+async function networkFirst(event, cacheName) {
+  try {
+    const response = await fetch(event.request);
+    if (ok(response)) event.waitUntil(put(cacheName, event.request, response.clone()));
+    return response;
+  } catch (error) {
+    const hit = await (await caches.open(cacheName)).match(event.request);
+    if (hit) return hit;
+    throw error;
+  }
+}
+
+async function staleWhileRevalidate(event, cacheName) {
+  const cache = await caches.open(cacheName);
+  const hit = await cache.match(event.request);
+  const refresh = fetch(event.request).then((response) => {
+    if (ok(response)) event.waitUntil(put(cacheName, event.request, response.clone()));
+    return response;
+  });
+  if (hit) {
+    event.waitUntil(refresh.catch(() => undefined));
+    return hit;
+  }
+  return refresh;
+}
+
+async function precache() {
+  try {
+    const cache = await caches.open(PAGES);
+    await cache.add(new Request(OFFLINE, { cache: "reload" }));
+    const home = await fetch("/", { cache: "reload", headers: { Accept: "text/html" } });
+    if (keepable(home) && !home.redirected && isHtml(home)) await cache.put(self.location.origin + "/", home);
+  } catch {
+    // install must never fail because of a bad moment of the network
+  }
+}
+
+self.addEventListener("install", (event) => {
   self.skipWaiting();
+  event.waitUntil(precache());
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    (async () => {
+      for (const name of await caches.keys()) if (name.startsWith("pna-") && !KEEP.includes(name)) await caches.delete(name);
+      await self.clients.claim();
+    })(),
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET" || request.headers.has("range") || request.headers.has("authorization")) return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+  if (request.mode === "navigate") {
+    event.respondWith(navigate(event));
+  } else if (url.pathname.startsWith("/_next/static/")) {
+    event.respondWith(cacheFirst(event, STATIC));
+  } else if (DATA_FILE.test(url.pathname)) {
+    event.respondWith(networkFirst(event, DATA));
+  } else if (IMAGE_FILE.test(url.pathname)) {
+    event.respondWith(staleWhileRevalidate(event, STATIC));
+  }
+  // everything else (API calls, the signed-in pages' data, React Server Component requests, voice files) goes to the network untouched
+});
+
+// The first page a person opens loads before this worker controls it, so the page asks the worker to keep a copy of it.
+self.addEventListener("message", (event) => {
+  const data = event.data || {};
+  if (data.type !== "pna-save-page" || typeof data.href !== "string") return;
+  event.waitUntil(
+    (async () => {
+      try {
+        const url = new URL(data.href, self.location.origin);
+        if (url.origin !== self.location.origin || url.search || !SAVEABLE_PAGE.test(url.pathname)) return;
+        const response = await fetch(url.pathname, { credentials: "same-origin", headers: { Accept: "text/html" } });
+        if (keepable(response) && !response.redirected && isHtml(response)) await put(PAGES, pageKey(url), response);
+      } catch {
+        // nothing to keep
+      }
+    })(),
+  );
 });
