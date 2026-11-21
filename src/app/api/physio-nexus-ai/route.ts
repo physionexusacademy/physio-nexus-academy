@@ -164,7 +164,8 @@ async function buildExplanation(request: Request, result: BrainResult): Promise<
     const condition = (await readStatic(request, `/conditions-data/${encodeURIComponent(slug)}.json`)) as ConditionJson | null;
     if (condition?.summary) {
       explanation = explainCondition(condition, result.lang, simple);
-      if (result.lang === "ur" && open) {
+      // Roman Urdu: with Claude switched on every condition answer gets a natural Roman Urdu retelling (a few hundred tokens); without it only the opened cards do, as before
+      if (result.lang === "ur" && (open || claudeEnabled())) {
         const retold = await aiRetellInRomanUrdu(explanation);
         if (retold) explanation.urSummary = retold;
       }
