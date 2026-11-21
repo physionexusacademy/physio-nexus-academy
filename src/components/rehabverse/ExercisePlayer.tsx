@@ -8,11 +8,14 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { planSpeech, speakText, stopSpeaking, supportsSpeech, unlockAudio, warmPlan } from "@/lib/speech/voices";
+import { planSpeech, speakText, stopSpeaking, unlockAudio, warmPlan } from "@/lib/speech/voices";
+import { useVoice } from "@/lib/speech/preference";
+import { VoiceHint } from "@/components/speech/VoiceHint";
 import { AlertTriangle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import { claimRoom, releaseRoom, shared, type Owner } from "@/lib/virtual-patient/shared-room";
 import { blendPose, buildCycle, ease, paceForVoice, sampleCycle, type Segment } from "@/lib/rehabverse/motion";
+import { lineFor } from "@/lib/rehabverse/lines";
 import { restingLimbs, withResting, type RestLimb } from "@/lib/rehabverse/resting";
 import type { ExerciseDef, Motion, View } from "@/lib/rehabverse/types";
 import { P, type Parts } from "@/lib/virtual-patient/parts";
@@ -38,18 +41,6 @@ const MAT_TOP = 0.018;
 
 const text = (lang: Lang, value: { en: string; ru: string }) => (lang === "ru" ? value.ru : value.en);
 
-const DEFAULT_LINES = {
-  start: { en: "Get into the starting position.", ru: "Pehle starting position mein aa jayein." },
-  move: { en: "Move slowly and with control.", ru: "Aahista aahista, control ke saath harkat karein." },
-  hold: { en: "Hold it steady.", ru: "Is position ko stable rakhein." },
-  return: { en: "Come back slowly — do not drop.", ru: "Aahista wapis aayein — jhatka na dein." },
-  rest: { en: "Relax, then go again.", ru: "Thora relax karein, phir dobara." },
-};
-/** The line spoken (and shown) during a segment of the repetition. */
-const lineFor = (segment: Segment, lang: "en" | "ru") => {
-  const base = segment.say ?? (segment.kind === "move" ? DEFAULT_LINES.move : segment.kind === "hold" ? DEFAULT_LINES.hold : segment.kind === "return" ? DEFAULT_LINES.return : DEFAULT_LINES.rest);
-  return lang === "ru" ? base.ru : base.en;
-};
 const BREATH_LABEL = {
   in: { en: "Breathe in", ru: "Saans andar lein" },
   out: { en: "Breathe out", ru: "Saans bahar chhodein" },
@@ -499,7 +490,8 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   const [playing, setPlaying] = useState(autoPlay);
   const [speed, setSpeed] = useState(1);
   const [showMistake, setShowMistake] = useState(false);
-  const [voice, setVoice] = useState(false);
+  // The voice is ON by default (one setting for every model, remembered): `speaking` is true once this browser lets sound play.
+  const { voice, setVoice, supported: voiceSupported, speaking: speakNow } = useVoice();
   const [line, setLine] = useState<string>("");
   const [breath, setBreath] = useState<"in" | "out" | "hold" | null>(null);
   const [rep, setRep] = useState(1);
@@ -703,7 +695,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   useEffect(() => {
     pacedRef.current = null;
     const rig = rigRef.current;
-    if (!voice || status !== "active" || !rig || !supportsSpeech()) return;
+    if (!speakNow || status !== "active" || !rig) return;
     let cancelled = false;
     const language = lang === "ru" ? "ur" : "en";
     const lines = [...new Set(rig.segments.map((segment) => lineFor(segment, lang)))];
@@ -723,11 +715,11 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
     return () => {
       cancelled = true;
     };
-  }, [voice, status, exercise, side, showMistake, lang, speed]);
+  }, [speakNow, status, exercise, side, showMistake, lang, speed]);
 
   // Optional spoken guidance: the recorded male voice for the lines that were recorded, in English or Roman Urdu (subtitles always stay).
   useEffect(() => {
-    if (!voice || !line || !playing || !supportsSpeech()) {
+    if (!speakNow || !line || !playing) {
       speakingRef.current = false;
       return;
     }
@@ -748,7 +740,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
       playback?.cancel();
       stopSpeaking();
     };
-  }, [voice, line, lang, playing]);
+  }, [speakNow, line, lang, playing]);
 
   const replay = () => {
     clock.current.elapsed = 0;
@@ -764,6 +756,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
     <figure className={"overflow-hidden rounded-3xl border border-slate-200 bg-[#e8eef3] shadow-[0_24px_60px_-40px_rgba(10,60,90,0.5)] " + (className ?? "")} data-rv-player={exercise.id}>
       <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
         <div ref={hostRef} className="absolute inset-0" role="img" aria-label={`3D physiotherapist demonstrating ${exercise.name.en}`} />
+        <div className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-3"><span className="pointer-events-auto"><VoiceHint ur={lang === "ru"} /></span></div>
         {status !== "active" ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#e8eef3]" role="status">
             <span className="text-sm font-bold text-navy-800">{lang === "ru" ? "Physio guide aa rahi hai…" : "Bringing in your physio guide…"} {Math.round(progress * 100)}%</span>
@@ -830,8 +823,8 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
               <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {lang === "ru" ? "Ghalti dekhein" : "Show mistake"}
             </button>
           ) : null}
-          <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn ml-auto " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title={lang === "ru" ? "Awaaz: recorded male awaaz (Roman Urdu)" : "Spoken guidance (recorded male voice)"}>
-            {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
+          <button type="button" onClick={() => { unlockAudio(); setVoice(!voice); }} aria-pressed={voice && voiceSupported} className={"d3-btn ml-auto " + (voice && voiceSupported ? "d3-on" : "")} aria-label="Spoken guidance" title={lang === "ru" ? (voice ? "Awaaz on hai (band karne ke liye dabayein)" : "Awaaz band hai (chalane ke liye dabayein)") : (voice ? "Voice is on (tap to turn off)" : "Voice is off (tap to turn on)")}>
+            {voice && voiceSupported ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
           </button>
         </div>
       </figcaption>

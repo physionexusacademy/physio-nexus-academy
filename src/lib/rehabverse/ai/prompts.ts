@@ -1,5 +1,6 @@
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS } from "../intake.ts";
 import { ASK_ORDER, isAnswered, scrubPII, type FieldKey, type IntakeDraft, type Lang } from "./intake-spec.ts";
+import { languageRule, withLanguageReminder } from "./reply-lang.ts";
 
 export type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 export type Turn = { role: "assistant" | "patient"; text: string };
@@ -15,7 +16,7 @@ export function systemPrompt(lang: Lang, draft: IntakeDraft, focus: FieldKey | n
 HOW YOU SPEAK
 - Sound like a caring, experienced clinician: unhurried, respectful, genuinely interested in this person. Before you ask anything, acknowledge what they just said in one short, specific, human sentence (their situation, effort, worry, lost sleep). Mirror their own words. Vary your wording; do not repeat stock phrases such as "I understand" or "I'm sorry to hear that".
 - Plain everyday words. Explain any medical word you use in a few words.
-- Reply in the patient's language. Patient's preferred language: ${lang === "ru" ? "Roman Urdu" : "English"}. If they write English, reply in English. If they write Roman Urdu (Urdu in English letters), reply in natural, respectful, spoken Pakistani Roman Urdu with common English words (pain, physio, scan). If they write Urdu script, reply in Roman Urdu.
+- ${languageRule(lang)} If they write Urdu script, reply in Roman Urdu.
 - 2 to 4 short sentences, then exactly ONE question. Never list several questions. No lists, no headings, no emojis.
 - If the patient is worried or distressed, stay steady and kind and slow down.
 
@@ -50,6 +51,6 @@ export function buildIntakeMessages(input: { lang: Lang; history: Turn[]; draft:
   return [
     { role: "system", content: systemPrompt(input.lang, input.draft, input.focus) },
     ...recent,
-    { role: "user", content: scrubPII(input.patientText).slice(0, 900) },
+    { role: "user", content: withLanguageReminder(scrubPII(input.patientText).slice(0, 900), input.lang) },
   ];
 }

@@ -15,7 +15,7 @@ Why not run the model in the visitor's browser: measured, it is about 3x slower 
 | Group | Source |
 |---|---|
 | `avatar-*` | `public/teacher/choreo/*.json` (the Guide-me tour, each technique) |
-| `rehab-*` | `src/lib/rehabverse/guide.ts`, the default cues in `ExercisePlayer.tsx`, each region's `say` cues in `public/rehabverse-data/*.json` |
+| `rehab-*` | `src/lib/rehabverse/guide.ts` (fixed text only: no numbers or functions), the default cues in `src/lib/rehabverse/lines.ts`, each region's `say` cues in `public/rehabverse-data/*.json` |
 | `lesson-<slug>` | every English beat text of a lesson (`collect.mts <out> lessons`); about 5,600 sentences, 7 hours of speech |
 | `ur-avatar-*`, `ur-rehab-*`, `ur-lesson-<slug>` | the same sources in Roman Urdu (`collect.mts <out> urdu`, with `lessons` for the lessons) |
 

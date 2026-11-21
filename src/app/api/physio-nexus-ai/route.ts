@@ -1,4 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { callClaude, claudeEnabled } from "@/lib/rehabverse/ai/claude";
 import { pnaLearningResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
 import { think, type BrainContext, type BrainProfile, type BrainResult } from "@/lib/pna-ai/brain";
 import {
@@ -109,19 +110,29 @@ async function readStatic(request: Request, pathname: string): Promise<unknown |
   }
 }
 
-/** Optional: retell an English guide in simple Roman Urdu. Accepted only if it adds no numbers, links or new facts. */
+/**
+ * Optional: retell an English guide in simple Roman Urdu. Claude Haiku (when ANTHROPIC_API_KEY is set) writes it first, the free Workers AI
+ * model second. Either way it is accepted only if it adds no numbers, links or new facts (isFaithfulRewrite).
+ */
 async function aiRetellInRomanUrdu(explanation: Explanation): Promise<string | null> {
   try {
+    const source = explanationText(explanation);
+    const rules = [
+      "You are a friendly Pakistani physiotherapy teacher. Retell the facts below in simple, natural Roman Urdu (Urdu written in English letters), the way a good teacher speaks in class, keeping medical terms in English.",
+      "Use ONLY the facts below. Do not add numbers, doses, medicines, diagnoses or advice that are not written below. Do not use Urdu script. Maximum 90 words. Plain text, no lists.",
+    ].join("\n\n");
+    const facts = `Facts:\n${source.slice(0, 1800)}`;
+
+    if (claudeEnabled()) {
+      const answer = await callClaude([{ role: "system", content: rules }, { role: "user", content: facts }], { maxTokens: 1024, effort: "low", timeoutMs: 9000 });
+      const cleaned = answer?.text.replace(/\s+/g, " ").trim() ?? "";
+      if (cleaned && isFaithfulRewrite(source, cleaned)) return cleaned;
+    }
+
     const context = getCloudflareContext() as unknown as { env?: { AI?: AiBinding } };
     const ai = context.env?.AI;
     if (!ai) return null;
-    const source = explanationText(explanation);
-    const prompt = [
-      "You are a friendly Pakistani physiotherapy teacher. Retell the facts below in simple Roman Urdu (Urdu written in English letters), the way teachers speak in class, keeping medical terms in English.",
-      "Use ONLY the facts below. Do not add numbers, doses, medicines, diagnoses or advice that are not written below. Do not use Urdu script. Maximum 90 words. Plain text, no lists.",
-      `Facts:\n${source.slice(0, 1800)}`,
-    ].join("\n\n");
-    const run = ai.run(MODEL, { prompt, max_tokens: 220, temperature: 0.2 }) as Promise<NavigatorResponse>;
+    const run = ai.run(MODEL, { prompt: `${rules}\n\n${facts}`, max_tokens: 220, temperature: 0.2 }) as Promise<NavigatorResponse>;
     const raw = await Promise.race([run, new Promise<null>((resolve) => setTimeout(() => resolve(null), 5000))]);
     const text = raw?.response ?? raw?.result?.response ?? "";
     if (typeof text !== "string") return null;
@@ -153,7 +164,8 @@ async function buildExplanation(request: Request, result: BrainResult): Promise<
     const condition = (await readStatic(request, `/conditions-data/${encodeURIComponent(slug)}.json`)) as ConditionJson | null;
     if (condition?.summary) {
       explanation = explainCondition(condition, result.lang, simple);
-      if (result.lang === "ur" && open) {
+      // Roman Urdu: with Claude switched on every condition answer gets a natural Roman Urdu retelling (a few hundred tokens); without it only the opened cards do, as before
+      if (result.lang === "ur" && (open || claudeEnabled())) {
         const retold = await aiRetellInRomanUrdu(explanation);
         if (retold) explanation.urSummary = retold;
       }

@@ -282,7 +282,7 @@ async function chat(lines: string[], lang: Lang = "en", model: () => { calls: nu
   ok(prompt.includes(QUESTION.response.en) && /YOU MUST NEVER/.test(prompt) && /Roman Urdu/.test(prompt), "the prompt states the current question, the prohibitions and the language rule");
   const msgs = buildCheckinMessages({ lang: "ru", history: [{ role: "patient", text: "call 0321 5551234" }], ctx, draft, step: "response", patientText: "my email is a.b@example.com" });
   ok(!JSON.stringify(msgs).includes("5551234") && !JSON.stringify(msgs).includes("a.b@example.com"), "phone numbers and e-mails in the chat are removed before the model sees them");
-  ok(/Preferred language: Roman Urdu/.test(msgs[0].content), "the preferred language is passed on");
+  ok(/Language of this reply: Roman Urdu/.test(msgs[0].content), "the language of the reply is passed on");
   const spy = scripted({ ack: "Thanks.", updates: {}, needs_therapist: false });
   await turn({ ...draft }, "better", { history: Array.from({ length: 20 }, (_, i) => ({ role: i % 2 ? "assistant" as const : "patient" as const, text: `line ${i}` })) }, spy);
   ok((spy.messages[0] as unknown[]).length <= 10, "only the recent turns are sent to the model");

@@ -20,6 +20,7 @@ import { sentenceKey, splitSentences } from "../../src/lib/speech/clip-key.ts";
 import { loadUrdu, prepareUrdu, type Segment } from "./urdu.mts";
 import { plain } from "../../src/lib/avatar/text.ts";
 import * as guide from "../../src/lib/rehabverse/guide.ts";
+import { DEFAULT_LINES } from "../../src/lib/rehabverse/lines.ts";
 
 /** One pack of recordings: the sentences, their keys and, for Roman Urdu, how each is read (runs of Hindi-script Urdu and English). */
 export type Group = { name: string; lang: "en" | "ur"; sentences: string[]; keys: string[]; segments?: Segment[][] };
@@ -77,9 +78,7 @@ export function collectGroups(root: string, withLessons = false, withUrdu = fals
   walk(guide, (key, node) => {
     if (key === "say" && typeof node.en === "string") guideLines.push(node.en);
   });
-  const player = fs.readFileSync(path.join(root, "src/components/rehabverse/ExercisePlayer.tsx"), "utf8");
-  const block = player.match(/const DEFAULT_LINES = \{([\s\S]*?)\n\};/)?.[1] ?? "";
-  for (const m of block.matchAll(/en: "((?:[^"\\]|\\.)*)"/g)) guideLines.push(JSON.parse(`"${m[1]}"`));
+  for (const line of Object.values(DEFAULT_LINES)) guideLines.push(line.en); // the player's default cues (lib/rehabverse/lines.ts)
   add("rehab-guide", guideLines, spokenDirect);
   const rehabDir = path.join(root, "public/rehabverse-data");
   for (const file of fs.readdirSync(rehabDir).sort()) {
@@ -115,7 +114,7 @@ export function collectGroups(root: string, withLessons = false, withUrdu = fals
     walk(guide, (key, node) => {
       if (key === "say" && typeof node.ru === "string") urGuide.push(node.ru);
     });
-    for (const m of block.matchAll(/ru: "((?:[^"\\]|\\.)*)"/g)) urGuide.push(JSON.parse(`"${m[1]}"`));
+    for (const line of Object.values(DEFAULT_LINES)) urGuide.push(line.ru);
     add("ur-rehab-guide", urGuide, spokenDirectUr, "ur");
     for (const file of fs.readdirSync(rehabDir).sort()) {
       if (file.endsWith(".json")) add(`ur-rehab-${file.replace(/\.json$/, "")}`, urSays(path.join(rehabDir, file), "ru"), spokenDirectUr, "ur");

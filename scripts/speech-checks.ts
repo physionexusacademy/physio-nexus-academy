@@ -1,10 +1,13 @@
 // Entry bundled by scripts/validate-speech.mjs: checks how a line finds its recording (sentence keys, planning, missing recordings, Roman Urdu),
 // that every fixed English and Roman Urdu line of the site has a recording, and the spoken-style text and Roman Urdu conversion rules that remain.
 import { NOTE_NO_RECORDING, NOTE_NO_RECORDING_UR, planSpeech } from "../src/lib/speech/voices";
-import { clipKey, normalise, splitSentences } from "../src/lib/speech/clip-key";
+import { clipKey, normalise, sentenceKey, splitSentences } from "../src/lib/speech/clip-key";
 import { toSpoken } from "../src/lib/speech/spoken";
 import { convertRun, splitRuns, toDevanagari, toUrdu } from "../src/lib/speech/roman-urdu";
 import { collectGroups } from "./voice/collect.mts";
+import { buildCycle } from "../src/lib/rehabverse/motion";
+import { lineFor } from "../src/lib/rehabverse/lines";
+import * as guideScripts from "../src/lib/rehabverse/guide";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -97,9 +100,62 @@ const runs = splitRuns("Pehle patient ko aaram se lita dein, aur dard ke baare m
 check(runs.map((r) => r.kind).join(",") === "ur,en,ur", "Run split: Urdu, English term, Urdu");
 check(!convertRun("karein.", "devanagari").includes("."), "Full stop becomes danda");
 
+let rehabLines = 0;
+// 7. The RehabVerse 3D models never go silent. The lines above are the ones that EXIST in the data; this walks what the player and the guide
+// really say: every segment of every exercise (correct and "mistake" version, both languages) and every beat of every guide script.
+{
+  const clipSet = new Set(Object.keys(index.clips));
+  const spokenOk = (line: unknown, lang: "en" | "ur") => {
+    if (typeof line !== "string" || !line.trim()) return "has no text";
+    const sentences = splitSentences(toSpoken(line, lang));
+    if (!sentences.length) return "has no sentences";
+    const missing = sentences.filter((sentence) => !clipSet.has(sentenceKey(sentence, lang)));
+    return missing.length ? "is not recorded: " + missing.join(" | ") : null;
+  };
+  const rehabDir = "public/rehabverse-data";
+  let lines = 0;
+  for (const file of fs.readdirSync(rehabDir).filter((f) => f.endsWith(".json"))) {
+    for (const exercise of JSON.parse(fs.readFileSync(path.join(rehabDir, file), "utf8")) as { id: string; motion: { start: unknown; moves: unknown[]; mistake?: { moves: unknown[] } } }[]) {
+      for (const variant of ["correct", "mistake"] as const) {
+        const moves = variant === "mistake" ? exercise.motion.mistake?.moves : exercise.motion.moves;
+        if (!moves) continue;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const segments = buildCycle({ ...(exercise.motion as any), start: exercise.motion.start }, "left", moves as any);
+        for (const segment of segments) {
+          for (const lang of ["en", "ru"] as const) {
+            lines++;
+            const problem = spokenOk(lineFor(segment, lang), lang === "ru" ? "ur" : "en");
+            check(!problem, `${exercise.id} (${variant}, ${lang}, ${segment.kind}): the exercise player's line ${problem}`);
+          }
+        }
+      }
+    }
+  }
+  const beats: { name: string; say: { en?: string; ru?: string } }[] = [];
+  const visit = (name: string, value: unknown) => {
+    if (typeof value === "function") check(false, `guide script ${name} is a function: a guide line must be fixed text so that it can be recorded`);
+    else if (Array.isArray(value)) value.forEach((item, i) => visit(`${name}[${i}]`, item));
+    else if (value && typeof value === "object") {
+      const say = (value as { say?: { en?: string; ru?: string } }).say;
+      if (say && typeof say === "object" && "en" in say) beats.push({ name, say });
+      else for (const [key, item] of Object.entries(value)) visit(`${name}.${key}`, item);
+    }
+  };
+  for (const [name, value] of Object.entries(guideScripts)) visit(name, value);
+  for (const beat of beats) {
+    for (const lang of ["en", "ru"] as const) {
+      lines++;
+      const problem = spokenOk(beat.say[lang], lang === "ru" ? "ur" : "en");
+      check(!problem, `RehabVerse guide ${beat.name} (${lang}) ${problem}`);
+    }
+  }
+  check(beats.length >= 30, "the guide scripts were found (checked " + beats.length + " beats)");
+  rehabLines = lines;
+}
+
 if (failures.length) {
   console.error("Speech checks FAILED:\n - " + failures.join("\n - "));
   process.exit(1);
 }
 const total = groups.reduce((n, x) => n + x.keys.length, 0);
-console.log(`Speech checks passed: sentence keys, spoken-style text, ${index.packs.length} voice packs and ${Object.keys(index.clips).length} clips consistent, all ${total} fixed English and Roman Urdu sentences recorded, planning (found / missing, English / Roman Urdu), ${cases.length} Roman Urdu conversion spot checks.`);
+console.log(`Speech checks passed: sentence keys, spoken-style text, ${index.packs.length} voice packs and ${Object.keys(index.clips).length} clips consistent, all ${total} fixed English and Roman Urdu sentences recorded, planning (found / missing, English / Roman Urdu), ${rehabLines} RehabVerse player and guide lines spoken in both languages, ${cases.length} Roman Urdu conversion spot checks.`);

@@ -10,6 +10,7 @@ import { closeCheckinChatAction } from "@/app/rehabverse/ai-actions";
 import { checkinPending } from "@/lib/rehabverse/ai/checkin-shared";
 import type { FollowupPoint, SessionDetail, SessionExercise } from "@/lib/rehabverse/api-types";
 import { GUIDE } from "@/lib/rehabverse/guide";
+import { ListenLine } from "@/components/speech/ListenLine";
 import { cleanDayTitle } from "@/lib/rehabverse/format";
 import { DIFFICULTY_WORDS, FEEDBACK_FLAGS, PAIN_WORDS, TIMEPOINT_LABEL } from "@/lib/rehabverse/intake";
 import { loadExercises } from "@/lib/rehabverse/library";
@@ -323,7 +324,8 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
           {access === "open" ? (
             <div className="mt-5 flex max-w-3xl items-start gap-3 rounded-2xl border border-teal-200 bg-teal-50/70 p-4">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-teal-700"><Stethoscope className="h-5 w-5" aria-hidden="true" /></span>
-              <p className="text-[14px] leading-6 text-teal-950"><b>Guide:</b> {GUIDE.dayOpen(session.day_number)[1].say[lang]}</p>
+              <p className="min-w-0 flex-1 text-[14px] leading-6 text-teal-950"><b>Guide:</b> {GUIDE.dayOpen[1].say[lang]}</p>
+              <ListenLine text={GUIDE.dayOpen[1].say[lang]} lang={lang as Lang} />
             </div>
           ) : null}
 
@@ -356,7 +358,7 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
               {access === "open" ? (
                 <section className="rv-glass p-5" aria-labelledby="fb">
                   <h2 id="fb" className="font-heading text-lg font-bold text-navy-800"><T en="After your session: feedback" ru="Session ke baad: feedback" /></h2>
-                  <p className="mb-4 mt-1 text-[13px] leading-5 text-slate-600">{GUIDE.feedback[0].say[lang]}</p>
+                  <p className="mb-4 mt-1 flex items-start gap-2 text-[13px] leading-5 text-slate-600"><span className="min-w-0 flex-1">{GUIDE.feedback[0].say[lang]}</span><ListenLine text={GUIDE.feedback[0].say[lang]} lang={lang as Lang} /></p>
                   <FeedbackForm data={data} exercises={exercises} />
                 </section>
               ) : null}

@@ -1,6 +1,7 @@
 import { scrubPII, type Lang } from "./intake-spec.ts";
 import type { ChatMessage, Turn } from "./prompts.ts";
 import type { CoachContext, CoachExercise } from "./coach-spec.ts";
+import { languageRule, withLanguageReminder } from "./reply-lang.ts";
 
 const both = (bi: { en: string; ru: string }) => `${bi.en} | ${bi.ru}`;
 const clean = (text: string | null | undefined) => scrubPII((text ?? "").replace(/\s+/g, " ").trim()).slice(0, 600);
@@ -33,7 +34,7 @@ export function coachSystemPrompt(lang: Lang, ctx: CoachContext, focus: number |
 
 HOW YOU SPEAK
 - Like a good coach: friendly, practical, unhurried, specific. Encourage effort in one short sentence, then answer. Plain everyday words. Vary your wording.
-- Reply in the patient's language. Preferred language: ${lang === "ru" ? "Roman Urdu" : "English"}. If they write English, reply in English; if they write Roman Urdu (Urdu in English letters), reply in natural, respectful, spoken Pakistani Roman Urdu with common English words; if they write Urdu script, reply in Roman Urdu.
+- ${languageRule(lang)} If they write Urdu script, reply in Roman Urdu.
 - 2 to 5 short sentences. At most one question. No lists with symbols, no headings, no emojis.
 
 YOU MAY
@@ -62,6 +63,6 @@ export function buildCoachMessages(input: { lang: Lang; history: Turn[]; ctx: Co
   return [
     { role: "system", content: coachSystemPrompt(input.lang, input.ctx, input.focus) },
     ...recent,
-    { role: "user", content: scrubPII(input.patientText).slice(0, 900) },
+    { role: "user", content: withLanguageReminder(scrubPII(input.patientText).slice(0, 900), input.lang) },
   ];
 }

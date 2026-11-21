@@ -267,6 +267,70 @@ export function answerFor(intent: Intent, ex: CoachExercise | null, ctx: CoachCo
   }
 }
 
+/* ───────────────────────── a coach talking, not a form ───────────────────────── */
+
+/**
+ * A short, warm opening and (every other answer) a closing line around an answer made from the plan, so the scripted answers sound like a
+ * coach and not like a printout. Nothing in them says anything about amounts, symptoms or the plan, so they cannot change what the answer
+ * means; the choice is made by the turn number, so a patient asking several things in a row does not read the same sentence twice.
+ */
+const OPENERS: Partial<Record<Intent, Bi[]>> = {
+  how: [
+    { en: "Sure, here is how to do it.", ru: "Zaroor, aaiye step by step dekhte hain." },
+    { en: "Of course. Let me walk you through it.", ru: "Bilkul, main samjha deta hoon." },
+    { en: "Happy to explain. Here we go.", ru: "Theek hai, suniye." },
+  ],
+  dose: [
+    { en: "Good question. This is what your physiotherapist set for you.", ru: "Achha sawal hai. Aap ke physiotherapist ne ye tay kiya hai." },
+    { en: "Here is your prescription for it.", ru: "Ye raha aap ka prescription is ke liye." },
+    { en: "Sure, here is the amount.", ru: "Zaroor, miqdar ye hai." },
+  ],
+  mistakes: [
+    { en: "It helps to know what to watch out for.", ru: "Ye jaan lena achha hai ke kin cheezon se bachna hai." },
+    { en: "Good to ask. These are the common slips.", ru: "Achha kiya poocha. Aam ghaltiyan ye hain." },
+    { en: "Sure, here is what to avoid.", ru: "Zaroor, in se bachein." },
+  ],
+  breathing: [
+    { en: "Breathing makes a real difference. Here is what to do.", ru: "Saans se bohat farq parta hai. Ye karein." },
+    { en: "Good thinking. Here is how to breathe with it.", ru: "Achha khayal hai. Saans aise lein." },
+    { en: "Sure, about your breathing.", ru: "Zaroor, saans ke baare mein." },
+  ],
+  equipment: [
+    { en: "Here is what you will need.", ru: "Is ke liye ye chahiye hoga." },
+    { en: "Good to get ready first. Here you go.", ru: "Pehle tayyari kar lena achha hai. Ye dekhiye." },
+    { en: "Sure, this is what to have ready.", ru: "Zaroor, ye cheezein tayyar rakhein." },
+  ],
+  safety: [
+    { en: "Good to ask. Staying safe comes first.", ru: "Achha kiya poocha. Hifazat sab se pehle." },
+    { en: "Of course. Here is how to keep it safe.", ru: "Bilkul. Ye hifazat ki baatein hain." },
+    { en: "Sure, here is what to keep in mind.", ru: "Zaroor, ye dhyan mein rakhein." },
+  ],
+  plan: [
+    { en: "Here is what is planned for you today.", ru: "Aaj aap ke liye ye plan hai." },
+    { en: "Sure, here is today's plan.", ru: "Zaroor, aaj ka plan ye hai." },
+    { en: "Let us look at today together.", ru: "Aaiye aaj ka plan saath dekhte hain." },
+  ],
+  pain: [
+    { en: "Thank you for asking about this before carrying on.", ru: "Aage barhne se pehle poochna achha kiya." },
+    { en: "I am glad you asked. This matters.", ru: "Achha hua aap ne poocha. Ye zaroori hai." },
+    { en: "Let us take that carefully.", ru: "Is baat ko ehtiyaat se lete hain." },
+  ],
+};
+const CLOSERS: Bi[] = [
+  { en: "Tell me if you would like to go through anything else.", ru: "Kuch aur poochna ho to batayein." },
+  { en: "You can ask me anything else about today's plan.", ru: "Aaj ke plan ke baare mein jo bhi poochna ho, poochein." },
+];
+const CLOSING_INTENTS: Intent[] = ["how", "dose", "mistakes", "breathing", "equipment", "plan"];
+
+export function conversational(intent: Intent, text: string, lang: Lang, seed: number): string {
+  if (intent === "physio") return text; // the physiotherapist's message stays exactly as it is
+  const n = Math.abs(Math.trunc(seed));
+  const openers = OPENERS[intent];
+  const open = openers ? t(lang, openers[n % openers.length]) : "";
+  const close = CLOSING_INTENTS.includes(intent) && n % 2 === 0 ? t(lang, CLOSERS[(n >> 1) % CLOSERS.length]) : "";
+  return [open, text, close].filter(Boolean).join("\n\n");
+}
+
 /** The quick questions offered for the exercise the patient has open (they send these exact sentences). */
 export const QUICK_QUESTIONS: { intent: Intent; label: Bi; ask: (name: Bi) => Bi }[] = [
   { intent: "how", label: { en: "How do I do it?", ru: "Kaise karni hai?" }, ask: (n) => ({ en: `How do I do ${n.en}?`, ru: `${n.ru} kaise karni hai?` }) },

@@ -102,7 +102,7 @@ async function ask(page, action) {
 
   /* 3. Quick answers come from the physiotherapist's plan and the reviewed library, for the exercise that is open. */
   const how = await ask(pa, () => pa.locator('[data-coach-quick="how"]').click());
-  check("3a 'How do I do it?' gives the reviewed steps for the open exercise (Clamshell)", /^Clamshell/.test(how) && /Starting position:/.test(how) && /1\. /.test(how) && /Breathing:/.test(how), how.slice(0, 120).replace(/\n/g, " | "));
+  check("3a 'How do I do it?' gives the reviewed steps for the open exercise (Clamshell)", /Clamshell/.test(how) && /Starting position:/.test(how) && /1\. /.test(how) && /Breathing:/.test(how), how.slice(0, 120).replace(/\n/g, " | "));
   const dose = await ask(pa, () => pa.locator('[data-coach-quick="dose"]').click());
   check("3b 'How many?' gives the physiotherapist's prescription, not the library default", /2 sets/.test(dose) && /10 repetitions/.test(dose) && /hold for 3 seconds/.test(dose) && /rest 30 seconds/.test(dose) && /left side only/.test(dose), dose.slice(0, 160));
   await pa.getByRole("button", { name: /Glute bridge/ }).first().click();
@@ -127,6 +127,14 @@ async function ask(page, action) {
   check("5a A free-form question without a model gets the scripted menu", /I can help with how to do an exercise/.test(free));
   const counts = (await rows("select turns, fallback_turns, models from public.rehab_ai_conversations where id = $1", [conv.id]))[0];
   check("5b ...and the transcript counts it as a scripted reply", counts.turns >= 6 && counts.fallback_turns === 1, JSON.stringify(counts));
+
+  /* 5c. A patient who WRITES Roman Urdu is answered in Roman Urdu, whatever the page's language switch says (the page is in English here). */
+  await pa.getByLabel("Your question").fill("ye exercise kaise karni hai");
+  const ur1 = await ask(pa, () => pa.getByRole("button", { name: "Send", exact: true }).click());
+  check("5c Roman Urdu question on an English page: the steps come in Roman Urdu", /Shuru ki position/.test(ur1) && !/Starting position:/.test(ur1), ur1.slice(0, 120).replace(/\n/g, " | "));
+  await pa.getByLabel("Your question").fill("ye hips stacked ka kya matlab hai");
+  const ur2 = await ask(pa, () => pa.getByRole("button", { name: "Send", exact: true }).click());
+  check("5d A free-form Roman Urdu question gets the scripted menu in Roman Urdu", /Main madad kar sakta hoon/.test(ur2) && !/I can help with/.test(ur2), ur2.slice(0, 100));
 
   /* 6. A safety problem stops the coach and alerts the physiotherapist. */
   await pa.getByLabel("Your question").fill("I felt a pop in my knee");

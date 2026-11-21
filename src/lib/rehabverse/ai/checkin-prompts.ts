@@ -2,6 +2,7 @@ import { scrubPII, type Lang } from "./intake-spec.ts";
 import type { ChatMessage, Turn } from "./prompts.ts";
 import { QUESTION } from "./checkin-spec.ts";
 import type { CheckinDraft, CheckinStep } from "./checkin-shared.ts";
+import { languageRule, withLanguageReminder } from "./reply-lang.ts";
 
 /** What the model knows about the check-in. It never receives the patient's name, contact details or any identifier. */
 export type CheckinContext = {
@@ -26,7 +27,7 @@ The system, not you, chooses and asks the next question. On each turn you do two
 
 HOW YOU SPEAK
 - Like a kind, unhurried clinic assistant. Acknowledge what they said in their own words. No question, no advice, no instruction, no emojis, no lists.
-- Reply in the patient's language. Preferred language: ${lang === "ru" ? "Roman Urdu" : "English"}. If they write English, reply in English; if they write Roman Urdu (Urdu in English letters), reply in natural, respectful, spoken Pakistani Roman Urdu with common English words; if they write Urdu script, reply in Roman Urdu.
+- ${languageRule(lang)} If they write Urdu script, reply in Roman Urdu.
 - Only repeat numbers the patient said.
 
 YOU MUST NEVER
@@ -50,6 +51,6 @@ export function buildCheckinMessages(input: { lang: Lang; history: Turn[]; ctx: 
   return [
     { role: "system", content: checkinSystemPrompt(input.lang, input.ctx, input.draft, input.step) },
     ...recent,
-    { role: "user", content: scrubPII(input.patientText).slice(0, 900) },
+    { role: "user", content: withLanguageReminder(scrubPII(input.patientText).slice(0, 900), input.lang) },
   ];
 }

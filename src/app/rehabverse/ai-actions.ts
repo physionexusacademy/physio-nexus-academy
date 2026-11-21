@@ -93,7 +93,7 @@ export async function intakeChatTurnAction(input: { conversationId: string; text
     const draft = applyUpdates(EMPTY_DRAFT, conversation.draft).draft;
     const result = await runIntakeTurn(
       { lang, history: asMessages(conversation.messages), draft, patientText: text, turnNumber: Number(conversation.turns ?? 0) + 1 },
-      { callModel: (messages) => callChat(messages) },
+      { callModel: (messages) => callChat(messages, { effort: "medium" }) },
     );
     const { error } = await db.rpc("rehab_ai_append_turn", {
       p_patient_id: context.patientId, p_conversation_id: input.conversationId, p_patient_text: text, p_assistant_text: result.reply,

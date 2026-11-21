@@ -130,6 +130,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-resting
 
+      - name: Validate the RehabVerse AI chats answer in the patient's language (Roman Urdu in, Roman Urdu out; wrong-language model replies refused)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-reply-lang
+
+      - name: Validate the Claude chat layer (request shape, failures fall back to the free chain, key only in the Worker, no SDK in the bundle)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-claude
+
       - name: Validate the RehabVerse history brief (nothing invented, no diagnosis, quotes exact, missed safety wording surfaced)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-brief
@@ -207,6 +215,8 @@ jobs:
           NEXT_PUBLIC_IMAGEKIT_3D_ENABLED: "false"
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          # Claude Haiku (pay-as-you-go) for the RehabVerse chats. Optional: without it the chats run on the free Workers AI chain.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           PAYMENTS_ENABLED: "false"
         run: |
           # Publish is controlled by the reviewed 35-cover manifest (not a
@@ -231,6 +241,13 @@ jobs:
             printf '%s' "$SUPABASE_SERVICE_ROLE_KEY" | npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
           else
             echo "::warning::SUPABASE_SERVICE_ROLE_KEY is not configured; reminder e-mails will be skipped."
+          fi
+
+          # The chats call Claude from inside the Worker, so the key must exist in the Worker runtime, never in the build or the browser.
+          if [ -n "${ANTHROPIC_API_KEY}" ]; then
+            printf '%s' "$ANTHROPIC_API_KEY" | npx wrangler secret put ANTHROPIC_API_KEY
+          else
+            echo "::warning::ANTHROPIC_API_KEY is not configured; the RehabVerse chats stay on the free Workers AI chain."
           fi
 
           npm run deploy

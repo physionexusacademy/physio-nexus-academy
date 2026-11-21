@@ -103,10 +103,11 @@ export const GUIDE = {
     { gesture: "nod", say: { en: "Your physiotherapist is reviewing your assessment. I will be here when your programme is ready.", ru: "Aap ke physiotherapist aap ka assessment dekh rahe hain. Programme tayyar hone par main yahin milunga." } },
   ] as GuideBeat[],
 
-  dayOpen: (day: number): GuideBeat[] => [
-    { gesture: "wave", say: { en: `Welcome back! Day ${day} is open. Let us look at today's exercises together.`, ru: `Wapis khush aamdeed! Din ${day} khul gaya hai. Aaiye aaj ki exercises saath dekhte hain.` } },
+  // No day number in these lines: the page already shows it, and a fixed line can be recorded once (a number would need a recording for every day).
+  dayOpen: [
+    { gesture: "wave", say: { en: "Welcome back! Your next day is open. Let us look at today's exercises together.", ru: "Wapis khush aamdeed! Aap ka agla din khul gaya hai. Aaiye aaj ki exercises saath dekhte hain." } },
     { gesture: "open", say: { en: "Watch each demo first, move slowly, and breathe. When you finish, give your feedback — that is how tomorrow opens.", ru: "Pehle har demo dekhein, aahista harkat karein aur saans lete rahein. Khatam hone par feedback dein — isi se agla din khulta hai." } },
-  ],
+  ] as GuideBeat[],
 
   waitingReview: [
     { gesture: "nod", say: { en: "Great work! Your feedback has gone to your physiotherapist. The next day opens once they approve it.", ru: "Shabash! Aap ka feedback physiotherapist ko pohanch gaya. Unke approve karne par agla din khul jayega." } },

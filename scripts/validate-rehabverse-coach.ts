@@ -68,7 +68,7 @@ const turn = (text: string, over: Partial<Parameters<typeof runCoachTurn>[0]> = 
     const { r, model } = await turn(text);
     ok(r.status === "safety_stop" && r.how === "safety" && r.notify === "safety" && r.model === "safety", `a safety problem stops the coach and alerts the physiotherapist: "${text}"`);
     ok(model.calls === 0, `...and the model is not consulted: "${text}"`);
-    ok(/stop|ruk/i.test(r.reply) && /1122/.test(r.reply), `...the patient is told to stop and given the emergency number: "${text}"`);
+    ok(/stop|ruk|rok/i.test(r.reply) && /1122/.test(r.reply), `...the patient is told to stop and given the emergency number (in the language they wrote): "${text}"`);
   }
   const roman = await turn("mujhe chakkar aa raha hai", { lang: "ru" });
   ok(/Barah-e-karam abhi exercise rok dein/.test(roman.r.reply), "the stop message is in Roman Urdu when the conversation is");
@@ -212,8 +212,13 @@ const turn = (text: string, over: Partial<Parameters<typeof runCoachTurn>[0]> = 
   const model = noModel();
   const long = await turn("how do I do it?", { turnNumber: 31 }, model);
   ok(long.r.status === "completed" && long.r.how === "limit" && model.calls === 0, "a very long conversation ends politely, without the model");
-  const ru = await turn("what does hips stacked mean", { lang: "ru" }, noModel());
-  eq(ru.r.reply, COACH_MENU.ru, "the scripted menu is in the conversation's language");
+  // the reply follows the language the patient WRITES in; the page's language switch only decides when the message does not show one
+  const ru = await turn("ye hips stacked ka kya matlab hai", { lang: "en" }, noModel());
+  eq(ru.r.reply, COACH_MENU.ru, "a patient who writes Roman Urdu gets the scripted menu in Roman Urdu, whatever the page's language switch says");
+  const en = await turn("what does hips stacked mean", { lang: "ru" }, noModel());
+  eq(en.r.reply, COACH_MENU.en, "a patient who writes English gets English");
+  const quiet = await turn("5", { lang: "ru" }, noModel());
+  eq(quiet.r.reply, COACH_MENU.ru, "a message that shows no language falls back to the page's language switch");
   ok(/1122/.test(COACH_STOP.en) && /1122/.test(COACH_STOP.ru), "the stop message gives the emergency number in both languages");
 }
 
