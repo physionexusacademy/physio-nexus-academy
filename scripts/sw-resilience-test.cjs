@@ -24,6 +24,24 @@ const check = (name, ok, detail = "") => {
 
 const page = (title, extra = "") => `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title></head><body><h1>${title}</h1><p>${extra}</p></body></html>`;
 
+// A second server stands in for the backup (workers.dev) address: the worker's BACKUP address is pointed at it, and it is answered or cut on demand.
+const BACKUP_PORT = 8098;
+let backupUp = false;
+const backupServer = http.createServer((req, res) => {
+  if (!backupUp) {
+    req.socket.destroy();
+    return;
+  }
+  const u = new URL(req.url, `http://127.0.0.1:${BACKUP_PORT}`);
+  if (u.pathname === "/robots.txt") {
+    res.writeHead(200, { "content-type": "text/plain" });
+    res.end("User-agent: *\nDisallow: /\n");
+    return;
+  }
+  res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+  res.end(`<!doctype html><title>backup</title><h1>BACKUP HOST ${u.pathname}${u.search}</h1>`);
+});
+
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, BASE);
   if (url.pathname === "/__mode") {
@@ -37,6 +55,7 @@ const server = http.createServer((req, res) => {
   const n = hits[url.pathname];
   if (url.pathname === "/sw.js") {
     let src = fs.readFileSync(path.join(PUBLIC, "sw.js"), "utf8");
+    src = src.replace(/const BACKUP = "[^"]*";/, `const BACKUP = "http://127.0.0.1:${BACKUP_PORT}";`);
     if (swVersion) src = src.replace(/const VERSION = "[^"]*";/, `const VERSION = "${swVersion}";`);
     res.writeHead(200, { "content-type": "text/javascript", "cache-control": "no-cache" });
     res.end(src);
@@ -126,6 +145,7 @@ const cacheUrls = (p, prefix) =>
 
 (async () => {
   await new Promise((resolve) => server.listen(PORT, "127.0.0.1", resolve));
+  await new Promise((resolve) => backupServer.listen(BACKUP_PORT, "127.0.0.1", resolve));
   const browser = await chromium.launch();
   const ctx = await browser.newContext();
   const p = await ctx.newPage();
@@ -227,6 +247,18 @@ const cacheUrls = (p, prefix) =>
   check("...the DNS steps are still there", /one\.one\.one\.one/.test(await text(p)));
   await ctx.unroute(BACKUP + "/**");
 
+  // --- the worker itself: when the backup address answers, a public page opens there live (not the saved copy); a signed-in page never moves
+  backupUp = true;
+  await p.goto(BASE + "/learn", { waitUntil: "load" });
+  check("cut connection, backup answers: a visited public page opens live on the backup address (not the saved copy)", p.url() === `http://127.0.0.1:${BACKUP_PORT}/learn` && /BACKUP HOST \/learn/.test(await text(p)), p.url());
+  await p.goto(BASE + "/learn/never-visited-3?utm=x", { waitUntil: "load" });
+  check("...a never-visited public page too, with its query", p.url() === `http://127.0.0.1:${BACKUP_PORT}/learn/never-visited-3?utm=x`, p.url());
+  await p.goto(BASE + "/account", { waitUntil: "load" });
+  check("...a signed-in page does not move (the offline page, never a copy)", p.url() === BASE + "/account" && /We can't reach the site right now/.test(await text(p)), p.url());
+  backupUp = false;
+  await p.goto(BASE + "/learn", { waitUntil: "load" });
+  check("backup address cut as well: the saved copy of a visited page is shown again", p.url() === BASE + "/learn" && /Page \/learn/.test(await text(p)), p.url());
+
   // --- the connection comes back: fresh again
   await set("up");
   await p.goto(BASE + "/learn", { waitUntil: "load" });
@@ -278,6 +310,7 @@ const cacheUrls = (p, prefix) =>
 
   await browser.close();
   server.close();
+  backupServer.close();
   const failed = results.filter((x) => !x).length;
   console.log(failed ? `\n${failed} of ${results.length} FAILED` : `\nALL ${results.length} PASSED`);
   process.exit(failed ? 1 : 0);
