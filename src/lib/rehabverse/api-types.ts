@@ -12,7 +12,8 @@ export type ReviewDecision = "progress" | "maintain" | "regress" | "modify" | "r
 
 /** The AI-assistance switch. Only the admin can change it (research design): a patient can neither turn it on nor off. */
 export type AiAssist = "off" | "on";
-export type PatientSummary = { id: string; reference_code: string; full_name: string; preferred_language: "en" | "ru"; age_years: number; ai_assist: AiAssist };
+export type AccountStatus = "pending" | "active" | "rejected" | "archived";
+export type PatientSummary = { id: string; reference_code: string; full_name: string; preferred_language: "en" | "ru"; age_years: number; ai_assist: AiAssist; status?: AccountStatus; decision_note?: string | null };
 
 export type OverviewSession = {
   id: string; day_number: number; title: string; status: SessionStatus;
@@ -105,7 +106,12 @@ export type AdminPatient = {
   audit: { id: number; at: string; action: string; entity: string; details: Record<string, unknown> | null; actor_role: string | null }[];
   ai_conversations?: AdminAiConversation[];
 };
-export type AdminPatientRow = { id: string; reference_code: string; full_name: string; city: string | null; created_at: string; ai_assist: AiAssist; programme_status: ProgrammeStatus | null };
+export type AdminPatientRow = { id: string; reference_code: string; full_name: string; city: string | null; created_at: string; ai_assist: AiAssist; status: AccountStatus; programme_status: ProgrammeStatus | null };
+
+/** A new account waiting for the clinic's decision (the contact details are what the clinic checks before approving). */
+export type RegistrationRequest = { id: string; reference_code: string; full_name: string; email: string | null; phone: string | null; city: string | null; age_years: number; sex: string | null; preferred_language: "en" | "ru"; created_at: string };
+export type RegistrationDecision = { id: string; reference_code: string; full_name: string; phone: string | null; preferred_language: "en" | "ru"; status: AccountStatus; decided_at: string; decision_note: string | null };
+export type Registrations = { pending: RegistrationRequest[]; recent: RegistrationDecision[] };
 
 /** What the programme builder sends to rehab_admin_save_plan. */
 export type PlanPayload = {

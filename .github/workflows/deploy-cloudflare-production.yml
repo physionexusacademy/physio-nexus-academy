@@ -182,6 +182,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-db
 
+      - name: Validate RehabVerse account approval (no confirmation e-mail, the clinic approves, a waiting account can do nothing)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-approval
+
       - name: Validate student accounts (private record, XP caps, outbox, insights)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student

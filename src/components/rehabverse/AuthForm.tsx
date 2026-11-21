@@ -11,6 +11,7 @@ const ERRORS: Record<string, { en: string; ru: string }> = {
   bad_email: { en: "That email address does not look right. Please check it.", ru: "Ye email address durust nahi lag raha. Dobara check karein." },
   weak_password: { en: "Use a password of at least 10 characters.", ru: "Kam az kam 10 characters ka password rakhein." },
   bad_name: { en: "Please enter your full name.", ru: "Apna poora naam likhein." },
+  bad_phone: { en: "Please enter a phone number the clinic can call or WhatsApp (at least 10 digits).", ru: "Aisa phone number likhein jis par clinic call ya WhatsApp kar sake (kam az kam 10 digits)." },
   bad_age: { en: "Please enter your age in years.", ru: "Apni umar saalon mein likhein." },
   under_18: { en: "RehabVerse is for adults (18+). Please ask a parent or guardian to book a clinic visit instead.", ru: "RehabVerse bartaaloon (18+) ke liye hai. Meherbani karke parent ya guardian se clinic visit book karwayein." },
   consent_required: { en: "Please tick the agreement box to continue.", ru: "Aage barhne ke liye agreement wale box par tick karein." },
@@ -79,7 +80,7 @@ function PasswordField({ id, name = "password", label, value, onChange, autoComp
 /* ───────────────────────── guidance + tabs ───────────────────────── */
 
 const STEPS = [
-  { icon: UserPlus, en: ["Create your account", "Your name, age and email — about one minute."], ru: ["Account banayein", "Naam, umar aur email — lagbhag ek minute."] },
+  { icon: UserPlus, en: ["Request your account", "Your name, age, phone and email — about one minute. The clinic approves every new account (no confirmation email)."], ru: ["Account ki request karein", "Naam, umar, phone aur email — lagbhag ek minute. Clinic har naya account khud approve karta hai (email confirm karne ki zaroorat nahi)."] },
   { icon: ClipboardList, en: ["Tell us what hurts", "A few simple questions and safety checks (about 5 minutes)."], ru: ["Takleef bataein", "Kuch aasaan sawal aur safety checks (lagbhag 5 minute)."] },
   { icon: Stethoscope, en: ["Your physiotherapist builds your plan", "A real physiotherapist reviews your answers and approves your programme."], ru: ["Physiotherapist aap ka plan banate hain", "Ek real physiotherapist aap ke jawabat dekh kar programme approve karte hain."] },
   { icon: Video, en: ["Follow it day by day", "3D demos for every exercise. Give feedback and the next day opens safely."], ru: ["Din ba din follow karein", "Har exercise ka 3D demo. Feedback dein aur agla din safely khulta hai."] },
@@ -141,7 +142,7 @@ function LoginForm({ notice }: { notice?: string }) {
         start(async () => {
           const result = await loginAction(form);
           if (!result.ok) return setError(result.error);
-          router.push(result.staff ? "/admin/rehabverse" : "/rehabverse/me");
+          router.push(result.staff ? "/admin/rehabverse" : result.status === "active" ? "/rehabverse/me" : "/rehabverse/pending");
           router.refresh();
         });
       }}
@@ -181,31 +182,8 @@ function LoginForm({ notice }: { notice?: string }) {
 
 function RegisterForm() {
   const { lang, router, pending, start, setError, message } = useAuth();
-  const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [resent, setResent] = useState(false);
-  if (confirmEmail) {
-    return (
-      <div className="space-y-4" role="status">
-        <span className="grid h-12 w-12 place-items-center rounded-2xl bg-teal-50 text-teal-700"><Mail className="h-6 w-6" aria-hidden="true" /></span>
-        <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="One last step: confirm your email" ru="Aakhri qadam: apna email confirm karein" /></h1>
-        <p className="text-sm leading-6 text-slate-700"><T en="We sent a link to" ru="Humne link bheji hai" /> <b>{confirmEmail}</b>.</p>
-        <ol className="list-decimal space-y-1.5 pl-5 text-[13.5px] leading-6 text-slate-700">
-          <li><T en="Open the email (check your spam or promotions folder too)." ru="Email kholein (spam ya promotions folder bhi dekhein)." /></li>
-          <li><T en="Tap the button in it — it brings you straight back here to start your assessment." ru="Us mein diye button par tap karein — wo aap ko seedha yahan wapis lata hai assessment shuru karne ke liye." /></li>
-          <li><T en="If the link opens on another device or the homepage, come back and use “Sign in”." ru="Agar link kisi aur device ya homepage par khule to wapis aa kar “Sign in” karein." /></li>
-        </ol>
-        {resent ? <p className="text-[13px] font-semibold text-teal-800"><T en="Sent again — please check your inbox." ru="Dobara bhej di — inbox dekhein." /></p> : (
-          <button type="button" disabled={pending} className="text-[13px] font-bold text-teal-700 underline" onClick={() => start(async () => { const fd = new FormData(); fd.set("email", confirmEmail); await resendConfirmationAction(fd); setResent(true); })}><T en="I did not get it — send again" ru="Nahi mili — dobara bhejein" /></button>
-        )}
-        <div className="flex flex-wrap gap-2 pt-1">
-          <Link href="/rehabverse/login" className="rv-btn rv-btn-primary"><T en="I confirmed — sign in" ru="Confirm kar liya — sign in" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
-          <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setConfirmEmail(null)}><T en="Wrong email? Go back" ru="Email ghalat hai? Wapis" /></button>
-        </div>
-      </div>
-    );
-  }
   return (
     <form
       className="space-y-4"
@@ -217,16 +195,15 @@ function RegisterForm() {
         start(async () => {
           const result = await registerAction(form);
           if (!result.ok) return setError(result.error);
-          if (result.needsEmailConfirmation) return setConfirmEmail(String(form.get("email")));
-          router.push("/rehabverse/start");
+          router.push("/rehabverse/pending");
           router.refresh();
         });
       }}
     >
       <div>
-        <p className="rv-h"><T en="Step 1 of 3" ru="Qadam 1 / 3" /></p>
-        <h1 className="mt-1 font-heading text-2xl font-bold text-navy-800"><T en="Create your RehabVerse account" ru="Apna RehabVerse account banayein" /></h1>
-        <p className="mt-1 text-sm text-slate-600"><T en="Next: a short assessment. Then your physiotherapist builds your programme." ru="Phir: chhota sa assessment. Uske baad aap ke physiotherapist aap ka programme banate hain." /></p>
+        <p className="rv-h"><T en="Step 1 of 4" ru="Qadam 1 / 4" /></p>
+        <h1 className="mt-1 font-heading text-2xl font-bold text-navy-800"><T en="Request your RehabVerse account" ru="Apne RehabVerse account ki request karein" /></h1>
+        <p className="mt-1 text-sm text-slate-600"><T en="The clinic checks every new account (by phone or WhatsApp) and approves it. Then: a short assessment, and your physiotherapist builds your programme." ru="Clinic har naya account (phone ya WhatsApp par) check kar ke approve karta hai. Phir: chhota sa assessment, aur aap ke physiotherapist aap ka programme banate hain." /></p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
@@ -248,8 +225,9 @@ function RegisterForm() {
           </select>
         </div>
         <div>
-          <label className="rv-label" htmlFor="phone"><T en="Phone (optional)" ru="Phone (zaroori nahi)" /></label>
-          <input id="phone" name="phone" type="tel" autoComplete="tel" className="rv-input" />
+          <label className="rv-label" htmlFor="phone"><T en="Phone / WhatsApp number" ru="Phone / WhatsApp number" /></label>
+          <input id="phone" name="phone" type="tel" inputMode="tel" required minLength={10} maxLength={30} autoComplete="tel" placeholder="03xx xxxxxxx" className="rv-input" />
+          <p className="rv-hint"><T en="The clinic uses it to check your request." ru="Clinic isse aap ki request check karta hai." /></p>
         </div>
         <div>
           <label className="rv-label" htmlFor="city"><T en="City (optional)" ru="Shehar (zaroori nahi)" /></label>
@@ -258,7 +236,7 @@ function RegisterForm() {
         <div className="sm:col-span-2">
           <label className="rv-label" htmlFor="email"><T en="Email" ru="Email" /></label>
           <input id="email" name="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rv-input" />
-          <p className="rv-hint"><T en="You will use it to sign in. We may send a confirmation link and programme updates (never your health details)." ru="Isi se sign in hoga. Hum confirmation link aur programme ke updates bhej sakte hain (aap ki sehat ki tafseel kabhi nahi)." /></p>
+          <p className="rv-hint"><T en="You will use it to sign in. We may send programme updates (never your health details). No confirmation link is needed." ru="Isi se sign in hoga. Hum programme ke updates bhej sakte hain (aap ki sehat ki tafseel kabhi nahi). Confirmation link ki zaroorat nahi." /></p>
         </div>
         <div className="sm:col-span-2">
           <PasswordField id="password" label={<T en="Create a password" ru="Password banayein" />} value={password} onChange={setPassword} autoComplete="new-password" showRules email={email} minLength={10} />
@@ -276,7 +254,7 @@ function RegisterForm() {
         </span>
       </label>
       {message ? <p className="rv-error" role="alert">{message}</p> : null}
-      <button type="submit" disabled={pending} className="rv-btn rv-btn-primary w-full"><UserPlus className="h-4 w-4" aria-hidden="true" /> {pending ? (lang === "ru" ? "Account ban raha hai…" : "Creating your account…") : <T en="Create my account" ru="Mera account banayein" />}</button>
+      <button type="submit" disabled={pending} className="rv-btn rv-btn-primary w-full"><UserPlus className="h-4 w-4" aria-hidden="true" /> {pending ? (lang === "ru" ? "Request bhej rahe hain…" : "Sending your request…") : <T en="Send my account request" ru="Account ki request bhejein" />}</button>
       <p className="text-center text-sm text-slate-600"><T en="Already registered?" ru="Pehle se registered hain?" /> <Link href="/rehabverse/login" className="font-bold text-teal-700 underline-offset-2 hover:underline"><T en="Sign in" ru="Sign in" /></Link></p>
     </form>
   );

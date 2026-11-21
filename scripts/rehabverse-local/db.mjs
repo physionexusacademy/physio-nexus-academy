@@ -40,6 +40,8 @@ export async function createDb({ dataDir } = {}) {
   if (!hasPilot) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261124120000_rehab_ai_pilot.sql"), "utf8"));
   const noLimit = await db.query("select 1 from pg_constraint where conname = 'rehab_ai_pilot_max_patients_check' and pg_get_constraintdef(oid) like '%100000%'").then((r) => r.rows.length > 0);
   if (!noLimit) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261125120000_rehab_ai_pilot_no_limit.sql"), "utf8"));
+  const hasApproval = await db.query("select 1 from information_schema.columns where table_schema = 'public' and table_name = 'rehab_patients' and column_name = 'decided_at'").then((r) => r.rows.length > 0);
+  if (!hasApproval) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261126120000_rehab_account_approval.sql"), "utf8"));
   return db;
 }
 

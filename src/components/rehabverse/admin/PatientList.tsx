@@ -13,6 +13,7 @@ const FILTERS = [
   { id: "none", label: "No programme" },
   { id: "done", label: "Completed / stopped" },
   { id: "ai_on", label: "AI on" },
+  { id: "waiting", label: "Waiting for approval" },
 ];
 
 /** Find a patient by name, reference or city, and filter by programme state. */
@@ -25,7 +26,7 @@ export function PatientList({ patients }: { patients: AdminPatientRow[] }) {
       const state = p.programme_status;
       const matchesFilter =
         filter === "all" ||
-        (filter === "ai_on" ? p.ai_assist === "on" : filter === "none" ? !state : filter === "done" ? state === "completed" || state === "discontinued" : state === filter);
+        (filter === "waiting" ? p.status === "pending" || p.status === "rejected" : filter === "ai_on" ? p.ai_assist === "on" : filter === "none" ? !state : filter === "done" ? state === "completed" || state === "discontinued" : state === filter);
       return matchesFilter && (!q || p.full_name.toLowerCase().includes(q) || p.reference_code.toLowerCase().includes(q) || (p.city ?? "").toLowerCase().includes(q));
     });
   }, [patients, query, filter]);
@@ -47,6 +48,7 @@ export function PatientList({ patients }: { patients: AdminPatientRow[] }) {
             <Link href={`/admin/rehabverse/patients/${p.id}`} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] hover:border-teal-400">
               <span><b className="text-navy-800">{p.full_name}</b> <span className="text-slate-500">{p.reference_code}{p.city ? ` · ${p.city}` : ""}</span></span>
               <span className="flex flex-wrap items-center justify-end gap-1">
+                {p.status === "pending" || p.status === "rejected" ? <span className={"rv-chip " + (p.status === "pending" ? "rv-chip-amber" : "rv-chip-rose")}>{p.status === "pending" ? "waiting for approval" : "rejected"}</span> : null}
                 {p.ai_assist === "on" ? <span className="rv-chip rv-chip-navy">AI on</span> : null}
                 <span className={"rv-chip " + (p.programme_status === "active" ? "rv-chip-teal" : p.programme_status === "paused" ? "rv-chip-amber" : "")}>{p.programme_status ?? "no programme"}</span>
               </span>

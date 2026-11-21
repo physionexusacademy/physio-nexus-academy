@@ -14,6 +14,11 @@ const BASE = process.env.E2E_BASE ?? "http://127.0.0.1:3100";
 const API = process.env.E2E_API ?? "http://127.0.0.1:54321";
 const OUT = process.env.E2E_OUT ?? path.join(process.cwd(), "e2e-out");
 fs.mkdirSync(OUT, { recursive: true });
+async function devSql(sql, params = []) {
+  const res = await fetch(`${API}/__dev/sql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sql, params }) });
+  if (!res.ok) throw new Error("dev sql failed: " + (await res.text()));
+  return res.json();
+}
 const results = [];
 const check = (name, ok, detail = "") => {
   results.push({ name, ok: Boolean(ok) });
@@ -61,48 +66,36 @@ const lastCode = async (email) => (await (await fetch(`${API}/__dev/last-code?em
   check("R1 Sign-up page shows the guided steps and a Create account / Sign in switch", (await page.getByText("Here is exactly what happens").count()) === 1 && (await page.getByRole("link", { name: "Sign in" }).count()) >= 1);
   await page.fill("#full_name", U.name);
   await page.fill("#age_years", "37");
+  await page.fill("#phone", "0300 1234567");
   await page.fill("#email", U.email);
   await page.fill("#password", "short");
   check("R2 Password rules update as you type", (await page.getByText("At least 10 characters").count()) === 1);
   await page.fill("#password", U.password);
   await page.check("input[name=consent]");
   await page.screenshot({ path: path.join(OUT, "a3-register.png"), fullPage: true });
-  await page.getByRole("button", { name: "Create my account" }).click();
-  await page.getByText("One last step: confirm your email").waitFor();
-  check("R3 With e-mail confirmation on, the person is told exactly what to do next", (await page.getByText(U.email).count()) >= 1 && (await page.getByRole("button", { name: /send again/ }).count()) === 1);
-  await page.screenshot({ path: path.join(OUT, "a4-confirm-email.png") });
+  await page.getByRole("button", { name: "Send my account request" }).click();
+  await page.waitForURL(/\/rehabverse\/pending/);
+  await page.getByText("Your request is with the clinic").waitFor();
+  check("R3 A new account is a request: the person lands on the waiting screen and no email step is asked", (await page.getByText(/No email confirmation is needed/).count()) === 1 && (await page.getByText(/confirm your email/i).count()) === 0);
+  await page.screenshot({ path: path.join(OUT, "a4-waiting-for-approval.png") });
+  check("R4 No confirmation e-mail was issued", !(await lastCode(U.email)));
 
-  /* sign in before confirming */
+  /* a pending account can do nothing */
+  await page.goto(BASE + "/rehabverse/start");
+  await page.waitForURL(/\/rehabverse\/pending/);
+  check("R5 A waiting account cannot open the assessment (it is sent back to the waiting screen)", true);
+  await page.goto(BASE + "/rehabverse/me");
+  await page.waitForURL(/\/rehabverse\/pending/);
+  check("R6 ...nor the programme dashboard", true);
   await page.goto(BASE + "/rehabverse/login");
-  await page.fill("#email", U.email);
-  await page.fill("#password", U.password);
-  await page.getByRole("button", { name: "Sign in" }).last().click();
-  await page.getByText(/not confirmed yet/).waitFor();
-  check("R4 Signing in before confirming explains why and offers a new email", (await page.getByRole("button", { name: /new confirmation email/ }).count()) === 1);
-  await page.getByRole("button", { name: /new confirmation email/ }).click();
-  await page.getByText(/Sent — check your inbox/).waitFor();
-  check("R5 'Send a new confirmation email' works", true);
+  await page.waitForURL(/\/rehabverse\/pending/); // the sign-in page sends a signed-in person on, and the guard stops a waiting account at the waiting screen
+  check("R7 Signing in again keeps the person on the waiting screen", /\/rehabverse\/pending/.test(page.url()));
 
-  /* confirm via the e-mailed link */
-  const code = await lastCode(U.email);
-  check("R6 A confirmation code was issued", !!code);
-  await page.goto(`${BASE}/rehabverse/auth/callback?code=${code}&next=/rehabverse/start`);
-  await page.waitForURL(/\/rehabverse\/start/);
-  check("R7 The confirmation link signs the person in and lands on the assessment", true);
-  // A used code cannot be replayed on another browser: use a fresh context.
-  const other = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-  await other.addInitScript(() => { try { localStorage.setItem("pna-rv-lang", "en"); } catch { /* ignore */ } });
-  const op = await other.newPage();
-  await op.goto(`${BASE}/rehabverse/auth/callback?code=${code}&next=/rehabverse/start`);
-  await op.waitForURL(/\/rehabverse\/login\?notice=link/);
-  await op.getByText(/could not be used/).waitFor();
-  check("R8 An expired or reused link lands on sign-in with a clear message", true);
-  await other.close();
-
-  /* patient record is created at first sign-in; the intake page opens */
+  /* the clinic approves: the waiting screen moves on by itself, and the assessment opens */
+  await devSql("update public.rehab_patients set status = 'active', decided_at = now() where user_id = (select id from auth.users where email = $1)", [U.email]);
   await page.goto(BASE + "/rehabverse/start");
   await page.getByText("Where is the problem?").waitFor();
-  check("R9 After confirming, the assessment questionnaire opens", true);
+  check("R9 After the clinic approves, the assessment questionnaire opens", true);
 
   /* signed-in people skip the auth pages */
   await page.goto(BASE + "/rehabverse/login");
@@ -116,10 +109,11 @@ const lastCode = async (email) => (await (await fetch(`${API}/__dev/last-code?em
   await page.goto(BASE + "/rehabverse/register");
   await page.fill("#full_name", "Someone Else");
   await page.fill("#age_years", "30");
+  await page.fill("#phone", "0301 7654321");
   await page.fill("#email", U.email);
   await page.fill("#password", "Another-pass-2026!");
   await page.check("input[name=consent]");
-  await page.getByRole("button", { name: "Create my account" }).click();
+  await page.getByRole("button", { name: "Send my account request" }).click();
   await page.getByText(/already has an account/).waitFor();
   check("R11 A taken email is explained, pointing to Sign in / Forgot password", true);
 
