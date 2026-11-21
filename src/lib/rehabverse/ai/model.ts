@@ -1,17 +1,21 @@
 import "server-only";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { ChatMessage } from "./prompts.ts";
-import { callClaude, claudeEnabled, claudeModel, claudeProvider } from "./claude.ts";
+import { callClaude, claudeEnabled, claudeModel } from "./claude.ts";
 import { isClaudeModel } from "./claude-request.ts";
+import { callGroq, groqEnabled, groqModel } from "./groq.ts";
+import { isGroqModel } from "./groq-request.ts";
+import { chatProvider } from "./provider.ts";
 
 /**
- * The model behind the three chats (intake, coach, check-in). Two routes, tried in order:
+ * The model behind the three chats (intake, coach, check-in). Three routes, tried in order:
  *   1. Claude Haiku (Anthropic's API, pay-as-you-go; claude.ts) when ANTHROPIC_API_KEY is set: natural replies, strong Roman Urdu;
- *   2. Cloudflare Workers AI (the free plan's daily allowance): the models below, tried in order.
+ *   2. Groq (free tier; groq.ts) when GROQ_API_KEY is set;
+ *   3. Cloudflare Workers AI (the free plan's daily allowance): the models below, tried in order.
  * If a route is slow, unavailable, out of allowance or credit, the next answers; if none does, the conversation falls back to the scripted
  * questions. Override the Workers AI order with REHAB_AI_MODELS (comma-separated model ids) without a code change; REHAB_AI_PROVIDER
- * ("auto" | "claude" | "workers-ai") chooses the routes. A model id that starts with "claude-" always goes to Claude.
- * Patient data: what leaves Cloudflare for Claude is only the (name- and contact-free) chat text the prompts build; see notices.ts.
+ * ("auto" | "claude" | "groq" | "workers-ai") chooses the routes. A model id that starts with "claude-" goes to Claude, one that starts with "groq:" to Groq.
+ * Patient data: what leaves Cloudflare for Claude or Groq is only the (name- and contact-free) chat text the prompts build; see notices.ts.
  */
 type AiBinding = { run: (model: string, input: Record<string, unknown>) => Promise<unknown> };
 type ModelAnswer = { response?: unknown; result?: { response?: unknown }; choices?: { message?: { content?: unknown } }[] };
@@ -21,11 +25,21 @@ const workersChain = (): string[] => {
   const configured = (process.env.REHAB_AI_MODELS ?? "").split(",").map((item) => item.trim()).filter(Boolean);
   return configured.length ? configured : DEFAULT_MODELS;
 };
-/** Every model the chats may use, in the order they are tried: Claude first (when it is switched on), then the free Workers AI chain. */
+/**
+ * Every model the chats may use, in the order they are tried: Claude (paid, best Roman Urdu), then Groq (free tier), then the free Workers AI
+ * chain, each only when it is set up and the provider setting (REHAB_AI_PROVIDER) allows it. A single-service setting ("claude", "groq",
+ * "workers-ai") uses that service only.
+ */
 export const modelChain = (): string[] => {
-  const provider = claudeProvider();
-  return [...(claudeEnabled() ? [claudeModel()] : []), ...(provider === "claude" && claudeEnabled() ? [] : workersChain())].filter((model, i, all) => all.indexOf(model) === i);
+  const provider = chatProvider();
+  const chain: string[] = [];
+  if (claudeEnabled()) chain.push(claudeModel());
+  if (groqEnabled()) chain.push(groqModel());
+  if (provider === "auto" || provider === "workers-ai") chain.push(...workersChain());
+  return chain.filter((model, i, all) => all.indexOf(model) === i);
 };
+/** The keyed services only (no Workers AI): for answers where a weak model would do more harm than good (the site assistant's grounded answers). */
+export const externalChain = (): string[] => modelChain().filter((model) => isClaudeModel(model) || isGroqModel(model));
 
 const textOf = (raw: unknown): string => {
   const answer = (raw ?? {}) as ModelAnswer;
@@ -45,6 +59,12 @@ export async function callChat(
     if (isClaudeModel(model)) {
       if (!claudeEnabled()) continue;
       const answer = await callClaude(messages, { model, maxTokens: options.maxTokens, effort: options.effort, timeoutMs: options.timeoutMs });
+      if (answer) return answer;
+      continue;
+    }
+    if (isGroqModel(model)) {
+      if (!groqEnabled()) continue;
+      const answer = await callGroq(messages, { model, maxTokens: options.maxTokens, temperature: options.temperature, timeoutMs: options.timeoutMs });
       if (answer) return answer;
       continue;
     }

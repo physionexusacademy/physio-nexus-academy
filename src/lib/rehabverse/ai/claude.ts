@@ -1,5 +1,5 @@
 import "server-only";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { chatProvider, fromEnvironment } from "./provider.ts";
 import { DEFAULT_CLAUDE_MODEL, sendClaude, type ClaudeEffort, type ClaudeMessage } from "./claude-request.ts";
 
 /**
@@ -10,29 +10,12 @@ import { DEFAULT_CLAUDE_MODEL, sendClaude, type ClaudeEffort, type ClaudeMessage
  *
  *   ANTHROPIC_API_KEY   the key (Worker secret; never in the repository or in the browser)
  *   CLAUDE_CHAT_MODEL   optional: the model id (default claude-haiku-5-5)
- *   REHAB_AI_PROVIDER   optional: "auto" (default: Claude first, then the free chain), "claude" (Claude only) or "workers-ai" (the free chain only)
+ *   REHAB_AI_PROVIDER   optional, see provider.ts ("auto", "claude", "groq" or "workers-ai")
  */
-export type ClaudeProvider = "auto" | "claude" | "workers-ai";
-
-const fromEnvironment = (name: string): string => {
-  const direct = process.env[name];
-  if (typeof direct === "string" && direct.trim()) return direct.trim();
-  try {
-    const value = (getCloudflareContext() as unknown as { env?: Record<string, unknown> }).env?.[name];
-    return typeof value === "string" ? value.trim() : "";
-  } catch {
-    return ""; // outside Cloudflare (local development)
-  }
-};
-
 export const claudeKey = (): string | null => fromEnvironment("ANTHROPIC_API_KEY") || null;
 export const claudeModel = (): string => fromEnvironment("CLAUDE_CHAT_MODEL") || DEFAULT_CLAUDE_MODEL;
-export const claudeProvider = (): ClaudeProvider => {
-  const value = fromEnvironment("REHAB_AI_PROVIDER").toLowerCase();
-  return value === "claude" || value === "workers-ai" ? value : "auto";
-};
 /** True when Claude should be tried: a key is set and the provider setting allows it. */
-export const claudeEnabled = (): boolean => Boolean(claudeKey()) && claudeProvider() !== "workers-ai";
+export const claudeEnabled = (): boolean => Boolean(claudeKey()) && ["auto", "claude"].includes(chatProvider());
 
 /** After a rejected key (wrong, revoked, no credit) Claude is skipped for a few minutes, so a dead key is not hit on every message. */
 const PAUSE_MS = 10 * 60 * 1000;

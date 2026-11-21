@@ -138,6 +138,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-claude
 
+      - name: Validate the Groq chat layer (request shape, failures fall back, key only in the Worker, no key in the repository)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-groq
+
+      - name: Validate the site assistant's written answers (only from PNA content, in the question's language, guarded)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:pna-ai-grounded
+
       - name: Validate the RehabVerse history brief (nothing invented, no diagnosis, quotes exact, missed safety wording surfaced)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-brief
@@ -217,6 +225,8 @@ jobs:
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           # Claude Haiku (pay-as-you-go) for the RehabVerse chats. Optional: without it the chats run on the free Workers AI chain.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Groq (free tier) for the same chats and the site assistant's written answers. Optional.
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           PAYMENTS_ENABLED: "false"
         run: |
           # Publish is controlled by the reviewed 35-cover manifest (not a
@@ -248,6 +258,12 @@ jobs:
             printf '%s' "$ANTHROPIC_API_KEY" | npx wrangler secret put ANTHROPIC_API_KEY
           else
             echo "::warning::ANTHROPIC_API_KEY is not configured; the RehabVerse chats stay on the free Workers AI chain."
+          fi
+
+          if [ -n "${GROQ_API_KEY}" ]; then
+            printf '%s' "$GROQ_API_KEY" | npx wrangler secret put GROQ_API_KEY
+          else
+            echo "::warning::GROQ_API_KEY is not configured; Groq is not used."
           fi
 
           npm run deploy
