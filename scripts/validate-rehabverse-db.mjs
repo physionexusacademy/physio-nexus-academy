@@ -668,6 +668,23 @@ const mine2 = await rpc(gina.user, "rehab_my_outcomes", {});
 ok(mine2.responses.length === 3 && mine2.responses[0].instrument === "nprs" && mine2.responses[0].collected_by === "patient", "the patient reads her own answers");
 eq((await rpc(harun.user, "rehab_my_outcomes", {})).responses, [], "another patient never sees them");
 ok((await rows(admin, "select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'outcomes_answered'"))[0].n >= 2, "the physiotherapist is told when a questionnaire is answered by the patient");
+// messages about the results: only the physiotherapist sends them, they cannot be changed, the patient reads only her own
+await fails(gina.user, "rehab_admin_send_outcome_feedback", { p_patient_id: gina.id, p_message: "I could write to myself.", p_language: "en", p_source: "written" }, /not authorised/, "a patient cannot send a message as her physiotherapist");
+for (const [args, pattern, why] of [
+  [{ p_message: "too short", p_language: "en", p_source: "written" }, /10 to 1500/, "a message under 10 characters"],
+  [{ p_message: "x".repeat(1501), p_language: "en", p_source: "written" }, /10 to 1500/, "a message over 1500 characters"],
+  [{ p_message: "A proper message for the patient.", p_language: "fr", p_source: "written" }, /invalid message settings/, "an unknown language"],
+  [{ p_message: "A proper message for the patient.", p_language: "en", p_source: "robot" }, /invalid message settings/, "an unknown source"],
+]) await fails(admin, "rehab_admin_send_outcome_feedback", { p_patient_id: gina.id, ...args }, pattern, `the database refuses ${why}`);
+const fb = await rpc(admin, "rehab_admin_send_outcome_feedback", { p_patient_id: gina.id, p_message: "Your pain is lower than at the start. Well done.", p_language: "en", p_source: "rules", p_based_on: { instruments: ["nprs"] } });
+ok(/^[0-9a-f-]{36}$/.test(fb.id), "the physiotherapist sends a message about the results");
+const mineFb = await rpc(gina.user, "rehab_my_outcomes", {});
+ok(mineFb.feedback.length === 1 && mineFb.feedback[0].message.startsWith("Your pain is lower") && !("source" in mineFb.feedback[0]), "the patient reads it (she is not shown how it was drafted)");
+eq((await rpc(harun.user, "rehab_my_outcomes", {})).feedback ?? [], [], "another patient never sees it");
+eq((await rows(gina.user, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'outcomes_feedback'"))[0].n, 1, "the patient is told a message is waiting (without its content)");
+await assert.rejects(() => sql("update rehab_outcome_feedback set message = 'changed' where patient_id = $1", [gina.id]), /cannot be changed/); checks += 1;
+await rowsFail(gina.user, "select * from rehab_outcome_feedback", /permission denied/, "patients cannot read the message table directly");
+ok((await rpc(admin, "rehab_admin_outcomes", { p_patient_id: gina.id })).feedback[0].source === "rules", "the physiotherapist's view records how the message started");
 // a new plan replaces the live one; earlier answers and plans stay
 const plan2 = await rpc(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: [{ instrument: "nprs", version: 1, schedule: "intensive" }, { instrument: "groc", version: 1, schedule: "intensive" }] });
 const adminOutcomes = await rpc(admin, "rehab_admin_outcomes", { p_patient_id: gina.id });

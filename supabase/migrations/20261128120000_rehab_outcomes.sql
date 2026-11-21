@@ -53,6 +53,31 @@ create trigger rehab_outcome_responses_guard before update on public.rehab_outco
   for each row execute function public.rehab_outcome_responses_guard();
 revoke all on function public.rehab_outcome_responses_guard() from public, anon, authenticated;
 
+-- What the physiotherapist tells the patient about the results. A message is written by the physiotherapist (it may start from a draft made by fixed rules or
+-- smoothed by an AI service; `source` records how it started) and is only ever sent by the physiotherapist. Messages cannot be edited afterwards.
+create table if not exists public.rehab_outcome_feedback (
+  id uuid primary key default gen_random_uuid(),
+  patient_id uuid not null references public.rehab_patients (id) on delete restrict,
+  message text not null check (char_length(message) between 10 and 1500),
+  language text not null check (language in ('en', 'ru')),
+  source text not null check (source in ('rules', 'ai', 'written')),
+  based_on jsonb not null default '{}'::jsonb check (jsonb_typeof(based_on) = 'object' and pg_column_size(based_on) <= 4000),
+  sent_by uuid references auth.users (id) on delete set null,
+  sent_at timestamptz not null default now()
+);
+create index if not exists rehab_outcome_feedback_patient_idx on public.rehab_outcome_feedback (patient_id, sent_at desc);
+alter table public.rehab_outcome_feedback enable row level security;
+revoke all on public.rehab_outcome_feedback from anon, authenticated;
+create or replace function public.rehab_outcome_feedback_guard() returns trigger
+language plpgsql set search_path = public, pg_temp as $$
+begin
+  raise exception 'rehab: a message that was sent cannot be changed' using errcode = '55000';
+end $$;
+drop trigger if exists rehab_outcome_feedback_guard on public.rehab_outcome_feedback;
+create trigger rehab_outcome_feedback_guard before update on public.rehab_outcome_feedback
+  for each row execute function public.rehab_outcome_feedback_guard();
+revoke all on function public.rehab_outcome_feedback_guard() from public, anon, authenticated;
+
 -- The physiotherapist chooses what to follow. The shape is checked here; whether each instrument is available and at its current version is checked by the app.
 create or replace function public.rehab_admin_set_outcome_plan(p_patient_id uuid, p_items jsonb, p_note text default null)
 returns jsonb language plpgsql security definer set search_path = public, pg_temp as $$
@@ -124,7 +149,9 @@ begin
     'plan', jsonb_build_object('id', plan_row.id, 'items', plan_row.items, 'anchor_at', plan_row.anchor_at),
     'responses', coalesce((select jsonb_agg(jsonb_build_object('instrument', r.instrument, 'version', r.instrument_version, 'timepoint', r.timepoint,
         'answers', r.answers, 'score', r.score, 'language', r.language, 'collected_by', r.collected_by, 'taken_at', r.taken_at) order by r.taken_at)
-        from public.rehab_outcome_responses r where r.patient_id = pid), '[]'::jsonb));
+        from public.rehab_outcome_responses r where r.patient_id = pid), '[]'::jsonb),
+    'feedback', coalesce((select jsonb_agg(jsonb_build_object('message', f.message, 'language', f.language, 'sent_at', f.sent_at) order by f.sent_at desc)
+        from (select * from public.rehab_outcome_feedback where patient_id = pid order by sent_at desc limit 10) f), '[]'::jsonb));
 end $$;
 
 -- The physiotherapist's view: the live plan, the plans before it, and every answer.
@@ -140,7 +167,27 @@ begin
     'earlier_plans', (select count(*) from public.rehab_outcome_plans where patient_id = p_patient_id) - case when plan_row.id is null then 0 else 1 end,
     'responses', coalesce((select jsonb_agg(jsonb_build_object('id', r.id, 'instrument', r.instrument, 'version', r.instrument_version, 'timepoint', r.timepoint,
         'answers', r.answers, 'score', r.score, 'language', r.language, 'collected_by', r.collected_by, 'taken_at', r.taken_at) order by r.taken_at)
-        from public.rehab_outcome_responses r where r.patient_id = p_patient_id), '[]'::jsonb));
+        from public.rehab_outcome_responses r where r.patient_id = p_patient_id), '[]'::jsonb),
+    'feedback', coalesce((select jsonb_agg(jsonb_build_object('id', f.id, 'message', f.message, 'language', f.language, 'source', f.source, 'sent_at', f.sent_at) order by f.sent_at desc)
+        from (select * from public.rehab_outcome_feedback where patient_id = p_patient_id order by sent_at desc limit 20) f), '[]'::jsonb));
+end $$;
+
+-- Send a message about the results to the patient. Only the physiotherapist can; the patient is told that a message is waiting (not what it says).
+create or replace function public.rehab_admin_send_outcome_feedback(p_patient_id uuid, p_message text, p_language text, p_source text, p_based_on jsonb default '{}'::jsonb)
+returns jsonb language plpgsql security definer set search_path = public, pg_temp as $$
+declare uid uuid := public.rehab__require_admin(); new_id uuid; clean text := btrim(coalesce(p_message, ''));
+begin
+  if not exists (select 1 from public.rehab_patients where id = p_patient_id and status = 'active') then
+    raise exception 'rehab: patient not found' using errcode = 'P0002';
+  end if;
+  if char_length(clean) not between 10 and 1500 then raise exception 'rehab: the message must be 10 to 1500 characters' using errcode = '22023'; end if;
+  if p_language not in ('en', 'ru') or p_source not in ('rules', 'ai', 'written') then raise exception 'rehab: invalid message settings' using errcode = '22023'; end if;
+  insert into public.rehab_outcome_feedback (patient_id, message, language, source, based_on, sent_by)
+  values (p_patient_id, clean, p_language, p_source, coalesce(p_based_on, '{}'::jsonb), uid) returning id into new_id;
+  perform public.rehab__audit('outcomes.feedback_sent', 'rehab_outcome_feedback', new_id, p_patient_id, jsonb_build_object('source', p_source, 'language', p_language));
+  perform public.rehab__notify_patient(p_patient_id, 'outcomes_feedback', 'info', 'A message from your physiotherapist',
+    'Your physiotherapist has written to you about your progress. You will find it with your questionnaires.', '{}'::jsonb);
+  return jsonb_build_object('id', new_id);
 end $$;
 
 do $$
@@ -153,4 +200,6 @@ begin
   grant execute on function public.rehab_admin_set_outcome_plan(uuid, jsonb, text) to authenticated;
   revoke all on function public.rehab_admin_outcomes(uuid) from public, anon;
   grant execute on function public.rehab_admin_outcomes(uuid) to authenticated;
+  revoke all on function public.rehab_admin_send_outcome_feedback(uuid, text, text, text, jsonb) from public, anon;
+  grant execute on function public.rehab_admin_send_outcome_feedback(uuid, text, text, text, jsonb) to authenticated;
 end $$;

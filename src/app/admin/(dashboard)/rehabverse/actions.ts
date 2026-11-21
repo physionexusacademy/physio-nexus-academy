@@ -6,6 +6,8 @@ import { checkPlanItems, timepointsFor } from "@/lib/outcomes/plan";
 import { instrumentFor } from "@/lib/outcomes/instruments";
 import { scoreResponse } from "@/lib/outcomes/scoring";
 import type { TimepointKey } from "@/lib/outcomes/types";
+import { checkPolished } from "@/lib/outcomes/feedback";
+import { callChat } from "@/lib/rehabverse/ai/model";
 import type { AiAssist, AiSignoffDecision, PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
 import { buildReviewPack } from "@/lib/rehabverse/ai/review-pack";
 import { emailPatient, type PatientEmailKind } from "@/lib/rehabverse/notify";
@@ -183,5 +185,40 @@ export async function recordOutcomeAction(patientId: string, input: { instrument
     });
     if (error) return { ok: false, error: "Could not save the record." };
     return { ok: true, saved: Boolean((data as { saved?: boolean } | null)?.saved) };
+  } catch (e) { return fail(e); }
+}
+
+/** Send the physiotherapist's message about the results. `source` says how the text started (fixed rules, an AI smoothing of that draft, or written from nothing). */
+export async function sendOutcomeFeedbackAction(patientId: string, input: { message: string; language: "en" | "ru"; source: "rules" | "ai" | "written"; basedOn?: Record<string, unknown> }): Promise<Result<{ id: string }>> {
+  try {
+    const r = await rpc<{ id: string }>("rehab_admin_send_outcome_feedback", {
+      p_patient_id: patientId, p_message: String(input.message ?? "").slice(0, 1500), p_language: input.language === "ru" ? "ru" : "en",
+      p_source: input.source === "ai" || input.source === "written" ? input.source : "rules", p_based_on: input.basedOn ?? {},
+    });
+    return { ok: true, id: r.id };
+  } catch (e) { return fail(e); }
+}
+
+/**
+ * Ask an AI service to smooth the wording of the draft. Only the draft goes (numbers and instrument names: no name or contact detail), the answer must keep the same
+ * numbers and may add no diagnosis, treatment, medicine, promise or link (checkPolished); anything else is refused and the draft stays as it is. The physiotherapist
+ * still reads and sends the message.
+ */
+export async function polishOutcomeFeedbackAction(draft: string, language: "en" | "ru"): Promise<Result<{ text: string; model: string }>> {
+  try {
+    if (!(await isStaff())) return { ok: false, error: "not authorised" };
+    const text = String(draft ?? "").slice(0, 1500);
+    if (text.length < 20) return { ok: false, error: "Write or draft the message first." };
+    const style = language === "ru"
+      ? "Write in natural, spoken Roman Urdu mixed with common English words, the way a Pakistani clinic talks (not formal or pure Urdu), in Roman letters."
+      : "Write in plain, warm English.";
+    const answer = await callChat([
+      { role: "system", content: `You help a physiotherapist polish a short message to a patient about their progress on outcome questionnaires. ${style} Rewrite the DRAFT so it reads naturally and kindly. Rules: keep every number exactly as in the draft and add no number; add no new facts, no diagnosis, no treatment advice, no medicine, no promise or guarantee; keep any sentence about urgent medical care; keep it under 120 words; keep the sign-off as from the physiotherapist. Output only the message.` },
+      { role: "user", content: text },
+    ], { maxTokens: 420, temperature: 0.3, timeoutMs: 20000 });
+    if (!answer) return { ok: false, error: "No AI service answered. The draft is unchanged." };
+    const checked = checkPolished(text, answer.text);
+    if (!checked.ok) return { ok: false, error: `The AI's version was not used (${checked.reason}). The draft is unchanged.` };
+    return { ok: true, text: checked.text, model: answer.model };
   } catch (e) { return fail(e); }
 }

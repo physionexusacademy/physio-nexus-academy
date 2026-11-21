@@ -162,6 +162,7 @@ const responses = async () => devSql(`select r.instrument, r.timepoint, r.score,
   await pp.getByText(/Shukriya/).waitFor();
   const psfs = (await responses()).find((r) => r.instrument === "psfs");
   check("3f The PSFS is stored with the activities as written and the mean (3)", psfs && psfs.score.primary === 3 && psfs.answers.activities.length === 2 && psfs.answers.activities[0].name === "Bachay ko uthana", JSON.stringify(psfs && psfs.answers));
+  await pp.getByText("Abhi aap ke liye kuch baaqi nahi").waitFor({ timeout: 20000 }).catch(() => undefined); // the list refreshes a moment after the thanks
   check("3g Nothing is waiting any more", /Abhi aap ke liye kuch baaqi nahi/.test(await pp.locator("main").innerText()));
   await patientUr.context.close();
 
@@ -227,6 +228,41 @@ const responses = async () => devSql(`select r.instrument, r.timepoint, r.score,
   await shot(admin, "o6-admin-results");
   const stable = (await devSql("select count(*)::int n from public.rehab_audit_log where action = 'outcomes.recorded' and patient_id = $1", [pid]))[0].n;
   check("6d Every answer is in the audit log (6 records)", stable === 6, String(stable));
+
+  /* ───────────── 4. feedback to the patient: a draft from the results, edited and sent by the physiotherapist ───────────── */
+  const fb = admin.locator("[data-testid=outcomes-feedback]");
+  await fb.scrollIntoViewIfNeeded();
+  await fb.getByRole("button", { name: "Draft from the results" }).click();
+  const draft = await fb.getByLabel("Message to the patient").inputValue();
+  check("7a The draft is written from the stored scores (pain 6 to 3, 50% lower; activities 3 to 6.5; rating +5) and signed", /went from 6\/10 to 3\/10 \(50% lower\)/.test(draft) && /went from 3 to 6\.5 out of 10/.test(draft) && /\+5/.test(draft) && /Your physiotherapist$/.test(draft.trim()), draft.slice(0, 120));
+  await fb.getByLabel("Language of the message").selectOption("ru");
+  await fb.getByRole("button", { name: "Draft from the results" }).click();
+  const draftRu = await fb.getByLabel("Message to the patient").inputValue();
+  check("7b In Roman Urdu the draft is natural spoken Roman Urdu with the same numbers", /aap ka pichle hafte ka average dard 6\/10 se 3\/10 ho gaya/.test(draftRu) && /Aap ka physiotherapist/.test(draftRu), draftRu.slice(0, 120));
+  await fb.getByLabel("Language of the message").selectOption("en");
+  await fb.getByRole("button", { name: "Draft from the results" }).click();
+  await fb.getByRole("button", { name: /Smooth the wording with AI/ }).click();
+  await fb.getByText(/The draft is unchanged|AI's version was not used|Wording smoothed/).waitFor();
+  check("7c With no AI service the draft is kept as it is and the physiotherapist is told", /The draft is unchanged|not used|Wording smoothed/.test(await fb.innerText()));
+  const base = await fb.getByLabel("Message to the patient").inputValue();
+  await fb.getByLabel("Message to the patient").fill(base + "\nSee you at the next visit.");
+  await fb.getByRole("button", { name: "Send to the patient" }).click();
+  await fb.getByText(/Sent\. The patient has been told/).waitFor();
+  const sent = (await devSql("select message, language, source from public.rehab_outcome_feedback where patient_id = $1", [pid]))[0];
+  check("7d The message is stored as the physiotherapist sent it (with the extra line), English, and records that it started from a rules draft", sent && /See you at the next visit\./.test(sent.message) && sent.language === "en" && sent.source === "rules", JSON.stringify(sent && sent.source));
+  const patientEn3 = await newPage(browser, "en");
+  const p3 = patientEn3.page;
+  await p3.goto(`${BASE}/rehabverse/login`);
+  await p3.fill("#email", P.email);
+  await p3.fill("#password", P.password);
+  await p3.locator("form button[type=submit]").click();
+  await p3.waitForURL(/\/rehabverse\/me/, { timeout: 60000 });
+  await p3.goto(`${BASE}/rehabverse/me/outcomes`);
+  const msgs = p3.locator("[data-testid=outcomes-messages]");
+  await msgs.waitFor();
+  check("7e The patient reads the message on her questionnaires page (and is not shown how it was drafted)", /went from 6\/10 to 3\/10/.test(await msgs.innerText()) && /See you at the next visit\./.test(await msgs.innerText()) && !/\b(rules draft|AI-smoothed|drafted by)\b/i.test(await msgs.innerText()));
+  await shot(p3, "o7-patient-message");
+  await patientEn3.context.close();
   await adminCtx.close();
 
   await browser.close();

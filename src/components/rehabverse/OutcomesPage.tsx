@@ -61,6 +61,18 @@ export function OutcomesPage({ outcomes }: { outcomes: MyOutcomes }) {
           <p className="mt-1 text-[14px] leading-6 text-slate-600"><T en="A few short questionnaires help your physiotherapist see how you are doing over time. There are no right or wrong answers." ru="Chand chhote sawalnaame aap ke physiotherapist ko waqt ke saath aap ki progress dekhne mein madad karte hain. Koi jawab sahi ya ghalat nahi hota." /></p>
         </header>
 
+        {(outcomes.feedback ?? []).length ? (
+          <section className="space-y-3" aria-labelledby="oc-msg" data-testid="outcomes-messages">
+            <h2 id="oc-msg" className="font-heading text-lg font-bold text-navy-800"><T en="Messages from your physiotherapist" ru="Aap ke physiotherapist ke paighaam" /></h2>
+            {(outcomes.feedback ?? []).map((f) => (
+              <article key={f.id ?? f.sent_at} className="rv-glass border-l-4 !border-l-[#0db3aa] p-4">
+                <p className="text-[12px] font-bold text-slate-500">{new Date(f.sent_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
+                <p className="mt-1 whitespace-pre-line text-[14.5px] leading-6 text-navy-800">{f.message}</p>
+              </article>
+            ))}
+          </section>
+        ) : null}
+
         {done ? <p className="flex items-center gap-2 rounded-2xl bg-teal-50 px-4 py-3 text-[14px] font-bold text-teal-900" role="status"><CheckCircle2 className="h-5 w-5" aria-hidden="true" /> <T en="Thank you — your answers were sent." ru="Shukriya — aap ke jawab bhej diye gaye." /></p> : null}
 
         {!plan ? (

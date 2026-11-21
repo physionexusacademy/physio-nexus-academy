@@ -181,7 +181,7 @@ export function AdminPatientRecord({ data, outcomes = null }: { data: AdminPatie
 
       {outcomes && ["cleared_for_programme", "programme_created", "in_review", "submitted"].includes(latest?.status ?? "") ? (
         <Section id="outcomes" title="Outcome measures" aside={outcomes.plan ? <span className="rv-chip rv-chip-navy">{outcomes.plan.items.length} followed</span> : <span className="rv-chip">not set</span>}>
-          <OutcomesPanel patientId={patient.id} outcomes={outcomes} regions={latest?.regions ?? []} />
+          <OutcomesPanel patientId={patient.id} outcomes={outcomes} regions={latest?.regions ?? []} preferredLanguage={patient.preferred_language} />
         </Section>
       ) : null}
 

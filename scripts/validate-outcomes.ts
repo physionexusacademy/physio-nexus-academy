@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { AVAILABLE_INSTRUMENTS, GROC_OPTIONS, INSTRUMENTS, INSTRUMENT_BY_ID, instrumentFor } from "../src/lib/outcomes/instruments.ts";
 import { interpretChange, measureImprovement } from "../src/lib/outcomes/interpret.ts";
 import { MAX_PLAN_ITEMS, checkPlanItems, dueList, timepointsFor } from "../src/lib/outcomes/plan.ts";
+import { checkPolished, collectFacts, draftFeedback, numbersIn, type ResponseLike } from "../src/lib/outcomes/feedback.ts";
+import { RULES } from "../src/lib/rehabverse/ai/guard.ts";
 import { scoreResponse } from "../src/lib/outcomes/scoring.ts";
 import { SCHEDULES, TIMEPOINT_DAYS, type Bi, type Instrument, type Score } from "../src/lib/outcomes/types.ts";
 
@@ -192,6 +194,57 @@ for (const [key, schedule] of Object.entries(SCHEDULES)) {
 // scoring never changes what it is given
 const frozen = Object.freeze({ now: 3, avg7: 3, worst7: 6, best7: 1 });
 ok(scoreResponse(nprs, frozen).ok, "Scoring does not change the answers it is given");
+
+/* ---------- 9. feedback for the patient: facts by rules, a draft from the facts, an AI polish held to the draft ---------- */
+const fplan = { items: [item("nprs"), item("psfs"), item("groc"), item("back_function_tests")].map((i) => ({ ...i, version: 1, schedule: "standard" as const })), anchor };
+const R = (instrument: string, timepoint: ResponseLike["timepoint"], primary: number | null, parts: Record<string, number> = {}): ResponseLike => ({ instrument, timepoint, score: S(primary, parts) });
+const rows: ResponseLike[] = [
+  R("nprs", "baseline", 6), R("nprs", "w2", 3),
+  R("psfs", "baseline", 3), R("psfs", "w2", 6.5),
+  R("groc", "w2", 5),
+  R("back_function_tests", "baseline", null, { sorensen: 40, five_sts: 12 }), R("back_function_tests", "w2", null, { sorensen: 55, five_sts: 10.4 }),
+];
+const facts = collectFacts(fplan, rows, day(15));
+eq(facts.patient.map((f) => [f.instrument, f.first, f.last, f.band]), [["nprs", 6, 3, "much_better"], ["psfs", 3, 6.5, "better"], ["groc", null, 5, "better"]], "Facts: pain, PSFS and GROC are read by the rules");
+eq(facts.measures.map((m) => [m.label.en, m.first, m.last, m.improvement]), [["Sorensen hold", 40, 55, 15], ["Five times sit-to-stand", 12, 10.4, 1.6]], "Facts: measured tests change in the direction that is better (a shorter sit-to-stand time is an improvement)");
+eq([facts.worse, facts.open >= 0], [false, true], "Facts: nothing is worse");
+const en = draftFeedback(facts, "en");
+ok(en.includes("went from 6/10 to 3/10 (50% lower)") && en.includes("That is a clear improvement."), "Draft: the pain line carries the numbers and the band");
+ok(en.includes("went from 3 to 6.5 out of 10") && en.includes("you rated your condition +5"), "Draft: PSFS and GROC lines");
+ok(en.includes("Sorensen hold: 40 to 55 s (+15 s better)") && en.includes("Five times sit-to-stand: 12 to 10.4 s (+1.6 s better)"), "Draft: measured tests with signed change");
+ok(!/urgent medical care/.test(en) && en.trim().endsWith("— Your physiotherapist"), "Draft: no safety sentence when nothing is worse, and it is signed");
+const worseRows = [R("nprs", "baseline", 3), R("nprs", "w2", 6)];
+const worseFacts = collectFacts({ items: [{ ...item("nprs"), version: 1, schedule: "standard" as const }], anchor }, worseRows, day(15));
+ok(worseFacts.worse && /urgent medical care/.test(draftFeedback(worseFacts, "en")) && /\(100% higher\)/.test(draftFeedback(worseFacts, "en")), "Draft: when pain is worse the message says so and carries the urgent-care sentence");
+ok(/foran medical madad/.test(draftFeedback(worseFacts, "ru")), "Draft: ...and so does the Roman Urdu one");
+const ru = draftFeedback(facts, "ru");
+ok(!ARABIC.test(ru) && ru.includes("6/10 se 3/10") && ru.includes("— Aap ka physiotherapist"), "Draft: Roman Urdu is in Roman letters and keeps the numbers");
+eq(numbersIn(ru).filter((n) => !numbersIn(en).includes(n)), [], "Draft: the Roman Urdu draft uses no number the English one does not");
+const none = draftFeedback(collectFacts({ items: fplan.items.slice(0, 1), anchor }, [R("nprs", "baseline", 5)], day(1)), "en");
+ok(/not enough answers yet/.test(none), "Draft: with one answer it says there is not enough to show a change");
+ok(draftFeedback(collectFacts(fplan, [], day(30)), "en").includes("questionnaire(s) are still waiting"), "Draft: open questionnaires are mentioned");
+for (const [name, text] of [["English", en], ["Roman Urdu", ru], ["worse (English)", draftFeedback(worseFacts, "en")], ["worse (Roman Urdu)", draftFeedback(worseFacts, "ru")]] as const) {
+  ok(RULES.every((rule) => !rule.test(text)), `Draft (${name}) passes the assistant's own guard: no diagnosis, treatment advice, medicine, promise or link`);
+  ok(text.length < 1400, `Draft (${name}) is a sensible length`);
+}
+// the AI's smoothing is held to the draft
+const smooth = "A short update from your questionnaires: your average pain went from 6/10 to 3/10 (50% lower), a clear improvement. Your own activities went from 3 to 6.5 out of 10, you rated your condition +5 compared with the start (scale -7 to +7). Sorensen hold: 40 to 55 s (+15 s better). Five times sit-to-stand: 12 to 10.4 s (+1.6 s better). Your physiotherapist";
+ok(checkPolished(en, smooth).ok, "Polish: a rewrite with the same numbers is accepted");
+for (const [name, text, reason] of [
+  ["an added number", smooth.replace("clear improvement", "clear improvement of 20 points"), "numbers changed"],
+  ["a dropped number", smooth.replace("Sorensen hold: 40 to 55 s (+15 s better).", "Sorensen improved."), "numbers changed"],
+  ["a changed number", smooth.replace("6.5", "7"), "numbers changed"],
+  ["a link", smooth + " https://example.com", "forbidden content"],
+  ["a medicine", smooth + " Take paracetamol.", "forbidden content"],
+  ["a diagnosis", smooth + " This is a diagnosis of arthritis.", "forbidden content"],
+  ["a promise", smooth + " You will definitely recover.", "forbidden content"],
+  ["no sign-off", smooth.replace("Your physiotherapist", "The clinic"), "not signed"],
+  ["too short", "Well done.", "length"],
+  ["too long", smooth + " ".repeat(2) + "word ".repeat(400), "length"],
+] as const) { const r = checkPolished(en, text); ok(!r.ok && r.reason === reason, `Polish: ${name} is refused (${reason})`); }
+const worseEn = draftFeedback(worseFacts, "en");
+ok(!checkPolished(worseEn, worseEn.replace(/Please tell your physiotherapist[^.]*\. If you notice new weakness[^.]*\./, "Please keep going.")).ok, "Polish: dropping the urgent-care sentence is refused");
+ok(checkPolished(worseEn, worseEn).ok, "Polish: the draft itself passes");
 
 if (failures.length) {
   console.error(failures.map((f) => `✗ ${f}`).join("\n"));

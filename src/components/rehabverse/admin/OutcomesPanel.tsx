@@ -2,10 +2,11 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ClipboardList, FlaskConical } from "lucide-react";
-import { recordOutcomeAction, setOutcomePlanAction } from "@/app/admin/(dashboard)/rehabverse/actions";
+import { ClipboardList, FlaskConical, MessageSquareText, Sparkles } from "lucide-react";
+import { polishOutcomeFeedbackAction, recordOutcomeAction, sendOutcomeFeedbackAction, setOutcomePlanAction } from "@/app/admin/(dashboard)/rehabverse/actions";
 import type { AdminOutcomes, OutcomePlanItem, OutcomeResponseRow } from "@/lib/rehabverse/api-types";
 import { AVAILABLE_INSTRUMENTS, INSTRUMENTS, INSTRUMENT_BY_ID } from "@/lib/outcomes/instruments";
+import { collectFacts, draftFeedback } from "@/lib/outcomes/feedback";
 import { interpretChange, measureImprovement } from "@/lib/outcomes/interpret";
 import { dueList, timepointsFor } from "@/lib/outcomes/plan";
 import { SCHEDULES, TIMEPOINT_LABEL, type Instrument, type ScheduleKey, type TimepointKey } from "@/lib/outcomes/types";
@@ -63,7 +64,7 @@ function MeasureEntry({ instrument, onSave, pending, error }: { instrument: Inst
  * Outcome measures for one patient: choose what to follow and how often, see every answer with its change from the start and the threshold it is read against,
  * and record the measurements taken in clinic. Records are never edited; a wrong entry is explained in the clinical notes, not rewritten.
  */
-export function OutcomesPanel({ patientId, outcomes, regions }: { patientId: string; outcomes: AdminOutcomes; regions: string[] }) {
+export function OutcomesPanel({ patientId, outcomes, regions, preferredLanguage = "en" }: { patientId: string; outcomes: AdminOutcomes; regions: string[]; preferredLanguage?: "en" | "ru" }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [editing, setEditing] = useState(!outcomes.plan);
@@ -72,6 +73,10 @@ export function OutcomesPanel({ patientId, outcomes, regions }: { patientId: str
   const [chosen, setChosen] = useState<Record<string, ScheduleKey | null>>(() => Object.fromEntries((outcomes.plan?.items ?? []).map((i) => [i.instrument, i.schedule])));
   const [recording, setRecording] = useState<{ instrument: string; timepoint: TimepointKey } | null>(null);
   const [recordError, setRecordError] = useState<string | null>(null);
+  const [fbLang, setFbLang] = useState<"en" | "ru">(preferredLanguage);
+  const [fbText, setFbText] = useState("");
+  const [fbSource, setFbSource] = useState<"rules" | "ai" | "written">("written");
+  const [fbNote, setFbNote] = useState<string | null>(null);
 
   const suggestion = useMemo(() => [...new Set(regions.flatMap((r) => SUGGESTED[r] ?? []))], [regions]);
   const plan = outcomes.plan;
@@ -95,6 +100,35 @@ export function OutcomesPanel({ patientId, outcomes, regions }: { patientId: str
       const r = await recordOutcomeAction(patientId, { instrument, timepoint, answers, language: "en" });
       if (!r.ok) return setRecordError(r.error);
       setRecording(null);
+      router.refresh();
+    });
+  };
+
+  const facts = useMemo(() => (plan ? collectFacts({ items: plan.items, anchor: new Date(plan.anchor_at) }, outcomes.responses, new Date()) : null), [plan, outcomes.responses]);
+  const makeDraft = () => {
+    if (!facts) return;
+    setFbText(draftFeedback(facts, fbLang));
+    setFbSource("rules");
+    setFbNote("Draft made from the stored scores by fixed rules. Read it, change anything, then send.");
+  };
+  const polish = () => {
+    setFbNote(null);
+    start(async () => {
+      const r = await polishOutcomeFeedbackAction(fbText, fbLang);
+      if (!r.ok) return setFbNote(r.error);
+      setFbText(r.text);
+      setFbSource("ai");
+      setFbNote("Wording smoothed by an AI service (same numbers, nothing added). Read it before sending.");
+    });
+  };
+  const sendFeedback = () => {
+    setFbNote(null);
+    start(async () => {
+      const r = await sendOutcomeFeedbackAction(patientId, { message: fbText, language: fbLang, source: fbSource, basedOn: { instruments: plan?.items.map((i) => i.instrument) ?? [], answers: outcomes.responses.length } });
+      if (!r.ok) return setFbNote(r.error);
+      setFbText("");
+      setFbSource("written");
+      setFbNote("Sent. The patient has been told a message is waiting.");
       router.refresh();
     });
   };
@@ -202,6 +236,39 @@ export function OutcomesPanel({ patientId, outcomes, regions }: { patientId: str
           </section>
         );
       }) : null}
+      {plan && !editing ? (
+        <section className="space-y-2 rounded-xl border border-teal-200 bg-teal-50/40 p-3" aria-label="Feedback to the patient" data-testid="outcomes-feedback">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="flex items-center gap-1.5 text-[14.5px] font-bold text-navy-800"><MessageSquareText className="h-4 w-4 text-teal-600" aria-hidden="true" /> Feedback to the patient</h3>
+            <select className="rv-input !w-auto !py-1.5 text-[12.5px]" value={fbLang} onChange={(e) => setFbLang(e.target.value as "en" | "ru")} aria-label="Language of the message">
+              <option value="en">English</option>
+              <option value="ru">Roman Urdu</option>
+            </select>
+          </div>
+          <p className="text-[12.5px] leading-5 text-slate-600">Draft a message from the results, change it as you like and send it. Nothing reaches the patient unless you send it.</p>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className="rv-btn rv-btn-ghost !min-h-[36px] !text-[13px]" onClick={makeDraft} disabled={!facts}>Draft from the results</button>
+            <button type="button" className="rv-btn rv-btn-ghost !min-h-[36px] !text-[13px]" onClick={polish} disabled={pending || fbText.trim().length < 20}><Sparkles className="h-4 w-4" aria-hidden="true" /> Smooth the wording with AI</button>
+          </div>
+          <textarea className="rv-input" rows={7} maxLength={1500} value={fbText} onChange={(e) => setFbText(e.target.value)} aria-label="Message to the patient" placeholder="Write a message, or draft one from the results." />
+          {fbNote ? <p className="text-[12.5px] font-semibold text-slate-700" role="status">{fbNote}</p> : null}
+          <button type="button" className="rv-btn rv-btn-primary !min-h-[38px] !text-[13px]" disabled={pending || fbText.trim().length < 10} onClick={sendFeedback}>Send to the patient</button>
+          {facts && (facts.patient.length || facts.measures.length) ? (
+            <details className="text-[12px] leading-5 text-slate-500"><summary className="cursor-pointer font-bold">What a draft is based on</summary>
+              <ul className="mt-1 list-disc pl-5">
+                {facts.patient.map((f) => <li key={f.instrument}>{f.name.en}: {f.first ?? "–"} → {f.last} ({f.band.replace(/_/g, " ")})</li>)}
+                {facts.measures.map((m) => <li key={m.instrument + m.label.en}>{m.label.en}: {m.first} → {m.last} {m.unit}</li>)}
+                <li>{facts.open} open questionnaire(s), {facts.late} late</li>
+              </ul>
+            </details>
+          ) : null}
+          {(outcomes.feedback ?? []).length ? (
+            <details className="text-[12.5px]"><summary className="cursor-pointer font-bold text-slate-600">Messages already sent ({outcomes.feedback?.length})</summary>
+              <ul className="mt-1 space-y-2">{(outcomes.feedback ?? []).map((f) => <li key={f.id ?? f.sent_at} className="rounded-lg bg-white p-2"><span className="text-[11.5px] text-slate-500">{dt(f.sent_at)} · {f.language === "ru" ? "Roman Urdu" : "English"} · started as {f.source === "ai" ? "an AI-smoothed draft" : f.source === "rules" ? "a rules draft" : "written by you"}</span><span className="mt-0.5 block whitespace-pre-line text-slate-700">{f.message}</span></li>)}</ul>
+            </details>
+          ) : null}
+        </section>
+      ) : null}
       <p className="text-[11.5px] text-slate-500"><FlaskConical className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" /> Thresholds are guides from the published literature, shown with their source, and never a verdict. Answers are stored with the instrument version, the language shown and who collected them, and cannot be edited.</p>
     </div>
   );
