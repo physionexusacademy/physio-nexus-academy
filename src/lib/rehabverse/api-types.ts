@@ -160,3 +160,14 @@ export type AiPilot = {
   routed: Record<string, number>;
   checkin: { saved: number; changed: number };
 };
+
+/* ───────── outcome measures (what the physiotherapist chose to follow, and every answer) ───────── */
+export type OutcomePlanItem = { instrument: string; version: number; schedule: "standard" | "intensive" | "single" };
+export type OutcomePlan = { id: string; items: OutcomePlanItem[]; anchor_at: string; note?: string | null; created_at?: string };
+export type OutcomeResponseRow = {
+  id?: string; instrument: string; version: number; timepoint: "baseline" | "w1" | "w2" | "w4" | "w6" | "w12" | "discharge";
+  answers: Record<string, unknown>; score: { primary: number | null; parts: Record<string, number>; band: string | null };
+  language: "en" | "ru"; collected_by: "patient" | "therapist"; taken_at: string;
+};
+export type MyOutcomes = { plan: OutcomePlan | null; responses: OutcomeResponseRow[] };
+export type AdminOutcomes = MyOutcomes & { earlier_plans: number };

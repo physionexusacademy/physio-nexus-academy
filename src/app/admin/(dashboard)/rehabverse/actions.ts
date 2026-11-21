@@ -1,6 +1,11 @@
 "use server";
 
-import { RehabError, rpc } from "@/lib/rehabverse/api";
+import { RehabError, getAdminOutcomes, isStaff, rpc } from "@/lib/rehabverse/api";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { checkPlanItems, timepointsFor } from "@/lib/outcomes/plan";
+import { instrumentFor } from "@/lib/outcomes/instruments";
+import { scoreResponse } from "@/lib/outcomes/scoring";
+import type { TimepointKey } from "@/lib/outcomes/types";
 import type { AiAssist, AiSignoffDecision, PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
 import { buildReviewPack } from "@/lib/rehabverse/ai/review-pack";
 import { emailPatient, type PatientEmailKind } from "@/lib/rehabverse/notify";
@@ -133,5 +138,50 @@ export async function decideRegistrationAction(patientId: string, decision: "app
       p_patient_id: patientId, p_decision: decision, p_note: (note ?? "").trim().slice(0, 500) || null,
     });
     return { ok: true, status: r.status, phone: r.phone, fullName: r.full_name, language: r.preferred_language };
+  } catch (e) { return fail(e); }
+}
+
+/* ─────────────────────────────── outcome measures ─────────────────────────────── */
+
+/** Choose what to follow for a patient and how often. Only instruments that are available (their wording is settled) at their current version are accepted. */
+export async function setOutcomePlanAction(patientId: string, items: unknown, note?: string): Promise<Result<{ id: string }>> {
+  try {
+    const checked = checkPlanItems(items);
+    if (!checked.ok) return { ok: false, error: checked.reason };
+    const r = await rpc<{ id: string }>("rehab_admin_set_outcome_plan", { p_patient_id: patientId, p_items: checked.items, p_note: (note ?? "").trim().slice(0, 500) || null });
+    return { ok: true, id: r.id };
+  } catch (e) { return fail(e); }
+}
+
+/**
+ * Record a measurement the physiotherapist took (or answers given in the clinic) for a patient. The score is worked out here from the raw values; the staff check is
+ * made first because the write itself goes through the server-only function.
+ */
+export async function recordOutcomeAction(patientId: string, input: { instrument: string; timepoint: TimepointKey; answers: unknown; language?: "en" | "ru" }): Promise<Result<{ saved: boolean }>> {
+  try {
+    if (!(await isStaff())) return { ok: false, error: "not authorised" };
+    const instrument = instrumentFor(String(input.instrument));
+    if (!instrument || instrument.status !== "ready") return { ok: false, error: "That instrument is not available yet." };
+    const outcomes = await getAdminOutcomes(patientId);
+    const item = outcomes.plan?.items.find((i) => i.instrument === instrument.id && i.version === instrument.version);
+    if (!outcomes.plan || !item) return { ok: false, error: "That instrument is not in this patient's plan." };
+    if (!timepointsFor(item).includes(input.timepoint) && input.timepoint !== "discharge") return { ok: false, error: "That time point is not in the plan." };
+    if (outcomes.responses.some((r) => r.instrument === instrument.id && r.timepoint === input.timepoint)) return { ok: false, error: "That time point already has a record (records are not edited)." };
+    let answers = input.answers;
+    if (instrument.form.type === "psfs" && input.timepoint !== "baseline") {
+      const baseline = outcomes.responses.find((r) => r.instrument === "psfs" && r.timepoint === "baseline");
+      const names = ((baseline?.answers.activities as { name: string }[] | undefined) ?? []).map((a) => a.name);
+      const sent = (answers as { activities?: { rating?: unknown }[] } | null)?.activities;
+      if (names.length === 0 || !Array.isArray(sent) || sent.length !== names.length) return { ok: false, error: "Rate the same activities that were written at the start." };
+      answers = { activities: names.map((name, index) => ({ name, rating: sent[index]?.rating })) };
+    }
+    const scored = scoreResponse(instrument, answers);
+    if (!scored.ok) return { ok: false, error: scored.reason };
+    const { data, error } = await createAdminClient().rpc("rehab_outcome_save", {
+      p_patient_id: patientId, p_plan_id: outcomes.plan.id, p_instrument: instrument.id, p_version: instrument.version, p_timepoint: input.timepoint,
+      p_answers: scored.answers, p_score: scored.score, p_language: input.language === "ru" ? "ru" : "en", p_collected_by: "therapist",
+    });
+    if (error) return { ok: false, error: "Could not save the record." };
+    return { ok: true, saved: Boolean((data as { saved?: boolean } | null)?.saved) };
   } catch (e) { return fail(e); }
 }

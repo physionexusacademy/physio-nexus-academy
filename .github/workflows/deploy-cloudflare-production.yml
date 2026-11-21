@@ -194,6 +194,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:symptom-snapshot
 
+      - name: Validate outcome measures (catalogue, scoring refuses anything unexpected, thresholds with sources, only available instruments in a plan)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:outcomes
+
       - name: Validate student accounts (private record, XP caps, outbox, insights)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student

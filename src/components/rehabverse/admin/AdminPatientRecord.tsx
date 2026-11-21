@@ -4,12 +4,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ClipboardCheck, FileClock, ShieldAlert } from "lucide-react";
 import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
-import type { AdminAssessment, AdminPatient, StoredSnapshot } from "@/lib/rehabverse/api-types";
+import type { AdminAssessment, AdminOutcomes, AdminPatient, StoredSnapshot } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
 import { AiConversations } from "./AiConversations";
 import { HistoryBrief } from "./HistoryBrief";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
+import { OutcomesPanel } from "./OutcomesPanel";
 import { ScreeningSnapshot } from "./ScreeningSnapshot";
 import { SessionReview } from "./SessionReview";
 
@@ -131,7 +132,7 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
   );
 }
 
-export function AdminPatientRecord({ data }: { data: AdminPatient }) {
+export function AdminPatientRecord({ data, outcomes = null }: { data: AdminPatient; outcomes?: AdminOutcomes | null }) {
   const { patient, assessments, programmes, adverse_events, audit } = data;
   const aiConversations = data.ai_conversations ?? [];
   const live = programmes.find((p) => LIVE.includes(p.programme.status));
@@ -177,6 +178,12 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
           </details>
         ) : null}
       </Section>
+
+      {outcomes && ["cleared_for_programme", "programme_created", "in_review", "submitted"].includes(latest?.status ?? "") ? (
+        <Section id="outcomes" title="Outcome measures" aside={outcomes.plan ? <span className="rv-chip rv-chip-navy">{outcomes.plan.items.length} followed</span> : <span className="rv-chip">not set</span>}>
+          <OutcomesPanel patientId={patient.id} outcomes={outcomes} regions={latest?.regions ?? []} />
+        </Section>
+      ) : null}
 
       {aiConversations.length ? (
         <Section id="ai" title="AI conversations" aside={<span className="rv-chip rv-chip-navy">{aiConversations.length}</span>}>

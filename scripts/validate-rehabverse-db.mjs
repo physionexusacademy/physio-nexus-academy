@@ -622,6 +622,61 @@ ok(dinaRecord.checker_snapshots.length === 1 && dinaRecord.checker_snapshots[0].
 await rpc(admin, "rehab_admin_set_screening_visibility", { p_value: "immediate" });
 ok((await sql("select count(*)::int n from rehab_audit_log where action = 'study.screening_visibility'"))[0].n === 2, "every change of the study setting is in the audit log");
 
+/* ----------------------------- 16c. outcome measures: the physiotherapist's plan, the patient's answers, a record that cannot change ----------------------------- */
+const gina = await newPatient("Gina Rauf", "gina@pna.test");
+const harun = await newPatient("Harun Aziz", "harun@pna.test");
+const PLAN_ITEMS = [{ instrument: "nprs", version: 1, schedule: "standard" }, { instrument: "psfs", version: 1, schedule: "single" }];
+const saveOutcome = (patient, plan, instrument, version, timepoint, answers = { now: 4, avg7: 5, worst7: 7, best7: 2 }, score = { primary: 5, parts: { avg7: 5 }, band: null }, by = "patient") =>
+  sql("select public.rehab_outcome_save($1, $2, $3, $4, $5, $6::jsonb, $7::jsonb, 'ru', $8) as r", [patient, plan, instrument, version, timepoint, JSON.stringify(answers), JSON.stringify(score), by]).then((r) => r[0].r);
+eq(await rpc(gina.user, "rehab_my_outcomes", {}), { plan: null, responses: [] }, "before a plan there is nothing to answer");
+await fails(gina.user, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: PLAN_ITEMS }, /not authorised/, "a patient cannot choose her own outcome measures");
+await fails(gina.user, "rehab_admin_outcomes", { p_patient_id: gina.id }, /not authorised/, "a patient cannot use the physiotherapist's outcome view");
+for (const [items, pattern, why] of [
+  [[], /between 1 and 8/, "an empty plan"],
+  [Array.from({ length: 9 }, (_, i) => ({ instrument: "nprs" + i, version: 1, schedule: "standard" })), /between 1 and 8/, "nine instruments"],
+  [[{ instrument: "nprs", version: 1, schedule: "weekly" }], /invalid plan entry/, "an unknown schedule"],
+  [[{ instrument: "NPRS", version: 1, schedule: "standard" }], /invalid plan entry/, "an instrument id that is not plain"],
+  [[{ instrument: "nprs", version: "x", schedule: "standard" }], /invalid plan entry/, "a version that is not a number"],
+  [[{ instrument: "nprs", version: 1, schedule: "standard" }, { instrument: "nprs", version: 1, schedule: "single" }], /chosen twice/, "the same instrument twice"],
+  ["nprs", /between 1 and 8/, "not a list"],
+]) await fails(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: items }, pattern, `the database refuses ${why}`);
+await fails(admin, "rehab_admin_set_outcome_plan", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_items: PLAN_ITEMS }, /patient not found/, "a plan needs a real, active patient");
+const plan1 = await rpc(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: PLAN_ITEMS, p_note: "Baseline for the research" });
+ok(/^[0-9a-f-]{36}$/.test(plan1.id), "the physiotherapist sets a plan");
+const mine1 = await rpc(gina.user, "rehab_my_outcomes", {});
+ok(mine1.plan.id === plan1.id && mine1.plan.items.length === 2 && mine1.responses.length === 0, "the patient sees the plan that was chosen for her");
+eq((await rows(gina.user, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'outcomes_assigned'"))[0].n, 1, "the patient is told");
+eq((await rpc(harun.user, "rehab_my_outcomes", {})).plan, null, "another patient sees nothing of it");
+// writing answers: server only, only what is in the live plan
+eq((await sql("select has_function_privilege('authenticated', 'public.rehab_outcome_save(uuid, uuid, text, int, text, jsonb, jsonb, text, text)', 'execute') as a, has_function_privilege('service_role', 'public.rehab_outcome_save(uuid, uuid, text, int, text, jsonb, jsonb, text, text)', 'execute') as s"))[0], { a: false, s: true }, "only the server can save an answer (a patient cannot write her own score)");
+await rowsFail(gina.user, "select * from rehab_outcome_responses", /permission denied/, "patients cannot read the answer table directly");
+await rowsFail(gina.user, "select * from rehab_outcome_plans", /permission denied/, "...or the plan table");
+eq(await saveOutcome(gina.id, plan1.id, "nprs", 1, "baseline"), { saved: true, id: (await sql("select id from rehab_outcome_responses where patient_id = $1 and instrument = 'nprs'", [gina.id]))[0].id }, "the server saves the answers with the score it worked out");
+eq((await saveOutcome(gina.id, plan1.id, "nprs", 1, "baseline", { now: 9, avg7: 9, worst7: 9, best7: 9 })).saved, false, "a second answer for the same time point is ignored: the first is kept");
+eq((await sql("select (score ->> 'primary')::int p, language, collected_by from rehab_outcome_responses where patient_id = $1 and instrument = 'nprs'", [gina.id]))[0], { p: 5, language: "ru", collected_by: "patient" }, "the record keeps the score, the language the words were shown in and who collected it");
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "groc", 1, "w2"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 2, "w2"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, "00000000-0000-0000-0000-000000000000", "nprs", 1, "w2"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(harun.id, plan1.id, "nprs", 1, "baseline"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 1, "w3"), /check constraint|violates/i); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 1, "w2", [1, 2]), /check constraint|violates/i); checks += 1;
+await assert.rejects(() => sql("update rehab_outcome_responses set score = '{}'::jsonb where patient_id = $1", [gina.id]), /cannot be changed/); checks += 1;
+await assert.rejects(() => sql("update rehab_outcome_responses set answers = '{}'::jsonb where patient_id = $1", [gina.id]), /cannot be changed/); checks += 1;
+ok((await saveOutcome(gina.id, plan1.id, "psfs", 1, "baseline", { activities: [{ name: "Lifting my child", rating: 3 }] }, { primary: 3, parts: { a1: 3 }, band: null })).saved, "a second instrument in the plan is saved");
+ok((await saveOutcome(gina.id, plan1.id, "nprs", 1, "w2", { now: 2, avg7: 3, worst7: 5, best7: 1 }, { primary: 3, parts: { avg7: 3 }, band: null }, "therapist")).saved, "the physiotherapist can record for the patient (collected_by says so)");
+const mine2 = await rpc(gina.user, "rehab_my_outcomes", {});
+ok(mine2.responses.length === 3 && mine2.responses[0].instrument === "nprs" && mine2.responses[0].collected_by === "patient", "the patient reads her own answers");
+eq((await rpc(harun.user, "rehab_my_outcomes", {})).responses, [], "another patient never sees them");
+ok((await rows(admin, "select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'outcomes_answered'"))[0].n >= 2, "the physiotherapist is told when a questionnaire is answered by the patient");
+// a new plan replaces the live one; earlier answers and plans stay
+const plan2 = await rpc(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: [{ instrument: "nprs", version: 1, schedule: "intensive" }, { instrument: "groc", version: 1, schedule: "intensive" }] });
+const adminOutcomes = await rpc(admin, "rehab_admin_outcomes", { p_patient_id: gina.id });
+ok(adminOutcomes.plan.id === plan2.id && adminOutcomes.earlier_plans === 1 && adminOutcomes.responses.length === 3, "a new plan is the live one, the earlier plan and every answer are kept");
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 1, "w4"), /not in the patient's plan/); checks += 1; // the old plan id no longer saves
+await assert.rejects(() => saveOutcome(gina.id, plan2.id, "psfs", 1, "w6", { activities: [] }, { primary: 1, parts: {}, band: null }), /not in the patient's plan/); checks += 1; // psfs is no longer in the plan
+ok((await saveOutcome(gina.id, plan2.id, "groc", 1, "w2", { value: 4 }, { primary: 4, parts: {}, band: null })).saved, "the new plan's instruments can be answered");
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'outcomes.plan_set' and patient_id = $1", [gina.id]))[0].n === 2 && (await sql("select count(*)::int n from rehab_audit_log where action = 'outcomes.recorded' and patient_id = $1", [gina.id]))[0].n === 4, "every plan and every answer is in the audit log");
+
 /* ----------------------------- 17. the AI-assistance switch in the app (code-level) ----------------------------- */
 import fs from "node:fs";
 const src = (file) => fs.readFileSync(new URL("../" + file, import.meta.url), "utf8");

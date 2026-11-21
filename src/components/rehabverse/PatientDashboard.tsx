@@ -42,7 +42,7 @@ function ScreeningPanel({ defaultOpen }: { defaultOpen: boolean }) {
   );
 }
 
-export function PatientDashboard({ overview, history, notifications, followup = null, hasScreening = false }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[]; followup?: PatientFollowup | null; hasScreening?: boolean }) {
+export function PatientDashboard({ overview, history, notifications, followup = null, hasScreening = false, outcomesDue = 0 }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[]; followup?: PatientFollowup | null; hasScreening?: boolean; outcomesDue?: number }) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -136,6 +136,12 @@ export function PatientDashboard({ overview, history, notifications, followup = 
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div className="order-2 space-y-5 lg:order-1">
+          {outcomesDue > 0 ? (
+            <Link href="/rehabverse/me/outcomes" className="rv-glass flex items-center justify-between gap-3 border-l-4 !border-l-[#0db3aa] p-4 hover:shadow-md" data-testid="outcomes-card">
+              <span className="flex items-center gap-3"><ClipboardList className="h-6 w-6 shrink-0 text-teal-600" aria-hidden="true" /><span><b className="block text-[15px] text-navy-800"><T en="Questions from your physiotherapist" ru="Aap ke physiotherapist ke sawal" /></b><span className="text-[13px] text-slate-600"><T en={`${outcomesDue} short questionnaire(s) waiting for you`} ru={`${outcomesDue} chhote sawalnaame aap ke intezar mein`} /></span></span></span>
+              <span className="rv-btn rv-btn-primary !min-h-[38px] !text-[13px]"><T en="Answer" ru="Jawab dein" /></span>
+            </Link>
+          ) : null}
           {hasScreening ? <ScreeningPanel defaultOpen={!live} /> : null}
           {/* Where things stand */}
           {state === "flagged" ? (

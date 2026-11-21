@@ -4,9 +4,13 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isPublicFormRateLimited } from "@/lib/security/public-form-protection";
-import { RehabError, currentUser, getHistory, getMyScreening, getNotifications, getOverview, getSession, isStaff, rpc } from "@/lib/rehabverse/api";
+import { RehabError, currentUser, getHistory, getMyOutcomes, getMyScreening, getNotifications, getOverview, getSession, isStaff, rpc } from "@/lib/rehabverse/api";
 import type { AccountStatus, FollowupPoint, MyScreening } from "@/lib/rehabverse/api-types";
 import { buildSnapshot } from "@/lib/symptom/snapshot";
+import { instrumentFor } from "@/lib/outcomes/instruments";
+import { timepointsFor } from "@/lib/outcomes/plan";
+import { scoreResponse } from "@/lib/outcomes/scoring";
+import type { TimepointKey } from "@/lib/outcomes/types";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
@@ -255,6 +259,48 @@ export async function submitAssessmentAction(input: IntakeInput, aiConversationI
 export async function myScreeningAction(): Promise<ActionResult<{ screening: MyScreening }>> {
   try {
     return { ok: true, screening: await getMyScreening() };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/* ─────────────────────────────── outcome measures ─────────────────────────────── */
+
+/**
+ * The patient answers a questionnaire the physiotherapist chose. The server checks that it is in the live plan at that time point, that the patient has not
+ * answered it already, works the score out from the raw answers (nothing sent by the browser is trusted as a score) and saves the answers with the language
+ * the words were shown in. A follow-up Patient-Specific Functional Scale re-asks the activities written at the start, in the same order.
+ */
+export async function submitOutcomeAction(input: { instrument: string; timepoint: TimepointKey; answers: unknown; language: "en" | "ru" }): Promise<ActionResult<{ saved: boolean }>> {
+  try {
+    const instrument = instrumentFor(String(input.instrument));
+    if (!instrument || instrument.status !== "ready" || instrument.kind !== "patient_reported") return { ok: false, error: "not_available" };
+    const mine = await getMyOutcomes();
+    const item = mine.plan?.items.find((i) => i.instrument === instrument.id && i.version === instrument.version);
+    if (!mine.plan || !item) return { ok: false, error: "not_in_plan" };
+    if (!timepointsFor(item).includes(input.timepoint)) return { ok: false, error: "not_in_plan" };
+    if (mine.responses.some((r) => r.instrument === instrument.id && r.timepoint === input.timepoint)) return { ok: false, error: "already_answered" };
+    let answers = input.answers;
+    if (instrument.form.type === "psfs" && input.timepoint !== "baseline") {
+      const baseline = mine.responses.find((r) => r.instrument === "psfs" && r.timepoint === "baseline");
+      const names = ((baseline?.answers.activities as { name: string }[] | undefined) ?? []).map((a) => a.name);
+      const sent = (answers as { activities?: { rating?: unknown }[] } | null)?.activities;
+      if (names.length === 0 || !Array.isArray(sent) || sent.length !== names.length) return { ok: false, error: "psfs_activities" };
+      answers = { activities: names.map((name, index) => ({ name, rating: sent[index]?.rating })) };
+    }
+    const scored = scoreResponse(instrument, answers);
+    if (!scored.ok) return { ok: false, error: "invalid_answers" };
+    const overview = await getOverview();
+    if (!overview.patient) return { ok: false, error: "no_patient" };
+    const { data, error } = await createAdminClient().rpc("rehab_outcome_save", {
+      p_patient_id: overview.patient.id, p_plan_id: mine.plan.id, p_instrument: instrument.id, p_version: instrument.version, p_timepoint: input.timepoint,
+      p_answers: scored.answers, p_score: scored.score, p_language: input.language === "ru" ? "ru" : "en", p_collected_by: "patient",
+    });
+    if (error) {
+      console.error("REHAB_OUTCOME", error.message);
+      return { ok: false, error: "failed" };
+    }
+    return { ok: true, saved: Boolean((data as { saved?: boolean } | null)?.saved) };
   } catch (e) {
     return fail(e);
   }
