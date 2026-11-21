@@ -70,7 +70,7 @@ ok(/isBackupHost\(url\.hostname\)/.test(worker) && /return handle\(request, url,
 
 // --- the deploy checks the backup address and keeps the smoke test marker
 const deploy = read(".github/workflows/deploy-cloudflare-production.yml");
-ok(/settings\/ech/.test(deploy) && /DESIRED_ECH: "(?:on|off)"/.test(deploy), "deploy: keeps Encrypted Client Hello at the chosen state (DESIRED_ECH), so a test of it is not undone by the next deploy");
+ok(/settings\/ech/.test(deploy) && /DESIRED_ECH: "off"/.test(deploy), "deploy: keeps Encrypted Client Hello OFF (confirmed: with it on, Chrome could not open the site on the owner's provider network)");
 const monitor = read(".github/workflows/uptime-monitor.yml");
 ok(/DNS of \$name/.test(monitor) && /HTTPS record/.test(monitor) && /ech=/.test(monitor), "monitor: checks that every public resolver answers and reports whether the HTTPS record carries ECH");
 ok(/offline-live:/.test(deploy) && deploy.includes("scripts/verify-offline-production.cjs"), "deploy: a real browser checks the offline behaviour on the live site after every release");

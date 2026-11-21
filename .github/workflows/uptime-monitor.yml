@@ -112,12 +112,12 @@ jobs:
               echo "$r: $a"
             fi
           done
-          # The HTTPS record may carry Encrypted Client Hello (ech=). It is switched off on purpose while Chrome on a provider's automatic DNS is tested
-          # (see DESIRED_ECH in the deploy workflow); this only reports which state the DNS is in.
+          # Encrypted Client Hello (ech= in the HTTPS record) is kept OFF on purpose: with it on, Chrome could not open the site on the owner's provider network
+          # (see DESIRED_ECH in the deploy workflow). This warns if it has been switched on again.
           https_record="$(dig +short +time=4 +tries=2 @1.1.1.1 "$name" HTTPS)"
           if printf '%s' "$https_record" | grep -q 'ech='; then
-            echo "The HTTPS record carries ech= (Encrypted Client Hello is on)."
-            echo "| HTTPS record | carries ech= (ECH on) |" >> "$summary"
+            echo "| HTTPS record | carries ech= (**ECH is on**) |" >> "$summary"
+            echo "::warning::Encrypted Client Hello is on again for $name. With it on, Chrome could not open the site on the owner's provider network (21 Nov 2026). The next deploy switches it off; by hand: Cloudflare dashboard > SSL/TLS > Edge Certificates > Encrypted Client Hello > Off."
           else
             echo "The HTTPS record has no ech= (Encrypted Client Hello is off)."
             echo "| HTTPS record | no ech= (ECH off) |" >> "$summary"
