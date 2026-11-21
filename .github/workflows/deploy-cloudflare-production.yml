@@ -382,6 +382,31 @@ jobs:
           done
           echo "::warning::Always Use HTTPS is on but port 80 did not answer with a redirect within 2 minutes; check: curl -sI http://physionexusacademy.com/"
 
+      - name: Keep Encrypted Client Hello on (people on Secure DNS then reach the site without a network filter seeing its name)
+        if: steps.auth.outputs.ready == 'true'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          api() { curl -sS -m 30 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          manual() { echo "::warning::$1 Do it by hand: Cloudflare dashboard > physionexusacademy.com > SSL/TLS > Edge Certificates > Encrypted Client Hello > On."; }
+          base="https://api.cloudflare.com/client/v4"
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1" || true)"
+          zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty' 2>/dev/null || true)"
+          if [ -z "$zone_id" ]; then manual "The Cloudflare token cannot read the zone, so Encrypted Client Hello was not checked."; exit 0; fi
+          current="$(api "$base/zones/$zone_id/settings/ech" | jq -r '.result.value // "unknown"' 2>/dev/null || echo unknown)"
+          echo "Encrypted Client Hello is currently: $current"
+          if [ "$current" = "on" ]; then exit 0; fi
+          result="$(api -X PATCH "$base/zones/$zone_id/settings/ech" --data '{"value":"on"}' || true)"
+          if [ "$(printf '%s' "$result" | jq -r '.success' 2>/dev/null)" = "true" ]; then
+            echo "Encrypted Client Hello is now on for physionexusacademy.com."
+          else
+            printf '%s' "$result" | jq -c '{success, errors}' 2>/dev/null || true
+            manual "The Cloudflare token could not switch Encrypted Client Hello on."
+          fi
+
       - name: Smoke test production
         if: steps.auth.outputs.ready == 'true'
         shell: bash

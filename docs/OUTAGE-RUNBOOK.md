@@ -12,6 +12,29 @@ Physio Nexus Academy runs on Cloudflare Workers (`physionexusacademy.com`). Two 
 
 Since `ERR_CONNECTION_RESET` with a healthy server has been seen on PCs and phones in Pakistan, the second row is the usual case.
 
+## Confirmed cause on 21 Nov 2026: the network's automatic DNS
+
+The owner's PC and phone could not open the site on the provider's **automatic DNS** and opened it at once after DNS was set by hand. The checks of the same day show the site's own DNS is healthy:
+every public resolver (1.1.1.1, 1.0.0.1, 8.8.8.8, 8.8.4.4, 9.9.9.9, 208.67.222.222, 94.140.14.14) and both Cloudflare name servers answer with the same two addresses
+(104.21.8.143, 172.67.188.121), the answers do not change with a Pakistani client subnet (PTCL, Jazz, Nayatel), and every Cloudflare address (also 188.114.96.6 and 188.114.97.6) answers the site
+with status 200 and a valid certificate. The HTTPS record with Encrypted Client Hello (`ech=`) is published. So the fault is in the provider's resolver/path, which only the visitor or the provider can change:
+
+- With automatic DNS the browser may not learn the site's Encrypted Client Hello from DNS (many provider and router resolvers drop the HTTPS record), so the site's name travels in the clear and a filter can reset the connection (`ERR_CONNECTION_RESET`).
+  With Secure DNS (DNS over HTTPS) or a public DNS the browser gets that record, hides the name, and the site opens. This is why Encrypted Client Hello is kept **on** (the deploy re-checks it) and why HTTP/3 stays off.
+- The server side cannot change a visitor's resolver. What it does: keeps the DNS records healthy (the hourly monitor checks them), keeps the backup address, and the offline page tells the visitor how to change DNS.
+
+How to change DNS (the steps are also on `/offline`):
+
+| Device | Steps |
+|---|---|
+| Android | Settings > Network > Private DNS > Private DNS provider hostname > `one.one.one.one` |
+| iPhone | Install the free **1.1.1.1** app and turn it on |
+| Chrome (PC or phone) | Settings > Privacy and security > Security > Use secure DNS > Cloudflare |
+| Windows 11 | Settings > Network & internet > Wi-Fi (or Ethernet) > Hardware properties > DNS server assignment > Manual > IPv4 on > Preferred `1.1.1.1`, Alternate `1.0.0.1`, DNS over HTTPS On (automatic template) |
+| Router (helps every device at home) | Router page > Internet / WAN > DNS > Manual > `1.1.1.1` and `1.0.0.1` |
+
+To prove it on one computer (automatic DNS on): `nslookup physionexusacademy.com` and `nslookup -type=HTTPS physionexusacademy.com`, then the same with ` 1.1.1.1` at the end. If the answers differ (other addresses, or no HTTPS answer), the provider's resolver is the cause and this is the evidence to give the provider.
+
 ## 1. First two minutes (owner)
 
 1. **Actions > Uptime monitor** (runs every hour; "Run workflow" runs it now). Open the run summary table:
@@ -35,13 +58,18 @@ The site is healthy; the visitor's mobile network, Wi-Fi router or ISP resets th
 2. **Switch network**: mobile data <-> Wi-Fi. If one works, nothing is wrong with the phone.
 3. **Type `https://` in front**: `https://physionexusacademy.com` (the site also sends plain `http://` visits to `https://`).
 4. **Use the backup address**: <https://physio-nexus-academy.physionexusacademypk.workers.dev> (same site, different name, so a filter on the main name does not catch it; it is never shown in Google).
-5. **Secure DNS** (Chrome: Settings > Privacy and security > Security > *Use secure DNS* > Cloudflare 1.1.1.1; Android: Settings > Network > Private DNS > `one.one.one.one`; iPhone: install the free 1.1.1.1 app).
+5. **Change the DNS** (the confirmed cause; see the table above). Chrome: Settings > Privacy and security > Security > *Use secure DNS* > Cloudflare; Android: Settings > Network > Private DNS > `one.one.one.one`; iPhone: install the free 1.1.1.1 app.
 6. A **VPN** or the free **1.1.1.1 / WARP** app.
 7. A visitor who has opened the site once before still sees the pages they visited, and a page with these tips (`/offline`), even when the connection is cut (the browser keeps those copies; it works only for pages opened before, in a browser that allows service workers).
 
 Send students this (WhatsApp-ready):
 
-> Agar Physio Nexus Academy na khule: ek minute baad reload karein, ya Wi-Fi ki jagah mobile data (ya ulta) try karein. Phir bhi na khule to ye backup address kholein: https://physio-nexus-academy.physionexusacademypk.workers.dev — same site hai. Help ke liye WhatsApp: 0348 900 9028.
+> Agar Physio Nexus Academy na khule, wajah aksar aap ke internet ka "automatic DNS" hota hai. Isay badal dein:
+> Android: Settings > Network > Private DNS > "Private DNS provider hostname" > one.one.one.one
+> iPhone: free "1.1.1.1" app install karke on karein
+> Chrome: Settings > Privacy and security > Security > Use secure DNS > Cloudflare
+> Phir bhi na khule to backup address: https://physio-nexus-academy.physionexusacademypk.workers.dev
+> Help ke liye WhatsApp: 0348 900 9028
 
 ## 4. Ask the ISP (or PTA) to stop cutting the connection
 

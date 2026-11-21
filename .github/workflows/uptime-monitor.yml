@@ -85,3 +85,41 @@ jobs:
           fi
 
           exit "$failed"
+
+      - name: Check the site's own DNS (every public resolver answers, the HTTPS record with Encrypted Client Hello is published)
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          name="physionexusacademy.com"
+          failed=0
+          summary="${GITHUB_STEP_SUMMARY:-/dev/null}"
+          {
+            echo
+            echo "### DNS of $name"
+            echo
+            echo "| Resolver | A answers |"
+            echo "|---|---|"
+          } >> "$summary"
+          for r in 1.1.1.1 8.8.8.8 9.9.9.9 ridge.ns.cloudflare.com tia.ns.cloudflare.com; do
+            a="$(dig +short +time=4 +tries=2 @"$r" "$name" A | tr '\n' ' ')"
+            if [ -z "$a" ]; then
+              echo "| $r | **no answer** |" >> "$summary"
+              echo "::error::$r gave no A record for $name"
+              failed=1
+            else
+              echo "| $r | $a |" >> "$summary"
+              echo "$r: $a"
+            fi
+          done
+          # Encrypted Client Hello hides the site's name from a network filter, but only for a browser that learns it from DNS (Secure DNS / DNS over HTTPS):
+          # the HTTPS record carries it. If it disappears, people on Secure DNS lose that protection.
+          https_record="$(dig +short +time=4 +tries=2 @1.1.1.1 "$name" HTTPS)"
+          if printf '%s' "$https_record" | grep -q 'ech='; then
+            echo "The HTTPS record with ech= is published."
+            echo "| HTTPS record (ECH) | published |" >> "$summary"
+          else
+            echo "| HTTPS record (ECH) | **missing** |" >> "$summary"
+            echo "::warning::The HTTPS DNS record with Encrypted Client Hello (ech=) is not published for $name. Cloudflare dashboard > SSL/TLS > Edge Certificates > Encrypted Client Hello > On."
+          fi
+          exit "$failed"

@@ -28,8 +28,8 @@
   <img src="/images/pna-logo.png" alt="">
   <h1>We can't reach the site right now</h1>
   <p class="ur">Abhi site tak connection nahi ban raha.</p>
-  <p>Your internet may be fine: on some Wi-Fi and mobile networks the connection to our site is cut on the way. It usually works again within minutes, and this page tries again by itself.</p>
-  <p class="ur">Aap ka internet theek ho sakta hai. Kuch Wi-Fi aur mobile networks par site tak ka connection raaste mein toot jata hai. Ye aksar chand minute mein theek ho jata hai, aur ye page khud dobara koshish karta hai.</p>
+  <p>Your internet may be fine: on some Wi-Fi and mobile networks the connection to our site is cut on the way. The most common cause is the network's <b>automatic DNS</b> (the phone book your provider gives your device). This page tries again by itself.</p>
+  <p class="ur">Aap ka internet theek ho sakta hai. Aksar wajah aap ke provider ka <b>automatic DNS</b> hota hai. Neeche DNS badalne ka tareeqa hai. Ye page khud dobara koshish bhi karta hai.</p>
   <div class="buttons">
     <button id="retry" type="button">Try again / Dobara koshish</button>
     <a class="btn" href="/">Home (saved copy)</a>
@@ -37,10 +37,16 @@
 
   <h2>What to try / Ye karein</h2>
   <ol>
-    <li>Type the address with <b>https://</b> at the start: <code>https://physionexusacademy.com</code><br><span class="ur">Address ke shuru mein <b>https://</b> likhein.</span></li>
-    <li>Switch between Wi-Fi and mobile data.<br><span class="ur">Wi-Fi se mobile data par (ya ulta) badal kar dekhein.</span></li>
-    <li>Turn on <b>Secure DNS</b>: Chrome &rarr; Settings &rarr; Privacy and security &rarr; Security &rarr; Use secure DNS &rarr; Cloudflare. Or install the free <b>1.1.1.1</b> app.<br><span class="ur">Chrome mein <b>Use secure DNS</b> on karein, ya free <b>1.1.1.1</b> app lagayein.</span></li>
+    <li><b>Turn automatic DNS off</b> (this opens the site on networks where it does not):
+      <ul>
+        <li><b>Android:</b> Settings &rarr; Network &rarr; Private DNS &rarr; Private DNS provider hostname &rarr; <code>one.one.one.one</code></li>
+        <li><b>iPhone:</b> install the free <b>1.1.1.1</b> app and turn it on</li>
+        <li><b>Chrome (PC or phone):</b> Settings &rarr; Privacy and security &rarr; Security &rarr; Use secure DNS &rarr; Cloudflare</li>
+        <li><b>Windows 11:</b> Settings &rarr; Network &amp; internet &rarr; Wi-Fi (or Ethernet) &rarr; Hardware properties &rarr; DNS server assignment &rarr; Manual &rarr; IPv4 on, Preferred <code>1.1.1.1</code>, Alternate <code>1.0.0.1</code>, DNS over HTTPS: On (automatic template)</li>
+      </ul>
+      <span class="ur">Automatic DNS band karke upar wala DNS lagayein. Android: Private DNS mein <code>one.one.one.one</code>. iPhone: free 1.1.1.1 app. Chrome: Use secure DNS &rarr; Cloudflare.</span></li>
     <li>Use the backup address: <a href="https://physio-nexus-academy.physionexusacademypk.workers.dev">physio-nexus-academy.physionexusacademypk.workers.dev</a><br><span class="ur">Backup address istemal karein (upar link).</span></li>
+    <li>Type the address with <b>https://</b> at the start: <code>https://physionexusacademy.com</code>, and switch between Wi-Fi and mobile data.<br><span class="ur">Address ke shuru mein <b>https://</b> likhein, aur Wi-Fi se mobile data par (ya ulta) badal kar dekhein.</span></li>
   </ol>
 
   <div id="savedBox" hidden>
