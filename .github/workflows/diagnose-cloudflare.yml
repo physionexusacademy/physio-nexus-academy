@@ -1,0 +1,91 @@
+name: Diagnose Cloudflare (read-only)
+
+# Run by hand (Actions > Diagnose Cloudflare > Run workflow) when visitors report that the site does not open.
+# It only READS: the zone's TLS / security / network settings and rules, the DNS records, and how the site answers
+# from the GitHub runner's network (several browsers' user agents, TLS versions, HTTP versions, repeated requests).
+# It never changes anything and never prints the API token.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Cloudflare zone settings, rules and DNS (read-only)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then echo "::warning::No CLOUDFLARE_API_TOKEN secret."; exit 0; fi
+          api() { curl -sS -m 30 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          base="https://api.cloudflare.com/client/v4"
+
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1" || true)"
+          zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty' 2>/dev/null || true)"
+          if [ -z "$zone_id" ]; then echo "Cannot read the zone:"; printf '%s' "$zone_json" | jq -c '{success, errors}' 2>/dev/null || true; exit 0; fi
+          echo "=== zone"
+          printf '%s' "$zone_json" | jq -r '.result[0] | {name, status, paused, type, development_mode, plan: .plan.name, name_servers} | tostring'
+
+          echo; echo "=== zone settings (id: value)"
+          api "$base/zones/$zone_id/settings" | jq -r '.result[]? | "\(.id): \(.value|tostring)"' | sort || echo "(settings not readable)"
+
+          echo; echo "=== ECH / min TLS / TLS 1.3 / HTTP versions (the ones that matter for a connection that is reset)"
+          for s in ech min_tls_version tls_1_3 ssl always_use_https http2 http3 ipv6 opportunistic_encryption security_level browser_check; do
+            printf '%-24s' "$s"; api "$base/zones/$zone_id/settings/$s" | jq -r '.result.value // (.errors[0].message // "n/a") | tostring'
+          done
+
+          echo; echo "=== DNS records (public information)"
+          api "$base/zones/$zone_id/dns_records?per_page=100" | jq -r '.result[]? | "\(.type)\t\(.name)\tproxied=\(.proxied)\t\(.content)"' || echo "(dns records not readable)"
+
+          echo; echo "=== rulesets of this zone (names, phases and the number of rules; expressions are not printed)"
+          api "$base/zones/$zone_id/rulesets" | jq -r '.result[]? | "\(.phase)\t\(.kind)\t\(.name)"' || echo "(rulesets not readable)"
+          for phase in http_request_firewall_custom http_ratelimit http_request_firewall_managed http_request_sanitize; do
+            n="$(api "$base/zones/$zone_id/rulesets/phases/$phase/entrypoint" | jq -r '[.result.rules[]?] | length' 2>/dev/null || echo n/a)"
+            actions="$(api "$base/zones/$zone_id/rulesets/phases/$phase/entrypoint" | jq -r '[.result.rules[]? | .action] | unique | join(",")' 2>/dev/null || true)"
+            echo "$phase: rules=$n actions=[$actions]"
+          done
+
+          echo; echo "=== IP access rules on the zone (count only)"
+          api "$base/zones/$zone_id/firewall/access_rules/rules?per_page=50" | jq -r '"rules: \(.result_info.total_count // 0)  modes: \([.result[]?.mode] | unique | join(","))"' || true
+
+      - name: How the site answers from this network
+        shell: bash
+        run: |
+          set -uo pipefail
+          url="https://physionexusacademy.com/"
+          echo "=== 20 requests"
+          ok=0; fail=0
+          for i in $(seq 1 20); do
+            out="$(curl -sS -o /dev/null -m 20 -w '%{http_code} connect=%{time_connect} tls=%{time_appconnect} total=%{time_total} ip=%{remote_ip} http=%{http_version}' "$url" 2>&1)" && ok=$((ok+1)) || fail=$((fail+1))
+            echo "$i: $out"
+          done
+          echo "ok=$ok failed=$fail"
+
+          echo; echo "=== different TLS / HTTP versions"
+          for o in "--http1.1" "--http2" "--tlsv1.2 --tls-max 1.2" "--tlsv1.3" "-4" "-6"; do
+            printf '%-26s' "$o"; curl -sS -o /dev/null -m 20 -w '%{http_code} %{http_version} tls=%{time_appconnect}\n' $o "$url" 2>&1 | tail -1
+          done
+
+          echo; echo "=== different browsers' user agents"
+          while IFS='|' read -r name ua; do
+            printf '%-18s' "$name"; curl -sS -o /dev/null -m 20 -A "$ua" -w '%{http_code}\n' "$url" 2>&1 | tail -1
+          done <<'UAS'
+          Chrome Windows|Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36
+          Chrome Android|Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36
+          Safari iPhone|Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1
+          UAS
+
+          echo; echo "=== headers"
+          curl -sSI -m 20 "$url" | tr -d '\r' | grep -iE '^(HTTP|server|cf-ray|cf-cache-status|alt-svc|strict-transport|location)'
+
+          echo; echo "=== port 80"
+          curl -sSI -m 20 "http://physionexusacademy.com/" | tr -d '\r' | head -5
+
+          echo; echo "=== DNS (resolvers 1.1.1.1 and 8.8.8.8)"
+          for r in 1.1.1.1 8.8.8.8; do echo "-- $r"; dig +short @"$r" physionexusacademy.com A; dig +short @"$r" physionexusacademy.com AAAA; dig +short @"$r" physionexusacademy.com HTTPS; done
