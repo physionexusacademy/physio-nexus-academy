@@ -60,6 +60,8 @@ const REGION_WORDS: [string, RegExp][] = [
   ["ankle_foot", /ankle|\bfoot\b|\bfeet\b|takhn|paon|\bpao\b|\bpair\b/],
 ];
 const NONE = /^\s*(no|none|nothing|nil|nahi|nahin|koi nahi|kuch nahi|na|n\/a)\b/i;
+/** "More than one area" (the answer the chat's tap button sends) and its everyday spellings. */
+const MANY_REGIONS = /more than one|several|multiple|many (?:areas|places|parts)|all over|ek se zyada|kai jagah|kai hisse|poore jism/;
 
 export function extractFromAnswer(focus: FieldKey | null, text: string): Partial<Record<FieldKey, unknown>> {
   const t = text.toLowerCase().trim();
@@ -68,6 +70,7 @@ export function extractFromAnswer(focus: FieldKey | null, text: string): Partial
     case "regions": {
       const ids = REGION_WORDS.filter(([, re]) => re.test(t)).map(([id]) => id);
       const specific = ids.includes("thoracic") ? ids.filter((id) => id !== "lumbar") : ids;
+      if (!specific.length && MANY_REGIONS.test(t)) return { regions: ["multiple"] };
       return specific.length ? { regions: specific } : {};
     }
     case "pain_now": {

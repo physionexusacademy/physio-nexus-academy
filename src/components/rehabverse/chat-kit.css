@@ -1,0 +1,96 @@
+/* RehabVerse AI chats: one easy look for the intake, the exercise coach and the check-in.
+   Goal: a person who finds reading or writing hard still sees at once what is being asked, can answer with ONE TAP, and finds a big Send button.
+   Sizes: every tap target is at least 44px, text is 16px or more in the box (so phones do not zoom), and the layout never needs side scrolling. */
+
+.ck-card { display: flex; flex-direction: column; padding: 0.75rem; }
+@media (min-width: 640px) { .ck-card { padding: 1rem; } }
+
+/* the long intake chat fills a screen on a computer; on a phone it flows with the page so the keyboard never squeezes the conversation to nothing */
+@media (min-width: 640px) {
+  .ck-card--fixed { height: min(80vh, 44rem); height: min(80dvh, 44rem); }
+  .ck-card--fixed .ck-log { flex: 1 1 auto; min-height: 8rem; }
+}
+
+.ck-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; border-bottom: 1px solid #e4ecf3; padding: 0 0.15rem 0.6rem; }
+.ck-who { display: flex; align-items: center; gap: 0.55rem; font-size: 1rem; font-weight: 800; color: #0a1f3d; line-height: 1.2; }
+.ck-who i { display: grid; place-items: center; height: 2.25rem; width: 2.25rem; flex: none; border-radius: 9999px; background: linear-gradient(135deg, #0a1f3d, #0db3aa); color: #fff; }
+.ck-who small { display: block; margin-top: 0.1rem; font-size: 0.74rem; font-weight: 600; color: #5b6b7e; }
+.ck-quit { display: inline-flex; min-height: 44px; align-items: center; border-radius: 9999px; border: 1px solid #cdd9e4; background: #fff; padding: 0.3rem 0.9rem; font-size: 0.84rem; font-weight: 800; color: #0a5f66; }
+.ck-quit:hover { border-color: #0db3aa; background: #f0faf9; }
+
+/* "How it works": three tiny steps, shown only until the first answer */
+.ck-how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; margin: 0.6rem 0 0; padding: 0; list-style: none; }
+.ck-how li { display: flex; align-items: center; gap: 0.45rem; border: 1px solid #cdece8; border-radius: 0.95rem; background: #effaf8; padding: 0.45rem 0.55rem; font-size: 0.8rem; font-weight: 800; line-height: 1.2; color: #0a3d47; }
+.ck-how b { display: grid; place-items: center; height: 1.5rem; width: 1.5rem; flex: none; border-radius: 9999px; background: #0db3aa; font-size: 0.8rem; color: #fff; }
+@media (max-width: 420px) { .ck-how li { padding: 0.4rem 0.45rem; font-size: 0.74rem; } .ck-how b { height: 1.3rem; width: 1.3rem; } }
+
+/* progress: words first, the bar second */
+.ck-progress { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.15rem 0; font-size: 0.82rem; font-weight: 800; color: #3d5266; }
+.ck-progress span.ck-bar { height: 0.5rem; flex: 1 1 auto; overflow: hidden; border-radius: 9999px; background: #e3ecf3; }
+.ck-progress span.ck-bar span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #0a1f3d, #0db3aa); transition: width 0.3s; }
+
+/* the conversation */
+.ck-log { position: relative; display: flex; flex-direction: column; gap: 0.7rem; overflow-y: auto; padding: 0.75rem 0.15rem; min-height: 8rem; max-height: min(24rem, 44vh); max-height: min(24rem, 44dvh); scroll-behavior: smooth; }
+@media (min-width: 640px) { .ck-card--fixed .ck-log { max-height: none; } }
+.ck-row { display: flex; }
+.ck-row--me { justify-content: flex-end; }
+.ck-bubble { max-width: 92%; margin: 0; white-space: pre-line; border-radius: 1.15rem; padding: 0.65rem 0.9rem; font-size: 1rem; line-height: 1.5; }
+.ck-bubble--bot { border: 1px solid #d5e0ea; border-bottom-left-radius: 0.4rem; background: #fff; color: #17263a; box-shadow: 0 6px 14px -12px rgba(10, 40, 70, 0.6); }
+.ck-bubble--me { border-bottom-right-radius: 0.4rem; background: #0a1f3d; color: #fff; }
+/* the question that is waiting for an answer stands out; the small tag is drawn by CSS so it is not part of the message text */
+.ck-bubble[data-now="1"] { border: 2px solid #0db3aa; background: #f4fffe; font-weight: 600; box-shadow: 0 0 0 4px rgba(13, 179, 170, 0.14); }
+.ck-bubble[data-now="1"]::before { content: attr(data-tag); display: block; margin-bottom: 0.2rem; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #0a7a74; }
+.ck-typing { display: inline-flex; gap: 0.3rem; align-items: center; border: 1px solid #d5e0ea; border-radius: 1.15rem; border-bottom-left-radius: 0.4rem; background: #fff; padding: 0.85rem 1rem; margin: 0; }
+.ck-typing i { height: 0.55rem; width: 0.55rem; border-radius: 9999px; background: #94a3b8; animation: ck-pulse 1s ease-in-out infinite; }
+.ck-typing i:nth-child(2) { animation-delay: 0.15s; }
+.ck-typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes ck-pulse { 0%, 100% { opacity: 0.35; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
+
+/* "Your turn": what to do now, in one line, with the answers to tap */
+.ck-turn { margin-top: 0.2rem; border-top: 1px solid #e4ecf3; padding-top: 0.7rem; }
+.ck-turn-title { display: flex; align-items: flex-start; gap: 0.5rem; margin: 0; font-size: 1.02rem; font-weight: 900; line-height: 1.3; color: #0a1f3d; }
+.ck-turn-title svg { margin-top: 0.15rem; height: 1.15rem; width: 1.15rem; flex: none; color: #0a7a74; }
+.ck-turn-eg { margin: 0.25rem 0 0; font-size: 0.86rem; line-height: 1.4; color: #4b5d70; }
+.ck-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.6rem; padding: 0.15rem; }
+.ck-chip { min-height: 46px; border-radius: 1.4rem; border: 2px solid #8fd3cc; background: #effaf8; padding: 0.4rem 1.05rem; font-size: 0.97rem; font-weight: 800; line-height: 1.2; color: #0a4a52; text-align: center; transition: background-color 0.15s, border-color 0.15s, transform 0.12s; }
+.ck-chip:hover { border-color: #0db3aa; background: #dff6f3; }
+.ck-chip:active { transform: scale(0.96); }
+.ck-chip[disabled] { opacity: 0.5; pointer-events: none; }
+.ck-chip[data-tone="good"] { border-color: #86d3a0; background: #effbf3; color: #14532d; }
+.ck-chip[data-tone="mid"] { border-color: #f0cd78; background: #fff8e6; color: #7a4a00; }
+.ck-chip[data-tone="bad"] { border-color: #f0a3ab; background: #fff1f2; color: #8f1020; }
+/* a scale of numbers (pain 0 to 10): two rows of big round buttons on a phone, one row on a computer */
+.ck-chips--nums { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.4rem; }
+.ck-chips--nums .ck-chip { padding: 0.3rem 0; font-size: 1.1rem; }
+@media (min-width: 560px) { .ck-chips--nums { grid-template-columns: repeat(11, minmax(0, 1fr)); } }
+
+.ck-compose { display: flex; align-items: stretch; gap: 0.5rem; margin-top: 0.6rem; }
+.ck-compose textarea { min-height: 3.5rem; flex: 1 1 auto; resize: none; border-radius: 1rem; border: 2px solid #a9bccd; background: #fff; padding: 0.65rem 0.85rem; font-size: 1rem; line-height: 1.45; color: #0a1f3d; }
+.ck-compose textarea:focus { outline: 3px solid rgba(13, 179, 170, 0.35); outline-offset: 0; border-color: #0db3aa; }
+.ck-compose textarea::placeholder { color: #6b7d90; }
+.ck-send { display: inline-flex; min-height: 3.5rem; flex: none; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 1rem; padding: 0 1.3rem; font-size: 1.05rem; font-weight: 900; }
+@media (max-width: 520px) {
+  .ck-compose { flex-direction: column; }
+  .ck-send { width: 100%; min-height: 3.25rem; }
+}
+.ck-tip { margin: 0.4rem 0 0; font-size: 0.78rem; color: #5b6b7e; }
+
+/* the end of a conversation: one big, obvious button */
+.ck-done { display: grid; gap: 0.6rem; border: 2px solid #8fd3cc; border-radius: 1.2rem; background: #effaf8; padding: 0.85rem; margin-top: 0.3rem; }
+.ck-done p { margin: 0; font-size: 1rem; font-weight: 800; line-height: 1.35; color: #0a3d47; }
+.ck-done .rv-btn { min-height: 3.25rem; font-size: 1.02rem; }
+
+/* which exercise the coach's questions are about */
+.ck-about { margin: 0.1rem 0 0.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; border-radius: 0.9rem; background: #f1f6fa; padding: 0.45rem 0.7rem; font-size: 0.86rem; color: #3d5266; }
+.ck-about b { color: #0a1f3d; font-size: 0.95rem; }
+
+/* the screen before the chat starts */
+.ck-big { min-height: 3.25rem; padding-left: 1.5rem; padding-right: 1.5rem; font-size: 1.02rem; }
+.ck-lead { margin: 0; font-size: 1.1rem; font-weight: 800; line-height: 1.4; color: #0a1f3d; }
+.ck-notice li { font-size: 0.98rem; line-height: 1.55; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-log { scroll-behavior: auto; }
+  .ck-typing i { animation: none; opacity: 0.7; }
+  .ck-chip, .ck-progress span.ck-bar span { transition: none; }
+}

@@ -142,6 +142,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-groq
 
+      - name: Validate the RehabVerse chat screens (every question has an example and tap answers in both languages, every tap is understood, big labelled controls)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:rehabverse-chat-ui
+
       - name: Validate the site assistant's written answers (only from PNA content, in the question's language, guarded)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:pna-ai-grounded

@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, ChevronDown, Send, Sparkles } from "lucide-react";
+import { useRef, useState } from "react";
+import { CheckCircle2, ChevronDown, Sparkles } from "lucide-react";
 import { checkinChatTurnAction, closeCheckinChatAction, startCheckinChatAction, type ChatMessageOut } from "@/app/rehabverse/ai-actions";
 import { checkinProgress, EMPTY_CHECKIN, MAX_CHECKIN_MESSAGE, type CheckinDraft } from "@/lib/rehabverse/ai/checkin-shared";
 import { AI_NOTICES } from "@/lib/rehabverse/ai/notices";
 import { AiNoticeList } from "./AiNoticeList";
+import { checkinPrompt } from "@/lib/rehabverse/ai/chat-quick";
+import { ChatLog, ChatTop, HowItWorks, Progress, toChips, YourTurn } from "./ChatKit";
 import { T, useRvLang } from "./useLang";
 
 type Phase = "closed" | "notice" | "starting" | "chat" | "gone";
@@ -42,12 +44,6 @@ export function CheckinChat({ sessionId, point, onFill, onConversation }: { sess
   const [stopped, setStopped] = useState(false);
   const [restarting, setRestarting] = useState(false);
   const applied = useRef<CheckinDraft>(EMPTY_CHECKIN);
-  const list = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const node = list.current;
-    if (node) node.scrollTo({ top: node.scrollHeight, behavior: "smooth" });
-  }, [messages, sending]);
 
   const take = (next: CheckinDraft) => {
     const patch = patchFrom(next, applied.current);
@@ -118,12 +114,13 @@ export function CheckinChat({ sessionId, point, onFill, onConversation }: { sess
   if (phase === "notice" || phase === "starting") {
     return (
       <section className="rv-glass space-y-3 p-4" aria-label="Check-in assistant" data-rv-checkin="notice">
+        <p className="ck-lead"><T en="Answer six short questions. Tap an answer, so you do not have to write. The form below is filled in for you." ru="Chhe chhote sawalon ke jawab dein. Jawab dabayein, likhna zaroori nahi. Neeche ka form aap ke liye bhar diya jata hai." /></p>
         <h4 className="font-heading text-base font-bold text-navy-800"><T en="Before we start" ru="Shuru karne se pehle" /></h4>
-        <AiNoticeList items={AI_NOTICES.checkin.items} className="space-y-2 text-[14px] leading-6 text-slate-700" />
+        <AiNoticeList items={AI_NOTICES.checkin.items} className="ck-notice space-y-2 text-slate-700" />
         {error ? <p className="rv-error" role="alert">{error === "limit" ? <T en="You have started several conversations today. Please use the form below, or try again tomorrow." ru="Aaj aap ne kai baat-cheet shuru kar li hain. Neeche form istemal karein, ya kal koshish karein." /> : <T en="That did not work. Please try again, or use the form below." ru="Ye nahi hua. Dobara koshish karein, ya neeche form istemal karein." />}</p> : null}
         <div className="flex flex-wrap gap-2">
-          <button type="button" className="rv-btn rv-btn-primary" disabled={phase === "starting"} onClick={start}>{phase === "starting" ? <T en="Starting…" ru="Shuru ho raha hai…" /> : <T en="I understand, start" ru="Main samajh gaya/gayi, shuru karein" />}</button>
-          <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setPhase("closed")}><T en="Use the form instead" ru="Form hi istemal karein" /></button>
+          <button type="button" className="rv-btn rv-btn-primary ck-big" disabled={phase === "starting"} onClick={start}>{phase === "starting" ? <T en="Starting…" ru="Shuru ho raha hai…" /> : <T en="I understand, start" ru="Main samajh gaya/gayi, shuru karein" />}</button>
+          <button type="button" className="rv-btn rv-btn-ghost ck-big" onClick={() => setPhase("closed")}><T en="Use the form instead" ru="Form hi istemal karein" /></button>
         </div>
       </section>
     );
@@ -131,46 +128,28 @@ export function CheckinChat({ sessionId, point, onFill, onConversation }: { sess
 
   const { done, total } = checkinProgress(answers);
   const finished = answers.done && !stopped;
+  const prompt = checkinPrompt(answers);
   return (
-    <section className="rv-glass flex flex-col p-3 sm:p-4" aria-label="Check-in assistant" data-rv-checkin="chat" data-rv-checkin-state={stopped ? "stopped" : finished ? "done" : "open"}>
-      <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-1 pb-2">
-        <p className="flex items-center gap-2 text-[14px] font-extrabold text-navy-800"><span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[#0a1f3d] to-[#0db3aa] text-white"><Sparkles className="h-4 w-4" aria-hidden="true" /></span> <T en="Check-in assistant" ru="Check-in assistant" /> <span className="rv-chip text-[11px]">AI</span></p>
-        <button type="button" className="text-[12.5px] font-bold text-teal-800 underline-offset-2 hover:underline" onClick={() => setPhase("closed")}><T en="Hide" ru="Chhupayein" /></button>
-      </div>
-      {!stopped ? (
-        <div className="flex items-center gap-2 px-1 pt-2" aria-label={lang === "ru" ? `${done} / ${total} sawal` : `${done} of ${total} questions`}>
-          <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100"><span className="block h-full rounded-full bg-teal-500 transition-all" style={{ width: `${Math.round((done / total) * 100)}%` }} /></span>
-          <span className="text-[11.5px] font-bold text-slate-500">{done}/{total}</span>
-        </div>
-      ) : null}
-
-      <div ref={list} className="max-h-[22rem] min-h-[8rem] space-y-3 overflow-y-auto px-1 py-3" role="log" aria-live="polite">
-        {messages.map((m, i) => (
-          <div key={i} className={"flex " + (m.role === "patient" ? "justify-end" : "justify-start")}>
-            <p className={"max-w-[92%] whitespace-pre-line rounded-2xl px-3.5 py-2.5 text-[14px] leading-6 " + (m.role === "patient" ? "rounded-br-md bg-[#0a1f3d] text-white" : "rounded-bl-md border border-slate-200 bg-white text-slate-800 shadow-sm")}>{m.text}</p>
-          </div>
-        ))}
-        {sending ? <div className="flex justify-start"><p className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3.5 py-3 text-slate-400 shadow-sm" aria-label="The assistant is typing"><span className="inline-flex gap-1"><i className="h-2 w-2 animate-pulse rounded-full bg-slate-400" /><i className="h-2 w-2 animate-pulse rounded-full bg-slate-400 [animation-delay:150ms]" /><i className="h-2 w-2 animate-pulse rounded-full bg-slate-400 [animation-delay:300ms]" /></span></p></div> : null}
-      </div>
-      {error ? <p className="rv-error mx-1 mb-2" role="alert">{error === "slow" ? <T en="Please wait a moment before sending again." ru="Dobara bhejne se pehle zara intezar karein." /> : <T en="I could not reply just now. Please send it again, or use the form below." ru="Main abhi jawab nahi de saka/saki. Dobara bhejein, ya neeche form istemal karein." />}</p> : null}
+    <section className="rv-glass ck-card" aria-label="Check-in assistant" data-rv-checkin="chat" data-rv-checkin-state={stopped ? "stopped" : finished ? "done" : "open"}>
+      <ChatTop title={<T en="Check-in assistant" ru="Check-in assistant" />} onAction={() => setPhase("closed")} actionLabel={<T en="Hide" ru="Chhupayein" />} />
+      {!messages.some((m) => m.role === "patient") && !stopped ? <HowItWorks /> : null}
+      {!stopped ? <Progress done={done} total={total} /> : null}
+      <ChatLog messages={messages} sending={sending} typingLabel="The assistant is typing" highlightLast={!stopped && !finished} />
+      {error ? <p className="rv-error mx-1 mb-2 text-[14px]" role="alert">{error === "slow" ? <T en="Please wait a moment before sending again." ru="Dobara bhejne se pehle zara intezar karein." /> : <T en="I could not reply just now. Please send it again, or use the form below." ru="Main abhi jawab nahi de saka/saki. Dobara bhejein, ya neeche form istemal karein." />}</p> : null}
 
       {stopped ? (
-        <p className="mx-1 mb-1 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-[13.5px] font-semibold leading-5 text-[#a1121f]" role="alert"><T en="Your physiotherapist has been told. The warning sign is ticked on the form below: please check it and save the check-in, then wait for their message." ru="Aap ke physiotherapist ko bata diya gaya hai. Warning sign neeche form mein tick hai: use check karke check-in save karein, phir un ke paigham ka intezar karein." /></p>
+        <p className="mx-1 mb-1 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-[14.5px] font-semibold leading-5 text-[#a1121f]" role="alert"><T en="Your physiotherapist has been told. The warning sign is ticked on the form below: please check it and save the check-in, then wait for their message." ru="Aap ke physiotherapist ko bata diya gaya hai. Warning sign neeche form mein tick hai: use check karke check-in save karein, phir un ke paigham ka intezar karein." /></p>
       ) : finished ? (
-        <div className="mx-1 mb-1 space-y-2 rounded-2xl border border-teal-200 bg-teal-50 p-3 text-[13.5px] leading-5 text-teal-950" role="status">
-          <p className="flex items-start gap-2 font-bold"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /><span><T en="The form below is filled in. Check every answer, tick the safety list yourself, and press Save." ru="Neeche ka form bhar diya gaya hai. Har jawab check karein, safety list khud tick karein, aur Save dabayein." /></span></p>
+        <div className="ck-done" role="status">
+          <p className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-teal-700" aria-hidden="true" /><span><T en="The form below is filled in. Check every answer, tick the safety list yourself, and press Save." ru="Neeche ka form bhar diya gaya hai. Har jawab check karein, safety list khud tick karein, aur Save dabayein." /></span></p>
           <button type="button" className="rv-btn rv-btn-ghost" disabled={restarting} onClick={again}><T en="Answer again" ru="Dobara jawab dein" /></button>
         </div>
       ) : (
-        <form className="flex items-end gap-2 border-t border-slate-100 pt-2" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
-          <textarea
-            value={input} onChange={(e) => setInput(e.target.value)} rows={2} maxLength={MAX_CHECKIN_MESSAGE} disabled={sending}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(input); } }}
-            placeholder={lang === "ru" ? "Apna jawab likhein (English ya Roman Urdu)…" : "Type your answer, in English or Roman Urdu…"}
-            aria-label={lang === "ru" ? "Aap ka jawab" : "Your answer"} className="rv-input min-h-[3.25rem] flex-1 resize-none"
-          />
-          <button type="submit" className="rv-btn rv-btn-primary" disabled={!input.trim() || sending} aria-label={lang === "ru" ? "Bhejein" : "Send"}><Send className="h-4 w-4" aria-hidden="true" /></button>
-        </form>
+        <YourTurn
+          title={<T en={prompt.title.en} ru={prompt.title.ru} />} example={prompt.example[lang] || undefined} chips={toChips(prompt.quick, lang)}
+          value={input} onChange={setInput} onSend={(text) => void send(text)} sending={sending} max={MAX_CHECKIN_MESSAGE}
+          inputLabel={lang === "ru" ? "Aap ka jawab" : "Your answer"}
+        />
       )}
     </section>
   );
