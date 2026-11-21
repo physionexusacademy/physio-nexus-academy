@@ -521,7 +521,8 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
       const u = (ms % loop) / loop;
       lastU.current = u;
       room.invalidate();
-      if (now - lastUi.current > 30) {
+      // the overlay lines are updated on every screen refresh (about 60 a second), so they stay glued to the moving limb instead of stepping at half the rate
+      if (now - lastUi.current > 15) {
         lastUi.current = now;
         draw(u, (ms % loop) / (slow ? 1.8 : 1));
       } else apply(room, scene, u, ms, opt);

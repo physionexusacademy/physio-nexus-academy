@@ -64,6 +64,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   // The latest voice and speed settings: the stage is built a few seconds after the first tap (dynamic imports, the character), and a setting changed meanwhile must not be lost.
   const settingsRef = useRef({ voice: false, speed: 1 });
   const sizeRef = useRef({ w: 600, h: 400 });
+  const viewKey = useRef("");
   langRef.current = lang;
   settingsRef.current = { voice: speakNow, speed };
 
@@ -114,8 +115,14 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
       const room = roomRef.current;
       const host = hostRef.current;
       if (!room || !host) return;
-      setView(v);
-      if (!v.overlays.length) return setSvg(null);
+      // The page around the picture only changes a few times a second (a new step or line, play or pause, the percentage): re-rendering it on every
+      // frame would compete with the 3D drawing for the same thread. Only the overlay lines, which must follow the moving body, update every frame.
+      const key = [v.step, v.lineIndex, v.started, v.playing, v.done, v.speaking, v.extra?.text ?? "", Math.round(v.progress * 100), v.notes.length, v.link?.href ?? ""].join("|");
+      if (key !== viewKey.current) {
+        viewKey.current = key;
+        setView(v);
+      }
+      if (!v.overlays.length) return setSvg((prev) => (prev === null ? prev : null));
       const w = host.clientWidth || 600, h = host.clientHeight || 400;
       sizeRef.current = { w, h };
       const side = v.ctx.side;

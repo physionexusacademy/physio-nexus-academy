@@ -216,9 +216,10 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
       const room = roomRef.current;
       if (!room) return;
       const talking = playing && !r.finished && (r.revealed < text.length || speaking.current) ? 1 : 0;
-      // Gestures and speech at ~30 fps, idle breathing at ~15 fps: smooth, but light on phones.
+      // Gestures and speech are drawn on every screen refresh (a wave or a nod must glide like a video, not step); the slow idle sway at 30 a second.
+      // (The picture itself adapts its resolution to the device, see lib/virtual-patient/engine.ts, so this stays smooth on a weak device too.)
       const busy = talking || (playing && !r.finished && (current?.gesture ?? "calm") !== "calm");
-      if (now - lastDraw < (busy ? 30 : 64)) return;
+      if (!busy && now - lastDraw < 30) return;
       const drawDt = Math.min(120, now - lastDraw);
       lastDraw = now;
       const t = now / 1000;
