@@ -85,3 +85,91 @@ jobs:
 
           echo; echo "=== DNS from 1.1.1.1 and 8.8.8.8 (A, AAAA, HTTPS record with ECH)"
           for r in 1.1.1.1 8.8.8.8; do echo "-- $r"; dig +short @"$r" physionexusacademy.com A; dig +short @"$r" physionexusacademy.com AAAA; dig +short @"$r" physionexusacademy.com HTTPS | cut -c1-200; done
+
+      - name: The other Cloudflare addresses that Pakistan is given (188.114.96.0/20) and what other resolvers answer
+        shell: bash
+        run: |
+          set +e
+          url="https://physionexusacademy.com/"
+          echo "=== does the site answer correctly on the addresses a Pakistani PC was given? (curl --resolve to each)"
+          for ip in 188.114.96.6 188.114.97.6 104.21.8.143 172.67.188.121; do
+            printf '%-16s' "$ip"
+            curl -sS -o /dev/null -m 20 --resolve "physionexusacademy.com:443:$ip" -w 'status=%{http_code} tls=%{time_appconnect}s total=%{time_total}s\n' "$url" 2>&1 | tail -1
+            echo "   trace: $(curl -sS -m 20 --resolve "physionexusacademy.com:443:$ip" "${url}cdn-cgi/trace" 2>&1 | grep -E '^(colo|http|tls|sni)=' | tr '\n' ' ')"
+            echo "   cert:  $(echo | openssl s_client -connect "$ip:443" -servername physionexusacademy.com 2>/dev/null | openssl x509 -noout -serial -enddate 2>/dev/null | tr '\n' ' ')"
+          done
+
+          echo; echo "=== what different resolvers answer from this network"
+          for r in 1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4 9.9.9.9 208.67.222.222 94.140.14.14; do
+            printf '%-16s' "$r"; dig +short +time=3 +tries=1 @"$r" physionexusacademy.com A | tr '\n' ' '; echo
+          done
+
+          echo; echo "=== the zone's own name servers (authoritative answers)"
+          for ns in ridge.ns.cloudflare.com tia.ns.cloudflare.com; do
+            printf '%-26s' "$ns"; dig +short +time=3 +tries=1 @"$ns" physionexusacademy.com A | tr '\n' ' '; echo
+          done
+          echo "-- with a client-subnet hint from Pakistan (PTCL 39.32.0.0/24, Jazz 119.160.0.0/24, Nayatel 202.163.64.0/24)"
+          for sub in 39.32.0.0/24 119.160.0.0/24 202.163.64.0/24; do
+            printf '%-20s' "$sub"; dig +short +time=3 +tries=1 +subnet=$sub @ridge.ns.cloudflare.com physionexusacademy.com A | tr '\n' ' '; echo
+            printf '%-20s' "  8.8.8.8 + subnet"; dig +short +time=3 +tries=1 +subnet=$sub @8.8.8.8 physionexusacademy.com A | tr '\n' ' '; echo
+          done
+
+      - name: Traffic and Worker usage of the last 24 hours (read-only analytics)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set +e
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then echo "::warning::No CLOUDFLARE_API_TOKEN secret."; exit 0; fi
+          api() { curl -sS -m 40 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          base="https://api.cloudflare.com/client/v4"
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1")"
+          zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty')"
+          acct_id="$(printf '%s' "$zone_json" | jq -r '.result[0].account.id // empty')"
+          since="$(date -u -d '23 hours ago' +%Y-%m-%dT%H:%M:%SZ)"; until="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "window: $since .. $until"
+          gql() { jq -n --arg q "$1" --argjson v "$2" '{query:$q, variables:$v}' | api -X POST "$base/graphql" --data @-; }
+
+          echo; echo "=== Worker invocations by status (free plan allows 100,000 requests a day)"
+          out="$(gql 'query($a:String!,$s:Time!,$u:Time!){viewer{accounts(filter:{accountTag:$a}){w:workersInvocationsAdaptive(limit:100,filter:{scriptName:"physio-nexus-academy",datetime_geq:$s,datetime_leq:$u}){sum{requests errors subrequests} dimensions{status}}}}}' "$(jq -n --arg a "$acct_id" --arg s "$since" --arg u "$until" '{a:$a,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.accounts[0].w[]? | "status=\(.dimensions.status)  requests=\(.sum.requests)  errors=\(.sum.errors)  subrequests=\(.sum.subrequests)")'
+          printf '%s' "$out" | jq -r '"TOTAL requests: \([.data.viewer.accounts[0].w[]?.sum.requests] | add // 0)"'
+
+          echo; echo "=== all zone requests by response status"
+          out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:30,filter:{datetime_geq:$s,datetime_leq:$u},orderBy:[count_DESC]){count dimensions{edgeResponseStatus}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.edgeResponseStatus)\t\(.count)")'
+
+          echo; echo "=== requests by country (top 8)"
+          out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:8,filter:{datetime_geq:$s,datetime_leq:$u},orderBy:[count_DESC]){count dimensions{clientCountryName}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.clientCountryName)\t\(.count)")'
+
+          echo; echo "=== requests from Pakistan, hour by hour (UTC) and response status"
+          out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:500,filter:{datetime_geq:$s,datetime_leq:$u,clientCountryName:"PK"},orderBy:[datetimeHour_ASC]){count dimensions{datetimeHour edgeResponseStatus}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.datetimeHour)\t\(.dimensions.edgeResponseStatus)\t\(.count)")'
+
+      - name: Workers subdomain, every Worker script of the account, and Cloudflare's own Git builds (read-only)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set +e
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then echo "::warning::No CLOUDFLARE_API_TOKEN secret."; exit 0; fi
+          api() { curl -sS -m 40 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          base="https://api.cloudflare.com/client/v4"
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1")"
+          acct_id="$(printf '%s' "$zone_json" | jq -r '.result[0].account.id // empty')"
+
+          echo "=== the account's workers.dev subdomain"
+          api "$base/accounts/$acct_id/workers/subdomain" | jq -c '{success, subdomain: .result.subdomain, errors}'
+
+          echo; echo "=== every Worker script in the account (name, modified, whether it is on workers.dev)"
+          api "$base/accounts/$acct_id/workers/scripts" | jq -r '.result[]? | "\(.id)\tmodified=\(.modified_on)\tcreated=\(.created_on)\tlast_deployed_from=\(.last_deployed_from // "-")"'
+          echo "-- workers.dev switch of the production script"
+          api "$base/accounts/$acct_id/workers/scripts/physio-nexus-academy/subdomain" | jq -c '{success, result, errors}'
+
+          echo; echo "=== Cloudflare Workers Builds (Git integration) for the production Worker"
+          for path in "builds/workers/physio-nexus-academy/triggers" "builds/triggers" "builds/workers/physio-nexus-academy/builds"; do
+            echo "-- $path"
+            api "$base/accounts/$acct_id/$path" | jq -c 'if .success then (.result | if type=="array" then map({id:(.trigger_uuid // .build_uuid // .id), branch:(.branch_includes // .build_trigger_metadata.branch // null), build_command:.build_command, deploy_command:.deploy_command, root:.root_directory, repo:(.repo_connection.repo_name // null), status:(.status // null), outcome:(.build_outcome // null), created:(.created_on // null)}) | .[:8] else . end) else {success, errors} end' | head -c 2500; echo
+          done
+

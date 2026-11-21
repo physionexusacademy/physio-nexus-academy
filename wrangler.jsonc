@@ -3,7 +3,7 @@
   "main": "custom-worker.ts",
   "name": "physio-nexus-academy",
   "keep_vars": true,
-  "workers_dev": false,
+  "workers_dev": true,
   "preview_urls": false,
   "routes": [
     {

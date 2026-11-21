@@ -15,10 +15,14 @@
  *   unstyled and dead until the copy was replaced (the first visit of each listed page after every deploy).
  *
  * It also owns the hourly cron trigger that sends the opt-in reminder e-mails (src/lib/reminders/job.ts).
+ *
+ * It also answers on the Worker's workers.dev address, a backup for networks that cut the connection to the real name; there (and only there) search engines are told
+ * to ignore everything (src/lib/host-policy.ts).
  */
 // @ts-ignore — built by `opennextjs-cloudflare build`
 import openNextWorker from "./.open-next/worker.js";
 import { runReminderJob, type ReminderEnv } from "./src/lib/reminders/job";
+import { backupRobotsTxt, isBackupHost, withBackupHeaders } from "./src/lib/host-policy";
 // @ts-ignore — re-exported so Wrangler still finds OpenNext's Durable Object classes
 export { DOQueueHandler, DOShardedTagCache, BucketCachePurge } from "./.open-next/worker.js";
 
@@ -77,30 +81,39 @@ export default {
   },
   async fetch(request: Request, env: unknown, ctx: Ctx): Promise<Response> {
     const url = new URL(request.url);
-    const edgeCache = (globalThis as unknown as { caches?: { default?: Cache } }).caches?.default;
-    if (!edgeCache || !cacheable(request, url)) return worker.fetch(request, env, ctx);
-
-    const key = new Request(`${url.origin}${url.pathname}${url.search}${url.search ? "&" : "?"}__pna_v=${versionOf(env)}`, { method: "GET" });
-    const hit = await edgeCache.match(key);
-    if (hit) {
-      const age = Date.now() - Number(hit.headers.get("x-pna-rendered-at") ?? 0);
-      if (age < FRESH_MS) return forBrowser(hit, "HIT");
-      if (age < STALE_MS) {
-        if (!refreshing.has(key.url)) {
-          refreshing.add(key.url);
-          ctx.waitUntil(
-            renderAndStore(new Request(request.url, { headers: request.headers }), env, ctx, key, edgeCache)
-              .catch(() => undefined)
-              .finally(() => refreshing.delete(key.url)),
-          );
-        }
-        return forBrowser(hit, "STALE");
-      }
+    // the backup (workers.dev) address: never indexed, always pointing at the real address; the real address is answered exactly as before
+    if (isBackupHost(url.hostname)) {
+      if (url.pathname === "/robots.txt") return backupRobotsTxt();
+      return withBackupHeaders(await handle(request, url, env, ctx), url);
     }
-    const fresh = await renderAndStore(request, env, ctx, key, edgeCache);
-    if (fresh.status !== 200) return fresh;
-    const out = new Response(fresh.body, fresh);
-    out.headers.set("x-pna-edge-cache", "MISS");
-    return out;
+    return handle(request, url, env, ctx);
   },
 };
+
+async function handle(request: Request, url: URL, env: unknown, ctx: Ctx): Promise<Response> {
+  const edgeCache = (globalThis as unknown as { caches?: { default?: Cache } }).caches?.default;
+  if (!edgeCache || !cacheable(request, url)) return worker.fetch(request, env, ctx);
+
+  const key = new Request(`${url.origin}${url.pathname}${url.search}${url.search ? "&" : "?"}__pna_v=${versionOf(env)}`, { method: "GET" });
+  const hit = await edgeCache.match(key);
+  if (hit) {
+    const age = Date.now() - Number(hit.headers.get("x-pna-rendered-at") ?? 0);
+    if (age < FRESH_MS) return forBrowser(hit, "HIT");
+    if (age < STALE_MS) {
+      if (!refreshing.has(key.url)) {
+        refreshing.add(key.url);
+        ctx.waitUntil(
+          renderAndStore(new Request(request.url, { headers: request.headers }), env, ctx, key, edgeCache)
+            .catch(() => undefined)
+            .finally(() => refreshing.delete(key.url)),
+        );
+      }
+      return forBrowser(hit, "STALE");
+    }
+  }
+  const fresh = await renderAndStore(request, env, ctx, key, edgeCache);
+  if (fresh.status !== 200) return fresh;
+  const out = new Response(fresh.body, fresh);
+  out.headers.set("x-pna-edge-cache", "MISS");
+  return out;
+}

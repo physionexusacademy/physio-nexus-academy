@@ -47,6 +47,7 @@
     "validate:motion": "node scripts/validate-motion.mjs",
     "validate:3d-smooth": "node scripts/validate-3d-smooth.mjs",
     "validate:3d-governor": "node --experimental-strip-types scripts/validate-3d-governor.ts",
+    "validate:resilience": "node --experimental-strip-types scripts/validate-resilience.ts",
     "validate:easy-touch": "node scripts/validate-easy-touch.mjs",
     "validate:rehabverse-chat-ui": "node --experimental-strip-types scripts/validate-rehabverse-chat-ui.ts",
     "validate:pna-ai-grounded": "node --experimental-strip-types scripts/validate-pna-ai-grounded.ts",

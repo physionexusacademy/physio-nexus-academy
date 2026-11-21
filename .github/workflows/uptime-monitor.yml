@@ -1,0 +1,87 @@
+name: Uptime monitor
+
+# Every hour (and when run by hand) this asks the real address, the backup address (workers.dev) and the http:// address how they answer, and
+# FAILS the run when something is down. GitHub then emails the person who last edited this schedule, and the Actions tab shows a red run with the
+# numbers in the summary. It reads only public pages. It runs from GitHub's network, so it tells you whether the SERVER side is healthy; it cannot
+# see a filter on a visitor's own ISP (see docs/OUTAGE-RUNBOOK.md for that case).
+#
+# Scheduled runs use the default branch (cloudflare-deploy). If the repository sees no activity for 60 days GitHub pauses scheduled workflows;
+# any push or a manual run turns them back on.
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime-monitor
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Ask each address how it answers (3 tries each, so one bad moment does not raise an alarm)
+        shell: bash
+        run: |
+          set +e
+          real="https://physionexusacademy.com"
+          backup="https://physio-nexus-academy.physionexusacademypk.workers.dev"
+          failed=0
+          summary="${GITHUB_STEP_SUMMARY:-/dev/null}"
+          {
+            echo "### Uptime check $(date -u +'%Y-%m-%d %H:%M') UTC"
+            echo
+            echo "| Address | Result | HTTP | Connect | TLS | Total |"
+            echo "|---|---|---|---|---|---|"
+          } >> "$summary"
+
+          # check <label> <url> <marker or ""> <wanted http status>
+          check() {
+            local label="$1" url="$2" marker="$3" want="$4" out code connect tls total ok
+            ok=0
+            for attempt in 1 2 3; do
+              out="$(curl -sS -o /tmp/body.html -w '%{http_code} %{time_connect} %{time_appconnect} %{time_total}' --connect-timeout 15 --max-time 30 "$url?monitor=$(date +%s)" 2>/tmp/err.txt)"
+              read -r code connect tls total <<<"$out"
+              if [ "$code" = "$want" ] && { [ -z "$marker" ] || grep -Fq "$marker" /tmp/body.html; }; then ok=1; break; fi
+              echo "$label attempt $attempt: HTTP ${code:-none} $(cat /tmp/err.txt 2>/dev/null | head -c 200)"
+              sleep 20
+            done
+            if [ "$ok" = "1" ]; then
+              echo "| $label | up | $code | ${connect}s | ${tls}s | ${total}s |" >> "$summary"
+              echo "$label is up: HTTP $code in ${total}s"
+              if awk -v t="$total" 'BEGIN { exit !(t > 5) }'; then echo "::warning::$label answered but slowly: ${total}s"; fi
+            else
+              echo "| $label | **DOWN** | ${code:-none} | ${connect:--} | ${tls:--} | ${total:--} |" >> "$summary"
+              echo "::error::$label is not answering as expected (wanted HTTP $want${marker:+ with the page marker}, got HTTP ${code:-none}). See docs/OUTAGE-RUNBOOK.md."
+              failed=1
+            fi
+          }
+
+          check "Real address (home page)" "$real/" 'data-pna-home-signature="v2"' 200
+          check "Real address (a lesson)" "$real/learn/gait-cycle" 'data-pna-teacher-lesson="gait-cycle"' 200
+          check "Real address (offline page)" "$real/offline.html" "We can't reach the site right now" 200
+          check "Backup address (workers.dev)" "$backup/" 'data-pna-home-signature="v2"' 200
+
+          # http:// must be sent to https:// (Always Use HTTPS), so nobody browses over plain text.
+          loc="$(curl -sS -o /dev/null -D - --connect-timeout 15 --max-time 30 "http://physionexusacademy.com/" 2>/dev/null | tr -d '\r')"
+          if echo "$loc" | head -1 | grep -Eq ' 30[18]' && echo "$loc" | grep -iq '^location: https://physionexusacademy.com'; then
+            echo "| http:// address | redirects to https | 301 | - | - | - |" >> "$summary"
+            echo "http:// redirects to https://"
+          else
+            echo "| http:// address | **not redirecting** | - | - | - | - |" >> "$summary"
+            echo "::warning::http://physionexusacademy.com/ no longer redirects to https:// (Always Use HTTPS may have been switched off). Cloudflare dashboard > SSL/TLS > Edge Certificates > Always Use HTTPS."
+          fi
+
+          # The real address must never be told to stay out of search results.
+          real_headers="$(curl -sS -o /dev/null -D - --connect-timeout 15 --max-time 30 "$real/" | tr -d '\r')"
+          if echo "$real_headers" | grep -iq '^x-robots-tag:.*noindex'; then
+            echo "::error::The real address is sending a noindex header. Google would drop the site. Check custom-worker.ts / host-policy.ts."
+            failed=1
+          fi
+
+          exit "$failed"
