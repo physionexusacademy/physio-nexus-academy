@@ -114,3 +114,36 @@ jobs:
             printf '%-20s' "  8.8.8.8 + subnet"; dig +short +time=3 +tries=1 +subnet=$sub @8.8.8.8 physionexusacademy.com A | tr '\n' ' '; echo
           done
 
+      - name: Traffic and Worker usage of the last 24 hours (read-only analytics)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set +e
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then echo "::warning::No CLOUDFLARE_API_TOKEN secret."; exit 0; fi
+          api() { curl -sS -m 40 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          base="https://api.cloudflare.com/client/v4"
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1")"
+          zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty')"
+          acct_id="$(printf '%s' "$zone_json" | jq -r '.result[0].account.id // empty')"
+          since="$(date -u -d '23 hours ago' +%Y-%m-%dT%H:%M:%SZ)"; until="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "window: $since .. $until"
+          gql() { jq -n --arg q "$1" --argjson v "$2" '{query:$q, variables:$v}' | api -X POST "$base/graphql" --data @-; }
+
+          echo; echo "=== Worker invocations by status (free plan allows 100,000 requests a day)"
+          out="$(gql 'query($a:String!,$s:Time!,$u:Time!){viewer{accounts(filter:{accountTag:$a}){w:workersInvocationsAdaptive(limit:100,filter:{scriptName:"physio-nexus-academy",datetime_geq:$s,datetime_leq:$u}){sum{requests errors subrequests} dimensions{status}}}}}' "$(jq -n --arg a "$acct_id" --arg s "$since" --arg u "$until" '{a:$a,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.accounts[0].w[]? | "status=\(.dimensions.status)  requests=\(.sum.requests)  errors=\(.sum.errors)  subrequests=\(.sum.subrequests)")'
+          printf '%s' "$out" | jq -r '"TOTAL requests: \([.data.viewer.accounts[0].w[]?.sum.requests] | add // 0)"'
+
+          echo; echo "=== all zone requests by response status"
+          out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:30,filter:{datetime_geq:$s,datetime_leq:$u},orderBy:[count_DESC]){count dimensions{edgeResponseStatus}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.edgeResponseStatus)\t\(.count)")'
+
+          echo; echo "=== requests by country (top 8)"
+          out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:8,filter:{datetime_geq:$s,datetime_leq:$u},orderBy:[count_DESC]){count dimensions{clientCountryName}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.clientCountryName)\t\(.count)")'
+
+          echo; echo "=== requests from Pakistan, hour by hour (UTC) and response status"
+          out="$(gql 'query($z:String!,$s:Time!,$u:Time!){viewer{zones(filter:{zoneTag:$z}){g:httpRequestsAdaptiveGroups(limit:500,filter:{datetime_geq:$s,datetime_leq:$u,clientCountryName:"PK"},orderBy:[datetimeHour_ASC]){count dimensions{datetimeHour edgeResponseStatus}}}}}' "$(jq -n --arg z "$zone_id" --arg s "$since" --arg u "$until" '{z:$z,s:$s,u:$u}')")"
+          printf '%s' "$out" | jq -r '(.errors // empty | "ERRORS: \(.)"), (.data.viewer.zones[0].g[]? | "\(.dimensions.datetimeHour)\t\(.dimensions.edgeResponseStatus)\t\(.count)")'
+
