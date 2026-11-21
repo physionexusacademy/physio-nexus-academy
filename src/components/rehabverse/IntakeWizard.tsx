@@ -5,13 +5,20 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Send } from "lucide-react";
 import { submitAssessmentAction, type IntakeResult } from "@/app/rehabverse/actions";
-import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_RED_FLAGS, INTAKE_SYMPTOMS, PAIN_WORDS, type Option } from "@/lib/rehabverse/intake";
+import { INTAKE_DURATION, INTAKE_ONSET, INTAKE_REGIONS, INTAKE_RED_FLAGS, INTAKE_SYMPTOMS, PAIN_WORDS, type Option } from "@/lib/rehabverse/intake";
+import { EMPTY_FLOW, SymptomFlow, type FlowAnswers } from "@/components/symptom/SymptomFlow";
+import { INTAKE_REGION_FOR_CHECKER, checkerAnswersFromIntake } from "@/lib/symptom/snapshot";
+import { clearHandover, flowFromHandover, readHandover } from "@/lib/symptom/handover";
+import { checkerCopy } from "@/lib/symptom/copy";
+import { ScreeningCard } from "./ScreeningCard";
 import { GUIDE, TOPIC_RED_FLAGS } from "@/lib/rehabverse/guide";
 import { GuideStage } from "./GuideStage";
 import { T, useRvLang } from "./useLang";
 
-const STEPS = ["area", "symptoms", "pain", "history", "better", "life", "safety", "words"] as const;
-type Step = (typeof STEPS)[number];
+/** With the symptom-checker pictures ("screen") in place of the plain area list; the plain list stays for a form pre-filled by the AI chat. */
+const CLASSIC_STEPS = ["area", "symptoms", "pain", "history", "better", "life", "safety", "words"] as const;
+const CHECKER_STEPS = ["screen", "symptoms", "pain", "history", "better", "life", "safety", "words"] as const;
+type Step = (typeof CLASSIC_STEPS)[number] | (typeof CHECKER_STEPS)[number];
 
 const painColour = (n: number) => (n <= 3 ? "#0db3aa" : n <= 6 ? "#d99a00" : "#d6293a");
 
@@ -27,13 +34,6 @@ const EMPTY: Form = {
   regions: [], symptoms: [], other_symptoms: "", pain_now: null, pain_worst: null, pain_best: null, duration: "", onset: "", possible_cause: "",
   aggravating: "", relieving: "", functional_limitations: "", previous_treatment: "", medical_conditions: "", medications: "", red_flags: [], no_red_flags: false, own_words: "",
 };
-
-const ONSET: Option[] = [
-  { id: "sudden", label: { en: "Suddenly (an injury or one moment)", ru: "Achanak (chot ya ek lamhe mein)" } },
-  { id: "gradual", label: { en: "Slowly, over time", ru: "Aahista aahista, waqt ke saath" } },
-  { id: "after_surgery", label: { en: "After surgery or a procedure", ru: "Operation ya procedure ke baad" } },
-  { id: "unknown", label: { en: "I am not sure", ru: "Mujhe pata nahi" } },
-];
 
 function Choice({ option, on, onClick, multi }: { option: Option; on: boolean; onClick: () => void; multi?: boolean }) {
   const [lang] = useRvLang();
@@ -76,12 +76,18 @@ export type IntakeForm = Form;
 export type IntakeStep = Step;
 
 /** The assessment questionnaire. It can start empty, or pre-filled from the AI conversation (the patient always checks and can change every answer). */
-export function IntakeWizard({ initial, startStep, aiConversationId, notice }: { initial?: Partial<Form>; startStep?: Step; aiConversationId?: string; notice?: React.ReactNode } = {}) {
+export function IntakeWizard({ initial, startStep, aiConversationId, notice, ageYears }: { initial?: Partial<Form>; startStep?: Step; aiConversationId?: string; notice?: React.ReactNode; ageYears?: number } = {}) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [stepIndex, setStepIndex] = useState(startStep ? Math.max(0, STEPS.indexOf(startStep)) : 0);
+  // The symptom-checker pictures and clues, unless the AI chat already filled in the areas (then its answers are checked in the plain form).
+  const withChecker = typeof ageYears === "number" && !(initial?.regions && initial.regions.length > 0);
+  const STEPS = withChecker ? CHECKER_STEPS : CLASSIC_STEPS;
+  const [stepIndex, setStepIndex] = useState(startStep ? Math.max(0, (STEPS as readonly Step[]).indexOf(startStep)) : 0);
   const [form, setForm] = useState<Form>({ ...EMPTY, ...(initial ?? {}) });
+  // Answers carried over from the public symptom checker (same browser tab): the pictures start at the history step with them filled in.
+  const [handover] = useState(() => (withChecker ? readHandover() : null));
+  const [flow, setFlow] = useState<FlowAnswers>(() => (handover ? { ...EMPTY_FLOW, ...flowFromHandover(handover) } : EMPTY_FLOW));
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<IntakeResult | null>(null);
   const token = useRef<string>("");
@@ -96,7 +102,7 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice }: {
     setForm((f) => ({ ...f, [key]: f[key].includes(id) ? f[key].filter((x) => x !== id) : [...f[key], id], ...(key === "red_flags" ? { no_red_flags: false } : {}) }));
 
   const valid = useMemo(() => {
-    if (step === "area") return form.regions.length > 0;
+    if (step === "area" || step === "screen") return form.regions.length > 0;
     if (step === "pain") return form.pain_now !== null;
     if (step === "safety") return form.no_red_flags || form.red_flags.length > 0;
     return true;
@@ -107,6 +113,20 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice }: {
     setStepIndex(to);
     top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  /** The picture questions are done: the main area, how it started and how long become the assessment's own answers. */
+  const lastMain = useRef<string | null>(null);
+  const finishFlow = (answers: FlowAnswers) => {
+    if (!answers.region) return;
+    const main = INTAKE_REGION_FOR_CHECKER[answers.region];
+    const before = lastMain.current;
+    lastMain.current = main;
+    // The main area comes first; areas ticked as "also bothers me" stay, but the main area the person picked before (if they changed it) does not.
+    setForm((f) => ({ ...f, regions: [main, ...f.regions.filter((r) => r !== main && r !== before && r !== "multiple")], onset: answers.onset, duration: answers.duration }));
+    go(1);
+  };
+  const mainRegion = flow.region ? INTAKE_REGION_FOR_CHECKER[flow.region] : null;
+  const toggleExtraArea = (id: string) => setForm((f) => ({ ...f, regions: f.regions.includes(id) ? f.regions.filter((r) => r !== id) : [...f.regions, id] }));
 
   const submit = () => {
     setError(null);
@@ -121,12 +141,15 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice }: {
         medical_conditions: form.medical_conditions || undefined, medications: form.medications || undefined,
         other_symptoms: form.other_symptoms || undefined, own_words: form.own_words || undefined,
         red_flags: form.red_flags,
-      }, aiConversationId);
+      }, aiConversationId, withChecker && flow.region
+        ? { region: flow.region, language: lang, source: handover ? "handover" : "checker", answers: checkerAnswersFromIntake({ ageYears: ageYears ?? 0, onset: flow.onset, duration: flow.duration, impact: flow.impact, location: flow.location, clues: flow.clues }) }
+        : undefined);
       if (!r.ok) {
         if (r.code === "open_assessment_exists") return router.replace("/rehabverse/me");
         return setError(r.code === "too many submissions" ? "rate" : "failed");
       }
       setResult(r.result);
+      if (handover) clearHandover();
       router.refresh();
       top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -164,11 +187,28 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice }: {
               <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="Thank you — your physiotherapist will review it." ru="Shukriya — aap ke physiotherapist isay review karenge." /></h1>
               <p className="text-[15px] leading-7 text-slate-700"><T en="You will see your programme on your dashboard once it is ready and approved. Please do not start exercises on your own until then." ru="Programme tayyar aur approve hote hi aap ke dashboard par nazar aayega. Tab tak apni marzi se exercises shuru na karein." /></p>
               {result.reference_code ? <p className="text-sm text-slate-600"><T en="Your reference:" ru="Aap ka reference:" /> <b>{result.reference_code}</b></p> : null}
+              {withChecker ? <ScreeningCard /> : null}
               <Link href="/rehabverse/me" className="rv-btn rv-btn-primary"><T en="Go to my dashboard" ru="Mere dashboard par jayein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
             </>
           )}
         </div>
         <GuideStage beats={beats} restartKey={flagged ? "flagged" : "submitted"} />
+      </div>
+    );
+  }
+
+  /* ───────────────────────── the picture questions (same as the public symptom checker) ───────────────────────── */
+  if (step === "screen") {
+    return (
+      <div ref={top} className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+        <div>
+          {notice}
+          {handover ? <p className="mb-3 rounded-2xl border border-teal-200 bg-teal-50 px-4 py-3 text-[13.5px] leading-6 text-teal-950" role="note">{checkerCopy(lang === "ru" ? "ru" : "en").rehab.handoverNote}</p> : null}
+          <SymptomFlow lang={lang === "ru" ? "ru" : "en"} ageYears={ageYears ?? 30} value={flow} onChange={setFlow} onDone={finishFlow} />
+        </div>
+        <div className="lg:sticky lg:top-24">
+          <GuideStage beats={beats} restartKey="intro" compact autoPlay />
+        </div>
       </div>
     );
   }
@@ -199,6 +239,14 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice }: {
               <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="What are you feeling?" ru="Aap kya mehsoos kar rahe hain?" /></h1>
               <p className="text-sm text-slate-600"><T en="Choose all that fit." ru="Jo bhi lagu ho wo chunein." /></p>
               <div className="grid gap-2 sm:grid-cols-2">{INTAKE_SYMPTOMS.map((o) => <Choice key={o.id} option={o} multi on={form.symptoms.includes(o.id)} onClick={() => toggle("symptoms", o.id)} />)}</div>
+              {withChecker ? (
+                <div className="space-y-2 pt-2">
+                  <p className="rv-label"><T en="Does anywhere else bother you too? (optional)" ru="Kya koi aur jagah bhi tang karti hai? (zaroori nahi)" /></p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {INTAKE_REGIONS.filter((o) => o.id !== "multiple" && o.id !== mainRegion).map((o) => <Choice key={o.id} option={o} multi on={form.regions.includes(o.id)} onClick={() => toggleExtraArea(o.id)} />)}
+                  </div>
+                </div>
+              ) : null}
               {form.symptoms.includes("other") ? <Area id="other_symptoms" rows={2} label={<T en="Tell us about it" ru="Is ke baare mein bataein" />} value={form.other_symptoms} onChange={(v) => set("other_symptoms", v)} /> : null}
             </>
           ) : null}
@@ -216,9 +264,21 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice }: {
           {step === "history" ? (
             <>
               <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="How long, and how did it start?" ru="Kitne arse se, aur kaise shuru hua?" /></h1>
-              <div className="grid gap-2 sm:grid-cols-2">{INTAKE_DURATION.map((o) => <Choice key={o.id} option={o} on={form.duration === o.id} onClick={() => set("duration", o.id)} />)}</div>
-              <p className="rv-label pt-1"><T en="It started…" ru="Ye shuru hua…" /></p>
-              <div className="grid gap-2 sm:grid-cols-2">{ONSET.map((o) => <Choice key={o.id} option={o} on={form.onset === o.id} onClick={() => set("onset", o.id)} />)}</div>
+              {withChecker ? (
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-[13.5px] leading-6 text-slate-700">
+                  <p>
+                    <b className="text-navy-800"><T en="You told us:" ru="Aap ne bataya:" /></b>{" "}
+                    {INTAKE_DURATION.find((o) => o.id === form.duration)?.label[lang]} · {INTAKE_ONSET.find((o) => o.id === form.onset)?.label[lang]}
+                  </p>
+                  <button type="button" className="rv-btn rv-btn-ghost" onClick={() => go(0)}><T en="Change" ru="Badlein" /></button>
+                </div>
+              ) : (
+                <>
+                  <div className="grid gap-2 sm:grid-cols-2">{INTAKE_DURATION.map((o) => <Choice key={o.id} option={o} on={form.duration === o.id} onClick={() => set("duration", o.id)} />)}</div>
+                  <p className="rv-label pt-1"><T en="It started…" ru="Ye shuru hua…" /></p>
+                  <div className="grid gap-2 sm:grid-cols-2">{INTAKE_ONSET.map((o) => <Choice key={o.id} option={o} on={form.onset === o.id} onClick={() => set("onset", o.id)} />)}</div>
+                </>
+              )}
               <Area id="cause" rows={2} label={<T en="Do you know what caused it? (optional)" ru="Kya pata hai ye kis wajah se hua? (zaroori nahi)" />} value={form.possible_cause} onChange={(v) => set("possible_cause", v)} />
             </>
           ) : null}

@@ -23,7 +23,7 @@ const ONSET: Record<string, { en: string; ru: string }> = {
  * end the patient reviews what was noted and the normal questionnaire (with its safety questions) takes over, so nothing is submitted
  * without the patient checking it. "Use the normal form" is always one tap away.
  */
-export function IntakeChat() {
+export function IntakeChat({ ageYears }: { ageYears?: number } = {}) {
   const [lang] = useRvLang();
   const [phase, setPhase] = useState<Phase>("notice");
   const [conversationId, setConversationId] = useState("");
@@ -98,7 +98,7 @@ export function IntakeChat() {
         </p>
       </div>
     );
-    return <IntakeWizard initial={{ ...draft, red_flags: safety?.flags ?? [] }} startStep={formStep} aiConversationId={conversationId || undefined} notice={notice} />;
+    return <IntakeWizard initial={{ ...draft, red_flags: safety?.flags ?? [] }} startStep={formStep} aiConversationId={conversationId || undefined} notice={notice} ageYears={ageYears} />;
   }
 
   /* ───────────── the AI notice ───────────── */

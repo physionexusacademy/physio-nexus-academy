@@ -8,6 +8,6 @@ const IntakeWizard = dynamic(() => import("./IntakeWizard").then((m) => m.Intake
   loading: () => <div className="mx-auto h-96 max-w-5xl animate-pulse rounded-3xl bg-white/70" aria-busy="true" aria-label="Loading questionnaire" />,
 });
 
-export function IntakeWizardLoader() {
-  return <IntakeWizard />;
+export function IntakeWizardLoader({ ageYears }: { ageYears?: number }) {
+  return <IntakeWizard ageYears={ageYears} />;
 }

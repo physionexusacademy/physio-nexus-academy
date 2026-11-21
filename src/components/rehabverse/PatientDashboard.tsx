@@ -15,6 +15,7 @@ import { AdherenceRing, FollowUpCard, PainTrendCard, type NextStep } from "./Fol
 import { LineChart } from "./charts";
 import { T, useRvLang } from "./useLang";
 import { AiAssistCard } from "./AiAssistCard";
+import { ScreeningCard } from "./ScreeningCard";
 
 const OPEN_ASSESSMENT = ["submitted", "needs_clinical_assessment", "in_review", "cleared_for_programme", "programme_created"];
 
@@ -30,7 +31,18 @@ function StatusChip({ session }: { session: OverviewSession }) {
   return <span className="rv-chip"><T en="Locked" ru="Locked" /></span>;
 }
 
-export function PatientDashboard({ overview, history, notifications, followup = null }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[]; followup?: PatientFollowup | null }) {
+/** What the patient's answers pointed to. Drawn (and so logged as shown) only while it is open. */
+function ScreeningPanel({ defaultOpen }: { defaultOpen: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <details className="rv-glass p-3 sm:p-4" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)} data-testid="screening-panel">
+      <summary className="cursor-pointer text-[15px] font-bold text-navy-800"><T en="What your answers pointed to (screening)" ru="Aap ke jawab kis taraf ishara kar rahe the (screening)" /></summary>
+      {open ? <div className="mt-3"><ScreeningCard /></div> : null}
+    </details>
+  );
+}
+
+export function PatientDashboard({ overview, history, notifications, followup = null, hasScreening = false }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[]; followup?: PatientFollowup | null; hasScreening?: boolean }) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -124,6 +136,7 @@ export function PatientDashboard({ overview, history, notifications, followup = 
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div className="order-2 space-y-5 lg:order-1">
+          {hasScreening ? <ScreeningPanel defaultOpen={!live} /> : null}
           {/* Where things stand */}
           {state === "flagged" ? (
             <section className="rv-glass border-l-4 !border-l-[#d6293a] p-5" role="alert">

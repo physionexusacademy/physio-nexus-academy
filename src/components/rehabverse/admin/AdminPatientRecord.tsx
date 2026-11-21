@@ -4,12 +4,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ClipboardCheck, FileClock, ShieldAlert } from "lucide-react";
 import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
-import type { AdminAssessment, AdminPatient } from "@/lib/rehabverse/api-types";
+import type { AdminAssessment, AdminPatient, StoredSnapshot } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
 import { AiConversations } from "./AiConversations";
 import { HistoryBrief } from "./HistoryBrief";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
+import { ScreeningSnapshot } from "./ScreeningSnapshot";
 import { SessionReview } from "./SessionReview";
 
 const dt = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -30,7 +31,7 @@ function Field({ k, v }: { k: string; v?: string | null }) {
   return <div><dt className="text-[11px] font-extrabold uppercase tracking-wide text-slate-500">{k}</dt><dd className="text-[14px] leading-6 text-slate-800">{v}</dd></div>;
 }
 
-function AssessmentPanel({ a }: { a: AdminAssessment }) {
+function AssessmentPanel({ a, snapshot }: { a: AdminAssessment; snapshot?: StoredSnapshot }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [note, setNote] = useState("");
@@ -70,6 +71,7 @@ function AssessmentPanel({ a }: { a: AdminAssessment }) {
         <Field k="Clearance note" v={a.clearance_note} />
         <Field k="Admin notes" v={a.admin_notes} />
       </dl>
+      {snapshot ? <ScreeningSnapshot snapshot={snapshot} /> : null}
       {["submitted", "in_review", "needs_clinical_assessment", "cleared_for_programme"].includes(a.status) ? (
         <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
           <textarea className="rv-input" rows={2} placeholder={flagged ? "Clinical note (required to clear a flagged assessment: what you assessed and why exercise is appropriate)" : "Note (required to clear for a programme: 10+ characters)"} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} aria-label="Clinical note" />
@@ -168,7 +170,7 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
       ) : null}
 
       <Section id="assessment" title="Initial assessment" aside={latest ? <span className="rv-chip">{latest.status.replace(/_/g, " ")}</span> : null}>
-        {latest ? <AssessmentPanel a={latest} /> : <p className="text-[13.5px] text-slate-500">No assessment submitted yet.</p>}
+        {latest ? <AssessmentPanel a={latest} snapshot={(data.checker_snapshots ?? []).find((k) => k.assessment_id === latest.id)} /> : <p className="text-[13.5px] text-slate-500">No assessment submitted yet.</p>}
         {assessments.length > 1 ? (
           <details className="mt-3 text-[13px]"><summary className="cursor-pointer font-bold text-slate-600">Earlier assessments ({assessments.length - 1})</summary>
             <ul className="mt-2 space-y-1">{assessments.slice(1).map((a) => <li key={a.id}>{dt(a.submitted_at)} — {a.status.replace(/_/g, " ")} · {a.regions.map((r) => label(INTAKE_REGIONS, r)).join(", ")} · NPRS {a.pain_now}</li>)}</ul>

@@ -72,7 +72,7 @@ async function say(page, text) {
   /* 1. A patient whose switch is off sees the normal form and no mention of AI. */
   const n = person("none"); const pn = await newPage(browser);
   await register(pn, n);
-  await pn.getByText("Where is the problem?").waitFor({ timeout: 60000 });
+  await pn.getByText("Where is your main problem?").waitFor({ timeout: 60000 });
   check("1a Without the switch the patient gets the normal form", (await pn.getByText("Before we start").count()) === 0);
   await pn.goto(`${BASE}/rehabverse/me`);
   await pn.waitForLoadState("networkidle");
@@ -148,7 +148,7 @@ async function say(page, text) {
   await aiOn(c);
   await pc.goto(`${BASE}/rehabverse/start`);
   await pc.getByRole("button", { name: /Use the normal form instead/ }).click();
-  await pc.getByText("Where is the problem?").waitFor();
+  await pc.getByText("Where is your main problem?").waitFor();
   check("4a 'Use the normal form instead' works and starts no conversation", (await rows("select 1 from public.rehab_ai_conversations c join public.rehab_patients p on p.id = c.patient_id join auth.users u on u.id = p.user_id where u.email = $1", [c.email])).length === 0);
 
   /* 5. Switching AI off stops a conversation at once, and the patient falls back to the form. */
@@ -163,7 +163,7 @@ async function say(page, text) {
   await devSql("update public.rehab_patients set ai_assist = 'off' where user_id = (select id from auth.users where email = $1)", [d.email]);
   await pd.getByLabel("Your message").fill("7");
   await pd.getByRole("button", { name: "Send" }).click();
-  await pd.getByText("Where is the problem?").waitFor({ timeout: 60000 });
+  await pd.getByText(/Where is (the|your main) problem\?/).waitFor({ timeout: 60000 }); // the plain list when the conversation already named an area, the pictures when it had not
   check("5a When the admin turns AI off mid-conversation the patient lands on the normal form", true);
   check("5b ...and no further AI turn was recorded", (await rows("select c.turns from public.rehab_ai_conversations c join public.rehab_patients p on p.id = c.patient_id join auth.users u on u.id = p.user_id where u.email = $1", [d.email]))[0].turns === 1);
 

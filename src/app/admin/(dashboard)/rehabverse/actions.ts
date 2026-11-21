@@ -118,6 +118,14 @@ export async function setAiPilotAction(input: { maxPatients: number; openToAll: 
   } catch (e) { return fail(e); }
 }
 
+/** Study setting: when patients are shown their symptom screening (at once, or only after the physiotherapist has reviewed the assessment). Admin only; every change is audited. */
+export async function setScreeningVisibilityAction(value: "immediate" | "after_review"): Promise<Result<{ value: "immediate" | "after_review" }>> {
+  try {
+    const r = await rpc<{ screening_visibility: "immediate" | "after_review" }>("rehab_admin_set_screening_visibility", { p_value: value });
+    return { ok: true, value: r.screening_visibility };
+  } catch (e) { return fail(e); }
+}
+
 /** Approve or reject a new account request. The database refuses anyone who is not staff and writes the decision to the audit log. */
 export async function decideRegistrationAction(patientId: string, decision: "approve" | "reject", note?: string): Promise<Result<{ status: string; phone: string | null; fullName: string; language: "en" | "ru" }>> {
   try {

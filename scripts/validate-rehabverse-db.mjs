@@ -560,6 +560,68 @@ const definerNoPath = await sql(`select p.proname from pg_proc p join pg_namespa
    where n.nspname = 'public' and p.proname like 'rehab%' and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`);
 eq(definerNoPath, [], "every security-definer function pins its search_path");
 
+/* ----------------------------- 16b. the symptom-checker snapshot and the study setting ----------------------------- */
+const SNAP = (over = {}) => ({ engine_version: "msk1-test0001", source: "checker", region: "knee", language: "ru", answers: ["onset_gradual", "loc_knee_front"], pain_now: 5,
+  top: [{ id: "patellofemoral-pain", score: 9, matched: 3, total: 7 }], priority: 1, fracture_screen: false, nerve_hint: null, ...over });
+const saveSnap = (patient, assessment, snap) => sql("select public.rehab_checker_snapshot_save($1, $2, $3::jsonb) as r", [patient, assessment, JSON.stringify(snap)]).then((r) => r[0].r);
+async function newPatient(name, email) {
+  const user = await makeUser(email);
+  const reg = await rpc(user, "rehab_register_patient", { p_payload: { full_name: name, age_years: 35, phone: "0300 0000000", consent: true } });
+  await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: reg.id, p_decision: "approve" });
+  return { user, id: reg.id };
+}
+const submit = (p, over = {}) => rpc(p.user, "rehab_submit_assessment", { p_payload: { ...INTAKE, client_token: crypto.randomUUID(), ...over } });
+
+const dina = await newPatient("Dina Noor", "dina@pna.test");
+eq(await rpc(dina.user, "rehab_my_screening", {}), { assessment_id: null, visible: false }, "before any assessment there is nothing to show");
+const dinaA = await submit(dina);
+eq(await rpc(dina.user, "rehab_my_screening", {}), { assessment_id: dinaA.id, visible: false }, "an assessment without a screening snapshot shows nothing");
+eq((await sql("select has_function_privilege('authenticated', 'public.rehab_checker_snapshot_save(uuid, uuid, jsonb)', 'execute') as a, has_function_privilege('service_role', 'public.rehab_checker_snapshot_save(uuid, uuid, jsonb)', 'execute') as s"))[0], { a: false, s: true }, "only the server can save a snapshot (a patient cannot write her own patterns)");
+await rowsFail(dina.user, "select * from rehab_checker_snapshots", /permission denied/, "patients cannot read the snapshot table directly");
+await assert.rejects(() => saveSnap(dina.id, "00000000-0000-0000-0000-000000000000", SNAP()), /assessment not found/); checks += 1;
+await assert.rejects(() => saveSnap(aliceReg.id, dinaA.id, SNAP()), /assessment not found/); checks += 1; // not her assessment
+eq(await saveSnap(dina.id, dinaA.id, SNAP()), { saved: true }, "the server saves the snapshot with the assessment");
+eq(await saveSnap(dina.id, dinaA.id, SNAP({ region: "hip" })), { saved: false }, "a second save is ignored (one snapshot per assessment, the first is kept)");
+eq((await sql("select region, arm, engine_version, shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0], { region: "knee", arm: "immediate", engine_version: "msk1-test0001", shown_to_patient_at: null }, "the snapshot records the answers' region, the engine version and the study arm");
+await assert.rejects(() => sql("update rehab_checker_snapshots set region = 'hip' where assessment_id = $1", [dinaA.id]), /cannot be changed/); checks += 1;
+await assert.rejects(() => sql("update rehab_checker_snapshots set top_patterns = '[]' where assessment_id = $1", [dinaA.id]), /cannot be changed/); checks += 1;
+const shown = await rpc(dina.user, "rehab_my_screening", {});
+ok(shown.visible && shown.snapshot.top[0].id === "patellofemoral-pain" && shown.snapshot.engine_version === "msk1-test0001", "in the 'immediate' arm the patient sees the patterns at once");
+const firstShown = (await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0].shown_to_patient_at;
+ok(firstShown !== null, "the first time the patient is shown the screening is logged");
+await rpc(dina.user, "rehab_my_screening", {});
+eq((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0].shown_to_patient_at, firstShown, "the first-shown time never moves");
+eq((await sql("select count(*)::int n from rehab_audit_log where action = 'screening.shown' and patient_id = $1", [dina.id]))[0].n, 1, "exposure is in the audit log once");
+await assert.rejects(() => sql("update rehab_checker_snapshots set shown_to_patient_at = now() where assessment_id = $1", [dinaA.id]), /first time shown cannot be changed/); checks += 1;
+
+await fails(dina.user, "rehab_admin_set_screening_visibility", { p_value: "after_review" }, /not authorised/, "a patient cannot change the study setting");
+await fails(admin, "rehab_admin_set_screening_visibility", { p_value: "whenever" }, /unknown setting/, "only the two settings exist");
+eq((await rpc(admin, "rehab_admin_study_settings", {})).screening_visibility, "immediate", "the default is 'immediate'");
+await rpc(admin, "rehab_admin_set_screening_visibility", { p_value: "after_review" });
+eq((await sql("select arm from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0].arm, "immediate", "changing the setting never changes an earlier participant's arm");
+const erin = await newPatient("Erin Zafar", "erin@pna.test");
+const erinA = await submit(erin);
+await saveSnap(erin.id, erinA.id, SNAP());
+eq((await sql("select arm from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].arm, "after_review", "a new participant is recorded in the arm in force");
+eq(await rpc(erin.user, "rehab_my_screening", {}), { assessment_id: erinA.id, visible: false, waiting_for_review: true }, "in the 'after review' arm the patient sees nothing before the physiotherapist has reviewed");
+eq((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].shown_to_patient_at, null, "and no exposure is logged");
+await rpc(admin, "rehab_admin_set_assessment_status", { p_assessment_id: erinA.id, p_status: "in_review" });
+const probe = await rpc(erin.user, "rehab_my_screening", { p_mark_shown: false });
+ok(probe.visible, "a probe ('is there something to show?') says it can be shown once reviewed");
+eq((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].shown_to_patient_at, null, "but a probe logs no exposure: only drawing it on the screen does");
+ok((await rpc(erin.user, "rehab_my_screening", {})).visible, "once the physiotherapist has reviewed it, the patient sees it");
+ok((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].shown_to_patient_at !== null, "and now the exposure is logged");
+
+const frank = await newPatient("Frank Iqbal", "frank@pna.test");
+const frankA = await submit(frank, { red_flags: ["rf_chest"] });
+await saveSnap(frank.id, frankA.id, SNAP());
+eq((await rpc(frank.user, "rehab_my_screening", {})).visible, false, "a patient with a safety warning is never shown a list of patterns");
+eq((await sql("select count(*)::int n from rehab_checker_snapshots where assessment_id = $1", [frankA.id]))[0].n, 1, "but the snapshot is kept for the physiotherapist and the research record");
+const dinaRecord = await rpc(admin, "rehab_admin_patient", { p_patient_id: dina.id });
+ok(dinaRecord.checker_snapshots.length === 1 && dinaRecord.checker_snapshots[0].arm === "immediate" && dinaRecord.checker_snapshots[0].shown_to_patient_at !== null && !("patient_id" in dinaRecord.checker_snapshots[0]), "the physiotherapist's record carries the snapshot, the arm and when the patient was shown it");
+await rpc(admin, "rehab_admin_set_screening_visibility", { p_value: "immediate" });
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'study.screening_visibility'"))[0].n === 2, "every change of the study setting is in the audit log");
+
 /* ----------------------------- 17. the AI-assistance switch in the app (code-level) ----------------------------- */
 import fs from "node:fs";
 const src = (file) => fs.readFileSync(new URL("../" + file, import.meta.url), "utf8");

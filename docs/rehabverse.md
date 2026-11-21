@@ -215,6 +215,33 @@ A new RehabVerse account is a request the clinic approves; no confirmation e-mai
 * Migration `20261126120000_rehab_account_approval.sql` must be applied to the database **before** the code that needs it is deployed (the guard treats a missing status as active, so the old database keeps working). Old accounts stay active.
 * Without e-mail verification anyone can type someone else's address; the clinic's phone check is the control, and password-reset e-mails still prove ownership of an address.
 
+## Symptom screening in the assessment (27 Nov 2026)
+
+The RehabVerse assessment now starts with the **same questions as the public symptom checker** (`/symptom-checker`): the body pictures, the location
+choices and the symptom clues. One set of building blocks serves both (`src/components/symptom/parts.tsx`; the words are in `src/lib/symptom/copy.ts`
+and `ru*.ts`, English and natural spoken Roman Urdu, checked by `npm run validate:symptom-ru`). RehabVerse keeps its own "how did it start / how long"
+options and its own, fuller safety questions; the checker adds the pictures and clues and then hands over to the rest of the form.
+
+- **What is stored.** After the assessment is saved, the server builds a **snapshot** from the raw answers with the checker engine (never from patterns sent
+  by the browser) and saves it with the assessment (`rehab_checker_snapshots`, written only through the service-role function
+  `rehab_checker_snapshot_save`): the answers, the engine version (`msk1-<hash of the questions, patterns and weights>`), the top three patterns with scores,
+  the next-step priority, the fracture-screen flag and the study arm. A snapshot cannot be edited afterwards (a trigger refuses everything except filling in
+  "first shown to the patient"). Safety warnings do not stop it being stored; they do stop it being shown.
+- **How the intake maps to the checker.** Age comes from the account; "suddenly" is the injury onset; durations are mapped cautiously (a band is only claimed
+  when the option is certain to lie in it: under a week = acute; three months or more = chronic; 1 week to 3 months = subacute, which carries no weight). See
+  `DURATION_TO_CHECKER` in `src/lib/symptom/snapshot.ts` and `npm run validate:symptom-snapshot`.
+- **What the patient sees.** After sending the form, and on the dashboard, a highlighted "what your answers point to" panel: the pattern that fits best, why it
+  matched, what is often also present, what argues against it. It always says it is a screening, not a diagnosis, and an acute knee/ankle injury that trips the
+  Ottawa-style screen shows a care note (an in-person assessment, possibly an X-ray) instead of a headline pattern. Never shown when a safety warning was ticked.
+- **Study setting (for the research).** Admin, RehabVerse inbox, "Study setting: when patients see their screening": *straight after the form is sent*
+  (default) or *after I have reviewed it*. Each participant is recorded in the arm in force when they sent the assessment; changing the setting never rewrites an
+  earlier record, and the change itself is in the audit log. The first time the screening is shown to a patient is logged (`shown_to_patient_at` and an audit row);
+  checking whether there is something to show logs nothing.
+- **What the physiotherapist sees.** In the patient's record, under the assessment: area, history, location, every clue ticked, the patterns with scores, the
+  engine version, the study arm and whether and when the patient was shown the screening.
+- **Tests.** `validate-rehabverse-db.mjs` (snapshot rules, arms, exposure log, immutability), `validate:symptom-snapshot`, `validate:symptom-ru` and
+  `scripts/rehabverse-local/e2e-screening.cjs` (browser: English and Roman Urdu, both arms, fracture screen, safety warning, admin view).
+
 ## Content review checklist (owner action)
 
 * Every exercise (indications, contraindications, dosage, progressions, references) is a **draft**.

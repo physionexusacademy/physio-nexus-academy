@@ -4,8 +4,9 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isPublicFormRateLimited } from "@/lib/security/public-form-protection";
-import { RehabError, currentUser, getHistory, getNotifications, getOverview, getSession, isStaff, rpc } from "@/lib/rehabverse/api";
-import type { AccountStatus, FollowupPoint } from "@/lib/rehabverse/api-types";
+import { RehabError, currentUser, getHistory, getMyScreening, getNotifications, getOverview, getSession, isStaff, rpc } from "@/lib/rehabverse/api";
+import type { AccountStatus, FollowupPoint, MyScreening } from "@/lib/rehabverse/api-types";
+import { buildSnapshot } from "@/lib/symptom/snapshot";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
@@ -210,9 +211,25 @@ export type IntakeInput = {
 };
 export type IntakeResult = { id: string; status: string; red_flag_level: "none" | "urgent" | "emergency"; red_flag_ids: string[]; reference_code?: string; duplicate: boolean };
 
-export async function submitAssessmentAction(input: IntakeInput, aiConversationId?: string): Promise<ActionResult<{ result: IntakeResult }>> {
+/** The raw answers given through the symptom-checker pictures and clues. The server works the patterns out itself; nothing computed in the browser is stored. */
+export type ScreeningInput = { region: string; answers: string[]; language: "en" | "ru"; source?: "checker" | "handover" };
+
+export async function submitAssessmentAction(input: IntakeInput, aiConversationId?: string, screening?: ScreeningInput): Promise<ActionResult<{ result: IntakeResult }>> {
   try {
     const result = await rpc<IntakeResult>("rehab_submit_assessment", { p_payload: input });
+    if (screening && !result.duplicate) {
+      // The screening snapshot (research record). Never blocks the submission: the assessment itself is already saved.
+      try {
+        const built = buildSnapshot({ region: screening.region, answers: screening.answers, pain_now: input.pain_now, language: screening.language, source: screening.source });
+        const overview = await getOverview();
+        if (built.ok && overview.patient) {
+          const { error } = await createAdminClient().rpc("rehab_checker_snapshot_save", { p_patient_id: overview.patient.id, p_assessment_id: result.id, p_snapshot: built.snapshot });
+          if (error) console.error("REHAB_SNAPSHOT", error.message);
+        } else console.error("REHAB_SNAPSHOT", built.ok ? "no patient" : built.reason);
+      } catch (error) {
+        console.error("REHAB_SNAPSHOT", error instanceof Error ? error.message : String(error));
+      }
+    }
     if (aiConversationId && /^[0-9a-f-]{36}$/i.test(aiConversationId)) {
       // Remember which assessment the AI conversation produced (research record). Never blocks the submission.
       try {
@@ -229,6 +246,15 @@ export async function submitAssessmentAction(input: IntakeInput, aiConversationI
       );
     }
     return { ok: true, result };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/** What the patient may see of the screening for the latest assessment (the database applies the safety rule and the study setting, and logs the first time it is shown). */
+export async function myScreeningAction(): Promise<ActionResult<{ screening: MyScreening }>> {
+  try {
+    return { ok: true, screening: await getMyScreening() };
   } catch (e) {
     return fail(e);
   }

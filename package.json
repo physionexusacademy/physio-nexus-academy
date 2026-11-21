@@ -35,6 +35,8 @@
     "build:rehabverse-data": "node --experimental-strip-types scripts/build-rehabverse-data.ts",
     "validate:rehabverse-db": "node scripts/validate-rehabverse-db.mjs",
     "validate:rehabverse-approval": "node --experimental-strip-types scripts/validate-rehabverse-approval.ts",
+    "validate:symptom-ru": "node --experimental-strip-types scripts/validate-symptom-checker-ru.ts",
+    "validate:symptom-snapshot": "node --experimental-strip-types scripts/validate-symptom-snapshot.ts",
     "validate:rehabverse-ai": "node --experimental-strip-types scripts/validate-rehabverse-ai.ts",
     "validate:rehabverse-brief": "node --experimental-strip-types scripts/validate-rehabverse-brief.ts",
     "validate:rehabverse-coach": "node --experimental-strip-types scripts/validate-rehabverse-coach.ts",

@@ -105,7 +105,23 @@ export type AdminPatient = {
   adverse_events: { id: string; severity: "mild" | "moderate" | "severe"; status: "open" | "reviewed" | "closed"; source: string; description: string; action_taken: string | null; flag_ids: string[]; created_at: string; session_id: string | null }[];
   audit: { id: number; at: string; action: string; entity: string; details: Record<string, unknown> | null; actor_role: string | null }[];
   ai_conversations?: AdminAiConversation[];
+  checker_snapshots?: StoredSnapshot[];
 };
+/** The screening snapshot stored with an assessment (what was answered, which engine version scored it, which patterns it found). */
+export type SnapshotPatternRow = { id: string; score: number; matched: number; total: number };
+export type StoredSnapshot = {
+  id: string; assessment_id: string; engine_version: string; source: "checker" | "handover"; region: string; language: "en" | "ru"; answers: string[];
+  pain_now: number | null; top_patterns: SnapshotPatternRow[]; priority: 0 | 1 | 2; fracture_screen: boolean; nerve_hint: string | null;
+  arm: ScreeningVisibility; shown_to_patient_at: string | null; created_at: string;
+};
+/** When the patient is shown the screening: at once, or only after the physiotherapist has reviewed the assessment (a study setting). */
+export type ScreeningVisibility = "immediate" | "after_review";
+/** What the patient may see of her/his own screening (the database decides; a safety warning or the study arm can hide it). */
+export type MyScreening = {
+  assessment_id: string | null; visible: boolean; waiting_for_review?: boolean;
+  snapshot?: { engine_version: string; region: string; language: "en" | "ru"; answers: string[]; pain_now: number | null; top: SnapshotPatternRow[]; priority: 0 | 1 | 2; fracture_screen: boolean; nerve_hint: string | null };
+};
+export type StudySettings = { screening_visibility: ScreeningVisibility; updated_at: string };
 export type AdminPatientRow = { id: string; reference_code: string; full_name: string; city: string | null; created_at: string; ai_assist: AiAssist; status: AccountStatus; programme_status: ProgrammeStatus | null };
 
 /** A new account waiting for the clinic's decision (the contact details are what the clinic checks before approving). */
