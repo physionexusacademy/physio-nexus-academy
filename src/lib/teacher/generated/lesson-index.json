@@ -1729,6 +1729,223 @@
    "Use sub-scores to pick training, standardise the set-up, guard the patient and never rely on one test to predict falls."
   ],
   "keywords": "Choosing a Balance Test — Berg, FGA, Mini-BESTest, Four Square Step and mCTSIB choosing-balance-tests Skills · Balance & Function Berg (0–56, below about 45 predicts falls, ceiling effect), FGA (0–30, 22 or less), Mini-BESTest (0–28, about 19 or less, four sections), FSST (15 s or more) and mCTSIB (four 30 s conditions). Choose the test for the question and the patient: screening versus localising versus tracking a fit person. Use sub-scores to pick training, standardise the set-up, guard the patient and never rely on one test to predict falls. Berg Balance Scale: range and cut-off? What is special about the Mini-BESTest? mCTSIB conditions? FSST cut-off?",
+  "next": {
+   "slug": "spinal-cord-syndromes-brown-sequard",
+   "title": "Brown-Séquard and the Cord Syndromes: Which Side Is Weak, Which Side Is Numb?",
+   "href": "/learn/spinal-cord-syndromes-brown-sequard"
+  }
+ },
+ {
+  "href": "/learn/spinal-cord-syndromes-brown-sequard",
+  "slug": "spinal-cord-syndromes-brown-sequard",
+  "title": "Brown-Séquard and the Cord Syndromes: Which Side Is Weak, Which Side Is Numb?",
+  "hook": {
+   "en": "A half-cut spinal cord leaves one leg weak and the OTHER leg unable to feel pain. Damage the cord yourself in the lab, then read the body like an expert.",
+   "ur": "Aadha kata hua spinal cord ek taang ko kamzor aur DOOSRI taang ko dard na mehsoos karne wala bana deta hai. Lab mein khud cord ko kharab karein, phir jism ko expert ki tarah parhein."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 15,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name Brown-Séquard, anterior, central and posterior cord syndromes from the findings, predict which side loses strength, position sense and pain, and plan safe first physiotherapy steps.",
+   "ur": "End tak aap findings se Brown-Séquard, anterior, central aur posterior cord syndromes ke naam batayenge, andaza lagayenge ke kaunsi side taqat, position sense aur dard khoti hai, aur physiotherapy ke mehfooz pehle qadam plan karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "The cord holds three tracts: corticospinal (strength, SAME side), dorsal columns (position and vibration, SAME side), spinothalamic (pain and temperature, OPPOSITE side).",
+   "Brown-Séquard = same-side weakness and lost position sense, opposite-side lost pain and temperature; anterior = lost motor and pain with position kept; central = arms worse than legs; posterior = position lost, strength normal.",
+   "Protect the numb side from burns and pressure, respect spinal precautions, and treat a new or worsening cord picture, or autonomic dysreflexia, as an emergency."
+  ],
+  "keywords": "Brown-Séquard and the Cord Syndromes: Which Side Is Weak, Which Side Is Numb? spinal-cord-syndromes-brown-sequard Neurology The cord holds three tracts: corticospinal (strength, SAME side), dorsal columns (position and vibration, SAME side), spinothalamic (pain and temperature, OPPOSITE side). Brown-Séquard = same-side weakness and lost position sense, opposite-side lost pain and temperature; anterior = lost motor and pain with position kept; central = arms worse than legs; posterior = position lost, strength normal. Protect the numb side from burns and pressure, respect spinal precautions, and treat a new or worsening cord picture, or autonomic dysreflexia, as an emergency. Which tract crosses in the medulla, and which crosses within the cord? What is Brown-Séquard syndrome? Which cord syndrome spares position sense but loses pain and strength? Which cord syndrome affects the arms more than the legs? What is autonomic dysreflexia and the first response?",
+  "next": {
+   "slug": "stroke-syndromes-by-territory",
+   "title": "Stroke Syndromes: Read the Artery from the Body",
+   "href": "/learn/stroke-syndromes-by-territory"
+  }
+ },
+ {
+  "href": "/learn/stroke-syndromes-by-territory",
+  "slug": "stroke-syndromes-by-territory",
+  "title": "Stroke Syndromes: Read the Artery from the Body",
+  "hook": {
+   "en": "Face and arm weak with language gone, or only the leg, or only the vision? The pattern on the body tells you which artery is blocked. Block each artery yourself and watch the body map change.",
+   "ur": "Chehra aur bazoo kamzor aur zubaan ghayab, ya sirf taang, ya sirf nazar? Jism ka pattern batata hai kaunsi artery band hai. Har artery khud band karein aur body map badalta dekhein."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 16,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll link MCA, ACA, PCA, lateral medullary and lacunar strokes to their typical deficits, tell left from right hemisphere problems, and shape a physiotherapy plan around each pattern.",
+   "ur": "End tak aap MCA, ACA, PCA, lateral medullary aur lacunar strokes ko un ke aam nuqs se jorenge, left aur right hemisphere ke masail alag karenge, aur har pattern ke mutabiq physiotherapy plan banayenge."
+  },
+  "checks": 4,
+  "summaryEn": [
+   "Each artery has a fingerprint: MCA = face and arm plus language (left) or neglect (right); ACA = leg plus apathy and bladder; PCA = vision and thalamic sensation; lateral medulla = crossed face and body; lacunar = equal weakness with a clear mind.",
+   "Left hemisphere is usually the language side; the right looks after attention and body awareness, so right strokes often hide the illness from the patient.",
+   "Sudden dizziness plus brainstem signs is a stroke until proven otherwise: use BE-FAST, call for help, and protect the weak shoulder and the swallow."
+  ],
+  "keywords": "Stroke Syndromes: Read the Artery from the Body stroke-syndromes-by-territory Neurology Each artery has a fingerprint: MCA = face and arm plus language (left) or neglect (right); ACA = leg plus apathy and bladder; PCA = vision and thalamic sensation; lateral medulla = crossed face and body; lacunar = equal weakness with a clear mind. Left hemisphere is usually the language side; the right looks after attention and body awareness, so right strokes often hide the illness from the patient. Sudden dizziness plus brainstem signs is a stroke until proven otherwise: use BE-FAST, call for help, and protect the weak shoulder and the swallow. What does an MCA stroke typically cause? What does an ACA stroke typically cause? What does a PCA stroke typically cause? What is the lateral medullary (Wallenberg) pattern? What does BE-FAST stand for?",
+  "next": {
+   "slug": "bppv-dix-hallpike-epley",
+   "title": "BPPV: Dix-Hallpike, the Epley Manoeuvre and When Not to Treat",
+   "href": "/learn/bppv-dix-hallpike-epley"
+  }
+ },
+ {
+  "href": "/learn/bppv-dix-hallpike-epley",
+  "slug": "bppv-dix-hallpike-epley",
+  "title": "BPPV: Dix-Hallpike, the Epley Manoeuvre and When Not to Treat",
+  "hook": {
+   "en": "The room spins for thirty seconds every time the patient rolls over in bed. Loose crystals in one canal cause it, and five head positions can put them back. Watch the crystal move.",
+   "ur": "Mareez jab bistar par palatta hai to tees second ke liye kamra ghoomta hai. Ek canal mein dheelay crystals wajah hain, aur sir ki paanch positions unhein wapas laa sakti hain. Crystal ko hilta dekhein."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 15,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll recognise BPPV from the story, perform and interpret a Dix-Hallpike test, explain the Epley step by step with the crystal's path, and know when the dizziness is NOT BPPV.",
+   "ur": "End tak aap kahani se BPPV pehchanenge, Dix-Hallpike test karenge aur samjhenge, Epley ko crystal ke raaste ke saath qadam ba qadam samjhayenge, aur jaanenge ke chakkar kab BPPV NAHI hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "BPPV is loose crystals in a canal (usually the posterior): brief, position-triggered vertigo with nothing in between.",
+   "A positive Dix-Hallpike gives an upbeating-torsional nystagmus with delay and fatigue; the Epley's five positions roll the crystals out through the canal's opening.",
+   "Down-beating or non-fading nystagmus, or any new neurological sign, means a central cause: stop and refer."
+  ],
+  "keywords": "BPPV: Dix-Hallpike, the Epley Manoeuvre and When Not to Treat bppv-dix-hallpike-epley Neurology BPPV is loose crystals in a canal (usually the posterior): brief, position-triggered vertigo with nothing in between. A positive Dix-Hallpike gives an upbeating-torsional nystagmus with delay and fatigue; the Epley's five positions roll the crystals out through the canal's opening. Down-beating or non-fading nystagmus, or any new neurological sign, means a central cause: stop and refer. What is BPPV? What is a positive Dix-Hallpike for the posterior canal? Give the five steps of the Epley manoeuvre. Which findings mean a central cause, not BPPV?",
+  "next": {
+   "slug": "spasticity-tardieu-catch-lab",
+   "title": "Spasticity or Contracture? The Tardieu Catch Lab",
+   "href": "/learn/spasticity-tardieu-catch-lab"
+  }
+ },
+ {
+  "href": "/learn/spasticity-tardieu-catch-lab",
+  "slug": "spasticity-tardieu-catch-lab",
+  "title": "Spasticity or Contracture? The Tardieu Catch Lab",
+  "hook": {
+   "en": "A stiff limb is not always \"high tone\". Stretch it slowly, then fast, and the muscle tells you whether the problem is the nervous system or the tissue itself. Do the test yourself.",
+   "ur": "Akri hui limb hamesha \"high tone\" nahi hoti. Pehle aahista, phir tez stretch karein, to muscle khud batata hai ke masla nervous system ka hai ya tissue ka. Test khud karke dekhein."
+  },
+  "area": "Neurology",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 15,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll separate spasticity from rigidity and contracture with the Tardieu method, record R1, R2 and the quality of reaction, and choose a sensible plan for each.",
+   "ur": "End tak aap Tardieu tareeqe se spasticity ko rigidity aur contracture se alag karenge, R1, R2 aur reaction ki quality likhenge, aur har ek ke liye munasib plan chunenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Spasticity is velocity-dependent: slow gives full range, fast gives an early catch. Rigidity resists equally at all speeds; contracture stops at the same angle at any speed.",
+   "Tardieu: R2 at the slowest speed is the muscle length, R1 at the fastest is the catch, X grades the reaction, and R2 − R1 is the neural part.",
+   "Standardise the measurement, treat the cause (tone versus length), strengthen without fear, and hunt for a trigger when tone suddenly rises."
+  ],
+  "keywords": "Spasticity or Contracture? The Tardieu Catch Lab spasticity-tardieu-catch-lab Neurology Spasticity is velocity-dependent: slow gives full range, fast gives an early catch. Rigidity resists equally at all speeds; contracture stops at the same angle at any speed. Tardieu: R2 at the slowest speed is the muscle length, R1 at the fastest is the catch, X grades the reaction, and R2 − R1 is the neural part. Standardise the measurement, treat the cause (tone versus length), strengthen without fear, and hunt for a trigger when tone suddenly rises. What is spasticity? What do R1 and R2 mean in the Tardieu method? How does rigidity differ from spasticity on a stretch test? What does a short R2 that does not change with speed suggest?",
+  "next": {
+   "slug": "developmental-milestones-0-5-years",
+   "title": "Developmental Milestones 0 to 5 Years: What Is Typical, What Is a Flag",
+   "href": "/learn/developmental-milestones-0-5-years"
+  }
+ },
+ {
+  "href": "/learn/developmental-milestones-0-5-years",
+  "slug": "developmental-milestones-0-5-years",
+  "title": "Developmental Milestones 0 to 5 Years: What Is Typical, What Is a Flag",
+  "hook": {
+   "en": "Is a 15-month-old who is not yet walking late, or normal? Slide through the first five years, switch on \"born early\" and see the milestone checklist change with the corrected age.",
+   "ur": "Kya 15 mahine ka bachcha jo abhi chalta nahi late hai ya normal? Pehle paanch saal slide karein, \"qabl-az-waqt paida\" on karein aur corrected age ke saath milestone checklist badalti dekhein."
+  },
+  "area": "Paediatrics",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 16,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll name the key motor, language, social and thinking milestones at each checkpoint from 2 months to 5 years, correct the age of a baby born early, and spot the flags that need a prompt referral.",
+   "ur": "End tak aap 2 mahine se 5 saal tak har checkpoint ke aham motor, zubaan, samaji aur sochne ke milestones batayenge, qabl-az-waqt paida bachay ki umar corrected karenge, aur woh flags pehchanenge jin par jaldi referral chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Milestones are skills most children show by an age (CDC 2022: three in four or more). Use the checkpoints for four domains, and watch the order of skills, not one skill alone.",
+   "Correct the age of a baby born early (calendar age minus the weeks early) until 24 months, and never correct upward.",
+   "Refer promptly for lost skills, asymmetry, abnormal tone, no walking by 18 months, no babbling by 12 months or any hearing or vision concern."
+  ],
+  "keywords": "Developmental Milestones 0 to 5 Years: What Is Typical, What Is a Flag developmental-milestones-0-5-years Paediatrics Milestones are skills most children show by an age (CDC 2022: three in four or more). Use the checkpoints for four domains, and watch the order of skills, not one skill alone. Correct the age of a baby born early (calendar age minus the weeks early) until 24 months, and never correct upward. Refer promptly for lost skills, asymmetry, abnormal tone, no walking by 18 months, no babbling by 12 months or any hearing or vision concern. What does a milestone mean in the 2022 CDC checklists? How do you correct a premature baby's age? Give three flags that need prompt referral. What did the WHO study show about walking age?",
+  "next": {
+   "slug": "primitive-reflexes-postural-reactions",
+   "title": "Primitive Reflexes and Postural Reactions: The Hidden Timeline of Infant Movement",
+   "href": "/learn/primitive-reflexes-postural-reactions"
+  }
+ },
+ {
+  "href": "/learn/primitive-reflexes-postural-reactions",
+  "slug": "primitive-reflexes-postural-reactions",
+  "title": "Primitive Reflexes and Postural Reactions: The Hidden Timeline of Infant Movement",
+  "hook": {
+   "en": "Some reflexes must disappear and others must appear and stay for life. Slide through the first two years and watch which ones are due, fading or overdue.",
+   "ur": "Kuch reflexes ko ghayab hona chahiye aur kuch ko aana aur umar bhar rehna chahiye. Pehle do saal slide karein aur dekhein kaun se due, khatam hotay ya late hain."
+  },
+  "area": "Paediatrics",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 15,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll describe the main primitive reflexes and postural reactions with their typical windows, test them safely, and explain why a reflex that stays too long, never appears or is asymmetrical matters.",
+   "ur": "End tak aap aham primitive reflexes aur postural reactions ko un ke typical windows ke saath bayan karenge, mehfooz tareeqe se test karenge, aur samjhayenge ke jo reflex bohat der rahe, kabhi na aaye ya asymmetrical ho woh kyun aham hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Primitive reflexes (Moro, ATNR, grasp, rooting) are present at birth and fade by 4 to 12 months; postural reactions (righting, equilibrium, parachute) appear from 3 months and stay for life.",
+   "Test a calm, awake baby by corrected age, and look for asymmetry, absence at birth and obligatory reflexes more than for one reflex slightly late.",
+   "Persisting primitive reflexes block rolling, reaching and standing; missing parachute reactions make sitting and walking unsafe: refer promptly."
+  ],
+  "keywords": "Primitive Reflexes and Postural Reactions: The Hidden Timeline of Infant Movement primitive-reflexes-postural-reactions Paediatrics Primitive reflexes (Moro, ATNR, grasp, rooting) are present at birth and fade by 4 to 12 months; postural reactions (righting, equilibrium, parachute) appear from 3 months and stay for life. Test a calm, awake baby by corrected age, and look for asymmetry, absence at birth and obligatory reflexes more than for one reflex slightly late. Persisting primitive reflexes block rolling, reaching and standing; missing parachute reactions make sitting and walking unsafe: refer promptly. Name three primitive reflexes and when they fade. When do the parachute reactions appear? What is an obligatory reflex? Why use the corrected age for reflexes?",
+  "next": {
+   "slug": "cerebral-palsy-gmfcs",
+   "title": "Cerebral Palsy and the GMFCS: Levels I to V, Hips and Goals",
+   "href": "/learn/cerebral-palsy-gmfcs"
+  }
+ },
+ {
+  "href": "/learn/cerebral-palsy-gmfcs",
+  "slug": "cerebral-palsy-gmfcs",
+  "title": "Cerebral Palsy and the GMFCS: Levels I to V, Hips and Goals",
+  "hook": {
+   "en": "Two children have the same diagnosis but live completely different movement lives. The GMFCS explains why, and it tells you what to aim for and what to watch, especially the hips.",
+   "ur": "Do bachon ki tashkhees ek hai magar un ki harkat ki zindagi bilkul mukhtalif hai. GMFCS batata hai kyun, aur yeh bhi ke kis cheez ka hadaf rakhein aur kis par nazar, khaas kar hips par."
+  },
+  "area": "Paediatrics",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 16,
+  "flashcardCount": 5,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll define cerebral palsy, classify a child's gross motor function on the GMFCS (I to V) by age band, link the level to hip risk and goals, and know the other classification systems and red flags.",
+   "ur": "End tak aap cerebral palsy ki tareef karenge, bachay ke gross motor function ko GMFCS (I se V) par umar ke band ke hisab se classify karenge, level ko hip risk aur goals se jorenge, aur doosre classification systems aur red flags jaanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "CP is a group of permanent, non-progressive disorders of movement and posture from an early brain injury; the secondary musculoskeletal problems grow over time.",
+   "The GMFCS (I to V, by age band) describes what a child usually does: Level I walks anywhere, II with limits, III with a handheld device, IV mainly powered mobility, V transported.",
+   "The level predicts hip risk (about 0% at Level I to about 90% at Level V), so surveillance, supported standing and abduction positioning are part of the plan, and new pain or lost skills are red flags."
+  ],
+  "keywords": "Cerebral Palsy and the GMFCS: Levels I to V, Hips and Goals cerebral-palsy-gmfcs Paediatrics CP is a group of permanent, non-progressive disorders of movement and posture from an early brain injury; the secondary musculoskeletal problems grow over time. The GMFCS (I to V, by age band) describes what a child usually does: Level I walks anywhere, II with limits, III with a handheld device, IV mainly powered mobility, V transported. The level predicts hip risk (about 0% at Level I to about 90% at Level V), so surveillance, supported standing and abduction positioning are part of the plan, and new pain or lost skills are red flags. What is cerebral palsy? What does the GMFCS classify? What separates Level II from Level III? How does hip risk change with GMFCS level? What is the Reimers migration percentage?",
   "next": null
  },
  {
