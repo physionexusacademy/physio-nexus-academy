@@ -8,6 +8,7 @@ import { getTeacherPath, recommendPathSlug, stepsPerDay } from "@/lib/teacher/pa
 import { saveTeacherProfile, teacherToday } from "@/lib/teacher/progress";
 import { withPath } from "@/lib/teacher/href";
 import { Chip, RichText, StudentBubble, TeacherBubble, TypingBubble, pick, t } from "./ui";
+import { motionReduced } from "@/lib/motion";
 
 const stageOptions: { value: TeacherStage; label: BiText }[] = [
   { value: "year1-2", label: { en: "1st–2nd year DPT", ur: "DPT 1st–2nd year" } },
@@ -48,7 +49,7 @@ export function WelcomeChat({ lessons, onComplete }: { lessons: TeacherLessonCar
 
   useEffect(() => {
     if (step === 0) return;
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const reduce = motionReduced();
     bottomRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
     if (step === 1 && !typing) nameInputRef.current?.focus({ preventScroll: true });
   }, [step, typing]);
@@ -57,7 +58,7 @@ export function WelcomeChat({ lessons, onComplete }: { lessons: TeacherLessonCar
     const merged = { ...answers, ...update };
     setAnswers(merged);
     setTyping(true);
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const reduce = motionReduced();
     timer.current = setTimeout(
       () => {
         setTyping(false);

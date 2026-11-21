@@ -184,3 +184,80 @@
 @keyframes rv-draw { from { stroke-dashoffset: 700; } }
 @media (max-width: 560px) { .rv-hero { padding: 1.1rem; border-radius: 1.5rem; } .rv-hero-side { width: 100%; justify-content: space-between; } }
 @media (prefers-reduced-motion: reduce) { .rv-hero::before, .rv-hero-day i, .rv-ring-fg, .rv-trend-line, .rv-next[data-kind="checkin"] > span { animation: none !important; } }
+
+/* ───────────── RehabVerse, the futuristic and easy version (2026-11) ─────────────
+   A light, clear page (easy to read for everybody) with a dark glass bar, glowing accents and big, obvious actions.
+   Only opacity and transform ever move, and the motion follows the visitor's choice (lib/motion.ts). */
+.rv-root {
+  background:
+    radial-gradient(900px 420px at 100% -10%, rgba(13, 179, 170, 0.14), transparent 70%),
+    radial-gradient(800px 380px at -10% 0%, rgba(124, 92, 255, 0.1), transparent 70%),
+    linear-gradient(rgba(10, 31, 61, 0.035) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(10, 31, 61, 0.035) 1px, transparent 1px) 0 0 / 44px 44px,
+    #f2f7fb;
+}
+.rv-glass {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    linear-gradient(135deg, rgba(13, 179, 170, 0.6), rgba(124, 92, 255, 0.32) 55%, rgba(13, 179, 170, 0.2)) border-box;
+  box-shadow: 0 22px 50px -36px rgba(10, 60, 90, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+.rv-card:hover { box-shadow: 0 0 0 1px rgba(13, 179, 170, 0.5), 0 16px 34px -22px rgba(13, 150, 160, 0.8); }
+.rv-btn-primary { position: relative; overflow: hidden; background: linear-gradient(120deg, #0a1f3d 0%, #0f6a83 55%, #0db3aa 100%); box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.35), 0 16px 34px -16px rgba(13, 179, 170, 0.9); }
+.rv-btn-primary::after { content: ""; position: absolute; inset: 0; width: 40%; transform: translateX(-140%) skewX(-18deg); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent); pointer-events: none; }
+.rv-btn-primary:hover::after { transform: translateX(340%) skewX(-18deg); transition: transform 0.7s ease; }
+.rv-input:focus, .ck-compose textarea:focus { outline-color: rgba(46, 230, 214, 0.7); box-shadow: 0 0 0 4px rgba(13, 179, 170, 0.18); }
+.rv-h::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; vertical-align: 1px; background: #2ee6d6; box-shadow: 0 0 10px 2px rgba(46, 230, 214, 0.7); }
+
+/* the section bar: dark glass like the site header */
+.rv-nav { border-bottom: 1px solid rgba(46, 230, 214, 0.28); background: #050f22; box-shadow: 0 10px 30px -22px rgba(0, 0, 0, 0.8); }
+.rv-nav a { color: #cfe3f5; }
+.rv-nav a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+.rv-nav a[aria-current="page"] { color: #04202a; background: linear-gradient(110deg, #2ee6d6, #3cc8ff); box-shadow: 0 0 18px -4px rgba(46, 230, 214, 0.8); }
+.rv-nav .rv-nav-brand { color: #fff; }
+
+/* the landing page's hero: a dark holographic panel */
+.rv-lhero { position: relative; overflow: hidden; padding: clamp(18px, 3.4vw, 40px); border-radius: 2rem; color: #dcecfb;
+  background: radial-gradient(120% 140% at 0% 0%, #0d4a6b 0%, #0a1f3d 55%, #06142a 100%); border: 1px solid rgba(46, 230, 214, 0.38); box-shadow: 0 34px 80px -44px #04162b, inset 0 0 0 1px rgba(255, 255, 255, 0.04); }
+.rv-lhero::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; background-image: linear-gradient(rgba(120, 200, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 200, 255, 0.07) 1px, transparent 1px); background-size: 38px 38px; }
+.rv-lhero::after { content: ""; position: absolute; width: 420px; height: 420px; right: -120px; top: -160px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(46, 230, 214, 0.28), transparent 68%); }
+.rv-lhero > * { position: relative; z-index: 1; }
+.rv-lhero .rv-h { color: #5eead4; }
+.rv-lhero h1 { color: #fff; }
+.rv-lhero h1 + p, .rv-lhero p { color: #c4d6e8; }
+.rv-lhero a.rv-btn-ghost { color: #eaf6ff; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.26); }
+.rv-lhero a:not(.rv-btn) { color: #7ff0e4; }
+.rv-lhero .rv-chip { background: rgba(255, 255, 255, 0.1); color: #cfe9f5; }
+.rv-lhero .rv-chip-teal { background: rgba(46, 230, 214, 0.16); color: #7ff0e4; }
+.rv-lhero [role="note"], .rv-lhero .rv-note { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); color: #dcecfb; }
+
+/* day page: two big, obvious actions */
+.rv-quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; max-width: 46rem; }
+.rv-quick > a, .rv-quick > button { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 18px; border-radius: 1.2rem; text-align: left; color: #fff; }
+.rv-quick > a b { display: block; font-size: 1.05rem; font-weight: 900; line-height: 1.2; }
+.rv-quick > a small { display: block; margin-top: 2px; font-size: 0.82rem; font-weight: 600; opacity: 0.85; }
+.rv-quick-go { background: linear-gradient(120deg, #0a1f3d, #0f6a83 60%, #0db3aa); box-shadow: 0 14px 30px -16px rgba(13, 130, 150, 0.9); }
+.rv-quick-ai { background: linear-gradient(120deg, #3b2a8c, #6b4ce6 55%, #2ee6d6); box-shadow: 0 0 0 1px rgba(150, 125, 255, 0.5), 0 14px 34px -14px rgba(107, 76, 230, 0.95); }
+
+/* the coach card, closed: dark glass with a glowing AI orb */
+.rv-ai-card { display: flex; width: 100%; align-items: center; gap: 14px; padding: 14px 16px; text-align: left; border-radius: 1.5rem; color: #eaf6ff; position: relative; overflow: hidden;
+  background: radial-gradient(120% 160% at 0% 0%, #123d68 0%, #0a1f3d 60%, #06142a 100%); border: 1px solid rgba(46, 230, 214, 0.45); box-shadow: 0 22px 50px -30px #04162b, 0 0 30px -12px rgba(46, 230, 214, 0.6); }
+.rv-ai-card:hover { border-color: #2ee6d6; box-shadow: 0 22px 50px -30px #04162b, 0 0 36px -8px rgba(46, 230, 214, 0.85); }
+.rv-ai-orb { position: relative; flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; color: #04202a; background: linear-gradient(135deg, #2ee6d6, #8f7cff); box-shadow: 0 0 22px rgba(46, 230, 214, 0.7); }
+.rv-ai-orb::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(46, 230, 214, 0.5); animation: rv-orb 2.4s ease-out infinite; }
+@keyframes rv-orb { 0% { transform: scale(0.85); opacity: 0.9; } 100% { transform: scale(1.35); opacity: 0; } }
+
+/* the floating AI button: always in reach, no matter how far down the page is */
+.rv-fab { position: fixed; left: 14px; bottom: 88px; z-index: 40; display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 6px 18px 6px 6px; border-radius: 999px; color: #fff; font-weight: 900; font-size: 0.98rem;
+  background: linear-gradient(120deg, #0a1f3d, #3b2a8c); border: 1px solid rgba(46, 230, 214, 0.6); box-shadow: 0 0 0 4px rgba(46, 230, 214, 0.12), 0 18px 40px -12px rgba(59, 42, 140, 0.9), 0 0 34px -6px rgba(46, 230, 214, 0.7); }
+.rv-fab:hover { transform: translateY(-2px); }
+.rv-fab:active { transform: scale(0.97); }
+.rv-fab-orb { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #04202a; background: linear-gradient(135deg, #2ee6d6, #8f7cff); box-shadow: 0 0 22px rgba(46, 230, 214, 0.8); }
+.rv-fab-orb::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid rgba(46, 230, 214, 0.55); animation: rv-orb 2.2s ease-out infinite; }
+@media (min-width: 1024px) { .rv-fab { bottom: 24px; left: 20px; } }
+@media (prefers-reduced-motion: reduce) { .rv-ai-orb::after, .rv-fab-orb::after { animation: none; } }
+.rv-lhero .rv-note-b { color: #fff; }
+.rv-lhero .rv-btn-primary { background: linear-gradient(120deg, #2ee6d6, #3cc8ff); color: #04202a; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), 0 16px 38px -12px rgba(46, 230, 214, 0.85); }
+.rv-quick > section { grid-column: 1 / -1; }
+.rv-quick .rv-ai-card { min-height: 64px; }

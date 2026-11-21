@@ -5,6 +5,7 @@ import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { useLang } from "@/lib/lang";
 import type { DemoKind } from "@/lib/manual-therapy-depth-types";
 import "./technique-demo.css";
+import { motionReduced } from "@/lib/motion";
 
 type Step = { title: string; detail: string };
 
@@ -301,7 +302,7 @@ export default function TechniqueDemo2D({ kind, title, captions, captionsUr }: {
   const scene = own ? Math.min(3, Math.floor((idx * 4) / steps.length)) : idx;
 
   useEffect(() => {
-    setReduced(Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches));
+    setReduced(motionReduced());
     const node = box.current;
     if (!node || typeof IntersectionObserver === "undefined") return setVisible(true);
     const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.35 });

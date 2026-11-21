@@ -910,3 +910,39 @@ h2.font-serif {
   font-family: var(--font-heading);
   letter-spacing: -0.03em;
 }
+
+/* ---------- the one-time motion note (components/MotionGovernor.tsx): small, dark glass, never in the way ---------- */
+.mg-note {
+  position: fixed;
+  left: 12px;
+  bottom: 84px;
+  z-index: 45;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+  max-width: min(94vw, 440px);
+  padding: 12px 14px;
+  border-radius: 18px;
+  color: #dcecfb;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  background: rgba(5, 15, 34, 0.94);
+  border: 1px solid rgba(46, 230, 214, 0.35);
+  box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.8), 0 0 28px -12px rgba(46, 230, 214, 0.5);
+}
+.mg-note p { margin: 0; }
+.mg-actions { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: 8px; }
+.mg-actions button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #04202a;
+  background: linear-gradient(110deg, #2ee6d6, #3cc8ff);
+}
+.mg-actions .mg-keep { color: #eaf6ff; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.22); }
+.mg-close { display: grid; place-items: center; width: 44px; height: 44px; margin: -8px -10px 0 0; border-radius: 12px; color: #9fb6cf; }
+.mg-close:hover { color: #fff; }
+@media (min-width: 1024px) { .mg-note { bottom: 16px; left: 16px; } }

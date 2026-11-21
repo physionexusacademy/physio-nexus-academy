@@ -45,6 +45,7 @@ import {
   t,
   type BubbleTone,
 } from "./ui";
+import { motionReduced } from "@/lib/motion";
 
 type Entry =
   | { k: "intro" }
@@ -101,7 +102,7 @@ function isSession(value: unknown): value is Session {
 }
 
 function prefersReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  return typeof window !== "undefined" && motionReduced();
 }
 
 /**

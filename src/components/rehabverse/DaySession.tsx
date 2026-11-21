@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronRight, Clock, Lock, Send, ShieldAlert, Stethoscope } from "lucide-react";
+import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronRight, Clock, Lock, Play, Send, ShieldAlert, Sparkles, Stethoscope } from "lucide-react";
 import { submitFeedbackAction, submitFollowupAction } from "@/app/rehabverse/actions";
 import { closeCheckinChatAction } from "@/app/rehabverse/ai-actions";
 import { checkinPending } from "@/lib/rehabverse/ai/checkin-shared";
@@ -16,7 +16,7 @@ import { DIFFICULTY_WORDS, FEEDBACK_FLAGS, PAIN_WORDS, TIMEPOINT_LABEL } from "@
 import { loadExercises } from "@/lib/rehabverse/library";
 import type { ExerciseDef } from "@/lib/rehabverse/types";
 import { CheckinChat, type FormPatch } from "./CheckinChat";
-import { CoachChat } from "./CoachChat";
+import { CoachChat, COACH_OPEN_EVENT, openCoach } from "./CoachChat";
 import { ExerciseDetails, } from "./ExerciseDetails";
 import { T, useRvLang } from "./useLang";
 import type { Lang } from "./ExercisePlayer";
@@ -303,6 +303,7 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
 
   return (
     <div className="container-content pb-20 pt-6 sm:pt-9">
+      {ai && access === "open" && exercise ? <button type="button" className="rv-fab" onClick={() => openCoach()} aria-label={lang === "ru" ? "AI coach se poochein" : "Ask the AI coach"}><span className="rv-fab-orb" aria-hidden="true"><Sparkles className="h-5 w-5" /></span><span className="rv-fab-text"><T en="Ask AI coach" ru="AI coach" /></span></button> : null}
       <Link href="/rehabverse/me" className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-700 hover:underline"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> <T en="My programme" ru="Mera programme" /></Link>
       <p className="rv-h mt-3">{data.programme.title}</p>
       <h1 className="mt-1 font-heading text-2xl font-extrabold text-navy-800 sm:text-4xl"><T en="Day" ru="Din" /> {session.day_number}: {cleanDayTitle(session.title)}</h1>
@@ -329,10 +330,18 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
             </div>
           ) : null}
 
+          {access === "open" && exercise ? (
+            <div className="rv-quick mt-4" role="group" aria-label={lang === "ru" ? "Seedhe kaam" : "Quick actions"}>
+              <a href="#rv-player" className="rv-quick-go"><Play className="h-5 w-5" aria-hidden="true" /> <span><b><T en="Start today's exercises" ru="Aaj ki exercises shuru karein" /></b><small><T en="Watch the 3D guide, then do them slowly" ru="3D guide dekhein, phir aahista karein" /></small></span></a>
+              {ai ? <CoachChat sessionId={session.id} selected={selected} names={exercises.map((e) => defs?.get(e.exercise_id)?.name ?? { en: e.exercise_title, ru: e.exercise_title })} /> : null}
+            </div>
+          ) : null}
+
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div className="space-y-4">
               {exercise ? (
                 <>
+                  <span id="rv-player" className="block scroll-mt-28" aria-hidden="true" />
                   {def && !playerFailed ? (
                     <ExercisePlayer exercise={def} lang={lang as Lang} side={side} reps={exercise.reps ?? undefined} onFail={() => setPlayerFailed(true)} />
                   ) : (
@@ -345,7 +354,6 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
                     {exercise.notes ? <p className="mt-2 text-[13.5px] leading-6 text-slate-700">{exercise.notes}</p> : null}
                     {def ? <div className="mt-3"><ExerciseDetails compact exercise={def} lang={lang as Lang} dose={{ sets: exercise.sets, reps: exercise.reps, hold: exercise.hold_seconds, rest: exercise.rest_seconds, duration: exercise.duration_seconds, frequency: exercise.frequency, side: exercise.side }} /></div> : null}
                   </div>
-                  {ai && access === "open" ? <CoachChat sessionId={session.id} selected={selected} names={exercises.map((e) => defs?.get(e.exercise_id)?.name ?? { en: e.exercise_title, ru: e.exercise_title })} /> : null}
                 </>
               ) : (
                 <p className="rv-glass p-5 text-sm text-slate-600"><T en="No exercises in this day." ru="Is din mein koi exercise nahi." /></p>

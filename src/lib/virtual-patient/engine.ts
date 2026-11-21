@@ -63,6 +63,7 @@ const sideKey = (side: Side) => (side === "left" ? "L" : "R");
 const sideSign = (side: Side) => (side === "left" ? 1 : -1);
 
 import { PLINTH } from "./plinth";
+import { motionReduced } from "../motion";
 export { PLINTH };
 
 /** A small tileable noise used as a bump map for skin pores (generated, nothing is downloaded). */
@@ -357,10 +358,10 @@ export class ExamRoom {
   private idleAllowed(): boolean {
     if (typeof window === "undefined") return false;
     const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return false;
+    // the patient breathes and shifts unless the visitor chose reduced motion (lib/motion.ts: a device setting alone does not stop it) or the device is truly tiny
+    if (motionReduced()) return false;
     if (nav.connection?.saveData) return false;
-    if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 2) return false;
-    if (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 2) return false;
+    if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 1) return false;
     return true;
   }
 

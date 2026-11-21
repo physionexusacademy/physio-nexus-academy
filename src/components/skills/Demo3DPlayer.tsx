@@ -13,6 +13,7 @@ import { claimRoom, handOff, players, releaseRoom, shared, snapshot, type Owner 
 import { DEMO3D, type Demo3DSpec } from "@/lib/skills/demo3d";
 import { otherSide, patientDir, resolvePoint } from "@/lib/skills/points3d";
 import { useLang } from "@/lib/lang";
+import { motionReduced } from "@/lib/motion";
 
 const other = otherSide;
 
@@ -237,7 +238,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
   }, [activate]);
 
   useEffect(() => {
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    if (motionReduced()) {
       setPlaying(false);
       setManual(1);
     }

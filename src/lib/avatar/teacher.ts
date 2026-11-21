@@ -22,7 +22,12 @@ const REQUIRED = [
   "upperleg01.L", "lowerleg01.L", "foot.L", "upperleg01.R", "lowerleg01.R", "foot.R",
 ];
 
-/** True on low-end devices and for visitors who prefer less motion: the avatar then shows one static pose and no second figure. */
+/**
+ * True only when the visitor asked for the simple picture (the lightning button of the player), when data saver is on, or on a truly tiny
+ * device: the avatar then shows one still pose and no second figure. A device that merely asks for "reduced motion", or has two processor
+ * cores, gets the full teacher WITH the patient (lib/motion.ts): the demonstration starts paused with a Play button, the engine lowers its
+ * own quality if the frame rate drops, and the player says plainly when it is showing the simple picture and how to get the full 3D.
+ */
 export function detectLightMode(): boolean {
   if (typeof window === "undefined") return true;
   try {
@@ -33,10 +38,8 @@ export function detectLightMode(): boolean {
     /* storage blocked */
   }
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return true;
   if (nav.connection?.saveData) return true;
-  if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 2) return true;
-  if (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 2) return true;
+  if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 1) return true;
   return false;
 }
 

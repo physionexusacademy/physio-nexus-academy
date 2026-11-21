@@ -346,6 +346,12 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
         <span className="ml-auto hidden items-center gap-1 text-[11px] font-bold text-cyan-100/60 sm:inline-flex"><Hand className="h-3.5 w-3.5" aria-hidden="true" /> {Math.round((view?.progress ?? 0) * 100)}%</span>
       </figcaption>
       {tour ? <AskPanel ur={ur} onAnswer={(text, answerLang, tag) => { if (status !== "active") activate(); stage()?.interject(text, answerLang, tag); }} /> : null}
+      {light ? (
+        <p className="av-voice-note av-light-note" role="status">
+          {ur ? "Abhi sirf saada still picture dikh rahi hai (light mode). Poora 3D demonstration patient ke saath dekhne ke liye bijli wala button dabayein." : "You are seeing the simple still picture (light mode). Press the lightning button for the full 3D demonstration with the patient."}{" "}
+          <button type="button" className="underline" onClick={() => { write("pna-avatar-light", "0"); setLight(false); }}>{ur ? "Poora 3D dikhayein" : "Show the full 3D"}</button>
+        </p>
+      ) : null}
       {voice && voiceNote ? <p className="av-voice-note" role="status">{voiceNote}</p> : null}
       {voice && voiceOk ? (
         <p className="av-voice-note">

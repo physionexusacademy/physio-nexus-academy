@@ -56,7 +56,7 @@ export default function RehabVerseHome() {
   return (
     <div className="container-content pb-20 pt-8 sm:pt-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <section className="grid items-center gap-8 lg:grid-cols-[1.02fr_1fr] lg:gap-12">
+      <section className="rv-lhero grid items-center gap-8 lg:grid-cols-[1.02fr_1fr] lg:gap-12">
         <div className="rv-fade-up">
           <p className="rv-h">PNA RehabVerse</p>
           <h1 className="mt-2 font-heading text-[2rem] font-extrabold leading-[1.1] tracking-tight text-navy-800 sm:text-5xl">
@@ -76,8 +76,8 @@ export default function RehabVerseHome() {
             <Link href="/rehabverse/login" className="rv-btn rv-btn-ghost"><T en="Sign in" ru="Sign in" /></Link>
             <Link href="/rehabverse/library" className="inline-flex min-h-[44px] items-center text-[14px] font-bold text-teal-700 underline-offset-2 hover:underline"><T en="Browse the 3D exercise library" ru="3D exercise library dekhein" /></Link>
           </div>
-          <div className="mt-5 max-w-xl rounded-2xl border border-teal-200/70 bg-white/70 p-3.5 text-[13px] leading-5 text-slate-700" aria-label="Getting started">
-            <b className="text-navy-800"><T en="New here? It takes three steps:" ru="Naye hain? Sirf teen qadam:" /></b>{" "}
+          <div className="rv-note mt-5 max-w-xl rounded-2xl border border-teal-200/70 bg-white/70 p-3.5 text-[13px] leading-5 text-slate-700" aria-label="Getting started">
+            <b className="rv-note-b text-navy-800"><T en="New here? It takes three steps:" ru="Naye hain? Sirf teen qadam:" /></b>{" "}
             <T en="① Create an account (1 minute) → ② answer a few questions (5 minutes) → ③ your physiotherapist builds and approves your programme." ru="① Account banayein (1 minute) → ② kuch sawalon ke jawab dein (5 minute) → ③ aap ke physiotherapist aap ka programme banate aur approve karte hain." />
           </div>
           <ul className="mt-6 flex flex-wrap gap-2">

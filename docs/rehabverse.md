@@ -303,3 +303,16 @@ warning-sign taps stop the check-in and tick the matching sign on the form.
 
 The whole site follows `src/app/easy-touch.css` (loaded last): 44px tap targets on phones and tablets, 16px text in form fields, the footer directory in
 two columns on a phone, no text under 11px (12px for words that carry information). `npm run validate:easy-touch` checks it.
+
+## Motion policy, the AI coach button and the RehabVerse look (2026-11)
+
+- **Motion.** The site's animations and 3D demonstrations (the feature tour, the cards, the Skills Lab, the PNA Teacher with its patient, RehabVerse's guide) play
+  by default, also on computers whose system setting asks for "reduced motion": on many Windows PCs and laptops that setting is on without anyone having
+  chosen it, and every demonstration then froze or lost the patient. Only the visitor's own choice calms them (footer switch "Animations: on /
+  Reduced motion: on", or the one-time note on a device that asks for less motion). `src/lib/motion.ts` decides; `MotionGovernor` makes every
+  `prefers-reduced-motion` rule of every stylesheet follow that choice; scripts call `motionReduced()` instead of asking the device.
+  `npm run validate:motion` checks it. To go back to "follow the device", change `MOTION_INIT_SCRIPT` in `lib/motion.ts`.
+- **PNA Teacher light mode** (one still pose, no patient) is now only for the visitor's own choice, data saver and tiny devices, and says so on the player.
+- **AI coach on the day page:** it sits in the quick strip at the top beside "Start today's exercises", and a floating "Ask AI coach" button (`rv-fab`)
+  opens it from anywhere (`openCoach()` in `CoachChat.tsx`).
+- **Look:** a dark glass section bar, a holographic landing hero, gradient-hairline cards, neon primary buttons (`rehabverse.css`, last block).

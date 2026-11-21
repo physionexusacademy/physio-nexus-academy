@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { MOTION_EVENT, motionReduced } from "@/lib/motion";
 
 const SWIPE_PX = 44;
 
@@ -198,9 +199,9 @@ function mountHeroShow(root: HTMLElement) {
   );
 
   // device settings and visibility
-  const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const onMotion = () => { reduced = motion.matches; sync(); };
-  motion.addEventListener("change", onMotion, { signal });
+  // "reduced" is the visitor's own choice (lib/motion.ts); a device setting alone does not calm the show any more
+  const onMotion = () => { reduced = motionReduced(); sync(); };
+  window.addEventListener(MOTION_EVENT, onMotion, { signal });
   document.addEventListener("visibilitychange", () => { hidden = document.hidden; sync(); }, { signal });
   const watcher = new IntersectionObserver(([entry]) => { offscreen = !entry.isIntersecting; sync(); }, { threshold: 0.12 });
   watcher.observe(root);
@@ -210,7 +211,7 @@ function mountHeroShow(root: HTMLElement) {
     if (running >= (reduced ? slideMs : slideMs + 1200)) go(index + 1, 1);
   }, 500);
 
-  reduced = motion.matches;
+  reduced = motionReduced();
   paint();
   sync();
   root.dataset.ready = "1";

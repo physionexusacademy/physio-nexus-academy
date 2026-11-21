@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, Check, GitFork, Gauge, Hand, ListChecks, Pause, Play, ShieldCheck, TrendingUp, Workflow } from "lucide-react";
 import { useLang } from "@/lib/lang";
 import "./demo-lab.css";
+import { motionReduced } from "@/lib/motion";
 
 export type DemoLabData = {
   /** The existing step-by-step hands-and-tissue demonstration with its "why" panel. */
@@ -36,7 +37,7 @@ export function useCycle(length: number, ms: number) {
   const [reduced, setReduced] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    setReduced(Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches));
+    setReduced(motionReduced());
     const node = ref.current;
     if (!node || typeof IntersectionObserver === "undefined") return setVisible(true);
     const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.3 });

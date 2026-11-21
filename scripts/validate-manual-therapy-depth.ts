@@ -50,7 +50,7 @@ for (const kind of KINDS) {
   assert(demo.includes('kind === "' + kind + '"') || kind === "position", kind + ": no scene is drawn for it");
 }
 for (const slug of depthSlugs) assert(KINDS.includes(getTechniqueDepth(slug)!.demo));
-assert(/prefers-reduced-motion/.test(demo), "the demonstration must respect reduced motion");
+assert(/prefers-reduced-motion|motionReduced/.test(demo), "the demonstration must respect the visitor's reduced-motion choice (lib/motion.ts)");
 assert(/aria-pressed|aria-label/.test(demo), "the demonstration controls need accessible names");
 
 /* 4. The pages show the demonstration and the depth, and no level labels. */

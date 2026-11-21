@@ -13,6 +13,7 @@ import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import { plain } from "@/lib/avatar/text";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
 import "./guide-me.css";
+import { motionReduced } from "@/lib/motion";
 
 const loadDemo = () => import("@/components/skills/Demo3D").then((module) => module.Demo3D);
 const Demo3D = dynamic(loadDemo, {
@@ -67,7 +68,7 @@ export function GuideMe() {
   const stage = useRef<HTMLDivElement>(null);
   // Bring the stage into view when it opens (the 3D view loads once it is in sight).
   useEffect(() => {
-    if (open) stage.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+    if (open) stage.current?.scrollIntoView({ behavior: motionReduced() ? "auto" : "smooth", block: "center" });
   }, [open]);
   const warm = () => void loadDemo();
 
