@@ -12,7 +12,7 @@
 // skipWaiting + clients.claim let a new worker take over without waiting for every old PNA tab to close. Change VERSION when this file or
 // public/offline.html changes: the old caches are deleted when the new worker activates.
 
-const VERSION = "2026-11-21-2";
+const VERSION = "2026-11-21-3";
 const PAGES = "pna-pages-" + VERSION;
 const STATIC = "pna-static-" + VERSION;
 const DATA = "pna-data-" + VERSION;

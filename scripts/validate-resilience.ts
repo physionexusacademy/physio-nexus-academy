@@ -44,6 +44,7 @@ ok(/pna-save-page/.test(runtime) && /firstVisit/.test(runtime), "PwaRuntime: the
 const offline = read("public/offline.html");
 ok(/We can't reach the site right now/.test(offline) && /Dobara koshish/.test(offline), "offline page: says what happened in English and Roman Urdu");
 ok(/fetch\("\/offline\?ping=/.test(offline) && !/fetch\("\/offline\.html/.test(offline), "offline page: asks /offline (not the redirecting /offline.html) whether the connection is back");
+ok(/automatic DNS/i.test(offline) && /one\.one\.one\.one/.test(offline) && /Private DNS/.test(offline) && /DNS over HTTPS/i.test(offline), "offline page: names the usual cause (the network's automatic DNS) and how to change it on Android, iPhone, Chrome and Windows");
 ok(/https:\/\/physio-nexus-academy\.physionexusacademypk\.workers\.dev/.test(offline) && /secure DNS/i.test(offline) && /1\.1\.1\.1/.test(offline) && /https:\/\//.test(offline), "offline page: names the backup address, Secure DNS, 1.1.1.1 and typing https://");
 ok(!/<(?:script|img|link)[^>]+(?:src|href)="https?:\/\/(?!physionexusacademy)/.test(offline), "offline page: loads nothing from other sites");
 const config = read("src/lib/site-config.ts");
@@ -66,6 +67,9 @@ ok(/isBackupHost\(url\.hostname\)/.test(worker) && /return handle\(request, url,
 
 // --- the deploy checks the backup address and keeps the smoke test marker
 const deploy = read(".github/workflows/deploy-cloudflare-production.yml");
+ok(/settings\/ech/.test(deploy) && /Encrypted Client Hello on/.test(deploy), "deploy: keeps Encrypted Client Hello on (Secure DNS users then reach the site without a filter seeing its name)");
+const monitor = read(".github/workflows/uptime-monitor.yml");
+ok(/DNS of \$name/.test(monitor) && /HTTPS record/.test(monitor) && /ech=/.test(monitor), "monitor: checks that every public resolver answers and the HTTPS record with ECH is published");
 ok(/offline-live:/.test(deploy) && deploy.includes("scripts/verify-offline-production.cjs"), "deploy: a real browser checks the offline behaviour on the live site after every release");
 ok(deploy.includes("PNA update-first service worker.") && /physio-nexus-academy\.physionexusacademypk\.workers\.dev/.test(deploy), "deploy: still checks the service worker and now checks the backup address too");
 
