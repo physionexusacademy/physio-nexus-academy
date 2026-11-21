@@ -1,5 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { callClaude, claudeEnabled } from "@/lib/rehabverse/ai/claude";
+import { callChat, externalChain } from "@/lib/rehabverse/ai/model";
+import { buildGroundedMessages, guardGroundedAnswer, type GroundedSource } from "@/lib/pna-ai/grounded";
 import { pnaLearningResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
 import { think, type BrainContext, type BrainProfile, type BrainResult } from "@/lib/pna-ai/brain";
 import {
@@ -174,6 +176,34 @@ async function buildExplanation(request: Request, result: BrainResult): Promise<
   return explanation && explanation.steps.length >= 2 ? { explanation, open } : null;
 }
 
+/**
+ * A natural written answer from an AI service (Claude or Groq, when a key is set), written ONLY from PNA's own content the brain found, in the
+ * language of the question (guarded: lib/pna-ai/grounded.ts). Returns null (and the site's own fixed answer is shown) when no service is set
+ * up, when the question is an emergency, about the person's own symptoms, or not matched with enough confidence, when the service is slow or
+ * down, or when the answer breaks a rule. The Workers AI chain is not used here: a weak model would answer from its own knowledge.
+ */
+async function groundedAnswer(query: string, result: BrainResult, facts: string | null): Promise<string | null> {
+  try {
+    if (result.safety || result.confidence === "low" || !result.resources.length) return null;
+    if ((result.intents ?? []).includes("patient")) return null;
+    const models = externalChain();
+    if (!models.length) return null;
+    const sources: GroundedSource[] = result.resources.slice(0, 3).map((resource, i) => ({
+      title: resource.title,
+      summary: resource.summary,
+      facts: i === 0 && facts ? facts : undefined,
+    }));
+    const messages = buildGroundedMessages({ question: query, lang: result.lang, sources });
+    const answer = await callChat(messages, { models, maxTokens: 700, temperature: 0.3, timeoutMs: 9000 });
+    if (!answer) return null;
+    const guarded = guardGroundedAnswer({ answer: answer.text, sources, lang: result.lang });
+    if (!guarded.ok) console.error("PNA_AI_GROUNDED_REJECTED", guarded.reason);
+    return guarded.ok ? guarded.text : null;
+  } catch {
+    return null;
+  }
+}
+
 function getClientKey(request: Request) {
   const forwarded = request.headers.get("cf-connecting-ip")
     ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
@@ -265,8 +295,12 @@ export async function POST(request: Request) {
     ? result.message.split("\n").filter((line) => !line.startsWith("• ") && !/^\*\*(Mukhtasar mein|In short):\*\*$/.test(line)).join("\n")
     : result.message;
 
+  // A natural answer written from PNA's own content (only when a service is set up and every guard passes); the fixed answer above is the fallback.
+  const written = await groundedAnswer(query, result, extra ? explanationText(extra.explanation) : null);
+  if (written) source = "pna-brain+ai-written";
+
   const responseBody = {
-    message,
+    message: written ?? message,
     explanation: extra?.explanation ?? null,
     explanationOpen: extra?.open ?? false,
     lang: result.lang,

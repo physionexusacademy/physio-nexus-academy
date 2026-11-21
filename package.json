@@ -43,6 +43,8 @@
     "validate:rehabverse-resting": "node --experimental-strip-types scripts/validate-rehabverse-resting.ts",
     "validate:rehabverse-reply-lang": "node --experimental-strip-types scripts/validate-rehabverse-reply-lang.ts",
     "validate:rehabverse-claude": "node --experimental-strip-types scripts/validate-rehabverse-claude.ts",
+    "validate:rehabverse-groq": "node --experimental-strip-types scripts/validate-rehabverse-groq.ts",
+    "validate:pna-ai-grounded": "node --experimental-strip-types scripts/validate-pna-ai-grounded.ts",
     "validate:rehabverse-rules": "node --experimental-strip-types scripts/validate-rehabverse-rules.ts",
     "validate:rehabverse-library": "node --experimental-strip-types scripts/validate-rehabverse-library.ts",
     "validate:rehabverse-poses": "node --experimental-strip-types scripts/rehabverse-pose-gate.mjs",

@@ -173,26 +173,29 @@ languages; then a few real patients up to the limit, reading their conversations
   prefetching and the sitemap. Alert e-mails contain no patient details.
 * Patients must be 18+ and tick a consent statement; the consent version is stored.
 
-### The AI model behind the chats (Claude Haiku, pay-as-you-go)
+### The AI model behind the chats (Claude Haiku, Groq, Workers AI)
 
-The three chats (intake, exercise coach, recovery check-in) and the site assistant's Roman Urdu retelling use **two routes, in order** (`src/lib/rehabverse/ai/model.ts`):
+The three chats (intake, exercise coach, recovery check-in) and the site assistant's written answers use these routes, **in this order, each only when it is set up** (`src/lib/rehabverse/ai/model.ts`):
 
-1. **Claude Haiku 5.5** (`claude-haiku-5-5`, Anthropic's API on a pay-as-you-go account) when the Worker secret `ANTHROPIC_API_KEY` exists. Far more natural replies, and much better Roman Urdu than the free models. One plain `fetch` to `https://api.anthropic.com/v1/messages` (`claude-request.ts` builds the request, `claude.ts` is the server-only wrapper); the official SDK is not used because the Worker has a hard size limit (it would add about 100 KiB gzip and Node-only modules).
-2. **Cloudflare Workers AI** (the free daily allowance), the models in `DEFAULT_MODELS`, as before.
+1. **Claude Haiku 5.5** (`claude-haiku-5-5`, Anthropic's API, prepaid credit) when the Worker secret `ANTHROPIC_API_KEY` exists. Far more natural replies, and much better Roman Urdu than the free models. One plain `fetch` to `https://api.anthropic.com/v1/messages` (`claude-request.ts` builds the request, `claude.ts` is the server-only wrapper); the official SDK is not used because the Worker has a hard size limit (it would add about 100 KiB gzip and Node-only modules).
+2. **Groq** (free tier, OpenAI-compatible; `groq-request.ts` and `groq.ts`, model `llama-3.3-70b-versatile` unless `GROQ_CHAT_MODEL` says otherwise) when the Worker secret `GROQ_API_KEY` exists.
+3. **Cloudflare Workers AI** (the free daily allowance), the models in `DEFAULT_MODELS`, as before (chats only).
 
-If neither answers (timeout, outage, no credit, a refusal) the scripted conversation carries on, so a patient is never left without a reply. A rejected key (wrong, revoked, or no credit left) pauses Claude for 10 minutes so a dead key is not called on every message; the free chain answers meanwhile.
+If neither answers (timeout, outage, no credit, a refusal) the scripted conversation carries on, so a patient is never left without a reply. A rejected key (wrong, revoked, or no credit left) pauses that service for 10 minutes (Groq's free-limit answer, 429, for the seconds Groq asks for) so a dead key or a full allowance is not called on every message; the next route answers meanwhile.
 
 | Setting | What it does |
 |---|---|
-| `ANTHROPIC_API_KEY` (Worker secret) | Switches Claude on. Set once as the GitHub repository secret `ANTHROPIC_API_KEY`; the deploy workflow puts it into the Worker (`wrangler secret put`). Never in the repository, never in a `NEXT_PUBLIC_` variable, never in the browser. |
-| `CLAUDE_CHAT_MODEL` | Optional model id (default `claude-haiku-5-5`). |
-| `REHAB_AI_PROVIDER` | `auto` (default: Claude, then the free chain), `claude` (Claude only: nothing goes to Workers AI) or `workers-ai` (the free chain only: Claude off, useful as a switch). |
+| `ANTHROPIC_API_KEY`, `GROQ_API_KEY` (Worker secrets) | Switch Claude / Groq on. Set each once as a GitHub repository secret of the same name; the deploy workflow puts it into the Worker (`wrangler secret put`). Never in the repository (a validator scans for key-shaped strings), never in a `NEXT_PUBLIC_` variable, never in the browser. A key that was ever pasted into a chat or a ticket must be revoked and replaced. |
+| `CLAUDE_CHAT_MODEL`, `GROQ_CHAT_MODEL` | Optional model ids (defaults `claude-haiku-5-5`, `llama-3.3-70b-versatile`). |
+| `REHAB_AI_PROVIDER` | `auto` (default: every service that is set up, in the order above), `claude` or `groq` (that service only: nothing goes anywhere else) or `workers-ai` (the free chain only: every keyed service off, useful as a switch). |
 
 Cost and safety: replies are short (the prompts ask for 2 to 5 sentences; `max_tokens` is 1024 to 4096 because the model may think first), conversations and message lengths are capped as before, no sampling parameters are sent (the API rejects them), and the logs carry only sizes (`CLAUDE_AI_USAGE <model> <input tokens> <output tokens>`) and failure types, never text or keys. Set a **monthly spend limit in the Anthropic Console** (Settings, Limits) so the postpaid bill has a ceiling. Every safety rule above still holds: the plain-code safety screen runs first and the model is not consulted on a hit, a reply must pass the guard (no diagnosis, no medicine, no new numbers) and the language check (a reply in the wrong language is never shown), and the model never sets a number in the check-in form.
 
-**Privacy:** with Claude switched on, the chat text (without the patient's name, e-mail or phone number, which are never sent; phone numbers and e-mails typed into the chat are removed first) goes to Anthropic to write the reply. The three patient notices (`notices.ts`) say so in plain words. Anthropic's API terms apply; review them and, if the research use needs it, the data-processing terms, before the pilot grows. The review pack in Admin reads the same notice text.
+**Privacy:** with Claude or Groq switched on, the chat text (without the patient's name, e-mail or phone number, which are never sent; phone numbers and e-mails typed into the chat are removed first) goes to that provider to write the reply. The three patient notices (`notices.ts`) say so in plain words. The provider's API and data terms apply (Groq's free tier especially: read what it keeps and whether it may use inputs); review them and, if the research use needs it, the data-processing terms, before the pilot grows. The review pack in Admin reads the same notice text.
 
-Check the live quality after a deploy with `/api/rehabverse/ai/selftest` (it now lists the Claude model first and runs the same scenarios on it).
+**The site assistant's written answers** (`src/lib/pna-ai/grounded.ts`, used by `/api/physio-nexus-ai`): when Claude or Groq is set up, the assistant's text is written by that service **only from PNA's own content** the brain found (the same sources the cards show), in the language of the question (English in, English out; Roman Urdu in, Roman Urdu out). It never reaches the model for an emergency, for a question about the person's own symptoms, or for a question the site cannot match with confidence; the free Workers AI models are never used for it. Every answer is checked before it is shown: right language, no number / medicine / link / diagnosis that is not in PNA's text, no leaked instructions, and it must stay with the content (a polite refusal for anything else). If a check fails, or no service answers, the site's own fixed answer is shown, as before. `npm run validate:pna-ai-grounded` tests all of this without a model.
+
+Check the live quality after a deploy with `/api/rehabverse/ai/selftest` (it lists the keyed models first and runs the same scenarios on them).
 
 ## Decision-support rules (starting point — review before use)
 
