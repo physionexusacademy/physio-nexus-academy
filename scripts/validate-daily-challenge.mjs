@@ -12,6 +12,8 @@ const api=read("src/app/api/daily-challenge/leaderboard/route.ts");
 const page=read("src/app/daily-challenge/page.tsx");
 const quiz=read("src/app/daily-challenge/DailyChallengeClient.tsx");
 const board=read("src/components/daily-challenge/DailyLeaderboard.tsx");
+const champions=read("src/components/daily-challenge/ChampionBoards.tsx");
+const championsCss=read("src/components/daily-challenge/champion-boards.css");
 const css=read("src/app/daily-challenge/daily-challenge.css");
 const home=read("src/app/page.tsx");
 const homeBoard=read("src/components/home/HomeDailyBoard.tsx");
@@ -47,7 +49,8 @@ const tests={
   publicPager:board.includes('Next</button>')&&board.includes('Previous</button>'),
   topFive:board.includes("compact||preview?5:30")&&homeBoard.includes("<DailyLeaderboard compact"),
   allRankings:board.includes('"month"')&&board.includes('"year"')&&board.includes('"today"'),
-  monthAndYearChampions:board.includes('initialPeriod="month"')&&board.includes('initialPeriod="year"'),
+  monthAndYearChampions:page.includes("<ChampionBoards")&&!page.includes("DailyHallOfFame")&&['today','month','year'].every(p=>champions.includes('<Board period="'+p+'" />'))&&champions.includes('id="full-leaderboard"')&&championsCss.includes('.cb-board[data-period="month"]')&&championsCss.includes('.cb-board[data-period="year"]'),
+  championBoardsLiveAndPlayable:champions.includes("pna-daily-score-saved")&&champions.includes("45000")&&champions.includes('href="#play-daily"')&&page.includes('id="play-daily"'),
   archiveArrows:board.includes("changeAnchor")&&board.includes("onClick={()=>shift(-1)}"),
   liveRefresh:board.includes("45000"),
   quizScoring:quiz.includes('dailyRequest<Completed>("submit"')&&quiz.includes("30"),
