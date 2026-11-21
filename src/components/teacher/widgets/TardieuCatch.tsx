@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { TeacherLang } from "@/lib/teacher/types";
+import { motionReduced } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { t } from "../ui";
 import { Seg, WidgetFrame, bi, type Bi } from "./kit";
@@ -133,8 +134,7 @@ export function TardieuCatch({ lang }: { lang: TeacherLang }) {
 
   const stretch = () => {
     stop();
-    const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
+    if (motionReduced()) {
       setPos(cut ?? profile.r2);
       return;
     }
