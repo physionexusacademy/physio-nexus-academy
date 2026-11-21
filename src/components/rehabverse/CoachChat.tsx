@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { motionReduced } from "@/lib/motion";
 import { ChevronDown, Sparkles } from "lucide-react";
 import { coachChatTurnAction, startCoachChatAction, type ChatMessageOut } from "@/app/rehabverse/ai-actions";
 import { MAX_COACH_MESSAGE, QUICK_QUESTIONS } from "@/lib/rehabverse/ai/coach-spec";
@@ -12,6 +13,10 @@ import { ChatLog, ChatTop, HowItWorks, YourTurn, type Chip } from "./ChatKit";
 import { T, useRvLang } from "./useLang";
 
 type Phase = "closed" | "notice" | "starting" | "chat" | "gone";
+
+/** The floating AI button and the quick strip open the coach from anywhere on the page. */
+export const COACH_OPEN_EVENT = "pna-open-coach";
+export const openCoach = () => window.dispatchEvent(new CustomEvent(COACH_OPEN_EVENT));
 
 /**
  * The exercise coach on an open exercise day: explains today's prescribed exercises from the plan and the reviewed library, with a quick
@@ -64,22 +69,31 @@ export function CoachChat({ sessionId, names, selected }: { sessionId: string; n
     if (r.status === "safety_stop") setStopped(true);
   };
 
+  useEffect(() => {
+    const onOpen = () => {
+      setPhase((current) => (current === "closed" ? "notice" : current));
+      window.setTimeout(() => document.getElementById("rv-ai-coach")?.scrollIntoView({ behavior: motionReduced() ? "auto" : "smooth", block: "center" }), 60);
+    };
+    window.addEventListener(COACH_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(COACH_OPEN_EVENT, onOpen);
+  }, []);
+
   if (phase === "gone") return null;
   const name = names[selected] ?? { en: "this exercise", ru: "is exercise" };
 
   if (phase === "closed") {
     return (
-      <button type="button" onClick={() => setPhase("notice")} className="rv-glass flex w-full items-center gap-3 p-4 text-left" data-rv-coach="closed">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#0a1f3d] to-[#0db3aa] text-white"><Sparkles className="h-5 w-5" aria-hidden="true" /></span>
-        <span className="min-w-0 flex-1"><span className="block font-heading text-base font-bold text-navy-800"><T en="Your exercise coach" ru="Aap ka exercise coach" /> <span className="rv-chip ml-1 align-middle text-[11px]">AI</span></span><span className="block text-[13px] leading-5 text-slate-600"><T en="Ask how to do today's exercises, how many, breathing and common mistakes." ru="Aaj ki exercises kaise karni hain, kitni baar, saans aur aam ghaltiyan poochein." /></span></span>
-        <ChevronDown className="h-5 w-5 shrink-0 text-slate-400" aria-hidden="true" />
+      <button type="button" onClick={() => setPhase("notice")} id="rv-ai-coach" className="rv-ai-card scroll-mt-28" data-rv-coach="closed">
+        <span className="rv-ai-orb"><Sparkles className="h-5 w-5" aria-hidden="true" /></span>
+        <span className="min-w-0 flex-1"><span className="block font-heading text-base font-bold text-white"><T en="Your exercise coach" ru="Aap ka exercise coach" /> <span className="rv-chip ml-1 align-middle text-[11px]">AI</span></span><span className="block text-[13px] leading-5 text-cyan-100/80"><T en="Ask how to do today's exercises, how many, breathing and common mistakes." ru="Aaj ki exercises kaise karni hain, kitni baar, saans aur aam ghaltiyan poochein." /></span></span>
+        <ChevronDown className="h-5 w-5 shrink-0 text-cyan-200/80" aria-hidden="true" />
       </button>
     );
   }
 
   if (phase === "notice" || phase === "starting") {
     return (
-      <section className="rv-glass space-y-3 p-4 sm:p-5" aria-label="Exercise coach" data-rv-coach="notice">
+      <section id="rv-ai-coach" className="rv-glass scroll-mt-28 space-y-3 p-4 sm:p-5" aria-label="Exercise coach" data-rv-coach="notice">
         <p className="ck-lead"><T en="Ask about today's exercises. Tap a question, or write your own." ru="Aaj ki exercises ke bare mein poochein. Sawal dabayein, ya apna sawal likhein." /></p>
         <h2 className="font-heading text-lg font-bold text-navy-800"><T en="Before we start" ru="Shuru karne se pehle" /></h2>
         <AiNoticeList items={AI_NOTICES.coach.items} className="ck-notice space-y-2 text-slate-700" />
@@ -94,7 +108,7 @@ export function CoachChat({ sessionId, names, selected }: { sessionId: string; n
 
   const chips: Chip[] = QUICK_QUESTIONS.map((q) => ({ key: q.intent, label: q.label[lang], send: q.ask(name)[lang], coach: q.intent }));
   return (
-    <section className="rv-glass ck-card" aria-label="Exercise coach" data-rv-coach="chat">
+    <section id="rv-ai-coach" className="rv-glass ck-card scroll-mt-28" aria-label="Exercise coach" data-rv-coach="chat">
       <ChatTop title={<T en="Exercise coach" ru="Exercise coach" />} onAction={() => setPhase("closed")} actionLabel={<T en="Hide" ru="Chhupayein" />} />
 
       {held ? (

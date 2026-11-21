@@ -19,6 +19,7 @@ import { lineFor } from "@/lib/rehabverse/lines";
 import { restingLimbs, withResting, type RestLimb } from "@/lib/rehabverse/resting";
 import type { ExerciseDef, Motion, View } from "@/lib/rehabverse/types";
 import { P, type Parts } from "@/lib/virtual-patient/parts";
+import { motionReduced } from "@/lib/motion";
 
 export type Lang = "en" | "ru";
 
@@ -563,7 +564,7 @@ export default function ExercisePlayer({ exercise, lang, side: sideProp, reps, a
   }, [activate]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+    if (typeof window !== "undefined" && motionReduced()) setPlaying(false);
   }, []);
 
   // Development hook for visual checks: freeze the movement at any moment.

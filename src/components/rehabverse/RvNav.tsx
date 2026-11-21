@@ -15,9 +15,9 @@ const LINKS = [
 export function RvNav() {
   const path = usePathname() ?? "";
   return (
-    <nav className="border-b border-slate-200/80 bg-white/70 backdrop-blur" aria-label="RehabVerse">
+    <nav className="rv-nav" aria-label="RehabVerse">
       <div className="container-content flex flex-wrap items-center gap-x-1 gap-y-1.5 py-2">
-        <Link href="/rehabverse" className="mr-2 inline-flex items-center gap-1.5 text-sm font-extrabold tracking-tight text-navy-800">
+        <Link href="/rehabverse" className="rv-nav-brand mr-2 inline-flex items-center gap-1.5 text-sm font-extrabold tracking-tight">
           <span className="grid h-6 w-6 place-items-center rounded-lg bg-gradient-to-br from-[#0a1f3d] to-[#0db3aa] text-white"><UserRound className="h-3.5 w-3.5" aria-hidden="true" /></span>
           PNA RehabVerse
         </Link>

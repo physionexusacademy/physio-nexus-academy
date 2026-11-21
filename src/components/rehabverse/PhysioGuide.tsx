@@ -21,6 +21,7 @@ import type { Lang } from "./ExercisePlayer";
 import { speakText, stopSpeaking, unlockAudio } from "@/lib/speech/voices";
 import { useVoice } from "@/lib/speech/preference";
 import { VoiceHint } from "@/components/speech/VoiceHint";
+import { motionReduced } from "@/lib/motion";
 
 const CHARS_PER_SECOND = 26;
 const BLINK_EVERY = 3600;
@@ -75,7 +76,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
   }, [restartKey]);
 
   useEffect(() => {
-    setReduced(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false);
+    setReduced(motionReduced());
   }, []);
 
   const activate = useCallback(() => {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { JointDemoSpec, SkillPose } from "@/lib/skills/types";
+import { MOTION_EVENT, motionReduced } from "@/lib/motion";
 
 const CX = 180;
 const CY = 128;
@@ -88,11 +89,11 @@ export function PoseGlyph({ pose, className }: { pose: SkillPose; className?: st
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(query.matches);
-    const onChange = () => setReduced(query.matches);
-    query.addEventListener?.("change", onChange);
-    return () => query.removeEventListener?.("change", onChange);
+    // the visitor's motion choice (lib/motion.ts), not the device setting
+    setReduced(motionReduced());
+    const onChange = () => setReduced(motionReduced());
+    window.addEventListener(MOTION_EVENT, onChange);
+    return () => window.removeEventListener(MOTION_EVENT, onChange);
   }, []);
   return reduced;
 }

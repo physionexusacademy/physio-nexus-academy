@@ -18,6 +18,7 @@ import { HudLayer, TONE } from "./SceneHud";
 import { useLang } from "@/lib/lang";
 import { UR_BEATS, UR_CHIPS, UR_OPTIONS } from "@/lib/skills/ur/scene-captions";
 import "./scene3d.css";
+import { motionReduced } from "@/lib/motion";
 
 const other = (side: Side): Side => (side === "left" ? "right" : "left");
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -365,7 +366,7 @@ export default function Scene3DPlayer({ demoKey, title, onFail }: { demoKey: str
 
   useEffect(() => setOpt(initialOptions), [initialOptions]);
   useEffect(() => {
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    if (motionReduced()) {
       setPlaying(false);
       setManual(0.5);
     }

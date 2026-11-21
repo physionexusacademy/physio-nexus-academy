@@ -35,6 +35,8 @@ const GL = ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swifts
 async function newPage(browser) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
   await ctx.addInitScript(() => { try { localStorage.setItem("pna-teacher-lang-v1", JSON.stringify("en")); localStorage.setItem("pna-fx-v1", JSON.stringify({ mode: "lite", how: "user", at: Date.now() })); } catch {} });
+  // third-party analytics are not part of what is tested, and a slow one would hold the page's load event
+  await ctx.route(/googletagmanager\.com|google-analytics\.com/, (route) => route.abort());
   const page = await ctx.newPage();
   page.errors = [];
   page.on("pageerror", (e) => page.errors.push(String(e)));

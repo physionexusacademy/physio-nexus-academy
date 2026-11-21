@@ -44,6 +44,7 @@
     "validate:rehabverse-reply-lang": "node --experimental-strip-types scripts/validate-rehabverse-reply-lang.ts",
     "validate:rehabverse-claude": "node --experimental-strip-types scripts/validate-rehabverse-claude.ts",
     "validate:rehabverse-groq": "node --experimental-strip-types scripts/validate-rehabverse-groq.ts",
+    "validate:motion": "node scripts/validate-motion.mjs",
     "validate:easy-touch": "node scripts/validate-easy-touch.mjs",
     "validate:rehabverse-chat-ui": "node --experimental-strip-types scripts/validate-rehabverse-chat-ui.ts",
     "validate:pna-ai-grounded": "node --experimental-strip-types scripts/validate-pna-ai-grounded.ts",

@@ -6,6 +6,7 @@ import {
   ClipboardList, Eye, FileBadge2, FlaskConical, GraduationCap, Hand, HeartPulse,
   Home, LibraryBig, PersonStanding, Ruler, ShieldCheck, Stethoscope, Trophy, Users } from "lucide-react";
 import { PnaPathwayArtwork } from "./PnaPathwayArtwork";
+import { motionReduced } from "@/lib/motion";
 
 const icons = {
   library: LibraryBig, eye: Eye, hand: Hand, clipboard: ClipboardList,
@@ -144,7 +145,7 @@ export function PremiumPathwayBrowser({ showAtlas = true }: { showAtlas?: boolea
       if (!target) return;
       target.scrollIntoView({
         block: "start",
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        behavior: motionReduced() ? "auto" : "smooth",
       });
     });
   };
