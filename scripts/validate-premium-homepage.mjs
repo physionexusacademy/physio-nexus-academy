@@ -53,8 +53,8 @@ const zones=[
   "Workshops & Professional Growth","I Need Physiotherapy"
 ];
 const tests={
-  academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<HomeNeedHelp />")&&home.includes("<HomeFeatures />")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
-  lobbyOrder:(()=>{const at=(needle)=>home.indexOf(needle);const flagship=at('data-pna-home-flagship="daily-clinical-challenge-v2"');const order=[at("<LobbyHero"),at("<HomeNeedHelp />"),at("<GuideMe />"),at("<HomeBodyMap"),at("<HomeFeatures />"),flagship,at("<HomeBooks />"),at("<StudentPass />"),at("<PremiumPathwayBrowser")];return order.every((position,index)=>position>=0&&(index===0||position>order[index-1]));})(),
+  academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<HomeNeedHelp />")&&home.includes("<HomeFeaturesTop />")&&home.includes("<HomeFeaturesMore />")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
+  lobbyOrder:(()=>{const at=(needle)=>home.indexOf(needle);const flagship=at('data-pna-home-flagship="daily-clinical-challenge-v2"');const order=[at("<LobbyHero"),at("<HomeNeedHelp />"),at("<GuideMe />"),at("<HomeBodyMap"),at("<HomeFeaturesTop />"),flagship,at("<HomeFeaturesMore />"),at("<HomeBooks />"),at("<StudentPass />"),at("<PremiumPathwayBrowser")];return order.every((position,index)=>position>=0&&(index===0||position>order[index-1]));})(),
   noDuplicatedFeatureWall:!home.includes("portalActions.map")&&!home.includes("portalGroups.map")&&!home.includes("pna-home-zones"),
   allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
   retiredWeeklyQuizGone:!hrefs.includes("/clinical-quiz")&&!home.includes("/clinical-quiz"),
@@ -84,7 +84,7 @@ const tests={
   existingProfessionalLearning:home.includes("<HomeTestimonials />")&&read("src/components/home/HomeTestimonials.tsx").includes("/rest/v1/testimonials")&&read("src/components/home/HomeTestimonials.tsx").includes("status=eq.published")&&home.includes("<HomeBooks />"),
   // The homepage is a prebuilt static page (instant from the edge), not rendered on every visit.
   homepageIsStatic:!home.includes('export const dynamic = "force-dynamic"')&&!home.includes("createPublicClient")&&!home.includes("async function HomePage"),
-  premiumChallengeKept:dailyBoard.includes('<DailyLeaderboard compact title="Today\'s Top 5"')&&home.includes("<HomeDailyBoard />")&&(home.includes("<DailyChallengeCountdown/>")||home.includes("<DailyChallengeCountdown />"))&&challengeCss.includes(".dc-flagship-countdown"),
+  premiumChallengeKept:dailyBoard.includes("<HomeTodayBoard />")&&dailyBoard.includes("data-pna-home-today-board")&&!dailyBoard.includes("<details")&&home.includes("<HomeDailyBoard />")&&(home.includes("<DailyChallengeCountdown/>")||home.includes("<DailyChallengeCountdown />"))&&challengeCss.includes(".dc-flagship-countdown"),
   patientRoutesUnchanged:browser.includes('href: "/symptom-checker"')&&browser.includes('href: "/appointment"')&&browser.includes('href: "/home-visit"'),
   existingCpdIdentityRetained:header.includes("CPD Provider · #791052")&&!hero.includes("lobby-stats"),
   studentPassIsPrivate:pass.includes("saved privately on this device")&&!pass.includes("fetch("),
@@ -106,7 +106,7 @@ const tests={
   guideOnHome:home.includes('import { GuideMe } from "@/components/avatar/GuideMe"')&&guide.includes("data-guide-me")&&guide.includes("ssr: false")&&guide.includes('demoKey="avatar/site-tour"')&&guide.includes("loading=\"lazy\"")&&guideCss.includes(".gm-card")&&!learnPage.includes("GuideMe")&&!skillsPage.includes("GuideMe")&&fs.existsSync("public/teacher/pna-teacher-poster.webp")&&fs.statSync("public/teacher/pna-teacher-poster.webp").size<60000,
   // Every book in the catalogue shows on the homepage, three across, with a small cover thumbnail.
   // The page stays short: no stats strip in the hero, no news block, the Registry sits in the physiotherapist pathway, Student Pass is one button.
-  calmerHome:!hero.includes("lobby-stats")&&!home.includes("lobby-news")&&!home.includes("clinical-registry-v1")&&!browser.includes("clinical-registry-v1")&&pass.includes("aria-expanded={open}")&&dailyBoard.includes('className="hdc-board"'),
+  calmerHome:!hero.includes("lobby-stats")&&!home.includes("lobby-news")&&!home.includes("clinical-registry-v1")&&!browser.includes("clinical-registry-v1")&&pass.includes("aria-expanded={open}")&&dailyBoard.includes('className="hdc-today cb"'),
   booksRowOnHome:home.includes("<HomeBooks />")&&booksRow.includes("BOOKS.slice(0, HOME_BOOK_COUNT).map(")&&booksRow.includes("const HOME_BOOK_COUNT = 3;")&&lobbyCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")&&bookIds.length>=3&&bookIds.every(id=>fs.existsSync(`public/images/books/thumbs/${id}.webp`))
 };
 for(const [name,okay] of Object.entries(tests)){

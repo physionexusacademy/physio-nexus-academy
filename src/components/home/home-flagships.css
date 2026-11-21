@@ -136,16 +136,10 @@
 .hdc-track li:nth-child(2) i { animation-delay: .25s; } .hdc-track li:nth-child(3) i { animation-delay: .5s; } .hdc-track li:nth-child(4) i { animation-delay: .75s; } .hdc-track li:nth-child(5) i { animation-delay: 1s; }
 .hdc-track-end { color: #ffc65c !important; } .hdc-track-end i { border-color: #ffc65c; background: #ffc65c; box-shadow: 0 0 16px rgba(255, 198, 92, .9); }
 @keyframes hdc-node { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.35); } }
-.hdc-board { grid-column: 1 / -1; border-top: 1px solid rgba(150, 205, 255, .16); padding-top: 10px; }
-.hdc-board > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; font-weight: 700; color: #cfe3f5; border-radius: 10px; padding: 4px 6px; }
-.hdc-board > summary::-webkit-details-marker { display: none; }
-.hdc-board > summary:focus-visible { outline: 2px solid #2ee6d6; outline-offset: 2px; }
 .hdc-chev { transition: transform .2s ease; }
-.hdc-board[open] .hdc-chev { transform: rotate(180deg); }
-.hdc-board-body { margin-top: 10px; max-width: 640px; }
 .hdc-board-link { margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; font-weight: 700; color: #2ee6d6; }
 .hdc-board-link:hover { color: #fff; }
-@media (max-width: 1000px) { .hdc-card { grid-template-columns: 1fr; padding: 16px; } .hdc-time { order: 3; } .hdc-actions { order: 4; } .hdc-board { order: 5; } }
+@media (max-width: 1000px) { .hdc-card { grid-template-columns: 1fr; padding: 16px; } .hdc-time { order: 3; } .hdc-actions { order: 4; } .hdc-today { order: 5; } }
 @media (max-width: 1000px) { .hdc-track { order: 2; } }
 @media (max-width: 560px) { .hdc-lead h2 { font-size: 1.12rem; } .hdc-actions .nx-btn { flex: 1; justify-content: center; } .hdc-track { padding: 0 2px; } }
 @media (prefers-reduced-motion: reduce) { .hdc-card::after, .hdc-track i { animation: none; } }
@@ -169,3 +163,20 @@
 
 /* the hero no longer has a stats strip: give its buttons room to breathe */
 .nx-sky.lobby-hero { padding-bottom: clamp(36px, 5vw, 64px); }
+
+/* ---------- the home page's Daily Clinical Challenge: the Today board is always open, beside the challenge on a computer ---------- */
+.hdc-today.cb { margin-top: 0; }
+.hdc-today { grid-column: 1 / -1; min-width: 0; }
+@media (min-width: 1001px) {
+  .hdc-card { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); grid-template-areas: "lead board" "time board" "track board" "actions board"; grid-template-rows: max-content max-content max-content 1fr; align-items: start; gap: 18px 32px; padding: 26px 28px; }
+  .hdc-lead { grid-area: lead; }
+  .hdc-time { grid-area: time; }
+  .hdc-track { grid-area: track; }
+  .hdc-actions { grid-area: actions; }
+  .hdc-today { grid-area: board; }
+}
+/* the countdown on the dark Daily Challenge card: dark glass with a glowing time, like the rest of the card */
+.hdc-time .dc-flagship-countdown { border-color: rgba(46, 230, 214, .38); background: rgba(8, 24, 50, .72); box-shadow: 0 0 26px -10px rgba(46, 230, 214, .6); }
+.hdc-time .dc-flagship-countdown-icon { color: #2ee6d6; background: rgba(46, 230, 214, .14); }
+.hdc-time .dc-flagship-countdown-label, .hdc-time .dc-flagship-countdown-tz { color: #9fc3d9; }
+.hdc-time .dc-flagship-countdown-time { color: #fff; text-shadow: 0 0 14px rgba(46, 230, 214, .55); }

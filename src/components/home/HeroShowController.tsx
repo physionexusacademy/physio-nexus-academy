@@ -8,9 +8,12 @@ const SWIPE_PX = 44;
  * Makes the server-rendered hero slideshow (HeroSlideshow) move. It renders nothing: it finds the markup by id and keeps its
  * state in `data-*` attributes that home-hero.css reacts to, so React never has to hydrate (or receive twice) the cards.
  *
- *   data-playing  the slideshow plays by itself (not paused by the visitor, not "reduce motion")
- *   data-run      the progress bar is running right now (playing, and nothing is holding it: pointer, keyboard focus, touch,
- *                 hidden tab, hero off screen)
+ *   data-playing  the slideshow plays by itself (not paused by the visitor). It also plays for people whose computer asks for less
+ *                 motion: those cards simply cross-fade (data-calm), nothing slides or loops. A show that looks frozen on a PC (a mouse
+ *                 resting on it, "reduce motion" switched on, animations blocked) is the worst way to meet the academy.
+ *   data-run      the progress bar is running right now (playing, and nothing is holding it: keyboard focus, touch,
+ *                 hidden tab, hero off screen). A mouse resting on it no longer holds it.
+ *   data-calm     the device asked for less motion: cards cross-fade, nothing slides or loops
  *   data-awake    the hero is on screen in a visible tab (everything animated pauses when not)
  *   data-ready    script is attached (the progress bar starts only now, so a first card that finished early is never stuck)
  *   data-moved    a card has changed at least once (cards animate in and out only after that)
@@ -41,7 +44,6 @@ function mountHeroShow(root: HTMLElement) {
   let direction: 1 | -1 = 1;
   let auto = true;
   let reduced = false;
-  let hover = false;
   let focus = false;
   let press = false;
   let hidden = document.hidden;
@@ -49,6 +51,10 @@ function mountHeroShow(root: HTMLElement) {
   let swipeFrom: { x: number; y: number } | null = null;
   let swiped = false;
   let leaveTimer: ReturnType<typeof setTimeout> | undefined;
+  // Watchdog: the progress bar (a CSS animation) is the timer, but if the browser, an extension or a power-saving mode stops CSS animations
+  // it would never fire and the show would sit on one card. This counts the running time itself and moves on a little after it should have.
+  const slideMs = Number.parseFloat(getComputedStyle(root).getPropertyValue("--hs-ms")) || 6200;
+  let running = 0;
 
   const paint = () => {
     slides.forEach((slide, i) => {
@@ -68,12 +74,13 @@ function mountHeroShow(root: HTMLElement) {
   };
 
   const sync = () => {
-    const playing = auto && !reduced;
-    const running = playing && !hover && !focus && !press && !hidden && !offscreen;
+    const playing = auto;
+    const run = playing && !focus && !press && !hidden && !offscreen;
     root.dataset.playing = flag(playing);
-    root.dataset.run = flag(running);
+    root.dataset.run = flag(run);
     root.dataset.awake = flag(!hidden && !offscreen);
-    stage.setAttribute("aria-live", running ? "off" : "polite");
+    root.dataset.calm = flag(reduced);
+    stage.setAttribute("aria-live", run ? "off" : "polite");
     if (playButton) {
       playButton.setAttribute("aria-label", playing ? "Pause the slideshow" : "Play the slideshow");
       playButton.setAttribute("aria-pressed", String(!playing));
@@ -84,6 +91,7 @@ function mountHeroShow(root: HTMLElement) {
     const target = ((to % count) + count) % count;
     if (target === index) return;
     direction = way ?? (target > index ? 1 : -1);
+    running = 0;
     leaving = index;
     index = target;
     root.dataset.moved = "1";
@@ -125,7 +133,8 @@ function mountHeroShow(root: HTMLElement) {
     "animationend",
     (event) => {
       const target = event.target as HTMLElement;
-      if (target.classList.contains("hs-fill") && event.animationName === "hs-fill" && root.dataset.playing === "1") go(index + 1, 1);
+      // with "reduce motion" the site shrinks every animation to nothing (globals.css), so the bar would "finish" at once: the watchdog is the timer then
+      if (!reduced && target.classList.contains("hs-fill") && event.animationName === "hs-fill" && root.dataset.playing === "1") go(index + 1, 1);
     },
     { signal },
   );
@@ -144,9 +153,7 @@ function mountHeroShow(root: HTMLElement) {
     { signal },
   );
 
-  // holds: a mouse over it, keyboard focus inside it, a finger on it
-  root.addEventListener("pointerenter", (event) => { if (event.pointerType === "mouse") { hover = true; sync(); } }, { signal });
-  root.addEventListener("pointerleave", (event) => { if (event.pointerType === "mouse") { hover = false; sync(); } }, { signal });
+  // holds: keyboard focus inside it, a finger on it (a mouse resting on it does not stop it)
   root.addEventListener("focusin", (event) => { focus = (event.target as HTMLElement).matches(":focus-visible"); sync(); }, { signal });
   root.addEventListener("focusout", () => { focus = false; sync(); }, { signal });
 
@@ -197,6 +204,11 @@ function mountHeroShow(root: HTMLElement) {
   document.addEventListener("visibilitychange", () => { hidden = document.hidden; sync(); }, { signal });
   const watcher = new IntersectionObserver(([entry]) => { offscreen = !entry.isIntersecting; sync(); }, { threshold: 0.12 });
   watcher.observe(root);
+  const watchdog = window.setInterval(() => {
+    if (root.dataset.run !== "1") return;
+    running += 500;
+    if (running >= (reduced ? slideMs : slideMs + 1200)) go(index + 1, 1);
+  }, 500);
 
   reduced = motion.matches;
   paint();
@@ -206,6 +218,7 @@ function mountHeroShow(root: HTMLElement) {
   return () => {
     abort.abort();
     watcher.disconnect();
+    window.clearInterval(watchdog);
     clearTimeout(leaveTimer);
   };
 }
