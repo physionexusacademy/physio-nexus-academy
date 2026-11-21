@@ -78,3 +78,10 @@ for the zone (workflow step "Turn off HTTP/3 (QUIC) …", through the Cloudflare
   hand: Cloudflare dashboard > physionexusacademy.com > Speed > Settings (older menu: Network) > HTTP/3 (with QUIC) > Off.
 - Check: `curl -sI https://physionexusacademy.com/ | grep -i alt-svc` prints nothing once it is off.
 - A visitor who still sees the error right now can open `chrome://flags/#enable-quic`, set it to Disabled and restart Chrome; Chrome also forgets the old advice after 24 hours.
+
+## Plain `http://` is redirected to `https://` (Always Use HTTPS)
+
+A browser that has only ever opened the site over `http://` (a typed address that autocompletes to an old `http://` history entry) sent every page, and any sign-in,
+in plain text, where a network filter or a router can read it and reset the connection (`ERR_CONNECTION_RESET`), while a phone that had visited over `https://`
+remembered HSTS and was fine. Every deploy now makes sure Cloudflare's **Always Use HTTPS** is on (SSL/TLS > Edge Certificates), so port 80 only ever answers with a
+redirect, and the next `https://` response teaches the browser's HSTS. Check: `curl -sI http://physionexusacademy.com/` shows `301` with `location: https://...`.

@@ -334,6 +334,50 @@ jobs:
           done
           echo "::warning::The setting is off but the edge still sent an alt-svc header after 4 minutes; it should clear shortly. Check: curl -sI https://physionexusacademy.com/ | grep -i alt-svc"
 
+      - name: Send every http:// visit to https:// (Always Use HTTPS), so nobody browses or signs in over plain text and no network filter reads the page
+        if: steps.auth.outputs.ready == 'true'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          api() { curl -sS -m 30 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          manual() { echo "::warning::$1 Do it by hand: Cloudflare dashboard > physionexusacademy.com > SSL/TLS > Edge Certificates > Always Use HTTPS > On."; }
+          base="https://api.cloudflare.com/client/v4"
+
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1" || true)"
+          zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty' 2>/dev/null || true)"
+          if [ -z "$zone_id" ]; then
+            printf '%s' "$zone_json" | jq -c '{success, errors}' 2>/dev/null || true
+            manual "The Cloudflare token cannot read the zone, so Always Use HTTPS was not changed."
+            exit 0
+          fi
+
+          current="$(api "$base/zones/$zone_id/settings/always_use_https" | jq -r '.result.value // "unknown"' 2>/dev/null || echo unknown)"
+          echo "Always Use HTTPS is currently: $current"
+          if [ "$current" != "on" ]; then
+            result="$(api -X PATCH "$base/zones/$zone_id/settings/always_use_https" --data '{"value":"on"}' || true)"
+            if [ "$(printf '%s' "$result" | jq -r '.success' 2>/dev/null)" = "true" ]; then
+              echo "Always Use HTTPS is now on for physionexusacademy.com."
+            else
+              printf '%s' "$result" | jq -c '{success, errors}' 2>/dev/null || true
+              manual "The Cloudflare token is not allowed to edit zone settings, so Always Use HTTPS was not changed."
+              exit 0
+            fi
+          fi
+
+          # port 80 must now answer with a redirect to https (not with the page); the edge needs a moment to pick the setting up
+          for attempt in 1 2 3 4 5 6; do
+            answer="$(curl -sS -m 20 -o /dev/null -w '%{http_code} %{redirect_url}' "http://physionexusacademy.com/" || true)"
+            case "$answer" in
+              301\ https://*|308\ https://*) echo "Confirmed: http://physionexusacademy.com/ answers $answer"; exit 0 ;;
+            esac
+            echo "Not redirecting yet (attempt $attempt): $answer"
+            sleep 20
+          done
+          echo "::warning::Always Use HTTPS is on but port 80 did not answer with a redirect within 2 minutes; check: curl -sI http://physionexusacademy.com/"
+
       - name: Smoke test production
         if: steps.auth.outputs.ready == 'true'
         shell: bash
