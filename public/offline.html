@@ -23,6 +23,9 @@
   a{color:#7fe6dc}
   code{background:#17395a;padding:2px 6px;border-radius:6px;word-break:break-all}
   small{color:#9db8cc}
+  .good{background:#0f3d3a;border:2px solid #2fbf9b;border-radius:14px;padding:14px 16px;margin:18px 0}
+  .good p{margin:6px 0}
+  .ghost{background:transparent;border:2px solid #4f7da0}
 </style>
 <main>
   <img src="/images/pna-logo.png" alt="">
@@ -30,6 +33,15 @@
   <p class="ur">Abhi site tak connection nahi ban raha.</p>
   <p>Your internet may be fine: on some Wi-Fi and mobile networks the connection to our site is cut on the way. The most common cause is the network's <b>automatic DNS</b> (the phone book your provider gives your device). This page tries again by itself.</p>
   <p class="ur">Aap ka internet theek ho sakta hai. Aksar wajah aap ke provider ka <b>automatic DNS</b> hota hai. Neeche DNS badalne ka tareeqa hai. Ye page khud dobara koshish bhi karta hai.</p>
+  <div id="backupBox" class="good" hidden>
+    <p><b>The site opens through the backup address.</b><br><span class="ur">Site backup address se khul rahi hai.</span></p>
+    <p id="backupCount">Opening it for you in <b id="count">4</b> seconds&hellip; <span class="ur">Aap ko khud le ja rahe hain.</span></p>
+    <p id="backupNote" hidden>This page needs sign-in, which works best on the main address. The public pages open here. <span class="ur">Sign-in wale page main address par behtar chalte hain; public pages yahan khulte hain.</span></p>
+    <div class="buttons">
+      <a class="btn" id="backupGo" href="https://physio-nexus-academy.physionexusacademypk.workers.dev">Open now / Abhi kholein</a>
+      <button id="backupStay" type="button" class="ghost">Stay here / Yahin rukein</button>
+    </div>
+  </div>
   <div class="buttons">
     <button id="retry" type="button">Try again / Dobara koshish</button>
     <a class="btn" href="/">Home (saved copy)</a>
@@ -59,11 +71,62 @@
 (function () {
   function probe() {
     // the page itself is not answered by the network while the connection is cut: when this request succeeds, the connection is back
-    fetch("/offline?ping=" + Date.now(), { cache: "no-store" }).then(function (r) { if (r.ok) location.reload(); }).catch(function () {});
+    fetch("/offline?ping=" + Date.now(), { cache: "no-store" }).then(function (r) { if (r.ok && location.pathname !== "/offline" && location.pathname !== "/offline.html") location.reload(); }).catch(function () {});
   }
   document.getElementById("retry").onclick = function () { location.reload(); };
   window.addEventListener("online", probe);
   setInterval(function () { if (!document.hidden) probe(); }, 15000);
+
+  // The backup address (workers.dev) has another name and other addresses than the main one, so a network that cuts the main name often lets it through.
+  // When it answers, offer it (and, for a public page, open it on its own after a few seconds). A no-cors request tells only "the connection worked" or "it failed".
+  var BACKUP = "https://physio-nexus-academy.physionexusacademypk.workers.dev";
+  var onBackup = /\.workers\.dev$/i.test(location.hostname);
+  var path = location.pathname === "/offline" || location.pathname === "/offline.html" ? "/" : location.pathname;
+  var SIGNED_IN = /^\/(?:account|admin|api|rehabverse\/(?:me|login|register|start|forgot|reset|auth))(?:\/|$)/;
+  var backupShown = false, stayed = false;
+  function reachable(url, ms) {
+    return new Promise(function (resolve) {
+      var settled = false, control = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (!settled) { settled = true; if (control) control.abort(); resolve(false); } }, ms);
+      fetch(url, { mode: "no-cors", cache: "no-store", signal: control ? control.signal : undefined }).then(
+        function () { if (!settled) { settled = true; clearTimeout(timer); resolve(true); } },
+        function () { if (!settled) { settled = true; clearTimeout(timer); resolve(false); } }
+      );
+    });
+  }
+  function offerBackup() {
+    if (onBackup || backupShown || stayed) return;
+    // only when the main address really does not answer (this page can also be opened on purpose, or the connection may have come back already)
+    fetch("/offline?check=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok; }, function () { return false; }).then(function (mainAnswers) {
+      if (mainAnswers) return false;
+      return reachable(BACKUP + "/robots.txt?probe=" + Date.now(), 7000);
+    }).then(function (ok) {
+      if (!ok || backupShown || stayed) return;
+      backupShown = true;
+      var signedIn = SIGNED_IN.test(path);
+      var target = BACKUP + (signedIn ? "/" : path + location.search + location.hash);
+      document.getElementById("backupGo").href = target;
+      document.getElementById("backupBox").hidden = false;
+      if (signedIn) {
+        document.getElementById("backupCount").hidden = true;
+        document.getElementById("backupNote").hidden = false;
+        return;
+      }
+      var left = 4, number = document.getElementById("count");
+      var tick = setInterval(function () {
+        if (stayed) { clearInterval(tick); return; }
+        left -= 1;
+        number.textContent = String(left);
+        if (left <= 0) { clearInterval(tick); location.replace(target); }
+      }, 1000);
+    });
+  }
+  document.getElementById("backupStay").onclick = function () {
+    stayed = true;
+    document.getElementById("backupCount").hidden = true;
+  };
+  offerBackup();
+  setInterval(function () { if (!document.hidden) offerBackup(); }, 20000);
 
   // list the public pages that are saved in this browser (the worker's saved copies)
   if (window.caches && caches.keys) {

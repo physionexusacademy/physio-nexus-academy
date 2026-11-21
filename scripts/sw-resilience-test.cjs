@@ -43,6 +43,16 @@ const server = http.createServer((req, res) => {
     return;
   }
   // like Cloudflare's static assets: /offline.html is sent on to /offline (a navigation must never be answered with a redirected response)
+  // (a cut connection cuts these too: only /sw.js and the logo stay answered, so the worker's own installation is not part of what is tested here)
+  const cut = url.pathname === "/offline" || url.pathname === "/offline.html";
+  if (cut && mode === "down") {
+    req.socket.destroy();
+    return;
+  }
+  if (cut && mode === "hang") {
+    hung.add(req.socket);
+    return;
+  }
   if (url.pathname === "/offline.html") {
     res.writeHead(307, { location: "/offline" });
     res.end();
@@ -183,10 +193,51 @@ const cacheUrls = (p, prefix) =>
   check("cut connection: saved script and lesson data still load", /served/.test(offlineFetches["/_next/static/chunks/a.js"]) && /served/.test(offlineFetches["/teacher-data/lessons/x.json"]), JSON.stringify(offlineFetches));
   check("cut connection: API calls fail honestly (nothing invented)", offlineFetches.api === "FAILED");
 
+  // --- the backup address: when it answers, the offline page opens a public page there by itself, or offers it (signed-in pages), or does nothing when it does not answer
+  const BACKUP = "https://physio-nexus-academy.physionexusacademypk.workers.dev";
+  const backupAnswers = (route) => {
+    const u = new URL(route.request().url());
+    if (u.pathname === "/robots.txt") return route.fulfill({ status: 200, contentType: "text/plain", body: "User-agent: *\nDisallow: /\n" });
+    return route.fulfill({ status: 200, contentType: "text/html", body: `<html><body><h1>BACKUP HOST ${u.pathname}</h1></body></html>` });
+  };
+  await ctx.route(BACKUP + "/**", backupAnswers);
+  await p.goto(BASE + "/learn/auto-route-1", { waitUntil: "load" });
+  check("cut connection, backup answers: the offline page is shown first", /We can't reach the site right now/.test(await text(p)));
+  await p.waitForURL((url) => url.origin === BACKUP, { timeout: 15000 }).catch(() => {});
+  check("...then a public page opens on the backup address by itself, on the same path", p.url() === BACKUP + "/learn/auto-route-1", p.url());
+  check("...and the backup host answers it", /BACKUP HOST \/learn\/auto-route-1/.test(await text(p)));
+
+  await p.goto(BASE + "/rehabverse/me", { waitUntil: "load" });
+  await p.waitForSelector("#backupBox:not([hidden])", { timeout: 15000 }).catch(() => {});
+  await p.waitForTimeout(6500);
+  check("a signed-in page is NOT moved to the backup address on its own", p.url() === BASE + "/rehabverse/me", p.url());
+  check("...but the backup address is offered (home page there)", (await p.getAttribute("#backupGo", "href")) === BACKUP + "/");
+
+  await p.goto(BASE + "/learn/auto-route-3", { waitUntil: "load" });
+  await p.waitForSelector("#backupBox:not([hidden])", { timeout: 15000 }).catch(() => {});
+  await p.click("#backupStay");
+  await p.waitForTimeout(6500);
+  check("'Stay here' stops the automatic move", p.url() === BASE + "/learn/auto-route-3", p.url());
+
+  await ctx.unroute(BACKUP + "/**");
+  await ctx.route(BACKUP + "/**", (route) => route.abort());
+  await p.goto(BASE + "/learn/auto-route-2", { waitUntil: "load" });
+  await p.waitForTimeout(9500);
+  check("backup address cut too: nothing moves and the box stays hidden", p.url() === BASE + "/learn/auto-route-2" && (await p.isHidden("#backupBox")), p.url());
+  check("...the DNS steps are still there", /one\.one\.one\.one/.test(await text(p)));
+  await ctx.unroute(BACKUP + "/**");
+
   // --- the connection comes back: fresh again
   await set("up");
   await p.goto(BASE + "/learn", { waitUntil: "load" });
   check("connection back: the page is fresh again", /version \d+/.test(await text(p)) && !/We can't reach/.test(await text(p)));
+
+  // the offline page opened on purpose while the connection works must not send anyone to the backup address
+  await ctx.route("https://physio-nexus-academy.physionexusacademypk.workers.dev/**", (route) => route.fulfill({ status: 200, contentType: "text/plain", body: "ok" }));
+  await p.goto(BASE + "/offline", { waitUntil: "load" });
+  await p.waitForTimeout(6500);
+  check("the offline page opened while the connection works stays put (no move to the backup address)", p.url() === BASE + "/offline" && (await p.isHidden("#backupBox")), p.url());
+  await ctx.unroute("https://physio-nexus-academy.physionexusacademypk.workers.dev/**");
 
   // --- a server error with a saved copy
   await set("503");

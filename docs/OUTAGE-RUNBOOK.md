@@ -23,6 +23,8 @@ with status 200 and a valid certificate. The HTTPS record with Encrypted Client 
   With Secure DNS (DNS over HTTPS) or a public DNS the browser gets that record, hides the name, and the site opens. This is why Encrypted Client Hello is kept **on** (the deploy re-checks it) and why HTTP/3 stays off.
 - The server side cannot change a visitor's resolver. What it does: keeps the DNS records healthy (the hourly monitor checks them), keeps the backup address, and the offline page tells the visitor how to change DNS.
 
+**Automatic route to the backup address (since worker 2026-11-21-4).** When the connection to the main name is cut, a visitor who has opened the site before gets `/offline`. That page tests the backup address in the background; if it answers, a green box appears and, for a public page, the browser is moved to the same page there after 4 seconds ("Stay here" cancels it). Signed-in pages (account, RehabVerse patient pages, admin) are not moved on their own: the box offers the backup home page. If the backup address is cut as well, the page stays and shows the DNS steps. A first-time visitor never gets this page, so the backup address and the DNS steps must reach them another way (the shareable card, WhatsApp, Instagram).
+
 How to change DNS (the steps are also on `/offline`):
 
 | Device | Steps |
