@@ -9,8 +9,14 @@ export type GroqMessage = { role: "system" | "user" | "assistant"; content: stri
 
 export const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 export const GROQ_PREFIX = "groq:";
-/** A strong open model that Groq serves for free within its limits. Change it with GROQ_CHAT_MODEL (for example "openai/gpt-oss-120b"). */
-export const DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
+/**
+ * Strong open models that Groq serves for free within its limits, in the order they are tried when a model has been retired or is not
+ * available to the account (a 400 / 404 about the model). GROQ_CHAT_MODEL replaces the list with one model.
+ */
+export const DEFAULT_GROQ_MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b"];
+export const DEFAULT_GROQ_MODEL = DEFAULT_GROQ_MODELS[0];
+/** The gpt-oss models think before they answer and the thinking counts toward the limit: they get a bigger limit and the lowest reasoning effort. */
+export const isReasoningModel = (model: string) => /gpt-oss/i.test(model);
 export const MIN_GROQ_MAX_TOKENS = 200;
 export const MAX_GROQ_MAX_TOKENS = 2048;
 
@@ -22,6 +28,7 @@ export type GroqRequestBody = {
   messages: GroqMessage[];
   max_completion_tokens: number;
   temperature: number;
+  reasoning_effort?: "low";
 };
 
 export function buildGroqRequest(messages: GroqMessage[], options: { model?: string; maxTokens?: number; temperature?: number } = {}): GroqRequestBody {
@@ -36,11 +43,14 @@ export function buildGroqRequest(messages: GroqMessage[], options: { model?: str
   if (!turns.some((m) => m.role === "user")) turns.push({ role: "user", content: "(The patient has just opened the chat.)" });
   const wanted = Math.round(options.maxTokens ?? 0);
   const temperature = typeof options.temperature === "number" && Number.isFinite(options.temperature) ? Math.min(1, Math.max(0, options.temperature)) : 0.4;
+  const model = groqModelName(options.model ?? DEFAULT_GROQ_MODEL);
+  const reasoning = isReasoningModel(model);
   return {
-    model: groqModelName(options.model ?? DEFAULT_GROQ_MODEL),
+    model,
     messages: turns,
-    max_completion_tokens: Math.min(MAX_GROQ_MAX_TOKENS, Math.max(MIN_GROQ_MAX_TOKENS, wanted)),
+    max_completion_tokens: Math.min(MAX_GROQ_MAX_TOKENS, Math.max(reasoning ? 1024 : MIN_GROQ_MAX_TOKENS, wanted)),
     temperature,
+    ...(reasoning ? { reasoning_effort: "low" as const } : {}),
   };
 }
 

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import {
-  buildGroqRequest, classifyGroqFailure, DEFAULT_GROQ_MODEL, GROQ_API_URL, GROQ_PREFIX, groqModelName, isGroqModel, MAX_GROQ_MAX_TOKENS, MIN_GROQ_MAX_TOKENS, readGroqAnswer, sendGroq,
+  buildGroqRequest, classifyGroqFailure, DEFAULT_GROQ_MODEL, DEFAULT_GROQ_MODELS, isReasoningModel, GROQ_API_URL, GROQ_PREFIX, groqModelName, isGroqModel, MAX_GROQ_MAX_TOKENS, MIN_GROQ_MAX_TOKENS, readGroqAnswer, sendGroq,
   type GroqMessage,
 } from "../src/lib/rehabverse/ai/groq-request.ts";
 
@@ -36,6 +36,11 @@ const read = (path: string) => readFileSync(new URL("../" + path, import.meta.ur
   ok(isGroqModel("groq:llama-3.3-70b-versatile") && !isGroqModel("claude-haiku-5-5") && !isGroqModel("@cf/meta/llama-3.3-70b-instruct-fp8-fast"), "only groq: ids go to Groq");
   eq(groqModelName("groq:x/y"), "x/y", "the model name after the prefix is kept whole");
   eq(GROQ_PREFIX, "groq:", "the prefix");
+  eq(DEFAULT_GROQ_MODELS, ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b"], "if a model is retired the next one in the list is tried");
+  ok(isReasoningModel("openai/gpt-oss-20b") && !isReasoningModel("llama-3.3-70b-versatile"), "the gpt-oss models are the ones that think first");
+  const reasoning = buildGroqRequest(chat, { model: "groq:openai/gpt-oss-20b", maxTokens: 300 });
+  ok(reasoning.reasoning_effort === "low" && reasoning.max_completion_tokens >= 1024, "a thinking model gets the lowest reasoning effort and room for the reply after its thinking");
+  ok(!("reasoning_effort" in buildGroqRequest(chat, { maxTokens: 300 })), "a normal model gets no reasoning setting");
 }
 
 /* 2. The answer and the failures. */
@@ -84,6 +89,8 @@ const read = (path: string) => readFileSync(new URL("../" + path, import.meta.ur
   ok(!/console\.(log|error|warn)\([^)]*\bkey\b/.test(groq), "the key is never logged");
   ok(/export const groqEnabled =/.test(groq) && /\["auto", "groq"\]/.test(groq), "Groq is used only when its key is set and the provider setting allows it");
 
+  ok(/for \(const model of groqModels\(\)\)/.test(groq) && /outcome\.reason !== "bug"\) break/.test(groq), "only a model problem hands over to the next Groq model; any other failure stops");
+  ok(/export const groqLastFailure/.test(groq), "the last failure (reason and status only) can be reported");
   const model = read("src/lib/rehabverse/ai/model.ts");
   ok(/isGroqModel\(model\)/.test(model) && /callGroq\(/.test(model) && /groqEnabled\(\)/.test(model), "model.ts sends groq: ids to Groq");
   ok(/chain\.push\(claudeModel\(\)\)/.test(model) && /chain\.push\(groqModel\(\)\)/.test(model) && model.indexOf("claudeModel()") < model.indexOf("groqModel()"), "the order is Claude, then Groq, then the free Workers AI chain");
