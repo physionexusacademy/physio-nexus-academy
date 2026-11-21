@@ -276,6 +276,52 @@ jobs:
 
           npm run deploy
 
+      # Some visitors' Chrome showed "This site can't be reached ... ERR_QUIC_PROTOCOL_ERROR" for physionexusacademy.com. Cloudflare told browsers to use
+      # HTTP/3 (QUIC, over UDP) with "alt-svc: h3", and on networks, VPNs or security software that mishandle QUIC the connection fails. HTTP/2 over TCP works
+      # everywhere, so HTTP/3 is switched off for the zone on every deploy (idempotent). It never blocks a deploy: if the token may not edit zone settings,
+      # the step says so and tells the owner the one switch to flip in the Cloudflare dashboard.
+      - name: Turn off HTTP/3 (QUIC) for physionexusacademy.com so nobody gets ERR_QUIC_PROTOCOL_ERROR
+        if: steps.auth.outputs.ready == 'true'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          api() { curl -sS -m 30 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
+          manual() { echo "::warning::$1 Do it by hand: Cloudflare dashboard > physionexusacademy.com > Speed > Settings (or Network) > HTTP/3 (with QUIC) > Off."; }
+          base="https://api.cloudflare.com/client/v4"
+
+          zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1" || true)"
+          zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty' 2>/dev/null || true)"
+          if [ -z "$zone_id" ]; then
+            printf '%s' "$zone_json" | jq -c '{success, errors}' 2>/dev/null || true
+            manual "The Cloudflare token cannot read the zone, so HTTP/3 was not changed."
+            exit 0
+          fi
+
+          current="$(api "$base/zones/$zone_id/settings/http3" | jq -r '.result.value // "unknown"' 2>/dev/null || echo unknown)"
+          echo "HTTP/3 (QUIC) is currently: $current"
+          if [ "$current" != "off" ]; then
+            result="$(api -X PATCH "$base/zones/$zone_id/settings/http3" --data '{"value":"off"}' || true)"
+            if [ "$(printf '%s' "$result" | jq -r '.success' 2>/dev/null)" = "true" ]; then
+              echo "HTTP/3 (QUIC) is now off for physionexusacademy.com."
+            else
+              printf '%s' "$result" | jq -c '{success, errors}' 2>/dev/null || true
+              manual "The Cloudflare token is not allowed to edit zone settings (it needs Zone > Zone Settings > Edit), so HTTP/3 was not changed."
+              exit 0
+            fi
+          fi
+
+          # The edge stops advertising HTTP/3 within a few minutes; look for it for up to 4 minutes.
+          for attempt in 1 2 3 4 5 6 7 8; do
+            alt="$(curl -sS -m 20 -I "https://physionexusacademy.com/" | tr -d '\r' | grep -i '^alt-svc:' || true)"
+            if [ -z "$alt" ]; then echo "Confirmed: the site no longer advertises HTTP/3 (no alt-svc header)."; exit 0; fi
+            echo "Still advertised (attempt $attempt): $alt"
+            sleep 30
+          done
+          echo "::warning::The setting is off but the edge still sent an alt-svc header after 4 minutes; it should clear shortly. Check: curl -sI https://physionexusacademy.com/ | grep -i alt-svc"
+
       - name: Smoke test production
         if: steps.auth.outputs.ready == 'true'
         shell: bash
