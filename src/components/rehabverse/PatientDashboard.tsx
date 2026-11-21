@@ -67,7 +67,7 @@ export function PatientDashboard({ overview, history, notifications, followup = 
   const state = flagged ? "flagged" : !programme && openAssessment ? "review" : !programme ? "new" : programme.status === "completed" ? "done" : programme.status !== "active" ? "paused" : open ? `open-${open.day_number}` : awaiting ? "waiting" : "idle";
   const beats: GuideBeat[] =
     state === "flagged" ? GUIDE.flagged : state === "review" ? GUIDE.awaitingReview : state === "new" ? GUIDE.intake : state === "done" ? GUIDE.completed
-    : state === "paused" ? GUIDE.paused : state.startsWith("open-") ? GUIDE.dayOpen(Number(state.slice(5))) : GUIDE.waitingReview;
+    : state === "paused" ? GUIDE.paused : state.startsWith("open-") ? GUIDE.dayOpen : GUIDE.waitingReview;
 
   // Progress figures.
   const days = history?.days ?? [];

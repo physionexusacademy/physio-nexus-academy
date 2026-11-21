@@ -18,7 +18,9 @@ import { blendPose } from "@/lib/rehabverse/motion";
 import type { Gesture, GuideBeat, GuideTopic } from "@/lib/rehabverse/guide";
 import { gestureParts, IDLE } from "@/lib/rehabverse/guide-motion";
 import type { Lang } from "./ExercisePlayer";
-import { speakText, stopSpeaking, supportsSpeech, unlockAudio } from "@/lib/speech/voices";
+import { speakText, stopSpeaking, unlockAudio } from "@/lib/speech/voices";
+import { useVoice } from "@/lib/speech/preference";
+import { VoiceHint } from "@/components/speech/VoiceHint";
 
 const CHARS_PER_SECOND = 26;
 const BLINK_EVERY = 3600;
@@ -43,7 +45,8 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
   const [index, setIndex] = useState(0);
   const [shown, setShown] = useState(0);
   const [playing, setPlaying] = useState(autoPlay);
-  const [voice, setVoice] = useState(false);
+  // The voice is ON by default (one setting for every model, remembered): `speakNow` is true once this browser lets sound play.
+  const { voice, setVoice, supported: voiceSupported, speaking: speakNow } = useVoice();
   const [reduced, setReduced] = useState(false);
   const run = useRef({ index: 0, revealed: 0, holdLeft: 0, finished: false, spoken: -1 });
   const speaking = useRef(false);
@@ -177,7 +180,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
       const text = current ? current.say[lang_.current] : "";
 
       if (current && playing && !r.finished) {
-        if (voice && r.spoken !== r.index && supportsSpeech()) {
+        if (speakNow && r.spoken !== r.index) {
           r.spoken = r.index;
           const spokenIndex = r.index;
           // The recorded male voice (English); the subtitles always stay.
@@ -236,7 +239,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [active, playing, voice, reduced]);
+  }, [active, playing, speakNow, reduced]);
 
   const go = (to: number) => {
     const i = Math.max(0, Math.min(active.beats.length - 1, to));
@@ -255,6 +258,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
     <section className={"rv-glass overflow-hidden " + (className ?? "")} aria-label={lang === "ru" ? "PNA virtual physio guide" : "PNA virtual physio guide"} data-rv-guide>
       <div className={"relative w-full bg-[#e8eef3] " + (compact ? "aspect-[16/11]" : "aspect-[4/3] sm:aspect-[16/10]")}>
         <div ref={hostRef} className="absolute inset-0" role="img" aria-label="3D virtual physiotherapist guide" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-3"><span className="pointer-events-auto"><VoiceHint ur={lang === "ru"} /></span></div>
         {status !== "active" ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#e8eef3] p-4 text-center" role="status">
             {status === "text" ? (
@@ -296,8 +300,8 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
           <button type="button" className="d3-btn ml-auto" onClick={() => setLite(status !== "text")} aria-label={status === "text" ? "Turn the 3D guide on" : "Switch to text only"} title={status === "text" ? "Turn the 3D guide on" : "Text only (lighter on your phone)"}>
             {status === "text" ? <Monitor className="h-4 w-4" aria-hidden="true" /> : <MonitorOff className="h-4 w-4" aria-hidden="true" />}
           </button>
-          <button type="button" onClick={() => { unlockAudio(); setVoice((v) => !v); }} aria-pressed={voice} className={"d3-btn " + (voice ? "d3-on" : "")} aria-label="Spoken guidance" title={lang === "ru" ? "Awaaz: recorded male awaaz (Roman Urdu)" : "Spoken guidance (recorded male voice)"}>
-            {voice ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
+          <button type="button" onClick={() => { unlockAudio(); setVoice(!voice); }} aria-pressed={voice && voiceSupported} className={"d3-btn " + (voice && voiceSupported ? "d3-on" : "")} aria-label="Spoken guidance" title={lang === "ru" ? (voice ? "Awaaz on hai (band karne ke liye dabayein)" : "Awaaz band hai (chalane ke liye dabayein)") : (voice ? "Voice is on (tap to turn off)" : "Voice is off (tap to turn on)")}>
+            {voice && voiceSupported ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
           </button>
         </div>
         {topics.length ? (

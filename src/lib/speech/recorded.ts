@@ -106,13 +106,32 @@ function audio(): AudioContext | null {
  */
 export function unlockRecorded() {
   const c = audio();
-  if (c && c.state === "suspended") void c.resume().catch(() => undefined);
+  if (c && c.state !== "running") void c.resume().catch(() => undefined);
 }
 function resumeIfCreated() {
-  if (context && context.state === "suspended") void context.resume().catch(() => undefined);
+  if (context && context.state !== "running") void context.resume().catch(() => undefined);
 }
 if (typeof window !== "undefined") {
-  for (const type of ["pointerdown", "keydown", "touchend"] as const) window.addEventListener(type, resumeIfCreated, { capture: true, passive: true });
+  // The first tap or key press anywhere on the page lets the browser start the voice (iOS wants a click or touchend, others a pointerdown).
+  for (const type of ["pointerdown", "click", "keydown", "touchend"] as const) window.addEventListener(type, resumeIfCreated, { capture: true, passive: true });
+}
+
+/** Makes the audio output now (it stays "suspended" until the browser allows sound), so the first tap only has to resume it. Safe to call often. */
+export function prepareAudio() {
+  audio();
+}
+
+/** True when sound can play right now (the browser has allowed it). */
+export function audioRunning(): boolean {
+  return context !== null && context.state === "running";
+}
+
+/** Calls `onChange` whenever the audio output starts or stops being allowed to play. Returns the function that stops listening. */
+export function onAudioState(onChange: () => void): () => void {
+  const c = audio();
+  if (!c) return () => undefined;
+  c.addEventListener("statechange", onChange);
+  return () => c.removeEventListener("statechange", onChange);
 }
 
 /* ---------------- packs (downloaded and decoded once) ---------------- */

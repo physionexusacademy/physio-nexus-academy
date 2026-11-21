@@ -15,7 +15,9 @@ import { resolvePoint } from "@/lib/skills/points3d";
 import { plain } from "@/lib/avatar/text";
 import AskPanel from "./AskPanel";
 import { useLang } from "@/lib/lang";
-import { supportsSpeech, unlockAudio } from "@/lib/speech/voices";
+import { unlockAudio } from "@/lib/speech/voices";
+import { useVoice } from "@/lib/speech/preference";
+import { VoiceHint } from "@/components/speech/VoiceHint";
 import { recordedPacks, warmPack } from "@/lib/speech/recorded";
 import { AVATAR_LABEL, AVATAR_NOTICE } from "@/lib/avatar/labels";
 import type { BuiltChoreo } from "@/lib/avatar/choreo/built";
@@ -48,8 +50,8 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const [choreo, setChoreo] = useState<BuiltChoreo | null>(null);
   const [view, setView] = useState<StageView | null>(null);
   const [svg, setSvg] = useState<ReactNode>(null);
-  const [voice, setVoice] = useState(false);
-  const [voiceOk, setVoiceOk] = useState(false);
+  // The voice is ON by default (one setting for every model, remembered); `speakNow` is true once this browser lets sound play.
+  const { voice, setVoice, supported: voiceOk, speaking: speakNow } = useVoice();
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
   const [speed, setSpeed] = useState(1);
   const [turn, setTurn] = useState(false);
@@ -63,12 +65,10 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
   const settingsRef = useRef({ voice: false, speed: 1 });
   const sizeRef = useRef({ w: 600, h: 400 });
   langRef.current = lang;
-  settingsRef.current = { voice: voice && voiceOk, speed };
+  settingsRef.current = { voice: speakNow, speed };
 
   // What this device can do.
   useEffect(() => {
-    setVoiceOk(supportsSpeech());
-    setVoice(read("pna-avatar-voice") === "1");
     setSpeed(Number(read("pna-avatar-speed")) || 1);
     void import("@/lib/avatar/teacher").then((m) => setLight(m.detectLightMode()));
   }, []);
@@ -190,8 +190,8 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
     stageRef.current?.setLang(lang);
   }, [lang]);
   useEffect(() => {
-    stageRef.current?.setVoice(voice && voiceOk);
-  }, [voice, voiceOk]);
+    stageRef.current?.setVoice(speakNow);
+  }, [speakNow]);
   useEffect(() => {
     stageRef.current?.setSpeed(speed);
   }, [speed]);
@@ -249,6 +249,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
     <figure className="s3 av-focus" data-demo3d={demoKey} data-avatar="pna-teacher" tabIndex={0} onKeyDown={keys} aria-label={`${AVATAR_LABEL}: ${stepTitle}. Space plays or pauses, arrow keys change step, R replays.`}>
       <div className="s3-view av-view">
         <div ref={hostRef} className="absolute inset-0" role="img" aria-label={`3D demonstration by the ${AVATAR_LABEL}: ${title}`} />
+        <div className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-3"><span className="pointer-events-auto"><VoiceHint ur={ur} /></span></div>
         <span className="s3-corner tl" /><span className="s3-corner tr" /><span className="s3-corner bl" /><span className="s3-corner br" />
         {status === "active" ? <span className="s3-scan" aria-hidden="true" /> : null}
         {status === "parked" || status === "idle" ? (
@@ -337,7 +338,7 @@ export default function AvatarStage({ demoKey, title, onFail }: { demoKey: strin
             {SPEEDS.map((v) => <option key={v} value={v}>{v}×</option>)}
           </select>
         </label>
-        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); write("pna-avatar-voice", v ? "1" : "0"); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: PNA Teacher ki recorded male awaaz" : "Voice: the PNA Teacher reads aloud (recorded male voice)") : "Voice is not available in this browser"} aria-label="Voice">
+        <button type="button" className="s3-btn" onClick={() => { const v = !voice; if (v) unlockAudio(); setVoice(v); }} aria-pressed={voice && voiceOk} disabled={!voiceOk} title={voiceOk ? (ur ? "Awaaz: PNA Teacher ki recorded male awaaz" : "Voice: the PNA Teacher reads aloud (recorded male voice)") : "Voice is not available in this browser"} aria-label="Voice">
           {voice && voiceOk ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
         </button>
         <button type="button" className="s3-btn" onClick={() => setTurn((v) => !v)} aria-pressed={turn} title="Turn the view" aria-label="Turn the view"><Rotate3d className="h-4 w-4" aria-hidden="true" /></button>
