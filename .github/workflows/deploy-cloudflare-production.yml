@@ -382,29 +382,33 @@ jobs:
           done
           echo "::warning::Always Use HTTPS is on but port 80 did not answer with a redirect within 2 minutes; check: curl -sI http://physionexusacademy.com/"
 
-      - name: Keep Encrypted Client Hello on (people on Secure DNS then reach the site without a network filter seeing its name)
+      - name: Encrypted Client Hello - keep the zone at the chosen state (off while Chrome on a provider's automatic DNS is tested; set DESIRED_ECH to on to go back)
         if: steps.auth.outputs.ready == 'true'
         continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Chrome (and other Chromium browsers) use Encrypted Client Hello whenever the site's DNS HTTPS record carries it, and do not fall back to a plain
+          # handshake if that attempt is cut on the way; browsers that do not read the record (Firefox without DNS over HTTPS) connect the ordinary way.
+          # The owner's Chrome (PC and phone) fails on the provider's automatic DNS while other browsers open the site, so ECH is switched off to test this.
+          DESIRED_ECH: "off"
         shell: bash
         run: |
           set -uo pipefail
           api() { curl -sS -m 30 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json" "$@"; }
-          manual() { echo "::warning::$1 Do it by hand: Cloudflare dashboard > physionexusacademy.com > SSL/TLS > Edge Certificates > Encrypted Client Hello > On."; }
+          manual() { echo "::warning::$1 Do it by hand: Cloudflare dashboard > physionexusacademy.com > SSL/TLS > Edge Certificates > Encrypted Client Hello > ${DESIRED_ECH}."; }
           base="https://api.cloudflare.com/client/v4"
           zone_json="$(api "$base/zones?name=physionexusacademy.com&per_page=1" || true)"
           zone_id="$(printf '%s' "$zone_json" | jq -r '.result[0].id // empty' 2>/dev/null || true)"
           if [ -z "$zone_id" ]; then manual "The Cloudflare token cannot read the zone, so Encrypted Client Hello was not checked."; exit 0; fi
           current="$(api "$base/zones/$zone_id/settings/ech" | jq -r '.result.value // "unknown"' 2>/dev/null || echo unknown)"
-          echo "Encrypted Client Hello is currently: $current"
-          if [ "$current" = "on" ]; then exit 0; fi
-          result="$(api -X PATCH "$base/zones/$zone_id/settings/ech" --data '{"value":"on"}' || true)"
+          echo "Encrypted Client Hello is currently: $current (wanted: $DESIRED_ECH)"
+          if [ "$current" = "$DESIRED_ECH" ]; then exit 0; fi
+          result="$(api -X PATCH "$base/zones/$zone_id/settings/ech" --data "{\"value\":\"${DESIRED_ECH}\"}" || true)"
           if [ "$(printf '%s' "$result" | jq -r '.success' 2>/dev/null)" = "true" ]; then
-            echo "Encrypted Client Hello is now on for physionexusacademy.com."
+            echo "Encrypted Client Hello is now ${DESIRED_ECH} for physionexusacademy.com."
           else
             printf '%s' "$result" | jq -c '{success, errors}' 2>/dev/null || true
-            manual "The Cloudflare token could not switch Encrypted Client Hello on."
+            manual "The Cloudflare token could not switch Encrypted Client Hello ${DESIRED_ECH}."
           fi
 
       - name: Smoke test production

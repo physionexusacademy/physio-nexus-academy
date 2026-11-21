@@ -70,9 +70,9 @@ ok(/isBackupHost\(url\.hostname\)/.test(worker) && /return handle\(request, url,
 
 // --- the deploy checks the backup address and keeps the smoke test marker
 const deploy = read(".github/workflows/deploy-cloudflare-production.yml");
-ok(/settings\/ech/.test(deploy) && /Encrypted Client Hello on/.test(deploy), "deploy: keeps Encrypted Client Hello on (Secure DNS users then reach the site without a filter seeing its name)");
+ok(/settings\/ech/.test(deploy) && /DESIRED_ECH: "(?:on|off)"/.test(deploy), "deploy: keeps Encrypted Client Hello at the chosen state (DESIRED_ECH), so a test of it is not undone by the next deploy");
 const monitor = read(".github/workflows/uptime-monitor.yml");
-ok(/DNS of \$name/.test(monitor) && /HTTPS record/.test(monitor) && /ech=/.test(monitor), "monitor: checks that every public resolver answers and the HTTPS record with ECH is published");
+ok(/DNS of \$name/.test(monitor) && /HTTPS record/.test(monitor) && /ech=/.test(monitor), "monitor: checks that every public resolver answers and reports whether the HTTPS record carries ECH");
 ok(/offline-live:/.test(deploy) && deploy.includes("scripts/verify-offline-production.cjs"), "deploy: a real browser checks the offline behaviour on the live site after every release");
 ok(deploy.includes("PNA update-first service worker.") && /physio-nexus-academy\.physionexusacademypk\.workers\.dev/.test(deploy), "deploy: still checks the service worker and now checks the backup address too");
 
