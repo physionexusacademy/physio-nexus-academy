@@ -48,7 +48,7 @@
 .cb-name small { font-size: .78rem; color: #9db4cc; }
 .cb-pts { display: grid; justify-items: end; line-height: 1.1; }
 .cb-pts b { font-size: 1.3rem; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
-.cb-pts small { font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #9db4cc; }
+.cb-pts small { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #9db4cc; }
 
 .cb-skel { background: linear-gradient(90deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .12), rgba(255, 255, 255, .05)); background-size: 200% 100%; animation: cb-shimmer 1.4s linear infinite; border-color: transparent; }
 .cb-empty { display: grid; justify-items: center; gap: 10px; padding: 22px 10px 12px; text-align: center; color: #c4d6e8; font-size: 1rem; line-height: 1.5; }

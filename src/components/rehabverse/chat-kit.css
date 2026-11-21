@@ -39,7 +39,7 @@
 .ck-bubble--me { border-bottom-right-radius: 0.4rem; background: #0a1f3d; color: #fff; }
 /* the question that is waiting for an answer stands out; the small tag is drawn by CSS so it is not part of the message text */
 .ck-bubble[data-now="1"] { border: 2px solid #0db3aa; background: #f4fffe; font-weight: 600; box-shadow: 0 0 0 4px rgba(13, 179, 170, 0.14); }
-.ck-bubble[data-now="1"]::before { content: attr(data-tag); display: block; margin-bottom: 0.2rem; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #0a7a74; }
+.ck-bubble[data-now="1"]::before { content: attr(data-tag); display: block; margin-bottom: 0.2rem; font-size: 11px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #0a7a74; }
 .ck-typing { display: inline-flex; gap: 0.3rem; align-items: center; border: 1px solid #d5e0ea; border-radius: 1.15rem; border-bottom-left-radius: 0.4rem; background: #fff; padding: 0.85rem 1rem; margin: 0; }
 .ck-typing i { height: 0.55rem; width: 0.55rem; border-radius: 9999px; background: #94a3b8; animation: ck-pulse 1s ease-in-out infinite; }
 .ck-typing i:nth-child(2) { animation-delay: 0.15s; }

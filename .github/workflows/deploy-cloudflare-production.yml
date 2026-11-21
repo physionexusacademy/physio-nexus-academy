@@ -142,6 +142,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-groq
 
+      - name: Validate easy touch (44px tap targets, 16px form text, no text under 11px, easy-touch layer loads last)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:easy-touch
+
       - name: Validate the RehabVerse chat screens (every question has an example and tap answers in both languages, every tap is understood, big labelled controls)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-chat-ui

@@ -28,7 +28,7 @@
   border-radius: 9999px;
   background: #eef3f8;
   padding: 0.18rem 0.6rem;
-  font-size: 0.68rem;
+  font-size: 11px;
   font-weight: 700;
   color: #3a4b5f;
 }
@@ -130,7 +130,7 @@
 .rv-hero-day { margin: 10px 0 0; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 5px 12px; font-size: .78rem; font-weight: 800; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); color: #e6f2ff; }
 .rv-hero-day i { width: 8px; height: 8px; border-radius: 50%; background: #2ee6d6; box-shadow: 0 0 0 4px rgba(46, 230, 214, .25); animation: rv-pulse 2s ease-in-out infinite; }
 .rv-hero-side { display: flex; align-items: center; gap: 14px; }
-.rv-hero-ring { display: grid; justify-items: center; gap: 2px; font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #8aa3bd; }
+.rv-hero-ring { display: grid; justify-items: center; gap: 2px; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #8aa3bd; }
 .rv-hero-out { display: inline-flex; align-items: center; gap: 6px; border-radius: 12px; padding: 9px 14px; font-size: .8rem; font-weight: 700; color: #e6f2ff; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .2); transition: background .2s; }
 .rv-hero-out:hover { background: rgba(255, 255, 255, .16); }
 .rv-ring { position: relative; width: 66px; height: 66px; display: grid; place-items: center; }
@@ -138,7 +138,7 @@
 .rv-ring-bg { fill: none; stroke: rgba(255, 255, 255, .14); stroke-width: 5; }
 .rv-ring-fg { fill: none; stroke: #2ee6d6; stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(46, 230, 214, .7)); animation: rv-ring-in 1.2s cubic-bezier(.2, .8, .2, 1) both; }
 .rv-ring b { position: relative; font-size: 1.1rem; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
-.rv-ring small { font-size: .62rem; color: #a9bfd6; }
+.rv-ring small { font-size: 11px; color: #a9bfd6; }
 
 .rv-follow { padding: 1.15rem 1.25rem; border-left: 4px solid #0db3aa; }
 .rv-follow-h { display: flex; align-items: center; gap: 8px; margin: 0; font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #0b7a7a; }
@@ -172,7 +172,7 @@
 .rv-trend[data-verdict="higher"] .rv-trend-line { stroke: #d99a00; filter: drop-shadow(0 4px 6px rgba(217, 154, 0, .35)); }
 .rv-trend-dot { fill: #fff; stroke: #0db3aa; stroke-width: 2.2; }
 .rv-trend-dot[data-last="true"] { fill: #0db3aa; stroke: #fff; stroke-width: 2; filter: drop-shadow(0 0 6px rgba(13, 179, 170, .8)); }
-.rv-trend-lab { font-size: 9.5px; fill: #64748b; }
+.rv-trend-lab { font-size: 11px; fill: #64748b; }
 .rv-trend-nums { margin: 4px 0 0; font-size: 1.5rem; font-weight: 800; color: #0a1f3d; font-variant-numeric: tabular-nums; }
 .rv-trend-nums small { font-size: .74rem; font-weight: 600; color: #64748b; }
 .rv-trend-copy { margin: 6px 0 0; font-size: .95rem; font-weight: 700; color: #0a1f3d; }

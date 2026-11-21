@@ -220,7 +220,7 @@ select {
   color:#345c70;
 }
 .pna-mobile-dock-icon{width:21px;height:21px;stroke-width:2.1}
-.pna-mobile-dock-label{font-size:10px;line-height:1.2;font-weight:850;letter-spacing:-.01em}
+.pna-mobile-dock-label{font-size: 11px;line-height:1.2;font-weight:850;letter-spacing:-.01em}
 .pna-mobile-dock-item.is-active{
   color:#075a66;background:linear-gradient(140deg,#e5f6f3,#f0fbfc);border-color:#cfebe8;
   box-shadow:0 4px 10px -9px rgba(0,104,110,.7);
@@ -235,7 +235,7 @@ select {
 @media(max-width:380px){
   .pna-mobile-dock{left:7px;right:7px;padding:5px}
   .pna-mobile-dock-item{min-height:56px}
-  .pna-mobile-dock-label{font-size:9px}
+  .pna-mobile-dock-label{font-size: 11px}
 }
 /* Skills Lab 3D demonstrations (src/components/skills/Demo3DPlayer.tsx) */
 .d3-btn {

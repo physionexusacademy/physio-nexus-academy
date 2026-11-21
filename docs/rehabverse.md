@@ -291,3 +291,15 @@ Staff login for the local backend: `admin@pna.test` / `AdminPass#2026` (local on
 
 The migration is additive (new `rehab_*` tables, functions and policies only). Apply it with the
 Supabase CLI or the dashboard SQL editor on the main project, then deploy as usual.
+
+## Easy chats and easy touch
+
+The three AI chats (intake, exercise coach, check-in) are built from one kit, `src/components/rehabverse/ChatKit.tsx` (look: `chat-kit.css`).
+Each screen says in one line what will happen, shows three steps (read the question, tap an answer or write, press Send), highlights the question that
+waits for an answer, and offers "Your turn": one instruction, an example, answers to tap and a big box with a big Send button. What is offered for
+each question lives in `src/lib/rehabverse/ai/chat-quick.ts` (English and Roman Urdu). A tap sends the same words a person would type, so
+the assistant reads it like any answer; `npm run validate:rehabverse-chat-ui` proves every tap is understood without any AI service, and that the
+warning-sign taps stop the check-in and tick the matching sign on the form.
+
+The whole site follows `src/app/easy-touch.css` (loaded last): 44px tap targets on phones and tablets, 16px text in form fields, the footer directory in
+two columns on a phone, no text under 11px (12px for words that carry information). `npm run validate:easy-touch` checks it.

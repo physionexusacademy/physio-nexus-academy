@@ -405,7 +405,7 @@ export default function Demo3DPlayer({ demoKey, title, say, onFail }: { demoKey:
               {frame.push ? <ArrowOverlay at={frame.push.at} dir={frame.push.dir} label={spec.kind === "mmt" ? (ur ? "Resist karein" : "Resist") : ur ? "Examiner move karta hai" : "Examiner moves"} tone={spec.kind === "mmt" ? "resist" : "move"} /> : null}
             </svg>
             <div className="pointer-events-none absolute left-2 top-2 max-w-[62%] rounded-xl bg-white/90 px-2.5 py-1 shadow-sm sm:left-2.5 sm:top-2.5 sm:max-w-[70%] sm:rounded-2xl sm:px-3 sm:py-1.5">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-teal-700">{spec.kind === "mmt" ? spec.label ?? "Muscle test" : label}</p>
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-teal-700">{spec.kind === "mmt" ? spec.label ?? "Muscle test" : label}</p>
               <p className="text-xs font-bold leading-4 text-navy-800 sm:text-sm sm:leading-5" aria-live="polite">{phaseText}</p>
             </div>
             {showSay ? (

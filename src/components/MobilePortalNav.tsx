@@ -38,7 +38,7 @@ export function MobilePortalNav() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "pna-mobile-dock-item flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold transition",
+                "pna-mobile-dock-item flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold transition",
                 active
                   ? "is-active text-teal-800"
                   : "text-navy-500 hover:bg-grey-50 hover:text-navy-800"

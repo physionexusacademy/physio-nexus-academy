@@ -95,7 +95,7 @@ export function EditorialBlock({ title, items, icon: Icon }: EditorialBlockProps
             <Icon className="h-5 w-5" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${isSafety ? "text-rose-700" : "text-teal-700"}`}>
+            <p className={`text-[11px] font-bold uppercase tracking-[0.2em] ${isSafety ? "text-rose-700" : "text-teal-700"}`}>
               {isSafety ? "Clinical safety" : isCase ? "Inside the clinic" : isSequence ? "The clinical sequence" : "A closer look"}
             </p>
             <h2 className="mt-1 font-serif text-xl font-bold leading-snug text-slate-900 sm:text-[22px]">
@@ -112,7 +112,7 @@ export function EditorialBlock({ title, items, icon: Icon }: EditorialBlockProps
           <ol className="relative mt-6 border-l border-teal-200 pl-6">
             {lines.map((line, index) => (
               <li key={index} className="relative pb-5 last:pb-0">
-                <span className="absolute -left-[36px] top-0 flex h-6 w-6 items-center justify-center rounded-full border border-teal-200 bg-white text-[10px] font-bold tabular-nums text-teal-800">
+                <span className="absolute -left-[36px] top-0 flex h-6 w-6 items-center justify-center rounded-full border border-teal-200 bg-white text-[11px] font-bold tabular-nums text-teal-800">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <p className="text-[15px] leading-7 text-slate-700">

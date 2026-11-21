@@ -768,12 +768,12 @@ export function AnatomyMiniMap({
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-violet-50/40 p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">
             Structure-specific map
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <p className="text-sm font-bold text-navy-900">{label}</p>
-            <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-500">
+            <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
               {viewLabel}
             </span>
           </div>
@@ -859,7 +859,7 @@ function CueGraphic({ type }: { type: CueType }) {
       <div className="relative flex h-16 items-center justify-center">
         <div className="h-12 w-12 rounded-full border-4 border-violet-300 border-r-transparent shadow-sm" />
         <ArrowDown className="-ml-4 mt-7 h-5 w-5 rotate-45 text-violet-700" />
-        <span className="ml-3 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">
+        <span className="ml-3 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
           ease
         </span>
       </div>
@@ -882,7 +882,7 @@ function CueGraphic({ type }: { type: CueType }) {
         <ArrowLeft className="h-5 w-5 text-violet-600" />
         <div className="h-2 w-20 rounded-full bg-gradient-to-r from-violet-500 via-cyan-400 to-emerald-400 shadow-sm" />
         <ArrowRight className="h-5 w-5 text-emerald-600" />
-        <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-cyan-700">
+        <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-cyan-700">
           slide
         </span>
       </div>
@@ -928,7 +928,7 @@ export function ForceDirectionMiniMap({
     <div className="overflow-hidden rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50/40 p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-cyan-700">
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-cyan-700">
             {cue.title}
           </p>
           <p className="mt-1 text-sm font-bold text-navy-900">{cue.label}</p>
@@ -967,7 +967,7 @@ export function ClinicalCompareStrip({
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <div className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-violet-700">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-violet-700">
           Patient focus
         </p>
         <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
@@ -976,7 +976,7 @@ export function ClinicalCompareStrip({
       </div>
 
       <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-700">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-700">
           Therapist verifies
         </p>
         <p className="mt-2 text-sm font-semibold leading-6 text-navy-800">
@@ -994,7 +994,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
   const endpoint = (label: string, tone: "violet" | "cyan" = "violet") => (
     <span
       className={
-        "flex h-9 min-w-9 items-center justify-center rounded-xl border px-2 text-[10px] font-black uppercase tracking-wide shadow-sm " +
+        "flex h-9 min-w-9 items-center justify-center rounded-xl border px-2 text-[11px] font-black uppercase tracking-wide shadow-sm " +
         (tone === "violet"
           ? "border-violet-200 bg-violet-50 text-violet-800"
           : "border-cyan-200 bg-cyan-50 text-cyan-800")
@@ -1035,12 +1035,12 @@ function ExactDirectionVector({ direction }: { direction: string }) {
       <div className="flex h-20 items-center justify-center gap-5">
         <div className="flex flex-col items-center">
           <ArrowUp className="h-8 w-8 text-violet-700" />
-          <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Superior</span>
+          <span className="text-[11px] font-black uppercase tracking-wide text-violet-700">Superior</span>
         </div>
         <div className="h-14 w-2 rounded-full bg-gradient-to-b from-violet-500 to-cyan-500" />
         <div className="flex flex-col items-center">
           <ArrowDown className="h-8 w-8 text-cyan-700" />
-          <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Inferior</span>
+          <span className="text-[11px] font-black uppercase tracking-wide text-cyan-700">Inferior</span>
         </div>
       </div>
     );
@@ -1050,7 +1050,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
     return (
       <div className="flex h-20 flex-col items-center justify-center">
         <ArrowDown className="h-10 w-10 text-cyan-700" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Inferior</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-cyan-700">Inferior</span>
       </div>
     );
   }
@@ -1059,7 +1059,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
     return (
       <div className="flex h-20 flex-col items-center justify-center">
         <ArrowUp className="h-10 w-10 text-violet-700" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Superior</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-violet-700">Superior</span>
       </div>
     );
   }
@@ -1068,7 +1068,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
     return (
       <div className="flex h-20 items-center justify-center">
         <ArrowRight className="h-11 w-11 -rotate-45 text-violet-700" />
-        <span className="ml-2 text-[10px] font-black uppercase tracking-wide text-violet-700">Posterolateral</span>
+        <span className="ml-2 text-[11px] font-black uppercase tracking-wide text-violet-700">Posterolateral</span>
       </div>
     );
   }
@@ -1078,7 +1078,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
       <div className="flex h-20 items-center justify-center gap-2">
         <ArrowLeft className="h-10 w-10 text-violet-700" />
         <div className="h-2 w-24 rounded-full bg-gradient-to-l from-violet-600 to-cyan-500" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Posterior</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-violet-700">Posterior</span>
       </div>
     );
   }
@@ -1086,7 +1086,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
   if (d.includes("anterior glide") || d.includes("anterior translation")) {
     return (
       <div className="flex h-20 items-center justify-center gap-2">
-        <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Anterior</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-cyan-700">Anterior</span>
         <div className="h-2 w-24 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
         <ArrowRight className="h-10 w-10 text-cyan-700" />
       </div>
@@ -1115,7 +1115,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
       <div className="flex h-20 items-center justify-center gap-2">
         <div className="h-2 w-28 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
         <ArrowRight className="h-10 w-10 text-cyan-700" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-cyan-700">Lateral</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-cyan-700">Lateral</span>
       </div>
     );
   }
@@ -1123,7 +1123,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
   if (d.includes("medial")) {
     return (
       <div className="flex h-20 items-center justify-center gap-2">
-        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Medial</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-violet-700">Medial</span>
         <ArrowLeft className="h-10 w-10 text-violet-700" />
         <div className="h-2 w-28 rounded-full bg-gradient-to-l from-violet-600 to-cyan-500" />
       </div>
@@ -1136,7 +1136,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
         <ArrowLeft className="h-9 w-9 text-violet-700" />
         <div className="h-2 w-24 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
         <ArrowRight className="h-9 w-9 text-cyan-700" />
-        <span className="ml-1 text-[10px] font-black uppercase tracking-wide text-slate-600">Distraction</span>
+        <span className="ml-1 text-[11px] font-black uppercase tracking-wide text-slate-600">Distraction</span>
       </div>
     );
   }
@@ -1145,7 +1145,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
     return (
       <div className="flex h-20 items-center justify-center gap-3">
         <RotateCw className="h-12 w-12 text-violet-700" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Rotation</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-violet-700">Rotation</span>
       </div>
     );
   }
@@ -1154,7 +1154,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
     return (
       <div className="flex h-20 items-center justify-center gap-3">
         <ArrowRight className="h-12 w-12 -rotate-45 text-violet-700" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-violet-700">Diagonal</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-violet-700">Diagonal</span>
       </div>
     );
   }
@@ -1172,7 +1172,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
           <div className="h-8 w-2 rounded-full bg-gradient-to-b from-violet-600 to-cyan-500" />
           <ArrowDown className="h-7 w-7 text-cyan-700" />
         </div>
-        <span className="text-[10px] font-black uppercase tracking-wide text-slate-600">Longitudinal</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-slate-600">Longitudinal</span>
       </div>
     );
   }
@@ -1182,7 +1182,7 @@ function ExactDirectionVector({ direction }: { direction: string }) {
       <div className="flex h-20 items-center justify-center gap-3">
         <ArrowDown className="h-10 w-10 text-violet-700" />
         <div className="h-8 w-8 rounded-full border-4 border-rose-300 bg-rose-100 shadow-[0_0_20px_rgba(244,63,94,0.25)]" />
-        <span className="text-[10px] font-black uppercase tracking-wide text-rose-700">Target load</span>
+        <span className="text-[11px] font-black uppercase tracking-wide text-rose-700">Target load</span>
       </div>
     );
   }
@@ -1209,7 +1209,7 @@ export function TechniqueAnatomyForceVisual({
 
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-700">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-violet-700">
             PNA Clinical Technique Visual
           </p>
           <p className="mt-1 text-sm font-bold text-navy-900">
@@ -1231,12 +1231,12 @@ export function TechniqueAnatomyForceVisual({
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">
+              <p className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-500">
                 Anatomy + target area
               </p>
               <p className="mt-1 text-sm font-bold text-navy-900">{region}</p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-[10px] font-bold text-rose-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-[11px] font-bold text-rose-700">
               <span className="h-2 w-2 rounded-full bg-rose-500" />
               Target / pain-sensitive region
             </span>
@@ -1276,7 +1276,7 @@ export function TechniqueAnatomyForceVisual({
           </div>
 
           <div className="mt-3 rounded-2xl border border-rose-100 bg-rose-50/70 px-3 py-2.5">
-            <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-600">
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-rose-600">
               Primary target
             </p>
             <p className="mt-1 text-sm font-bold leading-5 text-navy-900">{target}</p>
@@ -1285,7 +1285,7 @@ export function TechniqueAnatomyForceVisual({
 
         <div className="rounded-3xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-violet-50 p-4 shadow-sm">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-cyan-700">
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-cyan-700">
               Force / movement vector
             </p>
             <p className="mt-1 text-sm font-bold text-navy-900">
@@ -1298,13 +1298,13 @@ export function TechniqueAnatomyForceVisual({
           </div>
 
           <div className="mt-4 rounded-2xl border border-slate-200 bg-white/90 px-3.5 py-3">
-            <p className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-500">
               Applied direction
             </p>
             <p className="mt-1.5 text-sm font-semibold leading-6 text-navy-800">{direction}</p>
           </div>
 
-          <div className="mt-3 flex items-center gap-2 rounded-xl border border-violet-100 bg-violet-50/70 px-3 py-2 text-[10px] font-semibold leading-4 text-violet-800">
+          <div className="mt-3 flex items-center gap-2 rounded-xl border border-violet-100 bg-violet-50/70 px-3 py-2 text-[11px] font-semibold leading-4 text-violet-800">
             <Crosshair className="h-4 w-4 flex-none" />
             Schematic teaching visual — force vector and target are intentionally simplified for clarity.
           </div>

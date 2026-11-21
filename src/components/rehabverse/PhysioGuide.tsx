@@ -276,7 +276,7 @@ export default function PhysioGuide({ beats, topics = [], lang, autoPlay = true,
             )}
           </div>
         ) : null}
-        <span className="pointer-events-none absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-teal-800 shadow-sm">
+        <span className="pointer-events-none absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.1em] text-teal-800 shadow-sm">
           <Stethoscope className="h-3 w-3" aria-hidden="true" /> {label}
         </span>
         {status === "active" ? (
