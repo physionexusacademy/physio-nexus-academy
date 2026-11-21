@@ -231,21 +231,21 @@ export function VirtualPatientApp() {
           {ready && stage !== "pick" ? (
             <div ref={toolbarRef} className="vp-toolbar absolute inset-x-0 top-0 flex items-center gap-1.5 overflow-x-auto p-3 sm:pointer-events-none sm:flex-wrap sm:overflow-visible">
               {POSITIONS.map(({ id, label, icon: Icon }) => (
-                <button key={id} type="button" onClick={() => changePosition(id)} aria-pressed={position === id} className={"pointer-events-auto inline-flex flex-none items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold backdrop-blur " + (position === id ? "bg-[#2ee6d6] text-[#04263a]" : "bg-[#0a1f3d]/75 text-white hover:bg-[#0a1f3d]")}>
+                <button key={id} type="button" onClick={() => changePosition(id)} aria-pressed={position === id} className={"pointer-events-auto inline-flex flex-none items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold " + (position === id ? "bg-[#2ee6d6] text-[#04263a]" : "bg-[#0a1f3d]/90 text-white hover:bg-[#0a1f3d]")}>
                   <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
                 </button>
               ))}
-              <button type="button" onClick={() => room?.frameCamera()} className="pointer-events-auto inline-flex flex-none items-center gap-1.5 rounded-full bg-[#0a1f3d]/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">
+              <button type="button" onClick={() => room?.frameCamera()} className="pointer-events-auto inline-flex flex-none items-center gap-1.5 rounded-full bg-[#0a1f3d]/90 px-3 py-1.5 text-xs font-bold text-white">
                 <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> View
               </button>
-              <span className="pointer-events-auto order-first inline-flex flex-none items-center gap-1.5 rounded-full bg-[#0a1f3d]/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur sm:order-none sm:ml-auto">
+              <span className="pointer-events-auto order-first inline-flex flex-none items-center gap-1.5 rounded-full bg-[#0a1f3d]/90 px-3 py-1.5 text-xs font-bold text-white sm:order-none sm:ml-auto">
                 <Clock className="h-3.5 w-3.5 text-[#2ee6d6]" aria-hidden="true" />
                 {mode === "osce" && !practice ? `${Math.max(0, Math.floor(remaining / 60))}:${String(Math.max(0, remaining % 60)).padStart(2, "0")} left` : `${elapsedMin} min`}
               </span>
             </div>
           ) : null}
           {identify && stage === "exam" && mode === "guided" ? (
-            <div className="absolute bottom-3 left-3 max-w-xs rounded-2xl bg-[#0a1f3d]/85 p-3 text-xs text-white backdrop-blur" role="status">
+            <div className="absolute bottom-3 left-3 max-w-xs rounded-2xl bg-[#0a1f3d]/92 p-3 text-xs text-white" role="status">
               <p className="text-sm font-bold">{identify.landmark ? identify.landmark.id.replace(/-/g, " ") : identify.region} ({identify.side})</p>
               <p className="mt-0.5 text-[#a9bfd6]">{identify.covered ? "Under the shorts" : [identify.dermatome ? `Dermatome ${identify.dermatome}` : null, identify.nerve ? NERVE_LABEL[identify.nerve] : null].filter(Boolean).join(" · ")}</p>
             </div>

@@ -16,6 +16,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import rig from "./generated/rig.json";
 import { classifySurface, type SurfaceInfo } from "./anatomy";
 import { SOFT_SITES, mirrorProbe, type SkinProbe } from "./points";
+import { RATIOS, ResolutionGovernor } from "./quality";
 
 export type Side = "left" | "right";
 export type PatientPosition = "standing" | "supine" | "prone" | "sitting" | "sidelying";
@@ -343,17 +344,36 @@ export class ExamRoom {
 
   /* ---------------- quality (keeps the picture smooth on weak or very high-resolution screens) ---------------- */
 
-  /** 0 = full, 1 = reduced (lighter shadows, lower resolution), 2 = minimal (no shadows, plain skin shading, 1x resolution). */
-  private qualityTier: 0 | 1 | 2 = 0;
+  /**
+   * The drawing resolution (device pixels per CSS pixel) adapts to the device the way a game's dynamic resolution does: a run of slow frames steps it down at
+   * once, a long clean run steps it up (a good computer then draws with a sharper, smoother-edged picture than its screen alone would need), and a step that
+   * turns out too heavy is taken back and not tried again in this visit. Changing the resolution only resizes the canvas: no shader is rebuilt and no shadow
+   * is switched off, so a change never freezes the picture (the old tiered scheme rebuilt every shader in the middle of the movement, a visible stall on a
+   * real computer). The level that held up is remembered for the next visit, so the picture starts at the right quality straight away.
+   */
+  static readonly RATIO_KEY = "pna-3d-ratio-v1";
+  /** Decides the resolution level (lib/virtual-patient/quality.ts, tested in node); this class only resizes the canvas for the level it names. */
+  private governor = new ResolutionGovernor(4, 5);
+  private lastResortDone = false;
   private keyLight: THREE.DirectionalLight | null = null;
   private lastTick = 0;
   private drewLast = false;
-  private frameEma = 16.7;
-  private slowFrames = 0;
   private onFxChange = () => {
     const lite = typeof document !== "undefined" && document.documentElement.getAttribute("data-fx") === "lite";
-    if (lite && this.qualityTier < 1) this.applyQuality(1);
+    this.governor.setCap(this.ceilingIndex(lite));
+    if (this.governor.level > this.governor.cap) this.setRatioLevel(this.governor.cap, performance.now());
   };
+
+  /** Highest resolution level this device may use: its own pixel density (at least 1.5 so a 1x screen is drawn smoothly), at most 2; 1 in light mode. */
+  private ceilingIndex(lite: boolean) {
+    const device = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
+    return this.levelFor(lite ? 1 : Math.min(2, Math.max(device, 1.5)));
+  }
+  private levelFor(ratio: number) {
+    let index = 0;
+    RATIOS.forEach((r, i) => { if (r <= ratio + 0.001) index = i; });
+    return index;
+  }
 
   private idleAllowed(): boolean {
     if (typeof window === "undefined") return false;
@@ -365,7 +385,7 @@ export class ExamRoom {
     return true;
   }
 
-  /** Called from the render loop at about 11 frames a second while the view is visible and nothing else is moving. */
+  /** Called from the render loop at about 25 frames a second while the view is visible and nothing else is moving (the breathing is slow, so this is smooth). */
   private tickIdle(now: number) {
     const dt = Math.min(0.2, (now - this.idleLast) / 1000);
     this.idleLast = now;
@@ -409,7 +429,11 @@ export class ExamRoom {
 
   constructor(private container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    // Start where this device ended last time (what held up), or at its own density up to 1.5; light mode never goes above 1.
+    const cap = this.ceilingIndex(document.documentElement.getAttribute("data-fx") === "lite");
+    const learned = ExamRoom.learnedRatio();
+    this.governor = new ResolutionGovernor(Math.min(cap, this.levelFor(learned ?? Math.min(window.devicePixelRatio || 1, 1.5))), cap);
+    this.renderer.setPixelRatio(RATIOS[this.governor.level]);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
@@ -432,7 +456,7 @@ export class ExamRoom {
 
     this.buildRoom();
     this.scene.add(this.patientRoot, this.extras);
-    if (document.documentElement.getAttribute("data-fx") === "lite") this.applyQuality(1);
+    this.shadowSizeFor(RATIOS[this.governor.level]);
     window.addEventListener("pna-fx-change", this.onFxChange);
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
@@ -590,6 +614,10 @@ export class ExamRoom {
     this.setPosition("standing", false);
     gltf.scene.visible = true;
     this.invalidate();
+    // shaders and textures are prepared before the first movement, so the opening frames never stall
+    this.warm();
+    // the first moments after loading carry the browser's one-off work, not the cost of the picture: the resolution is not judged during them
+    this.governor.settle(performance.now(), 2500);
   }
 
   /* ---------------- events / render ---------------- */
@@ -611,6 +639,7 @@ export class ExamRoom {
     this.resizeObserver.observe(container);
     this.viewObserver?.observe(container);
     this.inView = true;
+    this.governor.settle(performance.now(), 800);
     this.resize();
   }
 
@@ -629,7 +658,7 @@ export class ExamRoom {
     this.frame = requestAnimationFrame(this.loop);
     const controlsMoved = this.controls.update();
     if (this.tween) this.stepTween(now);
-    else if (this.idleOn && this.inView && !this.needsRender && now - this.idleLast > 90 && typeof document !== "undefined" && document.visibilityState === "visible") this.tickIdle(now);
+    else if (this.idleOn && this.inView && !this.needsRender && now - this.idleLast > 40 && typeof document !== "undefined" && document.visibilityState === "visible") this.tickIdle(now);
     // Nothing is drawn while the stage is scrolled out of view (for more than a moment, so scrolling back never shows an old frame).
     const hidden = !this.inView && now - this.outAt > 300;
     const gap = now - this.lastTick;
@@ -642,52 +671,98 @@ export class ExamRoom {
       drew = true;
     }
     // Only back-to-back drawn frames say how fast the picture is (a pause, or a tab that was away, says nothing).
-    if (drew && this.drewLast && gap > 0 && gap < 1000) this.watchFrameTime(gap);
+    // (only the gaps between two frames drawn one after the other count: a hold, a pause or a hidden tab is not a measurement)
+    if (drew && this.drewLast) {
+      const action = this.governor.frame(gap, now);
+      if (action === "last-resort") this.lastResort();
+      else if (action) this.setRatioLevel(action.level, now, action.trial);
+      if (this.governor.provenLevel !== null) this.rememberRatio();
+    }
     this.drewLast = drew;
   }
 
-  /** While the picture is animating, a run of slow frames lowers the quality one step (never back up in the same visit). */
-  private watchFrameTime(gap: number) {
-    if (this.qualityTier >= 2) return;
-    this.frameEma = this.frameEma * 0.88 + gap * 0.12;
-    if (this.frameEma > 27) this.slowFrames += 1;
-    else this.slowFrames = Math.max(0, this.slowFrames - 2);
-    if (this.slowFrames > 50) {
-      this.slowFrames = 0;
-      this.frameEma = 16.7;
-      this.applyQuality((this.qualityTier + 1) as 1 | 2);
+  /** The resolution level that held up on this device in an earlier visit (null when none, or when it is old). */
+  static learnedRatio(): number | null {
+    try {
+      const raw = window.localStorage.getItem(ExamRoom.RATIO_KEY);
+      if (!raw) return null;
+      const value = JSON.parse(raw) as { r?: number; at?: number };
+      if (typeof value.r === "number" && typeof value.at === "number" && value.r >= 0.6 && value.r <= 2 && Date.now() - value.at < 14 * 24 * 3600 * 1000) return value.r;
+    } catch {
+      /* blocked storage: the default is used */
+    }
+    return null;
+  }
+
+  /** Moves to another resolution level: a canvas resize (and a smaller shadow map at the lowest levels), never a shader rebuild. */
+  private setRatioLevel(index: number, now: number, trial = false) {
+    this.governor.applied(index, now);
+    const ratio = RATIOS[this.governor.level];
+    if (Math.abs(ratio - this.renderer.getPixelRatio()) > 0.01) {
+      this.renderer.setPixelRatio(ratio);
+      this.shadowSizeFor(ratio);
+      this.resize();
+      // drawn in this same frame, so the resized canvas is never shown empty
+      this.renderer.render(this.scene, this.camera);
+      this.needsRender = false;
+    }
+    if (!trial) this.rememberRatio();
+  }
+
+  private rememberRatio() {
+    try {
+      // only a level worth starting from is kept; a very low one may come from a passing slowness (a power-saving screen, a busy moment), so the next visit
+      // starts at the default and steps down by itself within half a second if it really is needed
+      if (RATIOS[this.governor.level] >= 0.9) window.localStorage.setItem(ExamRoom.RATIO_KEY, JSON.stringify({ r: RATIOS[this.governor.level], at: Date.now() }));
+      else window.localStorage.removeItem(ExamRoom.RATIO_KEY);
+    } catch {
+      /* blocked storage */
     }
   }
 
-  private applyQuality(tier: 0 | 1 | 2) {
-    this.qualityTier = tier;
-    const device = window.devicePixelRatio || 1;
-    const ratio = tier === 0 ? Math.min(device, 1.5) : tier === 1 ? Math.min(device, 1.15) : 1;
-    if (Math.abs(ratio - this.renderer.getPixelRatio()) > 0.01) {
-      this.renderer.setPixelRatio(ratio);
-      this.resize();
-    }
+  /** A smaller shadow map at the lowest resolutions (re-allocated on the next draw; no shader is rebuilt). */
+  private shadowSizeFor(ratio: number) {
     const light = this.keyLight;
-    if (light) {
-      const shadows = tier < 2;
-      const size = tier === 0 ? 1024 : 512;
-      light.castShadow = shadows;
-      this.renderer.shadowMap.enabled = shadows;
-      this.renderer.shadowMap.type = tier === 0 ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
-      if (light.shadow.mapSize.x !== size) {
-        light.shadow.mapSize.set(size, size);
-        light.shadow.map?.dispose();
-        light.shadow.map = null;
-      }
-    }
+    if (!light) return;
+    const size = ratio <= 0.75 ? 512 : 1024;
+    if (light.shadow.mapSize.x === size) return;
+    light.shadow.mapSize.set(size, size);
+    light.shadow.map?.dispose();
+    light.shadow.map = null;
+  }
+
+  /**
+   * Even the lowest resolution cannot keep up (a very weak graphics chip): once per visit the shadow and the skin's sheen are switched off. This is the only
+   * place a shader is rebuilt, it happens at most once, and it is far rarer than the old stepwise scheme.
+   */
+  private lastResort() {
+    if (this.lastResortDone) return;
+    this.lastResortDone = true;
+    const light = this.keyLight;
+    if (light) light.castShadow = false;
+    this.renderer.shadowMap.enabled = false;
     const skin = this.skinned?.material as THREE.MeshPhysicalMaterial | undefined;
-    if (skin && "sheen" in skin) skin.sheen = tier === 2 ? 0 : 0.35;
-    // shading programs depend on these settings: rebuild them once
+    if (skin && "sheen" in skin) skin.sheen = 0;
     this.scene.traverse((object) => {
       const material = (object as THREE.Mesh).material;
       if (material) (Array.isArray(material) ? material : [material]).forEach((m) => (m.needsUpdate = true));
     });
     this.invalidate();
+  }
+
+  /**
+   * Builds every shader and uploads the textures now (the shaders off the main thread where the browser allows), so the first frames of a
+   * demonstration never stall while the browser compiles. Safe to call again after something new has been added to the scene.
+   */
+  warm() {
+    if (this.disposed) return;
+    try {
+      const skin = this.skinned?.material as THREE.MeshPhysicalMaterial | undefined;
+      for (const texture of [skin?.map, skin?.bumpMap]) if (texture) this.renderer.initTexture(texture);
+      void this.renderer.compileAsync(this.scene, this.camera).catch(() => undefined);
+    } catch {
+      /* an older browser or a lost context: the first draw compiles as before */
+    }
   }
   private originalMaterials: THREE.Material[] = [];
   dispose() {
@@ -759,8 +834,10 @@ export class ExamRoom {
   }
 
   private stepTween(now: number) {
-    const t = Math.min(1, (now - this.tween!.start) / this.tween!.duration);
-    const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    // (the frame's timestamp can be a hair older than the moment the move was asked for: never run backwards)
+    const t = Math.max(0, Math.min(1, (now - this.tween!.start) / this.tween!.duration));
+    // smootherstep: no jump in speed or in acceleration at either end (the old quadratic ease kicked at its middle), like a person moving
+    const e = t * t * t * (t * (6 * t - 15) + 10);
     const keys = new Set([...Object.keys(this.from), ...Object.keys(this.target)]) as Set<keyof Pose>;
     const blended: Pose = {};
     for (const key of keys) {

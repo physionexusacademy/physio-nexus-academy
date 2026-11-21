@@ -96,6 +96,8 @@ export class TeachingStage {
   ) {
     this.opt = { ...options };
     this.rig = new DoctorRig(doc);
+    // Development hook for motion checks (an `if` on a build-time constant, so none of it is in the production build)
+    if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") (window as unknown as Record<string, unknown>).__pnaStage = this;
     this.doc.speaker.rate = this.opt.speed;
   }
 
@@ -112,6 +114,8 @@ export class TeachingStage {
     const plinth = room.scene.getObjectByName("plinth");
     if (plinth) plinth.visible = choreo.position !== "standing";
     room.scene.add(this.doc.root);
+    // the teacher's shaders and textures are prepared before he starts to move (off the main thread where the browser allows)
+    room.warm();
     if (this.opt.light) {
       room.patientRoot.visible = false;
       if (plinth) plinth.visible = false;
@@ -443,7 +447,8 @@ export class TeachingStage {
 
   private emit(force: boolean) {
     const now = performance.now();
-    if (!force && now - this.lastView < 33) return;
+    // about 60 a second: the overlay lines must follow the moving body without stepping (the page around the picture is only re-rendered when it changes, see AvatarStage)
+    if (!force && now - this.lastView < 15) return;
     this.lastView = now;
     const step = this.choreo.steps[Math.max(0, this.index)];
     const total = this.choreo.steps.length;

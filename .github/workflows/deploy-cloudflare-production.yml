@@ -146,6 +146,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:motion
 
+      - name: Validate smooth 3D (resolution adapts without rebuilding shaders, shaders ready before the first movement, no blur over the canvas, the guide and overlays at the screen's rate, the Teacher moves like a person)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:3d-smooth
+
+      - name: Validate the 3D resolution governor (climbs on a fast device, settles on a medium one, drops on a slow one, ignores one stall)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:3d-governor
+
       - name: Validate easy touch (44px tap targets, 16px form text, no text under 11px, easy-touch layer loads last)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:easy-touch

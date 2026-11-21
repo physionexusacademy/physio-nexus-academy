@@ -36,6 +36,13 @@ export class DoctorRig {
   walkSpeed = 0.95;
   private phase = 0;
   walking = false;
+  /** Current walking speed (m/s): he eases into a walk and out of it, as a person does, instead of starting and stopping dead. */
+  private speed = 0;
+  /** How much of a stride the legs and arms show, 0 (standing) to 1 (walking at full pace): follows the speed, so a step never pops in or out. */
+  private gait = 0;
+  /** The head turn and nod as drawn last frame (degrees): it eases towards what he is looking at, so a new look is never a snap. */
+  private headYawShown = 0;
+  private headPitchShown = 0;
 
   lean = 0;
   leanTarget = 0;
@@ -77,7 +84,7 @@ export class DoctorRig {
     for (let i = 0; i <= 4; i++) {
       f.root.position.set(0, 0, 0);
       f.root.rotation.set(0, 0, 0);
-      f.setPose(this.basePose(i / 4, 0, "none", 0, false));
+      f.setPose(this.basePose(i / 4, 0, "none", 0, 0));
       f.root.updateMatrixWorld(true);
       f.mesh.computeBoundingBox();
       const box = f.mesh.boundingBox!.clone().applyMatrix4(f.mesh.matrixWorld);
@@ -98,6 +105,8 @@ export class DoctorRig {
     this.goal = null;
     this.faceYaw = null;
     this.walking = false;
+    this.speed = 0;
+    this.gait = 0;
   }
 
   /** Walks to (x, z), then turns to face `finalYaw`. */
@@ -128,31 +137,31 @@ export class DoctorRig {
   }
 
   /** The pose before IK: stance (knees), lean, gesture and gait. */
-  private basePose(crouch: number, lean: number, gesture: Gesture, t: number, walking: boolean, since = 0): Pose {
+  private basePose(crouch: number, lean: number, gesture: Gesture, t: number, gait: number, since = 0): Pose {
     const pose: Pose = {};
-    const swing = walking ? Math.sin(this.phase) : 0;
-    const hipFlex = (side: 1 | -1) => (walking ? 26 * swing * side : 0) + 46 * crouch;
-    const kneeFlex = (side: 1 | -1) => (walking ? 34 * Math.max(0, Math.sin(this.phase * side + 1.1)) + 6 : 0) + 78 * crouch;
+    const swing = gait * Math.sin(this.phase);
+    const hipFlex = (side: 1 | -1) => 26 * swing * side + 46 * crouch;
+    const kneeFlex = (side: 1 | -1) => gait * (34 * Math.max(0, Math.sin(this.phase * side + 1.1)) + 6) + 78 * crouch;
     pose["hip.left"] = { flex: hipFlex(1) };
     pose["hip.right"] = { flex: hipFlex(-1) };
     pose["knee.left"] = { flex: kneeFlex(1) };
     pose["knee.right"] = { flex: kneeFlex(-1) };
     pose["ankle.left"] = { flex: 24 * crouch };
     pose["ankle.right"] = { flex: 24 * crouch };
-    const armSwing = walking ? 14 * swing : 0;
+    const armSwing = 14 * swing;
     // arms: the natural gesture for what he is doing (calm, open hands, care, a presenting palm, a wave), with the walking swing added
     const arms = P("right", gestureParts(NATURAL[gesture], t, this.talk, since));
     for (const key of ARM_KEYS) {
       const angles = arms[key] as JointAngles | undefined;
       if (angles) pose[key] = { ...angles };
     }
-    if (walking) {
+    if (gait > 0.001) {
       pose["shoulder.left"] = { ...pose["shoulder.left"], flex: (pose["shoulder.left"]?.flex ?? 3) + armSwing };
       pose["shoulder.right"] = { ...pose["shoulder.right"], flex: (pose["shoulder.right"]?.flex ?? 3) - armSwing };
     }
     pose["hand.left"] = { flex: this.hands.L ? GRIP[this.hands.L.shape] : arms["hand.left"]?.flex ?? 12 };
     pose["hand.right"] = { flex: this.hands.R ? GRIP[this.hands.R.shape] : arms["hand.right"]?.flex ?? 12 };
-    pose.trunk = { flex: lean + (walking ? 1.5 : 0.8 * Math.sin(t * 1.4)), rot: walking ? 3 * swing : 0 };
+    pose.trunk = { flex: lean + 1.5 * gait + (1 - gait) * 0.8 * Math.sin(t * 1.4), rot: 3 * swing };
     pose.neck = { flex: 0 };
     return { ...pose, ...this.extra };
   }
@@ -182,7 +191,7 @@ export class DoctorRig {
     const f = this.figure;
     f.root.position.y = this.groundY(crouch);
     f.root.updateMatrixWorld(true);
-    f.setPose(this.basePose(crouch, lean, "none", 0, false));
+    f.setPose(this.basePose(crouch, lean, "none", 0, 0));
     return bonePosition(f, `upperarm01.${side}`);
   }
 
@@ -233,22 +242,30 @@ export class DoctorRig {
     if (this.goal) {
       const dx = this.goal.x - this.x, dz = this.goal.z - this.z;
       const dist = Math.hypot(dx, dz);
-      if (dist < 0.02) {
+      if (dist < 0.006) {
         this.x = this.goal.x;
         this.z = this.goal.z;
         this.goal = null;
+        this.speed = 0;
       } else {
         const heading = Math.atan2(dx, dz);
         this.yaw += angleDelta(this.yaw, heading) * (1 - Math.exp(-9 * dt));
-        const step = Math.min(dist, this.walkSpeed * dt * (Math.abs(angleDelta(this.yaw, heading)) < 0.7 ? 1 : 0.25));
+        // pace: slower while he is still turning towards the goal, and braking so that he can stop there (v² = 2·a·d); the speed eases towards it
+        const turning = Math.abs(angleDelta(this.yaw, heading)) < 0.7 ? 1 : 0.25;
+        const wanted = Math.min(this.walkSpeed * turning, Math.sqrt(2 * 1.1 * dist));
+        // he speeds up gently (about a fifth of a second) but brakes promptly, so that the speed follows the stopping curve down to the goal
+        this.speed += (wanted - this.speed) * (1 - Math.exp(-(wanted < this.speed ? 18 : 5) * dt));
+        const step = Math.min(dist, this.speed * dt);
         this.x += (dx / dist) * step;
         this.z += (dz / dist) * step;
-        this.phase += (2 * Math.PI * this.walkSpeed * dt) / 1.4;
+        this.phase += (2 * Math.PI * this.speed * dt) / 1.4;
         this.walking = true;
       }
     } else if (this.faceYaw !== null) {
       this.yaw += angleDelta(this.yaw, this.faceYaw) * (1 - Math.exp(-6 * dt));
     }
+    // the stride follows the pace, so a step never pops in or out
+    this.gait = damp(this.gait, this.walking ? Math.min(1, this.speed / 0.55) : 0, 8, dt);
     this.lean = damp(this.lean, this.leanTarget, 4, dt);
     this.crouch = damp(this.crouch, this.crouchTarget, 4, dt);
     for (const side of ["L", "R"] as Side[]) this.weight[side] = damp(this.weight[side], this.hands[side] ? 1 : 0, 5, dt);
@@ -260,25 +277,30 @@ export class DoctorRig {
 
     // Head and eyes follow what he is looking at (uses last frame's head position: one frame of lag is invisible).
     const face = this.doc.face;
+    // The head eases towards what he looks at (the eyes get there first, then the head follows, as in a person), so a new look is never a snap.
+    let yawGoal = 0;
+    let pitchGoal = 0;
+    let gazeGoal = { x: 0, y: 0 };
     if (this.lookAt) {
       const head = bonePosition(f, "head");
       const local = this.toSpace(this.lookAt).sub(head);
       const yaw = Math.atan2(local.x, local.z) / DEG;
       const pitch = Math.atan2(local.y, Math.hypot(local.x, local.z)) / DEG;
-      face.headYaw = Math.max(-45, Math.min(45, yaw)) * 0.6;
-      face.headPitch = -Math.max(-25, Math.min(25, pitch)) * 0.5;
-      face.gaze = { x: Math.max(-1, Math.min(1, (yaw - face.headYaw) / 25)), y: Math.max(-1, Math.min(1, (pitch + face.headPitch) / 18)) };
-    } else {
-      face.headYaw = 0;
-      face.headPitch = 0;
-      face.gaze = { x: 0, y: 0 };
+      yawGoal = Math.max(-45, Math.min(45, yaw)) * 0.6;
+      pitchGoal = -Math.max(-25, Math.min(25, pitch)) * 0.5;
+      gazeGoal = { x: Math.max(-1, Math.min(1, (yaw - this.headYawShown) / 25)), y: Math.max(-1, Math.min(1, (pitch + this.headPitchShown) / 18)) };
     }
+    this.headYawShown = damp(this.headYawShown, yawGoal, 6, dt);
+    this.headPitchShown = damp(this.headPitchShown, pitchGoal, 6, dt);
+    face.headYaw = this.headYawShown;
+    face.headPitch = this.headPitchShown;
+    face.gaze = gazeGoal;
     if (this.gesture === "nod") {
       this.nodClock += dt;
       face.headPitch += 9 * Math.abs(Math.sin(this.nodClock * 3.2));
     }
     if (this.gesture !== this.gestureSeen) { this.gestureSeen = this.gesture; this.gestureStart = t; }
-    f.setPose(this.smoothArms(this.basePose(this.crouch, this.lean, this.gesture, t, this.walking, t - this.gestureStart), dt));
+    f.setPose(this.smoothArms(this.basePose(this.crouch, this.lean, this.gesture, t, this.gait, t - this.gestureStart), dt));
 
     // Hands on the patient.
     this.reachError = 0;
