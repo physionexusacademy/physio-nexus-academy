@@ -1,6 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { callClaude, claudeEnabled } from "@/lib/rehabverse/ai/claude";
 import { callChat, externalChain } from "@/lib/rehabverse/ai/model";
+import { groqLastFailure } from "@/lib/rehabverse/ai/groq";
 import { buildGroundedMessages, guardGroundedAnswer, type GroundedSource } from "@/lib/pna-ai/grounded";
 import { pnaLearningResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
 import { think, type BrainContext, type BrainProfile, type BrainResult } from "@/lib/pna-ai/brain";
@@ -182,12 +183,12 @@ async function buildExplanation(request: Request, result: BrainResult): Promise<
  * up, when the question is an emergency, about the person's own symptoms, or not matched with enough confidence, when the service is slow or
  * down, or when the answer breaks a rule. The Workers AI chain is not used here: a weak model would answer from its own knowledge.
  */
-async function groundedAnswer(query: string, result: BrainResult, facts: string | null): Promise<string | null> {
+async function groundedAnswer(query: string, result: BrainResult, facts: string | null): Promise<{ text: string | null; status: string }> {
   try {
-    if (result.safety || result.confidence === "low" || !result.resources.length) return null;
-    if ((result.intents ?? []).includes("patient")) return null;
+    if (result.safety || result.confidence === "low" || !result.resources.length) return { text: null, status: "skipped" };
+    if ((result.intents ?? []).includes("patient")) return { text: null, status: "skipped" };
     const models = externalChain();
-    if (!models.length) return null;
+    if (!models.length) return { text: null, status: "no-service" };
     const sources: GroundedSource[] = result.resources.slice(0, 3).map((resource, i) => ({
       title: resource.title,
       summary: resource.summary,
@@ -195,12 +196,15 @@ async function groundedAnswer(query: string, result: BrainResult, facts: string 
     }));
     const messages = buildGroundedMessages({ question: query, lang: result.lang, sources });
     const answer = await callChat(messages, { models, maxTokens: 700, temperature: 0.3, timeoutMs: 9000 });
-    if (!answer) return null;
+    if (!answer) {
+      const failure = groqLastFailure();
+      return { text: null, status: failure ? `unavailable:${failure.reason}${failure.status ? `:${failure.status}` : ""}` : "unavailable" };
+    }
     const guarded = guardGroundedAnswer({ answer: answer.text, sources, lang: result.lang });
     if (!guarded.ok) console.error("PNA_AI_GROUNDED_REJECTED", guarded.reason);
-    return guarded.ok ? guarded.text : null;
+    return guarded.ok ? { text: guarded.text, status: "written" } : { text: null, status: `rejected:${guarded.reason}` };
   } catch {
-    return null;
+    return { text: null, status: "error" };
   }
 }
 
@@ -297,10 +301,12 @@ export async function POST(request: Request) {
 
   // A natural answer written from PNA's own content (only when a service is set up and every guard passes); the fixed answer above is the fallback.
   const written = await groundedAnswer(query, result, extra ? explanationText(extra.explanation) : null);
-  if (written) source = "pna-brain+ai-written";
+  if (written.text) source = "pna-brain+ai-written";
 
   const responseBody = {
-    message: written ?? message,
+    message: written.text ?? message,
+    // why the written answer is or is not there (a short code: skipped, no-service, unavailable:<reason>:<status>, rejected:<check>, written)
+    ai: written.status,
     explanation: extra?.explanation ?? null,
     explanationOpen: extra?.open ?? false,
     lang: result.lang,

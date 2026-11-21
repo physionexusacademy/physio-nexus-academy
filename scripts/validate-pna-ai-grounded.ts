@@ -75,11 +75,12 @@ const sources: GroundedSource[] = [
   const route = read("src/app/api/physio-nexus-ai/route.ts");
   const fn = route.slice(route.indexOf("async function groundedAnswer"), route.indexOf("function getClientKey"));
   ok(/result\.safety \|\| result\.confidence === "low" \|\| !result\.resources\.length/.test(fn), "an emergency, an unmatched question or no content never reaches the model");
-  ok(/includes\("patient"\)\) return null/.test(fn), "a question about the person's own symptoms never reaches the model (the site's fixed, reviewed answer is shown)");
-  ok(/externalChain\(\)/.test(fn) && /if \(!models\.length\) return null/.test(fn), "only the keyed services write answers (never the free Workers AI models), and with no key nothing changes");
-  ok(/guardGroundedAnswer\(/.test(fn) && /guarded\.ok \? guarded\.text : null/.test(fn), "an answer that fails a guard is dropped: the fixed answer is shown");
-  ok(/message: written \?\? message/.test(route), "the written answer replaces the fixed message only when it passed; cards, links and suggestions stay");
+  ok(/includes\("patient"\)\) return \{ text: null, status: "skipped" \}/.test(fn), "a question about the person's own symptoms never reaches the model (the site's fixed, reviewed answer is shown)");
+  ok(/externalChain\(\)/.test(fn) && /if \(!models\.length\) return \{ text: null, status: "no-service" \}/.test(fn), "only the keyed services write answers (never the free Workers AI models), and with no key nothing changes");
+  ok(/guardGroundedAnswer\(/.test(fn) && /guarded\.ok \? \{ text: guarded\.text, status: "written" \}/.test(fn), "an answer that fails a guard is dropped: the fixed answer is shown");
+  ok(/message: written\.text \?\? message/.test(route), "the written answer replaces the fixed message only when it passed; cards, links and suggestions stay");
   ok(/timeoutMs: 9000/.test(fn), "the call has a short timeout");
+  ok(/ai: written\.status/.test(route) && /unavailable:\$\{failure\.reason\}/.test(fn) && /rejected:\$\{guarded\.reason\}/.test(fn), "the response says why a written answer is or is not there (a short code: skipped, no-service, unavailable:<reason>:<status>, rejected:<check>, written), never a key or a message");
 }
 
 console.log(`PNA AI written answers: ${checks} checks passed (prompt: sources only, language of the question, injection stays in the question; refused: wrong language, numbers, medicines, links, diagnosis, leaks, off-topic; used only where safe).`);
