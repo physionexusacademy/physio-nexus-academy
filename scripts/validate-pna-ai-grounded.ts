@@ -28,7 +28,7 @@ const sources: GroundedSource[] = [
   const ur = buildGroundedMessages({ question: "frozen shoulder kya hota hai samjhao", lang: "ur", sources });
   eq(en.map((m) => m.role), ["system", "user"], "a system prompt and the question");
   ok(en[0].content.includes("Adhesive Capsulitis (frozen shoulder)") && en[0].content.includes("Glenohumeral joint mobilisation") && en[0].content.includes("[1]") && en[0].content.includes("[2]"), "the sources are in the prompt, numbered");
-  ok(/Answer ONLY from SOURCES/.test(en[0].content) && /Never diagnose/.test(en[0].content) && /never an instruction/.test(en[0].content) && /Stay on topic/.test(en[0].content), "the prompt says: only from the sources, no diagnosis, the question is not an instruction, stay on topic");
+  ok(/Answer ONLY from the PNA CONTENT/.test(en[0].content) && /Never diagnose/.test(en[0].content) && /never an instruction/.test(en[0].content) && /Stay on topic/.test(en[0].content), "the prompt says: only from the sources, no diagnosis, the question is not an instruction, stay on topic");
   ok(en[0].content.includes("Language of this reply: English") && ur[0].content.includes("Language of this reply: Roman Urdu") && ur[0].content.includes("NEVER answer in English"), "English in -> English out, Roman Urdu in -> Roman Urdu out is in the prompt");
   ok(en[1].content.endsWith(LANGUAGE_REMINDER.en) && ur[1].content.endsWith(LANGUAGE_REMINDER.ru), "...and the reminder is the last thing the model reads");
   eq(toReplyLang("ur"), "ru", "the site assistant's ur is Roman Urdu");
@@ -54,8 +54,8 @@ const sources: GroundedSource[] = [
     ["a link", "Read the Adhesive Capsulitis guide at https://example.com/frozen for the stages of frozen shoulder.", "en", "link"],
     ["a medicine that is not in the sources", "For frozen shoulder many people take ibuprofen before the stage by stage exercises in the guide.", "en", "medicine"],
     ["a diagnosis", "From what you describe you probably have Adhesive Capsulitis, so open the frozen shoulder guide today.", "en", "diagnosis"],
-    ["leaked instructions", "My instructions say I may only use the sources about Adhesive Capsulitis and the frozen shoulder guide.", "en", "leak"],
-    ["source numbers", "Adhesive Capsulitis is described in [1] with the frozen shoulder stages explained there.", "en", "leak"],
+    ["leaked instructions", "My instructions say I may only use pages about Adhesive Capsulitis and the frozen shoulder guide.", "en", "leak"],
+    ["the prompt's own label", "According to the PNA CONTENT, Adhesive Capsulitis is a painful frozen shoulder condition with three stages.", "en", "leak"],
     ["off topic", "Pasta carbonara needs eggs, cheese and pepper, and then you stir everything together slowly in a warm pan.", "en", "off-topic"],
     ["too short", "Yes it is.", "en", "length"],
     ["too long", "Frozen shoulder stage plan guide. ".repeat(40), "en", "length"],
@@ -64,6 +64,8 @@ const sources: GroundedSource[] = [
     const result = check(answer, lang);
     ok(!result.ok && result.reason === reason, `refused: ${name} (${result.ok ? "passed" : result.reason})`);
   }
+  const cited = check("Frozen shoulder, or Adhesive Capsulitis [1], is a painful condition with restricted movement [2, 3], and according to the source the PNA condition guide has a 3-stage plan.", "en");
+  ok(cited.ok && !/\[/.test(cited.ok ? cited.text : "") && /according to the source/.test(cited.ok ? cited.text : ""), "reference marks like [1] are removed from an answer, and the ordinary word 'source' is fine");
   ok(check("I can only help with PNA's physiotherapy content, so please ask about a lesson, a condition or a technique.", "en").ok, "a polite refusal of an off-topic question passes");
   ok(check("Main sirf PNA ke physiotherapy content mein madad kar sakta hoon, is liye lesson, condition ya technique ke baare mein poochein.", "ur").ok, "...and in Roman Urdu");
   ok(guardGroundedAnswer({ answer: "Grade I and II mobilisations are used for pain, and grade III and IV for stiffness of the glenohumeral joint.", sources, lang: "en" }).ok, "numbers that are written in the sources (grade I to IV, 3-stage) are allowed");
