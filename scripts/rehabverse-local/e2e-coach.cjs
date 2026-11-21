@@ -46,10 +46,15 @@ async function register(page, who) {
   await page.goto(`${BASE}/rehabverse/register`);
   await page.fill("#full_name", who.name);
   await page.fill("#age_years", "41");
+  await page.fill("#phone", "0300 1234567");
   await page.fill("#email", who.email);
   await page.fill("#password", who.password);
   await page.check("input[name=consent]");
-  await page.getByRole("button", { name: "Create my account" }).click();
+  await page.getByRole("button", { name: "Send my account request" }).click();
+  await page.waitForURL(/\/rehabverse\/pending/, { timeout: 90000 });
+  // the clinic approves the request (a new account waits for it): done in the local database
+  await devSql("update public.rehab_patients set status = 'active', decided_at = now() where user_id = (select id from auth.users where email = $1)", [who.email]);
+  await page.goto(`${BASE}/rehabverse/start`);
   await page.waitForURL(/\/rehabverse\/start/, { timeout: 90000 });
 }
 

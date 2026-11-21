@@ -81,12 +81,39 @@ const stranger = await makeUser("nobody@pna.test"); // signed in, never register
 await fails(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 17, consent: true } }, /under_18/, "under-18s are routed to the clinic");
 await fails(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 30, consent: false } }, /consent/, "consent is required");
 await fails(admin, "rehab_register_patient", { p_payload: { full_name: "Dr Test", age_years: 40, consent: true } }, /staff accounts/, "staff cannot become patients");
-const aliceReg = await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 30, sex: "female", city: "Karachi", consent: true, consent_version: "v1" } });
+const aliceReg = await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 30, sex: "female", city: "Karachi", phone: "0300 1234567", consent: true, consent_version: "v1" } });
 ok(/^RV-[A-Z0-9]{6}$/.test(aliceReg.reference_code), "reference code issued");
-const again = await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice K. Khan", age_years: 30, consent: true } });
+const again = await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice K. Khan", age_years: 30, phone: "0300 1234567", consent: true } });
 eq(again.id, aliceReg.id, "registering twice does not create a duplicate patient");
 eq((await sql("select count(*)::int n from rehab_patients where user_id = $1", [alice.sub]))[0].n, 1, "one patient row per account");
-const bobReg = await rpc(bob, "rehab_register_patient", { p_payload: { full_name: "Bob Ali", age_years: 45, consent: true } });
+const bobReg = await rpc(bob, "rehab_register_patient", { p_payload: { full_name: "Bob Ali", age_years: 45, phone: "0321 7654321", consent: true } });
+
+/* ----------------------------- 1a. account approval: a new account is a request the clinic decides ----------------------------- */
+eq(aliceReg.status, "pending", "a new account starts as a pending request");
+eq((await rpc(alice, "rehab_my_overview", {})).patient.status, "pending", "the patient sees that the request is waiting");
+await fails(alice, "rehab_submit_assessment", { p_payload: { client_token: "11111111-1111-1111-1111-111111111111", regions: ["knee"], symptoms: ["pain"], pain_now: 3, red_flags: [] } }, /patient profile required/, "a pending account cannot submit an assessment");
+await fails(alice, "rehab_my_history", {}, /patient profile required/, "a pending account cannot read clinical history");
+await fails(alice, "rehab_admin_registrations", {}, /not authorised/, "a patient cannot see the waiting requests");
+await fails(alice, "rehab_admin_decide_patient", { p_patient_id: aliceReg.id, p_decision: "approve" }, /not authorised/, "a patient cannot approve herself");
+await rowsFail(alice, `update rehab_patients set status = 'active' where id = '${aliceReg.id}'`, /permission denied/, "patients cannot write their own status");
+const waiting = await rpc(admin, "rehab_admin_registrations", {});
+eq(waiting.pending.map((p) => p.id).sort(), [aliceReg.id, bobReg.id].sort(), "the admin sees both waiting requests");
+ok(waiting.pending.every((p) => p.phone && p.email === undefined || p.phone), "each request carries the phone number the clinic checks");
+eq((await sql("select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'registration'"))[0].n, 2, "the clinic is told once per new request (a repeat sign-up does not notify again)");
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'patient.registration_requested'"))[0].n === 2, "each request is in the audit log");
+await fails(admin, "rehab_admin_decide_patient", { p_patient_id: aliceReg.id, p_decision: "maybe" }, /unknown decision/, "only approve or reject exist");
+const rejected = await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: bobReg.id, p_decision: "reject", p_note: "Could not verify the phone number" });
+eq(rejected.status, "rejected", "the admin can reject a request");
+const bobOverview = (await rpc(bob, "rehab_my_overview", {})).patient;
+eq([bobOverview.status, bobOverview.decision_note], ["rejected", "Could not verify the phone number"], "the person reads the reason");
+await fails(bob, "rehab_my_history", {}, /patient profile required/, "a rejected account stays locked out");
+const approvedBob = await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: bobReg.id, p_decision: "approve" });
+eq(approvedBob.status, "active", "a rejected request can be approved later");
+eq((await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: aliceReg.id, p_decision: "approve", p_note: "Phone verified" })).status, "active", "the admin approves");
+await fails(admin, "rehab_admin_decide_patient", { p_patient_id: aliceReg.id, p_decision: "reject" }, /not waiting for a decision/, "an active account cannot be rejected by mistake");
+ok((await sql("select count(*)::int n from rehab_audit_log where action in ('patient.approve', 'patient.reject')"))[0].n === 3, "every decision is in the audit log");
+eq((await rpc(admin, "rehab_admin_registrations", {})).pending, [], "nothing is waiting after the decisions");
+eq((await rpc(alice, "rehab_my_overview", {})).patient.status, "active", "the approved person is active");
 
 /* ----------------------------- 1b. the AI-assistance switch (default off, ONLY the admin decides) ----------------------------- */
 const myAi = async (claims) => (await rpc(claims, "rehab_my_overview", {})).patient.ai_assist;
@@ -94,7 +121,8 @@ eq(await myAi(alice), "off", "AI assistance is OFF by default");
 eq(await rpc(alice, "rehab_ai_enabled", {}), false, "the server check says no while it is off");
 eq(await rpc(stranger, "rehab_ai_enabled", {}), false, "an unregistered account never gets AI");
 const carol = await makeUser("carol@pna.test");
-await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, consent: true, ai_requested: true, ai_assist: "on" } });
+const carolReg = await rpc(carol, "rehab_register_patient", { p_payload: { full_name: "Carol Shah", age_years: 33, phone: "0333 1112223", consent: true, ai_requested: true, ai_assist: "on" } });
+await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: carolReg.id, p_decision: "approve" });
 eq(await myAi(carol), "off", "nothing a patient sends at sign-up can switch AI on or request it");
 ok((await sql("select count(*)::int n from rehab_notifications where kind = 'ai_requested'"))[0].n === 0, "there is no patient request to answer");
 await fails(alice, "rehab_patient_ai_choice", { p_want: true }, /Could not find|does not exist|permission denied/i, "patients have no function to ask for, turn on or turn off AI");
@@ -109,8 +137,9 @@ eq(listed.find((p) => p.id === aliceReg.id).ai_assist, "off", "the admin sees th
 eq(await rpc(admin, "rehab_admin_set_ai_assist", { p_patient_id: aliceReg.id, p_enabled: true }), { ai_assist: "on" }, "the admin turns it on");
 eq(await rpc(alice, "rehab_ai_enabled", {}), true, "the server check now says yes");
 eq(await rpc(bob, "rehab_ai_enabled", {}), false, "other patients are unaffected");
-await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice K. Khan", age_years: 30, consent: true } });
+await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice K. Khan", age_years: 30, phone: "0300 1234567", consent: true } });
 eq(await myAi(alice), "on", "updating the profile never touches the switch");
+eq((await rpc(alice, "rehab_my_overview", {})).patient.status, "active", "updating the profile never changes the approval");
 ok((await rows(alice, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'ai_assist'"))[0].n === 1, "the patient is told it was switched on");
 
 /* ----------------------------- 1c. stored AI conversations (server-only writes, only while the switch is on) ----------------------------- */

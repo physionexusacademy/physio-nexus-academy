@@ -117,3 +117,13 @@ export async function setAiPilotAction(input: { maxPatients: number; openToAll: 
     return { ok: true };
   } catch (e) { return fail(e); }
 }
+
+/** Approve or reject a new account request. The database refuses anyone who is not staff and writes the decision to the audit log. */
+export async function decideRegistrationAction(patientId: string, decision: "approve" | "reject", note?: string): Promise<Result<{ status: string; phone: string | null; fullName: string; language: "en" | "ru" }>> {
+  try {
+    const r = await rpc<{ status: string; phone: string | null; full_name: string; preferred_language: "en" | "ru" }>("rehab_admin_decide_patient", {
+      p_patient_id: patientId, p_decision: decision, p_note: (note ?? "").trim().slice(0, 500) || null,
+    });
+    return { ok: true, status: r.status, phone: r.phone, fullName: r.full_name, language: r.preferred_language };
+  } catch (e) { return fail(e); }
+}

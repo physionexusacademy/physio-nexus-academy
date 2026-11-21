@@ -205,12 +205,22 @@ fired rule wins. They are **predefined, not clinically validated**, and each sug
 rules that fired, what was found, which check-ins are missing and a disclaimer. The supervising
 physiotherapist should read and adopt (or change) them before patient use.
 
+## Account approval (26 Nov 2026)
+
+A new RehabVerse account is a request the clinic approves; no confirmation e-mail is sent.
+
+* `registerAction` (server) creates the sign-in with the service role (`auth.admin.createUser`, already confirmed), signs the person in, and calls `rehab_register_patient`, which creates the patient with `status = 'pending'` and notifies the clinic (audit log + admin notification + a plain e-mail alert without details). A **phone number is required**: the clinic checks it by phone or WhatsApp.
+* Every patient function already requires `status = 'active'` (`rehab__require_patient`), so a pending or rejected account can do nothing; `requirePatient()` sends it to `/rehabverse/pending`, which polls every 20 s and moves on when approved.
+* The clinician inbox has an **Account requests** card (approve, or reject with a reason the person reads; "Tell them on WhatsApp" after approving). `rehab_admin_registrations()` lists the waiting requests, `rehab_admin_decide_patient()` decides and writes `patient.approve` / `patient.reject` to the audit log.
+* Migration `20261126120000_rehab_account_approval.sql` must be applied to the database **before** the code that needs it is deployed (the guard treats a missing status as active, so the old database keeps working). Old accounts stay active.
+* Without e-mail verification anyone can type someone else's address; the clinic's phone check is the control, and password-reset e-mails still prove ownership of an address.
+
 ## Content review checklist (owner action)
 
 * Every exercise (indications, contraindications, dosage, progressions, references) is a **draft**.
   The supervising physiotherapist should review the library, especially dosage and precautions.
 * References are widely cited guidelines; confirm each before relying on it.
-* Supabase Auth: confirm sign-up / e-mail confirmation / SMTP settings, and enable leaked-password protection.
+* Supabase Auth: enable leaked-password protection. RehabVerse sign-ups do not use e-mail confirmation any more (see "Account approval"); SMTP settings still matter for password-reset e-mails.
 * Confirm the emergency number text in the guide (1122 is used as an example for much of Pakistan).
 
 ## How an exercise is shown (poses, contact, voice)

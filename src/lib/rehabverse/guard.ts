@@ -6,8 +6,8 @@ import type { Overview, PatientSummary } from "./api-types";
 type Profile = { full_name?: string; age_years?: number; sex?: string; phone?: string; city?: string; preferred_language?: string; consent?: boolean };
 
 /**
- * Pages for patients call this first: signed-out → sign-in, staff → admin area, new account → the
- * patient record is created from the sign-up form (first sign-in after email confirmation).
+ * Pages for patients call this first: signed-out → sign-in, staff → admin area, an account the clinic has not
+ * approved yet → the waiting screen, an old account without a patient record → it is created from the sign-up form.
  */
 export async function requirePatient(): Promise<Overview & { patient: PatientSummary }> {
   const user = await currentUser();
@@ -26,5 +26,7 @@ export async function requirePatient(): Promise<Overview & { patient: PatientSum
     }
   }
   if (!overview.patient) redirect("/rehabverse/register");
+  // A new account is a request the clinic approves: until then (or if it was declined) the person only sees the waiting screen.
+  if (overview.patient.status && overview.patient.status !== "active") redirect("/rehabverse/pending"); // (no status = a database that has not had the approval migration yet: treat as active)
   return overview as Overview & { patient: PatientSummary };
 }

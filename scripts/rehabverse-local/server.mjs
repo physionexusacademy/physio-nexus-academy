@@ -156,6 +156,20 @@ const server = http.createServer(async (req, res) => {
       }
       return send(res, 200, session(rows[0]));
     }
+    // The server-side account request (service role): creates the sign-in already confirmed, no e-mail (RehabVerse accounts are approved by the clinic).
+    if (url.pathname === "/auth/v1/admin/users" && req.method === "POST") {
+      if (!serviceClaims(req)) return authError(res, 403, "not_admin", "User not allowed");
+      const body = await readJson(req);
+      const email = normaliseEmail(body.email);
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return authError(res, 422, "validation_failed", "Unable to validate email address: invalid format");
+      if (String(body.password ?? "").length < 8) return authError(res, 422, "weak_password", "Password should be at least 8 characters.");
+      if ((await db.query("select 1 from auth.users where email = $1", [email])).rows.length) return authError(res, 422, "email_exists", "A user with this email address has already been registered");
+      const { rows } = await db.query(
+        "insert into auth.users (email, encrypted_password, raw_user_meta_data) values ($1, $2, $3::jsonb) returning *",
+        [email, hashPassword(String(body.password)), JSON.stringify(body.user_metadata ?? {})],
+      );
+      return send(res, 200, { ...publicUser(rows[0]), identities: [{ identity_id: rows[0].id, provider: "email" }] });
+    }
     if (url.pathname === "/auth/v1/recover" && req.method === "POST") {
       const body = await readJson(req);
       const { rows } = await db.query("select id from auth.users where email = $1", [normaliseEmail(body.email)]);

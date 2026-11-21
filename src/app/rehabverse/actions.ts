@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isPublicFormRateLimited } from "@/lib/security/public-form-protection";
 import { RehabError, currentUser, getHistory, getNotifications, getOverview, getSession, isStaff, rpc } from "@/lib/rehabverse/api";
-import type { FollowupPoint } from "@/lib/rehabverse/api-types";
+import type { AccountStatus, FollowupPoint } from "@/lib/rehabverse/api-types";
 
 const ADMIN_EMAIL = "physionexusacademypk@gmail.com";
 const FROM_EMAIL = "Physio Nexus Academy <notifications@physionexusacademy.com>";
@@ -50,7 +50,13 @@ const text = (form: FormData, key: string) => String(form.get(key) ?? "").trim()
 
 /* ─────────────────────────────── account ─────────────────────────────── */
 
-export async function registerAction(form: FormData): Promise<ActionResult<{ needsEmailConfirmation: boolean }>> {
+/**
+ * A new account is a REQUEST the clinic approves (no confirmation e-mail is sent). The server creates the sign-in already confirmed, signs the person in,
+ * and creates the patient record with status "pending"; every patient function of the database refuses a patient who is not "active", so until
+ * the clinic approves there is nothing a pending account can do. The clinic is told by e-mail (no patient details in it) and sees the request,
+ * with the phone number it checks, in "Account requests".
+ */
+export async function registerAction(form: FormData): Promise<ActionResult<{ pendingApproval: true }>> {
   if (text(form, "website")) return { ok: false, error: "failed" }; // honeypot
   if (isPublicFormRateLimited(`rv-register:${await clientIp()}`)) return { ok: false, error: "rate_limited" };
 
@@ -60,7 +66,7 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ nee
     full_name: text(form, "full_name"),
     age_years: Number(text(form, "age_years")),
     sex: text(form, "sex") || undefined,
-    phone: text(form, "phone") || undefined,
+    phone: text(form, "phone"),
     city: text(form, "city") || undefined,
     preferred_language: text(form, "preferred_language") === "en" ? "en" : "ru",
     consent: text(form, "consent") === "on",
@@ -70,31 +76,33 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ nee
   if (profile.full_name.length < 2) return { ok: false, error: "bad_name" };
   if (!Number.isInteger(profile.age_years) || profile.age_years < 0 || profile.age_years > 120) return { ok: false, error: "bad_age" };
   if (profile.age_years < 18) return { ok: false, error: "under_18" };
+  if (profile.phone.replace(/\D/g, "").length < 10 || profile.phone.length > 30) return { ok: false, error: "bad_phone" };
   if (!profile.consent) return { ok: false, error: "consent_required" };
 
-  const supabase = await createClient();
-  const origin = await siteOrigin();
-  const { data, error } = await supabase.auth.signUp({
+  // The clinic checks who this is by phone, so the sign-in itself needs no e-mail round trip.
+  const { error: createError } = await createAdminClient().auth.admin.createUser({
     email,
     password,
-    options: { data: { rehabverse_profile: profile }, emailRedirectTo: `${origin}/rehabverse/auth/callback?next=/rehabverse/start` },
+    email_confirm: true,
+    user_metadata: { rehabverse_profile: profile },
   });
-  if (error) return { ok: false, error: /registered|exists/i.test(error.message) ? "email_taken" : /password/i.test(error.message) ? "weak_password" : "signup_failed" };
-  // With e-mail confirmation on, signing up an address that already has an account returns a user with no identities.
-  if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) return { ok: false, error: "email_taken" };
-  // Email confirmation on: there is no session yet; the profile is created at first sign-in.
-  if (!data.session) return { ok: true, needsEmailConfirmation: true };
+  if (createError) return { ok: false, error: /registered|exists|duplicate/i.test(createError.message) ? "email_taken" : /password/i.test(createError.message) ? "weak_password" : "signup_failed" };
+
+  const supabase = await createClient();
+  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+  if (signInError) return { ok: false, error: "signup_failed" };
   try {
     await rpc("rehab_register_patient", { p_payload: { ...profile, consent_version: "v2" } });
   } catch (e) {
     return fail(e);
   }
-  return { ok: true, needsEmailConfirmation: false };
+  await alertClinic("RehabVerse: new account request", "A new RehabVerse account is waiting for your approval. Open the clinician inbox > Account requests (patient details are shown only after you sign in).");
+  return { ok: true, pendingApproval: true };
 }
 
 type SignedProfile = { full_name?: string; age_years?: number; sex?: string; phone?: string; city?: string; preferred_language?: string; consent?: boolean };
 
-export async function loginAction(form: FormData): Promise<ActionResult<{ staff: boolean }>> {
+export async function loginAction(form: FormData): Promise<ActionResult<{ staff: boolean; status: AccountStatus }>> {
   if (isPublicFormRateLimited(`rv-login:${await clientIp()}`)) return { ok: false, error: "rate_limited" };
   const email = text(form, "email").toLowerCase();
   const password = String(form.get("password") ?? "");
@@ -102,20 +110,21 @@ export async function loginAction(form: FormData): Promise<ActionResult<{ staff:
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.user) return { ok: false, error: error?.code === "email_not_confirmed" || /not confirmed/i.test(error?.message ?? "") ? "email_not_confirmed" : "bad_login" };
-  if (await isStaff()) return { ok: true, staff: true };
-  // First sign-in after email confirmation: create the patient record from the sign-up form.
+  if (await isStaff()) return { ok: true, staff: true, status: "active" as const };
+  // An old account (e-mail sign-up before the clinic approved accounts) may have no patient record yet: create it from the sign-up form.
   try {
-    const overview = await rpc<{ patient: unknown }>("rehab_my_overview");
+    let overview = await rpc<{ patient: { status: AccountStatus } | null }>("rehab_my_overview");
     if (!overview.patient) {
       const profile = (data.user.user_metadata?.rehabverse_profile ?? null) as SignedProfile | null;
       if (profile?.consent && profile.full_name) {
         await rpc("rehab_register_patient", { p_payload: { ...profile, consent_version: "v2" } });
+        overview = await rpc<{ patient: { status: AccountStatus } | null }>("rehab_my_overview");
       }
     }
+    return { ok: true, staff: false, status: overview.patient?.status ?? "active" };
   } catch (e) {
     return fail(e);
   }
-  return { ok: true, staff: false };
 }
 
 /** Same answer whether or not an account exists, so nobody can probe which e-mails are registered. */
@@ -150,6 +159,17 @@ export async function updatePasswordAction(form: FormData): Promise<ActionResult
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { ok: false, error: /same|different/i.test(error.message) ? "same_password" : /password/i.test(error.message) ? "weak_password" : "failed" };
   return { ok: true };
+}
+
+/** What the waiting screen polls: is the request still waiting, approved or declined (and why). */
+export async function myAccountStatusAction(): Promise<ActionResult<{ status: AccountStatus; note: string | null }>> {
+  try {
+    const overview = await getOverview();
+    if (!overview.patient) return { ok: false, error: "no_account" };
+    return { ok: true, status: overview.patient.status ?? "active", note: overview.patient.decision_note ?? null };
+  } catch (e) {
+    return fail(e);
+  }
 }
 
 export async function logoutAction(): Promise<void> {

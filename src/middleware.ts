@@ -71,6 +71,7 @@ export const config = {
     "/rehabverse/me/:path*",
     "/rehabverse/me",
     "/rehabverse/start",
+    "/rehabverse/pending",
     "/rehabverse/login",
     "/rehabverse/register",
     "/rehabverse/forgot",
