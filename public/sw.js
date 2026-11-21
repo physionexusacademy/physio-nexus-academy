@@ -12,7 +12,7 @@
 // skipWaiting + clients.claim let a new worker take over without waiting for every old PNA tab to close. Change VERSION when this file or
 // public/offline.html changes: the old caches are deleted when the new worker activates.
 
-const VERSION = "2026-11-21-4";
+const VERSION = "2026-11-21-5";
 const PAGES = "pna-pages-" + VERSION;
 const STATIC = "pna-static-" + VERSION;
 const DATA = "pna-data-" + VERSION;
@@ -23,6 +23,11 @@ const LIMIT = { [PAGES]: 40, [STATIC]: 400, [DATA]: 150 };
 const OFFLINE = "/offline";
 /** With a saved copy at hand, a page that has not answered within this time is replaced by the saved copy (a connection that hangs instead of resetting). */
 const SAVED_COPY_WAIT_MS = 8000;
+// The backup address (see src/lib/host-policy.ts): another name and other addresses than the main one, so a network that cuts the main name often lets it through.
+// When the main address fails and the backup answers, a public page is opened there (a live page beats a saved one); on the backup address itself nothing moves.
+const BACKUP = "https://physio-nexus-academy.physionexusacademypk.workers.dev";
+const ON_BACKUP = /\.workers\.dev$/i.test(self.location.hostname);
+const BACKUP_PROBE_MS = 3500;
 
 // Public pages whose saved copy may be shown when the connection is cut. Not here on purpose: /account, /admin, /api, /rehabverse/me and the other RehabVerse
 // patient pages, the Daily Challenge and the leagues (live scores).
@@ -62,6 +67,17 @@ function withTimeout(promise, ms) {
   return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("slow")), ms))]);
 }
 
+/** A redirect to the same public page on the backup address when that address answers (a no-cors request only tells "the connection worked"), otherwise null. */
+async function viaBackup(url) {
+  if (ON_BACKUP || !SAVEABLE_PAGE.test(url.pathname)) return null;
+  try {
+    await withTimeout(fetch(BACKUP + "/robots.txt?probe=" + Date.now(), { mode: "no-cors", cache: "no-store" }), BACKUP_PROBE_MS);
+    return Response.redirect(BACKUP + url.pathname + url.search, 302);
+  } catch {
+    return null;
+  }
+}
+
 async function navigate(event) {
   const request = event.request;
   const url = new URL(request.url);
@@ -75,6 +91,8 @@ async function navigate(event) {
     if (saveable && !url.search && keepable(response) && !response.redirected && isHtml(response)) event.waitUntil(put(PAGES, key, response.clone()));
     return response;
   } catch (error) {
+    const live = await viaBackup(url);
+    if (live) return live;
     if (saved) return clean(saved);
     const offline = await caches.match(OFFLINE, { cacheName: PAGES });
     if (offline) return clean(offline);

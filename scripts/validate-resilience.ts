@@ -33,6 +33,7 @@ ok(test("DATA_FILE", "/teacher-data/lessons/gait-cycle.json") && test("DATA_FILE
 ok(!test("DATA_FILE", "/api/x.json") && !test("DATA_FILE", "/voice/george/a.mp3") && !test("DATA_FILE", "/account/export.json"), "sw.js: API answers and the large voice files are not kept");
 ok(/!url\.search/.test(source) && /!response\.redirected/.test(source) && /no-store\|private/.test(source), "sw.js: never saves a URL with a query, a redirected answer, or a private/no-store response");
 ok(/request\.method !== "GET"/.test(source) && /headers\.has\("authorization"\)/.test(source) && /url\.origin !== self\.location\.origin/.test(source), "sw.js: only plain same-origin GET requests are touched");
+ok(/const BACKUP = "https:\/\/physio-nexus-academy\.physionexusacademypk\.workers\.dev";/.test(source) && /const ON_BACKUP = \/\\\.workers\\\.dev\$\/i\.test\(self\.location\.hostname\)/.test(source) && /Response\.redirect\(BACKUP \+ url\.pathname \+ url\.search, 302\)/.test(source) && /if \(ON_BACKUP \|\| !SAVEABLE_PAGE\.test\(url\.pathname\)\) return null/.test(source) && /const live = await viaBackup\(url\);\s*if \(live\) return live;/.test(source), "sw.js: when the main address fails and the backup answers, a public page opens there (never from the backup itself, never a signed-in page)");
 ok(/for \(const name of await caches\.keys\(\)\) if \(name\.startsWith\("pna-"\)/.test(source), "sw.js: a new version removes the old PNA caches and no one else's");
 
 // --- the page that registers it
