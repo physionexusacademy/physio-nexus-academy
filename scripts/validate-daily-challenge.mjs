@@ -17,6 +17,7 @@ const championsCss=read("src/components/daily-challenge/champion-boards.css");
 const css=read("src/app/daily-challenge/daily-challenge.css");
 const home=read("src/app/page.tsx");
 const homeBoard=read("src/components/home/HomeDailyBoard.tsx");
+const features=read("src/components/home/HomeFeatures.tsx");
 const pathwayBrowser=read("src/components/home/PremiumPathwayBrowser.tsx");
 const hub=read("src/app/learn/page.tsx");
 const migration=read("supabase/migrations/20261009_pna_daily_challenge.sql");
@@ -47,7 +48,7 @@ const tests={
   oldScoresNotCleared:!migration.includes("truncate table")&&!migration.includes("delete from"),
   serverMidnightDeadline:actions.includes("time>=midnight")&&actions.includes("Today's challenge is closing"),
   publicPager:board.includes('Next</button>')&&board.includes('Previous</button>'),
-  topFive:board.includes("compact||preview?5:30")&&homeBoard.includes("<DailyLeaderboard compact"),
+  topFive:board.includes("compact||preview?5:30")&&champions.includes("const SHORT = 5")&&champions.includes("const LONG = 15"),
   allRankings:board.includes('"month"')&&board.includes('"year"')&&board.includes('"today"'),
   monthAndYearChampions:page.includes("<ChampionBoards")&&!page.includes("DailyHallOfFame")&&['today','month','year'].every(p=>champions.includes('<Board period="'+p+'" />'))&&champions.includes('id="full-leaderboard"')&&championsCss.includes('.cb-board[data-period="month"]')&&championsCss.includes('.cb-board[data-period="year"]'),
   championBoardsLiveAndPlayable:champions.includes("pna-daily-score-saved")&&champions.includes("45000")&&champions.includes('href="#play-daily"')&&page.includes('id="play-daily"'),
@@ -64,9 +65,11 @@ const tests={
   noGeneratedFakeRanks:!board.includes("Demo Participant"),
   challengeMarker:quiz.includes('data-pna-daily-challenge="v1"'),
   homepageFlagshipAccessible:home.includes('data-pna-home-flagship="daily-clinical-challenge-v2"') && home.includes("<LobbyHero") && home.indexOf("<LobbyHero") < home.indexOf('data-pna-home-flagship'),
-  flagshipSingleHero:(home.match(/data-pna-home-flagship/g)||[]).length===1 && (homeBoard.match(/<DailyLeaderboard compact/g)||[]).length===1&&!home.includes("<DailyLeaderboard"),
+  flagshipSingleHero:(home.match(/data-pna-home-flagship="daily-clinical-challenge-v2"/g)||[]).length===1 && (home.match(/<HomeDailyBoard/g)||[]).length===1&&!home.includes("<DailyLeaderboard"),
   flagshipActivePlay:home.includes('href="/daily-challenge#play-daily"'),
-  flagshipLiveBoard:homeBoard.includes('title="Today\'s Top 5"') && home.includes("DailyChallengeCountdown"),
+  flagshipLiveBoard:homeBoard.includes("<HomeTodayBoard")&&homeBoard.includes('data-pna-home-today-board')&&!homeBoard.includes("<details")&&home.includes("DailyChallengeCountdown"),
+  homeBoardLoadsLazily:champions.includes("export function HomeTodayBoard")&&champions.includes("lazy")&&champions.includes("IntersectionObserver")&&champions.includes("document.hidden"),
+  homeOrderTeacherRehabDaily:home.indexOf("<HomeFeaturesTop")>0&&home.indexOf("<HomeFeaturesTop")<home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')&&home.indexOf('data-pna-home-flagship="daily-clinical-challenge-v2"')<home.indexOf("<HomeFeaturesMore")&&features.indexOf('hx-teacher')<features.indexOf('data-pna-home-feature="rehabverse-v1"')&&features.indexOf('data-pna-home-feature="rehabverse-v1"')<features.indexOf("export function HomeFeaturesMore"),
   topLevelNav:nav.includes('label: "Daily Challenge", href: "/daily-challenge"') && desktop.includes('href="/daily-challenge" className="nx-pill-challenge"'),
   mobileChallengeShortcut:mobile.includes('label: "Challenge", href: "/daily-challenge"'),
   desktopChallengeHighlight:desktop.includes('className="nx-pill-challenge"') && read("src/app/nexus.css").includes(".nx-pill-challenge {"),

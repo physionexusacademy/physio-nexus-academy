@@ -8,7 +8,7 @@ import { StudentPass } from "@/components/home/StudentPass";
 import { PremiumPathwayBrowser } from "@/components/home/PremiumPathwayBrowser";
 import { HomeBooks } from "@/components/home/HomeBooks";
 import { HomeLeagues } from "@/components/home/HomeLeagues";
-import { HomeFeatures } from "@/components/home/HomeFeatures";
+import { HomeFeaturesMore, HomeFeaturesTop } from "@/components/home/HomeFeatures";
 import { HomeNeedHelp } from "@/components/home/HomeNeedHelp";
 import { HomeBodyMap } from "@/components/home/HomeBodyMap";
 import { GuideMe } from "@/components/avatar/GuideMe";
@@ -139,7 +139,7 @@ export default function HomePage() {
 
       <HomeBodyMap items={conditionCatalog.map(({ slug, name, area, type, stages }) => ({ slug, name, area, type, stages }))} />
 
-      <HomeFeatures />
+      <HomeFeaturesTop />
 
       <section data-pna-home-flagship="daily-clinical-challenge-v2" className="hdc" aria-labelledby="pna-daily-flagship-title">
         <div className="container-content">
@@ -163,14 +163,16 @@ export default function HomePage() {
               <a href="/daily-challenge#play-daily" className="nx-btn nx-btn-primary">
                 <Ur en="Take today's challenge" ur="Aaj ka challenge dein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
-              <a href="/daily-challenge#hall-of-fame" className="nx-btn nx-btn-ghost">
-                <Medal className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> Hall of Fame
+              <a href="/daily-challenge#full-leaderboard" className="nx-btn nx-btn-ghost">
+                <Medal className="h-4 w-4 text-[var(--nx-amber)]" aria-hidden="true" /> <Ur en="All rankings" ur="Tamam rankings" />
               </a>
             </div>
             <HomeDailyBoard />
           </div>
         </div>
       </section>
+
+      <HomeFeaturesMore />
 
       <HomeLeagues />
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, CalendarDays, Crown, Medal, RefreshCw, Sun, Trophy, Users } from "lucide-react";
 import { Ur } from "@/components/Ur";
 import "./champion-boards.css";
@@ -33,7 +33,13 @@ const initials = (name: string) => name.replace(/[^\p{L}\s]/gu, "").trim().split
 /** A steady colour for a name, so the same person always has the same avatar. */
 const hue = (name: string) => [...name].reduce((sum, ch) => (sum * 31 + ch.charCodeAt(0)) % 360, 7);
 
-function Board({ period }: { period: Period }) {
+/**
+ * One board. `lazy` (the home page): the scores are asked for only when the board comes near the screen, and the 45-second refresh only runs
+ * while the tab is visible, so the static home page makes no database call for a visitor who never scrolls down to it.
+ */
+function Board({ period, lazy = false, playHref = "#play-daily" }: { period: Period; lazy?: boolean; playHref?: string }) {
+  const [near, setNear] = useState(!lazy);
+  const holder = useRef<HTMLElement>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [anchor, setAnchor] = useState("");
   const [latest, setLatest] = useState("");
@@ -66,10 +72,20 @@ function Board({ period }: { period: Period }) {
   );
 
   useEffect(() => {
+    if (near) return;
+    const node = holder.current;
+    if (!node || typeof IntersectionObserver === "undefined") return setNear(true);
+    const watcher = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { setNear(true); watcher.disconnect(); } }, { rootMargin: "400px 0px" });
+    watcher.observe(node);
+    return () => watcher.disconnect();
+  }, [near]);
+
+  useEffect(() => {
+    if (!near) return;
     const controller = new AbortController();
     setLoading(true);
     void load(controller.signal);
-    const timer = window.setInterval(() => void load(controller.signal), 45000);
+    const timer = window.setInterval(() => { if (!document.hidden) void load(controller.signal); }, 45000);
     const onScore = () => void load(controller.signal);
     window.addEventListener("pna-daily-score-saved", onScore);
     return () => {
@@ -77,7 +93,7 @@ function Board({ period }: { period: Period }) {
       window.clearInterval(timer);
       window.removeEventListener("pna-daily-score-saved", onScore);
     };
-  }, [load]);
+  }, [load, near]);
 
   const chosen = anchor || latest;
   const key = period === "month" ? 7 : 4;
@@ -85,7 +101,7 @@ function Board({ period }: { period: Period }) {
   const Icon = period === "today" ? Sun : period === "month" ? CalendarDays : Crown;
 
   return (
-    <section className="cb-board" data-period={period} data-open={open ? "1" : "0"} aria-label={period === "today" ? "Today's ranking" : period === "month" ? "This month's ranking" : "This year's ranking"}>
+    <section ref={holder} className="cb-board" data-period={period} data-open={open ? "1" : "0"} aria-label={period === "today" ? "Today's ranking" : period === "month" ? "This month's ranking" : "This year's ranking"}>
       <header className="cb-bhead">
         <span className="cb-ico" aria-hidden="true"><Icon className="h-5 w-5" /></span>
         <div className="cb-btitle">
@@ -117,7 +133,7 @@ function Board({ period }: { period: Period }) {
         <div className="cb-empty">
           <Users className="h-7 w-7" aria-hidden="true" />
           <p><Ur en="Nobody has scored yet. Be the first name here!" ur="Abhi kisi ne score nahi kiya. Sab se pehle aap ka naam yahan aaye!" /></p>
-          <a href="#play-daily" className="cb-more"><Trophy className="h-4 w-4" aria-hidden="true" /> <Ur en="Play today's challenge" ur="Aaj ka challenge khelein" /></a>
+          <a href={playHref} className="cb-more"><Trophy className="h-4 w-4" aria-hidden="true" /> <Ur en="Play today's challenge" ur="Aaj ka challenge khelein" /></a>
         </div>
       ) : (
         <ol className="cb-rows">
@@ -142,6 +158,11 @@ function Board({ period }: { period: Period }) {
       ) : null}
     </section>
   );
+}
+
+/** The single "today" board for the home page (loaded when it comes near the screen). */
+export function HomeTodayBoard() {
+  return <Board period="today" lazy playHref="/daily-challenge#play-daily" />;
 }
 
 export function ChampionBoards() {

@@ -87,3 +87,45 @@
   .hf-media { aspect-ratio: auto; padding: 12px 14px; }
   .hf-card:hover { transform: none; }
 }
+
+/* ---------- home order: PNA Teacher (wide), RehabVerse, the Daily Clinical Challenge, then the Skills Lab and Virtual Patient ---------- */
+.hf-top { padding-bottom: 8px; }
+.hf-more { padding: 14px 0 28px; }
+.hf-grid-wide .hx-teacher { grid-column: span 12; }
+.hf-grid-pair .hf-card { grid-column: span 6; }
+@media (min-width: 900px) {
+  .hf-grid-wide .hx-teacher .hx-link { flex-direction: row; align-items: stretch; }
+  .hf-grid-wide .hx-teacher .hx-stage { flex: 0 0 46%; height: auto; min-height: 270px; margin: 16px; }
+  .hf-grid-wide .hx-teacher .hx-body { flex: 1; justify-content: center; padding: 22px 30px 22px 10px; }
+}
+@media (max-width: 760px) {
+  .hf-grid-pair .hf-card { grid-column: span 12; }
+}
+
+/* ---------- speed: the split sections keep their own "not yet on screen" sizes (the page keeps its height, so the scroll bar never jumps) ---------- */
+body .hf-top { contain-intrinsic-size: auto 1150px; }
+body .hf-more { contain-intrinsic-size: auto 760px; content-visibility: auto; }
+body .hdc { contain-intrinsic-size: auto 620px; }
+@media (max-width: 1000px) {
+  body .hf-top { contain-intrinsic-size: auto 1700px; }
+  body .hf-more { contain-intrinsic-size: auto 1250px; }
+  body .hdc { contain-intrinsic-size: auto 1150px; }
+}
+
+/* ---------- a little more futuristic, for free: cards rise into place as they scroll into view ----------
+   Pure CSS scroll-driven animation (nothing runs in script, only opacity and transform, on the graphics card). Browsers without it simply show the
+   cards; "reduce motion" and light mode skip it. The animation only fills BEFORE it starts, so hover effects keep working afterwards. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-fx="lite"]) .hf-card,
+    html:not([data-fx="lite"]) .hdc-card {
+      animation: hf-rise linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 38%;
+    }
+  }
+}
+@keyframes hf-rise {
+  from { opacity: 0; transform: translateY(28px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}

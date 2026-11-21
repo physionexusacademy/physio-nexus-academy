@@ -7,19 +7,21 @@ import "./home-flagships.css";
 import "./home-rehabverse.css";
 
 /**
- * "What you'll find here" — the things PNA does best, one card each, so a first-time visitor
- * understands the academy in one screen. Server-rendered, no JavaScript. Every card is one link.
- * The small previews are built from plain markup (no extra images to load) and match the real screens.
+ * "What you'll find here" — the things PNA does best, one card each, so a first-time visitor understands the academy in one screen.
+ * Server-rendered, no JavaScript. Every card is one link. The small previews are built from plain markup (no extra images to load).
+ *
+ * The home page shows them in this order: PNA Teacher, RehabVerse (HomeFeaturesTop), then the Daily Clinical Challenge, then the Skills Lab and the
+ * Virtual Patient (HomeFeaturesMore).
  */
-export function HomeFeatures() {
+export function HomeFeaturesTop() {
   return (
-    <section id="features" className="hf" aria-labelledby="hf-title">
+    <section id="features" className="hf hf-top" aria-labelledby="hf-title" data-pna-home-features="top">
       <div className="container-content">
         <p className="nx-kicker nx-kicker-light"><Ur en="What you will find here" ur="Yahan aap ko kya milega" /></p>
         <h2 id="hf-title" className="nx-title mt-2 text-3xl text-navy-800 sm:text-4xl"><Ur en="Learn, practise and recover" ur="Seekhein, practice karein aur recover karein" /></h2>
         <p className="hf-lead"><Ur en={<>New here? Pick one. A good first week: learn a concept in <b>PNA Teacher</b>, practise it in the <b>Skills Lab</b> or on the <b>Virtual Patient</b>, then test yourself in the <b>Daily Challenge</b>.</>} ur={<>Naye hain? Ek chun lein. Pehla hafta aise guzaarein: <b>PNA Teacher</b> mein ek concept seekhein, use <b>Skills Lab</b> ya <b>Virtual Patient</b> par practice karein, phir <b>Daily Challenge</b> mein khud ko test karein.</>} /></p>
 
-        <ul className="hf-grid">
+        <ul className="hf-grid hf-grid-wide">
           <li className="hf-card hx hx-teacher">
             <a href="/learn" className="hx-link" aria-label="PNA Teacher — free step-by-step lessons">
               <div className="hx-stage" aria-hidden="true">
@@ -42,75 +44,6 @@ export function HomeFeatures() {
                 </ul>
                 <span className="hx-meta">{lessonIndex.length} lessons · {manualLessonMetas.length} technique lessons</span>
                 <span className="hx-go"><Ur en="Start learning" ur="Seekhna shuru karein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-              </div>
-            </a>
-          </li>
-
-          <li className="hf-card hx hx-skills">
-            <a href="/skills" className="hx-link" aria-label="Clinical Skills Lab — practise assessment skills">
-              <div className="hx-stage" aria-hidden="true">
-                <svg className="hx-gonio" viewBox="0 0 220 140" role="presentation">
-                  <defs>
-                    <linearGradient id="hxg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#2ee6d6" /><stop offset="1" stopColor="#8f7cff" /></linearGradient>
-                  </defs>
-                  <g className="hx-ticks-ring">
-                    {Array.from({ length: 13 }, (_, i) => {
-                      const a = (i * 15 * Math.PI) / 180;
-                      return <line key={i} x1={70 + 46 * Math.cos(a)} y1={110 - 46 * Math.sin(a)} x2={70 + (i % 2 ? 50 : 54) * Math.cos(a)} y2={110 - (i % 2 ? 50 : 54) * Math.sin(a)} />;
-                    })}
-                  </g>
-                  <line className="hx-arm-fixed" x1="70" y1="110" x2="190" y2="110" />
-                  <circle className="hx-arc" cx="70" cy="110" r="34" />
-                  <g className="hx-arm-move"><line x1="70" y1="110" x2="170" y2="110" /><circle cx="170" cy="110" r="5" /></g>
-                  <circle className="hx-pivot" cx="70" cy="110" r="6" />
-                </svg>
-                <div className="hx-readout"><span>Shoulder flexion</span><b className="hx-deg" /></div>
-                <div className="hx-levels"><span className="on">MMT</span><span>Goniometry</span><span>Neuro</span><span>OSCE</span></div>
-              </div>
-              <div className="hx-body">
-                <span className="hx-badge"><Ruler className="h-3.5 w-3.5" aria-hidden="true" /> <Ur en="Practise · Free" ur="Practice · Free" /></span>
-                <h3>Clinical Skills Lab</h3>
-                <p className="hx-tag"><Ur en="Measure, test and examine like a clinician." ur="Clinician ki tarah naapein, test karein aur examine karein." /></p>
-                <ul className="hx-ticks">
-                  <li>Muscle testing, goniometry, neuro exam, balance</li>
-                  <li><Ur en="3D demonstrations of every technique" ur="Har technique ki 3D demonstrations" /></li>
-                  <li><Ur en="Skill tests and OSCE stations, taught at expert depth" ur="Skill tests aur OSCE stations, expert depth par" /></li>
-                </ul>
-                <span className="hx-meta">Expert depth · free</span>
-                <span className="hx-go"><Ur en="Open the Skills Lab" ur="Skills Lab kholein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-              </div>
-            </a>
-          </li>
-
-          <li className="hf-card hx hx-vp">
-            <a href="/virtual-patient" className="hx-link" aria-label="Virtual Patient — examine a 3D patient">
-              <div className="hx-stage" aria-hidden="true">
-                <svg className="hx-body-svg" viewBox="0 0 120 150" role="presentation">
-                  <g className="hx-human">
-                    <circle cx="60" cy="18" r="11" />
-                    <path d="M44 38 Q60 30 76 38 L82 78 L74 80 L70 60 L70 104 L64 104 L60 82 L56 104 L50 104 L50 60 L46 80 L38 78 Z" />
-                    <path d="M50 104 L48 146 M70 104 L72 146" />
-                  </g>
-                  <circle className="hx-hot" cx="44" cy="42" r="5" />
-                  <circle className="hx-hot-ring" cx="44" cy="42" r="5" />
-                </svg>
-                <span className="hx-scan" />
-                <span className="hx-chip hx-chip-a">Pain 6/10</span>
-                <span className="hx-chip hx-chip-b">Abduction 85°</span>
-                <span className="hx-chip hx-chip-c">⚠ Red flag?</span>
-                <div className="hx-vsteps"><span>History</span><span>Examine</span><span>Diagnose</span><span className="score">OSCE 87%</span></div>
-              </div>
-              <div className="hx-body">
-                <span className="hx-badge"><Stethoscope className="h-3.5 w-3.5" aria-hidden="true" /> Examine · Free</span>
-                <h3>Virtual Patient</h3>
-                <p className="hx-tag"><Ur en="A 3D patient. A hidden diagnosis. Your move." ur="Ek 3D patient. Ek chhupi hui diagnosis. Ab aap ki baari." /></p>
-                <ul className="hx-ticks">
-                  <li><Ur en="Take the history, then examine in 3D" ur="History lein, phir 3D mein examine karein" /></li>
-                  <li><Ur en="Find the diagnosis — red flags included" ur="Diagnosis dhoondein — red flags samet" /></li>
-                  <li><Ur en="Get an OSCE-style score and feedback" ur="OSCE-style score aur feedback hasil karein" /></li>
-                </ul>
-                <span className="hx-meta">{VP_CASE_COUNT} patients · guided or timed OSCE</span>
-                <span className="hx-go"><Ur en="Meet a patient" ur="Ek patient se milein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
               </div>
             </a>
           </li>
@@ -183,7 +116,88 @@ export function HomeFeatures() {
             <p className="rvx-fine"><Ur en="Virtual guide — not a real clinician. Your physiotherapist reviews and approves everything. Not for emergencies." ur="Virtual guide — asal clinician nahin. Aap ka physiotherapist sab kuch review aur approve karta hai. Emergency ke liye nahin." /></p>
           </li>
         </ul>
+      </div>
+    </section>
+  );
+}
 
+export function HomeFeaturesMore() {
+  return (
+    <section className="hf hf-more" aria-labelledby="hf-more-title" data-pna-home-features="more">
+      <div className="container-content">
+        <p className="nx-kicker nx-kicker-light"><Ur en="Practise like a clinician" ur="Clinician ki tarah practice karein" /></p>
+        <h2 id="hf-more-title" className="nx-title mt-2 text-3xl text-navy-800 sm:text-4xl"><Ur en="Measure, test and examine" ur="Naapein, test karein aur examine karein" /></h2>
+
+        <ul className="hf-grid hf-grid-pair">
+          <li className="hf-card hx hx-skills">
+            <a href="/skills" className="hx-link" aria-label="Clinical Skills Lab — practise assessment skills">
+              <div className="hx-stage" aria-hidden="true">
+                <svg className="hx-gonio" viewBox="0 0 220 140" role="presentation">
+                  <defs>
+                    <linearGradient id="hxg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#2ee6d6" /><stop offset="1" stopColor="#8f7cff" /></linearGradient>
+                  </defs>
+                  <g className="hx-ticks-ring">
+                    {Array.from({ length: 13 }, (_, i) => {
+                      const a = (i * 15 * Math.PI) / 180;
+                      return <line key={i} x1={70 + 46 * Math.cos(a)} y1={110 - 46 * Math.sin(a)} x2={70 + (i % 2 ? 50 : 54) * Math.cos(a)} y2={110 - (i % 2 ? 50 : 54) * Math.sin(a)} />;
+                    })}
+                  </g>
+                  <line className="hx-arm-fixed" x1="70" y1="110" x2="190" y2="110" />
+                  <circle className="hx-arc" cx="70" cy="110" r="34" />
+                  <g className="hx-arm-move"><line x1="70" y1="110" x2="170" y2="110" /><circle cx="170" cy="110" r="5" /></g>
+                  <circle className="hx-pivot" cx="70" cy="110" r="6" />
+                </svg>
+                <div className="hx-readout"><span>Shoulder flexion</span><b className="hx-deg" /></div>
+                <div className="hx-levels"><span className="on">MMT</span><span>Goniometry</span><span>Neuro</span><span>OSCE</span></div>
+              </div>
+              <div className="hx-body">
+                <span className="hx-badge"><Ruler className="h-3.5 w-3.5" aria-hidden="true" /> <Ur en="Practise · Free" ur="Practice · Free" /></span>
+                <h3>Clinical Skills Lab</h3>
+                <p className="hx-tag"><Ur en="Measure, test and examine like a clinician." ur="Clinician ki tarah naapein, test karein aur examine karein." /></p>
+                <ul className="hx-ticks">
+                  <li>Muscle testing, goniometry, neuro exam, balance</li>
+                  <li><Ur en="3D demonstrations of every technique" ur="Har technique ki 3D demonstrations" /></li>
+                  <li><Ur en="Skill tests and OSCE stations, taught at expert depth" ur="Skill tests aur OSCE stations, expert depth par" /></li>
+                </ul>
+                <span className="hx-meta">Expert depth · free</span>
+                <span className="hx-go"><Ur en="Open the Skills Lab" ur="Skills Lab kholein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+              </div>
+            </a>
+          </li>
+
+          <li className="hf-card hx hx-vp">
+            <a href="/virtual-patient" className="hx-link" aria-label="Virtual Patient — examine a 3D patient">
+              <div className="hx-stage" aria-hidden="true">
+                <svg className="hx-body-svg" viewBox="0 0 120 150" role="presentation">
+                  <g className="hx-human">
+                    <circle cx="60" cy="18" r="11" />
+                    <path d="M44 38 Q60 30 76 38 L82 78 L74 80 L70 60 L70 104 L64 104 L60 82 L56 104 L50 104 L50 60 L46 80 L38 78 Z" />
+                    <path d="M50 104 L48 146 M70 104 L72 146" />
+                  </g>
+                  <circle className="hx-hot" cx="44" cy="42" r="5" />
+                  <circle className="hx-hot-ring" cx="44" cy="42" r="5" />
+                </svg>
+                <span className="hx-scan" />
+                <span className="hx-chip hx-chip-a">Pain 6/10</span>
+                <span className="hx-chip hx-chip-b">Abduction 85°</span>
+                <span className="hx-chip hx-chip-c">⚠ Red flag?</span>
+                <div className="hx-vsteps"><span>History</span><span>Examine</span><span>Diagnose</span><span className="score">OSCE 87%</span></div>
+              </div>
+              <div className="hx-body">
+                <span className="hx-badge"><Stethoscope className="h-3.5 w-3.5" aria-hidden="true" /> Examine · Free</span>
+                <h3>Virtual Patient</h3>
+                <p className="hx-tag"><Ur en="A 3D patient. A hidden diagnosis. Your move." ur="Ek 3D patient. Ek chhupi hui diagnosis. Ab aap ki baari." /></p>
+                <ul className="hx-ticks">
+                  <li><Ur en="Take the history, then examine in 3D" ur="History lein, phir 3D mein examine karein" /></li>
+                  <li><Ur en="Find the diagnosis — red flags included" ur="Diagnosis dhoondein — red flags samet" /></li>
+                  <li><Ur en="Get an OSCE-style score and feedback" ur="OSCE-style score aur feedback hasil karein" /></li>
+                </ul>
+                <span className="hx-meta">{VP_CASE_COUNT} patients · guided or timed OSCE</span>
+                <span className="hx-go"><Ur en="Meet a patient" ur="Ek patient se milein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+              </div>
+            </a>
+          </li>
+        </ul>
         <p className="hf-foot">
           <Languages className="h-4 w-4" aria-hidden="true" /> Everything is in English and Roman Urdu.
           <a href="/manual-therapy"><Hand className="h-4 w-4" aria-hidden="true" /> Manual therapy techniques</a>
