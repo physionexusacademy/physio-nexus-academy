@@ -85,3 +85,32 @@ jobs:
 
           echo; echo "=== DNS from 1.1.1.1 and 8.8.8.8 (A, AAAA, HTTPS record with ECH)"
           for r in 1.1.1.1 8.8.8.8; do echo "-- $r"; dig +short @"$r" physionexusacademy.com A; dig +short @"$r" physionexusacademy.com AAAA; dig +short @"$r" physionexusacademy.com HTTPS | cut -c1-200; done
+
+      - name: The other Cloudflare addresses that Pakistan is given (188.114.96.0/20) and what other resolvers answer
+        shell: bash
+        run: |
+          set +e
+          url="https://physionexusacademy.com/"
+          echo "=== does the site answer correctly on the addresses a Pakistani PC was given? (curl --resolve to each)"
+          for ip in 188.114.96.6 188.114.97.6 104.21.8.143 172.67.188.121; do
+            printf '%-16s' "$ip"
+            curl -sS -o /dev/null -m 20 --resolve "physionexusacademy.com:443:$ip" -w 'status=%{http_code} tls=%{time_appconnect}s total=%{time_total}s\n' "$url" 2>&1 | tail -1
+            echo "   trace: $(curl -sS -m 20 --resolve "physionexusacademy.com:443:$ip" "${url}cdn-cgi/trace" 2>&1 | grep -E '^(colo|http|tls|sni)=' | tr '\n' ' ')"
+            echo "   cert:  $(echo | openssl s_client -connect "$ip:443" -servername physionexusacademy.com 2>/dev/null | openssl x509 -noout -serial -enddate 2>/dev/null | tr '\n' ' ')"
+          done
+
+          echo; echo "=== what different resolvers answer from this network"
+          for r in 1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4 9.9.9.9 208.67.222.222 94.140.14.14; do
+            printf '%-16s' "$r"; dig +short +time=3 +tries=1 @"$r" physionexusacademy.com A | tr '\n' ' '; echo
+          done
+
+          echo; echo "=== the zone's own name servers (authoritative answers)"
+          for ns in ridge.ns.cloudflare.com tia.ns.cloudflare.com; do
+            printf '%-26s' "$ns"; dig +short +time=3 +tries=1 @"$ns" physionexusacademy.com A | tr '\n' ' '; echo
+          done
+          echo "-- with a client-subnet hint from Pakistan (PTCL 39.32.0.0/24, Jazz 119.160.0.0/24, Nayatel 202.163.64.0/24)"
+          for sub in 39.32.0.0/24 119.160.0.0/24 202.163.64.0/24; do
+            printf '%-20s' "$sub"; dig +short +time=3 +tries=1 +subnet=$sub @ridge.ns.cloudflare.com physionexusacademy.com A | tr '\n' ' '; echo
+            printf '%-20s' "  8.8.8.8 + subnet"; dig +short +time=3 +tries=1 +subnet=$sub @8.8.8.8 physionexusacademy.com A | tr '\n' ' '; echo
+          done
+
