@@ -92,7 +92,7 @@ export function WelcomeChat({ lessons, onComplete }: { lessons: TeacherLessonCar
   const firstLesson = firstStep && firstStep.kind === "lesson" ? lessons.find((lesson) => lesson.slug === firstStep.lesson) : undefined;
 
   return (
-    <div className="space-y-4" data-pna-teacher-welcome="v1">
+    <div className="pna-console space-y-4" data-pna-teacher-welcome="v1">
       <TeacherBubble label="PNA Teacher">
         <RichText
           text={
@@ -181,7 +181,7 @@ export function WelcomeChat({ lessons, onComplete }: { lessons: TeacherLessonCar
       {typing ? <TypingBubble /> : null}
 
       {!typing ? (
-        <div className="flex flex-wrap gap-2 pl-10 sm:pl-[3.25rem]">
+        <div className="pna-dock flex flex-wrap gap-2.5" data-prompt={step === 0 ? "Language · Zabaan" : t(lang, "Your move", "Aap ki baari")}>
           {step === 0 ? (
             <>
               <Chip onClick={() => advance({ lang: "en" })}>English</Chip>

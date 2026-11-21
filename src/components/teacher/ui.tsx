@@ -37,20 +37,58 @@ export function RichText({ text, className }: { text: string; className?: string
   );
 }
 
-export function TeacherAvatar({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+export type AvatarState = "idle" | "thinking" | "speaking";
+
+/** The teacher. Inside the Mission Console (see teacher.css) it is an orb whose ring turns while the teacher thinks or speaks. */
+export function TeacherAvatar({ size = "md", state = "idle" }: { size?: "sm" | "md" | "lg"; state?: AvatarState }) {
   const dims = size === "lg" ? "h-14 w-14" : size === "sm" ? "h-8 w-8" : "h-10 w-10";
   const icon = size === "lg" ? "h-7 w-7" : size === "sm" ? "h-4 w-4" : "h-5 w-5";
   return (
-    <span
-      className={cn(
-        "relative flex flex-none items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-navy-700 text-white shadow-sm",
-        dims,
-      )}
-      aria-hidden="true"
-    >
-      <GraduationCap className={icon} />
-      <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
+    <span className="pna-orb relative flex-none" data-state={state} aria-hidden="true">
+      <span className="pna-orb-ring" />
+      <span
+        className={cn(
+          "pna-orb-core relative flex flex-none items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-navy-700 text-white shadow-sm",
+          dims,
+        )}
+      >
+        <GraduationCap className={icon} />
+        <span className="pna-orb-dot absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
+      </span>
     </span>
+  );
+}
+
+/** A round progress gauge (0 to 100) for the console's head-up display. */
+export function ProgressRing({ percent, label, compact = false }: { percent: number; label: string; compact?: boolean }) {
+  const radius = 18;
+  const circumference = 2 * Math.PI * radius;
+  const value = Math.max(0, Math.min(100, percent));
+  return (
+    <div className={cn("pna-ring relative flex-none", compact ? "h-11 w-11" : "h-12 w-12")} role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={value}>
+      <svg viewBox="0 0 44 44" className="h-full w-full -rotate-90" aria-hidden="true">
+        <circle cx="22" cy="22" r={radius} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="4" />
+        <circle
+          cx="22"
+          cy="22"
+          r={radius}
+          fill="none"
+          stroke="url(#pna-ring-grad)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - value / 100)}
+          className="pna-ring-arc"
+        />
+        <defs>
+          <linearGradient id="pna-ring-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#7fe6dc" />
+            <stop offset="100%" stopColor="#8b8dff" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <span className="pna-ring-text absolute inset-0 flex items-center justify-center text-[12px] font-extrabold tabular-nums text-white">{value}%</span>
+    </div>
   );
 }
 
@@ -91,22 +129,28 @@ export function TeacherBubble({
   onListen,
   listening = false,
   showAvatar = true,
+  tray,
+  avatarState = "idle",
 }: {
   children: ReactNode;
-  label?: string;
+  label?: ReactNode;
   tone?: BubbleTone;
   wide?: boolean;
   onListen?: () => void;
   listening?: boolean;
   showAvatar?: boolean;
+  /** An interactive instrument (widget, table, game) shown on its own tray under the message. */
+  tray?: ReactNode;
+  avatarState?: AvatarState;
 }) {
   const style = toneStyles[tone];
   return (
     <div className="flex animate-fadeUp items-start gap-2.5 sm:gap-3">
-      <div className="w-8 flex-none sm:w-10">{showAvatar ? <TeacherAvatar size="sm" /> : null}</div>
+      <div className="w-8 flex-none sm:w-10">{showAvatar ? <TeacherAvatar size="sm" state={listening ? "speaking" : avatarState} /> : null}</div>
       <div
         className={cn(
-          "relative min-w-0 rounded-2xl rounded-tl-md border px-4 py-3 shadow-sm sm:px-5 sm:py-4",
+          "pna-bubble relative min-w-0 rounded-2xl rounded-tl-md border px-4 py-3 shadow-sm sm:px-5 sm:py-4",
+          `pna-tone-${tone}`,
           style.box,
           wide ? "w-full" : "max-w-[min(42rem,100%)]",
         )}
@@ -114,7 +158,7 @@ export function TeacherBubble({
         {label || onListen ? (
           <div className="mb-1.5 flex items-center justify-between gap-3">
             {label ? (
-              <p className={cn("text-[11px] font-extrabold uppercase tracking-[0.14em]", style.label)}>{label}</p>
+              <p className={cn("pna-label text-xs font-extrabold uppercase tracking-[0.14em]", style.label)}>{label}</p>
             ) : (
               <span />
             )}
@@ -122,7 +166,7 @@ export function TeacherBubble({
               <button
                 type="button"
                 onClick={onListen}
-                className="inline-flex h-7 w-7 flex-none items-center justify-center rounded-full text-slate-500 transition hover:bg-white hover:text-teal-700"
+                className="pna-listen inline-flex h-8 w-8 flex-none items-center justify-center rounded-full text-slate-500 transition hover:bg-white hover:text-teal-700"
                 aria-label={listening ? "Stop reading aloud" : "Read this message aloud"}
               >
                 {listening ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
@@ -130,7 +174,8 @@ export function TeacherBubble({
             ) : null}
           </div>
         ) : null}
-        <div className="text-[15px] leading-7 text-slate-700 sm:text-base sm:leading-8">{children}</div>
+        <div className="pna-bubble-text text-[15px] leading-7 text-slate-700 sm:text-base sm:leading-8">{children}</div>
+        {tray ? <div className="pna-tray mt-3">{tray}</div> : null}
       </div>
     </div>
   );
@@ -139,7 +184,7 @@ export function TeacherBubble({
 export function StudentBubble({ children }: { children: ReactNode }) {
   return (
     <div className="flex animate-fadeUp justify-end">
-      <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-teal-700 px-4 py-2.5 text-[15px] font-semibold leading-6 text-white shadow-sm">
+      <div className="pna-student max-w-[85%] rounded-2xl rounded-tr-md bg-teal-700 px-4 py-2.5 text-[15px] font-semibold leading-6 text-white shadow-sm">
         {children}
       </div>
     </div>
@@ -150,9 +195,9 @@ export function TypingBubble() {
   return (
     <div className="flex items-start gap-2.5 sm:gap-3" aria-hidden="true">
       <div className="w-8 flex-none sm:w-10">
-        <TeacherAvatar size="sm" />
+        <TeacherAvatar size="sm" state="thinking" />
       </div>
-      <div className="pna-typing rounded-2xl rounded-tl-md border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
+      <div className="pna-typing pna-bubble pna-tone-plain rounded-2xl rounded-tl-md border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
         <span />
         <span />
         <span />
@@ -178,10 +223,10 @@ export function Chip({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-left text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        variant === "primary" && "bg-teal-700 text-white shadow-sm hover:bg-teal-800",
-        variant === "soft" && "border border-teal-200 bg-white text-teal-800 hover:border-teal-400 hover:bg-teal-50",
-        variant === "ghost" && "text-slate-600 hover:bg-slate-100 hover:text-navy-800",
+        "pna-chip inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-left text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+        variant === "primary" && "pna-chip--primary bg-teal-700 text-white shadow-sm hover:bg-teal-800",
+        variant === "soft" && "pna-chip--soft border border-teal-200 bg-white text-teal-800 hover:border-teal-400 hover:bg-teal-50",
+        variant === "ghost" && "pna-chip--ghost text-slate-600 hover:bg-slate-100 hover:text-navy-800",
       )}
     >
       {children}
@@ -194,7 +239,7 @@ export function LangToggle({ lang, onChange }: { lang: TeacherLang; onChange: (l
     <div
       role="group"
       aria-label="Teaching language"
-      className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm"
+      className="pna-lang inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm"
     >
       <Languages className="ml-1.5 h-4 w-4 text-teal-700" aria-hidden="true" />
       {(

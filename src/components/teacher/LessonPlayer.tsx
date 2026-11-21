@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
+  ArrowDown,
   ArrowRight,
   BookOpenCheck,
   ExternalLink,
+  Flame,
   Layers,
   MessageCircle,
   PartyPopper,
@@ -36,8 +38,10 @@ import { useSpeech } from "./useSpeech";
 import {
   Chip,
   LangToggle,
+  ProgressRing,
   RichText,
   StudentBubble,
+  TeacherAvatar,
   TeacherBubble,
   TypingBubble,
   pick,
@@ -138,8 +142,8 @@ export function LessonPlayer({ meta }: { meta: TeacherLessonMeta }) {
   if (lesson) return <LessonConversation lesson={lesson} nextLesson={meta.next} />;
 
   return (
-    <div className="mx-auto w-full max-w-3xl" data-pna-teacher-lesson={meta.slug} aria-busy={!failed}>
-      <div className="mt-5 space-y-4">
+    <div className="pna-console mx-auto w-full max-w-3xl" data-pna-teacher-lesson={meta.slug} aria-busy={!failed}>
+      <div className="space-y-4">
         <TeacherBubble>
           <RichText text={`Hello! 👋\nToday's concept: **${meta.title}**\n${meta.goal.en}`} />
         </TeacherBubble>
@@ -178,6 +182,7 @@ function LessonConversation({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userActed = useRef(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [atBottom, setAtBottom] = useState(true);
   // The recorded voice of this lesson (English and Roman Urdu); the buttons appear only when the lesson has a recording in the language shown.
   const speech = useSpeech(`lesson-${lesson.slug}`);
   const canListen = speech.has(lang === "ur" ? "ur" : "en");
@@ -205,6 +210,15 @@ function LessonConversation({
     if (ready) saveLessonSession(lesson.slug, session);
   }, [ready, lesson.slug, session]);
 
+  // "Jump to the latest message" appears when the newest message is out of sight
+  useEffect(() => {
+    const target = bottomRef.current;
+    if (!target || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setAtBottom(entry.isIntersecting), { rootMargin: "0px 0px 140px 0px" });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [ready]);
+
   useEffect(() => {
     if (!userActed.current) return;
     bottomRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "end" });
@@ -221,6 +235,19 @@ function LessonConversation({
     const beat = beats[index];
     return beat.type === "check" && tries?.length ? Boolean(beat.options[tries[0]]?.correct) : false;
   }).length;
+
+  // consecutive checks answered right at the first try, counted back from the latest answered check
+  const streak = useMemo(() => {
+    let run = 0;
+    for (const index of checkIndexes) {
+      const tries = session.attempts[String(index)];
+      if (!tries?.length) break;
+      const beat = beats[index];
+      if (beat.type === "check" && beat.options[tries[0]]?.correct) run += 1;
+      else run = 0;
+    }
+    return run;
+  }, [beats, checkIndexes, session.attempts]);
 
   const entryText = useCallback(
     (entry: Entry): string => {
@@ -403,35 +430,35 @@ function LessonConversation({
         );
       case "widget":
         return (
-          <TeacherBubble key={key} {...common} wide>
+          <TeacherBubble key={key} {...common} wide tray={<TeacherWidget widget={beat.widget} lang={lang} />}>
             <RichText text={pick(beat.intro, lang)} />
-            <div className="mt-3">
-              <TeacherWidget widget={beat.widget} lang={lang} />
-            </div>
           </TeacherBubble>
         );
       case "demo":
         return (
-          <TeacherBubble key={key} {...common} wide>
+          <TeacherBubble key={key} {...common} wide tray={<LessonDemo demoKey={beat.demo} title={beat.title} />}>
             <RichText text={pick(beat.intro, lang)} />
-            <div className="mt-3">
-              <LessonDemo demoKey={beat.demo} title={beat.title} />
-            </div>
           </TeacherBubble>
         );
       case "sort":
         return (
-          <TeacherBubble key={key} {...common} wide>
+          <TeacherBubble
+            key={key}
+            {...common}
+            wide
+            tray={
+              <SortActivity
+                categories={beat.categories}
+                items={beat.items}
+                lang={lang}
+                revealAll={hasEntry("sortDone", index)}
+                onDone={(correct, total) =>
+                  respond({ en: "Done sorting ✅", ur: "Sorting mukammal ✅" }, [{ k: "sortDone", i: index, correct, total }])
+                }
+              />
+            }
+          >
             <RichText text={pick(beat.prompt, lang)} />
-            <SortActivity
-              categories={beat.categories}
-              items={beat.items}
-              lang={lang}
-              revealAll={hasEntry("sortDone", index)}
-              onDone={(correct, total) =>
-                respond({ en: "Done sorting ✅", ur: "Sorting mukammal ✅" }, [{ k: "sortDone", i: index, correct, total }])
-              }
-            />
           </TeacherBubble>
         );
       case "steps":
@@ -474,7 +501,7 @@ function LessonConversation({
                   ] as const
                 ).map(([label, value]) => (
                   <div key={label} className="rounded-xl bg-white/80 p-3">
-                    <dt className="text-[11px] font-extrabold uppercase tracking-wider text-teal-700">{label}</dt>
+                    <dt className="text-xs font-extrabold uppercase tracking-wider text-teal-700">{label}</dt>
                     <dd className="mt-1 text-[15px] leading-7 text-slate-700">{value}</dd>
                   </div>
                 ))}
@@ -497,39 +524,45 @@ function LessonConversation({
         );
       case "compare":
         return (
-          <TeacherBubble key={key} {...common} wide>
-            <p className="font-bold text-navy-800">{pick(beat.title, lang)}</p>
-            <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200" data-horizontal-scroll>
-              <table className="w-full min-w-[30rem] border-collapse text-left text-sm">
-                <thead className="bg-slate-50">
-                  <tr>
-                    {beat.headers.map((header, headerIndex) => (
-                      <th
-                        key={header.en}
-                        scope="col"
-                        className={cn(
-                          "px-3 py-2 text-xs font-extrabold uppercase tracking-wider",
-                          headerIndex === 1 ? "text-violet-800" : headerIndex === 2 ? "text-teal-800" : "text-slate-600",
-                        )}
-                      >
-                        {pick(header, lang)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {beat.rows.map((row) => (
-                    <tr key={row[0].en} className="border-t border-slate-100">
-                      <th scope="row" className="px-3 py-2 font-bold text-navy-800">
-                        {pick(row[0], lang)}
-                      </th>
-                      <td className="px-3 py-2 text-slate-700">{pick(row[1], lang)}</td>
-                      <td className="px-3 py-2 text-slate-700">{pick(row[2], lang)}</td>
+          <TeacherBubble
+            key={key}
+            {...common}
+            wide
+            tray={
+              <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white" data-horizontal-scroll>
+                <table className="w-full min-w-[30rem] border-collapse text-left text-sm">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      {beat.headers.map((header, headerIndex) => (
+                        <th
+                          key={header.en}
+                          scope="col"
+                          className={cn(
+                            "px-3 py-2 text-xs font-extrabold uppercase tracking-wider",
+                            headerIndex === 1 ? "text-violet-800" : headerIndex === 2 ? "text-teal-800" : "text-slate-600",
+                          )}
+                        >
+                          {pick(header, lang)}
+                        </th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {beat.rows.map((row) => (
+                      <tr key={row[0].en} className="border-t border-slate-100">
+                        <th scope="row" className="px-3 py-2 font-bold text-navy-800">
+                          {pick(row[0], lang)}
+                        </th>
+                        <td className="px-3 py-2 text-slate-700">{pick(row[1], lang)}</td>
+                        <td className="px-3 py-2 text-slate-700">{pick(row[2], lang)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+          >
+            <p className="font-bold text-navy-800">{pick(beat.title, lang)}</p>
           </TeacherBubble>
         );
       default:
@@ -587,11 +620,21 @@ function LessonConversation({
           const option = beat.options[entry.o];
           const correct = Boolean(option?.correct);
           const text = pick(option.feedback, lang);
+          const firstTry = correct && (session.attempts[String(entry.i)] ?? [])[0] === entry.o;
           return (
             <TeacherBubble
               key={key}
               tone={correct ? "correct" : "retry"}
-              label={correct ? t(lang, "✅ Correct!", "✅ Sahi jawab!") : t(lang, "🤔 Not quite", "🤔 Abhi nahi")}
+              label={
+                correct ? (
+                  <>
+                    {t(lang, "✅ Correct!", "✅ Sahi jawab!")}
+                    {firstTry ? <span className="pna-xp">+5 XP</span> : null}
+                  </>
+                ) : (
+                  t(lang, "🤔 Not quite", "🤔 Abhi nahi")
+                )
+              }
               onListen={listen(text)}
               listening={speech.speakingId === key}
             >
@@ -740,59 +783,69 @@ function LessonConversation({
   const progressPercent = ended ? 100 : Math.round(((lastBeat + 1) / beats.length) * 100);
   const doubtMessage = `Assalam-o-Alaikum PNA! I'm learning "${lesson.title}" on PNA Teacher and I have a question: `;
 
+  const orbState = typing ? "thinking" : speech.speakingId ? "speaking" : "idle";
+  const status = typing
+    ? t(lang, "Thinking…", "Soch raha hun…")
+    : speech.speakingId
+      ? t(lang, "Speaking…", "Bol raha hun…")
+      : ended
+        ? t(lang, "Mission complete", "Mission mukammal")
+        : t(lang, "Online", "Online");
+  const xpNow = lessonXp(firstTryCorrect);
+
   return (
-    <div className="mx-auto w-full max-w-3xl" data-pna-teacher-lesson={lesson.slug}>
-      <div className="sticky top-20 z-30 -mx-4 border-b border-slate-200 bg-white/95 px-4 py-2.5 backdrop-blur-sm sm:mx-0 sm:rounded-b-2xl sm:border-x">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-3">
-            <div
-              className="h-2 min-w-24 flex-1 overflow-hidden rounded-full bg-slate-100"
-              role="progressbar"
-              aria-label={t(lang, "Lesson progress", "Lesson progress")}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={progressPercent}
-            >
-              <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-teal-700 transition-all duration-500" style={{ width: `${progressPercent}%` }} />
-            </div>
-            <span className="flex-none text-xs font-bold tabular-nums text-slate-500">{progressPercent}%</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <LangToggle lang={lang} onChange={changeLang} />
-            {canListen ? (
-              <button
-                type="button"
-                onClick={toggleVoice}
-                aria-pressed={voiceOn}
-                title={voiceOn ? "Stop reading new messages aloud" : "Read new messages aloud (recorded male voice)"}
-                className={cn(
-                  "inline-flex h-9 w-9 items-center justify-center rounded-full border transition disabled:opacity-40",
-                  voiceOn ? "border-teal-700 bg-teal-700 text-white" : "border-slate-200 bg-white text-slate-600 hover:text-teal-700",
-                )}
-              >
-                {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-                <span className="sr-only">{t(lang, "Teacher voice", "Teacher ki awaaz")}</span>
-              </button>
-            ) : null}
+    <div className="pna-console mx-auto w-full max-w-3xl" data-pna-teacher-lesson={lesson.slug}>
+      <div className="pna-toolbar">
+        <LangToggle lang={lang} onChange={changeLang} />
+        <div className="flex items-center gap-1.5">
+          {canListen ? (
             <button
               type="button"
-              onClick={restart}
-              title={t(lang, "Start the lesson again", "Lesson dobara shuru karein")}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:text-teal-700"
+              onClick={toggleVoice}
+              aria-pressed={voiceOn}
+              title={voiceOn ? "Stop reading new messages aloud" : "Read new messages aloud (recorded male voice)"}
+              className="pna-hud-btn"
             >
-              <RotateCcw className="h-4 w-4" />
-              <span className="sr-only">{t(lang, "Restart lesson", "Lesson restart")}</span>
+              {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              <span className="sr-only">{t(lang, "Teacher voice", "Teacher ki awaaz")}</span>
             </button>
-          </div>
+          ) : null}
+          <button type="button" onClick={restart} title={t(lang, "Start the lesson again", "Lesson dobara shuru karein")} className="pna-hud-btn">
+            <RotateCcw className="h-4 w-4" />
+            <span className="sr-only">{t(lang, "Restart lesson", "Lesson restart")}</span>
+          </button>
         </div>
-        {voiceOn && speech.note ? (
-          <p role="status" className="mt-2 rounded-lg bg-amber-50 px-3 py-1.5 text-xs leading-5 text-amber-900">
-            {speech.note}
-          </p>
-        ) : null}
+      </div>
+      {voiceOn && speech.note ? (
+        <p role="status" className="mb-3 rounded-lg bg-amber-100 px-3 py-1.5 text-xs leading-5 text-amber-950">
+          {speech.note}
+        </p>
+      ) : null}
+
+      <div className="pna-hud">
+        <div className="flex items-center gap-2.5">
+          <TeacherAvatar size="sm" state={orbState} />
+          <div className="min-w-0 flex-1">
+            <p className="pna-hud-status" aria-hidden="true">
+              {status}
+            </p>
+            <p className="pna-hud-title truncate">{lesson.title}</p>
+          </div>
+          <span className="pna-stat" title={t(lang, "XP you will earn: 30 plus 5 for every check answered right at the first try", "Aap ko milne wala XP: 30 aur har pehli koshish ke sahi jawab par 5")}>
+            <Zap className="h-4 w-4 text-amber-300" aria-hidden="true" />
+            {xpNow}
+            <span className="sr-only"> XP</span>
+          </span>
+          <span className="pna-stat" data-hot={streak >= 2 ? "true" : "false"} title={t(lang, "Checks right at the first try, in a row", "Lagataar pehli koshish ke sahi jawab")}>
+            <Flame className="h-4 w-4" aria-hidden="true" />
+            {streak}
+            <span className="sr-only">{t(lang, " in a row", " lagataar")}</span>
+          </span>
+          <ProgressRing percent={progressPercent} label={t(lang, "Lesson progress", "Lesson progress")} compact />
+        </div>
       </div>
 
-      <div className="mt-5 space-y-4" role="log" aria-live="polite" aria-label={t(lang, "Lesson conversation", "Lesson ki guftagu")}>
+      <div className="space-y-4" role="log" aria-live="polite" aria-label={t(lang, "Lesson conversation", "Lesson ki guftagu")}>
         {session.log.map(renderEntry)}
         {typing ? <TypingBubble /> : null}
       </div>
@@ -810,19 +863,29 @@ function LessonConversation({
           doubtHref={whatsappLink(doubtMessage)}
         />
       ) : (
-        <div className="mt-5 pl-10 sm:pl-[3.25rem]">
-          <div className="flex min-h-11 flex-wrap items-center gap-2">{renderChips()}</div>
+        <div className="pna-dock" data-prompt={t(lang, "Your move", "Aap ki baari")}>
+          <div className="flex min-h-12 flex-wrap items-center gap-2.5">{renderChips()}</div>
           <a
             href={whatsappLink(doubtMessage)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-teal-700"
+            className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-teal-300"
           >
             <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
             {t(lang, "Still stuck? Ask a PNA teacher on WhatsApp", "Phir bhi atke hain? PNA teacher se WhatsApp par poochein")}
           </a>
         </div>
       )}
+      {!atBottom && ready && session.log.length > 1 ? (
+        <button
+          type="button"
+          className="pna-jump"
+          onClick={() => bottomRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "end" })}
+        >
+          <ArrowDown className="h-4 w-4" aria-hidden="true" />
+          {t(lang, "Latest message", "Naya message")}
+        </button>
+      ) : null}
       <div ref={bottomRef} className="h-4 scroll-mb-36 lg:scroll-mb-10" />
     </div>
   );
@@ -859,7 +922,7 @@ function CompletionCard({
         : t(lang, "You finished — that's what matters. Mistakes today mean fewer mistakes in the clinic.", "Aap ne mukammal kiya — yehi asal baat hai. Aaj ki ghaltiyan clinic mein kam ghaltiyan hain.");
 
   return (
-    <section className="mt-6 animate-fadeUp overflow-hidden rounded-3xl border border-teal-200 bg-gradient-to-br from-white via-teal-50/60 to-cyan-50 shadow-sm" aria-labelledby="pna-lesson-complete">
+    <section className="pna-complete mt-6 animate-fadeUp overflow-hidden rounded-3xl border border-teal-200 bg-gradient-to-br from-white via-teal-50/60 to-cyan-50 shadow-sm" aria-labelledby="pna-lesson-complete">
       <div className="p-5 sm:p-7">
         <div className="flex items-start gap-3">
           <span className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-teal-700 text-white">

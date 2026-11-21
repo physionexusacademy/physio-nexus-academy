@@ -80,3 +80,394 @@
     left: var(--pna-osc-from);
   }
 }
+
+/* ------------------------------------------------------------------------------------------------------------------------------
+   PNA Teacher — "Mission Console". Everything below is scoped to .pna-console, so the same components keep their light look elsewhere
+   (Skills Lab teacher, flashcards...). The console is dark glass with neon edges in both site themes.
+   ------------------------------------------------------------------------------------------------------------------------------ */
+
+.pna-console {
+  --pna-teal: #7fe6dc;
+  --pna-line: rgba(127, 230, 220, 0.24);
+  position: relative;
+  isolation: isolate;
+  border-radius: 28px;
+  padding: 14px;
+  color: #d6e9f5;
+  border: 1px solid var(--pna-line);
+  background:
+    radial-gradient(900px 380px at 0% -5%, rgba(20, 184, 166, 0.2), transparent 60%),
+    radial-gradient(800px 360px at 100% 0%, rgba(99, 102, 241, 0.22), transparent 60%),
+    linear-gradient(180deg, #071f38 0%, #061a30 60%, #051427 100%);
+  box-shadow: 0 28px 60px -28px rgba(2, 12, 27, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+@media (min-width: 640px) {
+  .pna-console {
+    padding: 20px;
+  }
+}
+.pna-console::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(127, 230, 220, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 230, 220, 0.05) 1px, transparent 1px);
+  background-size: 38px 38px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 65%);
+  mask-image: linear-gradient(180deg, #000, transparent 65%);
+}
+
+/* Head-up display: stays under the site header while the lesson scrolls */
+.pna-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pna-hud {
+  position: sticky;
+  top: 4.75rem;
+  z-index: 30;
+  margin: 0 -4px 16px;
+  padding: 8px 12px;
+  border-radius: 22px;
+  border: 1px solid var(--pna-line);
+  background: rgba(6, 26, 46, 0.86);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8);
+}
+.pna-hud-status {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #9fd9d3;
+}
+.pna-hud-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+}
+@media (max-width: 479px) {
+  .pna-hud-title {
+    display: none;
+  }
+  .pna-hud-status {
+    font-size: 13px;
+  }
+}
+.pna-stat {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #eaf8ff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.pna-stat[data-hot="true"] {
+  color: #ffe2a8;
+  border-color: rgba(255, 190, 80, 0.6);
+  box-shadow: 0 0 18px -4px rgba(255, 170, 60, 0.6);
+}
+.pna-hud-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: #c9e4f3;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.pna-hud-btn:hover {
+  color: #fff;
+  border-color: var(--pna-teal);
+}
+.pna-hud-btn[aria-pressed="true"] {
+  color: #052036;
+  background: var(--pna-teal);
+  border-color: var(--pna-teal);
+}
+.pna-ring-arc {
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 0 4px rgba(127, 230, 220, 0.7));
+}
+
+/* The orb: the teacher's avatar inside the console */
+.pna-orb-ring {
+  display: none;
+}
+.pna-console .pna-orb-ring {
+  display: block;
+  position: absolute;
+  inset: -4px;
+  border-radius: 18px;
+  padding: 2px;
+  background: conic-gradient(from 0deg, #7fe6dc, #6366f1, #ff8fd8, #7fe6dc);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0.9;
+  animation: pna-orb-spin 9s linear infinite;
+}
+.pna-console .pna-orb[data-state="thinking"] .pna-orb-ring {
+  animation-duration: 1.1s;
+}
+.pna-console .pna-orb[data-state="speaking"] .pna-orb-ring {
+  animation-duration: 2.6s;
+  filter: drop-shadow(0 0 8px rgba(127, 230, 220, 0.9));
+}
+.pna-console .pna-orb-core {
+  background: radial-gradient(circle at 30% 25%, #19c5b8 0%, #0b6f8a 55%, #123a6b 100%);
+  box-shadow: 0 0 22px -4px rgba(34, 211, 238, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.pna-console .pna-orb-dot {
+  border-color: #061a30;
+}
+@keyframes pna-orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Messages */
+.pna-console .pna-bubble {
+  --tone: #7fe6dc;
+  color: #d6e9f5;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-left: 3px solid var(--tone);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.04));
+  box-shadow: 0 14px 32px -20px rgba(0, 0, 0, 0.8);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.pna-console .pna-tone-analogy { --tone: #ffd37a; }
+.pna-console .pna-tone-memory { --tone: #b9a2ff; }
+.pna-console .pna-tone-mistake { --tone: #ff8fa3; }
+.pna-console .pna-tone-clinic { --tone: #5eead4; }
+.pna-console .pna-tone-check { --tone: #7dd3fc; }
+.pna-console .pna-tone-try { --tone: #6ee7b7; }
+.pna-console .pna-tone-correct { --tone: #4ade80; box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.35), 0 0 30px -8px rgba(74, 222, 128, 0.6); animation: pna-pop 0.5s cubic-bezier(0.22, 1.4, 0.36, 1); }
+.pna-console .pna-tone-retry { --tone: #fbbf24; }
+.pna-console .pna-tone-simpler { --tone: #67e8f9; }
+.pna-console .pna-tone-safety { --tone: #ff6b6b; box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.35), 0 0 26px -8px rgba(255, 107, 107, 0.65); }
+.pna-console .pna-tone-evidence { --tone: #a5b4fc; }
+.pna-console .pna-bubble .pna-label {
+  color: var(--tone);
+}
+.pna-console .pna-bubble-text {
+  color: #d6e9f5;
+}
+.pna-console .pna-listen {
+  color: #9fbdd1;
+}
+.pna-console .pna-listen:hover {
+  color: #052036;
+  background: var(--pna-teal);
+}
+.pna-console .pna-student {
+  background: linear-gradient(135deg, #0ea5a4, #6366f1);
+  box-shadow: 0 10px 24px -12px rgba(99, 102, 241, 0.9);
+}
+.pna-console .pna-typing span {
+  background: #7fe6dc;
+}
+.pna-xp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #062a1a;
+  background: linear-gradient(135deg, #86efac, #4ade80);
+  box-shadow: 0 0 16px -2px rgba(74, 222, 128, 0.8);
+  animation: pna-xp-pop 0.9s cubic-bezier(0.22, 1.4, 0.36, 1) both;
+}
+@keyframes pna-pop {
+  0% { transform: scale(0.96); }
+  60% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+@keyframes pna-xp-pop {
+  0% { transform: translateY(6px) scale(0.6); opacity: 0; }
+  60% { transform: translateY(-2px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Light utility classes used inside lesson text become readable on the dark glass (the interactive tray is excluded: it is a sibling, not a child) */
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-navy-800, .text-navy-700, .text-slate-900) { color: #ffffff; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-slate-700, .text-slate-600) { color: #d0e4f2; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-slate-500, .text-slate-400) { color: #a3c0d4; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-teal-600, .text-teal-700, .text-teal-800) { color: #7fe6dc; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-amber-500, .text-amber-800, .text-amber-900) { color: #ffd37a; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-emerald-800, .text-emerald-900) { color: #86efc3; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.text-violet-600, .text-violet-800, .text-violet-900) { color: #cdbfff; }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.bg-white, .bg-white\/80, .bg-white\/70, .bg-slate-50, .bg-teal-50, .bg-violet-50, .bg-emerald-50) { background: rgba(255, 255, 255, 0.07); }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.border-slate-200, .border-white, .border-teal-200, .border-teal-100) { border-color: rgba(255, 255, 255, 0.15); }
+.pna-console :is(.pna-bubble-text, .pna-complete) .bg-emerald-200 { background: #5eead4; color: #04332e; }
+.pna-console :is(.pna-bubble-text, .pna-complete) .bg-teal-100 { background: #5eead4; color: #04332e; }
+.pna-console :is(.pna-bubble-text, .pna-complete) .bg-teal-700 { background: linear-gradient(135deg, #14b8a6, #6366f1); }
+.pna-console :is(.pna-bubble-text, .pna-complete) .hover\:bg-teal-800:hover { filter: brightness(1.1); }
+.pna-console :is(.pna-bubble-text, .pna-complete) :is(.hover\:bg-teal-50:hover, .hover\:bg-slate-50:hover, .hover\:bg-slate-100:hover, .hover\:bg-emerald-100:hover) { background: rgba(127, 230, 220, 0.14); }
+.pna-console .pna-complete {
+  color: #d6e9f5;
+  border-color: rgba(127, 230, 220, 0.4);
+  background-image: linear-gradient(135deg, #0b3556 0%, #0a2340 55%, #1b1f5c 100%);
+  box-shadow: 0 0 60px -20px rgba(99, 102, 241, 0.6);
+}
+
+/* The tray: where a widget, table or game sits on the console */
+.pna-console .pna-tray {
+  border-radius: 18px;
+  padding: 10px;
+  color: #1e293b;
+  background: linear-gradient(180deg, #f7fbff, #eaf3fb);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 1px rgba(127, 230, 220, 0.25), 0 18px 40px -22px rgba(0, 0, 0, 0.85);
+}
+.pna-console .pna-tray .pna-tray-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+/* The reply dock: the one place to tap next */
+.pna-dock {
+  position: relative;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 22px;
+  border: 1px solid rgba(127, 230, 220, 0.34);
+  background: linear-gradient(180deg, rgba(127, 230, 220, 0.11), rgba(99, 102, 241, 0.1));
+  box-shadow: 0 0 40px -18px rgba(34, 211, 238, 0.7);
+}
+.pna-dock::before {
+  content: attr(data-prompt);
+  display: block;
+  flex: 0 0 100%;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pna-teal, #7fe6dc);
+}
+.pna-console .pna-chip {
+  min-height: 48px;
+  font-size: 15px;
+}
+.pna-console .pna-chip--primary {
+  border: 0;
+  color: #fff;
+  background: linear-gradient(135deg, #14b8a6, #6366f1);
+  box-shadow: 0 12px 26px -12px rgba(20, 184, 166, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.pna-console .pna-chip--primary:hover {
+  background: linear-gradient(135deg, #19cdbd, #7476ff);
+  transform: translateY(-1px);
+}
+.pna-console .pna-chip--soft {
+  color: #ecfbff;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(127, 230, 220, 0.45);
+}
+.pna-console .pna-chip--soft:hover {
+  background: rgba(127, 230, 220, 0.16);
+  border-color: #7fe6dc;
+}
+.pna-console .pna-chip--ghost {
+  color: #a8c6d9;
+}
+.pna-console .pna-chip--ghost:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.pna-console .pna-chip:focus-visible,
+.pna-console .pna-hud-btn:focus-visible,
+.pna-console .pna-lang button:focus-visible {
+  outline: 2px solid #7fe6dc;
+  outline-offset: 3px;
+  box-shadow: none;
+}
+.pna-console .pna-chip:disabled {
+  opacity: 0.55;
+}
+
+/* Language switch in the console */
+.pna-console .pna-lang {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+}
+.pna-console .pna-lang svg {
+  color: #7fe6dc;
+}
+.pna-console .pna-lang button {
+  color: #c9e4f3;
+}
+.pna-console .pna-lang button[aria-pressed="true"] {
+  color: #052036;
+  background: #7fe6dc;
+}
+
+/* Jump to the latest message */
+.pna-jump {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+  z-index: 45;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #052036;
+  background: linear-gradient(135deg, #7fe6dc, #a5b4fc);
+  box-shadow: 0 14px 30px -10px rgba(34, 211, 238, 0.7);
+  animation: pna-pop 0.4s cubic-bezier(0.22, 1.4, 0.36, 1);
+}
+@media (min-width: 1024px) {
+  .pna-jump {
+    bottom: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pna-console .pna-orb-ring,
+  .pna-console .pna-tone-correct,
+  .pna-xp,
+  .pna-jump {
+    animation: none !important;
+  }
+  .pna-ring-arc {
+    transition: none;
+  }
+}
