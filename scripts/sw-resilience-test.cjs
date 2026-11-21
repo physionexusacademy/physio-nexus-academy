@@ -42,7 +42,13 @@ const server = http.createServer((req, res) => {
     res.end(src);
     return;
   }
+  // like Cloudflare's static assets: /offline.html is sent on to /offline (a navigation must never be answered with a redirected response)
   if (url.pathname === "/offline.html") {
+    res.writeHead(307, { location: "/offline" });
+    res.end();
+    return;
+  }
+  if (url.pathname === "/offline") {
     res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });
     res.end(fs.readFileSync(path.join(PUBLIC, "offline.html")));
     return;
@@ -120,7 +126,7 @@ const cacheUrls = (p, prefix) =>
   await p.evaluate(() => navigator.serviceWorker.ready);
   await p.waitForFunction(() => navigator.serviceWorker.controller, null, { timeout: 10000 });
   let pages = await cacheUrls(p, "pna-pages-");
-  check("install saves the offline page", pages.includes("/offline.html"), pages.join(" "));
+  check("install saves the offline page (at /offline, not the redirecting /offline.html)", pages.includes("/offline") && !pages.includes("/offline.html"), pages.join(" "));
   check("install saves the home page", pages.includes("/"));
 
   // --- online: always fresh from the network, public pages are kept

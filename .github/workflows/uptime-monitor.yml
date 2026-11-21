@@ -64,7 +64,7 @@ jobs:
 
           check "Real address (home page)" "$real/" 'data-pna-home-signature="v2"' 200
           check "Real address (a lesson)" "$real/learn/gait-cycle" 'data-pna-teacher-lesson="gait-cycle"' 200
-          check "Real address (offline page)" "$real/offline.html" "We can't reach the site right now" 200
+          check "Real address (offline page)" "$real/offline" "We can't reach the site right now" 200
           check "Backup address (workers.dev)" "$backup/" 'data-pna-home-signature="v2"' 200
 
           # http:// must be sent to https:// (Always Use HTTPS), so nobody browses over plain text.

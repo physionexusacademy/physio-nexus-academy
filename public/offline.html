@@ -53,7 +53,7 @@
 (function () {
   function probe() {
     // the page itself is not answered by the network while the connection is cut: when this request succeeds, the connection is back
-    fetch("/offline.html?ping=" + Date.now(), { cache: "no-store" }).then(function (r) { if (r.ok) location.reload(); }).catch(function () {});
+    fetch("/offline?ping=" + Date.now(), { cache: "no-store" }).then(function (r) { if (r.ok) location.reload(); }).catch(function () {});
   }
   document.getElementById("retry").onclick = function () { location.reload(); };
   window.addEventListener("online", probe);
@@ -69,7 +69,7 @@
         var shown = 0;
         requests.forEach(function (request) {
           var path = new URL(request.url).pathname;
-          if (path === "/offline.html" || shown >= 14) return;
+          if (path === "/offline" || path === "/offline.html" || shown >= 14) return;
           var li = document.createElement("li");
           var a = document.createElement("a");
           a.href = path;

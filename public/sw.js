@@ -4,21 +4,23 @@
 // deployment is never hidden behind an old copy (navigations and data files ask the network first; the only thing served before the network is the
 // immutable, hash-named /_next/static files and the pictures, which cannot be out of date). What this worker adds is a safety net for the moments when the connection to the site is CUT on
 // the way (a router or an ISP filter resetting it, a weak signal): a person who has opened a public page before sees that saved page (and the data it
-// needs) instead of the browser's "This site can't be reached", and anything not saved shows /offline.html with what to try.
+// needs) instead of the browser's "This site can't be reached", and anything not saved shows the offline page (/offline, which is public/offline.html) with what to try.
 //
 // Privacy: only public pages (SAVEABLE_PAGE) are ever saved, never a page of a signed-in person (account, RehabVerse patient pages, admin, API), never a
 // response that says `private` or `no-store`, never a URL with a query (sign-in links carry codes), and the saved copies live in this browser only.
 //
 // skipWaiting + clients.claim let a new worker take over without waiting for every old PNA tab to close. Change VERSION when this file or
-// /offline.html changes: the old caches are deleted when the new worker activates.
+// public/offline.html changes: the old caches are deleted when the new worker activates.
 
-const VERSION = "2026-11-21-1";
+const VERSION = "2026-11-21-2";
 const PAGES = "pna-pages-" + VERSION;
 const STATIC = "pna-static-" + VERSION;
 const DATA = "pna-data-" + VERSION;
 const KEEP = [PAGES, STATIC, DATA];
 const LIMIT = { [PAGES]: 40, [STATIC]: 400, [DATA]: 150 };
-const OFFLINE = "/offline.html";
+// The offline page is public/offline.html. Cloudflare serves it at /offline and redirects /offline.html to it (307): a redirected response must never be
+// handed to a navigation (the browser refuses it), so the worker keeps and shows /offline, and clean() rebuilds any answer that did come through a redirect.
+const OFFLINE = "/offline";
 /** With a saved copy at hand, a page that has not answered within this time is replaced by the saved copy (a connection that hangs instead of resetting). */
 const SAVED_COPY_WAIT_MS = 8000;
 
@@ -41,6 +43,8 @@ const ok = (response) => Boolean(response) && response.status === 200 && respons
 /** ...that may be kept: nothing marked private or no-store. */
 const keepable = (response) => ok(response) && !/(?:^|,)\s*(?:no-store|private)\b/i.test(response.headers.get("cache-control") || "");
 const pageKey = (url) => url.origin + url.pathname;
+/** A saved answer is shown to a navigation as it is; one that came through a redirect is rebuilt first (the browser refuses a redirected response there). */
+const clean = (response) => (response.redirected ? new Response(response.body, { status: response.status, statusText: response.statusText, headers: response.headers }) : response);
 
 async function put(cacheName, key, response) {
   try {
@@ -67,13 +71,13 @@ async function navigate(event) {
   try {
     const response = await withTimeout(fetch(request), saved ? SAVED_COPY_WAIT_MS : 0);
     // a server error is no better than a connection that failed: a saved copy is kinder
-    if (saved && response.status >= 500) return saved;
+    if (saved && response.status >= 500) return clean(saved);
     if (saveable && !url.search && keepable(response) && !response.redirected && isHtml(response)) event.waitUntil(put(PAGES, key, response.clone()));
     return response;
   } catch (error) {
-    if (saved) return saved;
+    if (saved) return clean(saved);
     const offline = await caches.match(OFFLINE, { cacheName: PAGES });
-    if (offline) return offline;
+    if (offline) return clean(offline);
     throw error; // the browser shows its own error page, as before
   }
 }
@@ -116,7 +120,8 @@ async function staleWhileRevalidate(event, cacheName) {
 async function precache() {
   try {
     const cache = await caches.open(PAGES);
-    await cache.add(new Request(OFFLINE, { cache: "reload" }));
+    const page = await fetch(OFFLINE, { cache: "reload" });
+    if (keepable(page) && isHtml(page)) await cache.put(OFFLINE, page);
     const home = await fetch("/", { cache: "reload", headers: { Accept: "text/html" } });
     if (keepable(home) && !home.redirected && isHtml(home)) await cache.put(self.location.origin + "/", home);
   } catch {
