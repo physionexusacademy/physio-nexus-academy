@@ -527,8 +527,8 @@ jobs:
             exit 1
           fi
           echo "The real address's robots.txt is untouched."
-          offline="$(curl -fsS --connect-timeout 10 --max-time 25 "https://physionexusacademy.com/offline.html?deploy=${GITHUB_SHA}")"
-          echo "$offline" | grep -Fq "We can't reach the site right now" || { echo "::warning::/offline.html did not contain the connection-problem page"; exit 1; }
+          offline="$(curl -fsS --connect-timeout 10 --max-time 25 "https://physionexusacademy.com/offline?deploy=${GITHUB_SHA}")"
+          echo "$offline" | grep -Fq "We can't reach the site right now" || { echo "::warning::/offline did not contain the connection-problem page"; exit 1; }
           echo "The offline page is live."
 
   seo-live:
@@ -543,6 +543,27 @@ jobs:
           node-version: 22
       - name: Check every hub page and a sample of each section on production
         run: node scripts/verify-seo-production.mjs
+
+  offline-live:
+    name: Verify live offline behaviour (saved pages and the offline page when the connection is cut)
+    needs: deploy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    env:
+      PNA_BROWSER_QA_DIR: /tmp/pna-offline-qa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated browser tooling
+        run: |
+          npm install --prefix "$PNA_BROWSER_QA_DIR" --no-package-lock playwright@1.56.1
+          "$PNA_BROWSER_QA_DIR/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Cut the connection in a real browser and check what the visitor sees
+        run: NODE_PATH="$PNA_BROWSER_QA_DIR/node_modules" node scripts/verify-offline-production.cjs https://physionexusacademy.com
 
   pathway-images:
     name: Verify live pathway photos and responsive interactions

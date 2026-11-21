@@ -16,6 +16,8 @@ const read = (path: string) => readFileSync(new URL("../" + path, import.meta.ur
 const source = read("public/sw.js");
 ok(source.includes("PNA update-first service worker."), "sw.js: keeps the marker the deploy's smoke test looks for");
 ok(/const VERSION = "[^"]+";/.test(source), "sw.js: has a VERSION that old caches are named by");
+ok(/const OFFLINE = "\/offline";/.test(source) && !/OFFLINE = "\/offline\.html"/.test(source), "sw.js: keeps the offline page at /offline (Cloudflare redirects /offline.html, and a redirected answer cannot be shown to a navigation)");
+ok(/const clean = \(response\) => \(response\.redirected/.test(source) && /return clean\(offline\)/.test(source) && /return clean\(saved\)/.test(source), "sw.js: a saved or offline answer that came through a redirect is rebuilt before it is shown");
 const sandbox: Record<string, unknown> = { self: { location: { origin: "https://physionexusacademy.com" }, addEventListener() {}, skipWaiting() {}, clients: { claim() {} } }, URL, Request, Response, caches: {}, fetch() {}, setTimeout, Promise };
 vm.createContext(sandbox);
 vm.runInContext(source, sandbox);
@@ -41,6 +43,7 @@ ok(/pna-save-page/.test(runtime) && /firstVisit/.test(runtime), "PwaRuntime: the
 // --- the offline page
 const offline = read("public/offline.html");
 ok(/We can't reach the site right now/.test(offline) && /Dobara koshish/.test(offline), "offline page: says what happened in English and Roman Urdu");
+ok(/fetch\("\/offline\?ping=/.test(offline) && !/fetch\("\/offline\.html/.test(offline), "offline page: asks /offline (not the redirecting /offline.html) whether the connection is back");
 ok(/https:\/\/physio-nexus-academy\.physionexusacademypk\.workers\.dev/.test(offline) && /secure DNS/i.test(offline) && /1\.1\.1\.1/.test(offline) && /https:\/\//.test(offline), "offline page: names the backup address, Secure DNS, 1.1.1.1 and typing https://");
 ok(!/<(?:script|img|link)[^>]+(?:src|href)="https?:\/\/(?!physionexusacademy)/.test(offline), "offline page: loads nothing from other sites");
 const config = read("src/lib/site-config.ts");
@@ -63,6 +66,7 @@ ok(/isBackupHost\(url\.hostname\)/.test(worker) && /return handle\(request, url,
 
 // --- the deploy checks the backup address and keeps the smoke test marker
 const deploy = read(".github/workflows/deploy-cloudflare-production.yml");
+ok(/offline-live:/.test(deploy) && deploy.includes("scripts/verify-offline-production.cjs"), "deploy: a real browser checks the offline behaviour on the live site after every release");
 ok(deploy.includes("PNA update-first service worker.") && /physio-nexus-academy\.physionexusacademypk\.workers\.dev/.test(deploy), "deploy: still checks the service worker and now checks the backup address too");
 
 console.log(`Resilience: ${checks} checks passed (public pages are saved and nothing private is; the offline page helps; the backup address answers but is never indexed; the real address is untouched).`);

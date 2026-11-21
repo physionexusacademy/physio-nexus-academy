@@ -37,7 +37,7 @@ The site is healthy; the visitor's mobile network, Wi-Fi router or ISP resets th
 4. **Use the backup address**: <https://physio-nexus-academy.physionexusacademypk.workers.dev> (same site, different name, so a filter on the main name does not catch it; it is never shown in Google).
 5. **Secure DNS** (Chrome: Settings > Privacy and security > Security > *Use secure DNS* > Cloudflare 1.1.1.1; Android: Settings > Network > Private DNS > `one.one.one.one`; iPhone: install the free 1.1.1.1 app).
 6. A **VPN** or the free **1.1.1.1 / WARP** app.
-7. A visitor who has opened the site once before still sees the pages they visited, and a page with these tips (`/offline.html`), even when the connection is cut (the browser keeps those copies; it works only for pages opened before, in a browser that allows service workers).
+7. A visitor who has opened the site once before still sees the pages they visited, and a page with these tips (`/offline`), even when the connection is cut (the browser keeps those copies; it works only for pages opened before, in a browser that allows service workers).
 
 Send students this (WhatsApp-ready):
 
@@ -55,7 +55,7 @@ Only if one provider's customers are affected over days. Collect first: the prov
 
 - **Always Use HTTPS** is on (every `http://` visit is sent to `https://`); the deploy re-checks and re-applies it.
 - **HTTP/3 (QUIC) is off**, so every browser uses plain TLS over TCP, which more networks let through than QUIC.
-- **Service worker + `/offline.html`** (see `public/sw.js`): public pages a visitor has opened keep working when the connection is cut; nothing private is ever saved (tested by `scripts/sw-resilience-test.cjs`, checked on every deploy by `npm run validate:resilience`).
+- **Service worker + the offline page (`/offline`)** (see `public/sw.js`): public pages a visitor has opened keep working when the connection is cut; nothing private is ever saved (tested by `scripts/sw-resilience-test.cjs`, checked on every deploy by `npm run validate:resilience`).
 - **Backup address** on `workers.dev` (`src/lib/host-policy.ts`): answers like the real site, marked `noindex`, canonical to the real address, `robots.txt` disallows everything, so Google keeps ranking the real address.
 - **Uptime monitor** (`.github/workflows/uptime-monitor.yml`): hourly check of the real address, the backup address, the offline page and the http→https redirect.
 
