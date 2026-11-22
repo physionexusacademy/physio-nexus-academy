@@ -18,35 +18,35 @@
 
 ## Summary
 
-| # | Exercise | Region | Position | Tier | Phone | Distance m | Lens cm | Face model | Counted by | Moving joints: measured / tracked / not measurable | 2nd pass |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Chin tuck (neck retraction) (`chin-tuck`) | cervical | Sitting | A | side, portrait | 1 to 1.6 | 90 to 120 | optional | reps: ear_fwd | 1 / 1 / 0 |  |
-| 2 | Neck rotation (active range) (`neck-rotation`) | cervical | Sitting | A | front, portrait | 1 to 1.6 | 90 to 120 | required | reps: yaw | 1 / 0 / 0 |  |
-| 3 | Neck side bend (`neck-side-bend`) | cervical | Sitting | A | front, portrait | 1 to 1.6 | 90 to 120 | optional | reps: head_tilt | 1 / 0 / 0 |  |
-| 4 | Upper trapezius stretch (`upper-trapezius-stretch`) | cervical | Sitting, one side at a time | A | front, portrait | 1 to 1.6 | 90 to 120 | optional | timer (reach): head_tilt | 1 / 2 / 1 |  |
-| 5 | Craniocervical flexion (supine nod) (`supine-nod`) | cervical | Lying on the back | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: nod_line | 1 / 0 / 0 |  |
-| 6 | Chin tuck with head lift (`chin-tuck-head-lift`) | cervical | Lying on the back | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: head_rise | 2 / 0 / 0 |  |
-| 7 | Shoulder blade squeeze (`shoulder-blade-squeeze`) | cervical | Sitting | A | side, portrait | 1 to 1.6 | 90 to 120 | no | reps: shoulder_fwd | 1 / 2 / 0 | front |
-| 8 | Levator scapulae stretch (`levator-scapulae-stretch`) | cervical | Sitting, one side at a time | A | front, portrait | 1 to 1.6 | 90 to 120 | required | timer (reach): yaw | 3 / 1 / 1 |  |
-| 9 | Scalene stretch (`scalene-stretch`) | cervical | Sitting, one side at a time | A | front, portrait | 1 to 1.6 | 90 to 120 | optional | timer (reach): head_tilt | 2 / 2 / 1 |  |
-| 10 | Open book (side-lying rotation) (`open-book`) | thoracic | Lying on the side, one side at a time | B | head end, landscape | 1.5 to 2.5 | 30 to 50 | no | reps: shoulder_turn | 2 / 0 / 1 |  |
-| 11 | Seated thoracic rotation (`seated-thoracic-rotation`) | thoracic | Sitting, one side at a time | A | front, portrait | 1 to 1.6 | 90 to 120 | no | reps: trunk_turn | 2 / 0 / 0 |  |
-| 12 | Thoracic extension over a chair (`thoracic-extension-chair`) | thoracic | Sitting | A | side, portrait | 1 to 1.6 | 90 to 120 | optional | reps: trunk_lean | 1 / 0 / 0 |  |
-| 13 | Cat–camel (spinal mobility) (`cat-camel`) | thoracic | On hands and knees | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: head_incline | 4 / 0 / 2 |  |
-| 14 | Quadruped thoracic rotation (`quadruped-thoracic-rotation`) | thoracic | On hands and knees, one side at a time | B | front, landscape | 1.5 to 2.5 | 30 to 50 | no | reps: shoulder_turn | 2 / 2 / 1 |  |
-| 15 | Prone chest lift (thoracic extension) (`prone-thoracic-extension`) | thoracic | Lying face down or in a plank | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: trunk_lift | 2 / 0 / 1 |  |
-| 16 | Single knee to chest (`knee-to-chest`) | lumbar | Lying on the back, one side at a time | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: hip_angle | 4 / 0 / 0 |  |
-| 17 | Lumbar rotation (knee rock) (`knee-rock`) | lumbar | Lying on the back, one side at a time | B | feet end, landscape | 1.5 to 2.5 | 30 to 50 | no | reps: knee_tilt | 3 / 0 / 2 |  |
-| 18 | Glute bridge (`glute-bridge`) | lumbar | Lying on the back | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: hip_angle | 3 / 3 / 2 | feet end |
-| 19 | Single-leg bridge (`single-leg-bridge`) | lumbar | Lying on the back, one side at a time | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: hip_angle | 3 / 1 / 2 | feet end |
-| 20 | Dead bug (`dead-bug`) | lumbar | Lying on the back, one side at a time | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: leg_hip | 3 / 0 / 0 | side |
-| 21 | Bird-dog (`bird-dog`) | lumbar | On hands and knees, one side at a time | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: leg_hip | 4 / 0 / 2 | feet end |
-| 22 | Forearm plank (`front-plank`) | lumbar | Lying face down or in a plank | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | timer (steady): hip_line | 3 / 1 / 5 |  |
-| 23 | Supine marching (core control) (`supine-marching`) | lumbar | Lying on the back, one side at a time | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: hip_angle | 2 / 0 / 0 | feet end |
-| 24 | Curl-up (abdominal control) (`mcgill-curl-up`) | lumbar | Lying on the back, one side at a time | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: trunk_incline | 2 / 0 / 0 |  |
-| 25 | Glute bridge with ball squeeze (`bridge-with-ball`) | lumbar | Lying on the back | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | reps: hip_angle | 3 / 3 / 2 | feet end |
-| 26 | Standing side bend (`standing-side-bend`) | lumbar | Standing, one side at a time | A | front, portrait | 2 to 3 | 90 to 110 | no | reps: trunk_tilt | 3 / 0 / 0 |  |
-| 27 | Lying on elbows (gentle back extension) (`prone-on-elbows`) | lumbar | Lying face down or in a plank | B | side, landscape | 1.8 to 2.8 | 30 to 60 | no | timer (reach): trunk_lift | 0 / 0 / 0 |  |
+| # | Exercise | Region, tier | Position | Phone: view, orientation, distance (m), lens height (cm) | Face model | Counted by | Moving joints: measured / tracked / not measurable | 2nd pass |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Chin tuck (neck retraction) (`chin-tuck`) | cervical, A | Sitting | side, portrait, 1 to 1.6 m, 90 to 120 cm | optional | reps: ear_fwd | 1 / 1 / 0 |  |
+| 2 | Neck rotation (active range) (`neck-rotation`) | cervical, A | Sitting | front, portrait, 1 to 1.6 m, 90 to 120 cm | required | reps: yaw | 1 / 0 / 0 |  |
+| 3 | Neck side bend (`neck-side-bend`) | cervical, A | Sitting | front, portrait, 1 to 1.6 m, 90 to 120 cm | optional | reps: head_tilt | 1 / 0 / 0 |  |
+| 4 | Upper trapezius stretch (`upper-trapezius-stretch`) | cervical, A | Sitting, one side at a time | front, portrait, 1 to 1.6 m, 90 to 120 cm | optional | timer (reach): head_tilt | 1 / 2 / 1 |  |
+| 5 | Craniocervical flexion (supine nod) (`supine-nod`) | cervical, B | Lying on the back | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: nod_line | 1 / 0 / 0 |  |
+| 6 | Chin tuck with head lift (`chin-tuck-head-lift`) | cervical, B | Lying on the back | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: head_rise | 2 / 0 / 0 |  |
+| 7 | Shoulder blade squeeze (`shoulder-blade-squeeze`) | cervical, A | Sitting | side, portrait, 1 to 1.6 m, 90 to 120 cm | no | reps: shoulder_fwd | 1 / 2 / 0 | front |
+| 8 | Levator scapulae stretch (`levator-scapulae-stretch`) | cervical, A | Sitting, one side at a time | front, portrait, 1 to 1.6 m, 90 to 120 cm | required | timer (reach): yaw | 3 / 1 / 1 |  |
+| 9 | Scalene stretch (`scalene-stretch`) | cervical, A | Sitting, one side at a time | front, portrait, 1 to 1.6 m, 90 to 120 cm | optional | timer (reach): head_tilt | 2 / 2 / 1 |  |
+| 10 | Open book (side-lying rotation) (`open-book`) | thoracic, B | Lying on the side, one side at a time | head end, landscape, 1.5 to 2.5 m, 30 to 50 cm | no | reps: shoulder_turn | 2 / 0 / 1 |  |
+| 11 | Seated thoracic rotation (`seated-thoracic-rotation`) | thoracic, A | Sitting, one side at a time | front, portrait, 1 to 1.6 m, 90 to 120 cm | no | reps: trunk_turn | 2 / 0 / 0 |  |
+| 12 | Thoracic extension over a chair (`thoracic-extension-chair`) | thoracic, A | Sitting | side, portrait, 1 to 1.6 m, 90 to 120 cm | optional | reps: trunk_lean | 1 / 0 / 0 |  |
+| 13 | Cat–camel (spinal mobility) (`cat-camel`) | thoracic, B | On hands and knees | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: head_incline | 4 / 0 / 2 |  |
+| 14 | Quadruped thoracic rotation (`quadruped-thoracic-rotation`) | thoracic, B | On hands and knees, one side at a time | front, landscape, 1.5 to 2.5 m, 30 to 50 cm | no | reps: shoulder_turn | 2 / 2 / 1 |  |
+| 15 | Prone chest lift (thoracic extension) (`prone-thoracic-extension`) | thoracic, B | Lying face down or in a plank | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: trunk_lift | 2 / 0 / 1 |  |
+| 16 | Single knee to chest (`knee-to-chest`) | lumbar, B | Lying on the back, one side at a time | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: hip_angle | 4 / 0 / 0 |  |
+| 17 | Lumbar rotation (knee rock) (`knee-rock`) | lumbar, B | Lying on the back, one side at a time | feet end, landscape, 1.5 to 2.5 m, 30 to 50 cm | no | reps: knee_tilt | 3 / 0 / 2 |  |
+| 18 | Glute bridge (`glute-bridge`) | lumbar, B | Lying on the back | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: hip_angle | 3 / 3 / 2 | feet end |
+| 19 | Single-leg bridge (`single-leg-bridge`) | lumbar, B | Lying on the back, one side at a time | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: hip_angle | 3 / 1 / 2 | feet end |
+| 20 | Dead bug (`dead-bug`) | lumbar, B | Lying on the back, one side at a time | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: leg_hip | 3 / 0 / 0 | side |
+| 21 | Bird-dog (`bird-dog`) | lumbar, B | On hands and knees, one side at a time | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: leg_hip | 4 / 0 / 2 | feet end |
+| 22 | Forearm plank (`front-plank`) | lumbar, B | Lying face down or in a plank | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | timer (steady): hip_line | 3 / 1 / 5 |  |
+| 23 | Supine marching (core control) (`supine-marching`) | lumbar, B | Lying on the back, one side at a time | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: hip_angle | 2 / 0 / 0 | feet end |
+| 24 | Curl-up (abdominal control) (`mcgill-curl-up`) | lumbar, B | Lying on the back, one side at a time | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: trunk_incline | 2 / 0 / 0 |  |
+| 25 | Glute bridge with ball squeeze (`bridge-with-ball`) | lumbar, B | Lying on the back | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | reps: hip_angle | 3 / 3 / 2 | feet end |
+| 26 | Standing side bend (`standing-side-bend`) | lumbar, A | Standing, one side at a time | front, portrait, 2 to 3 m, 90 to 110 cm | no | reps: trunk_tilt | 3 / 0 / 0 |  |
+| 27 | Lying on elbows (gentle back extension) (`prone-on-elbows`) | lumbar, B | Lying face down or in a plank | side, landscape, 1.8 to 2.8 m, 30 to 60 cm | no | timer (reach): trunk_lift | 0 / 0 / 0 |  |
 
 ## Movement types and the validation battery
 

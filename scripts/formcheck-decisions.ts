@@ -59,14 +59,12 @@ export function renderDecisions(root = process.cwd()): string {
 
   out("## Summary");
   out();
-  out("| # | Exercise | Region | Position | Tier | Phone | Distance m | Lens cm | Face model | Counted by | Moving joints: measured / tracked / not measurable | 2nd pass |");
-  out("|---|---|---|---|---|---|---|---|---|---|---|---|");
+  out("| # | Exercise | Region, tier | Position | Phone: view, orientation, distance (m), lens height (cm) | Face model | Counted by | Moving joints: measured / tracked / not measurable | 2nd pass |");
+  out("|---|---|---|---|---|---|---|---|---|");
   CAMERA_SPECS.forEach((spec, i) => {
     const lib = library.get(spec.id)!;
-    const primary = metricOf(spec, spec.primary.metric)!;
     const by = `${spec.primary.mode === "reps" ? "reps" : spec.primary.mode === "hold-reach" ? "timer (reach)" : "timer (steady)"}: ${spec.primary.metric}`;
-    out(`| ${i + 1} | ${cell(lib.name)} (\`${spec.id}\`) | ${spec.region} | ${POSTURE[spec.posture]}${spec.sided ? ", one side at a time" : ""} | ${spec.tier} | ${VIEW[spec.placement.view]}, ${spec.placement.orientation} | ${range(spec.placement.distanceM)} | ${range(spec.placement.heightCm)} | ${spec.needFace ?? "no"} | ${by} | ${count(spec, "measured")} / ${count(spec, "tracked")} / ${count(spec, "not_measurable")} | ${spec.second ? VIEW[spec.second.placement.view] : ""} |`);
-    void primary;
+    out(`| ${i + 1} | ${cell(lib.name)} (\`${spec.id}\`) | ${spec.region}, ${spec.tier} | ${POSTURE[spec.posture]}${spec.sided ? ", one side at a time" : ""} | ${VIEW[spec.placement.view]}, ${spec.placement.orientation}, ${range(spec.placement.distanceM)} m, ${range(spec.placement.heightCm)} cm | ${spec.needFace ?? "no"} | ${by} | ${count(spec, "measured")} / ${count(spec, "tracked")} / ${count(spec, "not_measurable")} | ${spec.second ? VIEW[spec.second.placement.view] : ""} |`);
   });
   out();
 

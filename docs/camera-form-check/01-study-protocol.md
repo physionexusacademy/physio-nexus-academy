@@ -17,7 +17,7 @@ subtitle: "Study protocol, version 0.1 (DRAFT for ethics review) — contains [T
 
 ## 1. Summary
 
-RehabVerse is a web application in which a physiotherapist assigns home exercises and a patient follows them with a 3D demonstration. "Form Check" is a proposed optional feature that uses the device camera and an on-device pose-estimation model to (a) count repetitions, (b) time holds, (c) estimate selected joint and segment angles and (d) give short spoken or written cues, for exercises of the neck (cervical), mid-back (thoracic) and low back (lumbar) regions. Nothing is uploaded: the video is processed on the device and is not recorded or stored.
+RehabVerse is a web application in which a physiotherapist assigns home exercises and a patient follows them with a 3D demonstration. "Form Check" is a proposed optional feature that uses the device camera and an on-device pose-estimation model to (a) count repetitions, (b) time holds, (c) estimate selected joint and segment angles and (d) give short spoken or written cues, for the 27 neck (cervical, 9), mid-back (thoracic, 6) and low-back (lumbar, 12) exercises of the application's library. Nothing is uploaded: the video is processed on the device and is not recorded or stored.
 
 Before any numeric angle is shown to a patient, its accuracy must be known. This pilot study measures, in healthy adult volunteers, how closely the tool's angle estimates agree with a reference instrument, how repeatable they are, how well repetitions and holds are counted and timed, how well deliberately introduced form errors are detected, how often the tool cannot give a reading, and how acceptable it is to use. Results are used (i) to decide, for each movement type, whether a numeric angle may be displayed, only a count and timer, or nothing, and (ii) to plan a larger confirmatory study. It is **not** a study of treatment effect, diagnosis or clinical decision making.
 
@@ -63,16 +63,18 @@ PNA RehabVerse Form Check, a web page that opens the front or rear camera after 
 
 ### 7.1 Movement battery (Appendix E gives the full set-up)
 
-| # | Movement | View | Camera quantity | Reference |
-|---|---|---|---|---|
-| 1 | Neck flexion and extension (sitting) | side | head–trunk sagittal angle | CROM device if available, otherwise a digital inclinometer |
-| 2 | Neck rotation, left and right (sitting) | front | head rotation | CROM device or goniometer |
-| 3 | Neck side bend, left and right (sitting) | front | head tilt relative to the shoulder line | CROM device or inclinometer |
-| 4 | Standing trunk side bend, left and right | front | trunk inclination | digital inclinometer |
-| 5 | Hip hinge (standing) | side | trunk inclination and knee angle | inclinometer and goniometer |
-| 6 | Seated thoracic rotation, left and right | front | shoulder-line rotation relative to the pelvis | goniometer / rotation gauge (exploratory) |
-| 7 | Glute bridge (supine), top position | side | shoulder–hip–knee angle | goniometer |
-| 8 | Bird-dog (quadruped), top position | side | arm elevation and leg extension | goniometer and a level |
+| # | Movement | View | Camera quantity | Reference | Movement type (see the camera decisions document) |
+|---|---|---|---|---|---|
+| 1 | Neck flexion and extension (sitting) | side | line from the shoulder to the ear against the vertical (head over trunk) | CROM device if available, otherwise a digital inclinometer | `head-trunk-sagittal` |
+| 2 | Neck rotation, left and right (sitting) | front | head turn from the face model | CROM device or goniometer | `head-yaw` |
+| 3 | Neck side bend, left and right (sitting) | front | ear line against shoulder line (head tilt on the trunk) | CROM device or inclinometer | `head-tilt-front` |
+| 4 | Standing trunk side bend, left and right | front | line from mid-hips to mid-shoulders against the vertical | digital inclinometer | `trunk-side-bend-front` |
+| 5 | Hip hinge (standing) | side | line from hip to shoulder against the vertical, and the knee angle | inclinometer and goniometer | `trunk-incline-side-upright` |
+| 6 | Seated thoracic rotation, left and right | front | trunk turn from how much narrower the shoulders look than in the person's own neutral sitting position | goniometer / rotation gauge (exploratory) | `trunk-rotation-width` |
+| 7 | Glute bridge (supine), top position | side | shoulder–hip–knee angle | goniometer | `limb-joint-lying-side` |
+| 8 | Bird-dog (quadruped), top position | side | arm elevation and leg extension (shoulder–hip–knee angles of the reaching limbs) | goniometer and a level | `limb-joint-quadruped-side` |
+
+**Why these eight.** The tool covers 27 exercises but only 8 *types* of measurement are validated here (the movement types listed in the last column). Exercises that measure the same type share the decision. Of the 27 exercises, those that depend on a type outside the battery (for example head tilt while lying, trunk rotation seen from the head end, the hip level seen from the feet, a plank's body line) stay at counts, timers and position cues in the supervised pilot, and are named in the camera decisions document (03) so that nobody has to guess.
 
 Each movement is held at its end point for 3 seconds so that the reference can be read; the camera reading for the same hold is the median of the readings in the middle second. Four repetitions per movement per session. Order of movements is randomised for each participant.
 
@@ -145,7 +147,7 @@ The study physiotherapist is present throughout. All movements are gentle, activ
 
 ## 12. Next step: supervised pilot with patients (separate protocol)
 
-If, and only if, the decision rules in 10.7 are met for some movements, a second protocol will describe a supervised feasibility and safety pilot in 8 to 10 adult patients of the clinic who are doing neck or back exercises, using only the movements that met the rules, with separate consent, therapist oversight, a stopping rule and outcome measures of safety, adherence, usability and therapist agreement. It is not part of this submission.
+If, and only if, the decision rules in 10.7 are met for some movements, a second protocol (draft provided with this submission as Part B for information) will describe a supervised feasibility and safety pilot in 8 to 10 adult patients of the clinic who are doing neck or back exercises, using only the movements that met the rules, with separate consent, therapist oversight, a stopping rule and outcome measures of safety, adherence, usability and therapist agreement. It is not part of this submission for approval; it is supplied so that the committee can see the intended path.
 
 ## 13. Timeline and resources
 
@@ -207,8 +209,9 @@ Participant code; date; session 1 or 2; age band; sex; height; clothing category
 
 ## Appendix E. Set-up for each movement
 
-Phone on a stand about 2 m from the participant, at about hip to chest height, level (a phone spirit-level reading is recorded), whole body in frame, plain background where possible, a front or side placement as in 7.1; the participant stands or sits on the marked spot. Floor movements: phone about 2 m to the side at floor-to-hip height. A distance and height are recorded in the case report form.
+Phone on a stand at the height and distance given for the movement in the camera decisions document (03-exercise-camera-decisions.md; for the battery: sitting and standing movements about 1.5 to 2.5 m away at chest to hip height, floor movements about 2 m to the side at floor-to-hip height with the phone on its long side), level (a phone spirit-level reading is recorded), whole body in frame, plain background where possible, a front or side placement as in 7.1; the participant sits or stands on the marked spot. Distance, height and orientation are recorded in the case report form. Distances and heights in the decisions document are provisional and are confirmed in the feasibility trial before the study starts.
 
+## Appendix F. Submission checklist
 ## Appendix F. Submission checklist
 
 Signed application form of the ethics committee; this protocol; participant information sheet and consent form (English and Urdu, the Urdu version checked by a fluent speaker); data management plan (Appendix B); risk register (Appendix C); case report form (Appendix D); curricula vitae of the investigators; evidence of registration plan; declaration of interest; insurance or indemnity statement if the committee asks for it [TO COMPLETE]; letter of permission from the site [TO COMPLETE].
