@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, Bell, ClipboardList, MessageCircle, Phone, Sparkles, Users } from "lucide-react";
+import { AlertTriangle, Bell, ClipboardList, FlaskConical, LayoutDashboard, MessageCircle, Phone, Sparkles, Users } from "lucide-react";
 import { getFollowups, getInbox, getRegistrations, getStudySettings } from "@/lib/rehabverse/api";
 import { AccountRequests } from "@/components/rehabverse/admin/AccountRequests";
 import { StudySetting } from "@/components/rehabverse/admin/StudySetting";
@@ -41,6 +41,8 @@ export default async function RehabVerseInbox() {
           <p className="text-[13.5px] text-slate-600">Assessments, feedback awaiting your decision, programmes and safety events.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Link href="/admin/rehabverse/board" className="rv-btn rv-btn-primary !min-h-[40px]" data-testid="nav-board"><LayoutDashboard className="h-4 w-4" aria-hidden="true" /> Board</Link>
+          <Link href="/admin/rehabverse/research" className="rv-btn rv-btn-ghost !min-h-[40px]" data-testid="nav-research"><FlaskConical className="h-4 w-4" aria-hidden="true" /> Research</Link>
           <Link href="/admin/rehabverse/ai-pilot" className="rv-btn rv-btn-ghost !min-h-[40px]"><Sparkles className="h-4 w-4" aria-hidden="true" /> AI pilot</Link>
           <Link href="/admin/rehabverse/patients" className="rv-btn rv-btn-ghost !min-h-[40px]"><Users className="h-4 w-4" aria-hidden="true" /> All patients</Link>
         </div>

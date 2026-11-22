@@ -11,6 +11,7 @@ import { AiConversations } from "./AiConversations";
 import { HistoryBrief } from "./HistoryBrief";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
 import { OutcomesPanel } from "./OutcomesPanel";
+import { ResearchConsent } from "./ResearchConsent";
 import { ScreeningSnapshot } from "./ScreeningSnapshot";
 import { SessionReview } from "./SessionReview";
 
@@ -159,6 +160,11 @@ export function AdminPatientRecord({ data, outcomes = null }: { data: AdminPatie
           </div>
         </div>
         <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />
+        {patient.research_consent === undefined ? null : ( // the column exists only once the board/research migration is applied
+          <div className="mt-3 border-t border-slate-100 pt-3">
+            <ResearchConsent key={String(patient.research_consent)} patientId={patient.id} consent={patient.research_consent} at={patient.research_consent_at ?? null} note={patient.research_consent_note ?? null} />
+          </div>
+        )}
         <nav className="mt-3 flex flex-wrap gap-1.5 text-[12.5px] font-bold" aria-label="Sections">
           {[...(latest ? [["#brief", "History brief"]] : []), ["#assessment", "Assessment"], ...(aiConversations.length ? [["#ai", "AI conversations"]] : []), ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
         </nav>

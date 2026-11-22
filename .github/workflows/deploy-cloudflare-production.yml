@@ -198,6 +198,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:outcomes
 
+      - name: Validate the therapist board and research record (traffic-light rules, de-identified export, data dictionary matches the database)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:board-research
+
       - name: Validate student accounts (private record, XP caps, outbox, insights)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student
