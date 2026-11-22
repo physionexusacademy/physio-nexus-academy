@@ -150,7 +150,8 @@ export function IntakeWizard({ initial, startStep, aiConversationId, notice, age
       }
       setResult(r.result);
       if (handover) clearHandover();
-      router.refresh();
+      // No router.refresh() here: the start page sends a patient who has an open assessment to the dashboard, so a refresh would replace this confirmation
+      // (the reference code and the screening) with the dashboard a moment after it appears. The dashboard link below loads fresh data anyway.
       top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };

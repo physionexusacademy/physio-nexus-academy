@@ -55,7 +55,19 @@ async function newContext(browser, viewport = { width: 1280, height: 900 }, { no
 const errors = [];
 const shot = (page, name) => page.screenshot({ path: path.join(OUT, name + ".png"), fullPage: true }).catch(() => undefined);
 const park = (page) => page.goto("about:blank").catch(() => undefined);
-const noOverflow = (page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+// A signed-in patient is redirected away from some pages (register, start): when that navigation lands in the middle of the check, wait for it and measure again.
+const noOverflow = async (page) => {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      await page.waitForLoadState("load");
+      return await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+    } catch (e) {
+      if (!/context was destroyed|navigation/i.test(String(e))) throw e;
+      await page.waitForTimeout(1500);
+    }
+  }
+  return false;
+};
 
 async function register(page, who, age = 41) {
   await page.goto(`${BASE}/rehabverse/register`);
