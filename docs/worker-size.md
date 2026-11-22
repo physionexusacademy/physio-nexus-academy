@@ -56,7 +56,7 @@ It is now one static file per chapter, `public/manual-therapy-data/chapters/<slu
   becomes reachable from a page, layout, route or the middleware, printing the import chain. Components take the chapter data as props; do not import a
   heavy module back into a component to "just look something up".
 - The rendered pages did not change: the visible markup, the JSON-LD and the `<head>` of all 337 prerendered Manual Therapy pages are identical to the build
-  before, and the page data (the RSC payload) matches row for row (only the order of the rows and one framework row differ).
+  before, and the page data (the RSC payload) is the same set of rows (only the order of the rows and one framework row, `IconMark`, differ).
 
 The same idea would free the regions pages (`manual-therapy-priority-depth.ts` 84 KB, `manual-therapy-subtechniques.ts` 30 KB and the regional learning labs, about 170 KB
 of source) if more room is ever needed.
