@@ -64,6 +64,9 @@ export class RepCounter {
     return (value - this.cfg.rest) / (this.cfg.target - this.cfg.rest);
   }
 
+  /** After tracking was lost in the middle of a repetition the person may come back already part way through the movement: wait until they are back at rest before a new repetition can start, so none is invented from what was not seen. */
+  private awaitRest = false;
+
   private abort() {
     this.phase = "rest";
     this.reached = false;
@@ -74,13 +77,17 @@ export class RepCounter {
   /** `value` is null when the quantity could not be read this frame. `t` in ms. */
   push(value: number | null, t: number): RepState {
     if (value === null || !Number.isFinite(value)) {
-      if (this.lastT !== null && this.phase !== "rest" && t - this.lastT > this.maxGapMs) this.abort();
+      if (this.lastT !== null && this.phase !== "rest" && t - this.lastT > this.maxGapMs) { this.abort(); this.awaitRest = true; }
       return this.state();
     }
     const dt = this.lastT === null ? 0 : Math.min(t - this.lastT, this.maxGapMs);
     this.lastT = t;
     const p = this.fraction(value);
     this.progress = p;
+    if (this.awaitRest) {
+      if (p < this.exit) this.awaitRest = false;
+      else return this.state();
+    }
     if (this.phase === "rest") {
       if (p > this.exit) {
         this.phase = "going";
@@ -123,6 +130,7 @@ export class RepCounter {
 
   reset() {
     this.abort();
+    this.awaitRest = false;
     this.reps = 0;
     this.partial = 0;
     this.progress = 0;

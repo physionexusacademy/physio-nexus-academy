@@ -46,8 +46,11 @@ export function assessSetup(frame: Frame, opts: SetupOptions): SetupResult {
     const ys = needed.map((p) => p.y);
     const xs = needed.map((p) => p.x);
     const height = Math.max(...ys) - Math.min(...ys);
-    if (height < minSize) issues.add("too_far");
-    if (height > maxSize || Math.min(...ys) < 0.01 || Math.max(...ys) > 0.99) issues.add("too_close");
+    const width = Math.max(...xs) - Math.min(...xs);
+    // a person standing is tall in the picture, a person lying on a mat seen from the side is wide: the larger extent is the one that must fill the frame
+    const span = Math.max(height, width);
+    if (span < minSize) issues.add("too_far");
+    if (span > maxSize || Math.min(...ys) < 0.01 || Math.max(...ys) > 0.99 || Math.min(...xs) < 0.01 || Math.max(...xs) > 0.99) issues.add("too_close");
     const centre = (Math.min(...xs) + Math.max(...xs)) / 2;
     if (centre < 0.25 || centre > 0.75) issues.add("off_centre");
   }

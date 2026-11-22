@@ -15,6 +15,11 @@ export type CalibratorOptions = {
   minVisibility?: number;
   /** the side the person is exercising, for "tested:" and "other:" references */
   tested?: Side;
+  /**
+   * The ids of the metrics that must be readable and still for the neutral position to be taken (those that count repetitions or fire cues). The others are
+   * followed on a best-effort basis: a short segment such as ear-to-nose jitters too much to demand stillness of it, and an unreadable one must not block the set.
+   */
+  strict?: string[];
 };
 export type CalibrationState = { done: boolean; progress: number; baseline: Baseline | null; side: Side | null };
 
@@ -38,7 +43,8 @@ function widthOf(metric: Extract<Metric, { kind: "rotation" }>, frame: Frame, si
 
 export class Calibrator {
   private readonly metrics: Metric[];
-  private readonly opts: Required<Omit<CalibratorOptions, "tested">>;
+  private readonly opts: Required<Omit<CalibratorOptions, "tested" | "strict">>;
+  private readonly strict: Set<string>;
   private readonly tested: Side | undefined;
   private samples: { t: number; values: Record<string, number> }[] = [];
   private startT: number | null = null;
@@ -49,6 +55,7 @@ export class Calibrator {
     this.metrics = metrics;
     this.opts = { stillMs: opts.stillMs ?? 800, angleTolerance: opts.angleTolerance ?? 3, ratioTolerance: opts.ratioTolerance ?? 0.02, minVisibility: opts.minVisibility ?? 0.5 };
     this.tested = opts.tested;
+    this.strict = new Set(opts.strict ?? metrics.map((m) => m.id));
   }
 
   push(frame: Frame): CalibrationState {
@@ -58,7 +65,7 @@ export class Calibrator {
     let complete = true;
     for (const metric of this.metrics) {
       const reading = metric.kind === "rotation" ? (() => { const w = widthOf(metric, frame, { near, tested: this.tested }); return w && w > 0 ? { value: w } : null; })() : readMetric(metric, frame, { minVisibility: this.opts.minVisibility, side: near, tested: this.tested, baseline: undefined });
-      if (!reading) { complete = false; break; }
+      if (!reading) { if (this.strict.has(metric.id)) { complete = false; break; } continue; }
       values[metric.id] = reading.value;
     }
     if (!complete) {
@@ -73,10 +80,11 @@ export class Calibrator {
     const windowStart = frame.t - this.opts.stillMs * 1.25;
     this.samples = this.samples.filter((s) => s.t >= windowStart);
     const span = frame.t - this.samples[0].t;
-    const med = (id: string) => { const v = this.samples.map((s) => s.values[id]).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; };
+    const med = (id: string) => { const v = this.samples.map((s) => s.values[id]).filter((x) => x !== undefined).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length / 2)] : undefined; };
     let still = true;
     for (const metric of this.metrics) {
-      const m = med(metric.id);
+      if (!this.strict.has(metric.id)) continue;
+      const m = med(metric.id)!;
       const tol = metric.kind === "rotation" ? Math.abs(m) * 0.03 : isRatio(metric) ? this.opts.ratioTolerance : this.opts.angleTolerance;
       if (this.samples.some((s) => Math.abs(s.values[metric.id] - m) > tol)) { still = false; break; }
     }
@@ -88,7 +96,7 @@ export class Calibrator {
     const progress = Math.min(1, span / this.opts.stillMs);
     if (span >= this.opts.stillMs && this.samples.length >= 8) {
       const baseline: Baseline = {};
-      for (const metric of this.metrics) baseline[metric.id] = med(metric.id);
+      for (const metric of this.metrics) { const m = med(metric.id); if (m !== undefined) baseline[metric.id] = m; }
       this.result = baseline;
       return { done: true, progress: 1, baseline, side: near };
     }

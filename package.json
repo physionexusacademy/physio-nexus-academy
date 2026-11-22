@@ -19,7 +19,7 @@
     "build:avatar-data": "node scripts/build-avatar-data.mjs",
     "validate:avatar": "node scripts/validate-avatar.mjs",
     "build:manual-therapy-data": "node scripts/build-manual-therapy-data.mjs",
-    "validate:formcheck": "node --experimental-strip-types scripts/validate-formcheck.ts && node --experimental-strip-types scripts/validate-formcheck-specs.ts",
+    "validate:formcheck": "node --experimental-strip-types scripts/validate-formcheck.ts && node --experimental-strip-types scripts/validate-formcheck-specs.ts && node --experimental-strip-types scripts/validate-formcheck-sessions.ts",
     "build:formcheck-decisions": "node --experimental-strip-types scripts/build-formcheck-decisions.ts",
     "validate:manual-therapy-data": "node scripts/validate-manual-therapy-data.mjs",
     "build:teacher-data": "node --experimental-strip-types scripts/build-teacher-data.ts",

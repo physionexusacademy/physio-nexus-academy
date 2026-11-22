@@ -107,7 +107,10 @@ function run(cfg: ConstructorParameters<typeof RepCounter>[0], signal: (t: numbe
   const hover = run({ rest: 0, target: 90 }, (t) => 60 + 6 * Math.sin(t / 40), 20); // jitters around the enter threshold (63) without leaving the middle
   ok(hover.reps <= 1, `jitter around the threshold does not count repeatedly (${hover.reps})`);
   const dropout = run({ rest: 0, target: 90 }, (t) => (t > 7000 && t < 10500 ? null : sine(t, 3000, 0, 90)), 15.4);
-  ok(dropout.reps === 4, `a repetition interrupted by lost tracking is dropped, not invented (${dropout.reps} of 5)`);
+  ok(dropout.reps === 3, `repetitions interrupted by lost tracking are dropped, and one that resumes part way through is not invented (${dropout.reps} of 5: the one that lost tracking and the one that came back at its top)`);
+  // tracking comes back while the person is already at the top of the movement: that is not a new repetition, it is the one that was interrupted
+  const resumeAtTop = run({ rest: 0, target: 90 }, (t) => (t > 7500 && t < 10500 ? null : t < 12000 ? sine(t, 6000, 0, 90) : 0), 15.4);
+  ok(resumeAtTop.reps === 1, `a repetition that resumes after a gap at the top of the movement is not counted twice (${resumeAtTop.reps})`);
   const gapRest = run({ rest: 0, target: 90 }, (t) => (t > 3200 && t < 5800 ? null : sine(t, 3000, 0, 90)), 9.4);
   ok(gapRest.reps >= 2, `a gap while at rest costs nothing (${gapRest.reps})`);
 }
