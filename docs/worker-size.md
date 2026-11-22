@@ -42,3 +42,21 @@ for three times:
 
 Largest remaining items (raw KB in the worker): `teacher/lesson-index.ts` 168 (keywords 36, goal 33, summary 29,
 hook 29), `daily-content/pool.generated.ts` 134, the manual-therapy data files (~700 together), zod (2 copies, ~170), `tailwind-merge` (2 copies, ~38).
+
+## Chapter text lives in static files, not in the worker (Nov 2026)
+The Manual Therapy chapter pages are prerendered, but the text they render (application guides, mechanisms, mastery guides, expert depth, Roman Urdu, stories,
+worldwide deep chapters; about 760 KB of source, more than 200 KiB gzip) used to be imported by the page code and so travelled inside the worker.
+It is now one static file per chapter, `public/manual-therapy-data/chapters/<slug>.json`, plus a small `index.json` for the encyclopedia cards:
+
+- `npm run build:manual-therapy-data` writes them from the same content modules (edit a chapter's content, run it, commit the changed JSON).
+  `src/lib/manual-therapy-chapter-build.ts` is the only code that imports those modules, and only the generator and the validator import it.
+- The pages read them with `src/lib/manual-therapy-chapter-loader.ts`: the file in the repository when the pages are built, the ASSETS binding on Cloudflare
+  if a page is ever rendered on request. A chapter that is listed but has no file fails the build (it is never turned into a 404).
+- `npm run validate:manual-therapy-data` (a deploy gate) fails when a generated file is stale or not plain JSON, and when any of the heavy chapter modules
+  becomes reachable from a page, layout, route or the middleware, printing the import chain. Components take the chapter data as props; do not import a
+  heavy module back into a component to "just look something up".
+- The rendered pages did not change: the visible markup, the JSON-LD and the `<head>` of all 337 prerendered Manual Therapy pages are identical to the build
+  before, and the page data (the RSC payload) is the same set of rows (only the order of the rows and one framework row, `IconMark`, differ).
+
+The same idea would free the regions pages (`manual-therapy-priority-depth.ts` 84 KB, `manual-therapy-subtechniques.ts` 30 KB and the regional learning labs, about 170 KB
+of source) if more room is ever needed.

@@ -90,6 +90,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:teacher
 
+      - name: Validate Manual Therapy chapter data (static files fresh, plain JSON, no chapter text reachable from the worker)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:manual-therapy-data
+
       - name: Validate Clinical Skills Lab content, generated data and wiring
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:skills

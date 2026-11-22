@@ -1,4 +1,4 @@
-import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
+import type { MasteryGuide as MasteryGuideData } from "@/lib/manual-therapy-mastery-types";
 import { Ur } from "@/components/Ur";
 
 /**
@@ -27,8 +27,8 @@ function Head({ n, id, en, ur, tone }: { n: number; id: string; en: string; ur: 
   );
 }
 
-export function MasteryGuide({ slug }: { slug: string }) {
-  const g = getMasteryGuide(slug);
+export function MasteryGuide({ guide }: { guide: MasteryGuideData | null }) {
+  const g = guide;
   if (!g) return null;
   const hues = ["from-teal-500 to-cyan-500", "from-violet-500 to-indigo-500", "from-amber-500 to-orange-500"];
 

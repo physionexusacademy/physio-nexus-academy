@@ -17,29 +17,15 @@ import {
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { WorldApproachChapter } from "@/components/manual-therapy/WorldApproachChapter";
-import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
-import { getClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import { ClinicalStoryChapter } from "@/components/manual-therapy/ClinicalStoryChapter";
 import { AttentionReset } from "@/components/manual-therapy/AttentionReset";
-import { getManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
-import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
-import { manualApplicationGuides } from "@/lib/all-manual-therapy-guides";
-import { getApplicationsForTechnique } from "@/lib/manual-therapy-regional";
-import {
-  manualTherapyMechanisms,
-  manualTherapyMechanismEvidence,
-} from "@/lib/all-manual-therapy-mechanisms";
-import { getManualTherapyExpertProfile } from "@/lib/manual-therapy-expert";
+import { loadChapterData } from "@/lib/manual-therapy-chapter-loader";
 import ClinicalImage from "@/components/clinical/ClinicalImage";
-import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
-import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
-import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
 import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadingNav";
 import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
 import { ExpertDepthSections } from "@/components/manual-therapy/ExpertDepthSections";
-import { getTechniqueDepth } from "@/lib/manual-therapy-depth";
 import { UrduGuideSection } from "@/components/manual-therapy/ChapterExtras";
 
 type PageProps = {
@@ -107,26 +93,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ManualTherapyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const worldLesson = worldManualApproaches.find((item) => item.slug === slug);
-  if (worldLesson) return <WorldApproachChapter lesson={worldLesson} />;
   const technique = manualTherapyTechniques.find((item) => item.slug === slug);
-  const story = getManualTherapyStory(slug);
-  const episode = getClinicalEpisode(slug);
-  const aha = getManualTherapyAhaMoment(slug);
-  const weave = manualTherapyLessonWeaves[slug];
-  const guide = manualApplicationGuides[slug];
-  const mechanism = manualTherapyMechanisms[slug];
-  const expert = getManualTherapyExpertProfile(slug);
-  const mastery = getMasteryGuide(slug);
-  const depth = getTechniqueDepth(slug);
-  const visuals = getManualTherapyVisuals(slug);
-  const regionalApplications = getApplicationsForTechnique(slug);
-  const totalRegionalVariations = regionalApplications.reduce(
-    (total, application) =>
-      total + getRegionalSubTechniques(slug, application.region).length,
-    0,
-  );
-
-  if (!technique || !guide || !mechanism || !expert) notFound();
+  if (!worldLesson && !technique) notFound();
+  // The chapter's long-form data is a static file, not worker code (see src/lib/manual-therapy-chapter-types.ts). Every listed chapter has one
+  // (npm run build:manual-therapy-data): a missing file must fail the build, never turn a real chapter into a 404.
+  const data = await loadChapterData(slug);
+  if (!data) throw new Error(`Manual Therapy chapter data is missing for "${slug}". Run: npm run build:manual-therapy-data`);
+  if (worldLesson) return <WorldApproachChapter lesson={worldLesson} data={data} />;
+  const detail = data.technique;
+  if (!technique || !detail) notFound();
+  const { episode, guide, mechanism, mechanismEvidence, visuals, room } = detail;
+  const story = detail.storyHeadline;
+  const aha = detail.aha ?? undefined;
+  const weave = detail.weave ?? undefined;
+  const { mastery, depth } = data;
 
   return (
     <div className="container-content section-padding">
@@ -169,7 +149,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
       <TechniqueTeacher slug={slug} />
 
       {/* The whole chapter theory in Roman Urdu (only when the visitor picked Roman Urdu) */}
-      <UrduGuideSection slug={slug} name={technique.name} />
+      <UrduGuideSection urdu={data.urdu} name={technique.name} />
 
       {/* Sticky reading navigation */}
       <div className="mt-6">
@@ -177,20 +157,20 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
       </div>
 
       {/* 1. Mastery / Start here */}
-      <MasteryGuide slug={slug} />
+      <MasteryGuide guide={mastery} />
 
       {/* 2D demonstration and expert depth */}
-      <ExpertDepthSections slug={slug} name={technique.name} />
+      <ExpertDepthSections data={data} name={technique.name} />
 
       {/* Optional story - collapsed by default */}
       {episode ? (
         <details className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/50">
           <summary className="cursor-pointer p-5 text-sm font-semibold text-slate-700 sm:p-6">
             Optional · Short patient story to help remember
-            {story ? <span className="mt-1 block text-sm font-normal text-slate-500">{story.headline}</span> : null}
+            {story ? <span className="mt-1 block text-sm font-normal text-slate-500">{story}</span> : null}
           </summary>
           <div className="border-t border-slate-100 p-2 sm:p-4">
-            <ClinicalStoryChapter slug={slug} episode={episode} challenge={aha} weave={weave} />
+            <ClinicalStoryChapter room={room} episode={episode} challenge={aha} weave={weave} />
           </div>
         </details>
       ) : null}
@@ -214,7 +194,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <EditorialBlock title="Direction & Type of Force" items={guide.forceDirection} icon={Gauge} />
         </div>
 
-        <div className="mt-6"><AttentionReset slug={slug} moment="wake" /></div>
+        <div className="mt-6"><AttentionReset cue={data.cue} moment="wake" /></div>
 
         {weave ? (
           <aside className="mt-6 rounded-2xl border-l-4 border-teal-500 bg-white px-5 py-5 shadow-sm sm:px-7">
@@ -227,7 +207,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
           <EditorialBlock title="Complete Applying Method — Step by Step" items={guide.applicationSteps} icon={ClipboardCheck} />
         </div>
 
-        <div className="mt-6"><AttentionReset slug={slug} moment="think" /></div>
+        <div className="mt-6"><AttentionReset cue={data.cue} moment="think" /></div>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
           <EditorialBlock title="What Would Count as Progress?" items={guide.expectedResponse} icon={ShieldCheck} />
@@ -259,7 +239,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
         </section>
       ) : null}
 
-      <div className="mt-8"><AttentionReset slug={slug} moment="remember" /></div>
+      <div className="mt-8"><AttentionReset cue={data.cue} moment="remember" /></div>
 
       {/* 3. Safety & Essentials */}
       <section id="clinical-essentials" className="mt-12 scroll-mt-28" aria-labelledby="clinical-essentials-heading">
@@ -361,7 +341,7 @@ export default async function ManualTherapyDetailPage({ params }: PageProps) {
               Across manual therapy as a whole, current evidence supports interacting peripheral, spinal, supraspinal, neurovascular, neuromuscular and contextual responses rather than one universal mechanism.
             </p>
             <a
-              href={manualTherapyMechanismEvidence.sourceUrl}
+              href={mechanismEvidence.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-indigo-700"
