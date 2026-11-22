@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { AlertTriangle, Bell, ClipboardList, MessageCircle, Phone, Sparkles, Users } from "lucide-react";
-import { getFollowups, getInbox, getRegistrations } from "@/lib/rehabverse/api";
+import { AlertTriangle, Bell, ClipboardList, FlaskConical, LayoutDashboard, MessageCircle, Phone, Sparkles, Users } from "lucide-react";
+import { getFollowups, getInbox, getRegistrations, getStudySettings } from "@/lib/rehabverse/api";
 import { AccountRequests } from "@/components/rehabverse/admin/AccountRequests";
+import { StudySetting } from "@/components/rehabverse/admin/StudySetting";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { MarkRead } from "./MarkRead";
 
@@ -22,10 +23,11 @@ function Card({ title, count, children, tone }: { title: string; count: number; 
 
 export default async function RehabVerseInbox() {
   await requireAdmin();
-  const [inbox, followups, registrations] = await Promise.all([
+  const [inbox, followups, registrations, study] = await Promise.all([
     getInbox(),
     getFollowups().catch(() => []), // follow-ups need the reminders migration; until then the list is simply empty
     getRegistrations().catch(() => ({ pending: [], recent: [] })), // account requests need the approval migration
+    getStudySettings().catch(() => null), // the study setting needs the screening migration
   ]);
   const flagged = inbox.assessments.filter((a) => a.red_flag_level !== "none");
   const toReview = inbox.assessments.filter((a) => a.red_flag_level === "none");
@@ -39,12 +41,15 @@ export default async function RehabVerseInbox() {
           <p className="text-[13.5px] text-slate-600">Assessments, feedback awaiting your decision, programmes and safety events.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Link href="/admin/rehabverse/board" className="rv-btn rv-btn-primary !min-h-[40px]" data-testid="nav-board"><LayoutDashboard className="h-4 w-4" aria-hidden="true" /> Board</Link>
+          <Link href="/admin/rehabverse/research" className="rv-btn rv-btn-ghost !min-h-[40px]" data-testid="nav-research"><FlaskConical className="h-4 w-4" aria-hidden="true" /> Research</Link>
           <Link href="/admin/rehabverse/ai-pilot" className="rv-btn rv-btn-ghost !min-h-[40px]"><Sparkles className="h-4 w-4" aria-hidden="true" /> AI pilot</Link>
           <Link href="/admin/rehabverse/patients" className="rv-btn rv-btn-ghost !min-h-[40px]"><Users className="h-4 w-4" aria-hidden="true" /> All patients</Link>
         </div>
       </div>
 
       <AccountRequests pending={registrations.pending} recent={registrations.recent} />
+      {study ? <StudySetting value={study.screening_visibility} /> : null}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Safety: red flags & adverse events" count={flagged.length + inbox.adverse_events.length} tone="alert">

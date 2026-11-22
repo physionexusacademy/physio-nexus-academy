@@ -1,0 +1,47 @@
+/** Roman Urdu for the symptom checker's patterns, part 3: knee, lower leg, ankle and foot (see ru-conditions-a.ts). */
+import type { RuCondition } from "./ru-conditions-a.ts";
+
+export const RU_CONDITIONS_C: Record<string, RuCondition> = {
+  // knee
+  "patellofemoral-pain": { plainName: "Kneecap se jura dard", summary: "Ghutne ke aage ka dard jo seerhiyon, squat, daurne ya der tak baithne se barhta hai." },
+  "knee-oa": { plainName: "Ghutne ki arthritis ka pattern", summary: "Chalne aur rozmarra ke kaamon ke saath aahista barhta ghutne ka dard aur akraahat, umar ke saath zyada aam." },
+  "meniscal-injury": { plainName: "Ghutne ke cartilage / meniscus ki chot", summary: "Joint line par dard, sujan, phansna ya lock hona, aksar mudne ke baad." },
+  "acl-injury": { plainName: "Ghutne ko sambhalne wale bare ligament ki chot", summary: "Ghoomne ki chot jis mein 'pop', jaldi sujan aur larkharahat / jawab dena ho." },
+  "mcl-sprain": { plainName: "Ghutne ke andar ke ligament ka mudna", summary: "Ghutne ko andar ki taraf dhakelne wali force ke baad ghutne ke andar ka dard." },
+  "lcl-sprain": { plainName: "Ghutne ke bahar ke ligament ka mudna", summary: "Ghutne ko bahar ki taraf dhakelne wali force ke baad ghutne ke bahar ka dard." },
+  "pcl-injury": { plainName: "Peechay wale cruciate ligament ki chot", summary: "Mudey hue ghutne ke aage seedhi chot ke baad ghutne ka dard / larkharahat." },
+  "patellar-tendinopathy": { plainName: "Jumper's knee: tendon ka dard", summary: "Kneecap ke bilkul neechay dard jo kudne, daurne ya baar baar bojh se ho." },
+  "bakers-cyst": { plainName: "Ghutne ke peechay paani ki sujan", summary: "Ghutne ke peechay bhari pan, khichao ya sujan, aksar kisi doosre ghutne ke masle ke saath." },
+  "quadriceps-tendinopathy": { plainName: "Kneecap ke upar ke tendon ka dard", summary: "Kneecap ke bilkul upar dard jo kudne, squat ya zor se ghutna seedha karne se ho, quadriceps tendon ke zyada bojh se mil sakta hai." },
+  "pes-anserine": { plainName: "Shin ke andar upar ke soft tissue ka dard", summary: "Joint line ke neechay shin ke andar wale hissay par dukhta dard pes anserine pain pattern se mil sakta hai." },
+  "itb-syndrome": { plainName: "Daurne se jura ghutne ke bahar ka dard", summary: "Ghutne ke bahar ka dard jo daurte ya cycling ke dauran tay tareeqe se shuru ho, ITB se jure dard se mil sakta hai." },
+  "prepatellar-bursitis": { plainName: "Kneecap ke aage sujan", summary: "Kneecap ke aage local sujan aksar ghutne ke bal baithne, dabao ya seedhi chot ke baad aati hai." },
+  "patellar-instability": { plainName: "Kneecap ke phisalne ka pattern", summary: "Yeh ehsaas ke kneecap side ki taraf khisakti hai, khaas kar pehle nikalne ke baad, patellar instability se mil sakta hai." },
+  // lower-leg
+  "mtss": { plainName: "Daurne se shin ke andar phaila hua dard", summary: "Kasrat se jura dard / dukhna jo shin ke andar wale kinare ke saath phailta hai." },
+  "tibial-stress-injury": { plainName: "Haddi ki stress injury ka imkan", summary: "Zyada impact bojh ke baad shin ki haddi par khaas dard aur dukhna." },
+  "calf-strain": { plainName: "Pindli ke muscle ka khinchao", summary: "Daurte, kudte ya dhakelte waqt pindli mein achanak dard." },
+  "exertional-compartment": { plainName: "Kasrat se paida hone wala pindli ka dabao", summary: "Khichao / dard jo kasrat ke dauran tay tareeqe se barhta hai aur rukne ke baad theek ho jata hai." },
+  "common-peroneal-nerve": { plainName: "Taang ke bahar ki nerve ka masla", summary: "Taang ke bahar / paaon ke upar sunn-pan, mumkin hai foot-drop jaisi kamzori ke saath." },
+  "tibialis-anterior-tendinopathy": { plainName: "Shin / takhne ke aage ke tendon par zyada bojh", summary: "Taang ya takhne ke aage ka dard jo paaon upar khainchne aur chadhai par chalne se barhta hai, tibialis anterior ke zyada bojh se mil sakta hai." },
+  "soleus-strain": { plainName: "Pindli ke gehre muscle ka khinchao", summary: "Daurte ya ghutna mor kar pindli par bojh dalte waqt gehra pindli ka dard soleus muscle ki chot se mil sakta hai." },
+  // ankle-foot
+  "lateral-ankle-sprain": { plainName: "Takhna mudne se ligament ki chot", summary: "Takhna andar ki taraf mudne ke baad takhne ke bahar ka dard aur sujan." },
+  "achilles-tendinopathy": { plainName: "Achilles tendon par zyada bojh ka dard", summary: "Edi ke peechay / Achilles ka bojh se jura dard jo daurne, seerhiyon ya pindli uthane se ho." },
+  "achilles-rupture": { plainName: "Achilles tendon ke phatne ka imkan", summary: "Achanak 'pop' ya laat lagne jaisa ehsaas aur dhakelne ki taqat ka bohat kam ho jana." },
+  "plantar-heel-pain": { plainName: "Edi ke neechay pehle qadam ka dard", summary: "Edi ka dard jo aam taur par aaraam ke baad pehle qadmon par aur der tak wazan dalne par sab se zyada ho." },
+  "posterior-tibial-tendon": { plainName: "Takhne ke andar / arch ke tendon ka masla", summary: "Der tak chalne se takhne ke andar / arch ka dard, aur mumkin hai arch aahista aahista chapta ho raha ho." },
+  "mortons-neuroma": { plainName: "Paaon ke agle hissay ki nerve ki jalan", summary: "Ungliyon ke darmiyan jalan ya jhunjhuni wala dard, aksar tang jootoun mein zyada." },
+  "metatarsalgia": { plainName: "Paaon ki tali par bojh ka dard", summary: "Khare hone, chalne ya daurne par paaon ke agle hissay ke neechay dard." },
+  "hallux-rigidus": { plainName: "Bare angoothay ke jor ki akraahat aur dard", summary: "Bare angoothay ke jor par dard aur akraahat, khaas kar dhakelte waqt." },
+  "foot-stress-injury": { plainName: "Paaon ki haddi ki stress injury ka imkan", summary: "Haal hi mein chalne / daurne ka bojh barhne ke baad haddi par khaas dard." },
+  "syndesmotic-sprain": { plainName: "Takhne ke upar wale ligament ki chot", summary: "Paaon ke bahar ki taraf mudne ke baad takhne ke jor ke upar dard syndesmotic sprain se mil sakta hai." },
+  "deltoid-sprain": { plainName: "Takhne ke andar ke ligament ki chot", summary: "Paaon ko bahar ki taraf lipatne ke baad takhne ke andar ka dard deltoid ligament ki chot se mil sakta hai." },
+  "peroneal-tendinopathy": { plainName: "Takhne ke bahar ke tendons par zyada bojh", summary: "Takhne ki bahar wali haddi ke peechay ka dard jo chalne, daurne ya paaon bahar mornay se barhta hai, peroneal tendons ke zyada bojh se mil sakta hai." },
+  "tarsal-tunnel": { plainName: "Takhne ke andar ki nerve ki jalan", summary: "Takhne ke andar ke qareeb jalan ya jhunjhuni jo talwe mein phailti hai, tarsal tunnel mein tibial nerve ke dabao se mil sakti hai." },
+  "turf-toe": { plainName: "Bare angoothay ko zor se upar mornay ki chot", summary: "Zabardasti upar mornay ke baad bare angoothay ke jor ka dard pehle MTP jor ke mudne se mil sakta hai." },
+  "anterior-ankle-impingement": { plainName: "Takhne ke aage chubhan", summary: "Gehra takhna modte, squat ya utarte waqt takhne ke aage chubhan impingement pattern se mil sakti hai." },
+  "posterior-ankle-impingement": { plainName: "Takhne ke peechay chubhan", summary: "Paaon ko zor se neechay seedha karne par barhta takhne ke peechay ka dard posterior impingement pattern se mil sakta hai." },
+  "hallux-valgus": { plainName: "Bunion se jura bare angoothay ka dard", summary: "Bare angoothay ki jar par dukhta ubhaar jahan angootha doosri ungliyon ki taraf jhuk jata ho, hallux valgus se milta hai." },
+  "plantar-plate-injury": { plainName: "Paaon ke agle hissay / ungli ke jor ko sambhalne wale hissay ki chot", summary: "Chhoti ungli ke jor ke neechay dard jis mein ungli khisak rahi ya larkhara rahi ho, plantar-plate ki chot se mil sakta hai." },
+};

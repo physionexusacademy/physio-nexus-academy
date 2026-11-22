@@ -186,6 +186,22 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-approval
 
+      - name: Validate symptom checker Roman Urdu (every option, warning, pattern and advice line, numbers kept)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:symptom-ru
+
+      - name: Validate the screening snapshot (built on the server from raw answers, versioned, mapped cautiously from the intake)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:symptom-snapshot
+
+      - name: Validate outcome measures (catalogue, scoring refuses anything unexpected, thresholds with sources, only available instruments in a plan)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:outcomes
+
+      - name: Validate the therapist board and research record (traffic-light rules, de-identified export, data dictionary matches the database)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:board-research
+
       - name: Validate student accounts (private record, XP caps, outbox, insights)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student

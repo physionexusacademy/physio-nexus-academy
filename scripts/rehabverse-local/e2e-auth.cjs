@@ -94,7 +94,7 @@ const lastCode = async (email) => (await (await fetch(`${API}/__dev/last-code?em
   /* the clinic approves: the waiting screen moves on by itself, and the assessment opens */
   await devSql("update public.rehab_patients set status = 'active', decided_at = now() where user_id = (select id from auth.users where email = $1)", [U.email]);
   await page.goto(BASE + "/rehabverse/start");
-  await page.getByText("Where is the problem?").waitFor();
+  await page.getByText("Where is your main problem?").waitFor();
   check("R9 After the clinic approves, the assessment questionnaire opens", true);
 
   /* signed-in people skip the auth pages */

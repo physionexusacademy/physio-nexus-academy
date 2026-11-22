@@ -560,6 +560,191 @@ const definerNoPath = await sql(`select p.proname from pg_proc p join pg_namespa
    where n.nspname = 'public' and p.proname like 'rehab%' and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`);
 eq(definerNoPath, [], "every security-definer function pins its search_path");
 
+/* ----------------------------- 16b. the symptom-checker snapshot and the study setting ----------------------------- */
+const SNAP = (over = {}) => ({ engine_version: "msk1-test0001", source: "checker", region: "knee", language: "ru", answers: ["onset_gradual", "loc_knee_front"], pain_now: 5,
+  top: [{ id: "patellofemoral-pain", score: 9, matched: 3, total: 7 }], priority: 1, fracture_screen: false, nerve_hint: null, ...over });
+const saveSnap = (patient, assessment, snap) => sql("select public.rehab_checker_snapshot_save($1, $2, $3::jsonb) as r", [patient, assessment, JSON.stringify(snap)]).then((r) => r[0].r);
+async function newPatient(name, email) {
+  const user = await makeUser(email);
+  const reg = await rpc(user, "rehab_register_patient", { p_payload: { full_name: name, age_years: 35, phone: "0300 0000000", consent: true } });
+  await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: reg.id, p_decision: "approve" });
+  return { user, id: reg.id };
+}
+const submit = (p, over = {}) => rpc(p.user, "rehab_submit_assessment", { p_payload: { ...INTAKE, client_token: crypto.randomUUID(), ...over } });
+
+const dina = await newPatient("Dina Noor", "dina@pna.test");
+eq(await rpc(dina.user, "rehab_my_screening", {}), { assessment_id: null, visible: false }, "before any assessment there is nothing to show");
+const dinaA = await submit(dina);
+eq(await rpc(dina.user, "rehab_my_screening", {}), { assessment_id: dinaA.id, visible: false }, "an assessment without a screening snapshot shows nothing");
+eq((await sql("select has_function_privilege('authenticated', 'public.rehab_checker_snapshot_save(uuid, uuid, jsonb)', 'execute') as a, has_function_privilege('service_role', 'public.rehab_checker_snapshot_save(uuid, uuid, jsonb)', 'execute') as s"))[0], { a: false, s: true }, "only the server can save a snapshot (a patient cannot write her own patterns)");
+await rowsFail(dina.user, "select * from rehab_checker_snapshots", /permission denied/, "patients cannot read the snapshot table directly");
+await assert.rejects(() => saveSnap(dina.id, "00000000-0000-0000-0000-000000000000", SNAP()), /assessment not found/); checks += 1;
+await assert.rejects(() => saveSnap(aliceReg.id, dinaA.id, SNAP()), /assessment not found/); checks += 1; // not her assessment
+eq(await saveSnap(dina.id, dinaA.id, SNAP()), { saved: true }, "the server saves the snapshot with the assessment");
+eq(await saveSnap(dina.id, dinaA.id, SNAP({ region: "hip" })), { saved: false }, "a second save is ignored (one snapshot per assessment, the first is kept)");
+eq((await sql("select region, arm, engine_version, shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0], { region: "knee", arm: "immediate", engine_version: "msk1-test0001", shown_to_patient_at: null }, "the snapshot records the answers' region, the engine version and the study arm");
+await assert.rejects(() => sql("update rehab_checker_snapshots set region = 'hip' where assessment_id = $1", [dinaA.id]), /cannot be changed/); checks += 1;
+await assert.rejects(() => sql("update rehab_checker_snapshots set top_patterns = '[]' where assessment_id = $1", [dinaA.id]), /cannot be changed/); checks += 1;
+const shown = await rpc(dina.user, "rehab_my_screening", {});
+ok(shown.visible && shown.snapshot.top[0].id === "patellofemoral-pain" && shown.snapshot.engine_version === "msk1-test0001", "in the 'immediate' arm the patient sees the patterns at once");
+const firstShown = (await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0].shown_to_patient_at;
+ok(firstShown !== null, "the first time the patient is shown the screening is logged");
+await rpc(dina.user, "rehab_my_screening", {});
+eq((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0].shown_to_patient_at, firstShown, "the first-shown time never moves");
+eq((await sql("select count(*)::int n from rehab_audit_log where action = 'screening.shown' and patient_id = $1", [dina.id]))[0].n, 1, "exposure is in the audit log once");
+await assert.rejects(() => sql("update rehab_checker_snapshots set shown_to_patient_at = now() where assessment_id = $1", [dinaA.id]), /first time shown cannot be changed/); checks += 1;
+
+await fails(dina.user, "rehab_admin_set_screening_visibility", { p_value: "after_review" }, /not authorised/, "a patient cannot change the study setting");
+await fails(admin, "rehab_admin_set_screening_visibility", { p_value: "whenever" }, /unknown setting/, "only the two settings exist");
+eq((await rpc(admin, "rehab_admin_study_settings", {})).screening_visibility, "immediate", "the default is 'immediate'");
+await rpc(admin, "rehab_admin_set_screening_visibility", { p_value: "after_review" });
+eq((await sql("select arm from rehab_checker_snapshots where assessment_id = $1", [dinaA.id]))[0].arm, "immediate", "changing the setting never changes an earlier participant's arm");
+const erin = await newPatient("Erin Zafar", "erin@pna.test");
+const erinA = await submit(erin);
+await saveSnap(erin.id, erinA.id, SNAP());
+eq((await sql("select arm from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].arm, "after_review", "a new participant is recorded in the arm in force");
+eq(await rpc(erin.user, "rehab_my_screening", {}), { assessment_id: erinA.id, visible: false, waiting_for_review: true }, "in the 'after review' arm the patient sees nothing before the physiotherapist has reviewed");
+eq((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].shown_to_patient_at, null, "and no exposure is logged");
+await rpc(admin, "rehab_admin_set_assessment_status", { p_assessment_id: erinA.id, p_status: "in_review" });
+const probe = await rpc(erin.user, "rehab_my_screening", { p_mark_shown: false });
+ok(probe.visible, "a probe ('is there something to show?') says it can be shown once reviewed");
+eq((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].shown_to_patient_at, null, "but a probe logs no exposure: only drawing it on the screen does");
+ok((await rpc(erin.user, "rehab_my_screening", {})).visible, "once the physiotherapist has reviewed it, the patient sees it");
+ok((await sql("select shown_to_patient_at from rehab_checker_snapshots where assessment_id = $1", [erinA.id]))[0].shown_to_patient_at !== null, "and now the exposure is logged");
+
+const frank = await newPatient("Frank Iqbal", "frank@pna.test");
+const frankA = await submit(frank, { red_flags: ["rf_chest"] });
+await saveSnap(frank.id, frankA.id, SNAP());
+eq((await rpc(frank.user, "rehab_my_screening", {})).visible, false, "a patient with a safety warning is never shown a list of patterns");
+eq((await sql("select count(*)::int n from rehab_checker_snapshots where assessment_id = $1", [frankA.id]))[0].n, 1, "but the snapshot is kept for the physiotherapist and the research record");
+const dinaRecord = await rpc(admin, "rehab_admin_patient", { p_patient_id: dina.id });
+ok(dinaRecord.checker_snapshots.length === 1 && dinaRecord.checker_snapshots[0].arm === "immediate" && dinaRecord.checker_snapshots[0].shown_to_patient_at !== null && !("patient_id" in dinaRecord.checker_snapshots[0]), "the physiotherapist's record carries the snapshot, the arm and when the patient was shown it");
+await rpc(admin, "rehab_admin_set_screening_visibility", { p_value: "immediate" });
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'study.screening_visibility'"))[0].n === 2, "every change of the study setting is in the audit log");
+
+/* ----------------------------- 16c. outcome measures: the physiotherapist's plan, the patient's answers, a record that cannot change ----------------------------- */
+const gina = await newPatient("Gina Rauf", "gina@pna.test");
+const harun = await newPatient("Harun Aziz", "harun@pna.test");
+const PLAN_ITEMS = [{ instrument: "nprs", version: 1, schedule: "standard" }, { instrument: "psfs", version: 1, schedule: "single" }];
+const saveOutcome = (patient, plan, instrument, version, timepoint, answers = { now: 4, avg7: 5, worst7: 7, best7: 2 }, score = { primary: 5, parts: { avg7: 5 }, band: null }, by = "patient") =>
+  sql("select public.rehab_outcome_save($1, $2, $3, $4, $5, $6::jsonb, $7::jsonb, 'ru', $8) as r", [patient, plan, instrument, version, timepoint, JSON.stringify(answers), JSON.stringify(score), by]).then((r) => r[0].r);
+eq(await rpc(gina.user, "rehab_my_outcomes", {}), { plan: null, responses: [] }, "before a plan there is nothing to answer");
+await fails(gina.user, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: PLAN_ITEMS }, /not authorised/, "a patient cannot choose her own outcome measures");
+await fails(gina.user, "rehab_admin_outcomes", { p_patient_id: gina.id }, /not authorised/, "a patient cannot use the physiotherapist's outcome view");
+for (const [items, pattern, why] of [
+  [[], /between 1 and 8/, "an empty plan"],
+  [Array.from({ length: 9 }, (_, i) => ({ instrument: "nprs" + i, version: 1, schedule: "standard" })), /between 1 and 8/, "nine instruments"],
+  [[{ instrument: "nprs", version: 1, schedule: "weekly" }], /invalid plan entry/, "an unknown schedule"],
+  [[{ instrument: "NPRS", version: 1, schedule: "standard" }], /invalid plan entry/, "an instrument id that is not plain"],
+  [[{ instrument: "nprs", version: "x", schedule: "standard" }], /invalid plan entry/, "a version that is not a number"],
+  [[{ instrument: "nprs", version: 1, schedule: "standard" }, { instrument: "nprs", version: 1, schedule: "single" }], /chosen twice/, "the same instrument twice"],
+  ["nprs", /between 1 and 8/, "not a list"],
+]) await fails(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: items }, pattern, `the database refuses ${why}`);
+await fails(admin, "rehab_admin_set_outcome_plan", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_items: PLAN_ITEMS }, /patient not found/, "a plan needs a real, active patient");
+const plan1 = await rpc(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: PLAN_ITEMS, p_note: "Baseline for the research" });
+ok(/^[0-9a-f-]{36}$/.test(plan1.id), "the physiotherapist sets a plan");
+const mine1 = await rpc(gina.user, "rehab_my_outcomes", {});
+ok(mine1.plan.id === plan1.id && mine1.plan.items.length === 2 && mine1.responses.length === 0, "the patient sees the plan that was chosen for her");
+eq((await rows(gina.user, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'outcomes_assigned'"))[0].n, 1, "the patient is told");
+eq((await rpc(harun.user, "rehab_my_outcomes", {})).plan, null, "another patient sees nothing of it");
+// writing answers: server only, only what is in the live plan
+eq((await sql("select has_function_privilege('authenticated', 'public.rehab_outcome_save(uuid, uuid, text, int, text, jsonb, jsonb, text, text)', 'execute') as a, has_function_privilege('service_role', 'public.rehab_outcome_save(uuid, uuid, text, int, text, jsonb, jsonb, text, text)', 'execute') as s"))[0], { a: false, s: true }, "only the server can save an answer (a patient cannot write her own score)");
+await rowsFail(gina.user, "select * from rehab_outcome_responses", /permission denied/, "patients cannot read the answer table directly");
+await rowsFail(gina.user, "select * from rehab_outcome_plans", /permission denied/, "...or the plan table");
+eq(await saveOutcome(gina.id, plan1.id, "nprs", 1, "baseline"), { saved: true, id: (await sql("select id from rehab_outcome_responses where patient_id = $1 and instrument = 'nprs'", [gina.id]))[0].id }, "the server saves the answers with the score it worked out");
+eq((await saveOutcome(gina.id, plan1.id, "nprs", 1, "baseline", { now: 9, avg7: 9, worst7: 9, best7: 9 })).saved, false, "a second answer for the same time point is ignored: the first is kept");
+eq((await sql("select (score ->> 'primary')::int p, language, collected_by from rehab_outcome_responses where patient_id = $1 and instrument = 'nprs'", [gina.id]))[0], { p: 5, language: "ru", collected_by: "patient" }, "the record keeps the score, the language the words were shown in and who collected it");
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "groc", 1, "w2"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 2, "w2"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, "00000000-0000-0000-0000-000000000000", "nprs", 1, "w2"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(harun.id, plan1.id, "nprs", 1, "baseline"), /not in the patient's plan/); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 1, "w3"), /check constraint|violates/i); checks += 1;
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 1, "w2", [1, 2]), /check constraint|violates/i); checks += 1;
+await assert.rejects(() => sql("update rehab_outcome_responses set score = '{}'::jsonb where patient_id = $1", [gina.id]), /cannot be changed/); checks += 1;
+await assert.rejects(() => sql("update rehab_outcome_responses set answers = '{}'::jsonb where patient_id = $1", [gina.id]), /cannot be changed/); checks += 1;
+ok((await saveOutcome(gina.id, plan1.id, "psfs", 1, "baseline", { activities: [{ name: "Lifting my child", rating: 3 }] }, { primary: 3, parts: { a1: 3 }, band: null })).saved, "a second instrument in the plan is saved");
+ok((await saveOutcome(gina.id, plan1.id, "nprs", 1, "w2", { now: 2, avg7: 3, worst7: 5, best7: 1 }, { primary: 3, parts: { avg7: 3 }, band: null }, "therapist")).saved, "the physiotherapist can record for the patient (collected_by says so)");
+const mine2 = await rpc(gina.user, "rehab_my_outcomes", {});
+ok(mine2.responses.length === 3 && mine2.responses[0].instrument === "nprs" && mine2.responses[0].collected_by === "patient", "the patient reads her own answers");
+eq((await rpc(harun.user, "rehab_my_outcomes", {})).responses, [], "another patient never sees them");
+ok((await rows(admin, "select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'outcomes_answered'"))[0].n >= 2, "the physiotherapist is told when a questionnaire is answered by the patient");
+// messages about the results: only the physiotherapist sends them, they cannot be changed, the patient reads only her own
+await fails(gina.user, "rehab_admin_send_outcome_feedback", { p_patient_id: gina.id, p_message: "I could write to myself.", p_language: "en", p_source: "written" }, /not authorised/, "a patient cannot send a message as her physiotherapist");
+for (const [args, pattern, why] of [
+  [{ p_message: "too short", p_language: "en", p_source: "written" }, /10 to 1500/, "a message under 10 characters"],
+  [{ p_message: "x".repeat(1501), p_language: "en", p_source: "written" }, /10 to 1500/, "a message over 1500 characters"],
+  [{ p_message: "A proper message for the patient.", p_language: "fr", p_source: "written" }, /invalid message settings/, "an unknown language"],
+  [{ p_message: "A proper message for the patient.", p_language: "en", p_source: "robot" }, /invalid message settings/, "an unknown source"],
+]) await fails(admin, "rehab_admin_send_outcome_feedback", { p_patient_id: gina.id, ...args }, pattern, `the database refuses ${why}`);
+const fb = await rpc(admin, "rehab_admin_send_outcome_feedback", { p_patient_id: gina.id, p_message: "Your pain is lower than at the start. Well done.", p_language: "en", p_source: "rules", p_based_on: { instruments: ["nprs"] } });
+ok(/^[0-9a-f-]{36}$/.test(fb.id), "the physiotherapist sends a message about the results");
+const mineFb = await rpc(gina.user, "rehab_my_outcomes", {});
+ok(mineFb.feedback.length === 1 && mineFb.feedback[0].message.startsWith("Your pain is lower") && !("source" in mineFb.feedback[0]), "the patient reads it (she is not shown how it was drafted)");
+eq((await rpc(harun.user, "rehab_my_outcomes", {})).feedback ?? [], [], "another patient never sees it");
+eq((await rows(gina.user, "select count(*)::int n from rehab_notifications where audience = 'patient' and kind = 'outcomes_feedback'"))[0].n, 1, "the patient is told a message is waiting (without its content)");
+await assert.rejects(() => sql("update rehab_outcome_feedback set message = 'changed' where patient_id = $1", [gina.id]), /cannot be changed/); checks += 1;
+await rowsFail(gina.user, "select * from rehab_outcome_feedback", /permission denied/, "patients cannot read the message table directly");
+ok((await rpc(admin, "rehab_admin_outcomes", { p_patient_id: gina.id })).feedback[0].source === "rules", "the physiotherapist's view records how the message started");
+// a new plan replaces the live one; earlier answers and plans stay
+const plan2 = await rpc(admin, "rehab_admin_set_outcome_plan", { p_patient_id: gina.id, p_items: [{ instrument: "nprs", version: 1, schedule: "intensive" }, { instrument: "groc", version: 1, schedule: "intensive" }] });
+const adminOutcomes = await rpc(admin, "rehab_admin_outcomes", { p_patient_id: gina.id });
+ok(adminOutcomes.plan.id === plan2.id && adminOutcomes.earlier_plans === 1 && adminOutcomes.responses.length === 3, "a new plan is the live one, the earlier plan and every answer are kept");
+await assert.rejects(() => saveOutcome(gina.id, plan1.id, "nprs", 1, "w4"), /not in the patient's plan/); checks += 1; // the old plan id no longer saves
+await assert.rejects(() => saveOutcome(gina.id, plan2.id, "psfs", 1, "w6", { activities: [] }, { primary: 1, parts: {}, band: null }), /not in the patient's plan/); checks += 1; // psfs is no longer in the plan
+ok((await saveOutcome(gina.id, plan2.id, "groc", 1, "w2", { value: 4 }, { primary: 4, parts: {}, band: null })).saved, "the new plan's instruments can be answered");
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'outcomes.plan_set' and patient_id = $1", [gina.id]))[0].n === 2 && (await sql("select count(*)::int n from rehab_audit_log where action = 'outcomes.recorded' and patient_id = $1", [gina.id]))[0].n === 4, "every plan and every answer is in the audit log");
+
+/* ----------------------------- 16d. the therapist board and the research record (consent, de-identified export, audit) ----------------------------- */
+await fails(gina.user, "rehab_admin_board", {}, /not authorised/, "a patient cannot open the board");
+await fails(gina.user, "rehab_admin_research_export", { p_table: "participants" }, /not authorised/, "a patient cannot export the research record");
+await fails(gina.user, "rehab_admin_set_research_consent", { p_patient_id: gina.id, p_consent: true, p_note: "I say so" }, /not authorised/, "a patient cannot record her own research consent");
+await rowsFail(gina.user, `update rehab_patients set research_consent = true where id = '${gina.id}'`, /permission denied/, "...or write it directly");
+await fails(admin, "rehab_admin_set_research_consent", { p_patient_id: gina.id, p_consent: true }, /say how research consent was obtained/, "consent needs a note on how it was obtained");
+await fails(admin, "rehab_admin_set_research_consent", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_consent: true, p_note: "Signed on paper" }, /patient not found/, "consent needs a real patient");
+eq((await rpc(admin, "rehab_admin_research_export", { p_table: "participants" })).rows, [], "before anyone has consented the research record is empty");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: gina.id, p_consent: true, p_note: "Signed paper form, clinic visit" });
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: dina.id, p_consent: true, p_note: "Verbal consent recorded in notes" });
+const participants = (await rpc(admin, "rehab_admin_research_export", { p_table: "participants" })).rows;
+eq(participants.map((r) => r.study_id).sort(), [dina.ref ?? (await sql("select reference_code from rehab_patients where id = $1", [dina.id]))[0].reference_code, (await sql("select reference_code from rehab_patients where id = $1", [gina.id]))[0].reference_code].sort(), "only patients who consented are in the record, under their study id");
+const exported = JSON.stringify(participants);
+ok(!/Gina|Dina|Rauf|Noor|0300|@pna\.test/.test(exported), "no name, phone number or e-mail is in the export");
+ok(participants.every((r) => /^\d{2}-\d{2}$|^70\+$/.test(r.age_band) && /^\d{4}-\d{2}$/.test(r.enrolled_month)), "ages are bands and dates are months");
+eq((await sql("select public.rehab__age_band(25) a, public.rehab__age_band(39) b, public.rehab__age_band(70) c, public.rehab__age_band(91) d"))[0], { a: "20-29", b: "30-39", c: "70+", d: "70+" }, "age bands");
+const shot = (await rpc(admin, "rehab_admin_research_export", { p_table: "screening" })).rows;
+ok(shot.length === 1 && shot[0].engine_version === "msk1-test0001" && shot[0].study_arm === "immediate" && shot[0].shown_to_patient === true && shot[0].pattern_1 === "patellofemoral-pain" && /onset_gradual/.test(shot[0].answers), "the screening snapshot is exported with its engine version, arm and exposure (dina only)");
+const oc = (await rpc(admin, "rehab_admin_research_export", { p_table: "outcomes" })).rows;
+ok(oc.length === 4 && oc.every((r) => r.instrument && r.timepoint && r.language_shown && r.days_from_plan_start >= 0), "gina's four outcome records are exported with instrument, version, time point, language shown and days from the plan start");
+ok(!JSON.stringify(oc).includes("Lifting my child"), "the activities the patient wrote (free text) are not exported");
+ok(Array.isArray((await rpc(admin, "rehab_admin_research_export", { p_table: "daily_feedback" })).rows) && Array.isArray((await rpc(admin, "rehab_admin_research_export", { p_table: "adverse_events" })).rows), "daily feedback and adverse events can be exported");
+const dictionary = JSON.parse(fs.readFileSync(new URL("../src/lib/research/dictionary.json", import.meta.url), "utf8"));
+const dictKeys = (table) => dictionary.tables[table].columns.map((c) => c[0]).sort();
+eq(Object.keys(participants[0]).sort(), dictKeys("participants"), "the participants export has exactly the columns of the data dictionary");
+eq(Object.keys(shot[0]).sort(), dictKeys("screening"), "the screening export has exactly the columns of the data dictionary");
+eq(Object.keys(oc[0]).sort(), dictKeys("outcomes"), "the outcomes export has exactly the columns of the data dictionary");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: aliceReg.id, p_consent: true, p_note: "Signed paper form, test" });
+const fbRows = (await rpc(admin, "rehab_admin_research_export", { p_table: "daily_feedback" })).rows;
+const aeRows = (await rpc(admin, "rehab_admin_research_export", { p_table: "adverse_events" })).rows;
+ok(fbRows.length > 0 && aeRows.length > 0, "a consenting patient's daily feedback and adverse events are exported");
+eq(Object.keys(fbRows[0]).sort(), dictKeys("daily_feedback"), "the daily feedback export has exactly the columns of the data dictionary");
+eq(Object.keys(aeRows[0]).sort(), dictKeys("adverse_events"), "the adverse events export has exactly the columns of the data dictionary");
+ok(!/Cannot squat|football|seedhi|Stairs|Rest/.test(JSON.stringify([fbRows, aeRows, participants])), "no free text from the assessment, feedback or adverse events is exported");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: aliceReg.id, p_consent: false });
+await fails(admin, "rehab_admin_research_export", { p_table: "patients" }, /unknown export table/, "only the listed tables can be exported");
+await fails(admin, "rehab_admin_research_export", { p_table: "participants; drop table rehab_patients" }, /unknown export table/, "an export name is never run as SQL");
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'research.export'"))[0].n === 8, "every export is written to the audit log");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: dina.id, p_consent: false });
+eq((await rpc(admin, "rehab_admin_research_export", { p_table: "screening" })).rows, [], "withdrawing consent removes the patient from the record at once");
+ok((await sql("select count(*)::int n from rehab_audit_log where action in ('research.consent_recorded', 'research.consent_withdrawn')"))[0].n === 5, "consent and its withdrawal are audited");
+const board = await rpc(admin, "rehab_admin_board", {});
+const gRow = board.find((r) => r.id === gina.id);
+ok(board.length >= 6 && board.every((r) => r.reference_code && "research_consent" in r), "the board has a row for every active patient");
+ok(gRow && gRow.research_consent === true && gRow.outcome_plan.items.length === 2 && gRow.outcome_responses.length === 4 && gRow.assessment_status === null, "a board row carries the consent and the outcome plan and answers (a patient with no assessment yet shows none)");
+const dRow = board.find((r) => r.id === dina.id);
+ok(dRow && dRow.assessment_status === "submitted" && dRow.baseline_pain === 5 && dRow.red_flag_level === "none" && dRow.outcome_plan === null && dRow.days_total === 0, "...and one with an assessment shows its status, baseline pain and safety level");
+const fRow = board.find((r) => r.id === frank.id);
+ok(fRow && fRow.red_flag_level === "emergency" && fRow.assessment_status === "needs_clinical_assessment", "a patient with a safety warning shows it on the board");
+ok(!board.some((r) => r.id === aliceReg.id && false) && board.every((r) => r.status === undefined), "the board does not expose internal account ids");
+
 /* ----------------------------- 17. the AI-assistance switch in the app (code-level) ----------------------------- */
 import fs from "node:fs";
 const src = (file) => fs.readFileSync(new URL("../" + file, import.meta.url), "utf8");

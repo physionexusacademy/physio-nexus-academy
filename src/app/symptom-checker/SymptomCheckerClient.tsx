@@ -1,6 +1,5 @@
 "use client";
 
-import "./symptom-checker.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
@@ -18,7 +17,8 @@ import {
   Siren,
   Stethoscope,
 } from "lucide-react";
-import { AnatomyRegionVisual } from "./AnatomyRegionVisual";
+import { AnatomyRegionVisual } from "@/components/symptom/AnatomyRegionVisual";
+import { ChoiceGroup, ClueList, LocationGrid, PainSlider, PatternCard, PatternHeadline, RegionGrid, TRAUMA_ONLY_CLUES, visibleCluesFor } from "@/components/symptom/parts";
 import { REGION_COUNTS, REGION_PLAIN, libraryHref, regionForChecker } from "@/lib/rehabverse/area-map";
 import {
   commonHistoryOptions,
@@ -34,23 +34,12 @@ import {
   type RegionId,
 } from "@/lib/msk-symptom-checker";
 import { buildSummaryText } from "@/lib/msk-symptom-summary";
+import { useLang, writeLang } from "@/lib/lang";
+import { checkerCopy } from "@/lib/symptom/copy";
+import { saveHandover } from "@/lib/symptom/handover";
+import { careText, flagText, imagingText, neuroText, optionText, overlapText, regionText, safetyTitle, type CheckerLang } from "@/lib/symptom/ru";
 
 type Step = 0 | 1 | 2 | 3 | 4 | 5;
-
-const steps = ["Body area", "Your history", "Pain location", "Symptoms", "Safety check", "Result"];
-
-const traumaOnlyClueIds = new Set([
-  "clue_knee_age55",
-  "clue_knee_fibular_head_tender",
-  "clue_knee_patella_isolated_tender",
-  "clue_knee_cant_flex90",
-  "clue_knee_no_weight_initial",
-  "clue_knee_no4steps",
-  "clue_ankle_no_weight_initial",
-  "clue_ankle_no4steps",
-  "clue_ankle_malleolus_tender",
-  "clue_ankle_hindfoot_tender",
-]);
 
 const PRIORITY_LEVEL: Record<string, number> = {
   "Monitor and assess as needed": 0,
@@ -59,6 +48,10 @@ const PRIORITY_LEVEL: Record<string, number> = {
 };
 
 export function SymptomCheckerClient() {
+  const [siteLang] = useLang();
+  const lang: CheckerLang = siteLang === "ur" ? "ru" : "en";
+  const t = checkerCopy(lang);
+  const steps = t.steps;
   const [step, setStep] = useState<Step>(0);
   const [regionId, setRegionId] = useState<RegionId | null>(null);
   const [age, setAge] = useState("");
@@ -90,24 +83,14 @@ export function SymptomCheckerClient() {
   const neurologicHint = useMemo(() => (regionId ? getNeurologicHint(regionId, selectedFeatures) : null), [regionId, selectedFeatures]);
   const overlapNote = useMemo(() => getOverlapNote(results), [results]);
 
-  const visibleClues = useMemo(
-    () =>
-      region
-        ? region.clues.filter((item) => {
-            if (traumaOnlyClueIds.has(item.id) && onset !== "onset_trauma") return false;
-            if (item.id === "clue_knee_age55") return age === "age_40_59";
-            return true;
-          })
-        : [],
-    [region, onset, age],
-  );
+  const visibleClues = useMemo(() => visibleCluesFor(region, onset === "onset_trauma", age), [region, onset, age]);
 
   useEffect(() => {
     if (onset === "onset_trauma") return;
     setClues((current) => {
       const next = new Set(current);
       let changed = false;
-      traumaOnlyClueIds.forEach((id) => {
+      TRAUMA_ONLY_CLUES.forEach((id) => {
         if (next.delete(id)) changed = true;
       });
       return changed ? next : current;
@@ -163,15 +146,15 @@ export function SymptomCheckerClient() {
   const next = () => {
     setMessage("");
     if (step === 1 && (!age || !onset || !duration || !impact)) {
-      setMessage("Please choose your age range, how the problem started, how long it has been present and how much it affects daily activity.");
+      setMessage(t.errors.history);
       return;
     }
     if (step === 2 && !location) {
-      setMessage("Please choose the location that best matches your symptoms.");
+      setMessage(t.errors.location);
       return;
     }
     if (step === 4 && selectedRedFlags.size === 0 && !noRedFlags) {
-      setMessage("Please confirm whether any safety warning applies, or choose ‘None of these apply’.");
+      setMessage(t.errors.safety);
       return;
     }
     setStep((current) => Math.min(5, current + 1) as Step);
@@ -225,28 +208,54 @@ export function SymptomCheckerClient() {
   const appointmentHref = `/appointment?reason=${encodeURIComponent(reason)}`;
   const priorityLevel = PRIORITY_LEVEL[carePriority.label] ?? 0;
   const exerciseRegion = regionId ? regionForChecker(regionId) : null;
+  const regionWords = region ? regionText(lang, region) : null;
+  const care = careText(lang, carePriority);
+  const neuro = neurologicHint ? neuroText(lang, selectedFeatures, neurologicHint) : null;
+  const imaging = imagingNotice ? imagingText(lang, imagingNotice) : null;
+  const overlap = overlapText(lang, results, overlapNote);
+
+  // The headline answer: the pattern that fits best, shown big. When a fracture screen fired it waits behind the fracture notice, and an urgent priority goes first.
+  const headline = topResult && !imagingNotice ? <PatternHeadline lang={lang} result={topResult} /> : null;
+
+  const priorityBlock = (
+    <div className="sc-priority" data-level={priorityLevel}>
+      <div className="sc-meter" role="img" aria-label={t.result.urgency(priorityLevel + 1)}>
+        {t.result.meter.map((name, index) => (
+          <span key={index} data-on={index <= priorityLevel}>{name}</span>
+        ))}
+      </div>
+      <div>
+        <p className="sc-eyebrow">{t.result.priority}</p>
+        <h4>{care.label}</h4>
+        <p>{care.detail}</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="sc-wrap" ref={consoleRef}>
-      <div className="sc" data-step={step}>
+      <div className="sc" data-step={step} data-lang={lang}>
         <p className="sc-emergency" role="note">
           <Siren className="h-4 w-4" aria-hidden="true" />
           <span>
-            <strong>Emergency?</strong> Chest pain, trouble breathing, sudden weakness or numbness, or loss of bladder/bowel control — call your local emergency number now (1122 in much of Pakistan). This tool is not for emergencies.
+            <strong>{t.emergencyLead}</strong> {t.emergencyBody}
           </span>
         </p>
 
         <header className="sc-head">
           <div className="sc-head-top">
             <div>
-              <p className="sc-kicker">PNA MSK Screening Assistant</p>
+              <p className="sc-kicker">{t.kicker}</p>
               <h2 className="sc-title" tabIndex={-1} ref={headingRef}>
-                {steps[step]} <span>Step {step + 1} / {steps.length}</span>
+                {steps[step]} <span>{t.stepOf(step + 1, steps.length)}</span>
               </h2>
             </div>
-            <span className="sc-badge">Adults 18+ · Clinical screening</span>
+            <div className="sc-head-side">
+              <LangToggle lang={lang} label={t.language} />
+              <span className="sc-badge">{t.badge}</span>
+            </div>
           </div>
-          <ol className="sc-steps" aria-label="Progress">
+          <ol className="sc-steps" aria-label={t.progress}>
             {steps.map((label, index) => (
               <li key={label} data-state={index < step ? "done" : index === step ? "now" : "todo"} aria-current={index === step ? "step" : undefined}>
                 <i aria-hidden="true">{index < step ? <Check className="h-3 w-3" /> : index + 1}</i>
@@ -262,38 +271,23 @@ export function SymptomCheckerClient() {
         <div className="sc-body" key={step}>
           {step === 0 && (
             <section>
-              <p className="sc-eyebrow">Start here</p>
-              <h3 className="sc-h">Where is your main problem?</h3>
-              <p className="sc-lead">Choose the body area that bothers you most. Simple wording comes first; the medical term is shown underneath.</p>
-              <div className="sc-regions">
-                {regions.map((item) => (
-                  <button key={item.id} type="button" onClick={() => chooseRegion(item.id)} className="sc-region">
-                    <span className="sc-figure">
-                      <AnatomyRegionVisual region={item.id} compact className="h-[88px] w-[64px]" />
-                      <i aria-hidden="true" />
-                    </span>
-                    <span className="sc-region-text">
-                      <b>{item.label}</b>
-                      <em>{item.medical}</em>
-                      <small>{item.hint}</small>
-                    </span>
-                    <ArrowRight className="sc-go h-4 w-4" aria-hidden="true" />
-                  </button>
-                ))}
-              </div>
+              <p className="sc-eyebrow">{t.start.eyebrow}</p>
+              <h3 className="sc-h">{t.start.title}</h3>
+              <p className="sc-lead">{t.start.lead}</p>
+              <RegionGrid lang={lang} onPick={chooseRegion} />
             </section>
           )}
 
           {step === 1 && region && (
             <section>
-              <p className="sc-eyebrow">Clinical context</p>
-              <h3 className="sc-h">A few basics first</h3>
-              <p className="sc-lead">These details help separate injury, overuse and longer-term patterns.</p>
-              <ChoiceGroup title="Your age" options={commonHistoryOptions.age} value={age} onChange={setAge} />
-              <ChoiceGroup title="How did it start?" options={commonHistoryOptions.onset} value={onset} onChange={setOnset} />
-              <ChoiceGroup title="How long has it been present?" options={commonHistoryOptions.duration} value={duration} onChange={setDuration} />
-              <ChoiceGroup title="How much is it affecting normal life?" options={commonHistoryOptions.impact} value={impact} onChange={setImpact} />
-              <PainSlider value={pain} onChange={setPain} />
+              <p className="sc-eyebrow">{t.history.eyebrow}</p>
+              <h3 className="sc-h">{t.history.title}</h3>
+              <p className="sc-lead">{t.history.lead}</p>
+              <ChoiceGroup title={t.history.age} options={historyOptions(lang, commonHistoryOptions.age)} value={age} onChange={setAge} />
+              <ChoiceGroup title={t.history.onset} options={historyOptions(lang, commonHistoryOptions.onset)} value={onset} onChange={setOnset} />
+              <ChoiceGroup title={t.history.duration} options={historyOptions(lang, commonHistoryOptions.duration)} value={duration} onChange={setDuration} />
+              <ChoiceGroup title={t.history.impact} options={historyOptions(lang, commonHistoryOptions.impact)} value={impact} onChange={setImpact} />
+              <PainSlider copy={t.pain} value={pain} onChange={setPain} />
             </section>
           )}
 
@@ -301,50 +295,26 @@ export function SymptomCheckerClient() {
             <section>
               <div className="sc-split">
                 <div>
-                  <p className="sc-eyebrow">Symptom location</p>
-                  <h3 className="sc-h">Where exactly do you feel it?</h3>
-                  <p className="sc-lead">Choose the closest match for your main symptom location.</p>
+                  <p className="sc-eyebrow">{t.location.eyebrow}</p>
+                  <h3 className="sc-h">{t.location.title}</h3>
+                  <p className="sc-lead">{t.location.lead}</p>
                 </div>
                 <div className="sc-figure sc-figure-lg" aria-hidden="true">
                   <AnatomyRegionVisual region={region.id} className="h-40 w-auto" />
                   <i />
                 </div>
               </div>
-              <div className="sc-grid">
-                {region.locations.map((item) => (
-                  <button key={item.id} type="button" aria-pressed={location === item.id} onClick={() => setLocation(item.id)} className="sc-choice" data-on={location === item.id}>
-                    <span>
-                      <b>{item.label}</b>
-                      {item.medical ? <em>{item.medical}</em> : null}
-                    </span>
-                    <i aria-hidden="true" />
-                  </button>
-                ))}
-              </div>
+              <LocationGrid lang={lang} options={region.locations} value={location} onChange={setLocation} />
             </section>
           )}
 
           {step === 3 && region && (
             <section>
-              <p className="sc-eyebrow">Pattern matching</p>
-              <h3 className="sc-h">Which statements fit you?</h3>
-              <p className="sc-lead">Select every option that clearly matches. Leave an option unticked if you are unsure — unsure is fine.</p>
-              <p className="sc-count" aria-live="polite">{clues.size} selected</p>
-              <div className="sc-list">
-                {visibleClues.map((item) => {
-                  const checked = clues.has(item.id);
-                  return (
-                    <label key={item.id} className="sc-check" data-on={checked}>
-                      <input type="checkbox" checked={checked} onChange={() => toggleClue(item.id)} />
-                      <i aria-hidden="true">{checked ? <Check className="h-3.5 w-3.5" /> : null}</i>
-                      <span>
-                        <b>{item.label}</b>
-                        {item.medical ? <em>{item.medical}</em> : null}
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
+              <p className="sc-eyebrow">{t.clues.eyebrow}</p>
+              <h3 className="sc-h">{t.clues.title}</h3>
+              <p className="sc-lead">{t.clues.lead}</p>
+              <p className="sc-count" aria-live="polite">{t.clues.count(clues.size)}</p>
+              <ClueList lang={lang} items={visibleClues} selected={clues} onToggle={toggleClue} />
             </section>
           )}
 
@@ -353,9 +323,9 @@ export function SymptomCheckerClient() {
               <div className="sc-gate">
                 <span aria-hidden="true"><ShieldAlert className="h-6 w-6" /></span>
                 <div>
-                  <p className="sc-eyebrow sc-eyebrow-warn">Safety gate</p>
-                  <h3 className="sc-h">Safety check</h3>
-                  <p className="sc-lead">Before showing musculoskeletal possibilities, we screen for symptoms that need medical care first. Tick anything that applies right now.</p>
+                  <p className="sc-eyebrow sc-eyebrow-warn">{t.safety.eyebrow}</p>
+                  <h3 className="sc-h">{t.safety.title}</h3>
+                  <p className="sc-lead">{t.safety.lead}</p>
                 </div>
               </div>
               <div className="sc-list">
@@ -366,8 +336,8 @@ export function SymptomCheckerClient() {
                       <input type="checkbox" checked={checked} onChange={() => toggleRedFlag(flag.id)} />
                       <i aria-hidden="true">{checked ? <Check className="h-3.5 w-3.5" /> : null}</i>
                       <span>
-                        <b>{flag.label}</b>
-                        <em>{flag.level === "emergency" ? "Emergency warning" : "Urgent warning"}</em>
+                        <b>{flagText(lang, flag).label}</b>
+                        <em>{flag.level === "emergency" ? t.safety.emergency : t.safety.urgent}</em>
                       </span>
                     </label>
                   );
@@ -382,40 +352,43 @@ export function SymptomCheckerClient() {
                     }}
                   />
                   <i aria-hidden="true">{noRedFlags ? <Check className="h-3.5 w-3.5" /> : null}</i>
-                  <span><b>None of these apply to me</b></span>
+                  <span><b>{t.safety.none}</b></span>
                 </label>
               </div>
             </section>
           )}
 
-          {step === 5 && region && (
+          {step === 5 && region && regionWords && (
             <section aria-live="polite">
               {selectedFlagObjects.length > 0 ? (
                 <div>
                   <div className="sc-alert" data-level={hasEmergencyFlag ? "emergency" : "urgent"} role="alert">
                     <AlertTriangle className="h-7 w-7" aria-hidden="true" />
                     <div>
-                      <h3>{safetyDisposition?.title ?? "Medical assessment recommended"}</h3>
-                      <p>The checker has stopped before giving a musculoskeletal differential because one or more safety warnings were selected.</p>
+                      <h3>{safetyDisposition ? safetyTitle(lang, safetyDisposition.level, safetyDisposition.title) : t.result.stopTitle}</h3>
+                      <p>{t.result.stopBody}</p>
                     </div>
                   </div>
                   <ul className="sc-flagged">
-                    {selectedFlagObjects.map((flag) => (
-                      <li key={flag.id}>
-                        <strong>{flag.label}</strong>
-                        <span>{flag.advice}</span>
-                      </li>
-                    ))}
+                    {selectedFlagObjects.map((flag) => {
+                      const words = flagText(lang, flag);
+                      return (
+                        <li key={flag.id}>
+                          <strong>{words.label}</strong>
+                          <span>{words.advice}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                   <div className="sc-actions">
                     <button type="button" onClick={copySummary} className="sc-btn sc-btn-ghost">
-                      <ClipboardCopy className="h-4 w-4" aria-hidden="true" /> {copied === "done" ? "Copied" : "Copy summary for a clinician"}
+                      <ClipboardCopy className="h-4 w-4" aria-hidden="true" /> {copied === "done" ? t.result.copied : t.result.copyClinician}
                     </button>
                     <button type="button" onClick={restart} className="sc-btn sc-btn-ghost">
-                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> Start again
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> {t.result.again}
                     </button>
                   </div>
-                  {copied === "failed" ? <SummaryBox text={summary} /> : null}
+                  {copied === "failed" ? <SummaryBox text={summary} label={t.result.blocked} /> : null}
                 </div>
               ) : (
                 <div>
@@ -423,105 +396,57 @@ export function SymptomCheckerClient() {
                     <div className="sc-figure sc-figure-lg" aria-hidden="true">
                       <AnatomyRegionVisual region={region.id} className="h-44 w-auto" />
                       <i />
-                      <span className="sc-tag">{region.label}</span>
+                      <span className="sc-tag">{regionWords.label}</span>
                     </div>
                     <div>
-                      <p className="sc-kicker"><Stethoscope className="inline h-4 w-4" aria-hidden="true" /> Your screening result</p>
-                      <h3 className="sc-h">Possible {region.label} patterns</h3>
-                      <p className="sc-lead">These are ranked compatibility patterns from your answers — not confirmed diagnoses.</p>
+                      <p className="sc-kicker"><Stethoscope className="inline h-4 w-4" aria-hidden="true" /> {t.result.kicker}</p>
+                      <h3 className="sc-h">{t.result.title(regionWords.label)}</h3>
+                      <p className="sc-lead">{t.result.lead}</p>
                     </div>
                   </div>
 
-                  <div className="sc-priority" data-level={priorityLevel}>
-                    <div className="sc-meter" role="img" aria-label={`Urgency level ${priorityLevel + 1} of 3`}>
-                      {["Monitor", "Assess", "Prompt"].map((name, index) => (
-                        <span key={name} data-on={index <= priorityLevel}>{name}</span>
-                      ))}
-                    </div>
-                    <div>
-                      <p className="sc-eyebrow">Next-step priority</p>
-                      <h4>{carePriority.label}</h4>
-                      <p>{carePriority.detail}</p>
-                    </div>
-                  </div>
+                  {priorityLevel === 2 ? priorityBlock : headline}
+                  {priorityLevel === 2 ? headline : priorityBlock}
 
-                  {neurologicHint ? (
+                  {neuro ? (
                     <div className="sc-note" data-tone="info">
                       <Info className="h-5 w-5" aria-hidden="true" />
                       <div>
-                        <p className="sc-eyebrow">Nerve distribution hint</p>
-                        <h4>{neurologicHint.label}</h4>
-                        <p>{neurologicHint.detail}</p>
+                        <p className="sc-eyebrow">{t.result.nerve}</p>
+                        <h4>{neuro.label}</h4>
+                        <p>{neuro.detail}</p>
                       </div>
                     </div>
                   ) : null}
 
-                  {imagingNotice ? (
+                  {imaging ? (
                     <div className="sc-note" data-tone="warn">
                       <AlertTriangle className="h-5 w-5" aria-hidden="true" />
                       <div>
-                        <p className="sc-eyebrow">Fracture screening</p>
-                        <h4>{imagingNotice.title}</h4>
-                        <p>{imagingNotice.body}</p>
-                        <p className="sc-eyebrow sc-mt">Matched criteria</p>
+                        <p className="sc-eyebrow">{t.result.fracture}</p>
+                        <h4>{imaging.title}</h4>
+                        <p>{imaging.body}</p>
+                        <p className="sc-eyebrow sc-mt">{t.result.criteria}</p>
                         <ul>
-                          {imagingNotice.criteria.map((criterion) => <li key={criterion}>{criterion}</li>)}
+                          {imaging.criteria.map((criterion) => <li key={criterion}>{criterion}</li>)}
                         </ul>
-                        <p className="sc-strong">The MSK possibilities below are secondary until a fracture is reasonably excluded.</p>
+                        <p className="sc-strong">{t.result.secondary}</p>
                       </div>
                     </div>
                   ) : null}
 
-                  {overlapNote ? <p className="sc-overlap"><Info className="h-4 w-4" aria-hidden="true" /> {overlapNote}</p> : null}
+                  {overlap ? <p className="sc-overlap"><Info className="h-4 w-4" aria-hidden="true" /> {overlap}</p> : null}
 
                   {results.length > 0 ? (
                     <div className="sc-results">
-                      {results.slice(0, 3).map((result, index) => {
-                        const share = Math.round((result.matchedCount / Math.max(1, result.featureCount)) * 100);
-                        return (
-                          <article key={result.condition.id} className="sc-card" data-top={index === 0}>
-                            <div className="sc-card-top">
-                              <div>
-                                <p className="sc-eyebrow">{index === 0 ? "Most compatible pattern" : "Alternative possibility"}</p>
-                                <h4>{result.condition.plainName}</h4>
-                                <p className="sc-sub">{result.condition.name}</p>
-                              </div>
-                              <span className="sc-pill">{compatibilityLabel(result.score)}</span>
-                            </div>
-                            <p>{result.condition.summary}</p>
-                            <div className="sc-fit" role="img" aria-label={`You reported ${result.matchedCount} of ${result.featureCount} typical features`}>
-                              <div><i style={{ width: `${Math.max(6, share)}%` }} /></div>
-                              <span>You reported <b>{result.matchedCount}</b> of {result.featureCount} typical features</span>
-                            </div>
-                            {result.matches.length > 0 ? (
-                              <div className="sc-why">
-                                <p className="sc-eyebrow">Why it matched</p>
-                                <ul>{result.matches.map((match) => <li key={match}>{match}</li>)}</ul>
-                              </div>
-                            ) : null}
-                            {result.missing.length > 0 ? (
-                              <div className="sc-why">
-                                <p className="sc-eyebrow">Often also present — not reported</p>
-                                <ul>{result.missing.map((item) => <li key={item}>{item}</li>)}</ul>
-                              </div>
-                            ) : null}
-                            {result.contradictions.length > 0 ? (
-                              <div className="sc-against">
-                                <p className="sc-eyebrow">What argues against it</p>
-                                <ul>{result.contradictions.map((item) => <li key={item}>{item}</li>)}</ul>
-                              </div>
-                            ) : null}
-                            <p className="sc-advice">{result.condition.advice}</p>
-                          </article>
-                        );
-                      })}
+                      {results.slice(0, 3).map((result, index) => <PatternCard key={result.condition.id} lang={lang} result={result} index={index} underHeadline={index === 0 && Boolean(headline)} />)}
                     </div>
                   ) : (
                     <div className="sc-note" data-tone="plain">
                       <Info className="h-5 w-5" aria-hidden="true" />
                       <div>
-                        <h4>No single pattern stands out strongly</h4>
-                        <p>Your answers are not specific enough for a useful ranking. An in-person assessment can clarify the source of symptoms.</p>
+                        <h4>{t.result.noneTitle}</h4>
+                        <p>{t.result.noneBody}</p>
                       </div>
                     </div>
                   )}
@@ -529,35 +454,51 @@ export function SymptomCheckerClient() {
                   {exerciseRegion && priorityLevel < 2 && !imagingNotice ? (
                     <div className="sc-bridge">
                       <div>
-                        <h4><PersonStanding className="inline h-5 w-5" aria-hidden="true" /> See gentle {REGION_PLAIN[exerciseRegion].toLowerCase()} exercises in 3D</h4>
-                        <p>{REGION_COUNTS[exerciseRegion]} exercises performed step by step by the PNA virtual physiotherapist, in English or Roman Urdu. They are for learning, not a prescription: stop if pain increases, and have it assessed if it is not settling.</p>
+                        <h4><PersonStanding className="inline h-5 w-5" aria-hidden="true" /> {t.result.exercisesTitle(REGION_PLAIN[exerciseRegion].toLowerCase())}</h4>
+                        <p>{t.result.exercisesBody(REGION_COUNTS[exerciseRegion])}</p>
                       </div>
-                      <a href={libraryHref(exerciseRegion, "checker")} className="sc-btn sc-btn-ghost">Open the exercise library <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                      <a href={libraryHref(exerciseRegion, "checker")} className="sc-btn sc-btn-ghost">{t.result.exercisesLink} <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
                     </div>
                   ) : null}
 
                   <div className="sc-cta">
                     <div>
-                      <h4><CheckCircle2 className="inline h-5 w-5" aria-hidden="true" /> Need a professional assessment?</h4>
-                      <p>Book with Physio Nexus Academy for examination, confirmation of the clinical pattern and an individualized management plan.</p>
+                      <h4><CheckCircle2 className="inline h-5 w-5" aria-hidden="true" /> {t.result.needTitle}</h4>
+                      <p>{t.result.needBody}</p>
                     </div>
                     <div className="sc-actions">
-                      <a href={appointmentHref} className="sc-btn sc-btn-primary"><CalendarDays className="h-4 w-4" aria-hidden="true" /> Book Appointment</a>
-                      <a href="/home-visit" className="sc-btn sc-btn-ghost"><Home className="h-4 w-4" aria-hidden="true" /> Request Home Visit</a>
+                      <a href={appointmentHref} className="sc-btn sc-btn-primary"><CalendarDays className="h-4 w-4" aria-hidden="true" /> {t.result.book}</a>
+                      <a href="/home-visit" className="sc-btn sc-btn-ghost"><Home className="h-4 w-4" aria-hidden="true" /> {t.result.home}</a>
+                    </div>
+                  </div>
+
+                  <div className="sc-cta sc-handover">
+                    <div>
+                      <h4><Stethoscope className="inline h-5 w-5" aria-hidden="true" /> {t.result.handoverTitle}</h4>
+                      <p>{t.result.handoverBody}</p>
+                    </div>
+                    <div className="sc-actions">
+                      <a
+                        href="/rehabverse/start"
+                        onClick={() => saveHandover({ region: region.id, answers: [...selectedFeatures], language: lang })}
+                        className="sc-btn sc-btn-primary"
+                      >
+                        {t.result.handoverButton} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </a>
                     </div>
                   </div>
 
                   <div className="sc-actions">
                     <button type="button" onClick={copySummary} className="sc-btn sc-btn-ghost">
-                      <ClipboardCopy className="h-4 w-4" aria-hidden="true" /> {copied === "done" ? "Copied" : "Copy summary for my clinician"}
+                      <ClipboardCopy className="h-4 w-4" aria-hidden="true" /> {copied === "done" ? t.result.copied : t.result.copyMine}
                     </button>
                     <button type="button" onClick={restart} className="sc-btn sc-btn-ghost">
-                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> Check another problem
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> {t.result.anotherProblem}
                     </button>
                   </div>
-                  {copied === "failed" ? <SummaryBox text={summary} /> : null}
+                  {copied === "failed" ? <SummaryBox text={summary} label={t.result.blocked} /> : null}
 
-                  <p className="sc-disclaimer"><Info className="h-5 w-5" aria-hidden="true" /> This screening result does not replace physical examination, neurologic/vascular testing, imaging when indicated, or medical diagnosis. Your answers stay in this browser tab and are not saved.</p>
+                  <p className="sc-disclaimer"><Info className="h-5 w-5" aria-hidden="true" /> {t.result.disclaimer}</p>
                 </div>
               )}
             </section>
@@ -567,9 +508,9 @@ export function SymptomCheckerClient() {
 
           {step > 0 && step < 5 ? (
             <div className="sc-nav">
-              <button type="button" onClick={back} className="sc-btn sc-btn-ghost"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back</button>
+              <button type="button" onClick={back} className="sc-btn sc-btn-ghost"><ArrowLeft className="h-4 w-4" aria-hidden="true" /> {t.nav.back}</button>
               <button type="button" onClick={next} className="sc-btn sc-btn-primary">
-                {step === 4 ? "Show My Screening Result" : "Continue"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                {step === 4 ? t.nav.show : t.nav.next} <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           ) : null}
@@ -579,70 +520,23 @@ export function SymptomCheckerClient() {
   );
 }
 
-function SummaryBox({ text }: { text: string }) {
+/** The checker's own English / Roman Urdu switch: the same choice as the site switch in the header. */
+function LangToggle({ lang, label }: { lang: CheckerLang; label: string }) {
+  return (
+    <div className="sc-lang" role="group" aria-label={label}>
+      <button type="button" aria-pressed={lang === "en"} onClick={() => writeLang("en")}>English</button>
+      <button type="button" aria-pressed={lang === "ru"} onClick={() => writeLang("ur")}>Roman Urdu</button>
+    </div>
+  );
+}
+
+function SummaryBox({ text, label }: { text: string; label: string }) {
   return (
     <label className="sc-summary">
-      <span>Your browser blocked copying. Select and copy the text below:</span>
+      <span>{label}</span>
       <textarea readOnly rows={10} value={text} onFocus={(event) => event.currentTarget.select()} />
     </label>
   );
 }
 
-function PainSlider({ value, onChange }: { value: number | null; onChange: (value: number | null) => void }) {
-  const shown = value ?? 0;
-  const tone = value === null ? "none" : value >= 8 ? "high" : value >= 5 ? "mid" : "low";
-  return (
-    <div className="sc-group">
-      <p className="sc-group-title">
-        How strong is the pain right now? <small>(optional)</small>
-      </p>
-      <div className="sc-pain" data-tone={tone}>
-        <input
-          type="range"
-          min={0}
-          max={10}
-          step={1}
-          value={shown}
-          onChange={(event) => onChange(Number(event.target.value))}
-          aria-label="Pain right now from 0 (none) to 10 (worst imaginable)"
-          aria-valuetext={value === null ? "not set" : `${value} out of 10`}
-          style={{ ["--p" as string]: `${shown * 10}%` }}
-        />
-        <div className="sc-pain-scale" aria-hidden="true">
-          <span>0 none</span>
-          <span>5 moderate</span>
-          <span>10 worst</span>
-        </div>
-        <p className="sc-pain-read">
-          {value === null ? <span>Not set — slide to rate it, or skip.</span> : <span><b>{value}</b>/10</span>}
-          {value !== null ? <button type="button" onClick={() => onChange(null)}>Clear</button> : null}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function ChoiceGroup({
-  title,
-  options,
-  value,
-  onChange,
-}: {
-  title: string;
-  options: Array<{ id: string; label: string }>;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="sc-group" role="group" aria-label={title}>
-      <p className="sc-group-title">{title}</p>
-      <div className="sc-options">
-        {options.map((item) => (
-          <button key={item.id} type="button" aria-pressed={value === item.id} onClick={() => onChange(item.id)} className="sc-option" data-on={value === item.id}>
-            {item.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
+const historyOptions = (lang: CheckerLang, options: Array<{ id: string; label: string }>) => options.map((item) => ({ id: item.id, label: optionText(lang, item.id, item.label) }));

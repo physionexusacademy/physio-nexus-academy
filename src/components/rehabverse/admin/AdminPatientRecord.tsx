@@ -4,12 +4,15 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ClipboardCheck, FileClock, ShieldAlert } from "lucide-react";
 import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
-import type { AdminAssessment, AdminPatient } from "@/lib/rehabverse/api-types";
+import type { AdminAssessment, AdminOutcomes, AdminPatient, StoredSnapshot } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
 import { AiConversations } from "./AiConversations";
 import { HistoryBrief } from "./HistoryBrief";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
+import { OutcomesPanel } from "./OutcomesPanel";
+import { ResearchConsent } from "./ResearchConsent";
+import { ScreeningSnapshot } from "./ScreeningSnapshot";
 import { SessionReview } from "./SessionReview";
 
 const dt = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -30,7 +33,7 @@ function Field({ k, v }: { k: string; v?: string | null }) {
   return <div><dt className="text-[11px] font-extrabold uppercase tracking-wide text-slate-500">{k}</dt><dd className="text-[14px] leading-6 text-slate-800">{v}</dd></div>;
 }
 
-function AssessmentPanel({ a }: { a: AdminAssessment }) {
+function AssessmentPanel({ a, snapshot }: { a: AdminAssessment; snapshot?: StoredSnapshot }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [note, setNote] = useState("");
@@ -70,6 +73,7 @@ function AssessmentPanel({ a }: { a: AdminAssessment }) {
         <Field k="Clearance note" v={a.clearance_note} />
         <Field k="Admin notes" v={a.admin_notes} />
       </dl>
+      {snapshot ? <ScreeningSnapshot snapshot={snapshot} /> : null}
       {["submitted", "in_review", "needs_clinical_assessment", "cleared_for_programme"].includes(a.status) ? (
         <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
           <textarea className="rv-input" rows={2} placeholder={flagged ? "Clinical note (required to clear a flagged assessment: what you assessed and why exercise is appropriate)" : "Note (required to clear for a programme: 10+ characters)"} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} aria-label="Clinical note" />
@@ -129,7 +133,7 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
   );
 }
 
-export function AdminPatientRecord({ data }: { data: AdminPatient }) {
+export function AdminPatientRecord({ data, outcomes = null }: { data: AdminPatient; outcomes?: AdminOutcomes | null }) {
   const { patient, assessments, programmes, adverse_events, audit } = data;
   const aiConversations = data.ai_conversations ?? [];
   const live = programmes.find((p) => LIVE.includes(p.programme.status));
@@ -156,6 +160,11 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
           </div>
         </div>
         <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />
+        {patient.research_consent === undefined ? null : ( // the column exists only once the board/research migration is applied
+          <div className="mt-3 border-t border-slate-100 pt-3">
+            <ResearchConsent key={String(patient.research_consent)} patientId={patient.id} consent={patient.research_consent} at={patient.research_consent_at ?? null} note={patient.research_consent_note ?? null} />
+          </div>
+        )}
         <nav className="mt-3 flex flex-wrap gap-1.5 text-[12.5px] font-bold" aria-label="Sections">
           {[...(latest ? [["#brief", "History brief"]] : []), ["#assessment", "Assessment"], ...(aiConversations.length ? [["#ai", "AI conversations"]] : []), ["#programme", "Programme"], ["#days", "Days & review"], ["#events", "Adverse events"], ["#audit", "Audit trail"]].map(([h, t]) => <a key={h} href={h} className="rv-pill">{t}</a>)}
         </nav>
@@ -168,13 +177,19 @@ export function AdminPatientRecord({ data }: { data: AdminPatient }) {
       ) : null}
 
       <Section id="assessment" title="Initial assessment" aside={latest ? <span className="rv-chip">{latest.status.replace(/_/g, " ")}</span> : null}>
-        {latest ? <AssessmentPanel a={latest} /> : <p className="text-[13.5px] text-slate-500">No assessment submitted yet.</p>}
+        {latest ? <AssessmentPanel a={latest} snapshot={(data.checker_snapshots ?? []).find((k) => k.assessment_id === latest.id)} /> : <p className="text-[13.5px] text-slate-500">No assessment submitted yet.</p>}
         {assessments.length > 1 ? (
           <details className="mt-3 text-[13px]"><summary className="cursor-pointer font-bold text-slate-600">Earlier assessments ({assessments.length - 1})</summary>
             <ul className="mt-2 space-y-1">{assessments.slice(1).map((a) => <li key={a.id}>{dt(a.submitted_at)} — {a.status.replace(/_/g, " ")} · {a.regions.map((r) => label(INTAKE_REGIONS, r)).join(", ")} · NPRS {a.pain_now}</li>)}</ul>
           </details>
         ) : null}
       </Section>
+
+      {outcomes && ["cleared_for_programme", "programme_created", "in_review", "submitted"].includes(latest?.status ?? "") ? (
+        <Section id="outcomes" title="Outcome measures" aside={outcomes.plan ? <span className="rv-chip rv-chip-navy">{outcomes.plan.items.length} followed</span> : <span className="rv-chip">not set</span>}>
+          <OutcomesPanel patientId={patient.id} outcomes={outcomes} regions={latest?.regions ?? []} preferredLanguage={patient.preferred_language} />
+        </Section>
+      ) : null}
 
       {aiConversations.length ? (
         <Section id="ai" title="AI conversations" aside={<span className="rv-chip rv-chip-navy">{aiConversations.length}</span>}>

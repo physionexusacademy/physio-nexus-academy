@@ -8,6 +8,6 @@ const IntakeChat = dynamic(() => import("./IntakeChat").then((m) => m.IntakeChat
   loading: () => <div className="mx-auto h-96 max-w-5xl animate-pulse rounded-3xl bg-white/70" aria-busy="true" aria-label="Loading" />,
 });
 
-export function IntakeAssistantLoader() {
-  return <IntakeChat />;
+export function IntakeAssistantLoader({ ageYears }: { ageYears?: number }) {
+  return <IntakeChat ageYears={ageYears} />;
 }

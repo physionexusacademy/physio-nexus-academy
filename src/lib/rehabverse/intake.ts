@@ -41,6 +41,13 @@ export const INTAKE_DURATION: Option[] = [
   { id: "gt_6m", label: { en: "More than 6 months", ru: "6 maheene se zyada" } },
 ];
 
+export const INTAKE_ONSET: Option[] = [
+  { id: "sudden", label: { en: "Suddenly (an injury or one moment)", ru: "Achanak (chot ya ek lamhe mein)" } },
+  { id: "gradual", label: { en: "Slowly, over time", ru: "Aahista aahista, waqt ke saath" } },
+  { id: "after_surgery", label: { en: "After surgery or a procedure", ru: "Operation ya procedure ke baad" } },
+  { id: "unknown", label: { en: "I am not sure", ru: "Mujhe pata nahi" } },
+];
+
 /** Red-flag screening. Any "yes" routes the person to a clinical assessment — no automatic programme. */
 export const INTAKE_RED_FLAGS: (Option & { level: "emergency" | "urgent" })[] = [
   { id: "rf_bladder", level: "emergency",

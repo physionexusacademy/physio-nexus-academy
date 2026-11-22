@@ -12,7 +12,7 @@ export function LineChart({ series, labels, title, height = 190, yMax = 10 }: { 
   const id = useId();
   const W = 440;
   const H = height;
-  const pad = { l: 28, r: 12, t: 12, b: 26 };
+  const pad = { l: 28, r: 24, t: 12, b: 26 };
   const x = (i: number) => pad.l + (labels.length <= 1 ? (W - pad.l - pad.r) / 2 : (i * (W - pad.l - pad.r)) / (labels.length - 1));
   const y = (v: number) => pad.t + (1 - v / yMax) * (H - pad.t - pad.b);
   const ticks = [0, 2, 4, 6, 8, 10].filter((t) => t <= yMax);

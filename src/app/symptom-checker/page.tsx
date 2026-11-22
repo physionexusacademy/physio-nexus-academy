@@ -54,7 +54,7 @@ const highlights = [
 
 export default function SymptomCheckerPage() {
   return (
-    <main className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbfc_0%,#ffffff_42%,#f8fbfc_100%)]">
+    <main className="relative overflow-clip bg-[linear-gradient(180deg,#f7fbfc_0%,#ffffff_42%,#f8fbfc_100%)]">
       <div className="pointer-events-none absolute left-1/2 top-0 h-[560px] w-[900px] -translate-x-1/2 rounded-full bg-teal-100/40 blur-3xl" />
 
       <div className="container-content relative max-w-6xl py-10 sm:py-14 lg:py-16">

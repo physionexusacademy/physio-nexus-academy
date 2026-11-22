@@ -55,7 +55,19 @@ async function newContext(browser, viewport = { width: 1280, height: 900 }, { no
 const errors = [];
 const shot = (page, name) => page.screenshot({ path: path.join(OUT, name + ".png"), fullPage: true }).catch(() => undefined);
 const park = (page) => page.goto("about:blank").catch(() => undefined);
-const noOverflow = (page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+// A signed-in patient is redirected away from some pages (register, start): when that navigation lands in the middle of the check, wait for it and measure again.
+const noOverflow = async (page) => {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      await page.waitForLoadState("load");
+      return await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+    } catch (e) {
+      if (!/context was destroyed|navigation/i.test(String(e))) throw e;
+      await page.waitForTimeout(1500);
+    }
+  }
+  return false;
+};
 
 async function register(page, who, age = 41) {
   await page.goto(`${BASE}/rehabverse/register`);
@@ -72,14 +84,22 @@ async function register(page, who, age = 41) {
   await page.goto(`${BASE}/rehabverse/start`);
 }
 
-async function intake(page, { flags = [], region = "Lower back" } = {}) {
-  await page.getByRole("checkbox", { name: region, exact: true }).click();
-  await page.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click(); // symptoms
+async function intake(page, { flags = [], region = "Lower Back" } = {}) {
+  // The picture questions: the same body areas, history and symptom clues as the public symptom checker.
+  const sc = page.locator(".sc");
+  await sc.locator(".sc-region").filter({ hasText: region }).first().click();
+  await sc.locator(".sc-option", { hasText: "Slowly, over time" }).click();
+  await sc.locator(".sc-option", { hasText: "1–4 weeks" }).click();
+  await sc.locator(".sc-option", { hasText: /^Moderate/ }).click();
+  await sc.locator(".sc-btn-primary").click(); // location
+  await sc.locator(".sc-choice").first().click();
+  await sc.locator(".sc-btn-primary").click(); // clues
+  await sc.locator(".sc-check").first().click();
+  await sc.locator(".sc-btn-primary").click(); // finished the pictures: the symptoms question follows
   await page.getByRole("checkbox", { name: "Pain", exact: true }).click();
   await page.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click(); // pain
   await page.locator(".rv-nprs").first().getByRole("button", { name: /^6 —/ }).click();
-  await page.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click(); // history
-  await page.getByRole("radio", { name: "1–4 weeks" }).click();
+  await page.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click(); // history (the answers given in the pictures are shown, not asked again)
   await page.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click(); // better/worse
   await page.locator("#aggravating").fill("Sitting for long, bending forward");
   await page.locator("button.rv-btn-primary").filter({ hasText: /^\s*Next/ }).click(); // life
@@ -243,7 +263,11 @@ async function pickScale(page, group, n) {
   await pickScale(a.page, "How hard was it?", 3);
   await a.page.getByRole("checkbox", { name: "None of these", exact: true }).click();
   await a.page.getByRole("button", { name: /Send my feedback/ }).click();
-  await a.page.getByText("Feedback sent — well done!").waitFor();
+  await a.page.getByText("Feedback sent — well done!").waitFor({ timeout: 30000 }).catch(async (error) => {
+    await shot(a.page, "10-feedback-failed");
+    console.log("PAGE TEXT AFTER SENDING FEEDBACK:", (await a.page.locator("main").innerText()).replace(/\n+/g, " | ").slice(0, 700));
+    throw error;
+  });
   check("5a Patient submits daily feedback (pain before/during/after, difficulty, completion)", true);
   await shot(a.page, "10-feedback-sent");
   await a.page.goto(`${BASE}/rehabverse/me`);
@@ -325,8 +349,10 @@ async function pickScale(page, group, n) {
 
   /* ───────────── 9. Isolation and access control ───────────── */
   const denied = await b.page.goto(`${BASE}/rehabverse/me/day/${day2}`);
+  await b.page.getByText(/could not be found|not found|does not exist/i).first().waitFor({ timeout: 20000 }).catch(() => undefined); // the page streams in behind its loading skeleton
   const bText = await b.page.locator("body").innerText();
-  check("9a Patient B cannot open Patient A's session", denied.status() === 404 && !/Day 2 — Build up|Feedback|exercises/i.test(bText.replace(/Not Found/gi, "")), `status ${denied.status()}`);
+  // (the page's loading boundary has already sent its first bytes, so a missing page can answer 200 with the "not found" screen: what matters is that nothing of A's session shows)
+  check("9a Patient B cannot open Patient A's session", (denied.status() === 404 || /not found|could not be found|does not exist/i.test(bText)) && !/Day 2 — Build up|Feedback|exercises/i.test(bText.replace(/Not Found/gi, "")), `status ${denied.status()}`);
   const tokenB = await b.context.cookies();
   const authCookie = tokenB.find((c) => /auth-token/.test(c.name));
   let rpcDenied = false;
@@ -347,6 +373,7 @@ async function pickScale(page, group, n) {
   check("9d Patient cannot open the clinician area", /\/admin\/login/.test(b.page.url()), b.page.url());
   const anon = await newContext(browser, undefined, { no3d: false });
   await anon.page.goto(`${BASE}/rehabverse/me`);
+  await anon.page.waitForURL(/\/rehabverse\/login/, { timeout: 30000 }).catch(() => undefined);
   check("9e Signed-out visitor is sent to sign in", /\/rehabverse\/login/.test(anon.page.url()));
   const pub = await anon.page.goto(`${BASE}/rehabverse/library`);
   check("9f Public library needs no sign-in and exposes no patient data", pub.status() === 200 && (await anon.page.content()).indexOf(A.name) === -1);

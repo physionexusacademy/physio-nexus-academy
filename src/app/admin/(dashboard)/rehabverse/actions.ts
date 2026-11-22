@@ -1,6 +1,13 @@
 "use server";
 
-import { RehabError, rpc } from "@/lib/rehabverse/api";
+import { RehabError, getAdminOutcomes, isStaff, rpc } from "@/lib/rehabverse/api";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { checkPlanItems, timepointsFor } from "@/lib/outcomes/plan";
+import { instrumentFor } from "@/lib/outcomes/instruments";
+import { scoreResponse } from "@/lib/outcomes/scoring";
+import type { TimepointKey } from "@/lib/outcomes/types";
+import { checkPolished } from "@/lib/outcomes/feedback";
+import { callChat } from "@/lib/rehabverse/ai/model";
 import type { AiAssist, AiSignoffDecision, PlanPayload, ReviewDecision } from "@/lib/rehabverse/api-types";
 import { buildReviewPack } from "@/lib/rehabverse/ai/review-pack";
 import { emailPatient, type PatientEmailKind } from "@/lib/rehabverse/notify";
@@ -118,6 +125,14 @@ export async function setAiPilotAction(input: { maxPatients: number; openToAll: 
   } catch (e) { return fail(e); }
 }
 
+/** Study setting: when patients are shown their symptom screening (at once, or only after the physiotherapist has reviewed the assessment). Admin only; every change is audited. */
+export async function setScreeningVisibilityAction(value: "immediate" | "after_review"): Promise<Result<{ value: "immediate" | "after_review" }>> {
+  try {
+    const r = await rpc<{ screening_visibility: "immediate" | "after_review" }>("rehab_admin_set_screening_visibility", { p_value: value });
+    return { ok: true, value: r.screening_visibility };
+  } catch (e) { return fail(e); }
+}
+
 /** Approve or reject a new account request. The database refuses anyone who is not staff and writes the decision to the audit log. */
 export async function decideRegistrationAction(patientId: string, decision: "approve" | "reject", note?: string): Promise<Result<{ status: string; phone: string | null; fullName: string; language: "en" | "ru" }>> {
   try {
@@ -125,5 +140,93 @@ export async function decideRegistrationAction(patientId: string, decision: "app
       p_patient_id: patientId, p_decision: decision, p_note: (note ?? "").trim().slice(0, 500) || null,
     });
     return { ok: true, status: r.status, phone: r.phone, fullName: r.full_name, language: r.preferred_language };
+  } catch (e) { return fail(e); }
+}
+
+/* ─────────────────────────────── outcome measures ─────────────────────────────── */
+
+/** Choose what to follow for a patient and how often. Only instruments that are available (their wording is settled) at their current version are accepted. */
+export async function setOutcomePlanAction(patientId: string, items: unknown, note?: string): Promise<Result<{ id: string }>> {
+  try {
+    const checked = checkPlanItems(items);
+    if (!checked.ok) return { ok: false, error: checked.reason };
+    const r = await rpc<{ id: string }>("rehab_admin_set_outcome_plan", { p_patient_id: patientId, p_items: checked.items, p_note: (note ?? "").trim().slice(0, 500) || null });
+    return { ok: true, id: r.id };
+  } catch (e) { return fail(e); }
+}
+
+/**
+ * Record a measurement the physiotherapist took (or answers given in the clinic) for a patient. The score is worked out here from the raw values; the staff check is
+ * made first because the write itself goes through the server-only function.
+ */
+export async function recordOutcomeAction(patientId: string, input: { instrument: string; timepoint: TimepointKey; answers: unknown; language?: "en" | "ru" }): Promise<Result<{ saved: boolean }>> {
+  try {
+    if (!(await isStaff())) return { ok: false, error: "not authorised" };
+    const instrument = instrumentFor(String(input.instrument));
+    if (!instrument || instrument.status !== "ready") return { ok: false, error: "That instrument is not available yet." };
+    const outcomes = await getAdminOutcomes(patientId);
+    const item = outcomes.plan?.items.find((i) => i.instrument === instrument.id && i.version === instrument.version);
+    if (!outcomes.plan || !item) return { ok: false, error: "That instrument is not in this patient's plan." };
+    if (!timepointsFor(item).includes(input.timepoint) && input.timepoint !== "discharge") return { ok: false, error: "That time point is not in the plan." };
+    if (outcomes.responses.some((r) => r.instrument === instrument.id && r.timepoint === input.timepoint)) return { ok: false, error: "That time point already has a record (records are not edited)." };
+    let answers = input.answers;
+    if (instrument.form.type === "psfs" && input.timepoint !== "baseline") {
+      const baseline = outcomes.responses.find((r) => r.instrument === "psfs" && r.timepoint === "baseline");
+      const names = ((baseline?.answers.activities as { name: string }[] | undefined) ?? []).map((a) => a.name);
+      const sent = (answers as { activities?: { rating?: unknown }[] } | null)?.activities;
+      if (names.length === 0 || !Array.isArray(sent) || sent.length !== names.length) return { ok: false, error: "Rate the same activities that were written at the start." };
+      answers = { activities: names.map((name, index) => ({ name, rating: sent[index]?.rating })) };
+    }
+    const scored = scoreResponse(instrument, answers);
+    if (!scored.ok) return { ok: false, error: scored.reason };
+    const { data, error } = await createAdminClient().rpc("rehab_outcome_save", {
+      p_patient_id: patientId, p_plan_id: outcomes.plan.id, p_instrument: instrument.id, p_version: instrument.version, p_timepoint: input.timepoint,
+      p_answers: scored.answers, p_score: scored.score, p_language: input.language === "ru" ? "ru" : "en", p_collected_by: "therapist",
+    });
+    if (error) return { ok: false, error: "Could not save the record." };
+    return { ok: true, saved: Boolean((data as { saved?: boolean } | null)?.saved) };
+  } catch (e) { return fail(e); }
+}
+
+/** Send the physiotherapist's message about the results. `source` says how the text started (fixed rules, an AI smoothing of that draft, or written from nothing). */
+export async function sendOutcomeFeedbackAction(patientId: string, input: { message: string; language: "en" | "ru"; source: "rules" | "ai" | "written"; basedOn?: Record<string, unknown> }): Promise<Result<{ id: string }>> {
+  try {
+    const r = await rpc<{ id: string }>("rehab_admin_send_outcome_feedback", {
+      p_patient_id: patientId, p_message: String(input.message ?? "").slice(0, 1500), p_language: input.language === "ru" ? "ru" : "en",
+      p_source: input.source === "ai" || input.source === "written" ? input.source : "rules", p_based_on: input.basedOn ?? {},
+    });
+    return { ok: true, id: r.id };
+  } catch (e) { return fail(e); }
+}
+
+/**
+ * Ask an AI service to smooth the wording of the draft. Only the draft goes (numbers and instrument names: no name or contact detail), the answer must keep the same
+ * numbers and may add no diagnosis, treatment, medicine, promise or link (checkPolished); anything else is refused and the draft stays as it is. The physiotherapist
+ * still reads and sends the message.
+ */
+export async function polishOutcomeFeedbackAction(draft: string, language: "en" | "ru"): Promise<Result<{ text: string; model: string }>> {
+  try {
+    if (!(await isStaff())) return { ok: false, error: "not authorised" };
+    const text = String(draft ?? "").slice(0, 1500);
+    if (text.length < 20) return { ok: false, error: "Write or draft the message first." };
+    const style = language === "ru"
+      ? "Write in natural, spoken Roman Urdu mixed with common English words, the way a Pakistani clinic talks (not formal or pure Urdu), in Roman letters."
+      : "Write in plain, warm English.";
+    const answer = await callChat([
+      { role: "system", content: `You help a physiotherapist polish a short message to a patient about their progress on outcome questionnaires. ${style} Rewrite the DRAFT so it reads naturally and kindly. Rules: keep every number exactly as in the draft and add no number; add no new facts, no diagnosis, no treatment advice, no medicine, no promise or guarantee; keep any sentence about urgent medical care; keep it under 120 words; keep the sign-off as from the physiotherapist. Output only the message.` },
+      { role: "user", content: text },
+    ], { maxTokens: 420, temperature: 0.3, timeoutMs: 20000 });
+    if (!answer) return { ok: false, error: "No AI service answered. The draft is unchanged." };
+    const checked = checkPolished(text, answer.text);
+    if (!checked.ok) return { ok: false, error: `The AI's version was not used (${checked.reason}). The draft is unchanged.` };
+    return { ok: true, text: checked.text, model: answer.model };
+  } catch (e) { return fail(e); }
+}
+
+/** Record (or withdraw) a patient's research consent. The physiotherapist says how it was obtained; both changes are in the audit log. Only consenting patients are in the research export. */
+export async function setResearchConsentAction(patientId: string, consent: boolean, note?: string): Promise<Result<{ consent: boolean }>> {
+  try {
+    const r = await rpc<{ research_consent: boolean }>("rehab_admin_set_research_consent", { p_patient_id: patientId, p_consent: consent, p_note: (note ?? "").trim().slice(0, 300) || null });
+    return { ok: true, consent: r.research_consent };
   } catch (e) { return fail(e); }
 }

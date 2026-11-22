@@ -21,7 +21,7 @@ export default async function StartPage() {
   const assistant = await aiAssistAllowed();
   return (
     <div className="container-content pb-16 pt-6 sm:pt-10">
-      {assistant ? <IntakeAssistantLoader /> : <IntakeWizardLoader />}
+      {assistant ? <IntakeAssistantLoader ageYears={overview.patient?.age_years} /> : <IntakeWizardLoader ageYears={overview.patient?.age_years} />}
     </div>
   );
 }

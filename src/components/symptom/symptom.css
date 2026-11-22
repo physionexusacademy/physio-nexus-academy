@@ -190,8 +190,30 @@
 .sc-summary { margin-top: 14px; display: grid; gap: 6px; font-size: .8rem; color: var(--mute); }
 .sc-summary textarea { width: 100%; border-radius: 14px; padding: 12px; font-size: .8rem; line-height: 1.5; color: #fff; background: rgba(255, 255, 255, .07); border: 1px solid var(--line); }
 
+/* The headline answer (the pattern that fits best) and the in-checker language switch. */
+.sc-head-side { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.sc-lang { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); }
+.sc-lang button { min-height: 34px; border-radius: 999px; padding: 6px 13px; font-size: .74rem; font-weight: 800; color: #b9cde2; transition: background .2s, color .2s; }
+.sc-lang button[aria-pressed="true"] { color: #031a2a; background: linear-gradient(110deg, #17d6c4, #2f8cff); }
+.sc-lang button:focus-visible { outline: 3px solid rgba(46, 230, 214, .6); outline-offset: 2px; }
+.sc-headline { margin-top: 16px; display: flex; gap: 16px; align-items: flex-start; border-radius: 26px; padding: 20px 22px; background: linear-gradient(135deg, rgba(46, 230, 214, .24), rgba(47, 140, 255, .18)); border: 2px solid rgba(46, 230, 214, .8); box-shadow: 0 0 0 5px rgba(46, 230, 214, .1), 0 30px 70px -38px var(--teal); animation: sc-in .5s cubic-bezier(.2, .8, .2, 1) both; }
+.sc-headline-ico { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 16px; color: #031a2a; background: linear-gradient(135deg, #2ee6d6, #7fb4ff); box-shadow: 0 0 26px -4px var(--teal); }
+.sc-headline h4 { margin: 4px 0 0; font-size: clamp(1.4rem, 3.4vw, 1.9rem); line-height: 1.15; font-weight: 800; color: #fff; }
+.sc-headline-meta { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: .82rem; font-weight: 600; color: #cfe3f5; }
+.sc-headline-how { margin: 10px 0 0; font-size: .92rem; line-height: 1.6; color: #e6f2ff; }
+.sc-headline-not { margin: 8px 0 0; display: flex; gap: 6px; align-items: flex-start; font-size: .8rem; line-height: 1.5; color: #fff0c8; }
+.sc-headline-not svg { flex: none; margin-top: 2px; }
+@media (max-width: 520px) { .sc-headline { flex-direction: column; padding: 16px; } }
+
 @keyframes sc-in { from { opacity: 0; transform: translateY(14px); } }
 @keyframes sc-grow { from { transform: scaleX(0); } }
 @keyframes scf-scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(455%); } }
 @keyframes sc-blink { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-@media (prefers-reduced-motion: reduce) { .sc-body, .sc-card, .sc-fit i, .sc-figure i, .sc-emergency svg { animation: none !important; } .sc-bar div, .sc-region { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .sc-body, .sc-card, .sc-headline, .sc-fit i, .sc-figure i, .sc-emergency svg { animation: none !important; } .sc-bar div, .sc-region { transition: none; } }
+
+/* The checker's questions embedded in another page (the RehabVerse assessment): no top gap, a little breathing room below. */
+.sc-embedded.sc-wrap { margin-top: 0; }
+.sc-inline.sc { border-radius: 1.5rem; }
+.sc-inline .sc-body { padding: 18px 20px 20px; }
+/* The first card sits directly under the headline answer: join them. */
+.sc-card[data-under-headline="true"] { margin-top: -8px; border-top-left-radius: 8px; border-top-right-radius: 8px; padding-top: 14px; }

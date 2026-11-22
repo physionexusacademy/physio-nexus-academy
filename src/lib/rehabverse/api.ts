@@ -1,7 +1,8 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import type { BoardRow } from "@/lib/board/rules";
 import type {
-  AdminFollowup, AdminPatient, AdminPatientRow, AiPilot, History, Inbox, Notification, Overview, PatientFollowup, Registrations, SessionDetail,
+  AdminFollowup, AdminOutcomes, AdminPatient, AdminPatientRow, AiPilot, History, Inbox, MyOutcomes, MyScreening, Notification, Overview, PatientFollowup, Registrations, SessionDetail, StudySettings,
 } from "./api-types";
 
 /**
@@ -49,6 +50,8 @@ export const getSession = (id: string) => rpc<SessionDetail>("rehab_my_session",
 export const getHistory = () => rpc<History>("rehab_my_history");
 export const getNotifications = () => rpc<Notification[]>("rehab_my_notifications");
 export const getMyFollowup = () => rpc<PatientFollowup>("rehab_my_followup");
+/** `markShown: false` only asks whether there is something to show (nothing is logged); true is for when it is actually drawn on the screen. */
+export const getMyScreening = (markShown = true) => rpc<MyScreening>("rehab_my_screening", { p_mark_shown: markShown });
 
 // Staff
 export const getInbox = () => rpc<Inbox>("rehab_admin_inbox");
@@ -57,3 +60,9 @@ export const getPatients = () => rpc<AdminPatientRow[]>("rehab_admin_patients");
 export const getPatient = (id: string) => rpc<AdminPatient>("rehab_admin_patient", { p_patient_id: id });
 export const getAiPilot = () => rpc<AiPilot>("rehab_admin_ai_pilot");
 export const getRegistrations = () => rpc<Registrations>("rehab_admin_registrations");
+export const getStudySettings = () => rpc<StudySettings>("rehab_admin_study_settings");
+
+export const getMyOutcomes = () => rpc<MyOutcomes>("rehab_my_outcomes");
+export const getAdminOutcomes = (patientId: string) => rpc<AdminOutcomes>("rehab_admin_outcomes", { p_patient_id: patientId });
+
+export const getBoard = () => rpc<BoardRow[]>("rehab_admin_board");

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminPatientRecordLoader } from "@/components/rehabverse/admin/AdminPatientRecordLoader";
-import { RehabError, getPatient } from "@/lib/rehabverse/api";
+import { RehabError, getAdminOutcomes, getPatient } from "@/lib/rehabverse/api";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export const dynamic = "force-dynamic";
@@ -13,11 +13,11 @@ export default async function RehabVersePatient({ params }: { params: Promise<{ 
   if (!UUID.test(id)) notFound();
   await requireAdmin();
   try {
-    const data = await getPatient(id);
+    const [data, outcomes] = await Promise.all([getPatient(id), getAdminOutcomes(id).catch(() => null)]); // outcomes: null until its migration is live
     return (
       <div className="space-y-3">
         <Link href="/admin/rehabverse" className="text-[13px] font-bold text-teal-700 hover:underline">← Inbox</Link>
-        <AdminPatientRecordLoader data={data} />
+        <AdminPatientRecordLoader data={data} outcomes={outcomes} />
       </div>
     );
   } catch (error) {
