@@ -36,7 +36,7 @@ async function register(page, who, phone) {
 
 (async () => {
   const browser = await chromium.launch();
-  const ctx = (vp = { width: 1280, height: 900 }) => browser.newContext({ viewport: vp }).then(async (c) => { await c.addInitScript(() => { try { localStorage.setItem("pna-rv-lang", "en"); } catch { /* ignore */ } }); return c; });
+  const ctx = (vp = { width: 1280, height: 900 }) => browser.newContext({ viewport: vp }).then(async (c) => { c.setDefaultTimeout(60000); c.setDefaultNavigationTimeout(60000); await c.addInitScript(() => { try { localStorage.setItem("pna-rv-lang", "en"); } catch { /* ignore */ } }); return c; });
   const errors = [];
   const watch = (page) => page.on("pageerror", (e) => { if (!/ViewTransition opt-in disabled/.test(String(e))) errors.push(e.message); }); // (Chrome logs that harmless message when a quick redirect replaces a view transition)
 
@@ -44,6 +44,8 @@ async function register(page, who, phone) {
   const c2 = await ctx(), p2 = await c2.newPage(); watch(p2);
   await register(p1, P1, "0300 1112223");
   await register(p2, P2, "0311 4445556");
+  await p1.getByText("Your request is with the clinic").first().waitFor();
+  await p2.getByText("Your request is with the clinic").first().waitFor();
   check("A1 Both new accounts wait on the waiting screen", (await p1.getByText("Your request is with the clinic").count()) === 1 && (await p2.getByText("Your request is with the clinic").count()) === 1);
   await p1.screenshot({ path: path.join(OUT, "ap1-waiting.png") });
 
