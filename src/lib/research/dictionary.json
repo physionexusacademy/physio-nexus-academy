@@ -1,0 +1,300 @@
+{
+ "note": "De-identified research record. Only patients whose research consent was recorded by the physiotherapist are included. There are no names, phone numbers, e-mail addresses, cities or free text; dates are months; ages are 10-year bands; the study id is the patient's RehabVerse reference code (a random code, not derived from any personal detail). Every export is written to the audit log.",
+ "tables": {
+  "participants": {
+   "title": "Participants",
+   "columns": [
+    [
+     "study_id",
+     "text",
+     "Study id: the patient's RehabVerse reference code (a random code)"
+    ],
+    [
+     "age_band",
+     "text",
+     "Age in 10-year bands (18-19 shown as 10-19); 70+ for 70 and over"
+    ],
+    [
+     "sex",
+     "text",
+     "As entered at registration (may be empty)"
+    ],
+    [
+     "enrolled_month",
+     "text",
+     "Month the account was created (YYYY-MM)"
+    ],
+    [
+     "areas",
+     "text",
+     "Areas reported in the latest assessment, joined with |"
+    ],
+    [
+     "red_flag_level",
+     "text",
+     "Safety-screening level of the latest assessment: none, urgent or emergency"
+    ],
+    [
+     "baseline_pain_now",
+     "integer",
+     "Pain now (0-10) in the latest assessment"
+    ],
+    [
+     "duration_band",
+     "text",
+     "How long the problem had lasted (lt_1w, 1_4w, 1_3m, 3_6m, gt_6m)"
+    ],
+    [
+     "programme_status",
+     "text",
+     "Latest programme status (active, paused, completed, discontinued)"
+    ],
+    [
+     "days_planned",
+     "integer",
+     "Exercise days in the programme (not cancelled)"
+    ],
+    [
+     "days_done",
+     "integer",
+     "Days with feedback where the patient did something (completion all or partial)"
+    ],
+    [
+     "ai_assist",
+     "text",
+     "AI assistance setting chosen by the physiotherapist: off or on"
+    ]
+   ]
+  },
+  "screening": {
+   "title": "Symptom screening",
+   "columns": [
+    [
+     "study_id",
+     "text",
+     "Study id: the patient's RehabVerse reference code (a random code)"
+    ],
+    [
+     "engine_version",
+     "text",
+     "Version of the screening engine that scored the answers (changes when any question, pattern or weight changes)"
+    ],
+    [
+     "source",
+     "text",
+     "checker (answered inside RehabVerse) or handover (answers carried from the public symptom checker)"
+    ],
+    [
+     "region",
+     "text",
+     "Body area chosen"
+    ],
+    [
+     "language",
+     "text",
+     "Language the questions were shown in: en or ru (Roman Urdu)"
+    ],
+    [
+     "answers",
+     "text",
+     "Every answer id, sorted, joined with |"
+    ],
+    [
+     "pattern_1",
+     "text",
+     "Best-fitting screening pattern id (a screening pattern, not a diagnosis)"
+    ],
+    [
+     "pattern_1_score",
+     "integer",
+     "Engine score of pattern 1"
+    ],
+    [
+     "pattern_2",
+     "text",
+     "Second pattern id"
+    ],
+    [
+     "pattern_2_score",
+     "integer",
+     "Score of pattern 2"
+    ],
+    [
+     "pattern_3",
+     "text",
+     "Third pattern id"
+    ],
+    [
+     "pattern_3_score",
+     "integer",
+     "Score of pattern 3"
+    ],
+    [
+     "priority",
+     "integer",
+     "Next-step priority given by the checker: 0 monitor, 1 assess, 2 prompt"
+    ],
+    [
+     "fracture_screen",
+     "boolean",
+     "The acute-injury fracture screen (Ottawa-style) was triggered"
+    ],
+    [
+     "study_arm",
+     "text",
+     "Study arm in force when the assessment was sent: immediate (patient sees the screening straight away) or after_review"
+    ],
+    [
+     "shown_to_patient",
+     "boolean",
+     "The screening was actually shown to the patient"
+    ],
+    [
+     "shown_month",
+     "text",
+     "Month it was first shown (YYYY-MM)"
+    ]
+   ]
+  },
+  "outcomes": {
+   "title": "Outcome measures",
+   "columns": [
+    [
+     "study_id",
+     "text",
+     "Study id: the patient's RehabVerse reference code (a random code)"
+    ],
+    [
+     "instrument",
+     "text",
+     "Instrument id (nprs, psfs, groc, neck_rom, neck_endurance, back_function_tests, ...)"
+    ],
+    [
+     "instrument_version",
+     "integer",
+     "Version of the instrument's wording and scoring that was used"
+    ],
+    [
+     "timepoint",
+     "text",
+     "baseline, w1, w2, w4, w6, w12 or discharge"
+    ],
+    [
+     "score_primary",
+     "number",
+     "The number followed over time (for example the average pain over the week); empty for measurements with several values"
+    ],
+    [
+     "score_parts",
+     "json",
+     "All values: item scores or the measurements with their own names"
+    ],
+    [
+     "band",
+     "text",
+     "A class the instrument defines (for example STarT Back risk group)"
+    ],
+    [
+     "language_shown",
+     "text",
+     "Language the words were shown in: en or ru. Roman Urdu is an unvalidated help beside the English wording"
+    ],
+    [
+     "collected_by",
+     "text",
+     "patient or therapist"
+    ],
+    [
+     "days_from_plan_start",
+     "integer",
+     "Days from the start of the outcome plan to the answer"
+    ]
+   ]
+  },
+  "daily_feedback": {
+   "title": "Daily exercise feedback",
+   "columns": [
+    [
+     "study_id",
+     "text",
+     "Study id: the patient's RehabVerse reference code (a random code)"
+    ],
+    [
+     "day_number",
+     "integer",
+     "Programme day"
+    ],
+    [
+     "completion",
+     "text",
+     "all, partial or none"
+    ],
+    [
+     "pain_before",
+     "integer",
+     "Pain before the session (0-10)"
+    ],
+    [
+     "pain_during",
+     "integer",
+     "Pain during (0-10)"
+    ],
+    [
+     "pain_after",
+     "integer",
+     "Pain right after (0-10)"
+    ],
+    [
+     "difficulty",
+     "integer",
+     "How hard it was (0-10)"
+    ],
+    [
+     "unusual_symptoms",
+     "boolean",
+     "The patient reported unusual symptoms"
+    ],
+    [
+     "safety_flags",
+     "integer",
+     "Number of warning signs ticked (their wording is not exported)"
+    ]
+   ]
+  },
+  "adverse_events": {
+   "title": "Adverse events",
+   "columns": [
+    [
+     "study_id",
+     "text",
+     "Study id: the patient's RehabVerse reference code (a random code)"
+    ],
+    [
+     "severity",
+     "text",
+     "mild, moderate or severe"
+    ],
+    [
+     "source",
+     "text",
+     "How it was raised"
+    ],
+    [
+     "status",
+     "text",
+     "open, reviewed or closed"
+    ],
+    [
+     "flag_count",
+     "integer",
+     "Number of warning signs involved"
+    ],
+    [
+     "month",
+     "text",
+     "Month it was raised (YYYY-MM)"
+    ]
+   ]
+  }
+ }
+}

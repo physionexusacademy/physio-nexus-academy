@@ -99,7 +99,7 @@ export type AdminAiConversation = {
   safety_alert: string | null; assessment_id: string | null; created_at: string; updated_at: string;
 };
 export type AdminPatient = {
-  patient: { id: string; reference_code: string; full_name: string; email: string | null; age_years: number; sex: string | null; phone: string | null; city: string | null; preferred_language: "en" | "ru"; created_at: string; ai_assist: AiAssist; ai_assist_changed_at: string | null };
+  patient: { id: string; reference_code: string; full_name: string; email: string | null; age_years: number; sex: string | null; phone: string | null; city: string | null; preferred_language: "en" | "ru"; created_at: string; ai_assist: AiAssist; ai_assist_changed_at: string | null; research_consent?: boolean; research_consent_at?: string | null; research_consent_note?: string | null };
   assessments: AdminAssessment[];
   programmes: AdminProgramme[];
   adverse_events: { id: string; severity: "mild" | "moderate" | "severe"; status: "open" | "reviewed" | "closed"; source: string; description: string; action_taken: string | null; flag_ids: string[]; created_at: string; session_id: string | null }[];

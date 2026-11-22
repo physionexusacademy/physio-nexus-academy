@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import type { BoardRow } from "@/lib/board/rules";
 import type {
   AdminFollowup, AdminOutcomes, AdminPatient, AdminPatientRow, AiPilot, History, Inbox, MyOutcomes, MyScreening, Notification, Overview, PatientFollowup, Registrations, SessionDetail, StudySettings,
 } from "./api-types";
@@ -63,3 +64,5 @@ export const getStudySettings = () => rpc<StudySettings>("rehab_admin_study_sett
 
 export const getMyOutcomes = () => rpc<MyOutcomes>("rehab_my_outcomes");
 export const getAdminOutcomes = (patientId: string) => rpc<AdminOutcomes>("rehab_admin_outcomes", { p_patient_id: patientId });
+
+export const getBoard = () => rpc<BoardRow[]>("rehab_admin_board");

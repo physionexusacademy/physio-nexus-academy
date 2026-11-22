@@ -694,6 +694,57 @@ await assert.rejects(() => saveOutcome(gina.id, plan2.id, "psfs", 1, "w6", { act
 ok((await saveOutcome(gina.id, plan2.id, "groc", 1, "w2", { value: 4 }, { primary: 4, parts: {}, band: null })).saved, "the new plan's instruments can be answered");
 ok((await sql("select count(*)::int n from rehab_audit_log where action = 'outcomes.plan_set' and patient_id = $1", [gina.id]))[0].n === 2 && (await sql("select count(*)::int n from rehab_audit_log where action = 'outcomes.recorded' and patient_id = $1", [gina.id]))[0].n === 4, "every plan and every answer is in the audit log");
 
+/* ----------------------------- 16d. the therapist board and the research record (consent, de-identified export, audit) ----------------------------- */
+await fails(gina.user, "rehab_admin_board", {}, /not authorised/, "a patient cannot open the board");
+await fails(gina.user, "rehab_admin_research_export", { p_table: "participants" }, /not authorised/, "a patient cannot export the research record");
+await fails(gina.user, "rehab_admin_set_research_consent", { p_patient_id: gina.id, p_consent: true, p_note: "I say so" }, /not authorised/, "a patient cannot record her own research consent");
+await rowsFail(gina.user, `update rehab_patients set research_consent = true where id = '${gina.id}'`, /permission denied/, "...or write it directly");
+await fails(admin, "rehab_admin_set_research_consent", { p_patient_id: gina.id, p_consent: true }, /say how research consent was obtained/, "consent needs a note on how it was obtained");
+await fails(admin, "rehab_admin_set_research_consent", { p_patient_id: "00000000-0000-0000-0000-000000000000", p_consent: true, p_note: "Signed on paper" }, /patient not found/, "consent needs a real patient");
+eq((await rpc(admin, "rehab_admin_research_export", { p_table: "participants" })).rows, [], "before anyone has consented the research record is empty");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: gina.id, p_consent: true, p_note: "Signed paper form, clinic visit" });
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: dina.id, p_consent: true, p_note: "Verbal consent recorded in notes" });
+const participants = (await rpc(admin, "rehab_admin_research_export", { p_table: "participants" })).rows;
+eq(participants.map((r) => r.study_id).sort(), [dina.ref ?? (await sql("select reference_code from rehab_patients where id = $1", [dina.id]))[0].reference_code, (await sql("select reference_code from rehab_patients where id = $1", [gina.id]))[0].reference_code].sort(), "only patients who consented are in the record, under their study id");
+const exported = JSON.stringify(participants);
+ok(!/Gina|Dina|Rauf|Noor|0300|@pna\.test/.test(exported), "no name, phone number or e-mail is in the export");
+ok(participants.every((r) => /^\d{2}-\d{2}$|^70\+$/.test(r.age_band) && /^\d{4}-\d{2}$/.test(r.enrolled_month)), "ages are bands and dates are months");
+eq((await sql("select public.rehab__age_band(25) a, public.rehab__age_band(39) b, public.rehab__age_band(70) c, public.rehab__age_band(91) d"))[0], { a: "20-29", b: "30-39", c: "70+", d: "70+" }, "age bands");
+const shot = (await rpc(admin, "rehab_admin_research_export", { p_table: "screening" })).rows;
+ok(shot.length === 1 && shot[0].engine_version === "msk1-test0001" && shot[0].study_arm === "immediate" && shot[0].shown_to_patient === true && shot[0].pattern_1 === "patellofemoral-pain" && /onset_gradual/.test(shot[0].answers), "the screening snapshot is exported with its engine version, arm and exposure (dina only)");
+const oc = (await rpc(admin, "rehab_admin_research_export", { p_table: "outcomes" })).rows;
+ok(oc.length === 4 && oc.every((r) => r.instrument && r.timepoint && r.language_shown && r.days_from_plan_start >= 0), "gina's four outcome records are exported with instrument, version, time point, language shown and days from the plan start");
+ok(!JSON.stringify(oc).includes("Lifting my child"), "the activities the patient wrote (free text) are not exported");
+ok(Array.isArray((await rpc(admin, "rehab_admin_research_export", { p_table: "daily_feedback" })).rows) && Array.isArray((await rpc(admin, "rehab_admin_research_export", { p_table: "adverse_events" })).rows), "daily feedback and adverse events can be exported");
+const dictionary = JSON.parse(fs.readFileSync(new URL("../src/lib/research/dictionary.json", import.meta.url), "utf8"));
+const dictKeys = (table) => dictionary.tables[table].columns.map((c) => c[0]).sort();
+eq(Object.keys(participants[0]).sort(), dictKeys("participants"), "the participants export has exactly the columns of the data dictionary");
+eq(Object.keys(shot[0]).sort(), dictKeys("screening"), "the screening export has exactly the columns of the data dictionary");
+eq(Object.keys(oc[0]).sort(), dictKeys("outcomes"), "the outcomes export has exactly the columns of the data dictionary");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: aliceReg.id, p_consent: true, p_note: "Signed paper form, test" });
+const fbRows = (await rpc(admin, "rehab_admin_research_export", { p_table: "daily_feedback" })).rows;
+const aeRows = (await rpc(admin, "rehab_admin_research_export", { p_table: "adverse_events" })).rows;
+ok(fbRows.length > 0 && aeRows.length > 0, "a consenting patient's daily feedback and adverse events are exported");
+eq(Object.keys(fbRows[0]).sort(), dictKeys("daily_feedback"), "the daily feedback export has exactly the columns of the data dictionary");
+eq(Object.keys(aeRows[0]).sort(), dictKeys("adverse_events"), "the adverse events export has exactly the columns of the data dictionary");
+ok(!/Cannot squat|football|seedhi|Stairs|Rest/.test(JSON.stringify([fbRows, aeRows, participants])), "no free text from the assessment, feedback or adverse events is exported");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: aliceReg.id, p_consent: false });
+await fails(admin, "rehab_admin_research_export", { p_table: "patients" }, /unknown export table/, "only the listed tables can be exported");
+await fails(admin, "rehab_admin_research_export", { p_table: "participants; drop table rehab_patients" }, /unknown export table/, "an export name is never run as SQL");
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'research.export'"))[0].n === 8, "every export is written to the audit log");
+await rpc(admin, "rehab_admin_set_research_consent", { p_patient_id: dina.id, p_consent: false });
+eq((await rpc(admin, "rehab_admin_research_export", { p_table: "screening" })).rows, [], "withdrawing consent removes the patient from the record at once");
+ok((await sql("select count(*)::int n from rehab_audit_log where action in ('research.consent_recorded', 'research.consent_withdrawn')"))[0].n === 5, "consent and its withdrawal are audited");
+const board = await rpc(admin, "rehab_admin_board", {});
+const gRow = board.find((r) => r.id === gina.id);
+ok(board.length >= 6 && board.every((r) => r.reference_code && "research_consent" in r), "the board has a row for every active patient");
+ok(gRow && gRow.research_consent === true && gRow.outcome_plan.items.length === 2 && gRow.outcome_responses.length === 4 && gRow.assessment_status === null, "a board row carries the consent and the outcome plan and answers (a patient with no assessment yet shows none)");
+const dRow = board.find((r) => r.id === dina.id);
+ok(dRow && dRow.assessment_status === "submitted" && dRow.baseline_pain === 5 && dRow.red_flag_level === "none" && dRow.outcome_plan === null && dRow.days_total === 0, "...and one with an assessment shows its status, baseline pain and safety level");
+const fRow = board.find((r) => r.id === frank.id);
+ok(fRow && fRow.red_flag_level === "emergency" && fRow.assessment_status === "needs_clinical_assessment", "a patient with a safety warning shows it on the board");
+ok(!board.some((r) => r.id === aliceReg.id && false) && board.every((r) => r.status === undefined), "the board does not expose internal account ids");
+
 /* ----------------------------- 17. the AI-assistance switch in the app (code-level) ----------------------------- */
 import fs from "node:fs";
 const src = (file) => fs.readFileSync(new URL("../" + file, import.meta.url), "utf8");

@@ -222,3 +222,11 @@ export async function polishOutcomeFeedbackAction(draft: string, language: "en" 
     return { ok: true, text: checked.text, model: answer.model };
   } catch (e) { return fail(e); }
 }
+
+/** Record (or withdraw) a patient's research consent. The physiotherapist says how it was obtained; both changes are in the audit log. Only consenting patients are in the research export. */
+export async function setResearchConsentAction(patientId: string, consent: boolean, note?: string): Promise<Result<{ consent: boolean }>> {
+  try {
+    const r = await rpc<{ research_consent: boolean }>("rehab_admin_set_research_consent", { p_patient_id: patientId, p_consent: consent, p_note: (note ?? "").trim().slice(0, 300) || null });
+    return { ok: true, consent: r.research_consent };
+  } catch (e) { return fail(e); }
+}
