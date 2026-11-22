@@ -18,25 +18,59 @@ export const LM = {
 export type LandmarkName = keyof typeof LM;
 
 /** One video frame's pose. `t` is the capture time in milliseconds; `w` and `h` the image size in pixels. */
-export type Frame = { t: number; w: number; h: number; lm: Landmark[]; /** mean brightness of the image, 0..255, when the caller measured it */ luma?: number };
+export type Frame = {
+  t: number;
+  w: number;
+  h: number;
+  lm: Landmark[];
+  /** mean brightness of the image, 0..255, when the caller measured it */
+  luma?: number;
+  /**
+   * The head's orientation in degrees relative to the camera (from the face model), when the exercise needs it: yaw (turning left or right), pitch
+   * (nodding, positive when the chin goes down) and roll (tilting the ear to the shoulder, positive towards the image right). `v` is its confidence 0..1.
+   */
+  head?: { yaw: number; pitch: number; roll: number; v: number };
+};
 
-/** A point to measure: one landmark, or the midpoint of two (for example the middle of the shoulders). */
-export type PointRef = LandmarkName | { mid: [LandmarkName, LandmarkName] };
+/**
+ * In a side view the limb nearest the camera is the one the model sees best. "near:knee" is whichever knee that is for this frame (the side with the
+ * higher visibility of the shoulder, hip, knee and ankle), "far:knee" the other one. "tested:knee" is the knee of the side the person is exercising (said by
+ * the person before the exercise starts) and "other:knee" the opposite one; they need the tested side to be given (ReadOptions.tested), else they cannot be read.
+ */
+export type SidePart = "ear" | "shoulder" | "elbow" | "wrist" | "hip" | "knee" | "ankle" | "heel" | "footIndex";
+export type SidedRef = `near:${SidePart}` | `far:${SidePart}` | `tested:${SidePart}` | `other:${SidePart}`;
+/** A point to measure: one landmark, a near/far landmark, or the midpoint of two (for example the middle of the shoulders). */
+export type PointRef = LandmarkName | SidedRef | { mid: [PointRef, PointRef] };
 
 /**
  * What can be measured from one camera, all in the image plane:
  *  - joint: the angle at b between the segments b-a and b-c (0..180), for example the knee angle;
  *  - incline: the angle of the segment from -> to against the vertical or the horizontal (signed, degrees);
  *  - tilt: the angle of the line a -> b against the horizontal (signed), for example the shoulder line;
- *  - offset: the horizontal distance a -> b as a fraction of the length of the segment `scale` (signed; positive towards where the person faces when `byFacing`).
+ *  - offset: the distance a -> b along x (horizontal) or y (vertical, positive upwards) as a fraction of the length of the segment `scale` (signed);
+ *  - dist: the length of a -> b as a fraction of the length of the segment `scale` (for example how far the wrists are apart in shoulder widths);
+ *  - rotation: how far the trunk or head has turned about the long axis, from how much narrower a width looks than it did in the person's own neutral
+ *    position (acos of the width ratio; the size only, not the direction; needs the baseline taken while the person stands or sits neutral);
+ *  - head: the head orientation from the face model (yaw, pitch or roll), relative to the camera;
+ *  - diff: one metric minus another (for example the tilt of the ears minus the tilt of the shoulders = the head tilted on the trunk).
  * `byFacing` flips the sign so that positive always means "towards the way the person faces" (side views), which makes left-facing and right-facing
- * people read the same.
+ * people read the same. `abs` reports the size only (a movement to either side counts the same).
  */
-export type Metric =
-  | { id: string; kind: "joint"; a: PointRef; b: PointRef; c: PointRef }
-  | { id: string; kind: "incline"; from: PointRef; to: PointRef; ref: "vertical" | "horizontal"; byFacing?: boolean }
-  | { id: string; kind: "tilt"; a: PointRef; b: PointRef }
-  | { id: string; kind: "offset"; a: PointRef; b: PointRef; scale: [PointRef, PointRef]; byFacing?: boolean };
+type Flags = { abs?: boolean };
+export type Metric = Flags &
+  (
+    | { id: string; kind: "joint"; a: PointRef; b: PointRef; c: PointRef }
+    | { id: string; kind: "incline"; from: PointRef; to: PointRef; ref: "vertical" | "horizontal"; byFacing?: boolean }
+    | { id: string; kind: "tilt"; a: PointRef; b: PointRef }
+    | { id: string; kind: "offset"; a: PointRef; b: PointRef; scale: [PointRef, PointRef]; axis?: "x" | "y"; byFacing?: boolean }
+    | { id: string; kind: "dist"; a: PointRef; b: PointRef; scale: [PointRef, PointRef] }
+    | { id: string; kind: "rotation"; a: PointRef; b: PointRef }
+    | { id: string; kind: "head"; axis: "yaw" | "pitch" | "roll" }
+    | { id: string; kind: "diff"; a: Metric; b: Metric }
+  );
+
+/** Readings taken while the person is in their neutral position, by metric id: the raw reading (for `rotation`, the width in pixels it is measured against). */
+export type Baseline = Record<string, number>;
 
 export type Reading = { value: number; /** the lowest visibility of the landmarks used, 0..1 */ confidence: number };
 

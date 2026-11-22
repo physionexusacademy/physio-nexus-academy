@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {
-  HoldTimer, LM, OneEuroFilter, RepCounter, STOP_IF_PAINFUL, angleAt, assessSetup, facing, lintCue, readMetric, segmentAngle,
+  Calibrator, HoldTimer, LM, OneEuroFilter, RepCounter, STOP_IF_PAINFUL, angleAt, assessSetup, facing, lintCue, metricParts, needsBaseline, needsHead, readMetric, segmentAngle,
   type Frame, type Landmark, type LandmarkName, type Metric,
 } from "../src/lib/formcheck/index.ts";
 import { DEFAULT_LINES } from "../src/lib/rehabverse/lines.ts";
@@ -174,5 +174,139 @@ ok(lintCue("x".repeat(80)).some((p) => p.includes("longer")), "a cue that is too
 ok(lintCue("").includes("empty"), "an empty cue is rejected");
 // the lines the exercise player already says must satisfy the same rules
 for (const [kind, line] of Object.entries(DEFAULT_LINES)) for (const lang of ["en", "ru"] as const) ok(lintCue(line[lang]).length === 0, `exercise player line ${kind}/${lang} breaks the wording rules: ${lintCue(line[lang]).join("; ")}`);
+
+/* ───── 6. the metric kinds the exercise specs use ───── */
+const DEG = 180 / Math.PI;
+{
+  // near / far: the side the model sees best is "near"; the other is "far"; the choice follows the visibility
+  const sideFrame = (leftVis: number, rightVis: number) => {
+    const lm = blank();
+    for (const [name, x, y] of [["Shoulder", 0.5, 0.3], ["Hip", 0.5, 0.5], ["Knee", 0.5, 0.7], ["Ankle", 0.5, 0.9]] as const) {
+      set(lm, `left${name}` as LandmarkName, x, y, leftVis); set(lm, `right${name}` as LandmarkName, x, y, rightVis);
+    }
+    set(lm, "leftAnkle", 0.7, 0.7, leftVis); // the left knee bends to 90
+    return lm;
+  };
+  const nearKnee: Metric = { id: "k", kind: "joint", a: "near:hip", b: "near:knee", c: "near:ankle" };
+  const farKnee: Metric = { id: "k", kind: "joint", a: "far:hip", b: "far:knee", c: "far:ankle" };
+  const leftNear = frame(sideFrame(0.95, 0.3), 1000, 1000);
+  near(readMetric(nearKnee, leftNear, 0.5)!.value, 90, 1e-6, "near:knee is the left knee when the left side is seen best");
+  near(readMetric(farKnee, leftNear, 0.2)!.value, 180, 1e-6, "far:knee is the other knee");
+  ok(readMetric(farKnee, leftNear, 0.5) === null, "the far side, seen poorly, gives no reading at the usual minimum visibility");
+  const rightNear = frame(sideFrame(0.3, 0.95), 1000, 1000);
+  near(readMetric(nearKnee, rightNear, 0.5)!.value, 180, 1e-6, "near:knee follows the side that is seen best (the right one here)");
+  // tested / other: the side the person says they exercise, whatever the camera sees
+  const testedKnee: Metric = { id: "k", kind: "joint", a: "tested:hip", b: "tested:knee", c: "tested:ankle" };
+  const otherKnee: Metric = { id: "k", kind: "joint", a: "other:hip", b: "other:knee", c: "other:ankle" };
+  const both = frame(sideFrame(0.95, 0.95), 1000, 1000);
+  near(readMetric(testedKnee, both, { minVisibility: 0.5, tested: "left" })!.value, 90, 1e-6, "tested:knee is the left knee when the person exercises the left side");
+  near(readMetric(testedKnee, both, { minVisibility: 0.5, tested: "right" })!.value, 180, 1e-6, "tested:knee is the right knee when the person exercises the right side");
+  near(readMetric(otherKnee, both, { minVisibility: 0.5, tested: "right" })!.value, 90, 1e-6, "other:knee is the opposite knee");
+  ok(readMetric(testedKnee, both, 0.5) === null, "a tested: reference cannot be read until the person says which side they exercise");
+  ok(metricParts(testedKnee).includes("tested:knee") && metricParts(nearKnee).includes("near:hip"), "the parts a metric needs include the sided references");
+}
+{
+  // the face model's head pose; absent = no reading
+  const lm = blank();
+  const yaw: Metric = { id: "y", kind: "head", axis: "yaw" };
+  ok(readMetric(yaw, frame(lm)) === null && needsHead(yaw), "a head metric gives no reading without the face model");
+  near(readMetric(yaw, frame(lm, 1000, 1000, { head: { yaw: -30, pitch: 5, roll: 2, v: 0.9 } }))!.value, -30, 1e-9, "the head's yaw is read from the face model");
+  near(readMetric({ ...yaw, abs: true }, frame(lm, 1000, 1000, { head: { yaw: -30, pitch: 5, roll: 2, v: 0.9 } }))!.value, 30, 1e-9, "abs reports the size of a movement to either side");
+  near(readMetric({ id: "p", kind: "head", axis: "pitch" }, frame(lm, 1000, 1000, { head: { yaw: 0, pitch: 12, roll: 0, v: 0.9 } }))!.value, 12, 1e-9, "the head's pitch");
+  ok(readMetric(yaw, frame(lm, 1000, 1000, { head: { yaw: 10, pitch: 0, roll: 0, v: 0.2 } }), 0.5) === null, "a face the model is unsure of gives no reading");
+}
+{
+  // diff: the ears tilted on the shoulders = the head tilted on the trunk (the neck side bend); both tilting together = the trunk leaning, not the neck
+  const tiltFrame = (shoulderDeg: number, earDeg: number) => {
+    const lm = blank();
+    const line = (a: LandmarkName, b: LandmarkName, cx: number, cy: number, half: number, deg: number) => {
+      const dy = Math.tan((deg / DEG)) * half;
+      set(lm, a, cx - half, cy + dy); set(lm, b, cx + half, cy - dy);
+    };
+    line("leftShoulder", "rightShoulder", 0.5, 0.4, 0.2, shoulderDeg);
+    line("leftEar", "rightEar", 0.5, 0.2, 0.08, earDeg);
+    return frame(lm, 1000, 1000);
+  };
+  const headTilt: Metric = { id: "h", kind: "diff", a: { id: "e", kind: "tilt", a: "leftEar", b: "rightEar" }, b: { id: "s", kind: "tilt", a: "leftShoulder", b: "rightShoulder" } };
+  near(readMetric(headTilt, tiltFrame(0, 12))!.value, 12, 1e-6, "ears tilted 12 degrees on level shoulders read 12");
+  near(readMetric(headTilt, tiltFrame(8, 8))!.value, 0, 1e-6, "ears and shoulders tilting together read 0 (the trunk leaned, the neck did not)");
+  near(readMetric({ ...headTilt, abs: true }, tiltFrame(0, -12))!.value, 12, 1e-6, "a side bend to either side reads the same with abs");
+}
+{
+  // dist and offset on the vertical axis, as fractions of a body length
+  const lm = blank();
+  set(lm, "leftShoulder", 0.3, 0.3); set(lm, "rightShoulder", 0.7, 0.3); set(lm, "leftWrist", 0.1, 0.5); set(lm, "rightWrist", 0.9, 0.5);
+  near(readMetric({ id: "d", kind: "dist", a: "leftWrist", b: "rightWrist", scale: ["leftShoulder", "rightShoulder"] }, frame(lm, 1000, 1000))!.value, 2, 1e-9, "wrists twice a shoulder width apart read 2");
+  set(lm, "leftElbow", 0.3, 0.2);
+  near(readMetric({ id: "o", kind: "offset", a: "leftShoulder", b: "leftElbow", scale: ["leftShoulder", "rightShoulder"], axis: "y" }, frame(lm, 1000, 1000))!.value, 0.25, 1e-9, "an elbow a quarter of a shoulder width above its shoulder reads +0.25");
+  set(lm, "leftElbow", 0.3, 0.4);
+  ok(readMetric({ id: "o", kind: "offset", a: "leftShoulder", b: "leftElbow", scale: ["leftShoulder", "rightShoulder"], axis: "y" }, frame(lm, 1000, 1000))!.value < 0, "below the shoulder reads negative");
+}
+{
+  // rotation from how much narrower the shoulders look than in the person's own neutral position
+  const widthFrame = (halfWidth: number) => { const lm = blank(); set(lm, "leftShoulder", 0.5 - halfWidth, 0.3); set(lm, "rightShoulder", 0.5 + halfWidth, 0.3); return frame(lm, 1000, 1000); };
+  const rotation: Metric = { id: "turn", kind: "rotation", a: "leftShoulder", b: "rightShoulder" };
+  ok(needsBaseline(rotation) && readMetric(rotation, widthFrame(0.2)) === null, "a rotation cannot be read before the neutral position has been taken");
+  const baseline = { turn: 400 };
+  near(readMetric(rotation, widthFrame(0.2), { baseline })!.value, 0, 1e-6, "the neutral width reads 0 degrees");
+  near(readMetric(rotation, widthFrame(0.2 * Math.cos(Math.PI / 4)), { baseline })!.value, 45, 1e-6, "a width of cos(45) of neutral reads 45 degrees");
+  near(readMetric(rotation, widthFrame(0.22), { baseline })!.value, 0, 1e-6, "a wider reading than neutral reads 0, not an error");
+}
+
+/* ───── 7. taking the person's own neutral position ───── */
+{
+  const rr = rng(3);
+  const shoulderFrame = (t: number, tiltDeg: number, noise = 0, half = 0.2) => {
+    const lm = blank(); const dy = Math.tan(tiltDeg / DEG) * half;
+    set(lm, "leftShoulder", 0.5 - half, 0.4 + dy + noise * 0.001 * gauss(rr)); set(lm, "rightShoulder", 0.5 + half, 0.4 - dy);
+    return { ...frame(lm, 1000, 1000), t };
+  };
+  const tiltMetric: Metric = { id: "t", kind: "tilt", a: "leftShoulder", b: "rightShoulder" };
+  const turnMetric: Metric = { id: "turn", kind: "rotation", a: "leftShoulder", b: "rightShoulder" };
+  // holding still: done after about 0.8 s, and the baseline is the person's own reading
+  const calibrator = new Calibrator([tiltMetric, turnMetric]);
+  let state = calibrator.push(shoulderFrame(0, 4, 1));
+  for (let t = 33; t < 1200 && !state.done; t += 33) state = calibrator.push(shoulderFrame(t, 4, 1));
+  ok(state.done && state.baseline !== null, "holding still for under a second takes the neutral position");
+  near(state.baseline!.t, readMetric(tiltMetric, shoulderFrame(0, 4))!.value, 0.5, "the baseline is the person's own tilt");
+  near(state.baseline!.turn, 400, 4, "the baseline of a rotation is the shoulder width in pixels");
+  ok(calibrator.push(shoulderFrame(5000, 30)).done, "once taken, the baseline stays");
+  // fidgeting never completes it, and a movement restarts the wait
+  const fidget = new Calibrator([tiltMetric]);
+  let doneEver = false;
+  for (let t = 0; t < 3000; t += 33) doneEver = fidget.push(shoulderFrame(t, (Math.floor(t / 150) % 2) * 15)).done || doneEver;
+  ok(!doneEver, "a person who keeps moving never gets a neutral position taken");
+  const restart = new Calibrator([tiltMetric]);
+  let still = 0; let result = restart.push(shoulderFrame(0, 0));
+  for (let t = 33; t < 700; t += 33) result = restart.push(shoulderFrame(t, 0));
+  ok(!result.done, "700 ms is not enough");
+  result = restart.push(shoulderFrame(733, 20)); still = result.progress;
+  ok(!result.done && still === 0, "a movement restarts the wait");
+  for (let t = 766; t < 1800 && !result.done; t += 33) result = restart.push(shoulderFrame(t, 20));
+  ok(result.done && Math.abs(result.baseline!.t - readMetric(tiltMetric, shoulderFrame(0, 20))!.value) < 0.5, "and the new still position becomes the baseline");
+  // a landmark that is lost gives no baseline
+  const lost = new Calibrator([tiltMetric]);
+  const missing = shoulderFrame(0, 0); missing.lm[LM.leftShoulder] = { x: 0.3, y: 0.4, v: 0.1 };
+  ok(!lost.push(missing).done && lost.push({ ...missing, t: 2000 }).progress === 0, "a lost landmark never gives a baseline");
+  // a sided reference needs the tested side
+  const sided = new Calibrator([{ id: "elbow", kind: "joint", a: "tested:shoulder", b: "tested:elbow", c: "tested:wrist" }], { tested: "right" });
+  const armFrame = (t: number) => { const lm = blank(); set(lm, "rightShoulder", 0.5, 0.3); set(lm, "rightElbow", 0.5, 0.5); set(lm, "rightWrist", 0.7, 0.5); return { ...frame(lm, 1000, 1000), t }; };
+  let sidedState = sided.push(armFrame(0));
+  for (let t = 33; t < 1200 && !sidedState.done; t += 33) sidedState = sided.push(armFrame(t));
+  ok(sidedState.done && Math.abs(sidedState.baseline!.elbow - 90) < 1e-6, "a calibrator follows the side the person exercises");
+}
+
+/* ───── 8. the other views of the set-up check ───── */
+{
+  const lm = standing();
+  ok(assessSetup(frame(lm, 1280, 720), { need: NEED, view: "feet" }).issues.includes("wrong_view") === false, "a feet-end view is judged like a front view (shoulders wide against the trunk)");
+  const leftSeen = standing({ leftShoulder: [0.5, 0.26], leftHip: [0.5, 0.52], leftKnee: [0.5, 0.72], leftAnkle: [0.5, 0.92], rightShoulder: [0.5, 0.26, 0.3], rightHip: [0.5, 0.52, 0.3], rightKnee: [0.5, 0.72, 0.3], rightAnkle: [0.5, 0.92, 0.3] });
+  const sidedNeeds = assessSetup(frame(leftSeen, 720, 1280), { need: ["near:shoulder", "near:hip", "near:knee", "near:ankle"], view: "side" });
+  ok(sidedNeeds.ok, `near: needs are met by the side the model sees (${sidedNeeds.issues.join(",")})`);
+  const farNeeds = assessSetup(frame(leftSeen, 720, 1280), { need: ["far:knee"], view: "side" });
+  ok(farNeeds.missing.includes("far:knee"), "a far: need that is hidden is named");
+  ok(assessSetup(frame(standing(), 720, 1280), { need: ["tested:knee"], view: "front", tested: "left" }).ok === true, "a tested: need is resolved with the side the person exercises");
+  ok(assessSetup(frame(standing(), 720, 1280), { need: ["tested:knee"], view: "front" }).missing.includes("tested:knee"), "a tested: need cannot be judged before the side is known");
+}
 
 console.log(`Form Check engine: ${checks} checks passed.`);

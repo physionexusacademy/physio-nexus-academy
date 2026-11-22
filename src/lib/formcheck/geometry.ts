@@ -1,6 +1,7 @@
-import { LM, type Frame, type LandmarkName, type Metric, type PointRef, type Reading } from "./types.ts";
+import { LM, type Baseline, type Frame, type LandmarkName, type Metric, type PointRef, type Reading, type SidePart, type SidedRef } from "./types.ts";
 
 export type Pt = { x: number; y: number };
+export type Side = "left" | "right";
 const RAD = 180 / Math.PI;
 
 export const dist = (a: Pt, b: Pt) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -34,52 +35,144 @@ export function facing(frame: Frame): 1 | -1 {
   return nose && nose.x >= ears ? 1 : -1;
 }
 
+const cap = (part: string) => part.charAt(0).toUpperCase() + part.slice(1);
+const named = (side: Side, part: SidePart) => `${side}${cap(part)}` as LandmarkName;
+
+/** The side of the body nearest the camera in a side view: the one whose shoulder, hip, knee and ankle the model sees best. */
+export function nearSide(frame: Frame): Side {
+  const score = (side: Side) => (["shoulder", "hip", "knee", "ankle"] as SidePart[]).reduce((sum, part) => sum + (frame.lm[LM[named(side, part)]]?.v ?? 0), 0);
+  return score("left") >= score("right") ? "left" : "right";
+}
+
+/** Which side is which: the side nearest the camera (side views) and the side the person is exercising (when they have said). */
+export type Sides = { near: Side; tested?: Side };
+const opposite = (side: Side): Side => (side === "left" ? "right" : "left");
+
+/** The landmark a reference names for this frame, or null when it depends on a side that is not known. */
+export function resolveRef(ref: string, sides: Sides): LandmarkName | null {
+  const colon = ref.indexOf(":");
+  if (colon < 0) return ref as LandmarkName;
+  const which = ref.slice(0, colon);
+  const part = ref.slice(colon + 1) as SidePart;
+  let side: Side | undefined;
+  if (which === "near") side = sides.near;
+  else if (which === "far") side = opposite(sides.near);
+  else if (which === "tested") side = sides.tested;
+  else if (which === "other") side = sides.tested ? opposite(sides.tested) : undefined;
+  return side ? named(side, part) : null;
+}
+
 type Located = { pt: Pt; v: number };
-function locate(frame: Frame, ref: PointRef): Located | null {
+function locate(frame: Frame, ref: PointRef, sides: Sides): Located | null {
   if (typeof ref === "string") {
-    const lm = frame.lm[LM[ref]];
+    const name = resolveRef(ref, sides);
+    const lm = name ? frame.lm[LM[name]] : undefined;
     return lm ? { pt: { x: lm.x * frame.w, y: lm.y * frame.h }, v: lm.v } : null;
   }
-  const a = locate(frame, ref.mid[0]);
-  const b = locate(frame, ref.mid[1]);
+  const a = locate(frame, ref.mid[0], sides);
+  const b = locate(frame, ref.mid[1], sides);
   return a && b ? { pt: midpoint(a.pt, b.pt), v: Math.min(a.v, b.v) } : null;
 }
 
-/** The landmarks a metric uses (for the visibility check). */
-export function landmarksOf(ref: PointRef): LandmarkName[] {
-  return typeof ref === "string" ? [ref] : [...ref.mid];
+/** The landmarks (and near/far parts) a point reference uses. */
+export function partsOf(ref: PointRef): (LandmarkName | SidedRef)[] {
+  return typeof ref === "string" ? [ref] : [...partsOf(ref.mid[0]), ...partsOf(ref.mid[1])];
 }
-export function metricLandmarks(metric: Metric): LandmarkName[] {
-  const refs: PointRef[] = metric.kind === "joint" ? [metric.a, metric.b, metric.c] : metric.kind === "incline" ? [metric.from, metric.to] : metric.kind === "tilt" ? [metric.a, metric.b] : [metric.a, metric.b, ...metric.scale];
-  return [...new Set(refs.flatMap(landmarksOf))];
+/** Everything a metric needs to see (for the set-up check and for tests). `head` and `rotation` metrics are listed separately by their callers. */
+export function metricParts(metric: Metric): (LandmarkName | SidedRef)[] {
+  let refs: PointRef[] = [];
+  switch (metric.kind) {
+    case "joint": refs = [metric.a, metric.b, metric.c]; break;
+    case "incline": refs = [metric.from, metric.to]; break;
+    case "tilt": case "rotation": refs = [metric.a, metric.b]; break;
+    case "offset": case "dist": refs = [metric.a, metric.b, ...metric.scale]; break;
+    case "head": return [];
+    case "diff": return [...new Set([...metricParts(metric.a), ...metricParts(metric.b)])];
+  }
+  return [...new Set(refs.flatMap(partsOf))];
 }
+/** True when the metric needs the face model. */
+export const needsHead = (metric: Metric): boolean => metric.kind === "head" || (metric.kind === "diff" && (needsHead(metric.a) || needsHead(metric.b)));
+/** True when the metric is measured against the person's own neutral width (so a baseline must be taken first). */
+export const needsBaseline = (metric: Metric): boolean => metric.kind === "rotation" || (metric.kind === "diff" && (needsBaseline(metric.a) || needsBaseline(metric.b)));
 
-/** One metric from one frame, or null when a landmark it needs is missing or below `minVisibility`. */
-export function readMetric(metric: Metric, frame: Frame, minVisibility = 0.5): Reading | null {
-  const get = (ref: PointRef) => locate(frame, ref);
-  let points: (Located | null)[];
+export type ReadOptions = { minVisibility?: number; baseline?: Baseline; side?: Side; /** the side the person is exercising (for "tested:" and "other:" references) */ tested?: Side };
+
+/**
+ * One metric from one frame, or null when a landmark it needs is missing or below the minimum visibility, the face model is needed and absent, or a
+ * baseline is needed and not taken yet. `options` can be the minimum visibility alone (a number).
+ */
+export function readMetric(metric: Metric, frame: Frame, options: number | ReadOptions = 0.5): Reading | null {
+  const opts: ReadOptions = typeof options === "number" ? { minVisibility: options } : options;
+  const minVis = opts.minVisibility ?? 0.5;
+  const sides: Sides = { near: opts.side ?? nearSide(frame), tested: opts.tested };
+  const get = (ref: PointRef) => locate(frame, ref, sides);
+  let points: (Located | null)[] = [];
   let value: number;
-  if (metric.kind === "joint") {
-    points = [get(metric.a), get(metric.b), get(metric.c)];
-    if (points.some((p) => !p)) return null;
-    value = angleAt(points[0]!.pt, points[1]!.pt, points[2]!.pt);
-  } else if (metric.kind === "incline") {
-    points = [get(metric.from), get(metric.to)];
-    if (points.some((p) => !p)) return null;
-    value = segmentAngle(points[0]!.pt, points[1]!.pt, metric.ref);
-    if (metric.byFacing) value *= facing(frame);
-  } else if (metric.kind === "tilt") {
-    points = [get(metric.a), get(metric.b)];
-    if (points.some((p) => !p)) return null;
-    value = segmentAngle(points[0]!.pt, points[1]!.pt, "horizontal");
-  } else {
-    points = [get(metric.a), get(metric.b), get(metric.scale[0]), get(metric.scale[1])];
-    if (points.some((p) => !p)) return null;
-    const length = dist(points[2]!.pt, points[3]!.pt);
-    if (length === 0) return null;
-    value = ((points[1]!.pt.x - points[0]!.pt.x) / length) * (metric.byFacing ? facing(frame) : 1);
+  let confidence: number | null = null;
+  switch (metric.kind) {
+    case "joint": {
+      points = [get(metric.a), get(metric.b), get(metric.c)];
+      if (points.some((p) => !p)) return null;
+      value = angleAt(points[0]!.pt, points[1]!.pt, points[2]!.pt);
+      break;
+    }
+    case "incline": {
+      points = [get(metric.from), get(metric.to)];
+      if (points.some((p) => !p)) return null;
+      value = segmentAngle(points[0]!.pt, points[1]!.pt, metric.ref);
+      if (metric.byFacing) value *= facing(frame);
+      break;
+    }
+    case "tilt": {
+      points = [get(metric.a), get(metric.b)];
+      if (points.some((p) => !p)) return null;
+      value = segmentAngle(points[0]!.pt, points[1]!.pt, "horizontal");
+      break;
+    }
+    case "offset": {
+      points = [get(metric.a), get(metric.b), get(metric.scale[0]), get(metric.scale[1])];
+      if (points.some((p) => !p)) return null;
+      const length = dist(points[2]!.pt, points[3]!.pt);
+      if (length === 0) return null;
+      if ((metric.axis ?? "x") === "y") value = (points[0]!.pt.y - points[1]!.pt.y) / length;
+      else value = ((points[1]!.pt.x - points[0]!.pt.x) / length) * (metric.byFacing ? facing(frame) : 1);
+      break;
+    }
+    case "dist": {
+      points = [get(metric.a), get(metric.b), get(metric.scale[0]), get(metric.scale[1])];
+      if (points.some((p) => !p)) return null;
+      const length = dist(points[2]!.pt, points[3]!.pt);
+      if (length === 0) return null;
+      value = dist(points[0]!.pt, points[1]!.pt) / length;
+      break;
+    }
+    case "rotation": {
+      points = [get(metric.a), get(metric.b)];
+      if (points.some((p) => !p)) return null;
+      const width = dist(points[0]!.pt, points[1]!.pt);
+      const reference = opts.baseline?.[metric.id];
+      if (!reference || reference <= 0) return null;
+      value = Math.acos(Math.min(1, width / reference)) * RAD;
+      break;
+    }
+    case "head": {
+      if (!frame.head) return null;
+      value = frame.head[metric.axis];
+      confidence = frame.head.v;
+      break;
+    }
+    case "diff": {
+      const a = readMetric(metric.a, frame, opts);
+      const b = readMetric(metric.b, frame, opts);
+      if (!a || !b) return null;
+      value = a.value - b.value;
+      confidence = Math.min(a.confidence, b.confidence);
+      break;
+    }
   }
   if (!Number.isFinite(value)) return null;
-  const confidence = Math.min(...points.map((p) => p!.v));
-  return confidence >= minVisibility ? { value, confidence } : null;
+  const c = confidence ?? Math.min(...points.map((p) => p!.v));
+  if (c < minVis) return null;
+  return { value: metric.abs ? Math.abs(value) : value, confidence: c };
 }
