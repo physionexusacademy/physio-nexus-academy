@@ -35,6 +35,17 @@ const firstActive = (states: SessionState[]) => states.findIndex((s) => s.phase 
   ok(final.phase === "finished" && summary.limits.en.length > 30, "the summary carries what the camera cannot do for this exercise");
   ok(summary.baseline && Math.abs(summary.baseline.ear_fwd - 0.12) < 0.03, "the baseline is the person's own start position");
 }
+// capturing the middle second of a hold (the validation study's camera reading)
+{
+  const T0 = 4000;
+  const scene = seatedSide((t) => ({ earBack: 0.05 * cycles(t, T0, 1000, 5200, 1000, 1500, 1) }));
+  const session = new FormCheckSession(spec("chin-tuck"));
+  play(scene, 720, 1280, 9, (frame) => session.push(frame));
+  const middle = session.capture(T0 + 1000 + 1500, T0 + 1000 + 2500); // inside the plateau
+  ok(middle && middle.n >= 25 && middle.confidence > 0.9, "the middle second of a hold has about thirty readings");
+  ok(middle && Math.abs(middle.value + 0.05) < 0.012, `and their median is the change from the start position (${middle?.value.toFixed(3)} for a drawn -0.05)`);
+  ok(session.capture(T0 + 600000, T0 + 600500) === null, "a window with no readings gives null, never a guess");
+}
 {
   const scene = seatedSide((t) => ({ earBack: 0.012 * cycles(t, 4000, 1000, 2000, 1000, 1500, 5) }));
   const { summary } = run("chin-tuck", scene, 720, 1280, 30);
@@ -82,6 +93,8 @@ const firstActive = (states: SessionState[]) => states.findIndex((s) => s.phase 
   ok(Object.keys(level.summary.cues).length === 0 && firstActive(level.states) > 0, "level hips from the feet end: no cue, and the feet-end view passes the set-up check");
   const dropped = second((t) => (t > 8000 && t < 12000 ? 9 : 0));
   ok(dropped.summary.cues["bridge-hips-level"] === 1, `a dropping hip gets one cue (${JSON.stringify(dropped.summary.cues)})`);
+  const cueTimes = dropped.session.cuesBetween(0, 60000);
+  ok(cueTimes.length === 1 && cueTimes[0] === "bridge-hips-level", "the cues fired are logged with their times (for the validation record)");
   const knees = run("glute-bridge", feetEnd((t) => ({ gap: t > 8000 && t < 12000 ? 1.6 : 1 })), 1280, 720, 30, { pass: 2 });
   ok(knees.summary.cues["bridge-knees-apart"] === 1, `knees that fall apart get one cue (${JSON.stringify(knees.summary.cues)})`);
 }

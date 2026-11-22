@@ -106,6 +106,7 @@ export class FormCheckSession {
   private best = 0;
   private peaks: Record<string, number> = {};
   private buffer: { t: number; value: number; confidence: number }[] = [];
+  private cueLog: { id: string; t: number }[] = [];
   private current: SessionState;
 
   constructor(spec: CameraSpec, options: SessionOptions = {}) {
@@ -284,7 +285,8 @@ export class FormCheckSession {
       this.read += 1;
     }
 
-    this.cues.push(this.paused ? {} : cueReadings, t);
+    const started = this.cues.push(this.paused ? {} : cueReadings, t);
+    if (started) { this.cueLog.push({ id: started.id, t }); if (this.cueLog.length > 200) this.cueLog.shift(); }
     const cue = this.cues.active(t);
     const counter = this.counter?.state();
     const per = p?.movementsPerRep ?? 1;
@@ -309,6 +311,22 @@ export class FormCheckSession {
   median(fromT: number, toT: number): number | null {
     const values = this.buffer.filter((b) => b.t >= fromT && b.t <= toT).map((b) => b.value).sort((a, b) => a - b);
     return values.length ? values[Math.floor(values.length / 2)] : null;
+  }
+
+  /**
+   * The reading of the primary metric over a window of time (the middle second of a 3 s hold in the validation study): the median value, the median confidence and how many
+   * frames it is made of, or null when there was no reading. The window must be inside the last 12 seconds.
+   */
+  capture(fromT: number, toT: number): { value: number; confidence: number; n: number } | null {
+    const inside = this.buffer.filter((b) => b.t >= fromT && b.t <= toT);
+    if (!inside.length) return null;
+    const median = (values: number[]) => { const v = [...values].sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; };
+    return { value: median(inside.map((b) => b.value)), confidence: median(inside.map((b) => b.confidence)), n: inside.length };
+  }
+
+  /** The ids of the cues that started between two times. */
+  cuesBetween(fromT: number, toT: number): string[] {
+    return this.cueLog.filter((c) => c.t >= fromT && c.t <= toT).map((c) => c.id);
   }
 
   finish(t: number = this.lastT): SessionSummary {
