@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import "./encyclopedia.css";
 import { EditorialManualEncyclopedia } from "@/components/manual-therapy/EditorialManualEncyclopedia";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
-import { getManualTherapyStory } from "@/lib/manual-therapy-stories";
-import { manualTherapyLessonWeaves } from "@/lib/manual-therapy-lesson-weave";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { getPublishedManualCoverMap } from "@/lib/manual-therapy-cover-publishing";
-import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
-import { getTechniqueDepth } from "@/lib/manual-therapy-depth";
+import { loadChapterIndex } from "@/lib/manual-therapy-chapter-loader";
+import type { ChapterCard } from "@/lib/manual-therapy-chapter-types";
 
 /**
  * One clear group per purpose, in the order a learner should meet them.
@@ -60,37 +58,43 @@ const libraryFamilyBySlug: Record<string, string> = {
   "craniosacral-therapy": libraryFamilyOrder[5],
 };
 
-const libraryItems = [
-  ...manualTherapyTechniques.map((technique) => ({
-    slug: technique.slug,
-    href: "/manual-therapy/" + technique.slug,
-    family: libraryFamilyBySlug[technique.slug] ?? technique.family,
-    artFamily: technique.family,
-    name: technique.name,
-    summary: technique.summary,
-    tag: getTechniqueDepth(technique.slug) ? "2D demo · expert depth" : "Technique",
-    story: getMasteryGuide(technique.slug)?.oneLine ?? getManualTherapyStory(technique.slug)?.headline ?? "",
-    scene: getManualTherapyStory(technique.slug)?.scene ?? "",
-    closer: manualTherapyLessonWeaves[technique.slug]?.closer ?? "",
-    evidence: "",
-  })),
-  ...worldManualApproaches.map((approach) => ({
-    slug: approach.slug,
-    href: "/manual-therapy/" + approach.slug,
-    family: libraryFamilyBySlug[approach.slug] ?? "Neural & Specialized",
-    artFamily: "Specialized Manual Therapy",
-    name: approach.title,
-    summary: approach.summary,
-    tag: getTechniqueDepth(approach.slug) ? "2D demo · expert depth" : "World approach",
-    story: getMasteryGuide(approach.slug)?.oneLine ?? approach.headline,
-    scene: approach.scene,
-    closer: approach.aha,
-    evidence: approach.evidenceLabel,
-  })),
-];
-const libraryFamilies = libraryFamilyOrder.filter((name) =>
-  libraryItems.some((item) => item.family === name),
-);
+/** The cards of the encyclopedia. The long chapter text is not worker code: each card takes its one-line story, scene and closing line from the static chapter index. */
+function buildLibraryItems(cards: Record<string, ChapterCard>) {
+  return [
+    ...manualTherapyTechniques.map((technique) => {
+      const card = cards[technique.slug];
+      return {
+        slug: technique.slug,
+        href: "/manual-therapy/" + technique.slug,
+        family: libraryFamilyBySlug[technique.slug] ?? technique.family,
+        artFamily: technique.family,
+        name: technique.name,
+        summary: technique.summary,
+        tag: card?.hasDepth ? "2D demo · expert depth" : "Technique",
+        story: card?.oneLine ?? card?.storyHeadline ?? "",
+        scene: card?.storyScene ?? "",
+        closer: card?.closer ?? "",
+        evidence: "",
+      };
+    }),
+    ...worldManualApproaches.map((approach) => {
+      const card = cards[approach.slug];
+      return {
+        slug: approach.slug,
+        href: "/manual-therapy/" + approach.slug,
+        family: libraryFamilyBySlug[approach.slug] ?? "Neural & Specialized",
+        artFamily: "Specialized Manual Therapy",
+        name: approach.title,
+        summary: approach.summary,
+        tag: card?.hasDepth ? "2D demo · expert depth" : "World approach",
+        story: card?.oneLine ?? approach.headline,
+        scene: approach.scene,
+        closer: approach.aha,
+        evidence: approach.evidenceLabel,
+      };
+    }),
+  ];
+}
 
 const url = "https://physionexusacademy.com/manual-therapy";
 
@@ -150,7 +154,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ManualTherapyPage() {
+export default async function ManualTherapyPage() {
+  const index = await loadChapterIndex();
+  // Every listed chapter has a card (npm run build:manual-therapy-data); a missing index must fail the build, not publish empty cards.
+  if (!index) throw new Error("Manual Therapy chapter index is missing. Run: npm run build:manual-therapy-data");
+  const libraryItems = buildLibraryItems(index.cards);
+  const libraryFamilies = libraryFamilyOrder.filter((name) => libraryItems.some((item) => item.family === name));
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",

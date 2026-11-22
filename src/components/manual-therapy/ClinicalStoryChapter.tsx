@@ -1,18 +1,17 @@
 import { ArrowRight, BookOpenText, Lightbulb } from "lucide-react";
 import type { ClinicalEpisode } from "@/lib/manual-therapy-episodes";
 import type { ManualTherapyAhaMoment } from "@/lib/manual-therapy-aha-moments";
-import { clinicalRoomScenes } from "@/lib/manual-therapy-room-scenes";
+import type { RoomScene } from "@/lib/manual-therapy-chapter-types";
 import type { LessonWeave } from "@/lib/manual-therapy-lesson-weave";
 
 type Props = {
-  slug: string;
+  room?: RoomScene | null;
   episode: ClinicalEpisode;
   challenge?: ManualTherapyAhaMoment;
   weave?: LessonWeave;
 };
 
-export function ClinicalStoryChapter({ slug, episode, challenge, weave }: Props) {
-  const room = clinicalRoomScenes[slug];
+export function ClinicalStoryChapter({ room, episode, challenge, weave }: Props) {
   return (
     <article
       id="clinical-story"

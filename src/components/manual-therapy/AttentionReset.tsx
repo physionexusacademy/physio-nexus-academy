@@ -1,10 +1,10 @@
 import { Brain, Lightbulb, Sparkles } from "lucide-react";
-import { coreAttentionCues } from "@/lib/manual-therapy-attention-cues";
+import { coreAttentionCues, type AttentionCue } from "@/lib/manual-therapy-attention-cues";
 
-type CueProps = { slug: string; moment: "wake" | "think" | "remember" };
+type CueProps = { cue: AttentionCue | null; moment: "wake" | "think" | "remember" };
 
-export function AttentionReset({ slug, moment }: CueProps) {
-  const cue = coreAttentionCues[slug];
+/** The attention cue of a chapter (the cue itself comes from the chapter's static data, so this file needs no slug). */
+export function AttentionReset({ cue, moment }: CueProps) {
   if (!cue) return null;
   if (moment === "wake") {
     return (

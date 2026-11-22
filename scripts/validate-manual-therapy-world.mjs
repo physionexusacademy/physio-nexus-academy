@@ -59,7 +59,7 @@ assert(editorialCss.includes("@media(max-width:740px)") && editorialCss.includes
 assert(artwork.includes("getEditorialArt"), "Cached image mapping missing");
 assert(!hub.includes('data-pna-world-entry="v1"'), "Remove standalone worldwide promo card");
 assert(!hub.includes("Explore the worldwide collection"), "No second collection call-to-action");
-assert(detail.includes("...worldManualApproaches.map") && detail.includes("<WorldApproachChapter lesson={worldLesson} />"),
+assert(detail.includes("...worldManualApproaches.map") && detail.includes("<WorldApproachChapter lesson={worldLesson} data={data} />"),
   "13 additional chapters must resolve on the same /manual-therapy/[slug] route");
 assert(chapter.includes('data-pna-world-final="v1"') &&
   chapter.includes('data-pna-quick-recap="v1"') &&
@@ -127,7 +127,7 @@ for (const [slug, lesson] of Object.entries(authoredDepth)) {
   const approximateWords = passages.join(" ").trim().split(/\s+/).length;
   assert(approximateWords >= 700, slug + ": less than 700 words of additional depth");
 }
-assert(chapter.includes("<WorldApproachDeepDive chapter={deep} slug={lesson.slug} />"),
+assert(chapter.includes("<WorldApproachDeepDive chapter={deep} cue={data.cue} />"),
   "Deep clinical encyclopedia chapters must actually render on each approach page");
 const longChapterComponent = content("src/components/manual-therapy/WorldApproachDeepDive.tsx");
 assert(longChapterComponent.includes('data-pna-world-depth="full-chapter-v2"') &&

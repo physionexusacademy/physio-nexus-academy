@@ -1,16 +1,17 @@
 import { ClipboardCheck, Gauge, ShieldAlert, ShieldCheck } from "lucide-react";
-import { DEPTH_NOTE, getTechniqueDepth } from "@/lib/manual-therapy-depth";
+import { DEPTH_NOTE } from "@/lib/manual-therapy-depth-types";
+import type { ChapterData } from "@/lib/manual-therapy-chapter-types";
 import { EditorialBlock } from "@/components/manual-therapy/EditorialBlock";
 import TechniqueDemo2D from "@/components/manual-therapy/TechniqueDemo2D";
 import { Ur } from "@/components/Ur";
 import { DemoLab } from "@/components/manual-therapy/DemoLab";
-import { ComponentsSection, demoCaptions } from "@/components/manual-therapy/ChapterExtras";
+import { ComponentsSection } from "@/components/manual-therapy/ChapterExtras";
 
-/** "See it in 2D" and "Expert depth" for one technique or world approach (nothing is rendered for a slug without depth data). */
-export function ExpertDepthSections({ slug, name }: { slug: string; name: string }) {
-  const depth = getTechniqueDepth(slug);
+/** "See it in 2D" and "Expert depth" for one technique or world approach (nothing is rendered for a chapter without depth data). */
+export function ExpertDepthSections({ data, name }: { data: Pick<ChapterData, "depth" | "components" | "captions">; name: string }) {
+  const depth = data.depth;
   if (!depth) return null;
-  const captions = demoCaptions(slug);
+  const captions = data.captions;
   const own = captions.en.length >= 3;
   const sentences = (text: string) => text.split(/\.\s+/).map((part) => part.trim().replace(/\.$/, "")).filter((part) => part.length > 8).map((part) => part + ".");
   const how = sentences(depth.why).slice(0, 6);
@@ -18,7 +19,7 @@ export function ExpertDepthSections({ slug, name }: { slug: string; name: string
   const labData = { how: how.length ? how : [depth.why], parameters: depth.parameters, measure: depth.measure, choose: depth.choose, screen: depth.screen, pitfalls: depth.pitfalls, ladder: ladder.length ? ladder : [depth.progress] };
   return (
     <>
-      <ComponentsSection slug={slug} name={name} />
+      <ComponentsSection components={data.components} name={name} demo={depth.demo} />
       <section id="demo" className="mt-12 scroll-mt-28" aria-labelledby="demo-heading">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700"><Ur en="See it in 2D" ur="2D mein dekhein" /></p>
         <h2 id="demo-heading" className="mt-2 font-serif text-2xl font-bold text-slate-900 sm:text-3xl">

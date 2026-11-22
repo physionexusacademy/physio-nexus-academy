@@ -5,19 +5,18 @@ import {
 import { worldManualApproaches, type WorldManualApproach } from "@/lib/manual-therapy-world";
 import { WorldApproachChallenge } from "@/components/manual-therapy/WorldApproachChallenge";
 import { WorldApproachDeepDive } from "@/components/manual-therapy/WorldApproachDeepDive";
-import { worldManualDeepChapters } from "@/lib/manual-therapy-world-depth";
 import { MasteryGuide } from "@/components/manual-therapy/MasteryGuide";
-import { getMasteryGuide } from "@/lib/manual-therapy-mastery";
+import type { ChapterData } from "@/lib/manual-therapy-chapter-types";
 import { TechniqueReadingNav } from "@/components/manual-therapy/TechniqueReadingNav";
 import { TechniqueTeacher } from "@/components/teacher/TechniqueTeacher";
 import { ExpertDepthSections } from "@/components/manual-therapy/ExpertDepthSections";
 import { UrduGuideSection } from "@/components/manual-therapy/ChapterExtras";
 
 /** Shared full chapter for the unified Manual Therapy Encyclopedia. */
-export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }) {
+export function WorldApproachChapter({ lesson, data }: { lesson: WorldManualApproach; data: ChapterData }) {
   const next = worldManualApproaches[(worldManualApproaches.findIndex((x) => x.slug === lesson.slug) + 1) % worldManualApproaches.length];
-  const deep = worldManualDeepChapters[lesson.slug];
-  const mastery = getMasteryGuide(lesson.slug);
+  const deep = data.worldDeep;
+  const mastery = data.mastery;
 
   return (
     <main data-pna-world-final="v1" className="container-content section-padding">
@@ -42,7 +41,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
       <TechniqueTeacher slug={lesson.slug} />
 
       {/* The whole chapter theory in Roman Urdu (only when the visitor picked Roman Urdu) */}
-      <UrduGuideSection slug={lesson.slug} name={lesson.title} />
+      <UrduGuideSection urdu={data.urdu} name={lesson.title} />
 
       {/* Sticky nav */}
       <div className="mt-6">
@@ -51,11 +50,11 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
 
       {/* 1. Mastery */}
       <div id="mastery">
-        <MasteryGuide slug={lesson.slug} />
+        <MasteryGuide guide={data.mastery} />
       </div>
 
       {/* 2D demonstration and expert depth */}
-      <ExpertDepthSections slug={lesson.slug} name={lesson.title} />
+      <ExpertDepthSections data={data} name={lesson.title} />
 
       {/* Optional story - collapsed */}
       <details data-pna-world-story="v1" className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/50">
@@ -134,7 +133,7 @@ export function WorldApproachChapter({ lesson }: { lesson: WorldManualApproach }
             Go deeper · Full chapter with extra cases and clinical reasoning (optional)
           </summary>
           <div className="border-t border-slate-100 p-2 sm:p-4">
-            <WorldApproachDeepDive chapter={deep} slug={lesson.slug} />
+            <WorldApproachDeepDive chapter={deep} cue={data.cue} />
           </div>
         </details>
       ) : null}

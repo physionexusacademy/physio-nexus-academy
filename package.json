@@ -18,6 +18,8 @@
     "validate:teacher": "node --experimental-strip-types scripts/validate-pna-teacher.ts",
     "build:avatar-data": "node scripts/build-avatar-data.mjs",
     "validate:avatar": "node scripts/validate-avatar.mjs",
+    "build:manual-therapy-data": "node scripts/build-manual-therapy-data.mjs",
+    "validate:manual-therapy-data": "node scripts/validate-manual-therapy-data.mjs",
     "build:teacher-data": "node --experimental-strip-types scripts/build-teacher-data.ts",
     "validate:ai": "node scripts/validate-pna-ai.mjs",
     "validate:ai-explain": "node --experimental-strip-types scripts/validate-pna-ai-explain.ts",
