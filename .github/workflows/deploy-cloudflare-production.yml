@@ -90,6 +90,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:teacher
 
+      - name: Validate the Form Check engine (pixel geometry, smoothing, repetition and hold counting, set-up check, cue wording rules)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:formcheck
+
       - name: Validate Manual Therapy chapter data (static files fresh, plain JSON, no chapter text reachable from the worker)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:manual-therapy-data
