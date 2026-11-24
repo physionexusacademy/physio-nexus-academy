@@ -23,6 +23,7 @@
 import openNextWorker from "./.open-next/worker.js";
 import { runReminderJob, type ReminderEnv } from "./src/lib/reminders/job";
 import { backupRobotsTxt, isBackupHost, withBackupHeaders } from "./src/lib/host-policy";
+import { gateRequest, type GateEnv } from "./src/lib/members/worker-gate";
 // @ts-ignore — re-exported so Wrangler still finds OpenNext's Durable Object classes
 export { DOQueueHandler, DOShardedTagCache, BucketCachePurge } from "./.open-next/worker.js";
 
@@ -91,6 +92,9 @@ export default {
 };
 
 async function handle(request: Request, url: URL, env: unknown, ctx: Ctx): Promise<Response> {
+  // members-only mode (switched in Admin > Members access): before any cache or page, anyone who is not an approved member is sent to sign in
+  const gated = await gateRequest(request, (env ?? {}) as GateEnv);
+  if (gated) return gated;
   const edgeCache = (globalThis as unknown as { caches?: { default?: Cache } }).caches?.default;
   if (!edgeCache || !cacheable(request, url)) return worker.fetch(request, env, ctx);
 

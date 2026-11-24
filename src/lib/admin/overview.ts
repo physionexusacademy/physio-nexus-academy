@@ -65,7 +65,15 @@ export async function getAdminCounts(): Promise<AdminCounts> {
     waiting("book_orders"),
     waiting("contact_messages"),
   ]);
-  return { appointments: appointments.count, homeVisits: homeVisits.count, orders: orders.count, messages: messages.count };
+  // people waiting for access to the members-only website; zero (quietly) until the members migration exists
+  let members = 0;
+  try {
+    const result = await db.from("site_members").select("user_id", { count: "exact", head: true }).eq("status", "pending");
+    members = result.error ? 0 : result.count ?? 0;
+  } catch {
+    members = 0;
+  }
+  return { appointments: appointments.count, homeVisits: homeVisits.count, orders: orders.count, messages: messages.count, members };
 }
 
 export async function getAdminOverview(): Promise<AdminOverview> {
@@ -135,7 +143,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
 
   const checks = [cAppointments, cHomeVisits, cOrders, cMessages, tWorkshops, tResources];
   return {
-    counts: { appointments: cAppointments.count, homeVisits: cHomeVisits.count, orders: cOrders.count, messages: cMessages.count },
+    counts: { appointments: cAppointments.count, homeVisits: cHomeVisits.count, orders: cOrders.count, messages: cMessages.count, members: 0 }, // (the sidebar badge for waiting members comes from getAdminCounts)
     totals: { workshops: tWorkshops.count, resources: tResources.count, certificates: tCertificates.count, registrations: tRegistrations.count },
     attention,
     workshops: upcoming.value.map((r) => ({ id: str(r.id), title: str(r.title), city: str(r.city) || null, startDate: str(r.start_date) || null, status: str(r.status) || null })),

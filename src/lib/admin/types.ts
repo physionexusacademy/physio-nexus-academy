@@ -5,4 +5,6 @@ export type AdminCounts = {
   homeVisits: number;
   orders: number;
   messages: number;
+  /** People waiting for access to the members-only website (zero until the members migration exists). */
+  members: number;
 };
