@@ -47,6 +47,8 @@
     "validate:outcomes": "node --experimental-strip-types scripts/validate-outcomes.ts",
     "validate:research-room": "node --experimental-strip-types scripts/validate-research-room.ts",
     "validate:research-room-db": "node scripts/validate-research-room-db.mjs",
+    "validate:site-members": "node --experimental-strip-types scripts/validate-site-members.ts",
+    "validate:site-members-db": "node scripts/validate-site-members-db.mjs",
     "validate:board-research": "node --experimental-strip-types scripts/validate-board-research.ts",
     "validate:rehabverse-ai": "node --experimental-strip-types scripts/validate-rehabverse-ai.ts",
     "validate:rehabverse-brief": "node --experimental-strip-types scripts/validate-rehabverse-brief.ts",

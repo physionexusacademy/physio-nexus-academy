@@ -12,6 +12,7 @@ import {
   Settings,
   FileBadge2,
   HeartPulse,
+  UserCheck,
   type LucideIcon,
 } from "lucide-react";
 import type { AdminCounts } from "./types";
@@ -70,6 +71,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     label: "Inbox & system",
     items: [
       { label: "Messages", href: "/admin/messages", icon: Inbox, blurb: "Messages from the contact form", badge: "messages", keywords: "contact inbox email" },
+      { label: "Members access", href: "/admin/members", icon: UserCheck, blurb: "Approve who can enter the website; turn members-only mode on or off", badge: "members", keywords: "members approve access login register users students approval" },
       { label: "Site Settings", href: "/admin/settings", icon: Settings, blurb: "Contact details, founder profile and site text", keywords: "settings founder branding" },
     ],
   },
@@ -77,4 +79,4 @@ export const ADMIN_NAV: AdminNavGroup[] = [
 
 export const ADMIN_NAV_FLAT: AdminNavItem[] = ADMIN_NAV.flatMap((group) => group.items);
 
-export const totalWaiting = (counts: AdminCounts) => counts.appointments + counts.homeVisits + counts.orders + counts.messages;
+export const totalWaiting = (counts: AdminCounts) => counts.appointments + counts.homeVisits + counts.orders + counts.messages + counts.members;
