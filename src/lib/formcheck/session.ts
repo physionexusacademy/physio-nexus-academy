@@ -2,6 +2,7 @@ import { assessAlignment, type Alignment } from "./alignment.ts";
 import { Calibrator } from "./calibrate.ts";
 import { CueEngine, type CueEvent, type CueReading } from "./cues.ts";
 import { OneEuroFilter } from "./filter.ts";
+import { computeGhost, type Ghost } from "./ghost.ts";
 import { GLITCH_FLOOR, HampelGuard } from "./guard.ts";
 import { nearSide, needsHead, readMetric, type Side } from "./geometry.ts";
 import { STATUS_MESSAGES, SETUP_MESSAGES } from "./messages.ts";
@@ -28,6 +29,8 @@ export type SessionOptions = {
   minVisibility?: number;
   /** reject one-frame glitches of the pose model before smoothing (default true; switched off only to measure what the guard is worth) */
   guard?: boolean;
+  /** work out the ghost pose of the exercise's target for every picture (the screen draws it; the tests that play thousands of pictures leave it off) */
+  ghost?: boolean;
 };
 export type MetricReading = { raw: number; change: number; confidence: number };
 export type SessionState = {
@@ -52,6 +55,10 @@ export type SessionState = {
   readings: Record<string, MetricReading | null>;
   /** the alignment screen (set-up and neutral position only; null while a set is running) */
   alignment: Alignment | null;
+  /** where the moving part of the body has to be for the exercise's measurement to read its target (one ghost, or one each way); null when there is none or it cannot be seen */
+  ghost: Ghost[] | null;
+  /** the hold the exercise asks for at the target, ms, or 0 */
+  holdTargetMs: number;
 };
 export type SessionSummary = {
   specId: string;
@@ -72,9 +79,16 @@ export type SessionSummary = {
   limits: Bi;
   /** one-frame glitches of the pose model that were ignored (a measure of how steady the tracking was) */
   glitches: number;
+  /** the set began before the person had kept still (they started exercising at once): the neutral position was taken from their first readings */
+  forcedStart: boolean;
 };
 
 const SETUP_OK_MS = 600;
+/** a brief loss of a good set-up (one picture, a blink of the tracking) does not restart the wait */
+const SETUP_GRACE_MS = 300;
+/** a person who starts exercising at once never keeps still: after this long in the neutral-position step the set begins from their first readings */
+const CAL_MAX_MS = 2500;
+const PENDING_KEEP = 240;
 const LOST_MS = 1500;
 const BACK_MS = 400;
 const REACH_ENTER = 0.7;
@@ -88,6 +102,9 @@ export class FormCheckSession {
   private readonly face: boolean;
   private readonly minVisibility: number;
   private readonly useGuard: boolean;
+  private readonly useGhost: boolean;
+  private ghosts: Ghost[] | null = null;
+  private ghostFrame = 0;
   private guards = new Map<string, HampelGuard>();
   private readonly metrics: Metric[];
   private readonly need: CameraSpec["need"];
@@ -105,6 +122,11 @@ export class FormCheckSession {
   private timer: HoldTimer | null = null;
   private cues: CueEngine;
   private okSince: number | null = null;
+  private okLostAt: number | null = null;
+  private calStartT: number | null = null;
+  /** the frames of the neutral-position step, replayed into the set once it begins so that nothing the person did meanwhile is lost */
+  private pending: Frame[] = [];
+  private forcedStart = false;
   private lostSince: number | null = null;
   private backSince: number | null = null;
   private paused = false;
@@ -126,6 +148,7 @@ export class FormCheckSession {
     this.face = options.face ?? false;
     this.minVisibility = options.minVisibility ?? 0.5;
     this.useGuard = options.guard ?? true;
+    this.useGhost = options.ghost ?? false;
     const second = this.pass === 2 ? spec.second : undefined;
     if (this.pass === 2 && !second) throw new Error(`${spec.id} has no second pass`);
     this.metrics = (second?.metrics ?? spec.metrics).filter((m) => !needsHead(m) || this.face);
@@ -160,7 +183,7 @@ export class FormCheckSession {
   }
 
   private blank(): SessionState {
-    return { phase: this.phase, hint: null, setup: null, calibration: 0, tracking: false, progress: 0, reps: 0, partial: 0, holdMs: 0, primary: null, cue: null, readings: {}, alignment: null };
+    return { phase: this.phase, hint: null, setup: null, calibration: 0, tracking: false, progress: 0, reps: 0, partial: 0, holdMs: 0, primary: null, cue: null, readings: {}, alignment: null, ghost: null, holdTargetMs: 0 };
   }
 
   get state(): SessionState {
@@ -174,8 +197,13 @@ export class FormCheckSession {
     this.baseline = null;
     this.phase = "setup";
     this.okSince = null;
+    this.okLostAt = null;
+    this.calStartT = null;
+    this.pending = [];
+    this.forcedStart = false;
     this.filters.clear();
     this.guards.clear();
+    this.ghosts = null;
     this.counter = null;
     this.timer = null;
     this.cues.reset();
@@ -190,9 +218,16 @@ export class FormCheckSession {
 
     if (this.phase === "setup") {
       const setup = assessSetup(frame, { need: this.need, view: this.view, tested: this.tested, minVisibility: this.minVisibility, size: this.size });
-      this.okSince = setup.ok ? (this.okSince ?? frame.t) : null;
+      if (setup.ok) this.calibrator.observe(frame);
+      if (setup.ok) { this.okSince ??= frame.t; this.okLostAt = null; }
+      else if (this.okSince !== null) { this.okLostAt ??= frame.t; if (frame.t - this.okLostAt > SETUP_GRACE_MS) { this.okSince = null; this.okLostAt = null; } }
+      // the good frames of the set-up are kept from the first one, and replayed into the set when it begins: a person who starts at once has already made part of a repetition
+      // by the time the set-up check is satisfied
+      if (this.okSince === null) this.pending = [];
+      else if (setup.ok) { this.pending.push(frame); if (this.pending.length > PENDING_KEEP) this.pending.shift(); }
       if (setup.ok && frame.t - (this.okSince ?? frame.t) >= SETUP_OK_MS) {
         this.phase = "calibrating";
+        this.calStartT = frame.t;
         this.current = { ...this.blank(), phase: "calibrating", setup, hint: STATUS_MESSAGES.calibrating, alignment: assessAlignment(frame, { need: this.need, view: this.view, tested: this.tested, minVisibility: this.minVisibility, size: this.size }, 0) };
         return this.current;
       }
@@ -203,13 +238,23 @@ export class FormCheckSession {
     }
 
     if (this.phase === "calibrating") {
-      const step = this.calibrator.push(frame);
+      this.pending.push(frame);
+      if (this.pending.length > PENDING_KEEP) this.pending.shift();
+      let step = this.calibrator.push(frame);
+      // a person who starts exercising at once never keeps still: the set begins from their first readings, and everything they did meanwhile is counted
+      if (!step.done && this.calStartT !== null && frame.t - this.calStartT >= CAL_MAX_MS) {
+        const forced = this.calibrator.force();
+        if (forced) { step = forced; this.forcedStart = true; }
+      }
       if (step.done && step.baseline) {
         this.baseline = step.baseline;
         this.phase = "active";
-        this.startT = frame.t;
-        this.buildCounters();
-        this.current = { ...this.blank(), phase: "active", calibration: 1, hint: STATUS_MESSAGES.ready };
+        this.startT = this.pending[0]?.t ?? frame.t;
+        this.buildCounters(step.noise);
+        const replay = this.pending;
+        this.pending = [];
+        for (const past of replay) this.active(past, nearSide(past), true);
+        this.current = { ...this.current, hint: this.forcedStart ? null : STATUS_MESSAGES.ready };
         return this.current;
       }
       const alignment = assessAlignment(frame, { need: this.need, view: this.view, tested: this.tested, minVisibility: this.minVisibility, size: this.size }, step.progress);
@@ -220,10 +265,12 @@ export class FormCheckSession {
     return this.active(frame, side);
   }
 
-  private buildCounters() {
+  private buildCounters(noise?: Record<string, number>) {
     const p = this.primary;
     if (!p) return;
-    if (p.mode === "reps") this.counter = new RepCounter({ rest: p.rest, target: p.target, holdMs: p.holdMs });
+    // the counter asks for movements several times larger than the jitter measured in the neutral position (the smoothing takes about half of it away)
+    const sigma = noise?.[p.metric];
+    if (p.mode === "reps") this.counter = new RepCounter({ rest: p.rest, target: p.target, holdMs: p.holdMs, noise: sigma === undefined ? undefined : 0.5 * sigma });
     else this.timer = new HoldTimer();
   }
 
@@ -232,7 +279,10 @@ export class FormCheckSession {
     if (!this.useGuard) return value;
     let guard = this.guards.get(metric.id);
     if (!guard) {
-      guard = new HampelGuard(metric.kind === "offset" || metric.kind === "dist" ? GLITCH_FLOOR.ratio : GLITCH_FLOOR.angle);
+      const base = metric.kind === "offset" || metric.kind === "dist" ? GLITCH_FLOOR.ratio : GLITCH_FLOOR.angle;
+      // the movement that is counted has a range of its own (a chin tuck is 0.03 of a trunk length): a glitch is anything a third of that range out, never more than the usual floor
+      const span = this.primary && metric.id === this.primary.metric ? Math.abs(this.primary.target - this.primary.rest) : Number.POSITIVE_INFINITY;
+      guard = new HampelGuard(Math.min(base, 0.3 * span));
       this.guards.set(metric.id, guard);
     }
     return guard.push(value).value;
@@ -248,7 +298,8 @@ export class FormCheckSession {
     return entry.filter.filter(value, t);
   }
 
-  private active(frame: Frame, side: Side): SessionState {
+  /** `quiet`: the frame is being replayed from the neutral-position step: it counts, but gives no cue (the moment has passed). */
+  private active(frame: Frame, side: Side, quiet = false): SessionState {
     const t = frame.t;
     const baseline = this.baseline ?? {};
     this.frames += 1;
@@ -311,11 +362,19 @@ export class FormCheckSession {
       this.read += 1;
     }
 
-    const started = this.cues.push(this.paused ? {} : cueReadings, t);
-    if (started) { this.cueLog.push({ id: started.id, t }); if (this.cueLog.length > 200) this.cueLog.shift(); }
-    const cue = this.cues.active(t);
+    let cue: CueEvent | null = null;
+    if (!quiet) {
+      const started = this.cues.push(this.paused ? {} : cueReadings, t);
+      if (started) { this.cueLog.push({ id: started.id, t }); if (this.cueLog.length > 200) this.cueLog.shift(); }
+      cue = this.cues.active(t);
+    }
     const counter = this.counter?.state();
     const per = p?.movementsPerRep ?? 1;
+    // the ghost is made fresh from the person's pose, every other picture (it follows them, and costs next to nothing)
+    if (this.useGhost && !quiet) {
+      if (this.paused || blocking.length) this.ghosts = null;
+      else if (this.ghostFrame++ % 2 === 0) this.ghosts = computeGhost(this.spec, frame, baseline, { tested: this.tested, minVisibility: this.minVisibility });
+    }
     this.current = {
       phase: "active",
       hint: this.paused ? STATUS_MESSAGES.paused : blocking.length ? STATUS_MESSAGES.lost : null,
@@ -323,13 +382,15 @@ export class FormCheckSession {
       calibration: 1,
       tracking,
       progress,
-      reps: counter ? Math.floor(counter.reps / per) : 0,
+      reps: counter ? Math.round(counter.reps / per) : 0,
       partial: counter?.partial ?? 0,
       holdMs,
       primary: primaryReading,
       cue,
       readings,
       alignment: null,
+      ghost: this.useGhost ? this.ghosts : null,
+      holdTargetMs: p?.holdMs ?? 0,
     };
     return this.current;
   }
@@ -365,7 +426,7 @@ export class FormCheckSession {
       specId: this.spec.id,
       pass: this.pass,
       durationMs: this.startT === null ? 0 : Math.max(0, t - this.startT),
-      reps: counter ? Math.floor(counter.reps / per) : 0,
+      reps: counter ? Math.round(counter.reps / per) : 0,
       partial: counter?.partial ?? 0,
       records: counter?.records ?? [],
       bestHoldMs: this.best,
@@ -376,6 +437,7 @@ export class FormCheckSession {
       peak: { ...this.peaks },
       limits: this.spec.limits,
       glitches: [...this.guards.values()].reduce((n, g) => n + g.rejected, 0),
+      forcedStart: this.forcedStart,
     };
   }
 }

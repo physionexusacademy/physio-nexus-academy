@@ -93,8 +93,9 @@ const ok = (condition: unknown, message: string) => { checks++; assert(condition
   const byDefault = trial("chin-tuck", NORMAL, 1007);
   const switchedOff = trial("chin-tuck", NORMAL, 1007, false);
   ok(byDefault.glitches > 0 && switchedOff.glitches === 0, `a session made without options ignores glitches (${byDefault.glitches} ignored; none when switched off)`);
-  const harsh = score("chin-tuck", HARSH, true, TRIALS);
-  ok(harsh.exact >= TRIALS * 0.85, `chin tuck: even with ten times the measured jitter and frequent glitches, most sets are counted exactly (${harsh.exact}/${harsh.trials})`);
+  const harsh = Array.from({ length: TRIALS }, (_, i) => trial("chin-tuck", HARSH, 1000 + (i + 1) * 7).reps);
+  const within = harsh.filter((c) => Math.abs(c - 5) <= 1).length;
+  ok(within >= TRIALS * 0.9, `chin tuck: even with ten times the measured jitter and frequent glitches, nine sets in ten are within one repetition of five (${within}/${TRIALS}; exact counts are in validate-formcheck-reps.ts)`);
 }
 
 /* 5. a slow phone: fewer pictures a second must not stop the neutral position or the counting */

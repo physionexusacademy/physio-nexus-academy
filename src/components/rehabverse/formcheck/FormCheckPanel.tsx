@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Camera, CheckCircle2, EyeOff, RotateCcw, Square, Video } from "lucide-react";
+import { AlertTriangle, Camera, CheckCircle2, EyeOff, Ghost, RotateCcw, Square, Video } from "lucide-react";
 import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, specFor, type CameraSpec, type Side } from "@/lib/formcheck";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
@@ -55,8 +55,9 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
   const [side, setSide] = useState<Side | undefined>(initialSide);
   const [pass, setPass] = useState<1 | 2>(1);
   const [simple, setSimple] = useState(false);
+  const [showGhost, setShowGhost] = useState(true);
   const [facing, setFacing] = useState<"user" | "environment">("user");
-  const fc = useFormCheck(spec, { tested: side, pass, simple, facing });
+  const fc = useFormCheck(spec, { tested: side, pass, simple, facing, ghost: showGhost });
   const phone = usePhoneLevel();
   const { voice, speaking } = useVoice();
   const placement = pass === 2 && spec.second ? spec.second.placement : spec.placement;
@@ -161,7 +162,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
                   ) : (
                     <b className="font-heading text-3xl text-navy-800" data-pna-formcheck-hold>{seconds(state.holdMs)}<span className="text-lg text-slate-400"> s{targetHoldSeconds ? ` / ${targetHoldSeconds}` : ""}</span></b>
                   )}
-                  <span className="block text-[11.5px] font-semibold text-slate-500">{isReps ? <T en="repetitions" ru="repetitions" /> : <T en="time held" ru="waqt" />}{isReps && state.partial ? <> · {state.partial} <T en="partial" ru="adhoori" /></> : null}</span>
+                  <span className="block text-[11.5px] font-semibold text-slate-500">{isReps ? <T en="repetitions" ru="repetitions" /> : <T en="time held" ru="waqt" />}{isReps && state.partial ? <> · {state.partial} <T en="shallower than the target" ru="target se kam range" /></> : null}</span>
                 </div>
               </div>
             ) : null}
@@ -169,6 +170,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
             <div className="flex flex-wrap gap-2">
               <button type="button" className="rv-btn rv-btn-primary" onClick={() => { fc.stop(); phone.stop(); }} data-pna-formcheck-stop><Square className="h-4 w-4" aria-hidden="true" /> <T en="Finish" ru="Khatam" /></button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setSimple(!simple)} aria-pressed={simple}><EyeOff className="h-4 w-4" aria-hidden="true" /> <T en="Simple view" ru="Saada view" /></button>
+              <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setShowGhost(!showGhost)} aria-pressed={showGhost} data-pna-formcheck-ghost-toggle><Ghost className="h-4 w-4" aria-hidden="true" /> {showGhost ? <T en="Hide the target" ru="Target chhupayein" /> : <T en="Show the target" ru="Target dikhayein" />}</button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => fc.recalibrate()}><RotateCcw className="h-4 w-4" aria-hidden="true" /> <T en="Start position again" ru="Shuruati position dobara" /></button>
             </div>
             <p className="text-[12.5px] text-slate-500">{STOP_IF_PAINFUL[lang]}</p>
@@ -181,7 +183,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
           <p className="flex items-center gap-2 font-bold text-teal-900"><CheckCircle2 className="h-5 w-5" aria-hidden="true" /> <T en="Set finished" ru="Set mukammal" /></p>
           <ul className="grid grid-cols-2 gap-2 text-[13.5px] sm:grid-cols-4">
             {pass === 1 ? (isReps
-              ? <><li className="rv-card"><b className="block text-xl">{fc.summary.reps}</b><T en="repetitions counted" ru="repetitions gini gayin" /></li><li className="rv-card"><b className="block text-xl">{fc.summary.partial}</b><T en="partial movements" ru="adhoori harkatein" /></li></>
+              ? <><li className="rv-card"><b className="block text-xl">{fc.summary.reps}</b><T en="repetitions counted" ru="repetitions gini gayin" /></li><li className="rv-card"><b className="block text-xl">{fc.summary.partial}</b><T en="of them shallower than the target range" ru="in mein se target se kam range ki" /></li></>
               : <li className="rv-card"><b className="block text-xl">{seconds(fc.summary.bestHoldMs)} s</b><T en="longest hold" ru="sab se lamba hold" /></li>) : null}
             <li className="rv-card"><b className="block text-xl">{Math.round(fc.summary.coverage.fraction * 100)}%</b><T en="of the time I could see you" ru="waqt jab aap nazar aa rahe the" /></li>
             {Object.keys(fc.summary.cues).length ? <li className="rv-card"><b className="block text-xl">{Object.values(fc.summary.cues).reduce((a, b) => a + b, 0)}</b><T en="tips given" ru="mashware diye gaye" /></li> : null}

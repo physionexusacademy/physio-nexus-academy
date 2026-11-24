@@ -22,7 +22,7 @@ const AMBER = "251, 191, 36";
 
 export type HudMemo = { box: { x0: number; y0: number; x1: number; y1: number } | null; reps: number; pulseAt: number; lock: number };
 export const createHudMemo = (): HudMemo => ({ box: null, reps: 0, pulseAt: -1e9, lock: 0 });
-export type HudOptions = { mirror: boolean; simple: boolean; reducedMotion: boolean; now: number; minVisibility?: number };
+export type HudOptions = { mirror: boolean; simple: boolean; reducedMotion: boolean; now: number; minVisibility?: number; /** draw the ghost of the target (default true) */ ghost?: boolean };
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 
@@ -125,6 +125,10 @@ export function drawHud(canvas: HTMLCanvasElement, state: SessionState | null, l
   memo.reps = state?.reps ?? 0;
   const pulse = options.reducedMotion ? 0 : clamp01(1 - (options.now - memo.pulseAt) / 600);
 
+  /* the ghost: where the moving part has to go. Dashed light-line figure for the part that moves, a target ring on the part the measurement reads, a dotted link to it, and the
+     ring fills while the hold is kept. Brightest for the direction the person is going (an either-way exercise has one ghost each way). */
+  if (state?.phase === "active" && state.ghost?.length && landmarks && options.ghost !== false) drawGhost(ctx, state, landmarks, options, { w, h, unit, fx, fy });
+
   /* the figure */
   if (!landmarks) return;
   const minV = options.minVisibility ?? 0.5;
@@ -152,5 +156,80 @@ export function drawHud(canvas: HTMLCanvasElement, state: SessionState | null, l
     ctx.beginPath(); ctx.arc(fx(p.x), fy(p.y), r * 2.3, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = `rgba(255, 255, 255, ${0.95 * alpha})`;
     ctx.beginPath(); ctx.arc(fx(p.x), fy(p.y), r, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+
+type Space = { w: number; h: number; unit: number; fx: (x: number) => number; fy: (y: number) => number };
+const GHOST_BONES = BONES;
+
+function drawGhost(ctx: CanvasRenderingContext2D, state: SessionState, landmarks: Landmark[], options: HudOptions, { unit, fx, fy }: Space) {
+  const ghosts = state.ghost!;
+  const reached = state.progress >= 0.95;
+  const near = state.progress >= 0.6;
+  const tone = reached ? "94, 234, 212" : near ? TEAL : CYAN;
+  // the ghost the person is heading for: the one whose target marker is nearest to where that body part is now
+  const here = (g: (typeof ghosts)[number]) => landmarks[g.main];
+  const gap = (g: (typeof ghosts)[number]) => { const a = here(g); const b = g.lm[g.main]; return a ? Math.hypot(a.x - b.x, a.y - b.y) : Number.POSITIVE_INFINITY; };
+  const chosen = ghosts.reduce((best, g) => (gap(g) < gap(best) ? g : best), ghosts[0]);
+  const pulse = options.reducedMotion ? 0.5 : 0.5 + 0.5 * Math.sin(options.now / 380);
+  const holdFraction = state.holdTargetMs > 0 ? clamp01(state.holdMs / state.holdTargetMs) : 0;
+
+  for (const g of ghosts) {
+    const lead = g === chosen;
+    const alpha = (lead ? 0.95 : 0.4) * (reached ? 1 : 0.75 + 0.2 * (1 - clamp01(state.progress)));
+    const moved = new Set(g.moved);
+    ctx.lineCap = "round";
+    // a dark line under the bright dashed one, so the ghost reads over a bright or busy picture (sea, sky, a white wall)
+    for (const pass of [0, 1]) {
+      ctx.setLineDash(pass === 0 ? [] : [8 * unit, 7 * unit]);
+      ctx.lineWidth = pass === 0 ? Math.max(4, 6 * unit) : Math.max(2.4, 3.6 * unit);
+      ctx.strokeStyle = pass === 0 ? `rgba(4, 18, 36, ${alpha * 0.45})` : `rgba(${tone}, ${Math.min(1, alpha * 1.05)})`;
+      for (const [a, b] of GHOST_BONES) {
+        if (!moved.has(a) && !moved.has(b)) continue;
+        const pa = g.lm[a], pb = g.lm[b];
+        if (!pa || !pb || (landmarks[a]?.v ?? 0) < 0.3 || (landmarks[b]?.v ?? 0) < 0.3) continue;
+        ctx.beginPath(); ctx.moveTo(fx(pa.x), fy(pa.y)); ctx.lineTo(fx(pb.x), fy(pb.y)); ctx.stroke();
+      }
+    }
+    ctx.setLineDash([]);
+    for (const i of g.moved) {
+      if (!NODES.includes(i)) continue;
+      const p = g.lm[i];
+      ctx.strokeStyle = `rgba(${tone}, ${alpha})`;
+      ctx.lineWidth = Math.max(1.6, 2 * unit);
+      ctx.beginPath(); ctx.arc(fx(p.x), fy(p.y), Math.max(3.4, 4.2 * unit), 0, Math.PI * 2); ctx.stroke();
+    }
+    // the target marker on the part the measurement reads
+    const t = g.lm[g.main];
+    const cx = fx(t.x), cy = fy(t.y);
+    const r = (21 + 4 * pulse * (lead && !reached ? 1 : 0)) * unit;
+    ctx.strokeStyle = `rgba(${tone}, ${alpha})`;
+    ctx.lineWidth = Math.max(2, 2.6 * unit);
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); // four ticks: a sight
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { ctx.moveTo(cx + dx * (r + 3 * unit), cy + dy * (r + 3 * unit)); ctx.lineTo(cx + dx * (r + 11 * unit), cy + dy * (r + 11 * unit)); }
+    ctx.stroke();
+    if (lead) {
+      // a dotted link from where the part is to where it should be
+      const now = landmarks[g.main];
+      if (now && now.v >= 0.3) {
+        ctx.setLineDash([2 * unit, 8 * unit]);
+        ctx.strokeStyle = `rgba(${tone}, ${alpha * 0.8})`;
+        ctx.lineWidth = Math.max(2, 3 * unit);
+        ctx.beginPath(); ctx.moveTo(fx(now.x), fy(now.y)); ctx.lineTo(cx, cy); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      if (reached) {
+        // reached: a solid ring, and while a hold is asked for it fills as the hold is kept
+        ctx.fillStyle = `rgba(${tone}, 0.18)`;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+        if (holdFraction > 0) {
+          ctx.strokeStyle = `rgba(255, 255, 255, 0.95)`;
+          ctx.lineWidth = Math.max(3, 4.2 * unit);
+          ctx.beginPath(); ctx.arc(cx, cy, r + 9 * unit, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * holdFraction); ctx.stroke();
+        }
+      }
+    }
   }
 }

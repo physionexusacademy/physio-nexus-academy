@@ -49,7 +49,7 @@ const firstActive = (states: SessionState[]) => states.findIndex((s) => s.phase 
 {
   const scene = seatedSide((t) => ({ earBack: 0.012 * cycles(t, 4000, 1000, 2000, 1000, 1500, 5) }));
   const { summary } = run("chin-tuck", scene, 720, 1280, 30);
-  ok(summary.reps === 0 && summary.partial >= 3, `a movement that does not reach the target is partial, never a repetition (${summary.reps} reps, ${summary.partial} partial)`);
+  ok(summary.reps === 5 && summary.partial === 5, `a movement that does not reach the target range is still counted, and reported as shallow (${summary.reps} reps, ${summary.partial} shallow)`);
 }
 // a person who leaves the picture in the middle of a repetition: no repetition is invented
 {
@@ -136,8 +136,25 @@ const firstActive = (states: SessionState[]) => states.findIndex((s) => s.phase 
   ok(tooFar.last.phase === "setup" && tooFar.last.hint === SETUP_MESSAGES.too_far, "a person who is too far from the phone is told to come closer and the set never starts");
   const dark = run("neck-side-bend", seatedFront(() => ({})), 720, 1280, 6, {}, { luma: 20 });
   ok(dark.last.phase === "setup" && dark.last.hint === SETUP_MESSAGES.too_dark, "a dark room is reported and the set never starts");
+  // a person who starts exercising at once (no time to keep still): the set begins from their first readings, flagged as forced, and what they did meanwhile is counted
   const fidget = run("neck-side-bend", seatedFront((t) => ({ tilt: 12 * Math.sin(t / 220) })), 720, 1280, 10);
-  ok(fidget.last.phase === "calibrating" && fidget.summary.reps === 0, "a person who keeps moving never gets a neutral position taken, so nothing is counted");
+  ok(fidget.last.phase === "active" && fidget.summary.forcedStart && fidget.summary.reps >= 5, `a person who keeps moving from the start is counted, not ignored (${fidget.summary.reps} reps, started from the first readings)`);
+}
+
+/* 7b. the reports that led to the redesign: a person who starts at once, a weaker side, repetitions that flow into each other */
+{
+  // five side bends of 25 degrees, the first one beginning at once (no still time), no hold needed to be counted
+  const atOnce = (n: number, amp: (i: number) => number, period = 2600) => seatedFront((t) => { const i = Math.floor(t / period); return { tilt: i >= n ? 0 : amp(i) * (0.5 - 0.5 * Math.cos((2 * Math.PI * (t % period)) / period)) }; });
+  const a = run("neck-side-bend", atOnce(5, () => 25), 720, 1280, 5 * 2.6 + 3);
+  ok(a.summary.forcedStart && a.summary.reps === 5, `five side bends that begin at once are counted as five (${a.summary.reps}, forced start ${a.summary.forcedStart})`);
+  // 25 repetitions, every second one reaching only 55% of the range (the other side is stiffer): all of them are counted, the shallow ones are reported
+  const b = run("neck-side-bend", atOnce(25, (i) => (i % 2 ? 11 : 25), 1800), 720, 1280, 25 * 1.8 + 3);
+  const peaks = b.summary.records.map((r) => r.peak);
+  const strong = peaks.filter((_, i) => i % 2 === 0).sort((x, y) => x - y)[6]; const weak = peaks.filter((_, i) => i % 2 === 1).sort((x, y) => x - y)[6];
+  ok(b.summary.reps === 25 && strong / weak > 1.6, `25 repetitions with a stiffer side are all counted, and the shallower side's range is recorded as shallower (${b.summary.reps} reps; typical peak ${strong.toFixed(1)} against ${weak.toFixed(1)})`);
+  // after a still start the usual way works as before, with the neutral position taken from stillness (not forced)
+  const c = run("neck-side-bend", seatedFront((t) => { const u = t - 4000; const i = Math.floor(u / 2200); return { tilt: u < 0 || i >= 5 ? 0 : 25 * (0.5 - 0.5 * Math.cos((2 * Math.PI * (u % 2200)) / 2200)) }; }), 720, 1280, 20);
+  ok(!c.summary.forcedStart && c.summary.reps === 5, `a person who keeps still first gets the neutral position taken from stillness and five of five counted (${c.summary.reps}, forced ${c.summary.forcedStart})`);
 }
 
 /* 8. every spec can be started: the metrics of each exercise read from a body that has all the landmarks it needs */

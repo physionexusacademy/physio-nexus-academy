@@ -14,7 +14,7 @@ import type { SoftwareRecord } from "@/lib/formcheck/version";
  */
 export type FormCheckStatus = "idle" | "loading" | "live" | "error" | "finished";
 export type FormCheckProblem = CameraProblem | "model";
-export type FormCheckOptions = { tested?: Side; pass?: 1 | 2; facing?: "user" | "environment"; simple?: boolean };
+export type FormCheckOptions = { tested?: Side; pass?: 1 | 2; facing?: "user" | "environment"; simple?: boolean; /** draw the target ghost (the session always works it out) */ ghost?: boolean };
 
 export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -73,7 +73,7 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
     setSoftware(runtime.software);
     const canvas = canvasRef.current;
     if (canvas) { canvas.width = opened.camera.width; canvas.height = opened.camera.height; }
-    const session = new FormCheckSession(spec, { tested: optionsRef.current.tested, pass: optionsRef.current.pass ?? 1, face: !!spec.needFace });
+    const session = new FormCheckSession(spec, { tested: optionsRef.current.tested, pass: optionsRef.current.pass ?? 1, face: !!spec.needFace, ghost: true });
     sessionRef.current = session;
     loopRef.current = { stop: false };
     shown.current = { phase: "", hint: "", cue: "", reps: -1, tick: 0 };
@@ -93,7 +93,7 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
         try {
           const { frame, landmarks } = runtimeRef.current.detect(video, media);
           const next = session.push(frame);
-          if (canvasRef.current) drawHud(canvasRef.current, next, landmarks, { mirror, simple: optionsRef.current.simple ?? false, reducedMotion: motionReduced(), now: performance.now() }, hudRef.current);
+          if (canvasRef.current) drawHud(canvasRef.current, next, landmarks, { mirror, simple: optionsRef.current.simple ?? false, reducedMotion: motionReduced(), now: performance.now(), ghost: optionsRef.current.ghost !== false }, hudRef.current);
           const mark = shown.current;
           const hint = next.hint?.en ?? "";
           const cue = next.cue?.id ?? "";
