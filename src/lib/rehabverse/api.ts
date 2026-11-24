@@ -69,3 +69,10 @@ export const getAdminFormCheckSets = (patientId: string) => rpc<AdminFormCheckSe
 export const getAdminOutcomes = (patientId: string) => rpc<AdminOutcomes>("rehab_admin_outcomes", { p_patient_id: patientId });
 
 export const getBoard = () => rpc<BoardRow[]>("rehab_admin_board");
+
+/* ───────── Research Room (the database functions refuse anyone who is not staff) ───────── */
+import type { StudyLog, StudyOverview, StudyPatient, StudyQueue } from "@/lib/research-room";
+export const getStudyOverview = () => rpc<StudyOverview>("rehab_admin_study_overview");
+export const getStudyQueue = () => rpc<StudyQueue>("rehab_admin_study_queue");
+export const getStudyLog = () => rpc<StudyLog>("rehab_admin_study_log");
+export const getStudyPatient = (patientId: string) => rpc<StudyPatient>("rehab_admin_study_patient", { p_patient_id: patientId });

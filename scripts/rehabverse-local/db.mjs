@@ -50,6 +50,8 @@ export async function createDb({ dataDir } = {}) {
   if (!hasBoard) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261129120000_rehab_board_research.sql"), "utf8"));
   const hasFormcheck = await db.query("select to_regclass('public.rehab_formcheck_sets') as t").then((r) => r.rows[0].t);
   if (!hasFormcheck) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261201120000_rehab_formcheck.sql"), "utf8"));
+  const hasResearchRoom = await db.query("select to_regclass('public.rehab_studies') as t").then((r) => r.rows[0].t);
+  if (!hasResearchRoom) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261202120000_rehab_research_room.sql"), "utf8"));
   return db;
 }
 
