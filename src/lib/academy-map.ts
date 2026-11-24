@@ -108,6 +108,7 @@ export const popularLessons: AcademyPlace[] = [
 /** Each Skills Lab skill, so search and the command palette can jump straight to it. */
 export const skillPlaces: AcademyPlace[] = [
   { label: "Manual Muscle Testing (MMT)", href: "/skills/manual-muscle-testing", description: "Skills Lab · grades 0–5, 46 tests", icon: "skills", keywords: "mmt muscle strength grading oxford daniels kendall" },
+  { label: "Special Tests — Upper & Lower Limb", href: "/skills/special-tests", description: "Skills Lab · 55 tests, shoulder to ankle", icon: "skills", keywords: "special tests orthopaedic shoulder elbow wrist hip knee ankle lachman mcmurray neer hawkins phalen thompson ottawa fadir faber trendelenburg" },
   { label: "Goniometry", href: "/skills/goniometry", description: "Skills Lab · ROM measurement", icon: "skills", keywords: "rom range of motion goniometer measurement joint angle" },
   { label: "Dermatomes & Sensory Testing", href: "/skills/dermatomes", description: "Skills Lab · key sensory points", icon: "skills", keywords: "dermatome sensation light touch pinprick asia isncsci" },
   { label: "Myotomes", href: "/skills/myotomes", description: "Skills Lab · root motor testing", icon: "skills", keywords: "myotome root weakness key muscles asia" },

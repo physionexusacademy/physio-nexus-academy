@@ -35,6 +35,7 @@ const C = {
 export const SKILL_CASES: Record<string, VpCaseLink[]> = {
   "manual-muscle-testing": [C.cuff, C.radial, C.hip, C.l5],
   goniometry: [C.frozen, C.hip, C.oa],
+  "special-tests": [C.cuff, C.acl, C.ankle, C.cts, C.achilles, C.elbow, C.heel, C.hip, C.ulnar],
   dermatomes: [C.l5, C.c6, C.diabetic, C.cauda],
   myotomes: [C.l5, C.c6, C.radial, C.fibular],
   reflexes: [C.myelopathy, C.gbs, C.stroke, C.diabetic],

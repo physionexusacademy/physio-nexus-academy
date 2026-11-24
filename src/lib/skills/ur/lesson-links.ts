@@ -17,6 +17,7 @@ export const LESSONS_FOR_SKILL: Record<string, SkillLessonLink[]> = {
   "peripheral-nerves": [
     { slug: "arm-nerve-injuries", title: "Arm nerve injuries" },
     { slug: "leg-nerve-injuries", title: "Leg nerve injuries" },
+    { slug: "neural-mobilisation-neurodynamics", title: "Neural mobilisation" },
   ],
   "tone-coordination": [
     { slug: "tone-spasticity-rigidity-ashworth", title: "Tone & Ashworth" },
@@ -33,7 +34,16 @@ export const LESSONS_FOR_SKILL: Record<string, SkillLessonLink[]> = {
     { slug: "mmt-upper-limb-substitutions", title: "Upper-limb substitutions" },
     { slug: "mmt-lower-limb-gluteals", title: "Hip, knee, ankle MMT" },
   ],
-  "muscle-length": [{ slug: "muscle-length-testing", title: "Muscle length testing" }],
+  "muscle-length": [
+    { slug: "muscle-length-testing", title: "Muscle length testing" },
+    { slug: "muscle-energy-technique-mechanics", title: "Muscle energy technique" },
+  ],
+  "special-tests": [
+    { slug: "special-tests-sensitivity-clusters", title: "Using tests wisely" },
+    { slug: "shoulder-cuff-tests-lag-signs", title: "Shoulder tests" },
+    { slug: "knee-ligament-meniscus-exam", title: "Knee examination" },
+    { slug: "ankle-sprain-ottawa-syndesmosis", title: "Ankle sprain & Ottawa" },
+  ],
   "limb-measurements": [
     { slug: "limb-length-and-girth", title: "Limb length & girth" },
     { slug: "spinal-and-general-measures", title: "Spinal & general measures" },
