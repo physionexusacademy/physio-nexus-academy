@@ -2,6 +2,7 @@ import { assessAlignment, type Alignment } from "./alignment.ts";
 import { Calibrator } from "./calibrate.ts";
 import { CueEngine, type CueEvent, type CueReading } from "./cues.ts";
 import { OneEuroFilter } from "./filter.ts";
+import { computeGhost, type Ghost } from "./ghost.ts";
 import { GLITCH_FLOOR, HampelGuard } from "./guard.ts";
 import { nearSide, needsHead, readMetric, type Side } from "./geometry.ts";
 import { STATUS_MESSAGES, SETUP_MESSAGES } from "./messages.ts";
@@ -28,6 +29,8 @@ export type SessionOptions = {
   minVisibility?: number;
   /** reject one-frame glitches of the pose model before smoothing (default true; switched off only to measure what the guard is worth) */
   guard?: boolean;
+  /** work out the ghost pose of the exercise's target for every picture (the screen draws it; the tests that play thousands of pictures leave it off) */
+  ghost?: boolean;
 };
 export type MetricReading = { raw: number; change: number; confidence: number };
 export type SessionState = {
@@ -52,6 +55,10 @@ export type SessionState = {
   readings: Record<string, MetricReading | null>;
   /** the alignment screen (set-up and neutral position only; null while a set is running) */
   alignment: Alignment | null;
+  /** where the moving part of the body has to be for the exercise's measurement to read its target (one ghost, or one each way); null when there is none or it cannot be seen */
+  ghost: Ghost[] | null;
+  /** the hold the exercise asks for at the target, ms, or 0 */
+  holdTargetMs: number;
 };
 export type SessionSummary = {
   specId: string;
@@ -95,6 +102,9 @@ export class FormCheckSession {
   private readonly face: boolean;
   private readonly minVisibility: number;
   private readonly useGuard: boolean;
+  private readonly useGhost: boolean;
+  private ghosts: Ghost[] | null = null;
+  private ghostFrame = 0;
   private guards = new Map<string, HampelGuard>();
   private readonly metrics: Metric[];
   private readonly need: CameraSpec["need"];
@@ -138,6 +148,7 @@ export class FormCheckSession {
     this.face = options.face ?? false;
     this.minVisibility = options.minVisibility ?? 0.5;
     this.useGuard = options.guard ?? true;
+    this.useGhost = options.ghost ?? false;
     const second = this.pass === 2 ? spec.second : undefined;
     if (this.pass === 2 && !second) throw new Error(`${spec.id} has no second pass`);
     this.metrics = (second?.metrics ?? spec.metrics).filter((m) => !needsHead(m) || this.face);
@@ -172,7 +183,7 @@ export class FormCheckSession {
   }
 
   private blank(): SessionState {
-    return { phase: this.phase, hint: null, setup: null, calibration: 0, tracking: false, progress: 0, reps: 0, partial: 0, holdMs: 0, primary: null, cue: null, readings: {}, alignment: null };
+    return { phase: this.phase, hint: null, setup: null, calibration: 0, tracking: false, progress: 0, reps: 0, partial: 0, holdMs: 0, primary: null, cue: null, readings: {}, alignment: null, ghost: null, holdTargetMs: 0 };
   }
 
   get state(): SessionState {
@@ -192,6 +203,7 @@ export class FormCheckSession {
     this.forcedStart = false;
     this.filters.clear();
     this.guards.clear();
+    this.ghosts = null;
     this.counter = null;
     this.timer = null;
     this.cues.reset();
@@ -358,6 +370,11 @@ export class FormCheckSession {
     }
     const counter = this.counter?.state();
     const per = p?.movementsPerRep ?? 1;
+    // the ghost is made fresh from the person's pose, every other picture (it follows them, and costs next to nothing)
+    if (this.useGhost && !quiet) {
+      if (this.paused || blocking.length) this.ghosts = null;
+      else if (this.ghostFrame++ % 2 === 0) this.ghosts = computeGhost(this.spec, frame, baseline, { tested: this.tested, minVisibility: this.minVisibility });
+    }
     this.current = {
       phase: "active",
       hint: this.paused ? STATUS_MESSAGES.paused : blocking.length ? STATUS_MESSAGES.lost : null,
@@ -372,6 +389,8 @@ export class FormCheckSession {
       cue,
       readings,
       alignment: null,
+      ghost: this.useGhost ? this.ghosts : null,
+      holdTargetMs: p?.holdMs ?? 0,
     };
     return this.current;
   }

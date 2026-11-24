@@ -19,7 +19,7 @@
     "build:avatar-data": "node scripts/build-avatar-data.mjs",
     "validate:avatar": "node scripts/validate-avatar.mjs",
     "build:manual-therapy-data": "node scripts/build-manual-therapy-data.mjs",
-    "validate:formcheck": "node --experimental-strip-types scripts/validate-formcheck.ts && node --experimental-strip-types scripts/validate-formcheck-specs.ts && node --experimental-strip-types scripts/validate-formcheck-sessions.ts && node --experimental-strip-types scripts/validate-formcheck-robust.ts && node --experimental-strip-types scripts/validate-formcheck-reps.ts && node --experimental-strip-types scripts/validate-formcheck-wiring.ts",
+    "validate:formcheck": "node --experimental-strip-types scripts/validate-formcheck.ts && node --experimental-strip-types scripts/validate-formcheck-specs.ts && node --experimental-strip-types scripts/validate-formcheck-sessions.ts && node --experimental-strip-types scripts/validate-formcheck-robust.ts && node --experimental-strip-types scripts/validate-formcheck-reps.ts && node --experimental-strip-types scripts/validate-formcheck-ghost.ts && node --experimental-strip-types scripts/validate-formcheck-wiring.ts",
     "validate:formcheck-db": "node scripts/validate-formcheck-db.mjs",
     "fetch:formcheck-assets": "node scripts/fetch-formcheck-assets.mjs",
     "build:formcheck-decisions": "node --experimental-strip-types scripts/build-formcheck-decisions.ts",

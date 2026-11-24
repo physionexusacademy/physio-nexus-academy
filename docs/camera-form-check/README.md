@@ -18,6 +18,16 @@ Documents 00 to 16 in this folder are DRAFTS with `[TO COMPLETE]` fields for the
 ## Status
 Done: engine core with tests; ethics pack draft; feasibility; the 27 camera specifications with the coverage check; the browser runtime (pose and face models and the wasm from our own static files, every file checked against `src/lib/formcheck/assets.lock.json`); the patient panel (set-up, the person's own neutral position, live skeleton, gauge, repetition counter or hold timer, cues, summary, a short second check where the spec asks for one); the save of the finished set's numbers; the clinician's list of a patient's camera sets; the camera permission for the patient pages only.
 
+## The ghost coach
+
+While a set is running the screen draws a ghost: where the moving part of the person's body has to be for the exercise's measurement to read its target. A dashed light-line figure for the part that moves, a target ring on the part the measurement reads, a dotted link from where that part is to where it should be, and (when the exercise asks for a hold) the ring fills as the hold is kept. An exercise that works either way (a side bend) shows a ghost each way, brightest for the one the person is heading to. It can be switched off with "Hide the target".
+
+How it is made (`ghost.ts`): it is SOLVED with the same `readMetric` the repetition counter uses, on a copy of the person's current pose with the moving part turned (or slid) until the measurement reads the target. So it is never a drawing of what the exercise "should look like": when the body reaches the ghost, the counter reaches the target, by construction. It follows the person if they shift in the picture and is made fresh from every other picture. Which part moves follows from the measurement (a joint angle turns its distal end about the joint; an incline turns the far end about the near one; a shoulder or knee line turns, with what hangs on it, about the hips; a head tilt turns the head about the neck; an offset slides one landmark and what hangs on it; a trunk rotation narrows the shoulders).
+
+Tested for all 27 exercises (`validate-formcheck-ghost.ts`, 394 checks): the ghost pose reads the target on the exercise's own measurement; the right body part moves, as a whole (a wrong end of a joint, or one detached landmark, fails the test); nothing else moves; the ghost follows a shifted person; there is none when the parts it needs cannot be seen; and through a whole session the person's ear lands on the marker when they reach the target.
+
+No ghost for the two exercises measured by the face model's head turn (neck rotation, levator scapulae stretch: a yaw angle has no skeleton equivalent) and for the front plank (a position held steady has no target to move to); they keep the gauge.
+
 ## Repetition counting (engine formcheck-0.3.0)
 
 A patient did 25 repetitions and the tool counted 12 or 13; it sometimes missed one side; and it did not notice that the exercise had begun. Each cause was reproduced in a simulation of how people really move (`scripts/formcheck-replab.ts`, 25-repetition sets played into the counter) before anything was changed:

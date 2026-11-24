@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Camera, CheckCircle2, EyeOff, RotateCcw, Square, Video } from "lucide-react";
+import { AlertTriangle, Camera, CheckCircle2, EyeOff, Ghost, RotateCcw, Square, Video } from "lucide-react";
 import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, specFor, type CameraSpec, type Side } from "@/lib/formcheck";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
@@ -55,8 +55,9 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
   const [side, setSide] = useState<Side | undefined>(initialSide);
   const [pass, setPass] = useState<1 | 2>(1);
   const [simple, setSimple] = useState(false);
+  const [showGhost, setShowGhost] = useState(true);
   const [facing, setFacing] = useState<"user" | "environment">("user");
-  const fc = useFormCheck(spec, { tested: side, pass, simple, facing });
+  const fc = useFormCheck(spec, { tested: side, pass, simple, facing, ghost: showGhost });
   const phone = usePhoneLevel();
   const { voice, speaking } = useVoice();
   const placement = pass === 2 && spec.second ? spec.second.placement : spec.placement;
@@ -169,6 +170,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
             <div className="flex flex-wrap gap-2">
               <button type="button" className="rv-btn rv-btn-primary" onClick={() => { fc.stop(); phone.stop(); }} data-pna-formcheck-stop><Square className="h-4 w-4" aria-hidden="true" /> <T en="Finish" ru="Khatam" /></button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setSimple(!simple)} aria-pressed={simple}><EyeOff className="h-4 w-4" aria-hidden="true" /> <T en="Simple view" ru="Saada view" /></button>
+              <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setShowGhost(!showGhost)} aria-pressed={showGhost} data-pna-formcheck-ghost-toggle><Ghost className="h-4 w-4" aria-hidden="true" /> {showGhost ? <T en="Hide the target" ru="Target chhupayein" /> : <T en="Show the target" ru="Target dikhayein" />}</button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => fc.recalibrate()}><RotateCcw className="h-4 w-4" aria-hidden="true" /> <T en="Start position again" ru="Shuruati position dobara" /></button>
             </div>
             <p className="text-[12.5px] text-slate-500">{STOP_IF_PAINFUL[lang]}</p>
