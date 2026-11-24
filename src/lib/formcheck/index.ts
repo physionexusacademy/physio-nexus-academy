@@ -6,6 +6,7 @@ export * from "./quality.ts";
 export * from "./alignment.ts";
 export * from "./guard.ts";
 export * from "./ghost.ts";
+export * from "./health.ts";
 export * from "./calibrate.ts";
 export * from "./cuelint.ts";
 export * from "./spec-types.ts";

@@ -51,6 +51,11 @@ const hook2 = read("src/components/rehabverse/formcheck/useFormCheck.ts");
 ok(/motionReduced\(\)/.test(hook2) && !/matchMedia/.test(hook2 + read("src/lib/formcheck/browser/hud.ts")), "the HUD follows the visitor's motion choice (motionReduced) and does not ask the device");
 ok(/reducedMotion/.test(read("src/lib/formcheck/browser/hud.ts")), "the HUD has a calm mode");
 
+// 4c. a slow phone is told how long to take over a repetition: measured from the video clock, after the model has warmed up, shown under the gauge
+const hook3 = read("src/components/rehabverse/formcheck/useFormCheck.ts");
+ok(/trackingHealth\(1000 \/ typical\)/.test(hook3) && /median|sort\(\(a, b\) => a - b\)\[Math\.floor\(gaps\.length \/ 2\)\]/.test(hook3) && /\+\+seen > 4/.test(hook3), "the phone's speed is the median of recent gaps, measured after the model's warm-up");
+ok(/healthTip\(fc\.health\)/.test(read("src/components/rehabverse/formcheck/FormCheckPanel.tsx")) && /data-pna-formcheck-speed/.test(read("src/components/rehabverse/formcheck/FormCheckPanel.tsx")), "the panel shows the speed tip");
+
 // 5. the deploy: model files fetched and verified at build, database check, header and file smoke test
 const deploy = read(".github/workflows/deploy-cloudflare-production.yml");
 ok(/npm run validate:formcheck-db/.test(deploy), "the deploy must run validate:formcheck-db");

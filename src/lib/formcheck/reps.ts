@@ -62,6 +62,8 @@ export type RepState = {
 /** a fall from the top (or a rise from the bottom) must last this long, and this many readings, to be real: a single dip of the noise in the middle of a hold is not the end of a repetition */
 const PERSIST_MS = 60;
 const PERSIST_N = 2;
+/** above this time between pictures (below about 18 a second) a reading is too precious to vote on or to wait for: the median of three would span a second, and one reading past the threshold must do */
+const SLOW_GAP_MS = 55;
 /** how far below the top the valley can really be, in range-units (the person's whole range is about 1): anything deeper is a burst of bad readings, and the valley is pulled back so that it can heal */
 const MAX_AMP = 2.5;
 const MIN_DROP = 0.1;
@@ -94,6 +96,9 @@ export class RepCounter {
   private turnSince: number | null = null;
   private turnN = 0;
   private lastT: number | null = null;
+  /** the usual time between readings, ms (a running average, starting from the first interval measured) */
+  private gap = 33;
+  private gapKnown = false;
   /** the last three readings: their median is what the state machine sees, so one bad reading can never move a peak or a valley */
   private recent: number[] = [];
   /** a possible lower valley, adopted only when the quantity stays below the current one */
@@ -158,7 +163,8 @@ export class RepCounter {
     if (!past) { this.turnSince = null; this.turnN = 0; return false; }
     this.turnSince ??= t;
     this.turnN += 1;
-    return this.turnN >= PERSIST_N && t - this.turnSince >= PERSIST_MS;
+    // two readings in a row and 60 ms; on a slow phone one reading past the threshold is all there is to go on
+    return this.gap > SLOW_GAP_MS || (this.turnN >= PERSIST_N && t - this.turnSince >= PERSIST_MS);
   }
 
   /** `value` is null when the quantity could not be read this frame. `t` in ms. */
@@ -168,10 +174,12 @@ export class RepCounter {
       return this.state();
     }
     if (this.lastT !== null && t - this.lastT > this.maxGapMs) this.restart();
+    if (this.lastT !== null && t > this.lastT) { const dt = Math.min(t - this.lastT, 1000); this.gap = this.gapKnown ? 0.8 * this.gap + 0.2 * dt : dt; this.gapKnown = true; }
     this.lastT = t;
     this.recent.push(this.fraction(value));
     if (this.recent.length > 3) this.recent.shift();
-    const p = this.recent.length < 3 ? this.recent[this.recent.length - 1] : [...this.recent].sort((a, b) => a - b)[1];
+    // on a slow phone the median of three readings would span a second and erase a quick repetition: it votes only when the pictures come quickly
+    const p = this.recent.length < 3 || this.gap > SLOW_GAP_MS ? this.recent[this.recent.length - 1] : [...this.recent].sort((a, b) => a - b)[1];
     this.progress = p;
     this.samples.push({ t, p });
     while (this.samples.length > 1 && t - this.samples[0].t > KEEP_MS) this.samples.shift();
@@ -252,7 +260,10 @@ export class RepCounter {
     let a = i; let b = i;
     while (a > 0 && this.samples[a - 1].p >= level) a--;
     while (b < this.samples.length - 1 && this.samples[b + 1].p >= level) b++;
-    return this.samples[b].t - this.samples[a].t;
+    // on a slow phone one picture above half-height is as likely a glitch of the tracking as a repetition seen briefly, and a repetition that quick cannot be resolved anyway
+    if (this.gap > SLOW_GAP_MS && b - a + 1 < 2) return 0;
+    // a stretch of n pictures lasted about n picture-gaps (each picture stands for the time around it), not n - 1: on a slow phone that is the difference between 0 and 300 ms
+    return this.samples[b].t - this.samples[a].t + Math.min(this.gap, 400);
   }
 
   private record(hi: number, hiT: number, vT: number, vLevel: number, amp: number, held: number) {

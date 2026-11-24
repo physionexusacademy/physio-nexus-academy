@@ -275,7 +275,7 @@ export class FormCheckSession {
   }
 
   /** One-frame glitches of the pose model are replaced by the recent median before smoothing (see guard.ts). */
-  private deglitch(metric: Metric, value: number): number {
+  private deglitch(metric: Metric, value: number, t: number): number {
     if (!this.useGuard) return value;
     let guard = this.guards.get(metric.id);
     if (!guard) {
@@ -285,7 +285,7 @@ export class FormCheckSession {
       guard = new HampelGuard(Math.min(base, 0.3 * span));
       this.guards.set(metric.id, guard);
     }
-    return guard.push(value).value;
+    return guard.push(value, t).value;
   }
 
   private smooth(id: string, value: number, t: number): number {
@@ -322,7 +322,7 @@ export class FormCheckSession {
     for (const metric of this.metrics) {
       const r = blocking.length || this.paused ? null : readMetric(metric, frame, { minVisibility: this.minVisibility, baseline, side, tested: this.tested });
       if (!r) { readings[metric.id] = null; cueReadings[metric.id] = null; continue; }
-      const raw = this.smooth(metric.id, this.deglitch(metric, r.value), t);
+      const raw = this.smooth(metric.id, this.deglitch(metric, r.value, t), t);
       const change = metric.kind === "rotation" ? raw : raw - (baseline[metric.id] ?? 0);
       readings[metric.id] = { raw, change, confidence: r.confidence };
       cueReadings[metric.id] = { raw, change };
