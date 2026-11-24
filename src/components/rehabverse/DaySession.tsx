@@ -19,6 +19,7 @@ import { CheckinChat, type FormPatch } from "./CheckinChat";
 import { CoachChat, COACH_OPEN_EVENT, openCoach } from "./CoachChat";
 import { ExerciseDetails, } from "./ExerciseDetails";
 import { T, useRvLang } from "./useLang";
+import { useDefaultLanguage } from "./useDefaultLanguage";
 import type { Lang } from "./ExercisePlayer";
 import { hasFormCheck } from "@/lib/formcheck/ids";
 import { FormCheckSlot } from "./formcheck/FormCheckSlot";
@@ -264,8 +265,9 @@ function Checkin({ sessionId, point, ai }: { sessionId: string; point: FollowupP
 /* ───────────────────────── page ───────────────────────── */
 
 /** `ai`: the AI assistants (exercise coach, check-in assistant) are offered because the admin switched AI on for this patient; the server checks again on every message. */
-export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boolean }) {
+export function DaySession({ data, ai = false, preferredLanguage }: { data: SessionDetail; ai?: boolean; preferredLanguage?: "en" | "ru" }) {
   const [lang] = useRvLang();
+  useDefaultLanguage(preferredLanguage);
   const [defs, setDefs] = useState<Map<string, ExerciseDef> | null>(null);
   const [selected, setSelected] = useState(0);
   const [playerFailed, setPlayerFailed] = useState(false);
@@ -350,7 +352,7 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
                     <div className="grid aspect-[4/3] place-items-center rounded-3xl bg-slate-100 text-sm font-semibold text-slate-500 sm:aspect-[16/10]">{def === undefined && defs ? <T en="3D demo not available — follow the steps below." ru="3D demo maujood nahi — neeche ke steps follow karein." /> : <T en="Loading your guide…" ru="Guide aa raha hai…" />}</div>
                   )}
                   {ai && access === "open" && hasFormCheck(exercise.exercise_id) ? (
-                    <FormCheckSlot key={exercise.id} exerciseId={exercise.exercise_id} side={side} reps={exercise.reps ?? undefined} holdSeconds={exercise.hold_seconds ?? undefined} />
+                    <FormCheckSlot key={exercise.id} exerciseId={exercise.exercise_id} side={side} reps={exercise.reps ?? undefined} holdSeconds={exercise.hold_seconds ?? undefined} name={def?.name ?? { en: exercise.exercise_title, ru: exercise.exercise_title }} />
                   ) : null}
                   <div className="lg:hidden">{exerciseList}</div>
                   <div className="rv-glass p-4">

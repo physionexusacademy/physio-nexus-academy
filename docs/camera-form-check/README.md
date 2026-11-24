@@ -97,3 +97,18 @@ Deploying before step 1 is safe: the camera still works, saving fails quietly ("
 
 ## Not built yet (separate, later increments)
 The therapist-only validation mode (assessor's reference value entered before the camera value is revealed; the database functions for it exist), the recorded voice cues in English and Roman Urdu (cues are on-screen text and the browser's own voice when the voice setting is on), the 3D demonstration beside the live view, and the supervised pilot itself. These wait for the ethics committee's decision on the study.
+
+
+## Made for everyone: the camera studio and RehabVerse design (Dec 2026)
+
+The camera is now built so that a patient who reads little can use it alone. The engine, the accuracy and the data stored are unchanged; this is the screen and the voice.
+
+* **One huge glowing button** in the day ("Camera se check karein", at least 96px tall, nearly full width) replaces the small card. "Today's session" is now the first and biggest card on the dashboard, in the same look.
+* **A full-screen camera studio** that sits above every floating button (the AI coach, WhatsApp and the bottom bar used to cover "Start camera"). The page behind is locked; Escape or the X closes it and stops the camera.
+* **Set-up in one screen**: a picture of where the phone goes (2 metres, level with the hips), one instruction in large type, a big "Listen" button, giant Left/Right buttons when the exercise is one-sided, and one 76px start button. The small options (start position again, the target pose, hide the camera picture) are in one "More" sheet with big buttons.
+* **Live**: a 76px counter ("5 / 8"), a big red Finish button, one line saying whether the camera can see you, and the site's voice switch.
+* **Spoken help, on by default in Roman Urdu** (English for a patient who chose English): the set-up instruction is read when the studio opens; every repetition is counted aloud (never cutting over a longer sentence); a hold is counted every 5 seconds; "Ab shuru karein" at the start and "Shabash! Set mukammal." at the end; tips are spoken as well as shown. It is the site's one voice setting; turning it off anywhere turns it off here.
+* **Honest finish**: "Shabash!" only when something was counted; otherwise "Kuch ginti nahi hua" with a plain tip to try again.
+* **Roman Urdu from the first screen**: a patient who chose Roman Urdu at sign-up starts in it on any phone (only when that browser has no language choice yet; a choice made on the switch always wins).
+* Tests: `npm run validate:camera-design` (44 checks, each safeguard broken on purpose to prove the test catches it) and `scripts/rehabverse-local/e2e-camera-ui.cjs` (16 checks on a 390x844 phone with a fake camera showing a real person: sizes, nothing covering the start button, Roman Urdu text, spoken lines, the finish screen).
+* Not yet done: a trial with real low-literacy patients. Please watch two or three people use it alone and note where they hesitate.

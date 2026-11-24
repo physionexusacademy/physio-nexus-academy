@@ -13,12 +13,12 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export default async function DayPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!UUID.test(id)) notFound();
-  await requirePatient();
+  const { patient } = await requirePatient();
   try {
     // The database only returns a day that belongs to the signed-in patient.
     const data = await getSession(id);
     // the exercise coach and the check-in assistant are offered only when the admin has switched AI on for this patient (checked again on the server for every message)
-    return <DaySessionLoader data={data} ai={await aiAssistAllowed()} />;
+    return <DaySessionLoader data={data} ai={await aiAssistAllowed()} preferredLanguage={patient.preferred_language} />;
   } catch (error) {
     if (error instanceof RehabError) notFound();
     throw error;

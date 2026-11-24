@@ -94,6 +94,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:formcheck
 
+      - name: Validate the camera and RehabVerse design for everyone (one big button, full-screen studio above every layer, spoken counting, big targets, Roman Urdu first, today first)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:camera-design
+
       - name: Validate Manual Therapy chapter data (static files fresh, plain JSON, no chapter text reachable from the worker)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:manual-therapy-data

@@ -27,6 +27,15 @@ function read(): Lang {
   return "en";
 }
 
+/** True when this browser already holds a language choice (made on the switch, in the Teacher profile or in the earlier RehabVerse switch). */
+export function hasLangChoice(): boolean {
+  try {
+    return window.localStorage.getItem(LANG_KEY) !== null || window.localStorage.getItem(LEGACY_RV_KEY) !== null;
+  } catch {
+    return true; // storage blocked: leave the language alone
+  }
+}
+
 export function writeLang(lang: Lang) {
   try {
     window.localStorage.setItem(LANG_KEY, JSON.stringify(lang));

@@ -16,3 +16,4 @@ export * from "./movement-types.ts";
 export * from "./messages.ts";
 export * from "./cues.ts";
 export * from "./session.ts";
+export * from "./spoken.ts";

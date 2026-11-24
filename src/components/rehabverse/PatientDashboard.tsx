@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, CalendarClock, CheckCircle2, ClipboardList, Clock, Download, HeartPulse, Lock, LogOut, PlayCircle, ShieldAlert, Sparkles, TrendingDown, Trash2 } from "lucide-react";
+import { Bell, CalendarClock, CheckCircle2, ChevronRight, ClipboardList, Clock, Download, HeartPulse, Lock, LogOut, PlayCircle, ShieldAlert, Sparkles, TrendingDown, Trash2 } from "lucide-react";
+import "./rv-friendly.css";
 import { exportMyDataAction, logoutAction, markNotificationsReadAction, requestDeletionAction } from "@/app/rehabverse/actions";
 import type { History, Notification, Overview, OverviewSession, PatientFollowup, PatientSummary } from "@/lib/rehabverse/api-types";
 import { WINDOWS, checkinStates } from "@/lib/rehabverse/followup";
@@ -14,6 +15,7 @@ import { GuideStage } from "./GuideStage";
 import { AdherenceRing, FollowUpCard, PainTrendCard, type NextStep } from "./FollowUp";
 import { LineChart } from "./charts";
 import { T, useRvLang } from "./useLang";
+import { useDefaultLanguage } from "./useDefaultLanguage";
 import { AiAssistCard } from "./AiAssistCard";
 import { ScreeningCard } from "./ScreeningCard";
 
@@ -44,6 +46,7 @@ function ScreeningPanel({ defaultOpen }: { defaultOpen: boolean }) {
 
 export function PatientDashboard({ overview, history, notifications, followup = null, hasScreening = false, outcomesDue = 0 }: { overview: Overview & { patient: PatientSummary }; history: History | null; notifications: Notification[]; followup?: PatientFollowup | null; hasScreening?: boolean; outcomesDue?: number }) {
   const [lang] = useRvLang();
+  useDefaultLanguage(overview.patient.preferred_language);
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [unread, setUnread] = useState(overview.unread_notifications ?? 0);
@@ -132,6 +135,18 @@ export function PatientDashboard({ overview, history, notifications, followup = 
         </div>
       </header>
 
+      {open ? (
+        <Link href={`/rehabverse/me/day/${open.id}`} className="rv-today" data-testid="today-card">
+          <span className="rv-today-orb"><PlayCircle aria-hidden="true" /></span>
+          <span className="rv-today-text">
+            <small><T en="Today" ru="Aaj" /> · <T en="Day" ru="Din" /> {open.day_number}</small>
+            <b><T en="Start today's session" ru="Aaj ka session shuru karein" /></b>
+            <span>{cleanDayTitle(open.title)} · {open.exercise_count ?? 0} <T en="exercises, each with a 3D demo" ru="exercises, har ek ka 3D demo" /></span>
+          </span>
+          <span className="rv-today-go"><ChevronRight aria-hidden="true" /></span>
+        </Link>
+      ) : null}
+
       {patient.ai_assist === "on" ? <div className="mt-4"><AiAssistCard value="on" /></div> : null}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
@@ -191,19 +206,6 @@ export function PatientDashboard({ overview, history, notifications, followup = 
             </section>
           ) : null}
 
-          {open ? (
-            <section className="rv-glass relative overflow-hidden p-5 sm:p-6">
-              <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-[#0db3aa] to-[#0a1f3d]" aria-hidden="true" />
-              <p className="rv-h"><T en="Today" ru="Aaj" /></p>
-              <h2 className="mt-1 font-heading text-xl font-bold text-navy-800 sm:text-2xl"><T en="Day" ru="Din" /> {open.day_number}: {cleanDayTitle(open.title)}</h2>
-              {open.patient_note ? <p className="mt-1 text-[14px] leading-6 text-slate-600">{open.patient_note}</p> : null}
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="rv-chip rv-chip-teal">{open.exercise_count ?? 0} <T en="exercises" ru="exercises" /></span>
-                <span className="rv-chip"><T en="3D demo for each" ru="Har ek ka 3D demo" /></span>
-              </div>
-              <Link href={`/rehabverse/me/day/${open.id}`} className="rv-btn rv-btn-primary mt-4"><PlayCircle className="h-5 w-5" aria-hidden="true" /> <T en="Start today's session" ru="Aaj ka session shuru karein" /></Link>
-            </section>
-          ) : null}
 
           {scheduled && !open ? (
             <section className="rv-glass p-5">
