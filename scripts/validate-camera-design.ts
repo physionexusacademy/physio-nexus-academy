@@ -81,4 +81,21 @@ const dash = read("src/components/rehabverse/PatientDashboard.tsx");
 ok(dash.indexOf('className="rv-today"') > 0 && dash.indexOf('className="rv-today"') < dash.indexOf("<AiAssistCard") && dash.indexOf('className="rv-today"') < dash.indexOf("<ScreeningPanel"), "today's session is the first card on the dashboard, above the AI notice and everything else");
 eq((dash.match(/Start today's session/g) ?? []).length, 1, "there is one 'Start today's session' button, not two");
 
+
+/* ---------- the camera permission ---------- */
+const permission = read("src/lib/formcheck/browser/permission.ts");
+const cam = read("src/lib/formcheck/browser/camera.ts");
+const guide = read("src/components/rehabverse/formcheck/CameraPermissionGuide.tsx");
+ok(/navigator\.permissions\.query\(\{ name: "camera"/.test(permission) && /addEventListener\("change"/.test(permission) && /allowsFeature\("camera"\)/.test(permission), "permission: reads the camera state, listens for a change and can tell a site-policy block from the person's block");
+ok(!/localStorage|sessionStorage|indexedDB|fetch\(/.test(permission), "permission: stores and sends nothing");
+ok(/policyAllowsCamera\(\) === false \? "policy" : "denied"/.test(cam), "camera: a block by the site's own policy is told apart from the person's block");
+ok(/"android"/.test(guide) && /"ios"/.test(guide) && /Permissions/.test(guide) && /data-pna-formcheck-guide-check><RefreshCw aria-hidden="true" \/> <T en="Check again" ru="Dobara check karein"/.test(guide) && /Phone ki Settings/.test(guide), "guide: steps for Android and iPhone, a check-again button and the phone-settings fallback, in Roman Urdu");
+ok(/onListen/.test(guide) && /guideSpeech\(/.test(guide), "guide: the steps can be listened to");
+ok(/const blocked = perm === "denied" \|\| \(fc\.problem === "denied" && perm === "unknown"\)/.test(panel) && /\{!blocked \? \(/.test(panel), "panel: when blocked the guide replaces the Start button");
+ok(/data-pna-formcheck-prompt-note/.test(panel) && /Start dabane par/.test(panel), "panel: before the browser asks, the screen says what will happen and what to press");
+ok(/watchCameraPermission\(setPerm\)/.test(panel), "panel: the guide goes away by itself when the person allows the camera");
+ok(/getUserMedia/.test(cam) && cam.indexOf("getUserMedia") < cam.indexOf("await video.play()"), "camera: the browser is asked straight away, from the tap on Start");
+const fcHook = read("src/components/rehabverse/formcheck/useFormCheck.ts");
+ok(fcHook.indexOf("await openCamera(") < fcHook.indexOf("PoseRuntime.create("), "the camera is asked for BEFORE the pose model loads, so the question appears at once");
+
 console.log(`Camera and design: ${checks} checks passed (spoken counting, big targets, studio above every layer, Roman Urdu first, today first).`);

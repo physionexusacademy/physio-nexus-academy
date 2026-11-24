@@ -1,5 +1,7 @@
+import { policyAllowsCamera } from "./permission";
+
 /** Opening and closing the device camera, and telling the person what to do when it cannot open. Browser only. */
-export type CameraProblem = "denied" | "none" | "busy" | "insecure" | "unsupported" | "in_app" | "failed";
+export type CameraProblem = "denied" | "policy" | "none" | "busy" | "insecure" | "unsupported" | "in_app" | "failed";
 
 /** Facebook, Instagram, TikTok, Line, WeChat and similar in-app browsers often block the camera: the page asks to be opened in the phone's own browser. */
 export function inAppBrowser(userAgent: string = typeof navigator === "undefined" ? "" : navigator.userAgent): boolean {
@@ -20,7 +22,7 @@ export async function openCamera(video: HTMLVideoElement, facing: "user" | "envi
     return { ok: true, camera: { stream, width: video.videoWidth, height: video.videoHeight } };
   } catch (error) {
     const name = error instanceof DOMException ? error.name : "";
-    if (name === "NotAllowedError" || name === "SecurityError" || name === "PermissionDeniedError") return { ok: false, problem: inAppBrowser() ? "in_app" : "denied" };
+    if (name === "NotAllowedError" || name === "SecurityError" || name === "PermissionDeniedError") return { ok: false, problem: inAppBrowser() ? "in_app" : policyAllowsCamera() === false ? "policy" : "denied" };
     if (name === "NotFoundError" || name === "OverconstrainedError" || name === "DevicesNotFoundError") return { ok: false, problem: "none" };
     if (name === "NotReadableError" || name === "TrackStartError") return { ok: false, problem: "busy" };
     return { ok: false, problem: "failed" };
