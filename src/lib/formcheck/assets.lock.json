@@ -1,0 +1,14 @@
+{
+  "library": { "name": "@mediapipe/tasks-vision", "version": "1.2.3" },
+  "wasm": {
+    "vision_wasm_internal.js": "2aa5fd3fdd3d8208cd7587df0bb19fb6925c4ea16a76dd025aedc1f64d6a6309",
+    "vision_wasm_internal.wasm": "225bc06c0f51a9cf31fea0e9e0b0243e9e01fb5ef332cc1a7fa6656dbdfdaabf",
+    "vision_wasm_module_internal.js": "d29996249490361715c769c6a49b43ad47e6ac9a28a8e8bce8d02b238e897851",
+    "vision_wasm_module_internal.wasm": "a269e84b12aefc93c9d6a4d62b01f41e5434a9fa941533bb8e75b1e3d1669e46"
+  },
+  "models": {
+    "pose_landmarker_full.task": { "url": "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task", "sha256": "5134a3aad27a58b93da0088d431f366da362b44e3ccfbe3462b3827a839011b1", "bytes": 9398198 },
+    "pose_landmarker_lite.task": { "url": "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task", "sha256": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a", "bytes": 5777746 },
+    "face_landmarker.task": { "url": "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task", "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff", "bytes": 3758596 }
+  }
+}

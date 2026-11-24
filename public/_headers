@@ -33,3 +33,7 @@
 # (packs.json and clips.json are small and revalidated as usual, so a new recording shows up at once.)
 /voice/george/*.mp3
   Cache-Control: public,max-age=31536000,immutable
+
+# Form Check (camera): the pose library's wasm and the pinned model files. Each is checked against src/lib/formcheck/assets.lock.json at deploy; they change only with a new lock.
+/formcheck/*
+  Cache-Control: public,max-age=604800,stale-while-revalidate=86400

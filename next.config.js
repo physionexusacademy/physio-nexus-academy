@@ -106,10 +106,6 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=()',
-          },
           ...(process.env.PNA_PREVIEW_BUILD === 'true'
             ? [
                 {
@@ -119,6 +115,16 @@ const nextConfig = {
               ]
             : []),
         ],
+      },
+      // Camera: off everywhere except the signed-in patient pages of RehabVerse (/rehabverse/me/...), where the optional camera Form Check runs on the person's own device.
+      // 'self' only: a page of another site embedded here can never use it. The microphone stays off everywhere.
+      {
+        source: '/((?!rehabverse/me(?:/|$)).*)',
+        headers: [{ key: 'Permissions-Policy', value: 'camera=(), microphone=()' }],
+      },
+      {
+        source: '/rehabverse/me/:path*',
+        headers: [{ key: 'Permissions-Policy', value: 'camera=(self), microphone=()' }],
       },
     ];
   },
