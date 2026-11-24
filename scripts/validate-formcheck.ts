@@ -283,9 +283,12 @@ const DEG = 180 / Math.PI;
   let still = 0; let result = restart.push(shoulderFrame(0, 0));
   for (let t = 33; t < 700; t += 33) result = restart.push(shoulderFrame(t, 0));
   ok(!result.done, "700 ms is not enough");
+  // a real movement is recognised once three frames (about 100 ms) agree on the new level; one frame alone is treated as a glitch of the pose model (guard.ts)
   result = restart.push(shoulderFrame(733, 20)); still = result.progress;
-  ok(!result.done && still === 0, "a movement restarts the wait");
-  for (let t = 766; t < 1800 && !result.done; t += 33) result = restart.push(shoulderFrame(t, 20));
+  ok(!result.done && still > 0, "a single frame at a new level is taken for a glitch and does not restart the wait");
+  result = restart.push(shoulderFrame(766, 20)); result = restart.push(shoulderFrame(799, 20)); still = result.progress;
+  ok(!result.done && still === 0, "a movement that lasts restarts the wait");
+  for (let t = 832; t < 1900 && !result.done; t += 33) result = restart.push(shoulderFrame(t, 20));
   ok(result.done && Math.abs(result.baseline!.t - readMetric(tiltMetric, shoulderFrame(0, 20))!.value) < 0.5, "and the new still position becomes the baseline");
   // a landmark that is lost gives no baseline
   const lost = new Calibrator([tiltMetric]);

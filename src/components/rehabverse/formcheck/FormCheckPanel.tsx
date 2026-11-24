@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, Camera, CheckCircle2, EyeOff, RotateCcw, Square, Video } from "lucide-react";
 import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, specFor, type CameraSpec, type Side } from "@/lib/formcheck";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
+import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
 import { speakText } from "@/lib/speech/voices";
 import { useVoice } from "@/lib/speech/preference";
 import { T, useRvLang } from "../useLang";
+import { AlignmentOverlay } from "./AlignmentOverlay";
 import { useFormCheck, type FormCheckProblem } from "./useFormCheck";
 
 /**
@@ -36,6 +38,16 @@ export function FormCheckPanel({ specId, side: initialSide, targetReps, targetHo
   return <Panel spec={spec} side={initialSide} targetReps={targetReps} targetHoldSeconds={targetHoldSeconds} onFinished={onFinished} onClose={onClose} />;
 }
 
+/** The phone-level reading, started from the tap on "Start camera" (an iPhone asks for the motion sensor only then) and stopped with the camera. */
+function usePhoneLevel() {
+  const level = useRef<PhoneLevel | null>(null);
+  const [tilt, setTilt] = useState<Tilt | null>(null);
+  const start = useCallback(() => { level.current ??= new PhoneLevel(); void level.current.start(setTilt); }, []);
+  const stop = useCallback(() => { level.current?.stop(); setTilt(null); }, []);
+  useEffect(() => () => level.current?.stop(), []);
+  return { tilt, start, stop };
+}
+
 function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinished, onClose }: {
   spec: CameraSpec; side?: Side; targetReps?: number; targetHoldSeconds?: number; onFinished?: (set: FinishedSet) => void; onClose?: () => void;
 }) {
@@ -45,6 +57,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
   const [simple, setSimple] = useState(false);
   const [facing, setFacing] = useState<"user" | "environment">("user");
   const fc = useFormCheck(spec, { tested: side, pass, simple, facing });
+  const phone = usePhoneLevel();
   const { voice, speaking } = useVoice();
   const placement = pass === 2 && spec.second ? spec.second.placement : spec.placement;
   const needSide = spec.sided && !side;
@@ -79,7 +92,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
     onFinished?.({ summary: fc.summary, software: fc.software, side: side ?? null, pass, specId: spec.id });
   }, [fc.status, fc.summary, fc.software, onFinished, pass, side, spec.id]);
 
-  const again = (nextPass: 1 | 2) => { finishing.current = false; reported.current = null; setPass(nextPass); setTimeout(() => void fc.start(), 0); };
+  const again = (nextPass: 1 | 2) => { finishing.current = false; reported.current = null; setPass(nextPass); phone.start(); setTimeout(() => void fc.start(), 0); };
   const gaugePct = Math.round(Math.max(0, Math.min(1, state?.progress ?? 0)) * 100);
   const isReps = spec.primary.mode === "reps";
   const seconds = (ms: number) => (ms / 1000).toFixed(0);
@@ -90,7 +103,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
         <Camera className="h-5 w-5 text-teal-700" aria-hidden="true" />
         <h3 className="font-heading text-base font-bold text-navy-800"><T en="Camera form check" ru="Camera se form check" /></h3>
         <span className="rv-chip">{spec.tier === "A" ? <T en="Sitting or standing" ru="Baithe ya khare" /> : <T en="Lying or on the floor" ru="Lete ya zameen par" />}</span>
-        {onClose ? <button type="button" onClick={() => { fc.status === "live" && fc.stop(); onClose(); }} className="rv-btn rv-btn-ghost ml-auto !min-h-0 !px-3 !py-1.5 text-[13px]"><T en="Close" ru="Band karein" /></button> : null}
+        {onClose ? <button type="button" onClick={() => { fc.status === "live" && fc.stop(); phone.stop(); onClose(); }} className="rv-btn rv-btn-ghost ml-auto !min-h-0 !px-3 !py-1.5 text-[13px]"><T en="Close" ru="Band karein" /></button> : null}
       </div>
 
       {fc.status === "idle" || fc.status === "error" ? (
@@ -112,7 +125,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
           <p className="flex items-start gap-2 rounded-xl bg-amber-50 px-3 py-2 text-[13.5px] leading-5 text-amber-950"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> <span>{STOP_IF_PAINFUL[lang]}</span></p>
           {fc.status === "error" && fc.problem ? <p className="rv-error" role="alert">{PROBLEMS[fc.problem][lang]}</p> : null}
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" className="rv-btn rv-btn-primary" disabled={needSide} onClick={() => { finishing.current = false; void fc.start(); }} data-pna-formcheck-start>
+            <button type="button" className="rv-btn rv-btn-primary" disabled={needSide} onClick={() => { finishing.current = false; phone.start(); void fc.start(); }} data-pna-formcheck-start>
               <Video className="h-4 w-4" aria-hidden="true" /> {fc.status === "error" ? <T en="Try again" ru="Dobara koshish karein" /> : <T en="Start camera" ru="Camera shuru karein" />}
             </button>
             <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setFacing(facing === "user" ? "environment" : "user")}>{facing === "user" ? <T en="Use the back camera" ru="Peeche wala camera" /> : <T en="Use the front camera" ru="Samne wala camera" />}</button>
@@ -126,8 +139,11 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
         <div className="relative overflow-hidden rounded-2xl bg-slate-900" style={{ aspectRatio: placement.orientation === "portrait" ? "3 / 4" : "16 / 9", maxHeight: "70vh" }}>
           <video ref={fc.videoRef} playsInline muted className={"absolute inset-0 h-full w-full object-contain " + (simple ? "invisible" : "") + (facing === "user" ? " -scale-x-100" : "")} aria-label="" />
           <canvas ref={fc.canvasRef} className="absolute inset-0 h-full w-full object-contain" aria-hidden="true" />
-          {state?.hint ? <p className="absolute inset-x-2 top-2 rounded-xl bg-black/65 px-3 py-2 text-center text-[14px] font-bold text-white" role="status" aria-live="polite">{state.hint[lang]}</p> : null}
-          {state?.cue ? <p className="absolute inset-x-2 bottom-2 rounded-xl bg-teal-600/95 px-3 py-2.5 text-center text-[16px] font-extrabold text-white shadow-lg" role="alert" data-pna-formcheck-cue>{state.cue.text[lang]}</p> : null}
+          {state ? <AlignmentOverlay state={state} tilt={phone.tilt} /> : null}
+          <div className="absolute inset-x-2 bottom-2 grid gap-2">
+            {state?.hint ? <p className="fc-hint" data-tone={state.phase === "calibrating" || state.hint === null ? "ok" : undefined} role="status" aria-live="polite">{state.hint[lang]}</p> : null}
+            {state?.cue ? <p className="fc-cue" role="alert" data-pna-formcheck-cue>{state.cue.text[lang]}</p> : null}
+          </div>
         </div>
 
         {live && state ? (
@@ -151,7 +167,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
             ) : null}
             {state.primary?.shown ? <p className="text-[13px] text-slate-600">{Math.round(state.primary.value)}°</p> : null}
             <div className="flex flex-wrap gap-2">
-              <button type="button" className="rv-btn rv-btn-primary" onClick={() => fc.stop()} data-pna-formcheck-stop><Square className="h-4 w-4" aria-hidden="true" /> <T en="Finish" ru="Khatam" /></button>
+              <button type="button" className="rv-btn rv-btn-primary" onClick={() => { fc.stop(); phone.stop(); }} data-pna-formcheck-stop><Square className="h-4 w-4" aria-hidden="true" /> <T en="Finish" ru="Khatam" /></button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setSimple(!simple)} aria-pressed={simple}><EyeOff className="h-4 w-4" aria-hidden="true" /> <T en="Simple view" ru="Saada view" /></button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => fc.recalibrate()}><RotateCcw className="h-4 w-4" aria-hidden="true" /> <T en="Start position again" ru="Shuruati position dobara" /></button>
             </div>

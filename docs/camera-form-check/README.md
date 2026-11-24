@@ -18,6 +18,26 @@ Documents 00 to 16 in this folder are DRAFTS with `[TO COMPLETE]` fields for the
 ## Status
 Done: engine core with tests; ethics pack draft; feasibility; the 27 camera specifications with the coverage check; the browser runtime (pose and face models and the wasm from our own static files, every file checked against `src/lib/formcheck/assets.lock.json`); the patient panel (set-up, the person's own neutral position, live skeleton, gauge, repetition counter or hold timer, cues, summary, a short second check where the spec asks for one); the save of the finished set's numbers; the clinician's list of a patient's camera sets; the camera permission for the patient pages only.
 
+## Accuracy and the alignment screen (engine formcheck-0.2.0)
+
+What changed, why, and what was measured. Everything below the "real model" line was measured on the real pose model on one real person (a stock photo played as a camera feed, with camera-like sensor noise); everything else is a simulation of the tool's logic with faults added on purpose. **None of it is accuracy on patients: that is the validation study.**
+
+| Change | Why | Evidence |
+| --- | --- | --- |
+| Glitch guard (`guard.ts`, a causal Hampel filter on every measured quantity before smoothing) | a pose model sometimes gets one frame badly wrong (a limb taken for another, left and right swapped); smoothing spread it, and it could count a false repetition or restart the wait | simulation, 60 sets each, ordinary glitches: chin tucks counted exactly 24 -> 58 of 60 (false extra repetitions 36 -> 2); glute bridges 28 -> 60 of 60 (32 -> 0). With clean input nothing changes (60 of 60 either way) |
+| Stillness judged by the spread of the readings, not the worst frame (`isStill` in `calibrate.ts`) | on the real model one frame in 150 put a knee angle 4 degrees out, which restarted "stay still" under the old rule | real model; unit tests; the neutral position is taken within 3 s in the simulation |
+| The neutral position no longer needs a fixed 8 readings per second | the sandbox runs the real model at 3 pictures a second and the old rule could never finish | real model's own frames replayed: never ready -> ready at 5.6 s; simulation at 3, 5, 8, 15 and 30 pictures a second: ready in time and five of five repetitions counted |
+| Frames stamped with the video's own clock (`requestVideoFrameCallback` media time), never processed twice | a busy phone made the time between frames uneven, which unsettles smoothing and repetition timing | by construction; not measured separately |
+| Phone-level dial (`browser/level.ts`) | a phone that leans back or sideways skews every angle | by construction; shows only how far from level, never which way (axis signs differ between phones); not tested on a real phone's sensor |
+
+Real model, one still person, 1280 x 720, camera noise: landmark jitter 0.2 to 0.7 pixels (a knee angle varies 0.1 to 0.4 degrees); no glitch larger than 5 pixels in 150 frames. A moving person, a dim room or a cheap phone will be worse; the simulation's faults (`scripts/formcheck-faults.ts`) are set 3 to 10 times above the measured jitter on purpose.
+
+The alignment screen (`alignment.ts`, `AlignmentOverlay.tsx`, `browser/hud.ts`) shows the same judgement as the set-up check in six parts (in view, distance, centred, light, angle, steady) with one score. `assessSetup` stays the only authority on whether a set may start; the screen is display and is tested to agree with it. The HUD follows the site's motion choice (`motionReduced`) and never reads the camera picture back.
+
+`npm run validate:formcheck` now also runs `validate-formcheck-robust.ts` (53 checks: the guard, stillness, the alignment screen, sets with a misbehaving pose model, slow phones). Mutation checks confirmed it fails when the guard is off by default, when the worst-frame rule returns, and when the fixed 8-reading rule returns.
+
+Known limits: the neutral position can still take long when a metric is built from a very short segment (ear to nose) and the jitter is about ten times the measured level (median 24 s in that simulation); the next step is a tolerance that follows the segment's length in pixels. The heavy pose model is more accurate but about 29 MB, over Cloudflare's 25 MiB static-file limit.
+
 ## Where it appears and who sees it
 * **Patient:** `/rehabverse/me/day/[id]`, under the exercise player, only when the physiotherapist has switched AI assistance on for that patient, the day is open and the exercise is one of the 27. A card says it is optional; "Try it" opens the panel. The page code, the pose library and the models load only then.
 * **Camera permission:** `Permissions-Policy: camera=(self)` is sent only for `/rehabverse/me/*` (`next.config.js`); every other page keeps `camera=()`; the microphone is off everywhere.

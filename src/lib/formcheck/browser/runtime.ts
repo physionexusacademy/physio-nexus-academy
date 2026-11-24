@@ -67,10 +67,13 @@ export class PoseRuntime {
     this.luma = sum / (data.length / 4);
   }
 
-  /** One frame in, the engine's frame (and the raw landmarks, for drawing) out; null when no person is found. */
-  detect(video: HTMLVideoElement): { frame: Frame; landmarks: Landmark[] | null } {
+  /**
+   * One frame in, the engine's frame (and the raw landmarks, for drawing) out; landmarks are null when no person is found. `at`: the time of the frame in ms on any steady clock
+   * (the video's own presentation time when the browser gives it: it does not wobble when the phone is busy; else the clock at the moment of the call). It never goes backwards.
+   */
+  detect(video: HTMLVideoElement, at?: number): { frame: Frame; landmarks: Landmark[] | null } {
     const now = performance.now();
-    const stamp = Math.max(now, this.lastStamp + 1);
+    const stamp = Math.max(at ?? now, this.lastStamp + 1);
     this.lastStamp = stamp;
     if (this.frames++ % 12 === 0) this.measureLuma(video);
     const result = this.pose.detectForVideo(video, stamp);
