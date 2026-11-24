@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Camera } from "lucide-react";
+import { Camera, ChevronRight, ShieldCheck } from "lucide-react";
 import { saveFormCheckSetAction } from "@/app/rehabverse/formcheck-actions";
+import { unlockRecorded } from "@/lib/speech/recorded";
 import { T } from "../useLang";
 import type { FinishedSet } from "./FormCheckPanel";
+import "./camera-studio.css";
 
 /**
- * The button under the exercise player and, once pressed, the camera panel. The panel, the engine, the specs and the pose model are all loaded only now (never with the
- * page). The finished set's numbers are saved on the server, which checks the patient's AI switch again; a failed save never disturbs the exercise.
+ * The big glowing button under the exercise player and, once pressed, the full-screen camera studio. The studio, the engine, the specs and the pose model are all loaded only now
+ * (never with the page). The finished set's numbers are saved on the server, which checks the patient's AI switch again; a failed save never disturbs the exercise.
  */
-const FormCheckPanel = dynamic(() => import("./FormCheckPanel").then((m) => m.FormCheckPanel), { ssr: false, loading: () => <div className="rv-glass h-40 animate-pulse" aria-hidden="true" /> });
+const FormCheckPanel = dynamic(() => import("./FormCheckPanel").then((m) => m.FormCheckPanel), { ssr: false, loading: () => <div className="fc-studio" aria-hidden="true"><div className="fc-loading"><span className="fc-spin" /></div></div> });
 
-export function FormCheckSlot({ exerciseId, side, reps, holdSeconds }: { exerciseId: string; side?: "left" | "right"; reps?: number; holdSeconds?: number }) {
+export function FormCheckSlot({ exerciseId, side, reps, holdSeconds, name }: { exerciseId: string; side?: "left" | "right"; reps?: number; holdSeconds?: number; name?: { en: string; ru: string } }) {
   const [open, setOpen] = useState(false);
   const [saved, setSaved] = useState<"idle" | "saved" | "failed">("idle");
 
@@ -27,20 +29,20 @@ export function FormCheckSlot({ exerciseId, side, reps, holdSeconds }: { exercis
     setSaved(result.ok ? "saved" : "failed");
   };
 
-  if (!open) {
-    return (
-      <div className="rv-glass flex flex-wrap items-center gap-3 p-4">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-700"><Camera className="h-5 w-5" aria-hidden="true" /></span>
-        <p className="min-w-0 flex-1 text-[13.5px] leading-5 text-slate-700"><b className="text-navy-800"><T en="Camera form check" ru="Camera se form check" /></b><br /><T en="Optional. Your phone's camera counts your repetitions and gives short tips. Nothing is recorded or sent." ru="Marzi ki baat hai. Aap ke phone ka camera repetitions ginta hai aur chhote mashware deta hai. Kuch record ya send nahi hota." /></p>
-        <button type="button" className="rv-btn rv-btn-primary" onClick={() => { setSaved("idle"); setOpen(true); }} data-pna-formcheck-open><T en="Try it" ru="Aazmayein" /></button>
-      </div>
-    );
-  }
   return (
-    <div className="space-y-2">
-      <FormCheckPanel specId={exerciseId} side={side} targetReps={reps} targetHoldSeconds={holdSeconds} onFinished={onFinished} onClose={() => setOpen(false)} />
-      {saved === "saved" ? <p className="px-1 text-[12.5px] text-slate-500" role="status"><T en="The numbers of this set were saved for your physiotherapist. No video or picture was kept." ru="Is set ke numbers aap ke physiotherapist ke liye save ho gaye. Koi video ya tasveer nahi rakhi gayi." /></p> : null}
-      {saved === "failed" ? <p className="px-1 text-[12.5px] text-slate-500" role="status"><T en="The numbers could not be saved this time. Your exercise is not affected." ru="Is baar numbers save nahi ho sake. Aap ki exercise par koi asar nahi." /></p> : null}
+    <div className="fc-entry">
+      <button type="button" className="fc-hero" onClick={() => { unlockRecorded(); setSaved("idle"); setOpen(true); }} data-pna-formcheck-open>
+        <span className="fc-orb"><Camera aria-hidden="true" /></span>
+        <span className="fc-hero-text">
+          <b><T en="Check with the camera" ru="Camera se check karein" /></b>
+          <small><T en="Your phone counts for you and tells you if you are doing it right." ru="Aap ka phone ginti karega aur batayega ke aap sahi kar rahe hain." /></small>
+        </span>
+        <span className="fc-hero-go"><ChevronRight aria-hidden="true" /></span>
+      </button>
+      <p className="fc-privacy"><ShieldCheck aria-hidden="true" /> <T en="No video or picture is kept." ru="Koi video ya tasveer save nahi hoti." /></p>
+      {saved === "saved" ? <p className="fc-privacy" role="status"><T en="Your numbers were saved for your physiotherapist." ru="Aap ke numbers aap ke physiotherapist ke liye save ho gaye." /></p> : null}
+      {saved === "failed" ? <p className="fc-privacy" role="status"><T en="The numbers could not be saved this time. Your exercise is not affected." ru="Is baar numbers save nahi ho sake. Aap ki exercise par koi asar nahi." /></p> : null}
+      {open ? <FormCheckPanel specId={exerciseId} side={side} targetReps={reps} targetHoldSeconds={holdSeconds} exerciseName={name} onFinished={onFinished} onClose={() => setOpen(false)} /> : null}
     </div>
   );
 }
