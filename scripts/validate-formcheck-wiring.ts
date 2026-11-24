@@ -41,10 +41,15 @@ ok(/specFor\(input\.specId\)/.test(action), "the save action must check the exer
 ok(!/landmark|video|image|blob|base64/i.test(action.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "").replace(/No video[^\n]*/g, "")), "the save action must not handle pictures, video or landmarks");
 
 // 4. no recording, no upload from the browser code
-for (const file of ["src/components/rehabverse/formcheck/useFormCheck.ts", "src/components/rehabverse/formcheck/FormCheckPanel.tsx", "src/lib/formcheck/browser/camera.ts", "src/lib/formcheck/browser/draw.ts", "src/lib/formcheck/browser/runtime.ts"]) {
+for (const file of ["src/components/rehabverse/formcheck/useFormCheck.ts", "src/components/rehabverse/formcheck/FormCheckPanel.tsx", "src/lib/formcheck/browser/camera.ts", "src/lib/formcheck/browser/hud.ts", "src/lib/formcheck/browser/level.ts", "src/components/rehabverse/formcheck/AlignmentOverlay.tsx", "src/lib/formcheck/browser/runtime.ts"]) {
   const code = read(file).replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
   ok(!/MediaRecorder|toDataURL|toBlob|captureStream|createImageBitmap|fetch\(|XMLHttpRequest|sendBeacon|WebSocket|localStorage|sessionStorage|indexedDB/.test(code), `${file}: the camera code must not record, store or send anything`);
 }
+
+// 4b. the HUD follows the site's motion choice and never asks the device itself
+const hook2 = read("src/components/rehabverse/formcheck/useFormCheck.ts");
+ok(/motionReduced\(\)/.test(hook2) && !/matchMedia/.test(hook2 + read("src/lib/formcheck/browser/hud.ts")), "the HUD follows the visitor's motion choice (motionReduced) and does not ask the device");
+ok(/reducedMotion/.test(read("src/lib/formcheck/browser/hud.ts")), "the HUD has a calm mode");
 
 // 5. the deploy: model files fetched and verified at build, database check, header and file smoke test
 const deploy = read(".github/workflows/deploy-cloudflare-production.yml");

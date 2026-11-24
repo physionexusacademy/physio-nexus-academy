@@ -1,6 +1,8 @@
+import { assessAlignment, type Alignment } from "./alignment.ts";
 import { Calibrator } from "./calibrate.ts";
 import { CueEngine, type CueEvent, type CueReading } from "./cues.ts";
 import { OneEuroFilter } from "./filter.ts";
+import { GLITCH_FLOOR, HampelGuard } from "./guard.ts";
 import { nearSide, needsHead, readMetric, type Side } from "./geometry.ts";
 import { STATUS_MESSAGES, SETUP_MESSAGES } from "./messages.ts";
 import { mayShowAngle, movementTypeOf } from "./movement-types.ts";
@@ -24,6 +26,8 @@ export type SessionOptions = {
   /** the face model is running and `Frame.head` is supplied */
   face?: boolean;
   minVisibility?: number;
+  /** reject one-frame glitches of the pose model before smoothing (default true; switched off only to measure what the guard is worth) */
+  guard?: boolean;
 };
 export type MetricReading = { raw: number; change: number; confidence: number };
 export type SessionState = {
@@ -46,6 +50,8 @@ export type SessionState = {
   cue: CueEvent | null;
   /** every metric of the pass, this frame */
   readings: Record<string, MetricReading | null>;
+  /** the alignment screen (set-up and neutral position only; null while a set is running) */
+  alignment: Alignment | null;
 };
 export type SessionSummary = {
   specId: string;
@@ -64,6 +70,8 @@ export type SessionSummary = {
   /** the largest change of each metric from the start position during the set (the range reached) */
   peak: Record<string, number>;
   limits: Bi;
+  /** one-frame glitches of the pose model that were ignored (a measure of how steady the tracking was) */
+  glitches: number;
 };
 
 const SETUP_OK_MS = 600;
@@ -79,6 +87,8 @@ export class FormCheckSession {
   private readonly tested: Side | undefined;
   private readonly face: boolean;
   private readonly minVisibility: number;
+  private readonly useGuard: boolean;
+  private guards = new Map<string, HampelGuard>();
   private readonly metrics: Metric[];
   private readonly need: CameraSpec["need"];
   private readonly view: "front" | "side" | "feet" | "head";
@@ -115,6 +125,7 @@ export class FormCheckSession {
     this.tested = options.tested;
     this.face = options.face ?? false;
     this.minVisibility = options.minVisibility ?? 0.5;
+    this.useGuard = options.guard ?? true;
     const second = this.pass === 2 ? spec.second : undefined;
     if (this.pass === 2 && !second) throw new Error(`${spec.id} has no second pass`);
     this.metrics = (second?.metrics ?? spec.metrics).filter((m) => !needsHead(m) || this.face);
@@ -134,7 +145,7 @@ export class FormCheckSession {
   private newCalibrator(): Calibrator {
     const strict = new Set<string>(this.rules.map((c) => c.metric));
     if (this.primary) strict.add(this.primary.metric);
-    return new Calibrator(this.metrics, { tested: this.tested, minVisibility: this.minVisibility, strict: [...strict] });
+    return new Calibrator(this.metrics, { tested: this.tested, minVisibility: this.minVisibility, strict: [...strict], guard: this.useGuard });
   }
 
   private unavailable(): boolean {
@@ -149,7 +160,7 @@ export class FormCheckSession {
   }
 
   private blank(): SessionState {
-    return { phase: this.phase, hint: null, setup: null, calibration: 0, tracking: false, progress: 0, reps: 0, partial: 0, holdMs: 0, primary: null, cue: null, readings: {} };
+    return { phase: this.phase, hint: null, setup: null, calibration: 0, tracking: false, progress: 0, reps: 0, partial: 0, holdMs: 0, primary: null, cue: null, readings: {}, alignment: null };
   }
 
   get state(): SessionState {
@@ -164,6 +175,7 @@ export class FormCheckSession {
     this.phase = "setup";
     this.okSince = null;
     this.filters.clear();
+    this.guards.clear();
     this.counter = null;
     this.timer = null;
     this.cues.reset();
@@ -181,10 +193,12 @@ export class FormCheckSession {
       this.okSince = setup.ok ? (this.okSince ?? frame.t) : null;
       if (setup.ok && frame.t - (this.okSince ?? frame.t) >= SETUP_OK_MS) {
         this.phase = "calibrating";
-        this.current = { ...this.blank(), phase: "calibrating", setup, hint: STATUS_MESSAGES.calibrating };
+        this.current = { ...this.blank(), phase: "calibrating", setup, hint: STATUS_MESSAGES.calibrating, alignment: assessAlignment(frame, { need: this.need, view: this.view, tested: this.tested, minVisibility: this.minVisibility, size: this.size }, 0) };
         return this.current;
       }
-      this.current = { ...this.blank(), phase: "setup", setup, hint: setup.ok ? null : SETUP_MESSAGES[setup.issues[0]] };
+      const steady = setup.ok ? Math.min(1, (frame.t - (this.okSince ?? frame.t)) / SETUP_OK_MS) : 0;
+      const alignment = assessAlignment(frame, { need: this.need, view: this.view, tested: this.tested, minVisibility: this.minVisibility, size: this.size }, steady);
+      this.current = { ...this.blank(), phase: "setup", setup, hint: setup.ok ? null : SETUP_MESSAGES[setup.issues[0]], alignment };
       return this.current;
     }
 
@@ -198,7 +212,8 @@ export class FormCheckSession {
         this.current = { ...this.blank(), phase: "active", calibration: 1, hint: STATUS_MESSAGES.ready };
         return this.current;
       }
-      this.current = { ...this.blank(), phase: "calibrating", calibration: step.progress, hint: STATUS_MESSAGES.calibrating };
+      const alignment = assessAlignment(frame, { need: this.need, view: this.view, tested: this.tested, minVisibility: this.minVisibility, size: this.size }, step.progress);
+      this.current = { ...this.blank(), phase: "calibrating", calibration: step.progress, hint: STATUS_MESSAGES.calibrating, alignment };
       return this.current;
     }
 
@@ -210,6 +225,17 @@ export class FormCheckSession {
     if (!p) return;
     if (p.mode === "reps") this.counter = new RepCounter({ rest: p.rest, target: p.target, holdMs: p.holdMs });
     else this.timer = new HoldTimer();
+  }
+
+  /** One-frame glitches of the pose model are replaced by the recent median before smoothing (see guard.ts). */
+  private deglitch(metric: Metric, value: number): number {
+    if (!this.useGuard) return value;
+    let guard = this.guards.get(metric.id);
+    if (!guard) {
+      guard = new HampelGuard(metric.kind === "offset" || metric.kind === "dist" ? GLITCH_FLOOR.ratio : GLITCH_FLOOR.angle);
+      this.guards.set(metric.id, guard);
+    }
+    return guard.push(value).value;
   }
 
   private smooth(id: string, value: number, t: number): number {
@@ -245,7 +271,7 @@ export class FormCheckSession {
     for (const metric of this.metrics) {
       const r = blocking.length || this.paused ? null : readMetric(metric, frame, { minVisibility: this.minVisibility, baseline, side, tested: this.tested });
       if (!r) { readings[metric.id] = null; cueReadings[metric.id] = null; continue; }
-      const raw = this.smooth(metric.id, r.value, t);
+      const raw = this.smooth(metric.id, this.deglitch(metric, r.value), t);
       const change = metric.kind === "rotation" ? raw : raw - (baseline[metric.id] ?? 0);
       readings[metric.id] = { raw, change, confidence: r.confidence };
       cueReadings[metric.id] = { raw, change };
@@ -303,6 +329,7 @@ export class FormCheckSession {
       primary: primaryReading,
       cue,
       readings,
+      alignment: null,
     };
     return this.current;
   }
@@ -348,6 +375,7 @@ export class FormCheckSession {
       baseline: this.baseline,
       peak: { ...this.peaks },
       limits: this.spec.limits,
+      glitches: [...this.guards.values()].reduce((n, g) => n + g.rejected, 0),
     };
   }
 }

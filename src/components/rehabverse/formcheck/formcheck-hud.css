@@ -1,0 +1,44 @@
+/* Camera Form Check: the alignment screen laid over the live view. Calm: slow breathing only, nothing flashes; the site's motion switch (MotionGovernor) turns the
+   animations off, and so does the `reduce` rule below. */
+.fc-hud { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; }
+.fc-top { display: flex; align-items: flex-start; gap: 10px; }
+.fc-ring { position: relative; width: 58px; height: 58px; flex: none; filter: drop-shadow(0 0 10px rgba(45, 212, 191, 0.35)); }
+.fc-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.fc-ring-track { fill: rgba(5, 18, 36, 0.62); stroke: rgba(255, 255, 255, 0.16); stroke-width: 4; }
+.fc-ring-bar { fill: none; stroke-width: 4.5; stroke-linecap: round; transition: stroke-dashoffset 0.35s ease, stroke 0.35s ease; }
+.fc-ring-num { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 17px; letter-spacing: -0.02em; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); }
+.fc-ring-num small { display: block; font-size: 11px; font-weight: 700; opacity: 0.8; margin-top: -2px; }
+.fc-score { display: grid; justify-items: center; gap: 3px; flex: none; }
+.fc-state { margin: 0; color: #e6fffb; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8); max-width: 78px; text-align: center; line-height: 1.15; }
+.fc-state[data-on="true"] { color: #5eead4; }
+.fc-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; justify-content: flex-end; max-width: calc(100% - 92px); padding-top: 2px; }
+.fc-chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px 4px 7px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #fff;
+  background: rgba(8, 22, 42, 0.66); border: 1px solid rgba(251, 191, 36, 0.7); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.fc-chip svg { width: 14px; height: 14px; flex: none; color: #fbbf24; }
+.fc-chip[data-ok="true"] { padding: 4px 6px; }
+.fc-chip[data-ok="true"] { border-color: rgba(45, 212, 191, 0.85); background: rgba(13, 148, 136, 0.45); box-shadow: 0 0 12px rgba(45, 212, 191, 0.35); }
+.fc-chip[data-ok="true"] svg { color: #5eead4; }
+.fc-chip[data-first="true"] { animation: fc-breathe 1.8s ease-in-out infinite; }
+.fc-chip i { display: block; width: 18px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); overflow: hidden; }
+.fc-chip i b { display: block; height: 100%; background: #fbbf24; border-radius: 2px; transition: width 0.3s ease; }
+.fc-level { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: grid; justify-items: center; gap: 4px; color: #fff; font-size: 12px; font-weight: 800; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
+.fc-level-dial { position: relative; width: 38px; height: 38px; border-radius: 50%; border: 2px solid rgba(251, 191, 36, 0.85); background: rgba(8, 22, 42, 0.55); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.fc-level-dial::before, .fc-level-dial::after { content: ""; position: absolute; background: rgba(255, 255, 255, 0.35); }
+.fc-level-dial::before { left: 50%; top: 5px; bottom: 5px; width: 1px; }
+.fc-level-dial::after { top: 50%; left: 5px; right: 5px; height: 1px; }
+.fc-level-dial b { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fbbf24; transition: transform 0.2s ease, background 0.3s ease; }
+.fc-level[data-ok="true"] .fc-level-dial { border-color: rgba(45, 212, 191, 0.95); box-shadow: 0 0 12px rgba(45, 212, 191, 0.5); }
+.fc-level[data-ok="true"] .fc-level-dial b { background: #5eead4; }
+.fc-hint { align-self: center; max-width: 92%; padding: 9px 14px; border-radius: 14px; text-align: center; font-size: 15px; font-weight: 800; color: #fff;
+  background: rgba(6, 18, 36, 0.72); border: 1px solid rgba(103, 232, 249, 0.35); box-shadow: 0 0 22px rgba(34, 211, 238, 0.16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.fc-hint[data-tone="ok"] { border-color: rgba(45, 212, 191, 0.7); box-shadow: 0 0 22px rgba(45, 212, 191, 0.3); }
+.fc-cue { align-self: center; max-width: 94%; padding: 11px 16px; border-radius: 16px; text-align: center; font-size: 16.5px; font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.96), rgba(8, 112, 140, 0.96)); border: 1px solid rgba(153, 246, 228, 0.55); box-shadow: 0 6px 26px rgba(13, 148, 136, 0.45); }
+@keyframes fc-breathe { 0%, 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0); } 50% { box-shadow: 0 0 14px rgba(251, 191, 36, 0.55); } }
+@media (prefers-reduced-motion: reduce) {
+  .fc-chip[data-first="true"] { animation: none; }
+  .fc-ring-bar, .fc-chip, .fc-chip i b, .fc-level-dial b { transition: none; }
+}

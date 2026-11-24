@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FormCheckSession, type CameraSpec, type SessionState, type SessionSummary, type Side } from "@/lib/formcheck";
 import { closeCamera, openCamera, type CameraProblem } from "@/lib/formcheck/browser/camera";
-import { drawSkeleton } from "@/lib/formcheck/browser/draw";
+import { createHudMemo, drawHud, type HudMemo } from "@/lib/formcheck/browser/hud";
+import { motionReduced } from "@/lib/motion";
 import { PoseRuntime } from "@/lib/formcheck/browser/runtime";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 
@@ -22,6 +23,7 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
   const runtimeRef = useRef<PoseRuntime | null>(null);
   const sessionRef = useRef<FormCheckSession | null>(null);
   const loopRef = useRef<{ stop: boolean }>({ stop: false });
+  const hudRef = useRef<HudMemo>(createHudMemo());
   const optionsRef = useRef(options);
   optionsRef.current = options;
   const [status, setStatus] = useState<FormCheckStatus>("idle");
@@ -75,29 +77,37 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
     sessionRef.current = session;
     loopRef.current = { stop: false };
     shown.current = { phase: "", hint: "", cue: "", reps: -1, tick: 0 };
+    hudRef.current = createHudMemo();
     setStatus("live");
 
     const mirror = (optionsRef.current.facing ?? "user") === "user";
     const loop = loopRef.current;
-    const step = () => {
+    // Each frame is stamped with the video's own presentation time when the browser supplies it (requestVideoFrameCallback): it is steady even when the phone is busy, so the
+    // smoothing and the timing of repetitions do not wobble with the processing. A picture that has not changed since the last call is not processed twice.
+    let lastMedia = -1;
+    const step = (_now?: number, meta?: { mediaTime?: number }) => {
       if (loop.stop || !runtimeRef.current) return;
-      try {
-        const { frame, landmarks } = runtimeRef.current.detect(video);
-        const next = session.push(frame);
-        if (canvasRef.current) drawSkeleton(canvasRef.current, landmarks, { mirror, simple: optionsRef.current.simple });
-        const mark = shown.current;
-        const hint = next.hint?.en ?? "";
-        const cue = next.cue?.id ?? "";
-        const now = performance.now();
-        if (next.phase !== mark.phase || hint !== mark.hint || cue !== mark.cue || next.reps !== mark.reps || now - mark.tick > 100) {
-          shown.current = { phase: next.phase, hint, cue, reps: next.reps, tick: now };
-          setState(next);
+      const media = meta?.mediaTime !== undefined ? meta.mediaTime * 1000 : video.currentTime * 1000;
+      if (media !== lastMedia) {
+        lastMedia = media;
+        try {
+          const { frame, landmarks } = runtimeRef.current.detect(video, media);
+          const next = session.push(frame);
+          if (canvasRef.current) drawHud(canvasRef.current, next, landmarks, { mirror, simple: optionsRef.current.simple ?? false, reducedMotion: motionReduced(), now: performance.now() }, hudRef.current);
+          const mark = shown.current;
+          const hint = next.hint?.en ?? "";
+          const cue = next.cue?.id ?? "";
+          const now = performance.now();
+          if (next.phase !== mark.phase || hint !== mark.hint || cue !== mark.cue || next.reps !== mark.reps || now - mark.tick > 100) {
+            shown.current = { phase: next.phase, hint, cue, reps: next.reps, tick: now };
+            setState(next);
+          }
+        } catch {
+          /* one bad frame is skipped */
         }
-      } catch {
-        /* one bad frame is skipped */
       }
-      if ("requestVideoFrameCallback" in video) (video as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => void }).requestVideoFrameCallback(step);
-      else requestAnimationFrame(step);
+      if ("requestVideoFrameCallback" in video) (video as HTMLVideoElement & { requestVideoFrameCallback: (cb: (now: number, meta: { mediaTime?: number }) => void) => void }).requestVideoFrameCallback(step);
+      else requestAnimationFrame(() => step());
     };
     step();
   }, [spec, release]);
