@@ -147,7 +147,7 @@ export class Calibrator {
     for (const metric of this.metrics) {
       const reading = metric.kind === "rotation" ? (() => { const w = widthOf(metric, frame, { near, tested: this.tested }); return w && w > 0 ? { value: w } : null; })() : readMetric(metric, frame, { minVisibility: this.opts.minVisibility, side: near, tested: this.tested, baseline: undefined });
       if (!reading) { if (this.strict.has(metric.id)) return { values, complete: false }; continue; }
-      values[metric.id] = deglitch && this.useGuard ? this.deglitch(metric, reading.value) : reading.value;
+      values[metric.id] = deglitch && this.useGuard ? this.deglitch(metric, reading.value, frame.t) : reading.value;
     }
     return { values, complete: true };
   }
@@ -195,7 +195,7 @@ export class Calibrator {
     return { done: true, progress: 1, baseline, side: this.nearSideSeen, forced: true };
   }
 
-  private deglitch(metric: Metric, value: number): number {
+  private deglitch(metric: Metric, value: number, t: number): number {
     // a trunk or head rotation is measured against a width in pixels here (not in degrees), so it has no fixed floor: its stillness test is relative and stays as it was
     if (metric.kind === "rotation") return value;
     let guard = this.guards.get(metric.id);
@@ -203,7 +203,7 @@ export class Calibrator {
       guard = new HampelGuard(isRatio(metric) ? GLITCH_FLOOR.ratio : GLITCH_FLOOR.angle);
       this.guards.set(metric.id, guard);
     }
-    return guard.push(value).value;
+    return guard.push(value, t).value;
   }
 
   reset() {

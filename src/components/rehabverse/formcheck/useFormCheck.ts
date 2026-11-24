@@ -5,6 +5,7 @@ import { FormCheckSession, type CameraSpec, type SessionState, type SessionSumma
 import { closeCamera, openCamera, type CameraProblem } from "@/lib/formcheck/browser/camera";
 import { createHudMemo, drawHud, type HudMemo } from "@/lib/formcheck/browser/hud";
 import { motionReduced } from "@/lib/motion";
+import { trackingHealth, type TrackingHealth } from "@/lib/formcheck/health";
 import { PoseRuntime } from "@/lib/formcheck/browser/runtime";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 
@@ -31,6 +32,7 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
   const [state, setState] = useState<SessionState | null>(null);
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const [software, setSoftware] = useState<SoftwareRecord | null>(null);
+  const [health, setHealth] = useState<TrackingHealth | null>(null);
   const shown = useRef({ phase: "", hint: "", cue: "", reps: -1, tick: 0 });
 
   const release = useCallback(() => {
@@ -56,6 +58,7 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
     setProblem(null);
     setSummary(null);
     setState(null);
+    setHealth(null);
     setStatus("loading");
     const opened = await openCamera(video, optionsRef.current.facing ?? "user");
     if (!opened.ok) { setProblem(opened.problem); setStatus("error"); return; }
@@ -85,11 +88,21 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
     // Each frame is stamped with the video's own presentation time when the browser supplies it (requestVideoFrameCallback): it is steady even when the phone is busy, so the
     // smoothing and the timing of repetitions do not wobble with the processing. A picture that has not changed since the last call is not processed twice.
     let lastMedia = -1;
+    // how many pictures a second the phone manages, from the video clock: the MEDIAN of the last twenty gaps (a slow first few pictures while the model warms up must not
+    // count), reported only once there are enough, about twice a second
+    const gaps: number[] = []; let seen = 0; let reportedAt = 0;
     const step = (_now?: number, meta?: { mediaTime?: number }) => {
       if (loop.stop || !runtimeRef.current) return;
       const media = meta?.mediaTime !== undefined ? meta.mediaTime * 1000 : video.currentTime * 1000;
       if (media !== lastMedia) {
+        if (lastMedia >= 0 && media > lastMedia && ++seen > 4) { gaps.push(media - lastMedia); if (gaps.length > 20) gaps.shift(); }
         lastMedia = media;
+        const clock = performance.now();
+        if (gaps.length >= 10 && clock - reportedAt > 500) {
+          reportedAt = clock;
+          const typical = [...gaps].sort((a, b) => a - b)[Math.floor(gaps.length / 2)];
+          setHealth((was) => { const next = trackingHealth(1000 / typical); return was && was.fps === next.fps && was.level === next.level ? was : next; });
+        }
         try {
           const { frame, landmarks } = runtimeRef.current.detect(video, media);
           const next = session.push(frame);
@@ -121,5 +134,5 @@ export function useFormCheck(spec: CameraSpec, options: FormCheckOptions = {}) {
     return () => { document.removeEventListener("visibilitychange", hide); release(); };
   }, [stop, release]);
 
-  return { videoRef, canvasRef, status, problem, state, summary, software, start, stop, recalibrate, getSession: () => sessionRef.current };
+  return { videoRef, canvasRef, status, problem, state, summary, software, health, start, stop, recalibrate, getSession: () => sessionRef.current };
 }

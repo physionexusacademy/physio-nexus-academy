@@ -23,7 +23,7 @@ export const TARGET = 90;
 
 type Rep = { peak: number; valley: number; ms: number; pause: number; gapAtTop: number };
 export type Truth = { at: number; amp: number };
-export function makeSet(pattern: Pattern, seed: number): { signal: (t: number) => number | null; seconds: number; truth: Truth[] } {
+export function makeSet(pattern: Pattern, seed: number, cycleMs?: number): { signal: (t: number) => number | null; seconds: number; truth: Truth[] } {
   const r = rng(seed);
   const reps: Rep[] = [];
   for (let i = 0; i < REPS; i++) {
@@ -40,6 +40,8 @@ export function makeSet(pattern: Pattern, seed: number): { signal: (t: number) =
       case "noisy": rep = { peak: 100, valley: 40 + 10 * r(), ms: 2000, pause: 0, gapAtTop: 0 }; break;
       case "drift": rep = { peak: 100 + (i / REPS) * 25, valley: (i / REPS) * 25, ms: 2600, pause: 300, gapAtTop: 0 }; break;
     }
+    // `cycleMs`: every repetition takes exactly this long (to test the advice a slow phone gives about how long to take)
+    if (cycleMs) rep.ms = cycleMs;
     reps.push(rep);
   }
   const noise = pattern === "noisy" ? 4 : 1.2;
@@ -92,14 +94,15 @@ export type CounterLike = { push: (value: number | null, t: number) => unknown; 
  * Plays a set into a counter the way the session does: every reading goes through the glitch guard and the smoothing first (`pipeline: false` feeds the raw signal,
  * as the first versions of this lab did).
  */
-export function countSet(pattern: Pattern, seed: number, make: () => CounterLike, pipeline = true): number {
-  const { signal, seconds } = makeSet(pattern, seed);
+export function countSet(pattern: Pattern, seed: number, make: () => CounterLike, pipeline = true, fps = 30, cycleMs?: number): number {
+  const { signal, seconds } = makeSet(pattern, seed, cycleMs);
   const counter = make();
   const guard = new HampelGuard(GLITCH_FLOOR.angle);
   const filter = new OneEuroFilter(1.0, 0.02, 1.0);
-  for (let t = 0; t <= seconds * 1000; t += 1000 / 30) {
+  // `fps`: how many pictures a second the phone manages (a slow phone sees a repetition in only a few pictures)
+  for (let t = 0; t <= seconds * 1000; t += 1000 / fps) {
     const raw = signal(t);
-    counter.push(raw === null || !pipeline ? raw : filter.filter(guard.push(raw).value, t), t);
+    counter.push(raw === null || !pipeline ? raw : filter.filter(guard.push(raw, t).value, t), t);
   }
   return counter.state().reps;
 }

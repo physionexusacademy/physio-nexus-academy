@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Camera, CheckCircle2, EyeOff, Ghost, RotateCcw, Square, Video } from "lucide-react";
-import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, specFor, type CameraSpec, type Side } from "@/lib/formcheck";
+import { AlertTriangle, Camera, CheckCircle2, EyeOff, Gauge, Ghost, RotateCcw, Square, Video } from "lucide-react";
+import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, healthTip, specFor, type CameraSpec, type Side } from "@/lib/formcheck";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
 import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
@@ -167,6 +167,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, onFinis
               </div>
             ) : null}
             {state.primary?.shown ? <p className="text-[13px] text-slate-600">{Math.round(state.primary.value)}°</p> : null}
+            {fc.health && state.phase === "active" && healthTip(fc.health) ? <p className="flex items-start gap-2 rounded-xl bg-sky-50 px-3 py-2 text-[13px] leading-5 text-sky-950" role="status" data-pna-formcheck-speed={fc.health.level}><Gauge className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> <span>{healthTip(fc.health)![lang]}</span></p> : null}
             <div className="flex flex-wrap gap-2">
               <button type="button" className="rv-btn rv-btn-primary" onClick={() => { fc.stop(); phone.stop(); }} data-pna-formcheck-stop><Square className="h-4 w-4" aria-hidden="true" /> <T en="Finish" ru="Khatam" /></button>
               <button type="button" className="rv-btn rv-btn-ghost" onClick={() => setSimple(!simple)} aria-pressed={simple}><EyeOff className="h-4 w-4" aria-hidden="true" /> <T en="Simple view" ru="Saada view" /></button>

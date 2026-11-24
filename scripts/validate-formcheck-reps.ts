@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { HampelGuard, OneEuroFilter, RepCounter, GLITCH_FLOOR } from "../src/lib/formcheck/index.ts";
 import { CLEAN, HARSH, NORMAL, trial } from "./formcheck-faults.ts";
 import { PATTERNS, REPS, TARGET, countSet, makeSet, type Pattern } from "./formcheck-replab.ts";
+import { healthTip, lintCue, trackingHealth } from "../src/lib/formcheck/index.ts";
 import { rng } from "./formcheck-synthetic.ts";
 
 /**
@@ -94,6 +95,48 @@ function countSetFull(pattern: Pattern) {
     sets += 1; total += c.state().reps;
   }
   ok(total === sets * 5, `a 5 s hold with one-reading dips in the middle is one repetition each time, never several (${total} reps in ${sets} sets of 5)`);
+}
+
+/* 3c. a slow phone: the same repetitions seen in only a few pictures a second. Each way of moving is counted exactly down to the frame rate below, which is where the
+   movement itself becomes too fast to see (a 0.7 s repetition is only about three pictures at 4 a second: no method can resolve it). The first version of the counter, whose
+   filters were counted in readings, lost flowing repetitions at 6 pictures a second, quick ones at 10 and very fast ones at 15. */
+{
+  const SLOW: [Pattern, number][] = [["discrete", 3], ["flowing", 3], ["shallow", 3], ["oneside", 3], ["quick", 6], ["fast", 10]];
+  for (const [pattern, fps] of SLOW) {
+    for (const rate of [30, 15, 10, 6, 4, 3].filter((r) => r >= fps)) {
+      let exact = 0;
+      for (let seed = 1; seed <= 20; seed++) if (countSet(pattern, seed * 17, () => new RepCounter({ rest: 0, target: TARGET }), true, rate) === REPS) exact++;
+      ok(exact >= 19, `${pattern}: 25 repetitions counted exactly at ${rate} pictures a second (${exact}/20 sets)`);
+    }
+  }
+  const worst = Math.max(...Array.from({ length: 20 }, (_, i) => Math.abs(countSet("variable", (i + 1) * 17, () => new RepCounter({ rest: 0, target: TARGET }), true, 6) - REPS)));
+  ok(worst <= 4, `variable repetitions at 6 pictures a second: never more than 4 off (${worst})`);
+  // a slow phone counts less, never wildly more: nothing is invented
+  let most = 0;
+  for (const pattern of PATTERNS) for (let seed = 1; seed <= 10; seed++) for (const rate of [6, 4, 3]) most = Math.max(most, countSet(pattern, seed * 17, () => new RepCounter({ rest: 0, target: TARGET }), true, rate) - REPS);
+  ok(most <= 2, `on a slow phone no pattern is ever counted more than 2 above the truth (${most})`);
+}
+
+/* 3d. the advice a slow phone gives is true: a repetition that takes at least the time it asks for is counted */
+{
+  const levels = [[60, "good"], [30, "good"], [15, "good"], [14, "slow"], [8, "slow"], [7, "very-slow"], [3, "very-slow"], [2.5, "very-slow"], [2, "too-slow"], [1, "too-slow"]] as const;
+  for (const [fps, level] of levels) ok(trackingHealth(fps).level === level, `${fps} pictures a second is "${level}" (${trackingHealth(fps).level})`);
+  ok(trackingHealth(30).minRepSeconds === 0.7 && trackingHealth(10).minRepSeconds === 0.7 && trackingHealth(6).minRepSeconds === 1.2 && trackingHealth(4).minRepSeconds === 1.8 && trackingHealth(3).minRepSeconds === 2.4, "about seven pictures a repetition, never under 0.7 s: 0.7 s at 30 and 10 a second, 1.2 s at 6, 1.8 s at 4, 2.4 s at 3");
+  ok(healthTip(trackingHealth(30)) === null && healthTip(trackingHealth(20)) === null, "a quick phone is told nothing");
+  const tooSlow = healthTip(trackingHealth(1));
+  ok(tooSlow !== null && /too slow/.test(tooSlow.en) && !/\d+(\.\d)? s for each/.test(tooSlow.en), "a phone that is too slow to follow is told so, not given an absurd repetition time");
+  for (const fps of [12, 5]) {
+    const tip = healthTip(trackingHealth(fps));
+    ok(tip !== null && tip.en.length > 20 && tip.ru.length > 20, `a slower phone (${fps} a second) is told in both languages`);
+    const wording = tip ? [...lintCue(tip.en), ...lintCue(tip.ru)].filter((p) => !p.startsWith("longer than")) : ["no tip"];
+    ok(wording.length === 0, `the tip for ${fps} a second keeps to the wording rules (${wording.join("; ") || "ok"})`);
+  }
+  for (const fps of [10, 6, 4, 3]) {
+    const cycle = trackingHealth(fps).minRepSeconds * 1000;
+    let exact = 0;
+    for (let seed = 1; seed <= 20; seed++) for (const pattern of ["flowing", "discrete"] as const) if (countSet(pattern, seed * 17, () => new RepCounter({ rest: 0, target: TARGET }), true, fps, cycle) === REPS) exact++;
+    ok(exact >= 38, `at ${fps} pictures a second, repetitions that take the advised ${(cycle / 1000).toFixed(1)} s are counted exactly (${exact}/40 sets)`);
+  }
 }
 
 /* 4. whole sets through the session with a misbehaving pose model, the person starting 1.5 s after "ready" */

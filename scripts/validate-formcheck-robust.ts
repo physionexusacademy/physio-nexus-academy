@@ -30,6 +30,20 @@ const ok = (condition: unknown, message: string) => { checks++; assert(condition
   ok(new HampelGuard(7).push(5).rejected === false, "the first values pass untouched");
 }
 
+/* 1b. the guard looks back over a stretch of TIME, so a slow phone's quick movement is not taken for a glitch */
+{
+  const slow = new HampelGuard(7);
+  const readings = [0, 0, 0, 40, 0, 0, 0]; // a real peak lasting one picture
+  const out = readings.map((v, i) => slow.push(v, i * 250)); // four pictures a second
+  ok(out.every((r) => !r.rejected), "at four pictures a second a one-picture peak is real movement, not a glitch");
+  const fast = new HampelGuard(7);
+  const out2 = readings.map((v, i) => fast.push(v, i * 33));
+  ok(out2[3].rejected, "at thirty pictures a second the same one-picture peak is a glitch and is replaced");
+  const mid = new HampelGuard(7);
+  const out3 = readings.map((v, i) => mid.push(v, i * 100)); // ten a second: two readings fit in the look-back, too few to tell
+  ok(out3.every((r) => !r.rejected), "at ten pictures a second the guard steps aside rather than guess");
+}
+
 /* 2. stillness is judged by the spread, not by the worst frame */
 {
   const r = rng(11);
