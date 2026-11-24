@@ -5,7 +5,7 @@ import lock from "./assets.lock.json";
  * (from assets.lock.json, which scripts/fetch-formcheck-assets.mjs checks against the files that are actually served). Bump ENGINE_VERSION whenever geometry, thresholds,
  * specs or cue rules change; a study freezes it before the first participant (docs/camera-form-check/13-preregistration-summary.md).
  */
-export const ENGINE_VERSION = "formcheck-0.2.0";
+export const ENGINE_VERSION = "formcheck-0.3.0";
 
 export type SoftwareRecord = { engine: string; library: string; poseModel: string; poseModelSha256: string; faceModel: string | null; faceModelSha256: string | null; delegate: string };
 

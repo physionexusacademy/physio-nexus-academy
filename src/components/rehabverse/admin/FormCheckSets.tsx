@@ -22,7 +22,7 @@ export function FormCheckSets({ sets }: { sets: AdminFormCheckSet[] }) {
                 <tr key={s.id} className="border-t border-slate-100">
                   <td className="py-1.5 pr-3 whitespace-nowrap">{dt(s.created_at)}</td>
                   <td className="pr-3">{s.spec_id.replace(/-/g, " ")}{s.side ? ` (${s.side})` : ""}{s.pass === 2 ? " · second check" : ""}</td>
-                  <td className="pr-3">{isHold ? `${Math.round((s.best_hold_ms ?? 0) / 1000)} s held` : `${s.reps ?? 0} reps${s.partial ? `, ${s.partial} partial` : ""}`}</td>
+                  <td className="pr-3">{isHold ? `${Math.round((s.best_hold_ms ?? 0) / 1000)} s held` : `${s.reps ?? 0} reps${s.partial ? `, ${s.partial} shallow` : ""}`}</td>
                   <td className="pr-3">{s.coverage ? `${Math.round(s.coverage.fraction * 100)}%` : "-"}</td>
                   <td>{tips}</td>
                 </tr>

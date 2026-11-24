@@ -18,6 +18,30 @@ Documents 00 to 16 in this folder are DRAFTS with `[TO COMPLETE]` fields for the
 ## Status
 Done: engine core with tests; ethics pack draft; feasibility; the 27 camera specifications with the coverage check; the browser runtime (pose and face models and the wasm from our own static files, every file checked against `src/lib/formcheck/assets.lock.json`); the patient panel (set-up, the person's own neutral position, live skeleton, gauge, repetition counter or hold timer, cues, summary, a short second check where the spec asks for one); the save of the finished set's numbers; the clinician's list of a patient's camera sets; the camera permission for the patient pages only.
 
+## Repetition counting (engine formcheck-0.3.0)
+
+A patient did 25 repetitions and the tool counted 12 or 13; it sometimes missed one side; and it did not notice that the exercise had begun. Each cause was reproduced in a simulation of how people really move (`scripts/formcheck-replab.ts`, 25-repetition sets played into the counter) before anything was changed:
+
+| How the person moves (25 true repetitions) | Old counter | Now |
+| --- | --- | --- |
+| full range, back to rest each time | 25 | 25 |
+| flowing: the next repetition starts before they are back at rest | **0** | 25 |
+| shallow: 60% of the target range every time | **0** | 25 (all labelled shallow) |
+| one side weaker: every second repetition reaches 55% of the range | **13** | 25 (the 12 shallow ones labelled) |
+| every repetition different (range, return, speed) | **median 14** (8 to 17) | 25 median; 98% of repetitions found one by one |
+| noisy tracking with glitches | **1 to 8** | 25 |
+| about 0.7 s a repetition | 25 | 25 |
+
+Causes: a repetition had to reach 70% of one fixed population target and come back to within 30% of rest; and nothing counted until a "stay still" step had finished, which moving kept restarting.
+
+What the counter does now (`reps.ts`): a repetition is a **peak and a valley, wherever they are**. It counts every deliberate movement of at least a quarter of the way to the target (never less than four times the measured jitter) and reports how many of them were shallower than the full range (`partial` = "shallow"; the database and the server are unchanged). A person counting by eye counts the same way, which is also how the validation study's manual count is made. Safeguards, each with a test that fails without it: a movement must stay above half its own height for 250 ms and two repetitions must be at least 0.5 s apart (a flickering track is not a repetition); a fall or a rise must last two readings (one dip of the noise in the middle of a 5 s hold does not end it); the counter sees the median of its last three readings; a bad burst of readings can never pull the remembered valley more than 2.5 ranges below the top (it heals after one repetition); a gap longer than 1.5 s drops the repetition in progress, and one that resumes at the top is not counted twice.
+
+Starting: if the person starts exercising during the neutral-position step, after 2.5 s the set begins from their first good readings (flagged `forcedStart`) and **the frames of the set-up and of that step are replayed through the counter**, so the first repetitions are not lost. The set-up check forgives a lapse of 0.3 s. The glitch guard's size follows the exercise's own range (a chin tuck is 0.03 of a trunk length). The jitter used by the counter is measured in the neutral position.
+
+Not counted as repetitions (tested): standing still, breathing, a tremor, a restless person, a flickering track. A slow sway of a third of the range every 10 s IS counted (it looks like a slow repetition). Cat-camel's two movements per repetition are rounded, not cut down.
+
+Limits: all of this is the counter's LOGIC against simulated people (and the real pose model on one still person); counting accuracy on real patients is for the validation study (tool count against manual count).
+
 ## Accuracy and the alignment screen (engine formcheck-0.2.0)
 
 What changed, why, and what was measured. Everything below the "real model" line was measured on the real pose model on one real person (a stock photo played as a camera feed, with camera-like sensor noise); everything else is a simulation of the tool's logic with faults added on purpose. **None of it is accuracy on patients: that is the validation study.**

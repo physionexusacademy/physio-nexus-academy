@@ -99,7 +99,7 @@ function run(cfg: ConstructorParameters<typeof RepCounter>[0], signal: (t: numbe
   const state = run({ rest: 0, target: 90 }, noisy, 30.4); // ten periods
   ok(state.reps === 10 && state.partial === 0, `ten noisy repetitions are counted as ten (${state.reps}, partial ${state.partial})`);
   const half = run({ rest: 0, target: 90 }, (t) => sine(t, 3000, 0, 90, 0.5) + gauss(r) * 3, 30.4);
-  ok(half.reps === 0 && half.partial >= 8, `half-range movements are partial, never repetitions (${half.reps} reps, ${half.partial} partial)`);
+  ok(half.reps === 10 && half.partial === 10, `half-range movements are counted, and every one is reported as shallow (${half.reps} reps, ${half.partial} shallow)`);
   const down = run({ rest: 90, target: 0 }, (t) => sine(t, 3000, 90, 0) + gauss(r) * 3, 15.4);
   ok(down.reps === 5, `a movement that goes from a high value to a low one counts the same (${down.reps})`);
   const flicker = run({ rest: 0, target: 90 }, (t) => (Math.floor(t / 100) % 2 === 0 ? 0 : 90), 5);
