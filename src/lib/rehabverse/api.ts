@@ -63,6 +63,9 @@ export const getRegistrations = () => rpc<Registrations>("rehab_admin_registrati
 export const getStudySettings = () => rpc<StudySettings>("rehab_admin_study_settings");
 
 export const getMyOutcomes = () => rpc<MyOutcomes>("rehab_my_outcomes");
+export type AdminFormCheckSet = { id: string; spec_id: string; pass: 1 | 2; side: "left" | "right" | null; created_at: string; reps: number | null; partial: number | null; best_hold_ms: number | null; coverage: { fraction: number } | null; cues: Record<string, number> | null; duration_ms: number | null };
+/** A patient's camera sets (numbers only), newest first. Staff only. */
+export const getAdminFormCheckSets = (patientId: string) => rpc<AdminFormCheckSet[]>("rehab_admin_formcheck_patient_sets", { p_patient_id: patientId });
 export const getAdminOutcomes = (patientId: string) => rpc<AdminOutcomes>("rehab_admin_outcomes", { p_patient_id: patientId });
 
 export const getBoard = () => rpc<BoardRow[]>("rehab_admin_board");

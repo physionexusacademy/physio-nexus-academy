@@ -8,6 +8,8 @@ import type { AdminAssessment, AdminOutcomes, AdminPatient, StoredSnapshot } fro
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
 import { AiConversations } from "./AiConversations";
+import { FormCheckSets } from "./FormCheckSets";
+import type { AdminFormCheckSet } from "@/lib/rehabverse/api";
 import { HistoryBrief } from "./HistoryBrief";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
 import { OutcomesPanel } from "./OutcomesPanel";
@@ -133,7 +135,7 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
   );
 }
 
-export function AdminPatientRecord({ data, outcomes = null }: { data: AdminPatient; outcomes?: AdminOutcomes | null }) {
+export function AdminPatientRecord({ data, outcomes = null, formcheck = null }: { data: AdminPatient; outcomes?: AdminOutcomes | null; formcheck?: AdminFormCheckSet[] | null }) {
   const { patient, assessments, programmes, adverse_events, audit } = data;
   const aiConversations = data.ai_conversations ?? [];
   const live = programmes.find((p) => LIVE.includes(p.programme.status));
@@ -188,6 +190,12 @@ export function AdminPatientRecord({ data, outcomes = null }: { data: AdminPatie
       {outcomes && ["cleared_for_programme", "programme_created", "in_review", "submitted"].includes(latest?.status ?? "") ? (
         <Section id="outcomes" title="Outcome measures" aside={outcomes.plan ? <span className="rv-chip rv-chip-navy">{outcomes.plan.items.length} followed</span> : <span className="rv-chip">not set</span>}>
           <OutcomesPanel patientId={patient.id} outcomes={outcomes} regions={latest?.regions ?? []} preferredLanguage={patient.preferred_language} />
+        </Section>
+      ) : null}
+
+      {formcheck && formcheck.length ? (
+        <Section id="formcheck" title="Camera form checks" aside={<span className="rv-chip rv-chip-navy">{formcheck.length}</span>}>
+          <FormCheckSets sets={formcheck} />
         </Section>
       ) : null}
 

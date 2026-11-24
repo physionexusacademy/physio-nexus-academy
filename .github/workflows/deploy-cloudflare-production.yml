@@ -190,6 +190,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-db
 
+      - name: Fetch and verify the Form Check model files (every file must match the locked SHA-256, or nothing is deployed)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run fetch:formcheck-assets
+
+      - name: Validate the Form Check database (numbers only, immutable records, the patient's AI switch checked in the database)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:formcheck-db
+
       - name: Validate RehabVerse account approval (no confirmation e-mail, the clinic approves, a waiting account can do nothing)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:rehabverse-approval
@@ -507,6 +515,17 @@ jobs:
           # Every Manual Therapy chapter opens with PNA Teacher (technique + world approach layouts).
           check_url "https://physionexusacademy.com/manual-therapy/maitland-joint-mobilization" 'data-pna-technique-teacher="maitland-joint-mobilization"'
           check_url "https://physionexusacademy.com/manual-therapy/mckenzie-mdt" 'data-pna-technique-teacher="mckenzie-mdt"'
+          # Form Check (camera): the pose model files are static files; the camera is allowed on the patient pages only and stays off everywhere else.
+          for file in models/pose_landmarker_full.task models/face_landmarker.task wasm/vision_wasm_internal.wasm wasm/vision_wasm_internal.js; do
+            code="$(curl -sS --connect-timeout 10 --max-time 60 -o /dev/null -w '%{http_code}' "https://physionexusacademy.com/formcheck/$file?deploy=${GITHUB_SHA}" || true)"
+            if [ "$code" != "200" ]; then echo "::error::Form Check file /formcheck/$file answered HTTP $code"; exit 1; fi
+          done
+          echo "Smoke test passed: Form Check model files"
+          policy_home="$(curl -sSI --connect-timeout 10 --max-time 25 "https://physionexusacademy.com/" | tr -d '\r' | grep -i '^permissions-policy:' || true)"
+          if ! printf '%s' "$policy_home" | grep -Fq 'camera=()'; then echo "::error::The home page must keep camera=() (got: $policy_home)"; exit 1; fi
+          policy_me="$(curl -sSI --connect-timeout 10 --max-time 25 "https://physionexusacademy.com/rehabverse/me" | tr -d '\r' | grep -i '^permissions-policy:' || true)"
+          if ! printf '%s' "$policy_me" | grep -Fq 'camera=(self)'; then echo "::warning::/rehabverse/me should allow camera=(self) (got: $policy_me)"; fi
+          echo "Smoke test passed: camera permission policy"
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
           check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
 

@@ -4,6 +4,7 @@ import {
   CAMERA_SPECS, MOVEMENT_TYPES, VALIDATED_TYPES, lintCue, mayShowAngle, metricParts, movementTypeOf, needsBaseline, needsHead, specFor,
   type CameraSpec, type Metric, type Need,
 } from "../src/lib/formcheck/index.ts";
+import { FORMCHECK_EXERCISE_IDS } from "../src/lib/formcheck/ids.ts";
 import { renderDecisions } from "./formcheck-decisions.ts";
 import { loadLibrary } from "./formcheck-library.ts";
 
@@ -27,6 +28,7 @@ for (const lib of library) {
   ok(spec!.region === lib.region, `${lib.id}: region ${spec!.region} does not match the library's ${lib.region}`);
   ok(spec!.sided === lib.sided, `${lib.id}: sided is ${spec!.sided} but the library says ${lib.sided}`);
 }
+ok(JSON.stringify([...FORMCHECK_EXERCISE_IDS].sort()) === JSON.stringify(CAMERA_SPECS.map((s) => s.id).sort()), "src/lib/formcheck/ids.ts must list exactly the exercises that have a spec");
 for (const spec of CAMERA_SPECS) ok(library.some((l) => l.id === spec.id), `${spec.id}: not an exercise of the library`);
 ok(CAMERA_SPECS.map((s) => s.id).join() === library.map((l) => l.id).join(), "specs are listed in library order");
 

@@ -20,6 +20,8 @@ import { CoachChat, COACH_OPEN_EVENT, openCoach } from "./CoachChat";
 import { ExerciseDetails, } from "./ExerciseDetails";
 import { T, useRvLang } from "./useLang";
 import type { Lang } from "./ExercisePlayer";
+import { hasFormCheck } from "@/lib/formcheck/ids";
+import { FormCheckSlot } from "./formcheck/FormCheckSlot";
 
 const ExercisePlayer = dynamic(() => import("./ExercisePlayer"), { ssr: false, loading: () => <div className="aspect-[4/3] animate-pulse rounded-3xl bg-slate-100 sm:aspect-[16/10]" aria-hidden="true" /> });
 
@@ -347,6 +349,9 @@ export function DaySession({ data, ai = false }: { data: SessionDetail; ai?: boo
                   ) : (
                     <div className="grid aspect-[4/3] place-items-center rounded-3xl bg-slate-100 text-sm font-semibold text-slate-500 sm:aspect-[16/10]">{def === undefined && defs ? <T en="3D demo not available — follow the steps below." ru="3D demo maujood nahi — neeche ke steps follow karein." /> : <T en="Loading your guide…" ru="Guide aa raha hai…" />}</div>
                   )}
+                  {ai && access === "open" && hasFormCheck(exercise.exercise_id) ? (
+                    <FormCheckSlot key={exercise.id} exerciseId={exercise.exercise_id} side={side} reps={exercise.reps ?? undefined} holdSeconds={exercise.hold_seconds ?? undefined} />
+                  ) : null}
                   <div className="lg:hidden">{exerciseList}</div>
                   <div className="rv-glass p-4">
                     <h2 className="font-heading text-lg font-bold text-navy-800">{exercise.exercise_title}</h2>
