@@ -2,14 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AlertTriangle, Camera, CheckCircle2, Eye, EyeOff, Gauge, Ghost, RotateCcw, Settings2, SwitchCamera, Square, Video, Volume2, VolumeX, X } from "lucide-react";
+import { AlertTriangle, BellRing, Camera, CheckCircle2, Eye, EyeOff, Gauge, Ghost, RotateCcw, Settings2, SwitchCamera, Square, Video, Volume2, VolumeX, X } from "lucide-react";
 import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, healthTip, specFor, type CameraSpec, type Side } from "@/lib/formcheck";
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
 import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
+import { cameraPermission, policyAllowsCamera, watchCameraPermission, type CameraPermission } from "@/lib/formcheck/browser/permission";
 import { useVoice } from "@/lib/speech/preference";
 import { T, useRvLang } from "../useLang";
 import { AlignmentOverlay } from "./AlignmentOverlay";
+import { CameraPermissionGuide } from "./CameraPermissionGuide";
 import { PlacementArt } from "./PlacementArt";
 import { holdLine, repLine, START_LINE } from "@/lib/formcheck/spoken";
 import { useSay } from "./useSay";
@@ -26,6 +28,7 @@ export type FinishedSet = { summary: SessionSummary; software: SoftwareRecord | 
 
 const PROBLEMS: Record<FormCheckProblem, { en: string; ru: string }> = {
   denied: { en: "The camera is blocked. Allow the camera for this site in your browser settings, then try again.", ru: "Camera blocked hai. Browser ki settings mein is site ke liye camera allow karein, phir dobara koshish karein." },
+  policy: { en: "This page is not allowed to use the camera. Please tell the clinic so they can fix it.", ru: "Is page ko camera istemal karne ki ijazat nahi. Meharbani karke clinic ko batayein taake woh theek kar dein." },
   none: { en: "No camera was found on this device.", ru: "Is device par koi camera nahi mila." },
   busy: { en: "The camera is being used by another app. Close it and try again.", ru: "Camera kisi doosri app mein istemal ho raha hai. Usay band karein aur dobara koshish karein." },
   insecure: { en: "The camera needs a secure (https) page.", ru: "Camera ke liye secure (https) page chahiye." },
@@ -63,6 +66,8 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
   const [showGhost, setShowGhost] = useState(true);
   const [facing, setFacing] = useState<"user" | "environment">("user");
   const [sheet, setSheet] = useState(false);
+  const [perm, setPerm] = useState<CameraPermission>("unknown");
+  const [checkedAgain, setCheckedAgain] = useState(false);
   const fc = useFormCheck(spec, { tested: side, pass, simple, facing, ghost: showGhost });
   const phone = usePhoneLevel();
   const { voice, setVoice, unlock } = useVoice();
@@ -74,6 +79,13 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
   const showLive = fc.status === "loading" || live;
   const isReps = spec.primary.mode === "reps";
   const name = exerciseName?.[lang];
+
+  // what the browser says about the camera: "prompt" (it will ask), "granted", or "denied" (blocked: only the browser settings can change that). Chrome tells the page when the person changes it.
+  useEffect(() => {
+    let off: (() => void) | undefined;
+    void cameraPermission().then((state) => { setPerm(state); off = watchCameraPermission(setPerm); });
+    return () => off?.();
+  }, []);
 
   // lock the page behind the studio, close on Escape, and hand focus to the studio
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -91,7 +103,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
   }, [close, sheet]);
 
   // the set-up instruction is read aloud once when the studio opens (the voice switch is the site's one setting, on by default); "Listen" reads it again
-  const intro = `${placement.how[lang]}`;
+  const intro = placement.how[lang] + (perm === "prompt" ? " " + (lang === "ru" ? "Shuru karne par aap ke phone par sawal aayega. Allow dabayein." : "When you press Start, your phone will ask about the camera. Press Allow.") : "");
   const introSpoken = useRef(false);
   useEffect(() => {
     if (introSpoken.current || fc.status !== "idle") return;
@@ -152,6 +164,18 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
 
   const resetCounting = () => { finishing.current = false; lastReps.current = 0; lastHoldTick.current = 0; announcedStart.current = false; announcedDone.current = false; };
   const begin = () => { unlock(); resetCounting(); phone.start(); void fc.start(); };
+  // Chrome tells us when the setting changes; where the browser cannot say (Safari) the last error decides
+  const blocked = perm === "denied" || (fc.problem === "denied" && perm === "unknown");
+  // "Check again" after the person changed the setting: read the state and start straight away unless it is still blocked (then try once anyway, in case the browser's answer is out of date)
+  const checkAgain = async () => {
+    unlock();
+    const state = await cameraPermission();
+    setPerm(state);
+    setCheckedAgain(true);
+    if (needSide) return; // the side must be chosen first; the Start button is shown once the block is gone
+    if (state !== "denied") begin();
+    else if (policyAllowsCamera() !== false) { resetCounting(); void fc.start(); }
+  };
   const again = (nextPass: 1 | 2) => { resetCounting(); reported.current = null; setPass(nextPass); phone.start(); setTimeout(() => void fc.start(), 0); };
   const seconds = (ms: number) => (ms / 1000).toFixed(0);
   const count = isReps ? state?.reps ?? 0 : Math.floor((state?.holdMs ?? 0) / 1000);
@@ -173,6 +197,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
 
       {fc.status === "idle" || fc.status === "error" ? (
         <div className="fc-body" data-pna-formcheck-setup>
+          {blocked ? <CameraPermissionGuide stillBlocked={checkedAgain && perm === "denied"} onCheck={() => void checkAgain()} onReload={() => window.location.reload()} onListen={(text) => { unlock(); say(text, "now"); }} /> : null}
           <div className="fc-art"><PlacementArt lying={lying} label={lang === "ru" ? "Phone ko 2 metre door rakhein, poora jism nazar aaye" : "Put the phone 2 metres away so your whole body is in view"} /></div>
           <p className="fc-lead">{placement.how[lang]}</p>
           <button type="button" className="fc-soft" onClick={() => { unlock(); say(intro, "now"); }} data-pna-formcheck-listen><Volume2 aria-hidden="true" /> <T en="Listen" ru="Suniye" /></button>
@@ -191,11 +216,16 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
               </div>
             </fieldset>
           ) : null}
-          {fc.status === "error" && fc.problem ? <p className="fc-problem" role="alert">{PROBLEMS[fc.problem][lang]}</p> : null}
-          <button type="button" className="fc-go" disabled={needSide} onClick={begin} data-pna-formcheck-start>
+          {fc.status === "error" && fc.problem && fc.problem !== "denied" ? <p className="fc-problem" role="alert">{PROBLEMS[fc.problem][lang]}</p> : null}
+          {!blocked && perm !== "granted" && fc.problem !== "policy" ? (
+            <p className="fc-prompt-note" data-pna-formcheck-prompt-note><BellRing aria-hidden="true" /> <span><T en="When you press Start, your phone will ask: “Allow the camera?” Press “Allow”." ru="Start dabane par aap ke phone par sawal aayega: “Camera allow karein?” Aap “Allow” dabayein." /></span></p>
+          ) : null}
+          {!blocked ? (
+            <button type="button" className="fc-go" disabled={needSide} onClick={begin} data-pna-formcheck-start>
             <Video aria-hidden="true" /> {fc.status === "error" ? <T en="Try again" ru="Dobara koshish karein" /> : <T en="Start" ru="Shuru karein" />}
           </button>
-          {needSide ? <p className="fc-note" role="status"><T en="Choose a side first." ru="Pehle taraf chunein." /></p> : null}
+          ) : null}
+          {needSide && !blocked ? <p className="fc-note" role="status"><T en="Choose a side first." ru="Pehle taraf chunein." /></p> : null}
           <p className="fc-warn"><AlertTriangle aria-hidden="true" /> <span>{STOP_IF_PAINFUL[lang]}</span></p>
           <p className="fc-note">{CAMERA_NOTE[lang]}</p>
           <button type="button" className="fc-soft" onClick={() => setFacing(facing === "user" ? "environment" : "user")}><SwitchCamera aria-hidden="true" /> {facing === "user" ? <T en="Use the back camera" ru="Peeche wala camera" /> : <T en="Use the front camera" ru="Samne wala camera" />}</button>
