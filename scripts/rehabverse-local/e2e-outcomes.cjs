@@ -114,7 +114,7 @@ const responses = async () => devSql(`select r.instrument, r.timepoint, r.score,
   const unavailable = await editor.locator("details").innerText().catch(() => "");
   await editor.locator("details summary").click();
   const notes = await editor.locator("details").innerText();
-  check("2c Instruments that cannot be given yet are listed with the reason (NDI needs the author's permission, ODI a licence, RMDQ and STarT Back wording to be checked)", /Neck Disability Index/.test(notes) && /permission/i.test(notes) && /Oswestry/.test(notes) && /licen[cs]e/i.test(notes) && /Roland-Morris/.test(notes) && /STarT Back/.test(notes), unavailable.slice(0, 40));
+  check("2c Instruments that cannot be given yet are listed with the reason (NDI needs the author's permission, ODI a licence, STarT Back wording to be checked)", /Neck Disability Index/.test(notes) && /permission/i.test(notes) && /Oswestry/.test(notes) && /licen[cs]e/i.test(notes) && /STarT Back/.test(notes), unavailable.slice(0, 40));
   check("2d An unavailable instrument cannot be ticked", (await editor.locator("input[type=checkbox]").count()) === 6);
   await editor.getByLabel("Note for the record").fill("Baseline for the low back study");
   await editor.getByRole("button", { name: /Save plan and tell the patient/ }).click();

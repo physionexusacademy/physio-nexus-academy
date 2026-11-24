@@ -78,19 +78,12 @@ async function register(page, who, phone) {
   check("R6 The list is marked as a placeholder, not independent", (await admin.getByText(/generated here/).count()) >= 1);
   await admin.screenshot({ path: path.join(OUT, "rr1-setup.png"), fullPage: true });
 
-  await admin.getByTestId("study-start").click();
-  await admin.getByText(/not cleared for patients yet/).waitFor();
-  check("R7 Recruiting is refused while the RMDQ-24 wording is not cleared", true);
-  // use the cleared measures only for this test run: untick the RMDQ and make the NPRS the primary outcome
-  await admin.getByLabel(/RMDQ-24/).first().uncheck();
-  await admin.locator("li", { hasText: "NPRS" }).first().getByLabel("Primary outcome (12 weeks)").check();
-  await admin.getByTestId("study-save").click();
-  await admin.getByRole("status").filter({ hasText: "Saved." }).waitFor();
+  check("R7 The RMDQ-24 (checked against the official copy) is the primary outcome and does not block starting", (await admin.locator("li", { hasText: "RMDQ-24" }).first().getByLabel("Primary outcome (12 weeks)").isChecked()));
   await admin.getByTestId("study-start").click();
   await admin.getByTestId("study-hash").waitFor();
   const hash = await admin.getByTestId("study-hash").innerText();
   check("R8 Recruiting starts and the rules are frozen with a SHA-256 fingerprint", /^[0-9a-f]{64}$/.test(hash), hash.slice(0, 12) + "…");
-  check("R9 The set-up form is gone (frozen)", (await admin.locator("#rr-eth").count()) === 0 && (await admin.getByText("rules are frozen").count()) >= 1);
+  check("R9 The primary outcome shown is the RMDQ-24 and the set-up form is gone (frozen)", (await admin.locator("#rr-eth").count()) === 0 && /Primary outcome: RMDQ24/i.test(await admin.locator("body").innerText()) && (await admin.getByText("rules are frozen").count()) >= 1);
 
   /* ---- the inbox now sends people to enrolment ---- */
   await admin.goto(`${BASE}/admin/rehabverse`);

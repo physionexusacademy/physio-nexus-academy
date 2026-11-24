@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { AVAILABLE_INSTRUMENTS, GROC_OPTIONS, INSTRUMENTS, INSTRUMENT_BY_ID, instrumentFor } from "../src/lib/outcomes/instruments.ts";
 import { interpretChange, measureImprovement } from "../src/lib/outcomes/interpret.ts";
@@ -57,12 +58,30 @@ const numbersForm = get("nprs").form;
 ok(numbersForm.type === "numbers" && numbersForm.items.length === 4 && numbersForm.items.every((x) => x.min === 0 && x.max === 10), "NPRS: four 0-10 questions");
 const rmdq = get("rmdq24").form;
 ok(rmdq.type === "checklist" && rmdq.items.length === 24, "RMDQ-24: exactly 24 statements");
+{
+  // The wording must match the official English copy (scripts/fixtures/rmdq24-official-en.txt) word for word, except the one declared typo fix in statement 9.
+  const official = readFileSync(new URL("./fixtures/rmdq24-official-en.txt", import.meta.url), "utf8").split("\n").filter((l) => l && !l.startsWith("#"));
+  const statements = official.filter((l) => /^\d+\. /.test(l)).map((l) => l.replace(/^\d+\. /, ""));
+  const instruction = official.filter((l) => l.startsWith("INSTRUCTION-")).map((l) => l.replace(/^INSTRUCTION-\d: /, "")).join(" ");
+  ok(statements.length === 24, "RMDQ-24: the official copy on file has 24 statements");
+  const DECLARED = { 8: ["more slowly then usual", "more slowly than usual"] } as Record<number, [string, string]>; // statement 9 (index 8): the official copy's typo
+  const code = rmdq.type === "checklist" ? rmdq.items : [];
+  statements.forEach((text, i) => {
+    const expected = DECLARED[i] ? text.replace(DECLARED[i][0], DECLARED[i][1]) : text;
+    eq(code[i]?.text.en, expected, `RMDQ-24 statement ${i + 1}: the English wording matches the official copy`);
+    ok(code[i]?.id === `q${i + 1}`, `RMDQ-24 statement ${i + 1}: it keeps its position (q${i + 1})`);
+  });
+  eq(rmdq.type === "checklist" ? rmdq.instruction.en : "", instruction, "RMDQ-24: the English instruction is the official one");
+  ok(rmdq.type === "checklist" && code.every((c) => c.text.ru.length > 15), "RMDQ-24: every statement has a Roman Urdu help text");
+  ok(/than usual/.test(code[8].text.en) && Object.keys(DECLARED).length === 1, "RMDQ-24: statement 9 is the only declared difference (the official typo 'then')");
+}
 const sbst = get("sbst").form;
 ok(sbst.type === "sbst" && sbst.items.length === 9 && sbst.items[8].options.length === 5 && sbst.items.slice(0, 8).every((x) => x.options.length === 2), "STarT Back: 8 agree/disagree items and the 5-level bothersome item");
 eq(GROC_OPTIONS.map((o) => o.value), [7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7], "GROC: the 15 answers from +7 to -7");
 // availability: only what is ready may be given or recorded
 eq(AVAILABLE_INSTRUMENTS.map((i) => i.id).sort(), INSTRUMENTS.filter((i) => i.status === "ready").map((i) => i.id).sort(), "only 'ready' instruments are available");
-ok(!AVAILABLE_INSTRUMENTS.some((i) => ["rmdq24", "sbst", "ndi", "odi"].includes(i.id)), "RMDQ, STarT Back, NDI and ODI are not available until their wording or permission is settled");
+ok(!AVAILABLE_INSTRUMENTS.some((i) => ["sbst", "ndi", "odi"].includes(i.id)), "STarT Back, NDI and ODI are not available until their wording or permission is settled");
+ok(AVAILABLE_INSTRUMENTS.some((i) => i.id === "rmdq24"), "RMDQ-24 is available: its wording was checked against the official copy");
 ok(instrumentFor("nprs", 1) !== null && instrumentFor("nprs", 2) === null && instrumentFor("nope") === null, "an instrument is found by id and exact version only");
 
 /* ---------- 2. scoring: numbers (NPRS) ---------- */
@@ -97,7 +116,7 @@ for (const v of [-7, 0, 7]) ok(scoreResponse(groc, { value: v }).ok, `GROC: ${v}
 for (const v of [8, -8, 1.5, "3", null]) ok(!scoreResponse(groc, { value: v }).ok, `GROC: ${JSON.stringify(v)} is refused`);
 ok(!INSTRUMENT_BY_ID.groc.atBaseline && timepointsFor({ instrument: "groc", version: 1, schedule: "standard" }).join() === "w2,w6,w12", "GROC is asked at follow-up only");
 
-/* ---------- 5. RMDQ and STarT Back (scoreable; not yet offered) ---------- */
+/* ---------- 5. RMDQ and STarT Back (RMDQ is offered; STarT Back is scoreable but not yet offered) ---------- */
 const r = get("rmdq24");
 ok(scoreResponse(r, { ticked: ["q1", "q1", "q24", "q13"] }).ok && (scoreResponse(r, { ticked: ["q1", "q1", "q24", "q13"] }) as { score: Score }).score.primary === 3, "RMDQ: each ticked statement is one point, repeats count once");
 ok(scoreResponse(r, { ticked: [] }).ok && (scoreResponse(r, { ticked: [] }) as { score: Score }).score.primary === 0, "RMDQ: none ticked is 0");
@@ -161,7 +180,7 @@ ok(checkPlanItems([item("nprs"), item("psfs"), item("groc"), item("back_function
 for (const [plan, why] of [
   [[], "an empty plan"],
   [Array.from({ length: MAX_PLAN_ITEMS + 1 }, (_, i) => item(["nprs", "psfs", "groc", "neck_rom", "neck_endurance", "back_function_tests"][i % 6])), "too many"],
-  [[item("rmdq24", "standard", 1)], "an instrument whose wording is not verified"],
+  [[item("sbst", "standard", 1)], "an instrument whose wording is not verified"],
   [[item("ndi", "standard", 0)], "an instrument that needs permission"],
   [[item("odi", "standard", 0)], "an instrument that needs a licence"],
   [[item("nope")], "an unknown instrument"],

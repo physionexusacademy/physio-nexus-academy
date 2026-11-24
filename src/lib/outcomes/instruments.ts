@@ -27,7 +27,10 @@ export const GROC_OPTIONS: { value: number; label: Bi }[] = [
   { value: -7, label: bi("A very great deal worse", "Bohat hi zyada bura") },
 ];
 
-/** The 24 statements of the Roland-Morris Disability Questionnaire (public domain per its custodians; wording still to be compared with the official copy). */
+/**
+ * The 24 statements of the Roland-Morris Disability Questionnaire, compared word for word with the official English copy (rmdq.org PDF, 24 Nov 2026; see
+ * scripts/fixtures/rmdq24-official-en.txt). One deliberate difference: statement 9 reads "than usual" where the official copy has the typo "then usual".
+ */
 const RMDQ_ITEMS: Bi[] = [
   bi("I stay at home most of the time because of my back.", "Meri kamar ki wajah se main zyada tar waqt ghar par rehta/rehti hoon."),
   bi("I change position frequently to try and get my back comfortable.", "Kamar ko aaram dene ke liye main baar baar position badalta/badalti hoon."),
@@ -38,19 +41,19 @@ const RMDQ_ITEMS: Bi[] = [
   bi("Because of my back, I have to hold on to something to get out of an easy chair.", "Kamar ki wajah se aaram kursi se uthne ke liye mujhe kisi cheez ka sahara lena parta hai."),
   bi("Because of my back, I try to get other people to do things for me.", "Kamar ki wajah se main koshish karta/karti hoon ke doosre log mere kaam kar dein."),
   bi("I get dressed more slowly than usual because of my back.", "Kamar ki wajah se main kapray aam se aahista pehenta/pehenti hoon."),
-  bi("I only stand up for short periods of time because of my back.", "Kamar ki wajah se main sirf thori der ke liye khara hota/hoti hoon."),
+  bi("I only stand for short periods of time because of my back.", "Kamar ki wajah se main sirf thori der ke liye khara hota/hoti hoon."),
   bi("Because of my back, I try not to bend or kneel down.", "Kamar ki wajah se main jhukne ya ghutnon ke bal baithne se bachta/bachti hoon."),
   bi("I find it difficult to get out of a chair because of my back.", "Kamar ki wajah se mujhe kursi se uthna mushkil lagta hai."),
   bi("My back is painful almost all the time.", "Meri kamar mein taqreeban hamesha dard rehta hai."),
   bi("I find it difficult to turn over in bed because of my back.", "Kamar ki wajah se mujhe bistar mein karwat badalna mushkil lagta hai."),
   bi("My appetite is not very good because of my back pain.", "Kamar ke dard ki wajah se meri bhook zyada achhi nahi hai."),
   bi("I have trouble putting on my socks (or stockings) because of the pain in my back.", "Kamar ke dard ki wajah se mujhe moze pehenne mein mushkil hoti hai."),
-  bi("I only walk short distances because of my back pain.", "Kamar ke dard ki wajah se main sirf chhoti doori tak chalta/chalti hoon."),
+  bi("I only walk short distances because of my back.", "Kamar ki wajah se main sirf chhoti doori tak chalta/chalti hoon."),
   bi("I sleep less well because of my back.", "Kamar ki wajah se meri neend achhi nahi aati."),
   bi("Because of my back pain, I get dressed with help from someone else.", "Kamar ke dard ki wajah se main kisi ki madad se kapray pehenta/pehenti hoon."),
   bi("I sit down for most of the day because of my back.", "Kamar ki wajah se main din ka zyada hissa baitha rehta/rehti hoon."),
   bi("I avoid heavy jobs around the house because of my back.", "Kamar ki wajah se main ghar ke bhaari kaam se bachta/bachti hoon."),
-  bi("Because of back pain, I am more irritable and bad tempered with people than usual.", "Kamar ke dard ki wajah se main logon ke saath aam se zyada chirchira aur gusse wala ho gaya/gayi hoon."),
+  bi("Because of my back pain, I am more irritable and bad tempered with people than usual.", "Kamar ke dard ki wajah se main logon ke saath aam se zyada chirchira aur gusse wala ho gaya/gayi hoon."),
   bi("Because of my back, I go upstairs more slowly than usual.", "Kamar ki wajah se main seedhiyan aam se aahista chadhta/chadhti hoon."),
   bi("I stay in bed most of the time because of my back.", "Kamar ki wajah se main zyada tar waqt bistar mein rehta/rehti hoon."),
 ];
@@ -142,16 +145,16 @@ export const INSTRUMENTS: Instrument[] = [
     form: {
       type: "checklist",
       instruction: bi(
-        "When your back hurts, you may find it difficult to do some of the things you normally do. Tick only the sentences that describe you today.",
-        "Jab kamar dard karti hai to kuch aam kaam mushkil lag sakte hain. Sirf woh sentences tick karein jo aaj aap ko bayan karte hain.",
+        "When your back hurts, you may find it difficult to do some of the things you normally do. This list contains sentences that people have used to describe themselves when they have back pain. When you read them, you may find that some stand out because they describe you today. As you read the list, think of yourself today. When you read a sentence that describes you today, put a tick against it. If the sentence does not describe you, then leave the space blank and go on to the next one. Remember, only tick the sentence if you are sure it describes you today.",
+        "Jab kamar dard karti hai to kuch aam kaam mushkil lag sakte hain. Is list mein woh jumle hain jo log kamar dard hone par apne aap ko bayan karne ke liye istemal karte hain. Parhte waqt aap ko lagega ke kuch jumle aaj ke din aap ko bayan karte hain. List parhte hue sirf aaj ke baare mein sochein. Jo jumla aaj aap ko bayan karta ho us par tick lagayein. Jo jumla aap ko bayan na kare use khali chor kar agle par jayein. Yaad rakhein: tick sirf tab lagayein jab aap ko yaqeen ho ke woh jumla aaj aap ko bayan karta hai.",
       ),
       items: RMDQ_ITEMS.map((text, index) => ({ id: `q${index + 1}`, text })),
     },
     atBaseline: true,
-    status: "verify_wording",
-    statusNote: "Public domain. The 24 statements are in the library but must be compared with the official copy (rmdq.org) before patients are given it.",
+    status: "ready",
+    statusNote: "The English wording, instruction and scoring were compared with the official copy from rmdq.org (24 Nov 2026): 24 statements in the original order, score = number ticked (0 to 24). One deliberate difference: statement 9 reads \"than usual\" (the official copy has the typo \"then usual\"). The Roman Urdu is a help, not a validated translation.",
     citation: "Roland M, Morris R. Spine 1983;8:141-144; Roland M, Fairbank J. Spine 2000;25:3115-3124.",
-    licence: "Public domain; no permission needed for use (check the custodians' current statement before a published study).",
+    licence: "Free to use. The official copy states that tick boxes may be added and that it may be adapted for online or telephone use (check the custodians' current statement before a published study).",
     translation: "assist_not_validated",
   },
   {
