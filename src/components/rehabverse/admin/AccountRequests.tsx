@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, MessageCircle, Phone, UserCheck, X } from "lucide-react";
 import { decideRegistrationAction } from "@/app/admin/(dashboard)/rehabverse/actions";
@@ -16,7 +17,7 @@ const approvedMessage = (name: string, lang: "en" | "ru") =>
     : `Hello ${name}, your RehabVerse account is approved. Sign in here and start the short symptom assessment: ${SITE}/rehabverse/login`;
 
 /** New account requests: the clinic checks the person (phone or WhatsApp), then approves or rejects. Every decision goes to the audit log. */
-export function AccountRequests({ pending, recent }: { pending: RegistrationRequest[]; recent: RegistrationDecision[] }) {
+export function AccountRequests({ pending, recent, studyRecruiting = false }: { pending: RegistrationRequest[]; recent: RegistrationDecision[]; studyRecruiting?: boolean }) {
   const router = useRouter();
   const [busy, start] = useTransition();
   const [rejecting, setRejecting] = useState<string | null>(null);
@@ -86,7 +87,11 @@ export function AccountRequests({ pending, recent }: { pending: RegistrationRequ
               </div>
             ) : (
               <div className="mt-2 flex gap-2">
-                <button type="button" disabled={busy} onClick={() => decide(p, "approve")} className="rv-btn rv-btn-primary !min-h-[38px]"><Check className="h-4 w-4" aria-hidden="true" /> Approve</button>
+                {studyRecruiting ? (
+                  <Link href="/admin/rehabverse/research-room" className="rv-btn rv-btn-primary !min-h-[38px]" data-testid="enrol-instead"><Check className="h-4 w-4" aria-hidden="true" /> Screen and enrol (a study is recruiting)</Link>
+                ) : (
+                  <button type="button" disabled={busy} onClick={() => decide(p, "approve")} className="rv-btn rv-btn-primary !min-h-[38px]"><Check className="h-4 w-4" aria-hidden="true" /> Approve</button>
+                )}
                 <button type="button" disabled={busy} onClick={() => { setRejecting(p.id); setNote(""); }} className="rv-btn rv-btn-ghost !min-h-[38px]"><X className="h-4 w-4" aria-hidden="true" /> Reject…</button>
               </div>
             )}

@@ -7,6 +7,8 @@ import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAct
 import type { AdminAssessment, AdminOutcomes, AdminPatient, StoredSnapshot } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
+import { StudyArmCard } from "@/components/rehabverse/research-room/StudyArmCard";
+import type { StudyPatient } from "@/lib/research-room";
 import { AiConversations } from "./AiConversations";
 import { FormCheckSets } from "./FormCheckSets";
 import type { AdminFormCheckSet } from "@/lib/rehabverse/api";
@@ -135,7 +137,7 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
   );
 }
 
-export function AdminPatientRecord({ data, outcomes = null, formcheck = null }: { data: AdminPatient; outcomes?: AdminOutcomes | null; formcheck?: AdminFormCheckSet[] | null }) {
+export function AdminPatientRecord({ data, outcomes = null, formcheck = null, study = null }: { data: AdminPatient; outcomes?: AdminOutcomes | null; formcheck?: AdminFormCheckSet[] | null; study?: StudyPatient | null }) {
   const { patient, assessments, programmes, adverse_events, audit } = data;
   const aiConversations = data.ai_conversations ?? [];
   const live = programmes.find((p) => LIVE.includes(p.programme.status));
@@ -161,7 +163,7 @@ export function AdminPatientRecord({ data, outcomes = null, formcheck = null }: 
             {openAdverse ? <span className="rv-chip rv-chip-rose">{openAdverse} open adverse event(s)</span> : null}
           </div>
         </div>
-        <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />
+        {study?.enrolled ? <StudyArmCard patientId={patient.id} study={study} aiNow={patient.ai_assist === "on" ? "on" : "off"} /> : <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />}
         {patient.research_consent === undefined ? null : ( // the column exists only once the board/research migration is applied
           <div className="mt-3 border-t border-slate-100 pt-3">
             <ResearchConsent key={String(patient.research_consent)} patientId={patient.id} consent={patient.research_consent} at={patient.research_consent_at ?? null} note={patient.research_consent_note ?? null} />

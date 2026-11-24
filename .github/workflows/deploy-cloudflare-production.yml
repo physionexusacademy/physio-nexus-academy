@@ -218,6 +218,14 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:board-research
 
+      - name: Validate the Research Room (allocation lists, pain bands, study rules, flow numbers, the list never shown, recruiting needs ethics)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:research-room
+
+      - name: Validate the Research Room database (concealed stratified randomisation, consent evidence, locked AI switch, frozen rules, append-only records)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:research-room-db
+
       - name: Validate student accounts (private record, XP caps, outbox, insights)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:student
