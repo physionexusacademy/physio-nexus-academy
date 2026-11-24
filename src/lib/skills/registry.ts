@@ -14,11 +14,13 @@ import { postureSkill } from "./content/posture.ts";
 import { balanceFunctionSkill } from "./content/balance.ts";
 import { limbMeasuresSkill } from "./content/limb-measures.ts";
 import { palpationSkill } from "./content/palpation.ts";
+import { specialTestsSkill } from "./content/special-tests.ts";
 
 export const skillDefinitions: SkillDefinition[] = [
   // Phase 1 — measure & test
   mmtSkill,
   goniometrySkill,
+  specialTestsSkill,
   // Phase 2 — neurological examination
   dermatomesSkill,
   myotomesSkill,

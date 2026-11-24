@@ -587,6 +587,102 @@ export const teacherPaths: TeacherPath[] = [
       },
     ],
   },
+  {
+    slug: "special-tests-masterclass",
+    title: "Special Tests Masterclass",
+    tagline: {
+      en: "Use shoulder, knee and ankle tests like a clinician: what is positive, what it means and when a test is not enough.",
+      ur: "Shoulder, knee aur ankle ke tests clinician ki tarah istemal karein: positive kya hai, matlab kya hai aur test kab kaafi nahi.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Use sensitivity, specificity and likelihood ratios to judge a test", ur: "Sensitivity, specificity aur likelihood ratios se test ka andaza lagana" },
+      { en: "Examine a painful shoulder, an injured knee and a twisted ankle in order", ur: "Dardnak shoulder, zakhmi knee aur mure hue ankle ko tartib se examine karna" },
+      { en: "Know when to image, retest or refer", ur: "Jaanna ke kab imaging, dobara test ya referral karna hai" },
+    ],
+    steps: [
+      { id: "st-1", kind: "lesson", lesson: "special-tests-sensitivity-clusters" },
+      { id: "st-2", kind: "lesson", lesson: "shoulder-cuff-tests-lag-signs" },
+      { id: "st-3", kind: "lesson", lesson: "knee-ligament-meniscus-exam" },
+      { id: "st-4", kind: "lesson", lesson: "ankle-sprain-ottawa-syndesmosis" },
+      {
+        id: "st-5",
+        kind: "mission",
+        title: "Special tests atlas",
+        href: "/skills/special-tests",
+        mission: {
+          en: "Open the Skills Lab special tests. Choose five tests from different joints and, for each, say out loud what a positive finding is and one common pitfall.",
+          ur: "Skills Lab ke special tests kholein. Alag alag joints ke paanch tests chunein aur har ek ke liye zubaan se batayein ke positive finding kya hai aur ek aam ghalti kya hai.",
+        },
+        minutes: 15,
+      },
+      {
+        id: "st-6",
+        kind: "mission",
+        title: "Virtual Patient: knee that gave way",
+        href: "/virtual-patient?case=acl-tear",
+        mission: {
+          en: "Work through the ACL case. Before you run a test, write what you expect it to show and why; then compare with the result.",
+          ur: "ACL case hal karein. Test chalane se pehle likhein ke aap kya nateeja expect karte hain aur kyun; phir result se muqabla karein.",
+        },
+        minutes: 15,
+      },
+      {
+        id: "st-7",
+        kind: "mission",
+        title: "Daily Clinical Challenge",
+        href: "/daily-challenge",
+        mission: {
+          en: "Checkpoint: take today's 5-question challenge. Whatever your score, read every explanation — that's where the learning is.",
+          ur: "Checkpoint: aaj ka 5 sawalon wala challenge dein. Score jo bhi ho, har explanation zaroor parhein — asal seekhna wahin hai.",
+        },
+        minutes: 5,
+      },
+    ],
+  },
+  {
+    slug: "manual-therapy-safe-practice",
+    title: "Manual Therapy: Safe, Honest Practice",
+    tagline: {
+      en: "Screen the neck, choose a technique, dose it gently and explain it without fear.",
+      ur: "Gardan ki screening karein, technique chunein, halka dose dein aur bina dar ke samjhayein.",
+    },
+    audience: "Final year, interns & graduates",
+    outcomes: [
+      { en: "Screen a neck patient for artery problems and act correctly", ur: "Gardan ke patient mein artery ke masle ki screening karna aur sahi qadam uthana" },
+      { en: "Choose and dose thoracic, neural and muscle energy techniques", ur: "Thoracic, neural aur muscle energy techniques chunna aur dose dena" },
+      { en: "Explain what manual therapy does in calm, accurate words", ur: "Manual therapy kya karti hai, pur sukoon aur durust alfaz mein samjhana" },
+    ],
+    steps: [
+      { id: "mt2-1", kind: "lesson", lesson: "cervical-manipulation-safety-screening" },
+      { id: "mt2-2", kind: "lesson", lesson: "explaining-manual-therapy-effects" },
+      { id: "mt2-3", kind: "lesson", lesson: "thoracic-manipulation-neck-pain" },
+      { id: "mt2-4", kind: "lesson", lesson: "neural-mobilisation-neurodynamics" },
+      { id: "mt2-5", kind: "lesson", lesson: "muscle-energy-technique-mechanics" },
+      {
+        id: "mt2-6",
+        kind: "mission",
+        title: "Red flags screening",
+        href: "/learn/red-flags-screening",
+        mission: {
+          en: "Write the five questions you will ask every neck patient before you treat, and the two answers that would make you stop and refer.",
+          ur: "Woh paanch sawal likhein jo aap ilaaj se pehle har gardan ke patient se poochhenge, aur do jawab jin par aap ruk kar refer karenge.",
+        },
+        minutes: 10,
+      },
+      {
+        id: "mt2-7",
+        kind: "mission",
+        title: "Daily Clinical Challenge",
+        href: "/daily-challenge",
+        mission: {
+          en: "Checkpoint: take today's 5-question challenge. Whatever your score, read every explanation — that's where the learning is.",
+          ur: "Checkpoint: aaj ka 5 sawalon wala challenge dein. Score jo bhi ho, har explanation zaroor parhein — asal seekhna wahin hai.",
+        },
+        minutes: 5,
+      },
+    ],
+  },
 ];
 
 export function getTeacherPath(slug: string): TeacherPath | undefined {

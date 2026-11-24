@@ -1946,6 +1946,285 @@
    "The level predicts hip risk (about 0% at Level I to about 90% at Level V), so surveillance, supported standing and abduction positioning are part of the plan, and new pain or lost skills are red flags."
   ],
   "keywords": "Cerebral Palsy and the GMFCS: Levels I to V, Hips and Goals cerebral-palsy-gmfcs Paediatrics CP is a group of permanent, non-progressive disorders of movement and posture from an early brain injury; the secondary musculoskeletal problems grow over time. The GMFCS (I to V, by age band) describes what a child usually does: Level I walks anywhere, II with limits, III with a handheld device, IV mainly powered mobility, V transported. The level predicts hip risk (about 0% at Level I to about 90% at Level V), so surveillance, supported standing and abduction positioning are part of the plan, and new pain or lost skills are red flags. What is cerebral palsy? What does the GMFCS classify? What separates Level II from Level III? How does hip risk change with GMFCS level? What is the Reimers migration percentage?",
+  "next": {
+   "slug": "cervical-manipulation-safety-screening",
+   "title": "Neck Manipulation Safety — Screening for Artery Problems Before You Treat",
+   "href": "/learn/cervical-manipulation-safety-screening"
+  }
+ },
+ {
+  "href": "/learn/cervical-manipulation-safety-screening",
+  "slug": "cervical-manipulation-safety-screening",
+  "title": "Neck Manipulation Safety — Screening for Artery Problems Before You Treat",
+  "hook": {
+   "en": "Neck pain can be the first sign of an artery tear. Learn the screen that protects your patient before you mobilise or manipulate.",
+   "ur": "Gardan ka dard artery tear ki pehli nishani ho sakta hai. Mobilise ya manipulate karne se pehle woh screen seekhein jo patient ko mehfooz rakhti hai."
+  },
+  "area": "Manual Therapy",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll screen a neck patient for artery problems with clinical reasoning, know why the old \"pre-manipulation tests\" fail, and act correctly if you suspect one.",
+   "ur": "End tak aap gardan ke patient mein clinical reasoning se artery ke masle ki screening karenge, jaan jayenge ke purane \"pre-manipulation tests\" kyun nakaam hain, aur shak hone par sahi qadam uthayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Neck pain can be the first sign of an artery tear, so every neck patient needs a vascular screen: pain, risks, symptoms, blood pressure and cranial nerves.",
+   "The old positional \"pre-manipulation tests\" are not accurate enough to prove a neck safe; clinical reasoning replaces them.",
+   "If a vascular cause is possible, do not treat the neck: arrange emergency care. If it is clear, take informed consent and use the lowest-risk effective technique."
+  ],
+  "keywords": "Neck Manipulation Safety — Screening for Artery Problems Before You Treat cervical-manipulation-safety-screening Manual Therapy Neck pain can be the first sign of an artery tear, so every neck patient needs a vascular screen: pain, risks, symptoms, blood pressure and cranial nerves. The old positional \"pre-manipulation tests\" are not accurate enough to prove a neck safe; clinical reasoning replaces them. If a vascular cause is possible, do not treat the neck: arrange emergency care. If it is clear, take informed consent and use the lowest-risk effective technique. What is cervical arterial dysfunction? What are the 5 Ds and 3 Ns? Can a negative neck-rotation test clear the neck? What do you do if you suspect an artery dissection?",
+  "next": {
+   "slug": "neural-mobilisation-neurodynamics",
+   "title": "Neural Mobilisation — Testing and Treating the Nerve as a Moving Structure",
+   "href": "/learn/neural-mobilisation-neurodynamics"
+  }
+ },
+ {
+  "href": "/learn/neural-mobilisation-neurodynamics",
+  "slug": "neural-mobilisation-neurodynamics",
+  "title": "Neural Mobilisation — Testing and Treating the Nerve as a Moving Structure",
+  "hook": {
+   "en": "Nerves slide and stretch when you move. Learn to test that movement, tell a nerve problem from a muscle problem, and treat with sliders or tensioners safely.",
+   "ur": "Harkat par nerves sarakti aur khinchti hain. Is harkat ko test karna, nerve ke masle ko muscle ke masle se alag karna, aur sliders ya tensioners se mehfooz ilaaj karna seekhein."
+  },
+  "area": "Manual Therapy",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform a neurodynamic test, use structural differentiation, and choose between a slider and a tensioner for an irritable or a settled nerve.",
+   "ur": "End tak aap neurodynamic test karenge, structural differentiation istemal karenge, aur irritable ya settled nerve ke liye slider aur tensioner mein se chunenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Neurodynamic tests load a nerve to see if it is the source; a positive test reproduces the patient's own symptoms and changes with structural differentiation.",
+   "Sliders move the nerve with low tension; tensioners stretch it. Start with sliders and progress only when the nerve is calm.",
+   "Dose gently and watch the next 24 hours; refer for progressive weakness or loss of bladder, bowel or saddle sensation."
+  ],
+  "keywords": "Neural Mobilisation — Testing and Treating the Nerve as a Moving Structure neural-mobilisation-neurodynamics Manual Therapy Neurodynamic tests load a nerve to see if it is the source; a positive test reproduces the patient's own symptoms and changes with structural differentiation. Sliders move the nerve with low tension; tensioners stretch it. Start with sliders and progress only when the nerve is calm. Dose gently and watch the next 24 hours; refer for progressive weakness or loss of bladder, bowel or saddle sensation. What is a neurodynamic test? What is structural differentiation? Slider or tensioner for an irritable nerve? Which symptoms mean refer urgently?",
+  "next": {
+   "slug": "muscle-energy-technique-mechanics",
+   "title": "Muscle Energy Technique — Using the Patient's Own Contraction",
+   "href": "/learn/muscle-energy-technique-mechanics"
+  }
+ },
+ {
+  "href": "/learn/muscle-energy-technique-mechanics",
+  "slug": "muscle-energy-technique-mechanics",
+  "title": "Muscle Energy Technique — Using the Patient's Own Contraction",
+  "hook": {
+   "en": "A gentle contraction, a pause, and a new range. Learn how muscle energy technique works, when to use it and how to dose it so it stays comfortable.",
+   "ur": "Halki contraction, thora ruk jana, aur nayi range. Muscle energy technique kaise kaam karti hai, kab istemal karni hai aur dose kaise dena hai taake aaram se rahe, seekhein."
+  },
+  "area": "Manual Therapy · Soft Tissue",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll perform post-isometric relaxation and reciprocal inhibition correctly, set the force and timing, and explain why the effect is real but its mechanism is still debated.",
+   "ur": "End tak aap post-isometric relaxation aur reciprocal inhibition sahi karenge, force aur timing set karenge, aur samjha sakenge ke asar asli hai lekin uska mechanism abhi bhi behes talab hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "MET uses a gentle patient-made contraction followed by relaxation to improve range: light effort, a short hold, then take up the slack.",
+   "PIR contracts the tight muscle; reciprocal inhibition contracts its opposite; both stay comfortable and are repeated three to five times.",
+   "The effect is real but its mechanism is debated; retest the range, keep it with exercise and avoid MET over fractures, tears or unstable joints."
+  ],
+  "keywords": "Muscle Energy Technique — Using the Patient's Own Contraction muscle-energy-technique-mechanics Manual Therapy · Soft Tissue MET uses a gentle patient-made contraction followed by relaxation to improve range: light effort, a short hold, then take up the slack. PIR contracts the tight muscle; reciprocal inhibition contracts its opposite; both stay comfortable and are repeated three to five times. The effect is real but its mechanism is debated; retest the range, keep it with exercise and avoid MET over fractures, tears or unstable joints. What effort is used in a standard PIR contraction? What is reciprocal inhibition in MET? How many repeats do you do? Why can the range improve even if the muscle is not longer?",
+  "next": {
+   "slug": "explaining-manual-therapy-effects",
+   "title": "What Manual Therapy Really Does — And How to Explain It to Patients",
+   "href": "/learn/explaining-manual-therapy-effects"
+  }
+ },
+ {
+  "href": "/learn/explaining-manual-therapy-effects",
+  "slug": "explaining-manual-therapy-effects",
+  "title": "What Manual Therapy Really Does — And How to Explain It to Patients",
+  "hook": {
+   "en": "Bones are not \"put back in place\". Learn the model of how hands-on treatment helps, and the words that calm patients instead of scaring them.",
+   "ur": "Haddiyan \"wapas jagah par nahi rakhi jatin\". Haath ke ilaaj ke kaam karne ka model aur woh alfaz seekhein jo patients ko darane ki bajaye sukoon dein."
+  },
+  "area": "Pain Science",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll describe how manual therapy works using the neurophysiological and context model, avoid fear-making words, and give a clear, honest explanation.",
+   "ur": "End tak aap neurophysiological aur context model se bata sakenge ke manual therapy kaise kaam karti hai, dar paida karne wale alfaz se bachenge, aur saaf, imandaar wazahat denge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Manual therapy works mainly through the nervous system and context effects (expectation, trust), not by putting bones back in place.",
+   "The effect is a short window of less pain and easier movement: use it to teach an exercise so the change lasts.",
+   "Use calm, accurate words, avoid fear-making images and promises of a fix, and always link the treatment to what the patient can do."
+  ],
+  "keywords": "What Manual Therapy Really Does — And How to Explain It to Patients explaining-manual-therapy-effects Pain Science Manual therapy works mainly through the nervous system and context effects (expectation, trust), not by putting bones back in place. The effect is a short window of less pain and easier movement: use it to teach an exercise so the change lasts. Use calm, accurate words, avoid fear-making images and promises of a fix, and always link the treatment to what the patient can do. What is the main route by which manual therapy relieves pain? What are context effects? Why add an exercise straight after a technique? Give one phrase to avoid and one to use.",
+  "next": {
+   "slug": "thoracic-manipulation-neck-pain",
+   "title": "Thoracic Spine Manipulation for Neck Pain — Choosing Thrust or Non-Thrust",
+   "href": "/learn/thoracic-manipulation-neck-pain"
+  }
+ },
+ {
+  "href": "/learn/thoracic-manipulation-neck-pain",
+  "slug": "thoracic-manipulation-neck-pain",
+  "title": "Thoracic Spine Manipulation for Neck Pain — Choosing Thrust or Non-Thrust",
+  "hook": {
+   "en": "Treating the upper back can ease neck pain. Learn who may benefit, how to choose between thrust and non-thrust techniques, and when to leave the thrust out.",
+   "ur": "Upper back ka ilaaj gardan ka dard kam kar sakta hai. Kis ko faida ho sakta hai, thrust aur non-thrust mein kaise chunein, aur kab thrust chhor dein, seekhein."
+  },
+  "area": "Manual Therapy · Joint",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain why the thoracic spine is treated for neck pain, choose thrust or non-thrust from irritability and safety, and combine it with exercise and advice.",
+   "ur": "End tak aap samjha sakenge ke gardan ke dard mein thoracic spine ka ilaaj kyun hota hai, irritability aur safety se thrust ya non-thrust chunenge, aur use exercise aur advice ke saath jorenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "The thoracic spine can be treated for neck pain: thrust or non-thrust mobilisation can give short-term relief, best combined with exercise and education.",
+   "Choose non-thrust for irritable, anxious or unsafe-for-thrust patients, and thrust for less irritable, comfortable patients without a contraindication.",
+   "Screen and consent first, re-test after, teach an exercise and never thrust over fracture risk, tumour, infection or cord signs."
+  ],
+  "keywords": "Thoracic Spine Manipulation for Neck Pain — Choosing Thrust or Non-Thrust thoracic-manipulation-neck-pain Manual Therapy · Joint The thoracic spine can be treated for neck pain: thrust or non-thrust mobilisation can give short-term relief, best combined with exercise and education. Choose non-thrust for irritable, anxious or unsafe-for-thrust patients, and thrust for less irritable, comfortable patients without a contraindication. Screen and consent first, re-test after, teach an exercise and never thrust over fracture risk, tumour, infection or cord signs. Which part of the spine can be treated for neck pain? When is non-thrust the better choice? Name two reasons not to thrust. What should follow the technique?",
+  "next": {
+   "slug": "special-tests-sensitivity-clusters",
+   "title": "Using Special Tests Wisely — Rule In, Rule Out and Clusters",
+   "href": "/learn/special-tests-sensitivity-clusters"
+  }
+ },
+ {
+  "href": "/learn/special-tests-sensitivity-clusters",
+  "slug": "special-tests-sensitivity-clusters",
+  "title": "Using Special Tests Wisely — Rule In, Rule Out and Clusters",
+  "hook": {
+   "en": "A positive test does not prove a diagnosis and a negative one does not clear it. Learn how a test changes the odds, and why clusters beat single tests.",
+   "ur": "Positive test diagnosis sabit nahi karta aur negative test use clear nahi karta. Seekhein ke test chance ko kaise badalta hai, aur clusters ek akele test se behtar kyun hain."
+  },
+  "area": "Clinical Reasoning",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll use sensitivity, specificity and likelihood ratios to judge a test, work out a post-test probability, and build a small cluster for a clinical question.",
+   "ur": "End tak aap sensitivity, specificity aur likelihood ratios se test ka andaza lagayenge, post-test probability nikalenge, aur clinical sawal ke liye chhota cluster banayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Sensitivity helps rule out (SnNout) and specificity helps rule in (SpPin); the likelihood ratio tells how much a result moves the odds.",
+   "The pre-test probability from the history matters: the same positive test is worth more when the problem is already likely.",
+   "Combine several tests into a cluster for each question, use decision rules for imaging, and never let a test replace red-flag screening."
+  ],
+  "keywords": "Using Special Tests Wisely — Rule In, Rule Out and Clusters special-tests-sensitivity-clusters Clinical Reasoning Sensitivity helps rule out (SnNout) and specificity helps rule in (SpPin); the likelihood ratio tells how much a result moves the odds. The pre-test probability from the history matters: the same positive test is worth more when the problem is already likely. Combine several tests into a cluster for each question, use decision rules for imaging, and never let a test replace red-flag screening. What does SnNout mean? What does SpPin mean? Which likelihood ratios change the odds a lot? Why combine tests into a cluster?",
+  "next": {
+   "slug": "shoulder-cuff-tests-lag-signs",
+   "title": "The Painful Shoulder — Cuff Pain, Cuff Tears and the Tests That Tell Them Apart",
+   "href": "/learn/shoulder-cuff-tests-lag-signs"
+  }
+ },
+ {
+  "href": "/learn/shoulder-cuff-tests-lag-signs",
+  "slug": "shoulder-cuff-tests-lag-signs",
+  "title": "The Painful Shoulder — Cuff Pain, Cuff Tears and the Tests That Tell Them Apart",
+  "hook": {
+   "en": "Most painful shoulders are not torn. Learn the tests that separate cuff-related pain from a real tear, and the ones that point to instability or the AC joint.",
+   "ur": "Zyada tar dardnak shoulders phate hue nahi hote. Woh tests seekhein jo cuff ke dard ko asli tear se alag karte hain, aur woh jo instability ya AC joint ki taraf ishara karte hain."
+  },
+  "area": "Skills · Measurement",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll examine a painful shoulder with a cluster for rotator cuff-related pain, spot the signs of a large tear and know when to refer.",
+   "ur": "End tak aap rotator cuff-related dard ke cluster se dardnak shoulder examine karenge, bari tear ki alamat pehchanenge aur jaanenge ke kab refer karna hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Pain tests (painful arc, resisted external rotation, Hawkins-Kennedy) ask whether the cuff is irritated; lag signs and the drop-arm test ask whether it is torn.",
+   "Use a cluster, not one test, and use belly-press or lift-off for the subscapularis, apprehension for anterior instability and cross-body adduction for the AC joint.",
+   "Treat cuff-related pain with education and graded loading; refer early for signs of a large tear, instability that keeps recurring, infection or red flags."
+  ],
+  "keywords": "The Painful Shoulder — Cuff Pain, Cuff Tears and the Tests That Tell Them Apart shoulder-cuff-tests-lag-signs Skills · Measurement Pain tests (painful arc, resisted external rotation, Hawkins-Kennedy) ask whether the cuff is irritated; lag signs and the drop-arm test ask whether it is torn. Use a cluster, not one test, and use belly-press or lift-off for the subscapularis, apprehension for anterior instability and cross-body adduction for the AC joint. Treat cuff-related pain with education and graded loading; refer early for signs of a large tear, instability that keeps recurring, infection or red flags. What does the external rotation lag sign suggest? Which test is used for the subscapularis when the lift-off position is too painful? What does a positive apprehension test mean? Why is \"impingement\" a poor label?",
+  "next": {
+   "slug": "knee-ligament-meniscus-exam",
+   "title": "The Injured Knee — A Step-by-Step Ligament and Meniscus Examination",
+   "href": "/learn/knee-ligament-meniscus-exam"
+  }
+ },
+ {
+  "href": "/learn/knee-ligament-meniscus-exam",
+  "slug": "knee-ligament-meniscus-exam",
+  "title": "The Injured Knee — A Step-by-Step Ligament and Meniscus Examination",
+  "hook": {
+   "en": "A twisted knee can be a sprain, a meniscus tear or an ACL rupture. Learn the order of the examination and the tests that tell them apart, including when not to test.",
+   "ur": "Mura hua knee sprain, meniscus tear ya ACL rupture ho sakta hai. Examination ki tartib aur woh tests seekhein jo inhein alag karte hain, saath ye bhi ke kab test nahi karna."
+  },
+  "area": "Skills · Measurement",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll examine an injured knee in order, perform the Lachman, posterior sag, collateral stress and meniscus tests, and decide on imaging or referral.",
+   "ur": "End tak aap zakhmi knee ko tartib se examine karenge, Lachman, posterior sag, collateral stress aur meniscus tests karenge, aur imaging ya referral ka faisla karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Examine an injured knee in order (look, effusion, range, ligaments, meniscus); early swelling suggests bleeding into the joint and a serious injury.",
+   "The Lachman is the best ACL test; test the collaterals at 0° and 30°; the meniscus tests and joint line tenderness are best combined with the history.",
+   "A guarded knee hides laxity, a locked knee or multi-ligament injury needs early referral, and the Ottawa knee rule decides on an X-ray."
+  ],
+  "keywords": "The Injured Knee — A Step-by-Step Ligament and Meniscus Examination knee-ligament-meniscus-exam Skills · Measurement Examine an injured knee in order (look, effusion, range, ligaments, meniscus); early swelling suggests bleeding into the joint and a serious injury. The Lachman is the best ACL test; test the collaterals at 0° and 30°; the meniscus tests and joint line tenderness are best combined with the history. A guarded knee hides laxity, a locked knee or multi-ligament injury needs early referral, and the Ottawa knee rule decides on an X-ray. What is the best single clinical test for the ACL? Laxity of the knee on valgus stress when straight means what? Why is early swelling after a twist important? Name the five items of the Ottawa knee rule.",
+  "next": {
+   "slug": "ankle-sprain-ottawa-syndesmosis",
+   "title": "The Twisted Ankle — Ottawa Rules, Ligament Tests and the High Ankle Sprain",
+   "href": "/learn/ankle-sprain-ottawa-syndesmosis"
+  }
+ },
+ {
+  "href": "/learn/ankle-sprain-ottawa-syndesmosis",
+  "slug": "ankle-sprain-ottawa-syndesmosis",
+  "title": "The Twisted Ankle — Ottawa Rules, Ligament Tests and the High Ankle Sprain",
+  "hook": {
+   "en": "Most twisted ankles are sprains, but a few are fractures or high ankle sprains. Learn when to ask for an X-ray, how to test the ligaments and when to test them.",
+   "ur": "Zyada tar mure hue ankles sprain hote hain, lekin kuch fracture ya high ankle sprain. Seekhein ke X-ray kab maangna hai, ligaments kaise test karne hain aur kab."
+  },
+  "area": "Skills · Measurement",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll apply the Ottawa ankle rules, perform the anterior drawer, talar tilt, squeeze and external rotation tests at the right time, and plan early loading and follow-up.",
+   "ur": "End tak aap Ottawa ankle rules lagayenge, sahi waqt par anterior drawer, talar tilt, squeeze aur external rotation tests karenge, aur shuruati loading aur follow-up ka plan banayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Use the Ottawa ankle rules first: bone tenderness at the back edge or tip of a malleolus, base of the fifth metatarsal or navicular, or inability to take four steps means an X-ray.",
+   "The anterior drawer tests the ATFL and the talar tilt the CFL; they are more accurate four to five days after the injury.",
+   "Test the syndesmosis with the squeeze and external rotation tests (pain must be at the ankle); load a lateral sprain early and protect a high ankle sprain more."
+  ],
+  "keywords": "The Twisted Ankle — Ottawa Rules, Ligament Tests and the High Ankle Sprain ankle-sprain-ottawa-syndesmosis Skills · Measurement Use the Ottawa ankle rules first: bone tenderness at the back edge or tip of a malleolus, base of the fifth metatarsal or navicular, or inability to take four steps means an X-ray. The anterior drawer tests the ATFL and the talar tilt the CFL; they are more accurate four to five days after the injury. Test the syndesmosis with the squeeze and external rotation tests (pain must be at the ankle); load a lateral sprain early and protect a high ankle sprain more. What do the Ottawa ankle rules decide? Which ligament does the anterior drawer test? Where must the pain be felt in the squeeze test? When are ankle ligament tests most accurate?",
   "next": null
  },
  {
