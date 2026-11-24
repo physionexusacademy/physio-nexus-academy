@@ -106,6 +106,7 @@ eq([stratumFor(DEFAULT_CONFIG, 11), stratumFor(DEFAULT_CONFIG, -1), stratumFor(D
   ok(bad({ target_per_arm: -1 }).length > 0, "a negative target is refused");
   // the default plan only names instruments that exist at that version, and the primary one is the RMDQ-24
   for (const item of DEFAULT_CONFIG.outcome_plan) ok(instrumentFor(item.instrument, item.version) !== null, `${item.instrument} exists at version ${item.version}`);
+  for (const item of DEFAULT_CONFIG.outcome_plan) ok(instrumentFor(item.instrument, item.version)?.status === "ready", `${item.instrument} is cleared for patients, so the default study can start`);
   eq(DEFAULT_CONFIG.primary, { instrument: "rmdq24", timepoint: "w12" }, "the RMDQ-24 at 12 weeks is the primary outcome");
   eq(DEFAULT_CONFIG.regions, ["low_back"], "the RMDQ is a back questionnaire, so the default population is low back pain only");
   for (const item of DEFAULT_CONFIG.eligibility) ok(item.en.length > 5 && item.ru.length > 5, `eligibility "${item.id}" has English and Roman Urdu wording`);
