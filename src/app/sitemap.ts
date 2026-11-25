@@ -38,6 +38,7 @@ const routes = [
   "/research",
   "/patient-services",
   "/symptom-checker",
+  "/health-calculators",
   "/health-calculators/bmi",
   "/health-calculators/clinical",
   "/handouts",
