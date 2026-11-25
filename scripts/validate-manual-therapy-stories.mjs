@@ -50,7 +50,7 @@ assert(parentPage.includes("items={guide.applicationSteps}") && parentPage.inclu
 assert(storyComponent.includes("weave.dialogue") && storyComponent.includes("weave.watch"),
   "Scene and treatment-room visualization missing");
 assert(regionalPage.includes("clinicalStory.title")
-  && regionalPage.includes("<RegionalLearningLab slug={item.techniqueSlug} />")
+  && regionalPage.includes("<RegionalLearningLab lab={lab} />")
   && regionalPage.includes("Important: this is a clinical framework, not a complete technique protocol.")
   && regionalPage.includes("item.safety?.length"), "Regional story flow or overview safety status missing");
 console.log("Narrative flow, clinical method, warnings and regional classification: checked");
