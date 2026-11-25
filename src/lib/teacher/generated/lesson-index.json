@@ -2535,6 +2535,192 @@
    "Know the emergencies: dislocation, infection, a clot and chest pain or breathlessness need urgent medical help."
   ],
   "keywords": "After a Total Hip Replacement — Precautions, Walking and Strength total-hip-replacement-rehab Post-operative Rehab Mobilise early, follow the surgeon's written precautions and explain why they exist; precautions differ with the surgical approach. Strengthen the hip with gluteal sets, bridging, standing abduction, sit-to-stand, step-ups and walking, progressing aids from frame to stick to none. Know the emergencies: dislocation, infection, a clot and chest pain or breathlessness need urgent medical help. Who decides the hip precautions? Name three posterior-approach precautions. What is a sign of dislocation? What should you do for a hot, swollen, tender calf?",
+  "next": {
+   "slug": "return-to-sport-acl-criteria",
+   "title": "Return to Sport After ACL Surgery — Criteria, Not the Calendar",
+   "href": "/learn/return-to-sport-acl-criteria"
+  }
+ },
+ {
+  "href": "/learn/return-to-sport-acl-criteria",
+  "slug": "return-to-sport-acl-criteria",
+  "title": "Return to Sport After ACL Surgery — Criteria, Not the Calendar",
+  "hook": {
+   "en": "Many athletes go back to sport at six months and tear the graft again. Learn which tests and criteria show a knee is ready, and why time alone is not enough.",
+   "ur": "Bohat se khilari chhe mahine mein khel mein wapas aate hain aur graft dobara tor lete hain. Seekhein ke kaun se tests aur mayaar batate hain ke knee taiyar hai, aur sirf waqt kaafi kyun nahi."
+  },
+  "area": "Sports & Return to Play",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll build a staged return-to-sport plan after ACL reconstruction, use strength and hop tests with limb symmetry, add psychological readiness and movement quality, and explain why later and criteria-based return lowers re-injury.",
+   "ur": "End tak aap ACL reconstruction ke baad marhale war return-to-sport plan banayenge, limb symmetry ke saath strength aur hop tests istemal karenge, psychological readiness aur movement quality shamil karenge, aur samjhayenge ke der se aur mayaar par wapsi dobara chot kam karti hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Return to sport is a process (participation, sport, performance) decided by criteria, not the calendar.",
+   "Use at least nine months, 90 percent limb symmetry in strength and hopping, good movement quality and psychological readiness together.",
+   "Retest every four to six weeks, explain results in simple numbers and keep strength training for years."
+  ],
+  "keywords": "Return to Sport After ACL Surgery — Criteria, Not the Calendar return-to-sport-acl-criteria Sports & Return to Play Return to sport is a process (participation, sport, performance) decided by criteria, not the calendar. Use at least nine months, 90 percent limb symmetry in strength and hopping, good movement quality and psychological readiness together. Retest every four to six weeks, explain results in simple numbers and keep strength training for years. What are the three steps of return to sport? What limb symmetry target is common? Why not return at a set date? Which tool measures confidence after ACL surgery?",
+  "next": {
+   "slug": "training-load-injury-risk",
+   "title": "Training Load and Injury Risk — Building Athletes, Not Breaking Them",
+   "href": "/learn/training-load-injury-risk"
+  }
+ },
+ {
+  "href": "/learn/training-load-injury-risk",
+  "slug": "training-load-injury-risk",
+  "title": "Training Load and Injury Risk — Building Athletes, Not Breaking Them",
+  "hook": {
+   "en": "Athletes rarely get injured by training itself, but by sudden jumps in it. Learn how to read load, plan progression and spot the early signs of overload.",
+   "ur": "Khilari training se shayad hi zakhmi hote hain, balkay us mein achanak izafe se. Load parhna, progression ka plan banana aur overload ki shuruati nishaniyan pehchanna seekhein."
+  },
+  "area": "Sports & Return to Play",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll define training load, explain why sudden increases raise injury risk while a steady, high chronic load protects, and apply a simple monitoring and progression plan with rest and recovery.",
+   "ur": "End tak aap training load ki tareef karenge, samjhayenge ke achanak izafa chot ka khatra kyun barhata hai jabke musalsal, zyada chronic load bachata hai, aur aaram aur recovery ke saath saada monitoring aur progression ka plan lagayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Training load is how much work the body does; tissues adapt to load that rises gradually, and sudden jumps raise injury risk.",
+   "Measure sessions, compare recent with usual load, progress in small steps and treat ratios as guides, not laws.",
+   "Watch for warning signs and act early; refer bone-point night pain, falls with deformity, chest pain and signs of low energy availability."
+  ],
+  "keywords": "Training Load and Injury Risk — Building Athletes, Not Breaking Them training-load-injury-risk Sports & Return to Play Training load is how much work the body does; tissues adapt to load that rises gradually, and sudden jumps raise injury risk. Measure sessions, compare recent with usual load, progress in small steps and treat ratios as guides, not laws. Watch for warning signs and act early; refer bone-point night pain, falls with deformity, chest pain and signs of low energy availability. What is training load? What raises injury risk? What can protect against injury? What is the 10 percent rule?",
+  "next": {
+   "slug": "reading-a-randomised-trial",
+   "title": "Reading a Randomised Trial — Bias, Confidence Intervals and What to Trust",
+   "href": "/learn/reading-a-randomised-trial"
+  }
+ },
+ {
+  "href": "/learn/reading-a-randomised-trial",
+  "slug": "reading-a-randomised-trial",
+  "title": "Reading a Randomised Trial — Bias, Confidence Intervals and What to Trust",
+  "hook": {
+   "en": "A headline says \"treatment X works\", but did the trial deserve our trust? Learn a simple way to read a randomised trial, spot the usual weaknesses and decide if the result matters for your patient.",
+   "ur": "Headline kehti hai \"ilaj X kaam karta hai\", magar kya trial hamare bharose ke laiq thi? Randomised trial parhne ka saada tareeqa, aam kamzoriyan pehchanna aur faisla karna seekhein ke nateeja aap ke mareez ke liye ahem hai ya nahi."
+  },
+  "area": "Research & Evidence",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll check a trial for random allocation, concealment, blinding, dropouts and outcome reporting, read a mean difference with its confidence interval, and decide whether the result is both believable and important.",
+   "ur": "End tak aap trial mein random allocation, concealment, blinding, dropouts aur outcome reporting check karenge, mean difference ko confidence interval ke saath parhenge, aur faisla karenge ke nateeja qabil-e-yaqeen bhi hai aur ahem bhi."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Check how groups were formed (random and hidden), blinding and follow-up, and whether the main outcome was reported as planned.",
+   "Read the difference between groups and its 95 percent confidence interval, not only the p-value.",
+   "Judge whether the effect is important by comparing it with the minimal important change, and whether it fits your patient."
+  ],
+  "keywords": "Reading a Randomised Trial — Bias, Confidence Intervals and What to Trust reading-a-randomised-trial Research & Evidence Check how groups were formed (random and hidden), blinding and follow-up, and whether the main outcome was reported as planned. Read the difference between groups and its 95 percent confidence interval, not only the p-value. Judge whether the effect is important by comparing it with the minimal important change, and whether it fits your patient. What does randomisation do? What does a 95 percent confidence interval show? What is the difference between statistical and clinical importance? What does blinding protect against?",
+  "next": {
+   "slug": "outcome-measures-minimal-important-change",
+   "title": "Outcome Measures — Is the Change Real and Does It Matter?",
+   "href": "/learn/outcome-measures-minimal-important-change"
+  }
+ },
+ {
+  "href": "/learn/outcome-measures-minimal-important-change",
+  "slug": "outcome-measures-minimal-important-change",
+  "title": "Outcome Measures — Is the Change Real and Does It Matter?",
+  "hook": {
+   "en": "A patient's score went from 20 to 18. Is that progress, or noise? Learn to choose an outcome measure, read a change score and use the minimal important change so you can show patients and others that treatment is working.",
+   "ur": "Mareez ka score 20 se 18 hua. Kya yeh progress hai ya shor? Outcome measure chunna, change score parhna aur minimal important change istemal karna seekhein taake aap mareezon aur doosron ko dikha sakein ke ilaj kaam kar raha hai."
+  },
+  "area": "Research & Evidence",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll choose a validated measure for pain, disability or function, record a baseline, calculate change, and judge it against measurement error and the minimal important change.",
+   "ur": "End tak aap dard, disability ya function ke liye validated measure chunenge, baseline likhenge, change nikalenge, aur use measurement error aur minimal important change se parkhenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Choose a valid, reliable, responsive measure with the patient, record a baseline and repeat it in the same way.",
+   "A change is real if it is bigger than the measurement error and meaningful if it is bigger than the minimal important change.",
+   "Typical thresholds in low back pain: about 2 points or 30 percent for pain, 5 points for Roland-Morris and 10 points for Oswestry."
+  ],
+  "keywords": "Outcome Measures — Is the Change Real and Does It Matter? outcome-measures-minimal-important-change Research & Evidence Choose a valid, reliable, responsive measure with the patient, record a baseline and repeat it in the same way. A change is real if it is bigger than the measurement error and meaningful if it is bigger than the minimal important change. Typical thresholds in low back pain: about 2 points or 30 percent for pain, 5 points for Roland-Morris and 10 points for Oswestry. What is the minimal important change? What is measurement error? What is a typical important change in pain on a 0 to 10 scale? Why repeat the same tool?",
+  "next": {
+   "slug": "cardiac-rehabilitation-phases",
+   "title": "Cardiac Rehabilitation — Exercising Safely After a Heart Event",
+   "href": "/learn/cardiac-rehabilitation-phases"
+  }
+ },
+ {
+  "href": "/learn/cardiac-rehabilitation-phases",
+  "slug": "cardiac-rehabilitation-phases",
+  "title": "Cardiac Rehabilitation — Exercising Safely After a Heart Event",
+  "hook": {
+   "en": "After a heart attack or bypass, patients fear exercise. Yet supervised, graded exercise lowers deaths and readmissions. Learn the phases, how hard to push and when to stop.",
+   "ur": "Dil ke daure ya bypass ke baad mareez exercise se darte hain. Phir bhi nigrani wali, darje war exercise mauton aur dobara daakhilon ko kam karti hai. Marahil, kitna zor lagana hai aur kab rukna hai seekhein."
+  },
+  "area": "Cardiorespiratory",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll describe the phases of cardiac rehabilitation, screen before exercise, set intensity with heart rate and the Borg scale, and recognise stop signs and emergencies.",
+   "ur": "End tak aap cardiac rehabilitation ke marahil bayan karenge, exercise se pehle screening karenge, heart rate aur Borg scale se shiddat tay karenge, aur rukne ki nishaniyan aur emergencies pehchanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Cardiac rehabilitation combines exercise, education and risk-factor control, in early, outpatient and maintenance phases.",
+   "Screen before each session and keep effort at about 11 to 14 on the Borg scale, using symptoms and the cardiac team's range rather than a formula.",
+   "Know the stop signs and emergencies, and build the patient's confidence as well as fitness."
+  ],
+  "keywords": "Cardiac Rehabilitation — Exercising Safely After a Heart Event cardiac-rehabilitation-phases Cardiorespiratory Cardiac rehabilitation combines exercise, education and risk-factor control, in early, outpatient and maintenance phases. Screen before each session and keep effort at about 11 to 14 on the Borg scale, using symptoms and the cardiac team's range rather than a formula. Know the stop signs and emergencies, and build the patient's confidence as well as fitness. Name the three phases of cardiac rehabilitation. What Borg effort level is usual? Why is a formula heart rate unreliable? Name two reasons to stop a session.",
+  "next": {
+   "slug": "heat-and-cold-therapy-evidence",
+   "title": "Heat and Cold — What They Really Do and When to Avoid Them",
+   "href": "/learn/heat-and-cold-therapy-evidence"
+  }
+ },
+ {
+  "href": "/learn/heat-and-cold-therapy-evidence",
+  "slug": "heat-and-cold-therapy-evidence",
+  "title": "Heat and Cold — What They Really Do and When to Avoid Them",
+  "hook": {
+   "en": "Hot packs and ice are the most used treatments in clinics and homes, yet many people use them wrongly. Learn what each really does, what the evidence says and the safety rules that protect the skin.",
+   "ur": "Garam packs aur barf clinics aur gharon mein sab se zyada istemal hone wale ilaj hain, phir bhi bohat se log inhein ghalat istemal karte hain. Seekhein har ek asal mein kya karta hai, evidence kya kehta hai aur jild ki hifazat ke safety usool."
+  },
+  "area": "Electrotherapy",
+  "level": "Foundation",
+  "bestFor": "2nd year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll choose heat or cold for a given problem, apply each safely with time limits and skin checks, explain the PEACE and LOVE approach to soft-tissue injury and know when to avoid both.",
+   "ur": "End tak aap kisi masle ke liye garmi ya sardi chunenge, har ek ko waqt ki hadd aur jild ki jaanch ke saath mehfooz tareeqe se lagayenge, soft-tissue chot ke liye PEACE aur LOVE approach samjhayenge aur jaanenge ke dono se kab bachna hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Heat suits stiff, non-swollen tissue and cold gives short-term pain relief; both are adjuncts that help movement, not cures.",
+   "Apply with a barrier for 10 to 20 minutes, check the skin, and avoid both where sensation or circulation is poor.",
+   "For early soft-tissue injury, use PEACE and LOVE: protect first, then load early and progress."
+  ],
+  "keywords": "Heat and Cold — What They Really Do and When to Avoid Them heat-and-cold-therapy-evidence Electrotherapy Heat suits stiff, non-swollen tissue and cold gives short-term pain relief; both are adjuncts that help movement, not cures. Apply with a barrier for 10 to 20 minutes, check the skin, and avoid both where sensation or circulation is poor. For early soft-tissue injury, use PEACE and LOVE: protect first, then load early and progress. When is heat useful? How long is a typical heat or cold application? What does PEACE stand for? Who needs extra care with heat and cold?",
   "next": null
  },
  {

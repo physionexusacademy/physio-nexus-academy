@@ -389,6 +389,9 @@ export const teacherPaths: TeacherPath[] = [
       { id: "ce-3", kind: "lesson", lesson: "exercise-dosage" },
       { id: "ce-4", kind: "lesson", lesson: "pain-science-basics" },
       { id: "ce-5", kind: "lesson", lesson: "tens-ultrasound-evidence" },
+      { id: "ce-5b", kind: "lesson", lesson: "heat-and-cold-therapy-evidence" },
+      { id: "ce-5c", kind: "lesson", lesson: "six-minute-walk-test-breathlessness" },
+      { id: "ce-5d", kind: "lesson", lesson: "cardiac-rehabilitation-phases" },
       {
         id: "ce-6",
         kind: "mission",
@@ -584,6 +587,37 @@ export const teacherPaths: TeacherPath[] = [
           ur: "Checkpoint: aaj ka 5 sawalon wala challenge dein. Score jo bhi ho, har explanation zaroor parhein — asal seekhna wahin hai.",
         },
         minutes: 5,
+      },
+    ],
+  },
+  {
+    slug: "sports-and-evidence-in-practice",
+    title: "Sports Physio and Evidence in Practice",
+    tagline: {
+      en: "Bring athletes back safely, manage training load and read research so your practice stays honest and up to date.",
+      ur: "Khilariyon ko mehfooz tareeqe se wapas laayein, training load sambhalein aur research parhein taake aap ka kaam imandar aur jadeed rahe.",
+    },
+    audience: "Final year & interns",
+    outcomes: [
+      { en: "Plan a criteria-based return to sport after ACL surgery", ur: "ACL surgery ke baad mayaar par mabni return to sport ka plan banana" },
+      { en: "Monitor training load and progress it gradually", ur: "Training load ki nigrani aur aahista izafa" },
+      { en: "Appraise a randomised trial and read a change score", ur: "Randomised trial ki jaanch aur change score parhna" },
+    ],
+    steps: [
+      { id: "se-1", kind: "lesson", lesson: "training-load-injury-risk" },
+      { id: "se-2", kind: "lesson", lesson: "return-to-sport-acl-criteria" },
+      { id: "se-3", kind: "lesson", lesson: "reading-a-randomised-trial" },
+      { id: "se-4", kind: "lesson", lesson: "outcome-measures-minimal-important-change" },
+      {
+        id: "se-5",
+        kind: "mission",
+        title: "ACL reconstruction rehabilitation guide",
+        href: "/conditions/acl-reconstruction-rehabilitation",
+        mission: {
+          en: "Read the ACL rehabilitation plan and write the six criteria you would want an athlete to meet before returning to pivoting sport.",
+          ur: "ACL rehabilitation ka plan parhein aur woh chhe mayaar likhein jo aap chahte hain ke khilari pivoting khel mein wapas jane se pehle poore kare.",
+        },
+        minutes: 12,
       },
     ],
   },
