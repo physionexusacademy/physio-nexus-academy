@@ -93,9 +93,9 @@ export const goldenCases = [
   { q: "how to treat it", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/conditions/adhesive-capsulitis#clinical"] },
   { q: "special tests?", context: { lastTopic: "Anterior Cruciate Ligament (ACL) Injury" }, anyTop2: ["/msk-special-tests", "/conditions/acl-injury#quick"] },
   // Requests that stand on their own must not be hijacked by the previous topic.
-  { q: "help me prepare for my viva", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/daily-challenge"], any: ["/learn/review"], freshTopic: true, chip: /Exam prep: Adhesive Capsulitis/ },
+  { q: "help me prepare for my viva", context: { lastTopic: "Adhesive Capsulitis" }, top: ["/daily-challenge", "/learn/osce-viva-technique"], any: ["/learn/review"], freshTopic: true },
   { q: "book a home visit", context: { lastTopic: "Anterior Cruciate Ligament (ACL) Injury" }, top: ["/home-visit"], freshTopic: true },
-  { q: "viva ki tayyari kaise karun", context: { lastTopic: "Adhesive Capsulitis" }, lang: "ur", top: ["/daily-challenge"], freshTopic: true },
+  { q: "viva ki tayyari kaise karun", context: { lastTopic: "Adhesive Capsulitis" }, lang: "ur", top: ["/daily-challenge", "/learn/osce-viva-technique"], freshTopic: true },
   { q: "viva questions on it", context: { lastTopic: "Adhesive Capsulitis" }, any: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
   { q: "step by step?", context: { lastTopic: "Convex–Concave Rule" }, any: ["/learn/convex-concave-rule"] },
   { q: "Adhesive Capsulitis viva", anyTop2: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical", "/learn/review", "/daily-challenge"], any: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
