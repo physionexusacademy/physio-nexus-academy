@@ -64,6 +64,8 @@ ok(/npm run fetch:formcheck-assets/.test(deploy), "the deploy must verify the Fo
 const pkg = JSON.parse(read("package.json"));
 ok(/fetch-formcheck-assets\.mjs && opennextjs-cloudflare build && opennextjs-cloudflare deploy/.test(pkg.scripts.deploy), "npm run deploy must fetch the model files before the build");
 ok(/\/public\/formcheck\//.test(read(".gitignore")), "the downloaded model files must not be committed");
+// Cloudflare's own Git build (Workers Builds) deploys every push after our workflow and runs OpenNext's build, not `npm run deploy`: the fetch must be part of that build too.
+ok(/buildCommand:\s*"node scripts\/fetch-formcheck-assets\.mjs && npm run build"/.test(read("open-next.config.ts")), "open-next.config.ts must fetch the Form Check files before every build (Cloudflare's Git build deploys without them otherwise: the pose engine 404s and the camera cannot start)");
 ok(/\/formcheck\/\*/.test(read("public/_headers")), "public/_headers needs a cache rule for /formcheck/*");
 
 if (failures.length) { console.error("Form Check wiring FAILED:\n - " + failures.join("\n - ")); process.exit(1); }
