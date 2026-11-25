@@ -3,12 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { trainingHistory } from "@/lib/training-history";
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
-import { regionalManualApplications } from "@/lib/manual-therapy-regional";
+import { loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
-import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
+import { loadConceptLessons } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
 import { handouts } from "@/lib/handouts";
@@ -89,6 +89,10 @@ function getRoutePriority(route: string): number {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const conceptLessonMetas = await loadConceptLessons();
+  const regionIndex = await loadRegionIndex();
+  if (!regionIndex) throw new Error("Regional manual therapy index is missing: run npm run build:manual-therapy-data");
+  const regionalManualApplications = regionIndex.items.filter((item) => item.listed);
   const supabase = await createClient();
   const { data: workshops } = await supabase
     .from("workshops")

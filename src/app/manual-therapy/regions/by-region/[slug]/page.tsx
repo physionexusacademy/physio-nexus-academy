@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
-import {
-  completeRegionalManualApplications,
-  isTechniqueSpecificRegionalApplication,
-  manualRegions,
-} from "@/lib/manual-therapy-regional";
+import { isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regions";
+import { loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
+
+async function regionIndex() {
+  const index = await loadRegionIndex();
+  if (!index) throw new Error("Regional manual therapy index is missing: run npm run build:manual-therapy-data");
+  return index;
+}
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -13,12 +16,14 @@ function regionSlug(region: string) {
   return region.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { regions: manualRegions } = await regionIndex();
   return manualRegions.map((region) => ({ slug: regionSlug(region) }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const { regions: manualRegions } = await regionIndex();
   const region = manualRegions.find((region) => regionSlug(region) === slug);
   if (!region) return {};
   return {
@@ -30,6 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function RegionOverviewsPage({ params }: PageProps) {
   const { slug } = await params;
+  const { regions: manualRegions, items: completeRegionalManualApplications } = await regionIndex();
   const region = manualRegions.find((value) => regionSlug(value) === slug);
   if (!region) notFound();
 

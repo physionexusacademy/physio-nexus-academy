@@ -40,8 +40,7 @@ for three times:
   Before adding a route that only redirects, add it to `redirects()` instead.
 - Worker: 2,988.9 KiB before, **2,931.1 KiB** after (limit 3,072).
 
-Largest remaining items (raw KB in the worker): `teacher/lesson-index.ts` 168 (keywords 36, goal 33, summary 29,
-hook 29), `daily-content/pool.generated.ts` 134, the manual-therapy data files (~700 together), zod (2 copies, ~170), `tailwind-merge` (2 copies, ~38).
+Largest remaining items (raw KB in the worker): `teacher/lesson-index.ts` 168 (moved out, see below), `daily-content/pool.generated.ts` 134 (moved out, see below), the manual-therapy data files (~700 together), zod (2 copies, ~170), `tailwind-merge` (2 copies, ~38).
 
 ## Chapter text lives in static files, not in the worker (Nov 2026)
 The Manual Therapy chapter pages are prerendered, but the text they render (application guides, mechanisms, mastery guides, expert depth, Roman Urdu, stories,
@@ -58,5 +57,33 @@ It is now one static file per chapter, `public/manual-therapy-data/chapters/<slu
 - The rendered pages did not change: the visible markup, the JSON-LD and the `<head>` of all 337 prerendered Manual Therapy pages are identical to the build
   before, and the page data (the RSC payload) is the same set of rows (only the order of the rows and one framework row, `IconMark`, differ).
 
-The same idea would free the regions pages (`manual-therapy-priority-depth.ts` 84 KB, `manual-therapy-subtechniques.ts` 30 KB and the regional learning labs, about 170 KB
-of source) if more room is ever needed.
+The regions pages followed in Nov 2026 (next section).
+
+## The daily challenge's lesson questions are a static file (Nov 2026)
+The 397 lesson-based questions of the Daily Clinical Challenge (`public/daily-content/pool.json`, written by `scripts/build-daily-pool.ts`) used to be a TypeScript module
+(`pool.generated.ts`, ~54 KiB gzip inside the worker). They are now read at request time through the ASSETS binding by `src/lib/daily-pool-loader.ts` (the file in the repository
+in the build and local development), which cut the worker from 3,004.3 to 2,962.0 KiB. `challengeQuestions()` / `publicDailyQuestions()` are therefore async.
+- These questions are built from the PNA Teacher lessons, whose checks are public already (`public/teacher-data`), so the file adds no new exposure. The hand-written
+  100-question bank, which is not published anywhere else, stays in the worker with its answers.
+- `GET /api/daily-challenge/status` now also builds today's five questions and reports `"questions":5`; the deploy smoke test checks it, so a pool that cannot be read
+  fails the deploy run (without writing anything to the database).
+- After changing lessons, run `node --experimental-strip-types scripts/build-daily-pool.ts` and commit the changed `public/daily-content/pool.json`.
+
+## The PNA Teacher lesson index is a static file (Nov 2026)
+`src/lib/teacher/generated/lesson-index.json` (308 KB raw, ~67 KiB gzip) was imported by the learn pages, the sitemap, the AI assistant and two home components, so it travelled
+inside the worker. It is now `public/teacher-data/index.json` (written by `npm run build:teacher-data`) and read with `loadLessonIndex()` / `getLessonMeta()` in
+`src/lib/teacher/lesson-index.ts` (async; `src/lib/static-json.ts` reads the ASSETS binding on Cloudflare and the file in the build). Worker: 2,962.0 -> 2,905.0 KiB.
+- The home page only needs the counts: `src/lib/teacher/counts.ts` (a tiny generated file). Do not import the index into a client component.
+- The assistant's resource list is built on first use: `getLearningResources()` in `physio-nexus-ai-index.ts` (the route answers 503 if the index cannot be read).
+- Checked on the real build: the HTML of all 662 prerendered pages is identical to the build before (the Hyderabad page differs between any two builds, because `locations/hyderabad`
+  and `locations/[city]` both generate it); the flight (RSC) rows only differ by the extra suspense row of the now-async `TechniqueTeacher` and `/learn`.
+
+## The regional manual-therapy guides are static files (Nov 2026)
+The 288 regional guides (`manual-therapy-regional*.ts`, `-subtechniques`, `-priority-depth`, `-stories`, `-learning-labs`: about 230 KB of source) were imported by the regions pages,
+the sitemap and the AI assistant. They are now `public/manual-therapy-data/regions/<slug>.json` plus `regions/index.json`, written by the same generator as the chapters
+(`npm run build:manual-therapy-data`) and read with `loadRegionData()` / `loadRegionIndex()` in `manual-therapy-chapter-loader.ts`; the types and the one tiny function pages need
+are in `src/lib/manual-therapy-regions.ts`. `validate:manual-therapy-data` now also fails if any of those modules becomes reachable from a page. Worker: 2,905.0 -> 2,835.6 KiB.
+- `RegionalLearningLab` takes the lab as a prop instead of looking it up.
+- The HTML of all 662 prerendered pages is identical to the build before.
+
+Total since the 3,004.3 KiB measured on the deployed build: **2,835.6 KiB (-168.7 KiB)**.

@@ -1,8 +1,7 @@
 import { BookOpenText, Brain, Lightbulb, ShieldAlert } from "lucide-react";
-import { regionalLearningLabs } from "@/lib/manual-therapy-regional-learning-labs";
+import type { Walkthrough } from "@/lib/manual-therapy-regions";
 
-export function RegionalLearningLab({ slug }: { slug: string }) {
-  const lab = regionalLearningLabs[slug];
+export function RegionalLearningLab({ lab }: { lab: Walkthrough | null }) {
   if (!lab) return null;
 
   return (

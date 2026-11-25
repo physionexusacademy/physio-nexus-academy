@@ -14,7 +14,7 @@ import { goldenCases, judge } from "./pna-ai-golden-cases.mjs";
 const root = process.cwd();
 const result = await build({
   stdin: {
-    contents: 'export { pnaLearningResources } from "@/lib/physio-nexus-ai-index"; export { think } from "@/lib/pna-ai/brain";',
+    contents: 'export { getLearningResources } from "@/lib/physio-nexus-ai-index"; export { think } from "@/lib/pna-ai/brain";',
     resolveDir: root,
     loader: "ts",
   },
@@ -24,12 +24,23 @@ const result = await build({
   write: false,
   logLevel: "error",
   tsconfig: path.join(root, "tsconfig.json"),
-  external: ["@opennextjs/cloudflare"],
+  // Outside the worker there is no Cloudflare context and no React Server layer: the static JSON is read from public/, and "server-only" is a no-op.
+  plugins: [{
+    name: "outside-the-worker",
+    setup(b) {
+      b.onResolve({ filter: /^(server-only|@opennextjs\/cloudflare)$/ }, (a) => ({ path: a.path, namespace: "stub" }));
+      b.onLoad({ filter: /.*/, namespace: "stub" }, (a) => ({
+        contents: a.path === "server-only" ? "" : "export const getCloudflareContext = () => { throw new Error('no Cloudflare context'); };",
+        loader: "js",
+      }));
+    },
+  }],
 });
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pna-ai-"));
 const file = path.join(dir, "engine.mjs");
 fs.writeFileSync(file, result.outputFiles[0].text);
-const { think, pnaLearningResources } = await import(pathToFileURL(file).href);
+const { think, getLearningResources } = await import(pathToFileURL(file).href);
+const pnaLearningResources = await getLearningResources();
 
 const failures = [];
 for (const c of goldenCases) {

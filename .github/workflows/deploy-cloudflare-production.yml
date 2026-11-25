@@ -554,6 +554,7 @@ jobs:
           echo "Smoke test passed: camera permission policy"
           check_url "https://physionexusacademy.com/api/daily-challenge/leaderboard" '"challengeDate"'
           check_url "https://physionexusacademy.com/api/daily-challenge/status" '"database":"ready"'
+          check_url "https://physionexusacademy.com/api/daily-challenge/status" '"questions":5'
 
           # Exercise real POST route handling without creating fake attempts or scores.
           start_http="$(curl -sS --connect-timeout 10 --max-time 25 -o "$smoke_tmp/daily-start.json" \

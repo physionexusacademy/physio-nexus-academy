@@ -1,11 +1,11 @@
 /** PNA Daily Clinical Challenge.
  * Five questions per Pakistan calendar date, 20 points per correct answer, a fresh set at 12:00 AM Pakistan time.
  * The questions are drawn from across the whole academy: the 100-question clinical bank below plus one question for every understanding check in
- * the PNA Teacher lessons and manual therapy chapters (generated into daily-content/pool.generated.ts). Every question carries a link to the
+ * the PNA Teacher lessons and manual therapy chapters (generated into public/daily-content/pool.json and read at request time, not bundled into the worker). Every question carries a link to the
  * concept it tests, shown whenever an answer was wrong. Each cycle presents every question once, mixing subjects day by day.
  * Answer keys must never be included in the public question payload.
  */
-import {generatedDailyPool} from "./daily-content/pool.generated.ts";
+import {loadGeneratedPool} from "./daily-pool-loader";
 export type DailyChallengeQuestion={
  id:string;topic:string;question:string;
  options:string[];correct:number;explanation:string;
@@ -137,10 +137,17 @@ const topicLinks:Record<string,{href:string;linkTitle:string}>={
  "Pain Science":{href:"/learn",linkTitle:"PNA Teacher lessons"},
  "Anatomy":{href:"/skills",linkTitle:"Clinical Skills Lab"},
 };
-const pool:DailyChallengeQuestion[]=[
- ...generatedDailyPool,
- ...dailyQuestionBank.map(q=>({...q,...(topicLinks[q.topic]??{href:"/learn",linkTitle:"PNA Teacher lessons"})})),
-];
+let poolCache:DailyChallengeQuestion[]|null=null;
+/** The whole pool: the lesson questions (a static file, not part of the worker) followed by the hand-written bank. Order matters: it fixes each day's questions. */
+async function loadPool():Promise<DailyChallengeQuestion[]>{
+ if(poolCache)return poolCache;
+ const generated=await loadGeneratedPool();
+ poolCache=[
+  ...generated,
+  ...dailyQuestionBank.map(q=>({...q,...(topicLinks[q.topic]??{href:"/learn",linkTitle:"PNA Teacher lessons"})})),
+ ];
+ return poolCache;
+}
 function seededRandom(seed:number){
  let h=seed|0;
  return ()=>{h=(h+0x6d2b79f5)|0;let t=Math.imul(h^(h>>>15),1|h);t=(t+Math.imul(t^(t>>>7),61|t))^t;return ((t^(t>>>14))>>>0)/4294967296;};
@@ -152,7 +159,7 @@ function shuffled<T>(items:T[],random:()=>number){
 }
 let sequenceCache:{cycle:number;order:DailyChallengeQuestion[]}|null=null;
 /** One cycle's order: every subject shuffled, then dealt round-robin so neighbouring questions come from different subjects. */
-function cycleOrder(cycle:number){
+function cycleOrder(pool:DailyChallengeQuestion[],cycle:number){
  if(sequenceCache?.cycle===cycle)return sequenceCache.order;
  const random=seededRandom(cycle*7919+13);
  const groups=new Map<string,DailyChallengeQuestion[]>();
@@ -163,18 +170,19 @@ function cycleOrder(cycle:number){
  sequenceCache={cycle,order};
  return order;
 }
-export function challengeQuestions(date:string):DailyChallengeQuestion[]{
+export async function challengeQuestions(date:string):Promise<DailyChallengeQuestion[]>{
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error("Invalid date");
  const dayNumber=Math.floor(Date.parse(date+"T00:00:00Z")/86400000);
  // Five questions per day from the whole academy: no repeats within a cycle, a different mix of subjects every day.
+ const pool=await loadPool();
  const perCycle=Math.floor(pool.length/5);
  const cycle=Math.floor(dayNumber/perCycle);
  const day=dayNumber-cycle*perCycle;
- const order=cycleOrder(cycle);
+ const order=cycleOrder(pool,cycle);
  return Array.from({length:5},(_,i)=>order[day*5+i]);
 }
-export function publicDailyQuestions(date:string){
- return challengeQuestions(date).map(q=>({id:q.id,topic:q.topic,question:q.question,
+export async function publicDailyQuestions(date:string){
+ return (await challengeQuestions(date)).map(q=>({id:q.id,topic:q.topic,question:q.question,
   options:q.options.map((label,index)=>({value:["A","B","C","D"][index],label}))}));
 }
 export function pakistanMidnightUTC(day:string):string {

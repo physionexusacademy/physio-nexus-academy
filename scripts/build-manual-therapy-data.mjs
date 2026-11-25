@@ -10,11 +10,13 @@ import { loadChapterBuilder } from "./manual-therapy-data-run.mjs";
 const root = process.cwd();
 const { serializeChapterData } = await loadChapterBuilder(root);
 const files = serializeChapterData();
-const chapterDir = path.join(root, "public/manual-therapy-data/chapters");
-fs.mkdirSync(chapterDir, { recursive: true });
 const keep = new Set(Object.keys(files));
-for (const file of fs.readdirSync(chapterDir)) {
-  if (!keep.has(`public/manual-therapy-data/chapters/${file}`)) fs.rmSync(path.join(chapterDir, file));
+for (const sub of ["chapters", "regions"]) {
+  const dir = path.join(root, "public/manual-therapy-data", sub);
+  fs.mkdirSync(dir, { recursive: true });
+  for (const file of fs.readdirSync(dir)) {
+    if (!keep.has(`public/manual-therapy-data/${sub}/${file}`)) fs.rmSync(path.join(dir, file));
+  }
 }
 let bytes = 0;
 for (const [file, content] of Object.entries(files)) {

@@ -1,6 +1,6 @@
 import { Fragment, type CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
-import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
+import { lessonCounts } from "@/lib/teacher/counts";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { LobbySearch } from "./LobbySearch";
@@ -62,7 +62,7 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       badge: "Learn · Free",
       title: "PNA Teacher",
       tag: "Hard concepts, explained like a great teacher would.",
-      chips: [`${lessonIndex.length} lessons`, "English + Roman Urdu", "Quick checks"],
+      chips: [`${lessonCounts.lessons} lessons`, "English + Roman Urdu", "Quick checks"],
       cta: "Start learning",
       accent: "46 230 214",
       icon: "learn",
@@ -109,7 +109,7 @@ export function LobbyHero({ atlasPublished }: { atlasPublished: boolean }) {
       href: "/manual-therapy",
       badge: "Technique · Free",
       title: "Manual Therapy",
-      tag: `${manualLessonMetas.length} technique lessons, with 3D demonstrations.`,
+      tag: `${lessonCounts.manual} technique lessons, with 3D demonstrations.`,
       chips: ["Step by step", "3D demonstrations", "English + Roman Urdu"],
       cta: "Explore techniques",
       accent: "255 198 92",

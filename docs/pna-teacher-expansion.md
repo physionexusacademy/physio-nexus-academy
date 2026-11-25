@@ -33,4 +33,4 @@ Paths: `neuro-rehab-essentials`, `paediatric-physio-foundations`.
 * Expert thinking: Fagan nomogram and MCID, strength-duration and TENS lab, evidence toolkit, communication role-play, RA vs OA vs gout hand map.
 * More neuro and paediatrics: ASIA classifier, cranial nerve lab, nerve injury and Tinel, HINTS, Duchenne and Gowers, DDH, Parkinson cueing, GCS.
 
-The daily question pool (`src/lib/daily-content/pool.generated.ts`) is regenerated with `node --experimental-strip-types scripts/build-daily-pool.ts`; do it once after the last batch so a day's questions do not change under learners mid-attempt.
+The daily question pool (`public/daily-content/pool.json`) is regenerated with `node --experimental-strip-types scripts/build-daily-pool.ts`; do it once after the last batch so a day's questions do not change under learners mid-attempt.

@@ -51,6 +51,24 @@ for (const slug of slugs) {
 plain(index, "index");
 ok(Object.keys(index.cards).length === slugs.length, "the index must hold exactly the chapters that have pages");
 
+/* 2b. the regional guides (src/lib/manual-therapy-regions.ts) */
+const { regionSlugs, buildRegionData } = await loadChapterBuilder(root);
+const regionIndex = JSON.parse(read("public/manual-therapy-data/regions/index.json"));
+const regionDir = path.join(root, "public/manual-therapy-data/regions");
+for (const file of fs.readdirSync(regionDir)) ok(`public/manual-therapy-data/regions/${file}` in files, `${file} is a leftover region file: run npm run build:manual-therapy-data`);
+const regionList = regionSlugs();
+ok(regionList.length >= 250 && new Set(regionList).size === regionList.length, `unexpected regional guide list (${regionList.length})`);
+ok(regionIndex.version === 1 && regionIndex.items.length === regionList.length && regionIndex.regions.length >= 10, "the regional index must list every guide and region");
+ok(regionIndex.items.filter((item) => item.listed).length >= 40, "the regional index lost the hand-authored base list (sitemap and assistant)");
+plain(regionIndex, "regions/index");
+for (const slug of regionList) {
+  const data = buildRegionData(slug);
+  ok(data && data.version === 1 && data.item.slug === slug, `${slug}: no regional guide data`);
+  ok(`public/manual-therapy-data/regions/${slug}.json` in files, `${slug}: no regional guide file`);
+  plain(data, "regions/" + slug);
+  ok(fs.statSync(path.join(regionDir, `${slug}.json`)).size < 120 * 1024, `${slug}: regional guide file is unusually large`);
+}
+
 /* 3. the worker guard: reachability from every entry, type-only imports ignored (they are erased) */
 const sources = [];
 (function walk(dir) {
@@ -89,7 +107,7 @@ while (stack.length) {
   for (const next of deps.get(file) ?? []) if (!via.has(next)) { via.set(next, file); stack.push(next); }
 }
 ok(via.size > 100, "the entry points were not found (" + via.size + " files reached)");
-const HEAVY = /^src\/lib\/(all-)?manual-therapy-(guides?|guide-additions|mechanisms?|mechanism-additions|mastery(?!-types)[a-z-]*|depth(?!-types)[a-z-]*|urdu-content|urdu-depth|components|episodes|aha-moments|lesson-weave[a-z-]*|room-scenes|world-depth(?!-types)[a-z-]*|stories|expert|chapter-build)\.ts$/;
+const HEAVY = /^src\/lib\/(all-)?manual-therapy-(guides?|guide-additions|mechanisms?|mechanism-additions|mastery(?!-types)[a-z-]*|depth(?!-types)[a-z-]*|urdu-content|urdu-depth|components|regional(?:-authored|-stories|-learning-labs)?|subtechniques|priority-depth|episodes|aha-moments|lesson-weave[a-z-]*|room-scenes|world-depth(?!-types)[a-z-]*|stories|expert|chapter-build)\.ts$/;
 const heavy = sources.filter((file) => HEAVY.test(file));
 ok(heavy.length >= 20, `the heavy module list matched only ${heavy.length} files (the guard needs updating)`);
 for (const file of heavy) {
@@ -103,6 +121,7 @@ ok(!via.has("src/lib/manual-therapy-chapter-build.ts"), "the chapter builder mus
 
 /* 4. the loader and the pages */
 const loader = read("src/lib/manual-therapy-chapter-loader.ts");
+ok(/loadRegionData/.test(loader) && /loadRegionIndex/.test(loader), "the loader must read the regional guides");
 ok(/\^\[a-z0-9\]\[a-z0-9-\]\{0,80\}\$/.test(loader), "the loader must refuse a slug that is not a plain lowercase slug before it builds a path");
 ok(/path\.join\(process\.cwd\(\), "public", BASE, relative\)/.test(loader) && /assets\.fetch/.test(loader), "the loader reads the ASSETS binding on Cloudflare and the repository file otherwise");
 const page = read("src/app/manual-therapy/[slug]/page.tsx");

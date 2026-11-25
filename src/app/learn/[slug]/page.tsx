@@ -3,14 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Clock3, GraduationCap, Layers, Target } from "lucide-react";
-import { conceptLessonMetas, getLessonMeta } from "@/lib/teacher/lesson-index";
+import { getLessonMeta, loadConceptLessons } from "@/lib/teacher/lesson-index";
 import { LessonPlayer } from "@/components/teacher/LessonPlayer";
 import { ConceptLab } from "@/components/teacher/ConceptLab";
 
 const siteUrl = "https://physionexusacademy.com";
 
-export function generateStaticParams() {
-  return conceptLessonMetas.map((lesson) => ({ slug: lesson.slug }));
+export async function generateStaticParams() {
+  return (await loadConceptLessons()).map((lesson) => ({ slug: lesson.slug }));
 }
 
 // Cloudflare (OpenNext) has no incremental cache configured, so pages must be
@@ -20,7 +20,7 @@ export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const lesson = getLessonMeta(slug);
+  const lesson = await getLessonMeta(slug);
   if (!lesson || lesson.kind !== "concept") return {};
   const url = `${siteUrl}/learn/${lesson.slug}`;
   const description = fitDescription(`${lesson.hook.en} ${lesson.goal.en}`, "A step-by-step PNA Teacher lesson in English and Roman Urdu.");
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function TeacherLessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // Manual Therapy chapters are taught inside their own encyclopedia page.
-  const lesson = getLessonMeta(slug);
+  const lesson = await getLessonMeta(slug);
   if (lesson?.kind === "manual") permanentRedirect(`/manual-therapy/${slug}#pna-teacher`);
   if (!lesson) notFound();
 

@@ -23,7 +23,12 @@ import { coreAttentionCues } from "@/lib/manual-therapy-attention-cues";
 import { clinicalRoomScenes } from "@/lib/manual-therapy-room-scenes";
 import { getManualTherapyVisuals } from "@/lib/manual-therapy-visuals";
 import { worldManualDeepChapters } from "@/lib/manual-therapy-world-depth";
+import { completeRegionalManualApplications, regionalManualApplications, manualRegions } from "@/lib/manual-therapy-regional";
+import { getRegionalSubTechniques } from "@/lib/manual-therapy-subtechniques";
+import { regionalClinicalStories } from "@/lib/manual-therapy-regional-stories";
+import { regionalLearningLabs } from "@/lib/manual-therapy-regional-learning-labs";
 import type { ChapterCard, ChapterData, ChapterIndex, DemoCaption } from "@/lib/manual-therapy-chapter-types";
+import type { RegionData, RegionIndex } from "@/lib/manual-therapy-regions";
 
 /** The steps of the 2D demonstration in English and Roman Urdu (moved here from ChapterExtras, same rules). */
 function demoCaptions(slug: string): { en: DemoCaption[]; ur: DemoCaption[] } {
@@ -94,9 +99,58 @@ export function buildChapterIndex(): ChapterIndex {
   return { version: 1, cards };
 }
 
+/** The regional guides: one index and one file per guide (see manual-therapy-regions.ts). */
+export function regionSlugs(): string[] {
+  return completeRegionalManualApplications.map((item) => item.slug);
+}
+
+export function buildRegionIndex(): RegionIndex {
+  const base = new Map(regionalManualApplications.map((item) => [item.slug, item]));
+  return {
+    version: 1,
+    regions: [...manualRegions],
+    items: completeRegionalManualApplications.map((item) => {
+      const listed = base.get(item.slug);
+      return {
+        slug: item.slug,
+        techniqueSlug: item.techniqueSlug,
+        techniqueName: item.techniqueName,
+        region: item.region,
+        title: item.title,
+        applicability: item.applicability,
+        clinicalUse: item.clinicalUse.slice(0, 2),
+        listed: Boolean(listed),
+        listedApplicability: listed ? listed.applicability ?? null : null,
+      };
+    }),
+  };
+}
+
+export function buildRegionData(slug: string): RegionData | null {
+  const item = completeRegionalManualApplications.find((entry) => entry.slug === slug);
+  if (!item) return null;
+  const story = regionalClinicalStories[item.slug] ?? null;
+  const data: RegionData = {
+    version: 1,
+    item,
+    subTechniques: story ? [] : getRegionalSubTechniques(item.techniqueSlug, item.region),
+    story,
+    lab: story ? regionalLearningLabs[item.techniqueSlug] ?? null : null,
+  };
+  // Optional fields that are undefined simply are not there in the file (the page reads them the same way); spelling that out keeps the data plain.
+  return JSON.parse(JSON.stringify(data)) as RegionData;
+}
+
 /** Exact file contents (path -> text), so the validator can tell when the generated files are stale. */
 export function serializeChapterData(): Record<string, string> {
-  const files: Record<string, string> = { "public/manual-therapy-data/index.json": JSON.stringify(buildChapterIndex()) + "\n" };
+  const files: Record<string, string> = {
+    "public/manual-therapy-data/index.json": JSON.stringify(buildChapterIndex()) + "\n",
+    "public/manual-therapy-data/regions/index.json": JSON.stringify(buildRegionIndex()) + "\n",
+  };
+  for (const slug of regionSlugs()) {
+    const data = buildRegionData(slug);
+    if (data) files[`public/manual-therapy-data/regions/${slug}.json`] = JSON.stringify(data) + "\n";
+  }
   for (const slug of chapterSlugs()) {
     const data = buildChapterData(slug);
     if (data) files[`public/manual-therapy-data/chapters/${slug}.json`] = JSON.stringify(data) + "\n";

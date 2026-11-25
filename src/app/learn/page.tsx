@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { BookOpenCheck, Brain, Hand, Lightbulb, MessagesSquare, Repeat2 } from "lucide-react";
-import { conceptLessonMetas, lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
+import { loadLessonIndex } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { TeacherHome } from "@/components/teacher/TeacherHome";
 import { TeacherCatalog } from "@/components/teacher/TeacherCatalog";
@@ -74,7 +74,10 @@ const principles = [
   { icon: BookOpenCheck, title: "Honest evidence", text: "Clinical pearls, common mistakes and real sources — including where the textbook rule breaks down." },
 ];
 
-export default function LearnPage() {
+export default async function LearnPage() {
+  const lessonIndex = await loadLessonIndex();
+  const conceptLessonMetas = lessonIndex.filter((lesson) => lesson.kind === "concept");
+  const manualLessonMetas = lessonIndex.filter((lesson) => lesson.kind === "manual");
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",

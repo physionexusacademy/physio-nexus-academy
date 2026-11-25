@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import { JsonLd, breadcrumbList, orgRef, siteUrl } from "@/lib/seo/jsonld";
-import { getRegionalManualApplication } from "@/lib/manual-therapy-regional";
+import { loadRegionData } from "@/lib/manual-therapy-chapter-loader";
 import { fitDescription } from "@/lib/seo/text";
 
 export default async function Layout({ children, params }: { children: ReactNode; params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = getRegionalManualApplication(slug);
+  const item = (await loadRegionData(slug))?.item;
   if (!item) return <>{children}</>;
   const data = {
     "@context": "https://schema.org",

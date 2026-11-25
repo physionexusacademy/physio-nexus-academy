@@ -7,6 +7,7 @@ import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, healthTip, specFor, type 
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
 import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
+import { reloadIfPolicyBlocksCamera } from "@/lib/formcheck/browser/policy-reload";
 import { cameraPermission, policyAllowsCamera, watchCameraPermission, type CameraPermission } from "@/lib/formcheck/browser/permission";
 import { useVoice } from "@/lib/speech/preference";
 import { T, useRvLang } from "../useLang";
@@ -175,6 +176,7 @@ function Panel({ spec, side: initialSide, targetReps, targetHoldSeconds, exercis
     if (needSide) return; // the side must be chosen first; the Start button is shown once the block is gone
     if (state !== "denied") begin();
     else if (policyAllowsCamera() !== false) { resetCounting(); void fc.start(); }
+    else reloadIfPolicyBlocksCamera();
   };
   const again = (nextPass: 1 | 2) => { resetCounting(); reported.current = null; setPass(nextPass); phone.start(); setTimeout(() => void fc.start(), 0); };
   const seconds = (ms: number) => (ms / 1000).toFixed(0);

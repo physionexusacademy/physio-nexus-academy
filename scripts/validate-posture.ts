@@ -218,7 +218,14 @@ assert.ok(METRICS.length === 11 && new Set(METRICS.map((m) => m.id)).size === 11
   assert.match(loader, /dynamic\(\(\) => import\("\.\/PostureScreen"\), \{\s*ssr: false/, "the posture screen must load in the browser only (ssr: false)");
   const config = fs.readFileSync("next.config.js", "utf8");
   assert.ok(/source: '\/health-calculators\/posture',\s*headers: \[\{ key: 'Permissions-Policy', value: 'camera=\(self\), microphone=\(\)' \}\]/.test(config), "the posture page must be allowed its own camera");
-  assert.ok(fs.readFileSync("src/app/health-calculators/page.tsx", "utf8").includes("/health-calculators/posture"), "the calculators hub must link to the posture screen");
+  const hub = fs.readFileSync("src/app/health-calculators/page.tsx", "utf8");
+  assert.ok(hub.includes("/health-calculators/posture"), "the calculators hub must link to the posture screen");
+  // A Next.js link keeps the Permissions-Policy of the page it came from (camera=()): the posture page then refuses the camera ("tell the clinic").
+  assert.ok(/fullLoad: true/.test(hub) && /<a href=\{tool\.href\}/.test(hub), "the hub's posture card must be a plain link (a full page load), not a Next.js Link");
+  assert.match(page, /useEffect\(\(\) => \{ reloadIfPolicyBlocksCamera\(\); \}, \[\]\)/, "the posture screen must load itself as its own document when an in-app link left it with the previous page's camera policy");
+  assert.match(page, /opened\.problem === "policy" && reloadIfPolicyBlocksCamera\(\)/, "a camera refused by policy must trigger the one-time reload before any error is shown");
+  const permission = fs.readFileSync("src/lib/formcheck/browser/policy-reload.ts", "utf8");
+  assert.ok(/30_000/.test(permission) && /sessionStorage/.test(permission) && /catch \{\s*return false;/.test(permission), "the reload must be limited (no reload loops, none without storage to remember it)");
 }
 
 console.log("Posture screen checks passed: measurements against hand-worked skeletons (both facings, front and back), refusal to guess, capture summary, bands, agreement statistics, the study kit, and the page (consent, honest limits, nothing stored or sent, level gate, camera permission).");
