@@ -2225,6 +2225,130 @@
    "Test the syndesmosis with the squeeze and external rotation tests (pain must be at the ankle); load a lateral sprain early and protect a high ankle sprain more."
   ],
   "keywords": "The Twisted Ankle — Ottawa Rules, Ligament Tests and the High Ankle Sprain ankle-sprain-ottawa-syndesmosis Skills · Measurement Use the Ottawa ankle rules first: bone tenderness at the back edge or tip of a malleolus, base of the fifth metatarsal or navicular, or inability to take four steps means an X-ray. The anterior drawer tests the ATFL and the talar tilt the CFL; they are more accurate four to five days after the injury. Test the syndesmosis with the squeeze and external rotation tests (pain must be at the ankle); load a lateral sprain early and protect a high ankle sprain more. What do the Ottawa ankle rules decide? Which ligament does the anterior drawer test? Where must the pain be felt in the squeeze test? When are ankle ligament tests most accurate?",
+  "next": {
+   "slug": "hip-groin-pain-examination",
+   "title": "Hip and Groin Pain — What to Test, What to Rule Out",
+   "href": "/learn/hip-groin-pain-examination"
+  }
+ },
+ {
+  "href": "/learn/hip-groin-pain-examination",
+  "slug": "hip-groin-pain-examination",
+  "title": "Hip and Groin Pain — What to Test, What to Rule Out",
+  "hook": {
+   "en": "Hip and groin pain has many causes: the joint, the labrum, a tendon, a stress fracture, the spine, even the abdomen. Learn a clear order of examination and the signs that mean \"do not just treat\".",
+   "ur": "Hip aur groin ke dard ki bohat si wajuhat hain: joint, labrum, tendon, stress fracture, spine, hatta ke pait. Examination ki saaf tartib seekhein aur woh nishaniyan jin ka matlab hai \"sirf treat na karein\"."
+  },
+  "area": "Skills · Measurement",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll sort hip pain into joint, tendon, groin and referred causes, use the FADIR, FABER and scour tests with their limits in mind, and recognise a possible femoral neck stress fracture or slipped capital femoral epiphysis.",
+   "ur": "End tak aap hip ke dard ko joint, tendon, groin aur referred wajuhat mein baantein ge, FADIR, FABER aur scour tests unki hadood ke saath istemal karenge, aur femoral neck stress fracture ya slipped capital femoral epiphysis pehchanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Sort hip pain by where the patient points: a C sign suggests the joint, outer hip pain the tendons, and deep groin pain needs the most care.",
+   "FADIR is sensitive but not specific, so a negative result helps most; read every test with the history and range of movement.",
+   "Think twice about groin pain: a stress fracture, a slipped epiphysis or an abdominal cause needs referral, not just exercises."
+  ],
+  "keywords": "Hip and Groin Pain — What to Test, What to Rule Out hip-groin-pain-examination Skills · Measurement Sort hip pain by where the patient points: a C sign suggests the joint, outer hip pain the tendons, and deep groin pain needs the most care. FADIR is sensitive but not specific, so a negative result helps most; read every test with the history and range of movement. Think twice about groin pain: a stress fracture, a slipped epiphysis or an abdominal cause needs referral, not just exercises. What does the C sign suggest? What does a negative FADIR make unlikely? Which teenage problem can look like knee pain? Where should you also examine in hip pain?",
+  "next": {
+   "slug": "carpal-tunnel-hand-nerve-examination",
+   "title": "Numb Hands — Carpal Tunnel, Cubital Tunnel and the Neck",
+   "href": "/learn/carpal-tunnel-hand-nerve-examination"
+  }
+ },
+ {
+  "href": "/learn/carpal-tunnel-hand-nerve-examination",
+  "slug": "carpal-tunnel-hand-nerve-examination",
+  "title": "Numb Hands — Carpal Tunnel, Cubital Tunnel and the Neck",
+  "hook": {
+   "en": "Tingling hands at night are very common. Learn to tell carpal tunnel syndrome from an ulnar nerve problem or a neck cause, and when a hand needs a specialist.",
+   "ur": "Raat ko hathon mein jhunjhunahat bohat aam hai. Carpal tunnel syndrome ko ulnar nerve ke masle ya gardan ki wajah se alag karna seekhein, aur kab hath ko specialist chahiye."
+  },
+  "area": "Skills · Neuro Exam",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll map the numbness, use the hand diagram, Phalen, Tinel and the carpal compression test with their limits in mind, and decide between splinting, exercises and referral.",
+   "ur": "End tak aap sunn hone ka naqsha banayenge, hand diagram, Phalen, Tinel aur carpal compression test unki hadood ke saath istemal karenge, aur splint, exercises aur referral mein faisla karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Map the numbness first: median fingers and night waking point to the wrist, the little finger to the elbow and whole-arm symptoms to the neck.",
+   "Use Phalen, Tinel and carpal compression together with the hand diagram; no single test is enough.",
+   "Mild to moderate cases do well with a neutral night splint, changes to gripping and nerve glides; thenar wasting or constant numbness needs referral."
+  ],
+  "keywords": "Numb Hands — Carpal Tunnel, Cubital Tunnel and the Neck carpal-tunnel-hand-nerve-examination Skills · Neuro Exam Map the numbness first: median fingers and night waking point to the wrist, the little finger to the elbow and whole-arm symptoms to the neck. Use Phalen, Tinel and carpal compression together with the hand diagram; no single test is enough. Mild to moderate cases do well with a neutral night splint, changes to gripping and nerve glides; thenar wasting or constant numbness needs referral. Which fingers does the median nerve supply sensation to? What does thenar wasting suggest? Why is a neutral night splint useful? Which fingers suggest the ulnar nerve?",
+  "next": {
+   "slug": "six-minute-walk-test-breathlessness",
+   "title": "The Six-Minute Walk Test — Measuring Breathlessness Safely",
+   "href": "/learn/six-minute-walk-test-breathlessness"
+  }
+ },
+ {
+  "href": "/learn/six-minute-walk-test-breathlessness",
+  "slug": "six-minute-walk-test-breathlessness",
+  "title": "The Six-Minute Walk Test — Measuring Breathlessness Safely",
+  "hook": {
+   "en": "Walking for six minutes tells you more about a patient's daily life than many lab tests. Learn to run the test exactly the same way every time, watch the oxygen level and breathlessness, and know when to stop.",
+   "ur": "Chhe minute chalna rozmarra zindagi ke baare mein bohat si lab tests se zyada batata hai. Test ko har baar bilkul ek hi tareeqe se karna, oxygen aur saans ki tangi dekhna aur rukne ka waqt jaanna seekhein."
+  },
+  "area": "Skills · Vitals & Monitoring",
+  "level": "Clinical",
+  "bestFor": "2nd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll prepare and run a standard six-minute walk test, record distance, oxygen saturation, heart rate and the Borg breathlessness score, and decide whether a change is real.",
+   "ur": "End tak aap standard chhe minute walk test taiyar karenge aur chalayenge, distance, oxygen saturation, heart rate aur Borg saans ki tangi ka score likhenge, aur faisla karenge ke tabdeeli asli hai ya nahi."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "The six-minute walk test measures how far a patient walks at their own pace; it is submaximal and reflects daily life.",
+   "Run it the same way every time: same corridor, same words, same encouragement, and record oxygen, heart rate and the Borg score.",
+   "Know the stopping criteria and the size of change that is real (about 30 metres in chronic lung disease); use the result to set exercise intensity."
+  ],
+  "keywords": "The Six-Minute Walk Test — Measuring Breathlessness Safely six-minute-walk-test-breathlessness Skills · Vitals & Monitoring The six-minute walk test measures how far a patient walks at their own pace; it is submaximal and reflects daily life. Run it the same way every time: same corridor, same words, same encouragement, and record oxygen, heart rate and the Borg score. Know the stopping criteria and the size of change that is real (about 30 metres in chronic lung disease); use the result to set exercise intensity. What does the six-minute walk test measure? Why must the test be standardised? What does the Borg scale record? Name one reason to stop the test.",
+  "next": {
+   "slug": "clinical-reasoning-thinking-errors",
+   "title": "Think Like an Expert — Hypotheses, Red Flags and Thinking Errors",
+   "href": "/learn/clinical-reasoning-thinking-errors"
+  }
+ },
+ {
+  "href": "/learn/clinical-reasoning-thinking-errors",
+  "slug": "clinical-reasoning-thinking-errors",
+  "title": "Think Like an Expert — Hypotheses, Red Flags and Thinking Errors",
+  "hook": {
+   "en": "Experts are not smarter, they think in a different order: they form early ideas, test them, look for what does not fit and know their own thinking traps. Learn that order and the common errors.",
+   "ur": "Maahir zyada zaheen nahi hote, woh alag tartib se sochte hain: jaldi ideas banate hain, unhein test karte hain, jo mel nahi khata woh dhoondte hain aur apni soch ke jaal jaante hain. Woh tartib aur aam ghaltiyan seekhein."
+  },
+  "area": "Clinical Reasoning",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll build and test two or three hypotheses from the first minutes of a history, screen for red flags, and name four thinking errors and one habit that guards against each.",
+   "ur": "End tak aap history ke pehle minuton se do ya teen hypotheses banayenge aur test karenge, red flags screen karenge, aur chaar soch ki ghaltiyan aur har ek ke khilaf ek aadat batayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Work in loops: listen, name two or three possibilities, ask and test to separate them, then pause and check what does not fit.",
+   "Know your thinking traps: anchoring, premature closure, confirmation bias and availability; guard against each with a rival idea and \"what would prove me wrong?\"",
+   "Judge red flags as a cluster with the whole picture, and say your reasoning aloud to the patient."
+  ],
+  "keywords": "Think Like an Expert — Hypotheses, Red Flags and Thinking Errors clinical-reasoning-thinking-errors Clinical Reasoning Work in loops: listen, name two or three possibilities, ask and test to separate them, then pause and check what does not fit. Know your thinking traps: anchoring, premature closure, confirmation bias and availability; guard against each with a rival idea and \"what would prove me wrong?\" Judge red flags as a cluster with the whole picture, and say your reasoning aloud to the patient. What is anchoring? What is confirmation bias? What question guards against premature closure? How should red flags be judged?",
   "next": null
  },
  {
