@@ -43,6 +43,10 @@
 /teacher-data/*
   Cache-Control: public,max-age=300,stale-while-revalidate=86400
 
+# The daily challenge's lesson questions are read by the worker through the assets binding; always revalidated so a deploy is never served an older pool.
+/daily-content/*
+  Cache-Control: public,max-age=0,must-revalidate
+
 /skills-data/*
   Cache-Control: public,max-age=300,stale-while-revalidate=86400
 

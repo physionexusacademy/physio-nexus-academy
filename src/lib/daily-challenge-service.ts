@@ -41,7 +41,7 @@ export async function startDailyChallenge(input:{fullName:string;email:string;co
  return {ok:true as const,challenge:{
   attemptId:String(data.id),token:String(data.attempt_token),date:day,
   expiresAt,resetAt:pakistanMidnightUTC(day),
-  questions:publicDailyQuestions(day),timePerQuestionSeconds:QUESTION_SECONDS
+  questions:await publicDailyQuestions(day),timePerQuestionSeconds:QUESTION_SECONDS
  }};
 }
 export async function submitDailyChallenge(input:{
@@ -60,7 +60,7 @@ export async function submitDailyChallenge(input:{
  const time=Date.now();
  const elapsed=Math.max(0,time-new Date(data.started_at).getTime());
  const midnight=Date.parse(pakistanMidnightUTC(data.challenge_date));
- const questions=challengeQuestions(data.challenge_date);
+ const questions=await challengeQuestions(data.challenge_date);
  const expired=elapsed>TOTAL_LIMIT_MS+GRACE_MS||time>=midnight;
  const answers=input.answers&&typeof input.answers==="object"?input.answers:{};
  const correctCount=expired?0:questions.reduce((n,q)=>{

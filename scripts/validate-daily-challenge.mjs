@@ -25,8 +25,8 @@ const nav=read("src/lib/academy-map.ts");
 const mobile=read("src/components/MobilePortalNav.tsx");
 const desktop=read("src/components/Header.tsx");
 const countdown=read("src/components/daily-challenge/DailyChallengeCountdown.tsx");
-const poolText=read("src/lib/daily-content/pool.generated.ts");
-const pool=JSON.parse(poolText.slice(poolText.indexOf("= [")+2,poolText.lastIndexOf("];")+1));
+const pool=JSON.parse(read("public/daily-content/pool.json"));
+const loader=read("src/lib/daily-pool-loader.ts");
 const lessonQuestions=new Set(fs.readdirSync("public/teacher-data/lessons").flatMap(f=>JSON.parse(fs.readFileSync("public/teacher-data/lessons/"+f,"utf8")).beats.filter(b=>b.type==="check").map(b=>b.question.en.replace(/\*\*/g,"").replace(/\s+/g," ").trim())));
 const questions=[...data.matchAll(/\{id:"([^"]+)",topic:"([^"]+)",question:"/g)];
 const ids=new Set(questions.map(m=>m[1]));
@@ -34,7 +34,8 @@ const tests={
   oneHundredUniqueQuestions:questions.length===100&&ids.size===100,
   dailyPoolFromWholeSite:pool.length>=150&&pool.every(q=>q.href&&q.linkTitle&&q.explanation.length>=20&&q.options.length>=2&&q.options.length<=4&&q.correct>=0&&q.correct<q.options.length&&new Set(q.options).size===q.options.length),
   dailyPoolIsFresh:pool.every(q=>lessonQuestions.has(q.question)),
-  poolUsedForSelection:data.includes("generatedDailyPool")&&data.includes("cycleOrder"),
+  poolUsedForSelection:data.includes("loadGeneratedPool")&&data.includes("cycleOrder"),
+  poolNotBundledInWorker:!fs.existsSync("src/lib/daily-content/pool.generated.ts")&&!data.includes("pool.generated")&&loader.includes("ASSETS")&&loader.includes("daily-content/pool.json"),
   wrongAnswersLinkToConcept:quiz.includes("Learn this concept")&&quiz.includes("data-pna-daily-gaps")&&service.includes("href:q.href"),
   fiveRotatingQuestions:data.includes("Array.from({length:5}")&&data.includes("day*5"),
   exactlyKarachiTimezone:data.includes('timeZone:"Asia/Karachi"')&&data.includes("formatToParts(now)"),
