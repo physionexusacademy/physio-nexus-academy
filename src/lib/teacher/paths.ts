@@ -392,6 +392,7 @@ export const teacherPaths: TeacherPath[] = [
       { id: "ce-5b", kind: "lesson", lesson: "heat-and-cold-therapy-evidence" },
       { id: "ce-5c", kind: "lesson", lesson: "six-minute-walk-test-breathlessness" },
       { id: "ce-5d", kind: "lesson", lesson: "cardiac-rehabilitation-phases" },
+      { id: "ce-5e", kind: "lesson", lesson: "breathlessness-self-management" },
       {
         id: "ce-6",
         kind: "mission",
@@ -562,6 +563,7 @@ export const teacherPaths: TeacherPath[] = [
       { en: "Classify a child on the GMFCS and link it to hip risk and goals", ur: "Bachay ko GMFCS par classify karna aur hip risk aur goals se jorna" },
     ],
     steps: [
+      { id: "pf-0", kind: "lesson", lesson: "paediatric-flat-feet-in-toeing" },
       { id: "pf-1", kind: "lesson", lesson: "developmental-milestones-0-5-years" },
       { id: "pf-2", kind: "lesson", lesson: "primitive-reflexes-postural-reactions" },
       { id: "pf-3", kind: "lesson", lesson: "cerebral-palsy-gmfcs" },
@@ -587,6 +589,47 @@ export const teacherPaths: TeacherPath[] = [
           ur: "Checkpoint: aaj ka 5 sawalon wala challenge dein. Score jo bhi ho, har explanation zaroor parhein — asal seekhna wahin hai.",
         },
         minutes: 5,
+      },
+    ],
+  },
+  {
+    slug: "exam-and-first-job-skills",
+    title: "Exams and Your First Job",
+    tagline: {
+      en: "Pass your OSCE and viva with a routine, and write clinical notes that protect your patients and you.",
+      ur: "OSCE aur viva ko routine se paas karein, aur aise clinical notes likhein jo mareezon aur aap ki hifazat karein.",
+    },
+    audience: "2nd year to interns",
+    outcomes: [
+      { en: "Follow a safe routine at every OSCE station and manage the clock", ur: "Har OSCE station par mehfooz routine aur ghari ka intezam" },
+      { en: "Write a SOAP note with measurable findings and a clear plan", ur: "Naapne ke qabil findings aur saaf plan ke saath SOAP note likhna" },
+      { en: "Practise with a partner using a checklist", ur: "Checklist ke saath partner ke saath mashq" },
+    ],
+    steps: [
+      { id: "ef-1", kind: "lesson", lesson: "osce-viva-technique" },
+      { id: "ef-2", kind: "lesson", lesson: "clinical-notes-soap-documentation" },
+      { id: "ef-3", kind: "lesson", lesson: "clinical-reasoning-thinking-errors" },
+      {
+        id: "ef-4",
+        kind: "mission",
+        title: "Virtual Patient: a ten-minute station",
+        href: "/virtual-patient",
+        mission: {
+          en: "Pick any case, set a ten-minute timer, and run it as an OSCE station: introduce, consent, examine, explain. Then write a SOAP note for it.",
+          ur: "Koi bhi case chunein, das minute ka timer lagayein aur OSCE station ki tarah chalayein: taaruf, razamandi, examine, wazahat. Phir us ka SOAP note likhein.",
+        },
+        minutes: 20,
+      },
+      {
+        id: "ef-5",
+        kind: "mission",
+        title: "Skills Lab: practise with a partner",
+        href: "/skills",
+        mission: {
+          en: "Choose one Skills Lab skill and teach it to a friend, then swap roles. Mark each other on the steps shown in the skill.",
+          ur: "Skills Lab ki ek skill chunein aur dost ko sikhayein, phir kirdar badlein. Skill mein diye gaye qadmon par ek doosre ko marks dein.",
+        },
+        minutes: 20,
       },
     ],
   },
@@ -638,6 +681,7 @@ export const teacherPaths: TeacherPath[] = [
     steps: [
       { id: "wa-1", kind: "lesson", lesson: "pelvic-floor-pregnancy-postnatal" },
       { id: "wa-2", kind: "lesson", lesson: "pelvic-girdle-pain-pregnancy" },
+      { id: "wa-2b", kind: "lesson", lesson: "postnatal-return-to-exercise" },
       { id: "wa-3", kind: "lesson", lesson: "falls-prevention-older-adults" },
       { id: "wa-4", kind: "lesson", lesson: "osteoporosis-exercise-bone-health" },
       {
