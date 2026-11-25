@@ -40,8 +40,7 @@ for three times:
   Before adding a route that only redirects, add it to `redirects()` instead.
 - Worker: 2,988.9 KiB before, **2,931.1 KiB** after (limit 3,072).
 
-Largest remaining items (raw KB in the worker): `teacher/lesson-index.ts` 168 (keywords 36, goal 33, summary 29,
-hook 29), `daily-content/pool.generated.ts` 134 (moved out, see below), the manual-therapy data files (~700 together), zod (2 copies, ~170), `tailwind-merge` (2 copies, ~38).
+Largest remaining items (raw KB in the worker): `teacher/lesson-index.ts` 168 (moved out, see below), `daily-content/pool.generated.ts` 134 (moved out, see below), the manual-therapy data files (~700 together), zod (2 copies, ~170), `tailwind-merge` (2 copies, ~38).
 
 ## Chapter text lives in static files, not in the worker (Nov 2026)
 The Manual Therapy chapter pages are prerendered, but the text they render (application guides, mechanisms, mastery guides, expert depth, Roman Urdu, stories,
@@ -70,3 +69,12 @@ in the build and local development), which cut the worker from 3,004.3 to 2,962.
 - `GET /api/daily-challenge/status` now also builds today's five questions and reports `"questions":5`; the deploy smoke test checks it, so a pool that cannot be read
   fails the deploy run (without writing anything to the database).
 - After changing lessons, run `node --experimental-strip-types scripts/build-daily-pool.ts` and commit the changed `public/daily-content/pool.json`.
+
+## The PNA Teacher lesson index is a static file (Nov 2026)
+`src/lib/teacher/generated/lesson-index.json` (308 KB raw, ~67 KiB gzip) was imported by the learn pages, the sitemap, the AI assistant and two home components, so it travelled
+inside the worker. It is now `public/teacher-data/index.json` (written by `npm run build:teacher-data`) and read with `loadLessonIndex()` / `getLessonMeta()` in
+`src/lib/teacher/lesson-index.ts` (async; `src/lib/static-json.ts` reads the ASSETS binding on Cloudflare and the file in the build). Worker: 2,962.0 -> 2,905.0 KiB.
+- The home page only needs the counts: `src/lib/teacher/counts.ts` (a tiny generated file). Do not import the index into a client component.
+- The assistant's resource list is built on first use: `getLearningResources()` in `physio-nexus-ai-index.ts` (the route answers 503 if the index cannot be read).
+- Checked on the real build: the HTML of all 662 prerendered pages is identical to the build before (the Hyderabad page differs between any two builds, because `locations/hyderabad`
+  and `locations/[city]` both generate it); the flight (RSC) rows only differ by the extra suspense row of the now-async `TechniqueTeacher` and `/learn`.

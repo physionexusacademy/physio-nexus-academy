@@ -8,8 +8,8 @@ import "@/app/learn/teacher.css";
  * PNA Teacher at the top of a Manual Therapy chapter. The full reference chapter
  * stays below for reading and revision.
  */
-export function TechniqueTeacher({ slug, readAnchor = "#mastery" }: { slug: string; readAnchor?: string }) {
-  const lesson = getLessonMeta(slug);
+export async function TechniqueTeacher({ slug, readAnchor = "#mastery" }: { slug: string; readAnchor?: string }) {
+  const lesson = await getLessonMeta(slug);
   if (!lesson || lesson.kind !== "manual") return null;
   const checks = lesson.checks;
 

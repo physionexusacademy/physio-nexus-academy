@@ -53,7 +53,13 @@ export function buildTeacherData() {
 export function serializeTeacherData() {
   const { index, lessons, flashcards } = buildTeacherData();
   const files: Record<string, string> = {
-    "src/lib/teacher/generated/lesson-index.json": JSON.stringify(index, null, 1) + "\n",
+    // Read by the server through src/lib/teacher/lesson-index.ts (a static file, not part of the worker) and counted by src/lib/teacher/counts.ts.
+    "public/teacher-data/index.json": JSON.stringify(index) + "\n",
+    "src/lib/teacher/generated/lesson-counts.json": JSON.stringify({
+      lessons: index.length,
+      concept: index.filter((lesson) => lesson.kind === "concept").length,
+      manual: index.filter((lesson) => lesson.kind === "manual").length,
+    }) + "\n",
     "public/teacher-data/flashcards.json": JSON.stringify(flashcards) + "\n",
   };
   for (const [slug, lesson] of Object.entries(lessons)) files[`public/teacher-data/lessons/${slug}.json`] = JSON.stringify(lesson) + "\n";

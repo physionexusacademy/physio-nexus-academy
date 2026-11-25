@@ -1,5 +1,5 @@
 import { ArrowRight, Calculator, ClipboardCheck, GraduationCap, Hand, Languages, Play, Ruler, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
-import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
+import { lessonCounts } from "@/lib/teacher/counts";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { Ur } from "@/components/Ur";
 import "./home-features.css";
@@ -42,7 +42,7 @@ export function HomeFeaturesTop() {
                   <li><Ur en="English or Roman Urdu — switch anytime" ur="English ya Roman Urdu — jab chahein switch karein" /></li>
                   <li><Ur en="Quick checks, flashcards, spaced review" ur="Jaldi checks, flashcards, spaced review" /></li>
                 </ul>
-                <span className="hx-meta">{lessonIndex.length} lessons · {manualLessonMetas.length} technique lessons</span>
+                <span className="hx-meta">{lessonCounts.lessons} lessons · {lessonCounts.manual} technique lessons</span>
                 <span className="hx-go"><Ur en="Start learning" ur="Seekhna shuru karein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
               </div>
             </a>

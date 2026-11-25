@@ -8,7 +8,7 @@ import { conditionCatalog } from "@/lib/conditions/catalog";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
-import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
+import { loadConceptLessons } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
 import { handouts } from "@/lib/handouts";
@@ -89,6 +89,7 @@ function getRoutePriority(route: string): number {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const conceptLessonMetas = await loadConceptLessons();
   const supabase = await createClient();
   const { data: workshops } = await supabase
     .from("workshops")

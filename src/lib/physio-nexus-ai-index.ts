@@ -6,7 +6,8 @@ import { clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import { areaLabel, typeLabel } from "@/lib/conditions/taxonomy";
 import conditionKeywords from "@/lib/conditions/generated/keywords.json";
-import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
+import { loadConceptLessons } from "@/lib/teacher/lesson-index";
+import type { TeacherLessonMeta } from "@/lib/teacher/types";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
 import { siteGuide } from "@/lib/pna-ai/site-guide";
@@ -60,7 +61,8 @@ const manualResources: PnaLearningResource[] = [
   })),
 ];
 
-const teacherResources: PnaLearningResource[] = [
+function teacherResourcesFrom(conceptLessonMetas: TeacherLessonMeta[]): PnaLearningResource[] {
+  return [
   ...conceptLessonMetas.map((lesson) => ({
     id: `teacher:${lesson.slug}`,
     title: `${lesson.title} — PNA Teacher lesson`,
@@ -83,7 +85,8 @@ const teacherResources: PnaLearningResource[] = [
     level: path.audience,
     keywords: [path.title, path.slug, path.audience, "learning path course step by step", ...path.outcomes.map((outcome) => outcome.en)].join(" "),
   })),
-];
+  ];
+}
 
 const skillResources: PnaLearningResource[] = skillIndex.map((skill) => ({
   id: `skill:${skill.slug}`,
@@ -371,36 +374,54 @@ const browseResources: PnaLearningResource[] = [
   },
 ];
 
-const uniqueResources = new Map<string, PnaLearningResource>();
-for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...browseResources]) {
-  if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
-}
+let cached: Promise<PnaLearningResource[]> | null = null;
 
-// The site guide explains what each flagship feature is, in English and Roman Urdu.
-for (const guide of siteGuide) {
-  const existing = uniqueResources.get(guide.href);
-  if (existing) {
-    existing.summary = guide.summary;
-    existing.points = guide.points;
-    existing.pointsUr = guide.pointsUr;
-    existing.hookUr = guide.hookUr;
-    existing.tags = [existing.tags, guide.tags].filter(Boolean).join(" ");
-    existing.keywords = `${existing.keywords} ${guide.keywords}`;
-  } else {
-    uniqueResources.set(guide.href, {
-      id: `feature:${guide.id}`,
-      title: guide.title,
-      href: guide.href,
-      category: guide.category,
-      summary: guide.summary,
-      level: "Overview",
-      keywords: guide.keywords,
-      tags: guide.tags,
-      points: guide.points,
-      pointsUr: guide.pointsUr,
-      hookUr: guide.hookUr,
+/**
+ * Every page the assistant can point to. The PNA Teacher lesson index is a static file (not part of the worker), so this is built on first use and kept for the life of the isolate.
+ */
+export function getLearningResources(): Promise<PnaLearningResource[]> {
+  if (!cached) {
+    cached = build();
+    cached.catch(() => {
+      cached = null;
     });
   }
+  return cached;
 }
 
-export const pnaLearningResources = Array.from(uniqueResources.values());
+async function build(): Promise<PnaLearningResource[]> {
+  const teacherResources = teacherResourcesFrom(await loadConceptLessons());
+  const uniqueResources = new Map<string, PnaLearningResource>();
+  for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...browseResources]) {
+    if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);
+  }
+
+  // The site guide explains what each flagship feature is, in English and Roman Urdu.
+  for (const guide of siteGuide) {
+    const existing = uniqueResources.get(guide.href);
+    if (existing) {
+      existing.summary = guide.summary;
+      existing.points = guide.points;
+      existing.pointsUr = guide.pointsUr;
+      existing.hookUr = guide.hookUr;
+      existing.tags = [existing.tags, guide.tags].filter(Boolean).join(" ");
+      existing.keywords = `${existing.keywords} ${guide.keywords}`;
+    } else {
+      uniqueResources.set(guide.href, {
+        id: `feature:${guide.id}`,
+        title: guide.title,
+        href: guide.href,
+        category: guide.category,
+        summary: guide.summary,
+        level: "Overview",
+        keywords: guide.keywords,
+        tags: guide.tags,
+        points: guide.points,
+        pointsUr: guide.pointsUr,
+        hookUr: guide.hookUr,
+      });
+    }
+  }
+
+  return Array.from(uniqueResources.values());
+}

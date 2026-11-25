@@ -3,7 +3,7 @@ import { callClaude, claudeEnabled } from "@/lib/rehabverse/ai/claude";
 import { callChat, externalChain } from "@/lib/rehabverse/ai/model";
 import { groqLastFailure } from "@/lib/rehabverse/ai/groq";
 import { buildGroundedMessages, guardGroundedAnswer, type GroundedSource } from "@/lib/pna-ai/grounded";
-import { pnaLearningResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
+import { getLearningResources, type PnaLearningResource } from "@/lib/physio-nexus-ai-index";
 import { think, type BrainContext, type BrainProfile, type BrainResult } from "@/lib/pna-ai/brain";
 import {
   explainCondition,
@@ -280,6 +280,15 @@ export async function POST(request: Request) {
   const cacheKey = [normalizedQuery, context.lastTopic ?? "", profile.stage ?? "", profile.goal ?? ""].join("|");
   const cached = responseCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return json(cached.body);
+
+  // The lesson index inside the resource list is a static file read at request time (not part of the worker).
+  let pnaLearningResources: PnaLearningResource[];
+  try {
+    pnaLearningResources = await getLearningResources();
+  } catch (error) {
+    console.error("PNA_AI_RESOURCES", error instanceof Error ? error.message : "unknown");
+    return json({ error: "The assistant could not load its index. Please try again in a moment." }, 503);
+  }
 
   let result = think(query, pnaLearningResources, { context, profile });
   let source = result.safety ? "safety" : "pna-brain";
