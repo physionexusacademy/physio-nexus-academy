@@ -1,4 +1,4 @@
-import { ArrowRight, ClipboardCheck, GraduationCap, Hand, Languages, Play, Ruler, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
+import { ArrowRight, Calculator, ClipboardCheck, GraduationCap, Hand, Languages, Play, Ruler, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
 import { lessonIndex, manualLessonMetas } from "@/lib/teacher/lesson-index";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { Ur } from "@/components/Ur";
@@ -198,9 +198,18 @@ export function HomeFeaturesMore() {
             </a>
           </li>
         </ul>
+        <a href="/health-calculators" className="hf-tools" aria-label="Health and clinical calculators">
+          <span className="hf-tools-ico"><Calculator className="h-6 w-6" aria-hidden="true" /></span>
+          <span className="hf-tools-body">
+            <strong><Ur en="Health and clinical calculators" ur="Health aur clinical calculators" /></strong>
+            <span><Ur en="Heart rate zones, one-rep max, waist-hip ratio, daily energy, BMI, and a check of whether a score change really matters. Free, and worked out in your browser." ur="Heart rate zones, one-rep max, waist-hip ratio, daily energy, BMI, aur yeh jaanch ke score ki tabdeeli waqai ahem hai. Free, aur aap ke browser mein hisaab hota hai." /></span>
+          </span>
+          <span className="hx-go"><Ur en="Open the calculators" ur="Calculators kholein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+        </a>
         <p className="hf-foot">
           <Languages className="h-4 w-4" aria-hidden="true" /> Everything is in English and Roman Urdu.
           <a href="/manual-therapy"><Hand className="h-4 w-4" aria-hidden="true" /> Manual therapy techniques</a>
+          <a href="/health-calculators"><Calculator className="h-4 w-4" aria-hidden="true" /> <Ur en="Health calculators" ur="Health calculators" /></a>
           <a href="#explore-pna"><Ur en="Looking for something else? Browse by who you are" ur="Kuch aur dhoond rahe hain? Apni pehchan ke hisaab se dekhein" /></a>
           <a href="/symptom-checker"><Stethoscope className="h-4 w-4" aria-hidden="true" /> <Ur en="Not sure what is wrong? Try the symptom checker" ur="Pata nahin kya masla hai? Symptom checker try karein" /></a>
         </p>

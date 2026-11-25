@@ -129,3 +129,15 @@ body .hdc { contain-intrinsic-size: auto 620px; }
   from { opacity: 0; transform: translateY(28px) scale(0.985); }
   to { opacity: 1; transform: none; }
 }
+
+/* A slim strip under the feature cards: the free calculators. One link, plain markup. */
+.hf-tools { margin-top: 22px; display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 22px; border: 1px solid rgba(46, 230, 214, 0.35); background: radial-gradient(120% 140% at 0% 0%, rgba(46, 230, 214, 0.16), transparent 55%), linear-gradient(150deg, #0b2447, #061529); color: #fff; text-decoration: none; transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+.hf-tools-ico { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 16px; color: #04122a; background: linear-gradient(135deg, #2ee6d6, #8f7cff); box-shadow: 0 0 24px -6px #2ee6d6; }
+.hf-tools-body { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.hf-tools-body strong { font-size: 1.1rem; font-weight: 800; }
+.hf-tools-body > span { font-size: 0.9rem; line-height: 1.5; color: rgba(255, 255, 255, 0.78); }
+.hf-tools .hx-go { flex: none; color: #7ff3e4; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
+.hf-tools:focus-visible { outline: 3px solid #2ee6d6; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .hf-tools:hover { transform: translateY(-3px); border-color: #2ee6d6; box-shadow: 0 26px 52px -32px #2ee6d6; } }
+@media (max-width: 720px) { .hf-tools { flex-wrap: wrap; } .hf-tools .hx-go { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .hf-tools { transition: none; } }
