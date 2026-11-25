@@ -7,6 +7,7 @@ import { useLang } from "@/lib/lang";
 import { assessSetup, type SetupIssue } from "@/lib/formcheck/quality";
 import { SETUP_MESSAGES } from "@/lib/formcheck/messages";
 import { openCamera, closeCamera, type CameraProblem } from "@/lib/formcheck/browser/camera";
+import { reloadIfPolicyBlocksCamera } from "@/lib/formcheck/browser/permission";
 import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
 import { platform } from "@/lib/formcheck/browser/permission";
 import { GUIDE_STEPS } from "@/components/rehabverse/formcheck/CameraPermissionGuide";
@@ -80,6 +81,8 @@ export default function PostureScreen() {
   useEffect(() => { stageRef.current = stage; }, [stage]);
   useEffect(() => { viewRef.current = view; }, [view]);
   useEffect(() => { setValidation(new URLSearchParams(window.location.search).get("validation") === "1"); }, []);
+  // Arriving by an in-app link keeps the previous page's Permissions-Policy (camera off): load this page as its own document (see permission.ts).
+  useEffect(() => { reloadIfPolicyBlocksCamera(); }, []);
 
   const stop = useCallback(() => {
     cancelAnimationFrame(raf.current);
@@ -131,7 +134,10 @@ export default function PostureScreen() {
     const el = video.current;
     if (!el) return;
     const opened = await openCamera(el, who === "self" ? "user" : "environment");
-    if (!opened.ok) { setProblem(opened.problem); setLoading(false); setStage("choose"); return; }
+    if (!opened.ok) {
+      if (opened.problem === "policy" && reloadIfPolicyBlocksCamera()) return;
+      setProblem(opened.problem); setLoading(false); setStage("choose"); return;
+    }
     stream.current = opened.camera.stream;
     try {
       const { PoseRuntime } = await import("@/lib/formcheck/browser/runtime");

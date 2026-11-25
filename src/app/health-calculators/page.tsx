@@ -20,6 +20,8 @@ const tools = [
     title: "Posture screen",
     text: "Stand in front of your phone and see head position, trunk lean, shoulder and hip level and knee alignment, each with its margin of error. Read on your device; nothing is stored.",
     tag: "Uses your camera",
+    // A plain link (a full page load): the posture page has its own Permissions-Policy, which an in-app navigation from this page would not pick up.
+    fullLoad: true,
   },
   {
     href: "/health-calculators/clinical",
@@ -46,12 +48,21 @@ export default function HealthCalculatorsPage() {
       <ul className="mt-8 grid gap-4 sm:grid-cols-2">
         {tools.map((tool) => (
           <li key={tool.href}>
-            <Link href={tool.href} className="group nx-holo flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            {"fullLoad" in tool && tool.fullLoad ? (
+              <a href={tool.href} className="group nx-holo flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-700 text-white"><tool.icon className="h-5 w-5" aria-hidden="true" /></span>
+              <h2 className="mt-3 text-xl font-bold text-navy-800 group-hover:text-teal-800">{tool.title}</h2>
+              <p className="mt-1 flex-1 text-sm leading-6 text-slate-600">{tool.text}</p>
+              <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-teal-700">{tool.tag} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
+            </a>
+            ) : (
+              <Link href={tool.href} className="group nx-holo flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-700 text-white"><tool.icon className="h-5 w-5" aria-hidden="true" /></span>
               <h2 className="mt-3 text-xl font-bold text-navy-800 group-hover:text-teal-800">{tool.title}</h2>
               <p className="mt-1 flex-1 text-sm leading-6 text-slate-600">{tool.text}</p>
               <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-teal-700">{tool.tag} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
             </Link>
+            )}
           </li>
         ))}
       </ul>
