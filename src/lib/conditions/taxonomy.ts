@@ -94,6 +94,21 @@ export const placement: Record<string, [AreaId, TypeId]> = {
   "post-cabg-rehabilitation": ["chest", "postop"],
   "fibromyalgia": ["whole", "longterm"],
   "post-mastectomy-rehabilitation": ["whole", "postop"],
+  "total-knee-replacement-rehabilitation": ["knee", "postop"],
+  "total-hip-replacement-rehabilitation": ["hip", "postop"],
+  "rotator-cuff-repair-rehabilitation": ["shoulder", "postop"],
+  "lumbar-spinal-stenosis": ["back", "spine"],
+  "lumbar-spondylolisthesis": ["back", "spine"],
+  "pregnancy-related-pelvic-girdle-pain": ["back", "spine"],
+  "osteoporosis": ["whole", "longterm"],
+  "rheumatoid-arthritis": ["whole", "longterm"],
+  "lymphoedema": ["whole", "longterm"],
+  "lower-limb-amputation-rehabilitation": ["foot", "postop"],
+  "guillain-barre-syndrome": ["neuro", "neuro"],
+  "multiple-sclerosis": ["neuro", "neuro"],
+  "traumatic-brain-injury": ["neuro", "neuro"],
+  "bells-palsy": ["neuro", "neuro"],
+  "diabetic-peripheral-neuropathy": ["neuro", "neuro"],
 };
 
 /** Old addresses that changed name when the two libraries were merged. */

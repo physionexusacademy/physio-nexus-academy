@@ -1,3 +1,6 @@
+import { plansA } from "./conditions-more-a.ts";
+import { plansB } from "./conditions-more-b.ts";
+
 export type TreatmentPlan = {
   slug: string;
   name: string;
@@ -440,3 +443,6 @@ export const treatmentPlans: TreatmentPlan[] = [
 export const treatmentPlanCategories = Array.from(
   new Set(treatmentPlans.map((plan) => plan.category))
 );
+
+// Second batch of conditions (see conditions-more-a.ts and conditions-more-b.ts).
+treatmentPlans.push(...plansA, ...plansB);
