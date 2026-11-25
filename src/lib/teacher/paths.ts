@@ -588,6 +588,38 @@ export const teacherPaths: TeacherPath[] = [
     ],
   },
   {
+    slug: "examine-and-think-like-a-clinician",
+    title: "Examine and Think Like a Clinician",
+    tagline: {
+      en: "Hip, hand and heart-lung measures, plus the thinking habits that stop you missing something serious.",
+      ur: "Hip, hath aur dil-phephron ki pemaish, aur woh soch ki aadatein jo kisi sangeen cheez ko miss karne se bachati hain.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Examine hip and groin pain in order and spot a stress fracture or slipped epiphysis", ur: "Hip aur groin ke dard ko tartib se examine karna aur stress fracture ya slipped epiphysis pehchanna" },
+      { en: "Tell carpal tunnel from an elbow or neck cause", ur: "Carpal tunnel ko kohni ya gardan ki wajah se alag karna" },
+      { en: "Run a six-minute walk test safely and judge the change", ur: "Chhe minute walk test mehfooz tareeqe se chalana aur tabdeeli parkhna" },
+      { en: "Name your thinking traps and use red flags well", ur: "Apni soch ke jaal pehchanna aur red flags ko theek istemal karna" },
+    ],
+    steps: [
+      { id: "et-1", kind: "lesson", lesson: "clinical-reasoning-thinking-errors" },
+      { id: "et-2", kind: "lesson", lesson: "hip-groin-pain-examination" },
+      { id: "et-3", kind: "lesson", lesson: "carpal-tunnel-hand-nerve-examination" },
+      { id: "et-4", kind: "lesson", lesson: "six-minute-walk-test-breathlessness" },
+      {
+        id: "et-5",
+        kind: "mission",
+        title: "Special tests atlas: hip and wrist",
+        href: "/skills/special-tests",
+        mission: {
+          en: "Open the hip and wrist tests. For each of four tests, say out loud what a positive finding is, one pitfall and which hypothesis it would help you rule out.",
+          ur: "Hip aur kalai ke tests kholein. Chaar tests mein se har ek ke liye zubaan se batayein ke positive finding kya hai, ek ghalti kya hai aur yeh kis hypothesis ko rule out karne mein madad dega.",
+        },
+        minutes: 12,
+      },
+    ],
+  },
+  {
     slug: "special-tests-masterclass",
     title: "Special Tests Masterclass",
     tagline: {
