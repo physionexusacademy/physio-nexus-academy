@@ -22,7 +22,7 @@ execFileSync(process.execPath, ["--experimental-strip-types", "--no-warnings", "
 const catalog = JSON.parse(read("src/lib/conditions/generated/catalog.json")) as CatalogItem[];
 const slugs = catalog.map((c) => c.slug);
 assert.equal(new Set(slugs).size, slugs.length, "duplicate condition slug");
-assert.ok(catalog.length >= 48, `expected at least 48 conditions, found ${catalog.length}`);
+assert.ok(catalog.length >= 63, `expected at least 63 conditions, found ${catalog.length}`);
 
 // 2. Taxonomy
 const areaIds = new Set(areas.map((a) => a.id));

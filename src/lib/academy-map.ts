@@ -39,7 +39,7 @@ export const academyWings: AcademyWing[] = [
     places: [
       { label: "PNA Teacher", href: "/learn", description: "Hard concepts, step by step, with checks", icon: "teacher", keywords: "lessons course learn teach roman urdu paths beginner" },
       { label: "Manual Therapy", href: "/manual-therapy", description: "35 techniques: hands, dosage, safety", icon: "hand", keywords: "maitland mulligan mckenzie kaltenborn met mobilization manipulation" },
-      { label: "Conditions & Treatment", href: "/conditions", description: "48 conditions, expert detail, staged rehab plans", icon: "plan", keywords: "injuries conditions treatment plans back pain knee shoulder stroke protocol management rehab exercises knowledge articles" },
+      { label: "Conditions & Treatment", href: "/conditions", description: "63 conditions, expert detail, staged rehab plans", icon: "plan", keywords: "injuries conditions treatment plans back pain knee shoulder stroke protocol management rehab exercises knowledge articles" },
       { label: "Special Tests", href: "/msk-special-tests", description: "How to perform and interpret", icon: "tests", keywords: "orthopedic tests sensitivity specificity" },
       { label: "Clinical Visual Atlas", href: "/clinical-visual-atlas", description: "Anatomy & pathology visuals", icon: "atlas", keywords: "anatomy images 3d", requiresAtlas: true },
       { label: "Books & Resources", href: "/resources", description: "Books, PDFs and study material", icon: "book", keywords: "books pdf notes" },

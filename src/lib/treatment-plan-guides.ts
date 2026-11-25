@@ -1,3 +1,6 @@
+import { guidesA } from "./conditions-more-a.ts";
+import { guidesB } from "./conditions-more-b.ts";
+
 export type TreatmentPlanGuide = {
   clinicalLogic: string[];
   firstSession: string[];
@@ -1223,3 +1226,6 @@ export const treatmentPlanGuides: Record<string, TreatmentPlanGuide> = {
     ]
   }
 };
+
+// Second batch of conditions (see conditions-more-a.ts and conditions-more-b.ts).
+Object.assign(treatmentPlanGuides, guidesA, guidesB);
