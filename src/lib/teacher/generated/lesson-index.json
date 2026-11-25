@@ -2876,6 +2876,192 @@
    "Watch for bleeding, fever, calf pain, a bulge or low mood and refer promptly."
   ],
   "keywords": "Returning to Exercise After Childbirth — Gradual, Safe and Individual postnatal-return-to-exercise Women's Health Start gentle movement soon after birth; return to impact depends on readiness (no leaking, heaviness or pain), not on a fixed date. Build pelvic floor and strength in stages, and test hops and run-walk intervals before running; an abdominal gap is common and often narrows. Watch for bleeding, fever, calf pain, a bulge or low mood and refer promptly. What decides return to running after birth? Is an abdominal gap always a problem? What is a safe early activity? Name one sign needing medical review.",
+  "next": {
+   "slug": "reading-xray-fractures-joints",
+   "title": "Reading a Bone X-ray — A Safe Routine for Fractures and Joints",
+   "href": "/learn/reading-xray-fractures-joints"
+  }
+ },
+ {
+  "href": "/learn/reading-xray-fractures-joints",
+  "slug": "reading-xray-fractures-joints",
+  "title": "Reading a Bone X-ray — A Safe Routine for Fractures and Joints",
+  "hook": {
+   "en": "An X-ray report can decide whether you treat, refer or wait. Learn what a plain X-ray shows, a simple routine to look at one, and what you can and cannot say as a physiotherapist.",
+   "ur": "X-ray report faisla karti hai ke aap ilaj karein, refer karein ya intezaar. Seekhein saada X-ray kya dikhata hai, use dekhne ki saadi routine, aur physiotherapist ke taur par aap kya keh sakte hain aur kya nahi."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain what an X-ray shows, use an ABCS routine to look at a bone X-ray, read the words in a report (fracture, displacement, joint space, osteophyte) and know when a normal X-ray still needs follow-up.",
+   "ur": "End tak aap samjhayenge ke X-ray kya dikhata hai, hadi X-ray dekhne ke liye ABCS routine istemal karenge, report ke alfaz (fracture, displacement, joint space, osteophyte) parhenge aur jaanenge ke normal X-ray ke baad bhi follow-up kab chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "An X-ray shows density: bone is white, air black and soft tissue grey; always ask for two views including the joint above and below.",
+   "Use ABCS: alignment, bones (follow every outline), cartilage space and soft tissue; a normal film does not rule out an early stress or scaphoid fracture.",
+   "Explain reports in plain words, treat the patient rather than the picture, and refer urgently for red flags whatever the film shows."
+  ],
+  "keywords": "Reading a Bone X-ray — A Safe Routine for Fractures and Joints reading-xray-fractures-joints Imaging & Reports An X-ray shows density: bone is white, air black and soft tissue grey; always ask for two views including the joint above and below. Use ABCS: alignment, bones (follow every outline), cartilage space and soft tissue; a normal film does not rule out an early stress or scaphoid fracture. Explain reports in plain words, treat the patient rather than the picture, and refer urgently for red flags whatever the film shows. What does white mean on an X-ray? What does ABCS stand for here? Why take two views? Which fracture can be missed on the first X-ray?",
+  "next": {
+   "slug": "chest-xray-for-physiotherapists",
+   "title": "The Chest X-ray for Physiotherapists — Read the Report, Plan the Treatment",
+   "href": "/learn/chest-xray-for-physiotherapists"
+  }
+ },
+ {
+  "href": "/learn/chest-xray-for-physiotherapists",
+  "slug": "chest-xray-for-physiotherapists",
+  "title": "The Chest X-ray for Physiotherapists — Read the Report, Plan the Treatment",
+  "hook": {
+   "en": "Before you position a chest patient or clear secretions, the chest X-ray tells you where the problem is. Learn a simple routine, the common patterns and how they change your treatment.",
+   "ur": "Chest ke mareez ko position karne ya balgham saaf karne se pehle chest X-ray batati hai ke masla kahan hai. Saadi routine, aam patterns aur woh aap ka ilaj kaise badalte hain seekhein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll check the quality of a chest X-ray, follow an ABCDE routine, recognise consolidation, collapse, effusion and pneumothorax in a report and choose safe positions and techniques.",
+   "ur": "End tak aap chest X-ray ki quality check karenge, ABCDE routine follow karenge, report mein consolidation, collapse, effusion aur pneumothorax pehchanenge aur mehfooz positions aur techniques chunenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Air is black and fluid or pus is white; check rotation, inspiration and penetration, then read A, B, C, D and E in the same order every time.",
+   "Know the common patterns: consolidation, collapse, effusion and pneumothorax, and let them guide positioning and technique.",
+   "Match the film to the bedside, treat what the patient has, and tell the medical team about urgent findings such as pneumothorax."
+  ],
+  "keywords": "The Chest X-ray for Physiotherapists — Read the Report, Plan the Treatment chest-xray-for-physiotherapists Imaging & Reports Air is black and fluid or pus is white; check rotation, inspiration and penetration, then read A, B, C, D and E in the same order every time. Know the common patterns: consolidation, collapse, effusion and pneumothorax, and let them guide positioning and technique. Match the film to the bedside, treat what the patient has, and tell the medical team about urgent findings such as pneumothorax. What does air look like on a chest X-ray? Name two quality checks before reading a chest X-ray. What suggests a pleural effusion? Who must be told about a pneumothorax?",
+  "next": {
+   "slug": "ct-scan-basics-for-physiotherapists",
+   "title": "CT Scans — What They Show, When They Are Used and What the Report Means",
+   "href": "/learn/ct-scan-basics-for-physiotherapists"
+  }
+ },
+ {
+  "href": "/learn/ct-scan-basics-for-physiotherapists",
+  "slug": "ct-scan-basics-for-physiotherapists",
+  "title": "CT Scans — What They Show, When They Are Used and What the Report Means",
+  "hook": {
+   "en": "A CT scan gives a detailed 3D picture in minutes and is common after trauma and for chest and head problems. Learn what it shows well, how it differs from MRI and how to read a report with care.",
+   "ur": "CT scan chand minute mein tafseeli 3D tasveer deta hai aur trauma, seene aur sar ke masail mein aam hai. Seekhein yeh kya achha dikhata hai, MRI se kaise mukhtalif hai aur report ko ehtiyat se kaise parhein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain how CT works, say what it shows best, compare it with X-ray and MRI, understand windows, contrast and radiation, and read key report terms safely.",
+   "ur": "End tak aap samjhayenge ke CT kaise kaam karta hai, kya sab se achha dikhata hai, isay X-ray aur MRI se muqabil karenge, windows, contrast aur radiation samjhenge, aur report ke aham alfaz mehfooz tareeqe se parhenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "CT builds slices from many X-ray pictures; it is fast and shows bone, bleeding and lungs well, but shows soft tissue less well than MRI and uses radiation.",
+   "Read both the findings and the impression, note whether contrast was used and link the result to the patient.",
+   "A normal CT does not rule out ligament, stress-fracture or nerve problems; follow the story and the examination."
+  ],
+  "keywords": "CT Scans — What They Show, When They Are Used and What the Report Means ct-scan-basics-for-physiotherapists Imaging & Reports CT builds slices from many X-ray pictures; it is fast and shows bone, bleeding and lungs well, but shows soft tissue less well than MRI and uses radiation. Read both the findings and the impression, note whether contrast was used and link the result to the patient. A normal CT does not rule out ligament, stress-fracture or nerve problems; follow the story and the examination. What does CT stand for? What does CT show best? Which scan uses no radiation? What is the \"impression\" of a report?",
+  "next": {
+   "slug": "reading-mri-reports-spine-joints",
+   "title": "MRI Films and Reports — What the Words Mean and What They Do Not",
+   "href": "/learn/reading-mri-reports-spine-joints"
+  }
+ },
+ {
+  "href": "/learn/reading-mri-reports-spine-joints",
+  "slug": "reading-mri-reports-spine-joints",
+  "title": "MRI Films and Reports — What the Words Mean and What They Do Not",
+  "hook": {
+   "en": "\"Disc bulge\", \"degenerative changes\", \"tear\". MRI reports can frighten patients, and many findings are common in people with no pain. Learn how MRI works, how to read an image's brightness and how to put a report in perspective.",
+   "ur": "\"Disc bulge\", \"degenerative changes\", \"tear\". MRI reports mareezon ko daraa sakti hain, aur bohat si findings bina dard wale logon mein aam hain. Seekhein MRI kaise kaam karta hai, tasveer ki roshni kaise parhein aur report ko sahi nazariye se kaise dekhein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll tell T1 and T2 images apart, name the planes, understand common spine and joint report terms, and explain to a patient what a finding means for treatment.",
+   "ur": "End tak aap T1 aur T2 tasveerein alag karenge, planes ke naam batayenge, spine aur joint report ke aam alfaz samjhenge, aur mareez ko batayenge ke finding ka ilaj ke liye kya matlab hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "MRI uses a magnet, not radiation, to show soft tissue; on T1 fat is bright and fluid is dark, on T2 fluid is bright.",
+   "Many MRI findings (disc degeneration, mild bulges) are common without pain; they matter when they match the symptoms and examination.",
+   "Explain reports in plain words, avoid frightening language and refer urgently for cord compression or red flags."
+  ],
+  "keywords": "MRI Films and Reports — What the Words Mean and What They Do Not reading-mri-reports-spine-joints Imaging & Reports MRI uses a magnet, not radiation, to show soft tissue; on T1 fat is bright and fluid is dark, on T2 fluid is bright. Many MRI findings (disc degeneration, mild bulges) are common without pain; they matter when they match the symptoms and examination. Explain reports in plain words, avoid frightening language and refer urgently for cord compression or red flags. What is bright on a T2 image? Name the three planes of an MRI. Does MRI use radiation? Why do many MRI findings not matter?",
+  "next": {
+   "slug": "ecg-basics-for-physiotherapists",
+   "title": "Reading an ECG — Rate, Rhythm and the Signs That Mean Stop",
+   "href": "/learn/ecg-basics-for-physiotherapists"
+  }
+ },
+ {
+  "href": "/learn/ecg-basics-for-physiotherapists",
+  "slug": "ecg-basics-for-physiotherapists",
+  "title": "Reading an ECG — Rate, Rhythm and the Signs That Mean Stop",
+  "hook": {
+   "en": "In cardiac and ICU rehabilitation you will see ECG strips and monitors every day. Learn a five-step routine, the common rhythms and the changes that mean you stop exercise and call for help.",
+   "ur": "Cardiac aur ICU rehabilitation mein aap rozana ECG strips aur monitors dekhenge. Paanch qadam ki routine, aam rhythms aur woh tabdeeliyan seekhein jin ka matlab hai exercise rok kar madad bulayein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 14,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll find the heart rate on a strip, decide if the rhythm is regular and sinus, recognise atrial fibrillation, ST elevation and wide-complex tachycardia, and state when to stop and escalate.",
+   "ur": "End tak aap strip par heart rate nikalenge, faisla karenge ke rhythm regular aur sinus hai ya nahi, atrial fibrillation, ST elevation aur wide-complex tachycardia pehchanenge, aur batayenge ke kab rukna aur escalate karna hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "An ECG shows the heart's electrical activity: P wave, QRS and T wave; use five steps: rate, rhythm, P waves, QRS width and ST segment.",
+   "Recognise sinus rhythm, atrial fibrillation (irregularly irregular, no P waves), ST changes and wide-complex tachycardia, and always check the patient first.",
+   "Stop and call for help for symptoms with a new rhythm or ST change; a diagnosis is the doctor's job, not yours."
+  ],
+  "keywords": "Reading an ECG — Rate, Rhythm and the Signs That Mean Stop ecg-basics-for-physiotherapists Imaging & Reports An ECG shows the heart's electrical activity: P wave, QRS and T wave; use five steps: rate, rhythm, P waves, QRS width and ST segment. Recognise sinus rhythm, atrial fibrillation (irregularly irregular, no P waves), ST changes and wide-complex tachycardia, and always check the patient first. Stop and call for help for symptoms with a new rhythm or ST change; a diagnosis is the doctor's job, not yours. How long is one small square on an ECG? How do you recognise atrial fibrillation? Name one reason to stop exercise on a monitor. What do you check first when a monitor alarms?",
+  "next": {
+   "slug": "lab-reports-for-physiotherapists",
+   "title": "Reading Lab Reports — Blood Tests That Change Your Treatment",
+   "href": "/learn/lab-reports-for-physiotherapists"
+  }
+ },
+ {
+  "href": "/learn/lab-reports-for-physiotherapists",
+  "slug": "lab-reports-for-physiotherapists",
+  "title": "Reading Lab Reports — Blood Tests That Change Your Treatment",
+  "hook": {
+   "en": "A blood test can tell you that a patient is anaemic, infected, dehydrated, bleeding or on blood thinners, all of which change what exercise is safe. Learn the common tests and how to use them.",
+   "ur": "Blood test batata hai ke mareez mein khoon ki kami, infection, paani ki kami, bleeding ya khoon patla karne ki dawai hai, jo sab badalte hain ke kaun si exercise mehfooz hai. Aam tests aur unka istemal seekhein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll read a basic lab report, know the usual ranges and the meaning of the common tests (blood count, inflammation, sugar, kidney and salts, clotting) and decide when a result limits exercise or needs the doctor.",
+   "ur": "End tak aap basic lab report parhenge, aam ranges aur aam tests (blood count, sozish, sugar, gurda aur namkiyat, jamne) ka matlab jaanenge aur faisla karenge ke nateeja kab exercise ko mehdood karta hai ya doctor chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "A lab report gives the result, unit and reference range; a flag is not a diagnosis, and trends and the patient matter more than one number.",
+   "Know the key tests: haemoglobin, white cells, platelets, CRP, HbA1c, potassium and INR, and how each changes what exercise or technique is safe.",
+   "Report worrying results to the doctor, hold exercise when needed and never diagnose or change medicines."
+  ],
+  "keywords": "Reading Lab Reports — Blood Tests That Change Your Treatment lab-reports-for-physiotherapists Imaging & Reports A lab report gives the result, unit and reference range; a flag is not a diagnosis, and trends and the patient matter more than one number. Know the key tests: haemoglobin, white cells, platelets, CRP, HbA1c, potassium and INR, and how each changes what exercise or technique is safe. Report worrying results to the doctor, hold exercise when needed and never diagnose or change medicines. What are the three parts of a lab result? Which test shows how well diabetes is controlled over months? Which result raises bleeding risk in people on warfarin? Why is a very high or low potassium dangerous?",
   "next": null
  },
  {

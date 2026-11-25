@@ -593,6 +593,40 @@ export const teacherPaths: TeacherPath[] = [
     ],
   },
   {
+    slug: "scans-ecg-and-lab-reports",
+    title: "Scans, ECG and Lab Reports for Physiotherapists",
+    tagline: {
+      en: "Understand the X-ray, CT, MRI, ECG and blood test in your patient's file, and know when a result means stop, modify or refer.",
+      ur: "Apne mareez ki file mein X-ray, CT, MRI, ECG aur blood test samjhein, aur jaanein ke nateeja kab rukne, badalne ya refer karne ka matlab hai.",
+    },
+    audience: "Final year & interns",
+    outcomes: [
+      { en: "Use a routine for a bone X-ray and a chest X-ray", ur: "Hadi X-ray aur chest X-ray ki routine istemal karna" },
+      { en: "Tell what CT and MRI show and put a report in perspective", ur: "CT aur MRI kya dikhate hain aur report ko sahi nazariye se dekhna" },
+      { en: "Read a rhythm strip and know when to stop and call for help", ur: "Rhythm strip parhna aur jaanna ke kab rukna aur madad bulani hai" },
+      { en: "Read a lab report and know when a result limits exercise", ur: "Lab report parhna aur jaanna ke nateeja kab exercise ko mehdood karta hai" },
+    ],
+    steps: [
+      { id: "sr-1", kind: "lesson", lesson: "reading-xray-fractures-joints" },
+      { id: "sr-2", kind: "lesson", lesson: "chest-xray-for-physiotherapists" },
+      { id: "sr-3", kind: "lesson", lesson: "ct-scan-basics-for-physiotherapists" },
+      { id: "sr-4", kind: "lesson", lesson: "reading-mri-reports-spine-joints" },
+      { id: "sr-5", kind: "lesson", lesson: "ecg-basics-for-physiotherapists" },
+      { id: "sr-6", kind: "lesson", lesson: "lab-reports-for-physiotherapists" },
+      {
+        id: "sr-7",
+        kind: "mission",
+        title: "Virtual Patient: hip fracture after a fall",
+        href: "/virtual-patient?case=hip-fracture-fall",
+        mission: {
+          en: "Work through the hip fracture case. Before you decide, write which scan you would expect and what you would tell the medical team.",
+          ur: "Hip fracture case hal karein. Faisle se pehle likhein ke aap kaun sa scan expect karte hain aur medical team ko kya batayenge.",
+        },
+        minutes: 12,
+      },
+    ],
+  },
+  {
     slug: "exam-and-first-job-skills",
     title: "Exams and Your First Job",
     tagline: {

@@ -27,6 +27,7 @@ const areaTone: Record<string, string> = {
   "Post-operative Rehab": "bg-rose-100 text-rose-800",
   "Research & Evidence": "bg-violet-100 text-violet-800",
   "Exam & Career": "bg-sky-100 text-sky-800",
+  "Imaging & Reports": "bg-blue-100 text-blue-800",
   "Skills · Neuro Exam": "bg-fuchsia-100 text-fuchsia-800",
   "Skills · Measurement": "bg-sky-100 text-sky-800",
   "Skills · Posture & Palpation": "bg-amber-100 text-amber-800",

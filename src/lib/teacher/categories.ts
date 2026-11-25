@@ -17,6 +17,7 @@ export type TeacherCategoryId =
   | "sports"
   | "postop"
   | "electro"
+  | "imaging"
   | "career";
 
 export type TeacherCategory = {
@@ -131,6 +132,15 @@ export const teacherCategories: TeacherCategory[] = [
     icon: "zap",
     glow: ["#fbbf24", "#fb923c"],
     areas: ["Electrotherapy"],
+  },
+  {
+    id: "imaging",
+    title: "Scans, ECG & Lab Reports",
+    tagline: "Read X-rays, CT, MRI, ECG strips and blood tests, and know what to do with them.",
+    taglineUr: "X-ray, CT, MRI, ECG strips aur blood tests parhein, aur jaanein un ka kya karna hai.",
+    icon: "flask",
+    glow: ["#60a5fa", "#2ee6d6"],
+    areas: ["Imaging & Reports"],
   },
   {
     id: "career",

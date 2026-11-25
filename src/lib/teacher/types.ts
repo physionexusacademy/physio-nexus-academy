@@ -129,6 +129,7 @@ export type TeacherArea =
   | "Post-operative Rehab"
   | "Research & Evidence"
   | "Exam & Career"
+  | "Imaging & Reports"
   | "Skills · Neuro Exam"
   | "Skills · Measurement"
   | "Skills · Posture & Palpation"
