@@ -212,6 +212,10 @@ assert.ok(METRICS.length === 11 && new Set(METRICS.map((m) => m.id)).size === 11
   for (const needle of ["not a diagnosis", "can be wrong", "spine", "Nothing is recorded, uploaded or saved", "under 16"]) assert.ok(terms.includes(needle), `the terms must say: ${needle}`);
   for (const item of TERMS.items) assert.ok(item.ur.trim().length > 10 && item.ur !== item.en, "every term needs Roman Urdu");
   assert.ok(text.includes("See a physiotherapist or doctor") || page.includes("See a physiotherapist or doctor"), "the results must point to a clinician for pain, numbness or worry");
+  const serverPage = fs.readFileSync("src/app/health-calculators/posture/page.tsx", "utf8");
+  const loader = fs.readFileSync("src/app/health-calculators/posture/PostureLoader.tsx", "utf8");
+  assert.doesNotMatch(serverPage, /from "\.\/PostureScreen"/, "the server page must not import the posture screen: the camera code and the pose library must stay out of the Worker (it has a size limit)");
+  assert.match(loader, /dynamic\(\(\) => import\("\.\/PostureScreen"\), \{\s*ssr: false/, "the posture screen must load in the browser only (ssr: false)");
   const config = fs.readFileSync("next.config.js", "utf8");
   assert.ok(/source: '\/health-calculators\/posture',\s*headers: \[\{ key: 'Permissions-Policy', value: 'camera=\(self\), microphone=\(\)' \}\]/.test(config), "the posture page must be allowed its own camera");
   assert.ok(fs.readFileSync("src/app/health-calculators/page.tsx", "utf8").includes("/health-calculators/posture"), "the calculators hub must link to the posture screen");

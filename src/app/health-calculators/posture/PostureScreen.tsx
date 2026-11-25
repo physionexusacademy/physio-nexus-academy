@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Camera, CheckCircle2, Printer, RotateCcw, ScanLine, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Camera, CheckCircle2, Printer, RotateCcw, ShieldCheck } from "lucide-react";
 import { useLang } from "@/lib/lang";
 import { assessSetup, type SetupIssue } from "@/lib/formcheck/quality";
 import { SETUP_MESSAGES } from "@/lib/formcheck/messages";
@@ -14,7 +14,6 @@ import type { PoseRuntime } from "@/lib/formcheck/browser/runtime";
 import type { Frame, Landmark } from "@/lib/formcheck/types";
 import { band, MIN_FRAMES, summarise, metricDef, type CaptureResult, type PostureMetricId, type PostureView } from "@/lib/posture/measures";
 import { BAND_TEXT, METRIC_TEXT, NEXT_STEPS, SETUP_GUIDE, TERMS, type Bi } from "@/lib/posture/text";
-import "./posture.css";
 
 type Stage = "intro" | "choose" | "camera" | "countdown" | "capturing" | "results";
 type Who = "self" | "helper";
@@ -188,13 +187,6 @@ export default function PostureScreen() {
   };
 
   return (
-    <div className="ps-page">
-      <header className="ps-hero">
-        <p className="ps-eyebrow"><ScanLine aria-hidden="true" /> {t({ en: "Posture screen", ur: "Posture screen" })}</p>
-        <h1>{t({ en: "Check your posture with your phone", ur: "Apne phone se apni posture check karein" })}</h1>
-        <p>{t({ en: "A free screen for students and the public. It reads your posture from one phone picture, on your own device, and shows every number with its margin of error.", ur: "Students aur awam ke liye free screen. Yeh aap ke apne device par ek phone ki tasveer se posture parhta hai, aur har number ghalti ki hadd ke saath dikhata hai." })}</p>
-      </header>
-
       <div className="ps-shell">
         {stage === "intro" && (
           <section className="ps-card" aria-labelledby="ps-terms">
@@ -304,6 +296,5 @@ export default function PostureScreen() {
           </section>
         )}
       </div>
-    </div>
   );
 }

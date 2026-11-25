@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import PostureScreen from "./PostureScreen";
+import { ScanLine } from "lucide-react";
+import { Ur } from "@/components/Ur";
+import PostureLoader from "./PostureLoader";
+import "./posture.css";
 
 const url = "https://physionexusacademy.com/health-calculators/posture";
 
@@ -30,7 +33,14 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolJsonLd).replace(/</g, "\\u003c") }} />
-      <PostureScreen />
+      <div className="ps-page">
+        <header className="ps-hero">
+          <p className="ps-eyebrow"><ScanLine aria-hidden="true" /> <Ur en="Posture screen" ur="Posture screen" /></p>
+          <h1><Ur en="Check your posture with your phone" ur="Apne phone se apni posture check karein" /></h1>
+          <p><Ur en="A free screen for students and the public. It reads your posture from one phone picture, on your own device, and shows every number with its margin of error. Nothing is recorded, uploaded or saved." ur="Students aur awam ke liye free screen. Yeh aap ke apne device par ek phone ki tasveer se posture parhta hai, aur har number ghalti ki hadd ke saath dikhata hai. Kuch record, upload ya save nahi hota." /></p>
+        </header>
+        <PostureLoader />
+      </div>
     </>
   );
 }
