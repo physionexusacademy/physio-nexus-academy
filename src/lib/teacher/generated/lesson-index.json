@@ -3062,6 +3062,285 @@
    "Report worrying results to the doctor, hold exercise when needed and never diagnose or change medicines."
   ],
   "keywords": "Reading Lab Reports — Blood Tests That Change Your Treatment lab-reports-for-physiotherapists Imaging & Reports A lab report gives the result, unit and reference range; a flag is not a diagnosis, and trends and the patient matter more than one number. Know the key tests: haemoglobin, white cells, platelets, CRP, HbA1c, potassium and INR, and how each changes what exercise or technique is safe. Report worrying results to the doctor, hold exercise when needed and never diagnose or change medicines. What are the three parts of a lab result? Which test shows how well diabetes is controlled over months? Which result raises bleeding risk in people on warfarin? Why is a very high or low potassium dangerous?",
+  "next": {
+   "slug": "ultrasound-imaging-muscles-tendons-veins",
+   "title": "Diagnostic Ultrasound — Tendons, Muscles, Fluid and Veins",
+   "href": "/learn/ultrasound-imaging-muscles-tendons-veins"
+  }
+ },
+ {
+  "href": "/learn/ultrasound-imaging-muscles-tendons-veins",
+  "slug": "ultrasound-imaging-muscles-tendons-veins",
+  "title": "Diagnostic Ultrasound — Tendons, Muscles, Fluid and Veins",
+  "hook": {
+   "en": "Ultrasound uses sound, not radiation, and can show a tendon move in real time. Learn what it shows well, how to read the words in a report and when it is the right first test.",
+   "ur": "Ultrasound radiation nahi, awaaz istemal karta hai, aur tendon ko harkat karte hue dikha sakta hai. Seekhein yeh kya achha dikhata hai, report ke alfaz kaise parhein aur yeh pehla sahi test kab hai."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain how ultrasound works, describe bright and dark (echogenic and anechoic) structures, say when ultrasound beats MRI or X-ray, and recognise report terms for tendon tears, tendinopathy, fluid and a clot in a vein.",
+   "ur": "End tak aap samjhayenge ke ultrasound kaise kaam karta hai, roshan aur kaali (echogenic aur anechoic) structures batayenge, kehenge ke ultrasound MRI ya X-ray se kab behtar hai, aur tendon tears, tendinopathy, fluid aur nas mein clot ke report alfaz pehchanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Ultrasound uses sound to show soft tissue and movement without radiation; bone is bright with a shadow and fluid is black.",
+   "It is best for superficial tendons, muscles, fluid, nerves and clots in leg veins, but depends on the operator and cannot see through bone.",
+   "Match report findings to the patient: many tendon changes are common without pain."
+  ],
+  "keywords": "Diagnostic Ultrasound — Tendons, Muscles, Fluid and Veins ultrasound-imaging-muscles-tendons-veins Imaging & Reports Ultrasound uses sound to show soft tissue and movement without radiation; bone is bright with a shadow and fluid is black. It is best for superficial tendons, muscles, fluid, nerves and clots in leg veins, but depends on the operator and cannot see through bone. Match report findings to the patient: many tendon changes are common without pain. How does fluid look on ultrasound? What does \"hypoechoic\" mean? Name one thing ultrasound does that MRI cannot. Why can the result vary?",
+  "next": {
+   "slug": "bone-density-dexa-scans",
+   "title": "Bone Density (DEXA) Scans — T-scores, Fracture Risk and Exercise",
+   "href": "/learn/bone-density-dexa-scans"
+  }
+ },
+ {
+  "href": "/learn/bone-density-dexa-scans",
+  "slug": "bone-density-dexa-scans",
+  "title": "Bone Density (DEXA) Scans — T-scores, Fracture Risk and Exercise",
+  "hook": {
+   "en": "A DEXA report gives a \"T-score\" that patients often fear. Learn what it measures, what the numbers mean and how to use the result to plan safe, bone-friendly exercise.",
+   "ur": "DEXA report \"T-score\" deti hai jis se mareez aksar dartay hain. Seekhein yeh kya naapta hai, numbers ka matlab kya hai aur nateeje ko hadi-dost mehfooz exercise ke plan ke liye kaise istemal karein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 10,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain what a DEXA scan measures, read a T-score and a Z-score, name the WHO categories, understand why a score is not the same as fracture risk and plan exercise safely around it.",
+   "ur": "End tak aap samjhayenge ke DEXA scan kya naapta hai, T-score aur Z-score parhenge, WHO categories batayenge, samjhenge ke score fracture ke khatre ke barabar kyun nahi aur us ke gird mehfooz exercise ka plan banayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "DEXA measures bone density at the spine and hip; the T-score classifies it (normal -1.0 or higher, osteopenia -1.0 to -2.5, osteoporosis -2.5 or lower).",
+   "Fracture risk also depends on age, falls and previous fractures, so read the score with the patient's story.",
+   "Exercise is safe and part of treatment: weight-bearing, resistance and balance training with sensible spine care and falls prevention."
+  ],
+  "keywords": "Bone Density (DEXA) Scans — T-scores, Fracture Risk and Exercise bone-density-dexa-scans Imaging & Reports DEXA measures bone density at the spine and hip; the T-score classifies it (normal -1.0 or higher, osteopenia -1.0 to -2.5, osteoporosis -2.5 or lower). Fracture risk also depends on age, falls and previous fractures, so read the score with the patient's story. Exercise is safe and part of treatment: weight-bearing, resistance and balance training with sensible spine care and falls prevention. What does a DEXA scan measure? What T-score means osteoporosis? What is a Z-score? Name one thing that raises fracture risk beyond the score.",
+  "next": {
+   "slug": "nerve-conduction-emg-reports",
+   "title": "Nerve Conduction Studies and EMG — Reading the Report",
+   "href": "/learn/nerve-conduction-emg-reports"
+  }
+ },
+ {
+  "href": "/learn/nerve-conduction-emg-reports",
+  "slug": "nerve-conduction-emg-reports",
+  "title": "Nerve Conduction Studies and EMG — Reading the Report",
+  "hook": {
+   "en": "\"Slowed conduction\", \"denervation\", \"axonal loss\". Nerve tests can show where a nerve is injured and how badly, but the timing and the words matter. Learn what they measure and how to use a report.",
+   "ur": "\"Slowed conduction\", \"denervation\", \"axonal loss\". Nerve tests dikha sakte hain nerve kahan aur kitni zakhmi hai, magar waqt aur alfaz ahem hain. Seekhein yeh kya naapte hain aur report ko kaise istemal karein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 11,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain what nerve conduction studies and needle EMG measure, tell demyelination from axonal damage in a report, know when a test can be normal early on and use the result to plan treatment and referral.",
+   "ur": "End tak aap samjhayenge ke nerve conduction studies aur needle EMG kya naapte hain, report mein demyelination ko axonal nuqsan se alag karenge, jaanenge ke test shuru mein normal kab ho sakta hai aur nateeje ko ilaj aur referral ke plan ke liye istemal karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "NCS measure how fast and how strongly a nerve conducts; needle EMG listens to muscle activity.",
+   "Slow conduction suggests the coating (demyelination); low amplitude and denervation suggest fibre loss (axonal damage).",
+   "Remember the timing: a normal early test does not rule out a nerve injury; treat the clinical picture and repeat or refer."
+  ],
+  "keywords": "Nerve Conduction Studies and EMG — Reading the Report nerve-conduction-emg-reports Imaging & Reports NCS measure how fast and how strongly a nerve conducts; needle EMG listens to muscle activity. Slow conduction suggests the coating (demyelination); low amplitude and denervation suggest fibre loss (axonal damage). Remember the timing: a normal early test does not rule out a nerve injury; treat the clinical picture and repeat or refer. What do NCS measure? What does low amplitude suggest? When does denervation appear on EMG? How fast does a nerve fibre regrow?",
+  "next": {
+   "slug": "spirometry-lung-function-tests",
+   "title": "Spirometry and Lung Function Tests — Obstruction, Restriction and Exercise Planning",
+   "href": "/learn/spirometry-lung-function-tests"
+  }
+ },
+ {
+  "href": "/learn/spirometry-lung-function-tests",
+  "slug": "spirometry-lung-function-tests",
+  "title": "Spirometry and Lung Function Tests — Obstruction, Restriction and Exercise Planning",
+  "hook": {
+   "en": "A lung function report tells you why a patient is breathless and how hard they can safely exercise. Learn the key numbers, the two patterns and how to use them.",
+   "ur": "Lung function report batati hai mareez ko saans ki tangi kyun hai aur woh kitni mehfooz tareeqe se exercise kar sakta hai. Aham numbers, do patterns aur unka istemal seekhein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll define FEV1, FVC and the FEV1/FVC ratio, tell an obstructive from a restrictive pattern, read the bronchodilator response and GOLD grade of COPD and use the result to plan exercise and breathing strategies.",
+   "ur": "End tak aap FEV1, FVC aur FEV1/FVC ratio ki tareef karenge, obstructive ko restrictive pattern se alag karenge, bronchodilator response aur COPD ke GOLD grade parhenge aur nateeje se exercise aur saans ki strategies ka plan banayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Spirometry gives FEV1 and FVC; an FEV1/FVC ratio below about 0.70 after a bronchodilator shows obstruction, and a low FVC with a normal ratio suggests restriction.",
+   "COPD is graded by FEV1 percent predicted (GOLD 1 to 4); a large reversible response favours asthma.",
+   "Plan exercise by symptoms, effort and a walking test, not the FEV1 alone, and refer urgently for severe breathlessness."
+  ],
+  "keywords": "Spirometry and Lung Function Tests — Obstruction, Restriction and Exercise Planning spirometry-lung-function-tests Imaging & Reports Spirometry gives FEV1 and FVC; an FEV1/FVC ratio below about 0.70 after a bronchodilator shows obstruction, and a low FVC with a normal ratio suggests restriction. COPD is graded by FEV1 percent predicted (GOLD 1 to 4); a large reversible response favours asthma. Plan exercise by symptoms, effort and a walking test, not the FEV1 alone, and refer urgently for severe breathlessness. What is FEV1? What ratio suggests obstruction? What pattern has a low FVC and a normal ratio? What does GOLD grade 2 mean?",
+  "next": {
+   "slug": "arterial-blood-gases-basics",
+   "title": "Arterial Blood Gases — A Four-Step Read for Physiotherapists",
+   "href": "/learn/arterial-blood-gases-basics"
+  }
+ },
+ {
+  "href": "/learn/arterial-blood-gases-basics",
+  "slug": "arterial-blood-gases-basics",
+  "title": "Arterial Blood Gases — A Four-Step Read for Physiotherapists",
+  "hook": {
+   "en": "In the ICU and on the ward, a blood gas shows how well a patient is breathing and what their acid balance is doing. Learn a simple four-step read and what it means for your treatment.",
+   "ur": "ICU aur ward mein blood gas dikhata hai mareez kitni achhi saans le raha hai aur us ka acid balance kya kar raha hai. Chaar qadam ki saadi reading aur iska ilaj par matlab seekhein."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll recall normal values, read pH, PaCO2, bicarbonate and PaO2 in order, tell respiratory from metabolic problems, recognise respiratory failure and know when a result means you should hold treatment and call the doctor.",
+   "ur": "End tak aap normal values yaad rakhenge, pH, PaCO2, bicarbonate aur PaO2 ko tarteeb se parhenge, respiratory ko metabolic masle se alag karenge, respiratory failure pehchanenge aur jaanenge ke kab nateeja ilaj rokne aur doctor ko bulane ka matlab hai."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "An ABG gives pH, PaCO2, bicarbonate and PaO2; read them in that order to find the direction and the organ system involved.",
+   "Respiratory problems change PaCO2; metabolic problems change bicarbonate; a PaO2 below 60 mmHg is respiratory failure.",
+   "Treat the patient, follow the doctor's oxygen targets and hold exercise and call for help when the gas worsens."
+  ],
+  "keywords": "Arterial Blood Gases — A Four-Step Read for Physiotherapists arterial-blood-gases-basics Imaging & Reports An ABG gives pH, PaCO2, bicarbonate and PaO2; read them in that order to find the direction and the organ system involved. Respiratory problems change PaCO2; metabolic problems change bicarbonate; a PaO2 below 60 mmHg is respiratory failure. Treat the patient, follow the doctor's oxygen targets and hold exercise and call for help when the gas worsens. What is the normal pH range? What does a high PaCO2 with low pH suggest? What does low bicarbonate with low pH suggest? What PaO2 on room air means respiratory failure?",
+  "next": {
+   "slug": "echocardiography-heart-failure-basics",
+   "title": "Echocardiography and Heart Failure — Ejection Fraction and Safe Exercise",
+   "href": "/learn/echocardiography-heart-failure-basics"
+  }
+ },
+ {
+  "href": "/learn/echocardiography-heart-failure-basics",
+  "slug": "echocardiography-heart-failure-basics",
+  "title": "Echocardiography and Heart Failure — Ejection Fraction and Safe Exercise",
+  "hook": {
+   "en": "An echo report gives an \"ejection fraction\" that patients and families often misunderstand. Learn what it shows, the report terms and how to plan safe exercise for people with heart failure.",
+   "ur": "Echo report \"ejection fraction\" deti hai jise mareez aur ghar walay aksar ghalat samajhte hain. Seekhein yeh kya dikhati hai, report ke alfaz aur dil ki nakami wale logon ke liye mehfooz exercise ka plan."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain what an echocardiogram shows, state the normal ejection fraction and the heart failure categories, understand common report terms (valve disease, wall motion, pulmonary pressure) and plan and monitor exercise safely in heart failure.",
+   "ur": "End tak aap samjhayenge ke echocardiogram kya dikhata hai, normal ejection fraction aur heart failure ki categories batayenge, report ke aam alfaz (valve disease, wall motion, pulmonary pressure) samjhenge aur heart failure mein exercise ka mehfooz plan aur nigrani karenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "An echocardiogram is an ultrasound of the heart; the ejection fraction is the share of blood pumped each beat (normal about 55 to 70 percent).",
+   "Heart failure is grouped by ejection fraction (reduced 40 or below, mildly reduced 41 to 49, preserved 50 or more); check valves, wall motion and pressures before exercise.",
+   "Stable patients benefit from gradual, monitored exercise; hold it and call the doctor for fluid build-up, worsening breathlessness or other warning signs."
+  ],
+  "keywords": "Echocardiography and Heart Failure — Ejection Fraction and Safe Exercise echocardiography-heart-failure-basics Imaging & Reports An echocardiogram is an ultrasound of the heart; the ejection fraction is the share of blood pumped each beat (normal about 55 to 70 percent). Heart failure is grouped by ejection fraction (reduced 40 or below, mildly reduced 41 to 49, preserved 50 or more); check valves, wall motion and pressures before exercise. Stable patients benefit from gradual, monitored exercise; hold it and call the doctor for fluid build-up, worsening breathlessness or other warning signs. What does an echocardiogram use? What is a normal ejection fraction? What does HFrEF mean? Name a sign of fluid build-up in heart failure.",
+  "next": {
+   "slug": "when-to-image-decision-rules",
+   "title": "When Is Imaging Actually Needed? Ottawa, Canadian C-spine and Back Pain Rules",
+   "href": "/learn/when-to-image-decision-rules"
+  }
+ },
+ {
+  "href": "/learn/when-to-image-decision-rules",
+  "slug": "when-to-image-decision-rules",
+  "title": "When Is Imaging Actually Needed? Ottawa, Canadian C-spine and Back Pain Rules",
+  "hook": {
+   "en": "Too many scans cost money, worry patients and expose them to radiation; too few can miss a fracture. Learn the decision rules that tell you when to refer for an X-ray and when imaging will not help.",
+   "ur": "Bohat zyada scans paisa kharch karte hain, mareezon ko pareshan karte hain aur radiation dete hain; bohat kam fracture miss kar sakte hain. Woh decision rules seekhein jo batate hain X-ray ke liye refer kab karna hai aur imaging kab madad nahi karegi."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll apply the Ottawa ankle and knee rules, the Canadian C-spine rule and the low back pain imaging guidance, explain why most back pain needs no scan and know which red flags mean image or refer straight away.",
+   "ur": "End tak aap Ottawa ankle aur knee rules, Canadian C-spine rule aur kamar dard ki imaging guidance istemal karenge, samjhayenge ke zyada tar kamar dard ko scan nahi chahiye aur jaanenge ke kaun si red flags ka matlab hai foran imaging ya refer."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Decision rules (Ottawa ankle and knee, Canadian C-spine) are very sensitive, so a negative result safely avoids an X-ray for the patients they were built for.",
+   "For back pain, image only for red flags or a progressive deficit; most scans show common changes that do not change treatment.",
+   "Explain the rule to the patient, protect the area and refer promptly when a criterion or a red flag is present."
+  ],
+  "keywords": "When Is Imaging Actually Needed? Ottawa, Canadian C-spine and Back Pain Rules when-to-image-decision-rules Imaging & Reports Decision rules (Ottawa ankle and knee, Canadian C-spine) are very sensitive, so a negative result safely avoids an X-ray for the patients they were built for. For back pain, image only for red flags or a progressive deficit; most scans show common changes that do not change treatment. Explain the rule to the patient, protect the area and refer promptly when a criterion or a red flag is present. Name two Ottawa knee criteria. Which patients does the Canadian C-spine rule apply to? Who needs imaging for back pain? Why is a negative rule result useful?",
+  "next": {
+   "slug": "radiation-safety-imaging-pregnancy",
+   "title": "Radiation, Safety and Imaging in Pregnancy — What to Tell Patients",
+   "href": "/learn/radiation-safety-imaging-pregnancy"
+  }
+ },
+ {
+  "href": "/learn/radiation-safety-imaging-pregnancy",
+  "slug": "radiation-safety-imaging-pregnancy",
+  "title": "Radiation, Safety and Imaging in Pregnancy — What to Tell Patients",
+  "hook": {
+   "en": "Patients ask \"is the X-ray safe?\", and pregnant patients worry even more. Learn how doses compare, which scans use no radiation and what to say, honestly and calmly.",
+   "ur": "Mareez poochhte hain \"kya X-ray mehfooz hai?\", aur hamila mareez aur bhi fikr karte hain. Seekhein doses ka muqabla kaise hota hai, kaun se scans radiation istemal nahi karte aur imandari aur sukoon se kya kehna hai."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 10,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain radiation dose in everyday terms, compare common scans, apply the ALARA principle, say which tests are safe in pregnancy and counsel a patient clearly.",
+   "ur": "End tak aap radiation dose rozmarra alfaz mein samjhayenge, aam scans ka muqabla karenge, ALARA usool lagayenge, batayenge ke hamal mein kaun se tests mehfooz hain aur mareez ko saaf counselling denge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Ultrasound and MRI use no ionising radiation; a limb or chest X-ray is a very small dose, and CT is much higher; follow ALARA.",
+   "Compare doses to natural background radiation and avoid both dismissing and exaggerating the risk.",
+   "In pregnancy, delay routine radiation, prefer ultrasound or MRI, and let urgent tests go ahead when the doctor judges they are needed."
+  ],
+  "keywords": "Radiation, Safety and Imaging in Pregnancy — What to Tell Patients radiation-safety-imaging-pregnancy Imaging & Reports Ultrasound and MRI use no ionising radiation; a limb or chest X-ray is a very small dose, and CT is much higher; follow ALARA. Compare doses to natural background radiation and avoid both dismissing and exaggerating the risk. In pregnancy, delay routine radiation, prefer ultrasound or MRI, and let urgent tests go ahead when the doctor judges they are needed. What does ALARA stand for? Which scans use no ionising radiation? Roughly how does a chest X-ray compare with background radiation? Who decides shielding and dose?",
+  "next": {
+   "slug": "choosing-the-right-test-five-patients",
+   "title": "Choosing the Right Test — Five Patients, Five Decisions",
+   "href": "/learn/choosing-the-right-test-five-patients"
+  }
+ },
+ {
+  "href": "/learn/choosing-the-right-test-five-patients",
+  "slug": "choosing-the-right-test-five-patients",
+  "title": "Choosing the Right Test — Five Patients, Five Decisions",
+  "hook": {
+   "en": "Knowing what each test shows is only half the skill. The other half is picking the right one for the right patient at the right time. Work through five common cases that pull together X-ray, CT, MRI, ultrasound, ECG, lab and lung tests.",
+   "ur": "Har test kya dikhata hai yeh jaanna aadhi maharat hai. Doosri aadhi sahi mareez ke liye sahi waqt par sahi test chunna hai. Paanch aam kes hal karein jo X-ray, CT, MRI, ultrasound, ECG, lab aur phephron ke tests ko milate hain."
+  },
+  "area": "Imaging & Reports",
+  "level": "Clinical",
+  "bestFor": "Final year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll match a clinical question to the best first test, explain why other tests are not the first choice, know when a test result means treat, refer or wait, and communicate the plan to the patient.",
+   "ur": "End tak aap clinical sawal ko behtareen pehle test se milayenge, samjhayenge ke doosre tests pehli pasand kyun nahi, jaanenge ke test ka nateeja ilaj, refer ya intezaar ka kya matlab hai, aur plan mareez ko batayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Start with the question, check red flags and decision rules, match the tissue to the test and ask what the result will change.",
+   "Use the simplest test that answers the question; escalate to more detailed tests only when needed.",
+   "Explain your choice and follow-up to the patient, and escalate promptly when a red flag or emergency picture appears."
+  ],
+  "keywords": "Choosing the Right Test — Five Patients, Five Decisions choosing-the-right-test-five-patients Imaging & Reports Start with the question, check red flags and decision rules, match the tissue to the test and ask what the result will change. Use the simplest test that answers the question; escalate to more detailed tests only when needed. Explain your choice and follow-up to the patient, and escalate promptly when a red flag or emergency picture appears. What is the first step in choosing a test? Which test first for a suspected leg clot? Which test checks CO2 and acid balance? Why not always choose the most advanced test?",
   "next": null
  },
  {
