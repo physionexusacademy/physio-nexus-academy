@@ -218,8 +218,8 @@ export const siteGuide: SiteFeature[] = [
     create: true,
     title: "Conditions & Treatment Guide",
     category: "Learn",
-    summary: "63 conditions by body area, each at three depths (quick guide, clinical plan, expert detail) with a stage-by-stage treatment plan.",
-    hookUr: "Conditions & Treatment Guide mein 63 conditions hain — body area ke hisaab se — har ek teen depth par (quick, clinical, expert) aur stage-by-stage treatment plan ke saath.",
+    summary: "48 conditions by body area, each at three depths (quick guide, clinical plan, expert detail) with a stage-by-stage treatment plan.",
+    hookUr: "Conditions & Treatment Guide mein 48 conditions hain — body area ke hisaab se — har ek teen depth par (quick, clinical, expert) aur stage-by-stage treatment plan ke saath.",
     points: [
       "Find a condition by body area, kind of problem, or an everyday name like “sciatica”",
       "Quick guide: what it feels like, warning signs and what helps first",
