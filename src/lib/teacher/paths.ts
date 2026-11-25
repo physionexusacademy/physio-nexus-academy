@@ -588,6 +588,69 @@ export const teacherPaths: TeacherPath[] = [
     ],
   },
   {
+    slug: "womens-and-older-adults-health",
+    title: "Women's Health and Healthy Ageing",
+    tagline: {
+      en: "The pelvic floor, pregnancy pain, falls and bone health: the care that is often missing and always needed.",
+      ur: "Pelvic floor, hamal ka dard, girna aur haddiyon ki sehat: woh care jo aksar kam milti hai aur hamesha zaroori hai.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Teach a correct pelvic floor contraction and a safe programme for pregnancy and after birth", ur: "Sahi pelvic floor contraction aur hamal aur paidaish ke baad ka mehfooz programme sikhana" },
+      { en: "Tell pelvic girdle pain from lumbar pain and treat it", ur: "Pelvic girdle pain ko lumbar dard se alag karna aur ilaj karna" },
+      { en: "Screen fall risk and prescribe balance and strength exercise", ur: "Girne ke khatre ki screening aur balance aur strength exercise dena" },
+      { en: "Exercise safely with osteoporosis", ur: "Osteoporosis mein mehfooz exercise karwana" },
+    ],
+    steps: [
+      { id: "wa-1", kind: "lesson", lesson: "pelvic-floor-pregnancy-postnatal" },
+      { id: "wa-2", kind: "lesson", lesson: "pelvic-girdle-pain-pregnancy" },
+      { id: "wa-3", kind: "lesson", lesson: "falls-prevention-older-adults" },
+      { id: "wa-4", kind: "lesson", lesson: "osteoporosis-exercise-bone-health" },
+      {
+        id: "wa-5",
+        kind: "mission",
+        title: "Balance and functional tests",
+        href: "/skills/balance-function",
+        mission: {
+          en: "Open the balance tests and practise the timed up and go and the 30-second chair stand on a family member. Write down the times and what they mean.",
+          ur: "Balance tests kholein aur kisi ghar walay par timed up and go aur 30-second chair stand practise karein. Waqt likhein aur unka matlab bhi.",
+        },
+        minutes: 12,
+      },
+    ],
+  },
+  {
+    slug: "after-surgery-rehab",
+    title: "Rehab After Joint Replacement",
+    tagline: {
+      en: "Knee and hip replacement: the stages, the goals, the precautions and the warning signs.",
+      ur: "Knee aur hip replacement: marahil, maqasid, ehtiyatein aur warning signs.",
+    },
+    audience: "3rd year, final year & interns",
+    outcomes: [
+      { en: "Plan rehab from day one to full activity after a knee replacement", ur: "Knee replacement ke baad pehle din se poori activity tak rehab ka plan banana" },
+      { en: "Explain hip precautions and why they differ", ur: "Hip ehtiyatein aur unka farq samjhana" },
+      { en: "Recognise infection, a clot and a dislocation", ur: "Infection, clot aur dislocation pehchanna" },
+    ],
+    steps: [
+      { id: "as-1", kind: "lesson", lesson: "total-knee-replacement-rehab" },
+      { id: "as-2", kind: "lesson", lesson: "total-hip-replacement-rehab" },
+      { id: "as-3", kind: "lesson", lesson: "exercise-dosage" },
+      { id: "as-3b", kind: "lesson", lesson: "tissue-healing-phases" },
+      {
+        id: "as-4",
+        kind: "mission",
+        title: "Knee osteoarthritis conditions guide",
+        href: "/conditions/knee-osteoarthritis",
+        mission: {
+          en: "Read the knee osteoarthritis plan and write down which exercises you would keep, change and stop for a patient six weeks after a knee replacement.",
+          ur: "Knee osteoarthritis ka plan parhein aur likhein ke knee replacement ke chhe haftay baad ke mareez ke liye kaun si exercises rakhenge, badlenge aur rokenge.",
+        },
+        minutes: 12,
+      },
+    ],
+  },
+  {
     slug: "examine-and-think-like-a-clinician",
     title: "Examine and Think Like a Clinician",
     tagline: {
