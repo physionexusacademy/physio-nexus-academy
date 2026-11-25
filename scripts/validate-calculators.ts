@@ -69,4 +69,6 @@ assert.match(page, /never replace|does not replace|not a substitute/i, "the page
 assert.doesNotMatch(page, /fetch\(|XMLHttpRequest|localStorage|sendBeacon/, "calculators must not send or store anything");
 for (const needle of ["beta-blocker", "Tanaka", "10 repetitions", "Ostelo"]) assert.ok(page.includes(needle), `the page should mention ${needle}`);
 
+assert.ok(fs.existsSync("src/app/health-calculators/page.tsx"), "/health-calculators needs its own hub page so the short address does not 404");
+
 console.log("Clinical calculators checks passed: heart rate zones, waist-hip ratio, one-rep max, daily energy and outcome change, with worked examples and range checks.");
