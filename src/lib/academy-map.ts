@@ -70,6 +70,7 @@ export const academyWings: AcademyWing[] = [
       { label: "Book Appointment", href: "/appointment", description: "Request a consultation", icon: "calendar", keywords: "booking consult session appointment" },
       { label: "Home Visit", href: "/home-visit", description: "Physiotherapy at your home", icon: "home", keywords: "home visit ghar" },
       { label: "Symptom Checker", href: "/symptom-checker", description: "Screen patterns and red flags", icon: "symptoms", keywords: "pain checker symptoms" },
+      { label: "Clinical Calculators", href: "/health-calculators/clinical", description: "Heart rate zones, one-rep max, waist-hip ratio, outcome change", icon: "calculator", keywords: "calculator karvonen heart rate zones one rep max 1rm waist hip ratio bmr calories minimal important change" },
       { label: "BMI Calculator", href: "/health-calculators/bmi", description: "Quick BMI with age-aware notes", icon: "calculator", keywords: "bmi health calculator weight" },
       { label: "Karachi", href: "/locations/karachi", description: "Home visits & workshops", icon: "pin", keywords: "karachi location" },
       { label: "Hyderabad", href: "/locations/hyderabad", description: "Home visits & workshops", icon: "pin", keywords: "hyderabad location" },

@@ -58,6 +58,8 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-msk-stories.mjs
 
+      - name: Validate clinical calculators
+        run: npm run validate:calculators
       - name: Validate Conditions & Treatment Guide (fresh data, complete guides, redirects, no retired links)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:conditions
