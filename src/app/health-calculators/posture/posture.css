@@ -1,0 +1,70 @@
+.ps-page{--ps-navy:#0a1f3d;--ps-line:#dce9ed;color:var(--ps-navy);background:#fbfdfe}
+.ps-hero{padding:44px 16px 34px;text-align:center;background:radial-gradient(ellipse at 80% 0,#d9f5ef 0,transparent 40%),linear-gradient(115deg,#f4fbff,#e9f8f5);border-bottom:1px solid #e0eff0}
+.ps-hero h1{font-size:clamp(28px,5vw,44px);line-height:1.1;letter-spacing:-.03em;margin:14px auto 10px;max-width:760px}
+.ps-hero>p{max-width:640px;margin-inline:auto;color:#587286;line-height:1.7}
+.ps-eyebrow{display:inline-flex;align-items:center;gap:8px;color:#087f80;background:#dff5ee;border:1px solid #c6eadf;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.ps-eyebrow svg{width:15px;height:15px}
+.ps-shell{width:min(860px,calc(100% - 28px));margin-inline:auto;padding-block:26px 56px}
+.ps-card{background:#fff;border:1px solid var(--ps-line);border-radius:24px;padding:24px;box-shadow:0 12px 38px -32px #174b63}
+.ps-card h2{display:flex;align-items:center;gap:10px;font-size:23px;margin:0 0 14px}
+.ps-card h2 svg{width:22px;height:22px;color:#07988c;flex:none}
+.ps-card h3{font-size:17px;margin:20px 0 8px}
+.ps-terms{display:grid;gap:12px;margin:0 0 18px;padding-left:1.2em;list-style:disc;line-height:1.6;font-size:16px}
+.ps-agree{display:flex;align-items:flex-start;gap:12px;margin:0 0 16px;font-weight:700;line-height:1.5}
+.ps-agree input{width:24px;height:24px;flex:none;margin-top:2px;accent-color:#087f80}
+.ps-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 22px;border:0;border-radius:14px;background:linear-gradient(110deg,#087f80,#0a1f3d);color:#fff;font-weight:800;font-size:16px;cursor:pointer;transition:transform .2s,filter .2s}
+.ps-btn svg{width:19px;height:19px}
+.ps-btn:disabled{opacity:.45;cursor:not-allowed}
+.ps-btn:focus-visible,.ps-choice:focus-visible{outline:3px solid #2ee6d6;outline-offset:3px}
+@media (hover:hover){.ps-btn:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}}
+.ps-ghost{background:#fff;color:#0a1f3d;border:1px solid #cfe0e6}
+.ps-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.ps-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media (max-width:640px){.ps-choices{grid-template-columns:1fr}}
+.ps-choice{display:grid;gap:4px;text-align:left;min-height:64px;padding:14px 16px;border-radius:16px;border:2px solid var(--ps-line);background:#fff;color:var(--ps-navy);cursor:pointer}
+.ps-choice span{font-size:14px;color:#587286;line-height:1.45}
+.ps-choice[data-active="true"]{border-color:#087f80;background:#effaf6;box-shadow:0 10px 26px -20px #087f80}
+.ps-steps{display:grid;gap:8px;margin:0 0 16px;padding-left:1.3em;line-height:1.55;font-size:16px}
+.ps-stage{position:relative;margin-top:6px;border-radius:18px;overflow:hidden;background:#04122a;aspect-ratio:9/12;max-height:72vh}
+.ps-stage[hidden]{display:none}
+.ps-video,.ps-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.ps-video[data-mirror="true"],.ps-canvas[data-mirror="true"]{transform:scaleX(-1)}
+.ps-count{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(90px,28vw,200px);font-weight:900;color:#fff;text-shadow:0 6px 40px #000a}
+.ps-hold{font-size:clamp(32px,9vw,64px)}
+.ps-setup{margin-top:14px}
+.ps-ok{display:flex;align-items:center;gap:8px;font-weight:800;color:#087f68}
+.ps-ok svg,.ps-level svg{width:20px;height:20px}
+.ps-issues{margin:8px 0;padding-left:1.2em;display:grid;gap:6px;list-style:disc;font-weight:700;color:#7a4a0c}
+.ps-level{font-weight:800;color:#a12b0d}
+.ps-level[data-ok="true"]{color:#087f68;display:flex;align-items:center;gap:8px}
+.ps-note{font-size:14px;color:#587286;line-height:1.55}
+.ps-warn{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px;margin:14px 0;padding:14px 16px;border-radius:14px;background:#fff6e8;border:1px solid #f3dcb4;color:#7a4a0c;font-weight:700;line-height:1.55}
+.ps-warn svg{width:20px;height:20px;flex:none}
+.ps-warn .ps-steps{flex-basis:100%;font-weight:600}
+.ps-prov{padding:12px 14px;border-radius:12px;background:#eef6ff;border:1px solid #cfe2ff;color:#244a75;font-size:14px;line-height:1.55}
+.ps-results{list-style:none;margin:16px 0;padding:0;display:grid;gap:12px}
+.ps-result{padding:16px;border-radius:18px;border:1px solid var(--ps-line);border-left-width:6px;background:#fff}
+.ps-result[data-band="typical"],.ps-result[data-band="within_error"]{border-left-color:#16a07f}
+.ps-result[data-band="mild"]{border-left-color:#e0a21a}
+.ps-result[data-band="marked"]{border-left-color:#d6512a}
+.ps-result-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.ps-chip{padding:4px 12px;border-radius:999px;background:#f1f7f8;font-size:13px;font-weight:800;color:#345b70}
+.ps-value{font-size:30px;font-weight:900;margin:8px 0 4px}
+.ps-value span{font-size:16px;font-weight:700;color:#587286}
+.ps-result p{margin:4px 0;line-height:1.55}
+.ps-result details{margin-top:8px;font-size:14px;color:#587286}
+.ps-result summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center}
+.ps-safe{display:flex;align-items:flex-start;gap:10px;margin:18px 0;padding:14px 16px;border-radius:14px;background:#fff3f0;border:2px solid #f2b8a8;color:#8a260c;font-weight:700;line-height:1.55}
+.ps-safe svg{width:20px;height:20px;flex:none;margin-top:2px}
+.ps-next{display:grid;gap:8px;padding-left:1.2em;list-style:disc}
+.ps-next a,.ps-valid a{color:#087f80;font-weight:800;text-decoration:underline}
+.ps-ref{display:grid;gap:4px;margin-top:8px;font-size:14px;font-weight:700}
+.ps-ref input{min-height:44px;padding:0 12px;border:1px solid #cfe0e6;border-radius:10px;font-size:16px}
+.ps-valid{margin-top:22px;padding:16px;border-radius:16px;border:2px dashed #8f7cff;background:#f6f4ff}
+@media print{
+  header,footer,nav,[data-print-hide],.fixed,[aria-label="Open Physio Nexus AI"]{display:none!important}
+  .ps-hero{background:#fff;padding:0 0 8px;border:0}
+  .ps-card{box-shadow:none;border:0;padding:0}
+  .ps-result{break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){.ps-btn{transition:none}}

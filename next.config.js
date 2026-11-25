@@ -119,11 +119,16 @@ const nextConfig = {
       // Camera: off everywhere except the signed-in patient pages of RehabVerse (/rehabverse/me/...), where the optional camera Form Check runs on the person's own device.
       // 'self' only: a page of another site embedded here can never use it. The microphone stays off everywhere.
       {
-        source: '/((?!rehabverse/me(?:/|$)).*)',
+        source: '/((?!rehabverse/me(?:/|$)|health-calculators/posture(?:/|$)).*)',
         headers: [{ key: 'Permissions-Policy', value: 'camera=(), microphone=()' }],
       },
       {
         source: '/rehabverse/me/:path*',
+        headers: [{ key: 'Permissions-Policy', value: 'camera=(self), microphone=()' }],
+      },
+      // The posture screen (public) uses the camera on the person's own device, the same way: 'self' only, the microphone stays off.
+      {
+        source: '/health-calculators/posture',
         headers: [{ key: 'Permissions-Policy', value: 'camera=(self), microphone=()' }],
       },
     ];

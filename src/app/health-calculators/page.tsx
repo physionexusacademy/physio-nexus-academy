@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Calculator, HeartPulse } from "lucide-react";
+import { ArrowRight, Calculator, HeartPulse, ScanLine } from "lucide-react";
 
 const url = "https://physionexusacademy.com/health-calculators";
 
@@ -9,11 +9,18 @@ export const metadata: Metadata = {
   description:
     "Free calculators from Physio Nexus Academy: an age-aware BMI calculator, and clinical calculators for heart rate zones, waist-hip ratio, one-rep max, daily energy and outcome change. Worked out in your browser.",
   alternates: { canonical: url },
-  openGraph: { title: "Health and Clinical Calculators | Physio Nexus Academy", description: "BMI, heart rate zones, waist-hip ratio, one-rep max, daily energy and outcome change.", url, siteName: "Physio Nexus Academy", type: "website" },
+  openGraph: { title: "Health and Clinical Calculators | Physio Nexus Academy", description: "BMI, heart rate zones, waist-hip ratio, one-rep max, daily energy, outcome change and a posture screen.", url, siteName: "Physio Nexus Academy", type: "website" },
   robots: { index: true, follow: true },
 };
 
 const tools = [
+  {
+    href: "/health-calculators/posture",
+    icon: ScanLine,
+    title: "Posture screen",
+    text: "Stand in front of your phone and see head position, trunk lean, shoulder and hip level and knee alignment, each with its margin of error. Read on your device; nothing is stored.",
+    tag: "Uses your camera",
+  },
   {
     href: "/health-calculators/clinical",
     icon: HeartPulse,
