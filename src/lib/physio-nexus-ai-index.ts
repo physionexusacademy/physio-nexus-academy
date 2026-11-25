@@ -1,6 +1,7 @@
 import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
-import { regionalManualApplications } from "@/lib/manual-therapy-regional";
+import { loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
+import type { RegionIndexItem } from "@/lib/manual-therapy-regions";
 import { mskSpecialTests } from "@/lib/msk-special-tests";
 import { clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { conditionCatalog } from "@/lib/conditions/catalog";
@@ -31,7 +32,8 @@ export type PnaLearningResource = {
   pointsUr?: string[];
 };
 
-const manualResources: PnaLearningResource[] = [
+function manualResourcesFrom(regionalManualApplications: RegionIndexItem[]): PnaLearningResource[] {
+  return [
   ...manualTherapyTechniques.map((item) => ({
     id: `manual:${item.slug}`,
     title: item.name,
@@ -56,10 +58,11 @@ const manualResources: PnaLearningResource[] = [
     href: `/manual-therapy/regions/${encodeURIComponent(item.slug)}`,
     category: `Regional manual therapy · ${item.region}`,
     summary: item.clinicalUse.slice(0, 2).join(" "),
-    level: item.applicability ?? "Clinical",
+    level: item.listedApplicability ?? "Clinical",
     keywords: [item.title, item.slug, item.techniqueName, item.region, ...item.clinicalUse].join(" "),
   })),
-];
+  ];
+}
 
 function teacherResourcesFrom(conceptLessonMetas: TeacherLessonMeta[]): PnaLearningResource[] {
   return [
@@ -391,6 +394,9 @@ export function getLearningResources(): Promise<PnaLearningResource[]> {
 
 async function build(): Promise<PnaLearningResource[]> {
   const teacherResources = teacherResourcesFrom(await loadConceptLessons());
+  const regionIndex = await loadRegionIndex();
+  if (!regionIndex) throw new Error("The regional manual therapy index is missing.");
+  const manualResources = manualResourcesFrom(regionIndex.items.filter((item) => item.listed));
   const uniqueResources = new Map<string, PnaLearningResource>();
   for (const resource of [...teacherResources, ...skillResources, ...manualResources, ...mskResources, ...treatmentResources, ...assessmentResources, ...browseResources]) {
     if (!uniqueResources.has(resource.href)) uniqueResources.set(resource.href, resource);

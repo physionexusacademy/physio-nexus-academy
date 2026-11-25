@@ -1,6 +1,7 @@
 import "server-only";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { ChapterData, ChapterIndex } from "@/lib/manual-therapy-chapter-types";
+import type { RegionData, RegionIndex } from "@/lib/manual-therapy-regions";
 
 /**
  * Reads the static Manual Therapy chapter data (public/manual-therapy-data, see manual-therapy-chapter-types.ts). It is deliberately NOT bundled into the
@@ -40,4 +41,16 @@ export async function loadChapterData(slug: string): Promise<ChapterData | null>
 export async function loadChapterIndex(): Promise<ChapterIndex | null> {
   const index = (await readJson("/index.json")) as ChapterIndex | null;
   return index && index.version === 1 ? index : null;
+}
+
+/** The regional guides (see manual-therapy-regions.ts): the index of every guide, and the data of one guide (null when there is no such guide). */
+export async function loadRegionIndex(): Promise<RegionIndex | null> {
+  const index = (await readJson("/regions/index.json")) as RegionIndex | null;
+  return index && index.version === 1 ? index : null;
+}
+
+export async function loadRegionData(slug: string): Promise<RegionData | null> {
+  if (!/^[a-z0-9][a-z0-9-]{0,80}$/.test(slug)) return null;
+  const data = (await readJson(`/regions/${slug}.json`)) as RegionData | null;
+  return data && data.version === 1 && data.item?.slug === slug ? data : null;
 }

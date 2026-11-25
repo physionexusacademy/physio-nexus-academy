@@ -15,15 +15,11 @@ import {
   Target,
 } from "lucide-react";
 import {
-  completeRegionalManualApplications,
-  getRegionalManualApplication,
   isTechniqueSpecificRegionalApplication,
   type ManualRegion,
-} from "@/lib/manual-therapy-regional";
-import {
-  getRegionalSubTechniques,
   type RegionalSubTechnique,
-} from "@/lib/manual-therapy-subtechniques";
+} from "@/lib/manual-therapy-regions";
+import { loadRegionData, loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
 import {
   ClinicalCompareStrip,
 } from "@/components/manual-therapy/ClinicalMiniVisuals";
@@ -33,7 +29,6 @@ import {
   getManualTherapy3DAssetPublicId,
   cloudinary3DEnabled,
 } from "@/lib/manual-therapy-3d-assets";
-import { regionalClinicalStories } from "@/lib/manual-therapy-regional-stories";
 import { RegionalAttentionReset } from "@/components/manual-therapy/AttentionReset";
 import { RegionalLearningLab } from "@/components/manual-therapy/RegionalLearningLab";
 
@@ -41,13 +36,15 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return completeRegionalManualApplications.map((item) => ({ slug: item.slug }));
+export async function generateStaticParams() {
+  const index = await loadRegionIndex();
+  if (!index) throw new Error("Regional manual therapy index is missing: run npm run build:manual-therapy-data");
+  return index.items.map((item) => ({ slug: item.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const item = getRegionalManualApplication(slug);
+  const item = (await loadRegionData(slug))?.item;
   if (!item) return {};
 
   return {
@@ -251,14 +248,12 @@ function DeepTechniqueCard({
 
 export default async function RegionalManualDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const item = getRegionalManualApplication(slug);
-  if (!item) notFound();
+  const data = await loadRegionData(slug);
+  if (!data) notFound();
+  const { item, subTechniques, lab } = data;
 
   const isTechniqueSpecific = isTechniqueSpecificRegionalApplication(item);
-  const clinicalStory = regionalClinicalStories[item.slug];
-  const subTechniques = clinicalStory
-    ? []
-    : getRegionalSubTechniques(item.techniqueSlug, item.region);
+  const clinicalStory = data.story;
 
   return (
     <div className="container-content section-padding pb-20">
@@ -379,7 +374,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
       {/* Clinical story / learning lab if present */}
       {clinicalStory ? (
         <section className="mt-12">
-          <RegionalLearningLab slug={item.techniqueSlug} />
+          <RegionalLearningLab lab={lab} />
         </section>
       ) : null}
 

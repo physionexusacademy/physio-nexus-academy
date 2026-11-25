@@ -57,8 +57,7 @@ It is now one static file per chapter, `public/manual-therapy-data/chapters/<slu
 - The rendered pages did not change: the visible markup, the JSON-LD and the `<head>` of all 337 prerendered Manual Therapy pages are identical to the build
   before, and the page data (the RSC payload) is the same set of rows (only the order of the rows and one framework row, `IconMark`, differ).
 
-The same idea would free the regions pages (`manual-therapy-priority-depth.ts` 84 KB, `manual-therapy-subtechniques.ts` 30 KB and the regional learning labs, about 170 KB
-of source) if more room is ever needed.
+The regions pages followed in Nov 2026 (next section).
 
 ## The daily challenge's lesson questions are a static file (Nov 2026)
 The 397 lesson-based questions of the Daily Clinical Challenge (`public/daily-content/pool.json`, written by `scripts/build-daily-pool.ts`) used to be a TypeScript module
@@ -78,3 +77,13 @@ inside the worker. It is now `public/teacher-data/index.json` (written by `npm r
 - The assistant's resource list is built on first use: `getLearningResources()` in `physio-nexus-ai-index.ts` (the route answers 503 if the index cannot be read).
 - Checked on the real build: the HTML of all 662 prerendered pages is identical to the build before (the Hyderabad page differs between any two builds, because `locations/hyderabad`
   and `locations/[city]` both generate it); the flight (RSC) rows only differ by the extra suspense row of the now-async `TechniqueTeacher` and `/learn`.
+
+## The regional manual-therapy guides are static files (Nov 2026)
+The 288 regional guides (`manual-therapy-regional*.ts`, `-subtechniques`, `-priority-depth`, `-stories`, `-learning-labs`: about 230 KB of source) were imported by the regions pages,
+the sitemap and the AI assistant. They are now `public/manual-therapy-data/regions/<slug>.json` plus `regions/index.json`, written by the same generator as the chapters
+(`npm run build:manual-therapy-data`) and read with `loadRegionData()` / `loadRegionIndex()` in `manual-therapy-chapter-loader.ts`; the types and the one tiny function pages need
+are in `src/lib/manual-therapy-regions.ts`. `validate:manual-therapy-data` now also fails if any of those modules becomes reachable from a page. Worker: 2,905.0 -> 2,835.6 KiB.
+- `RegionalLearningLab` takes the lab as a prop instead of looking it up.
+- The HTML of all 662 prerendered pages is identical to the build before.
+
+Total since the 3,004.3 KiB measured on the deployed build: **2,835.6 KiB (-168.7 KiB)**.

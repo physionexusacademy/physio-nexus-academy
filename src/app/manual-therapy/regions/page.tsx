@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { HubJsonLd } from "@/lib/seo/hub";
 import { ArrowRight, Map, Hand, Activity, BookOpenCheck } from "lucide-react";
-import {
-  completeRegionalManualApplications,
-  manualRegions,
-  isTechniqueSpecificRegionalApplication,
-} from "@/lib/manual-therapy-regional";
+import { isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regions";
+import { loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
 
 export const metadata: Metadata = {
   title: "Regional Manual Therapy Techniques by Body Area",
@@ -18,7 +15,11 @@ function regionSlug(region: string) {
   return region.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-function RegionalManualTherapyPageBody() {
+async function RegionalManualTherapyPageBody() {
+  const index = await loadRegionIndex();
+  if (!index) throw new Error("Regional manual therapy index is missing: run npm run build:manual-therapy-data");
+  const completeRegionalManualApplications = index.items;
+  const manualRegions = index.regions;
   const authored = completeRegionalManualApplications.filter(isTechniqueSpecificRegionalApplication);
   const overviewCount = completeRegionalManualApplications.length - authored.length;
 
