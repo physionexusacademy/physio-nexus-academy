@@ -11,6 +11,7 @@ import { getAllCitySlugs } from "@/lib/locations";
 import { conceptLessonMetas } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { skillIndex } from "@/lib/skills/catalog";
+import { handouts } from "@/lib/handouts";
 
 const routes = [
   "",
@@ -39,6 +40,7 @@ const routes = [
   "/symptom-checker",
   "/health-calculators/bmi",
   "/health-calculators/clinical",
+  "/handouts",
   "/appointment",
   "/home-visit",
   "/contact",
@@ -142,6 +144,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.84,
   }));
 
+  const handoutRoutes: MetadataRoute.Sitemap = handouts.map((item) => ({
+    url: `${base}/handouts/${encodeURIComponent(item.slug)}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
+
   const regionalManualRoutes: MetadataRoute.Sitemap = regionalManualApplications.map((item) => ({
     url: `${base}/manual-therapy/regions/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
@@ -187,6 +195,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...workshopRoutes,
     ...trainingRoutes,
     ...conditionRoutes,
+    ...handoutRoutes,
     ...manualTherapyRoutes,
     ...regionalManualRoutes,
     ...facultyRoutes,

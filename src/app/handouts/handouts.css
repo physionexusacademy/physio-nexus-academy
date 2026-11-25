@@ -1,0 +1,38 @@
+.ho-page{background:#f3f7f9;min-height:60vh;padding:20px 12px 56px}
+.ho-toolbar{width:min(820px,100%);margin:0 auto 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ho-back{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:800;color:#087f80}
+.ho-back svg{width:16px;height:16px}
+.ho-modes{display:inline-flex;padding:4px;border-radius:999px;background:#fff;border:1px solid #dce9ed}
+.ho-mode{min-height:40px;padding:0 14px;border:0;border-radius:999px;background:transparent;font-weight:800;font-size:13px;color:#587286;cursor:pointer}
+.ho-mode[data-active="true"]{background:#0a1f3d;color:#fff}
+.ho-print{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:linear-gradient(110deg,#087f80,#0a1f3d);color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+.ho-print svg{width:17px;height:17px}
+.ho-sheet{width:min(820px,100%);margin:0 auto;background:#fff;border-radius:20px;padding:34px 34px 26px;box-shadow:0 14px 40px -28px #0a1f3d;color:#102a43;font-size:18px;line-height:1.55}
+.ho-brand{margin:0;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#087f80}
+.ho-head{border-bottom:3px solid #087f80;padding-bottom:14px;margin-bottom:16px}
+.ho-head h1{margin:6px 0 4px;font-size:clamp(26px,5vw,36px);line-height:1.15;color:#0a1f3d}
+.ho-for{margin:0;color:#587286;font-size:16px}
+.ho-intro{font-size:19px;margin:0 0 8px}
+.ho-section{margin-top:20px}
+.ho-section h2{font-size:21px;margin:0 0 8px;color:#0a1f3d}
+.ho-steps{margin:0;padding:0;display:grid;gap:12px;list-style:none;counter-reset:ho}
+.ho-steps li{counter-increment:ho;position:relative;padding-left:2.4em;min-height:1.9em}
+.ho-steps li::before{content:counter(ho);position:absolute;left:0;top:.05em;width:1.7em;height:1.7em;border-radius:50%;background:#087f80;color:#fff;font-weight:900;font-size:.85em;display:flex;align-items:center;justify-content:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ho-bullets{margin:0;padding-left:1.2em;display:grid;gap:8px;list-style:disc}
+.ho-ur{display:block;color:#0b5f61;margin-top:2px;font-size:.95em}
+.ho-help{margin-top:24px;padding:16px 18px;border-radius:16px;background:#fff3f0;border:2px solid #f2b8a8}
+.ho-help h2{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:20px;color:#a12b0d}
+.ho-help h2 svg{width:22px;height:22px;flex:none}
+.ho-help ul{margin:0;padding-left:1.2em;display:grid;gap:6px;list-style:disc}
+.ho-foot{margin-top:22px;padding-top:12px;border-top:1px solid #dce9ed;font-size:13px;color:#587286}
+.ho-foot p{margin:4px 0}
+@media (max-width:560px){.ho-sheet{padding:22px 18px;font-size:17px}}
+@media print{
+  header,footer,nav,[data-print-hide],[data-pna-chrome],.nx-nav-progress,.fixed,[aria-label="Open Physio Nexus AI"]{display:none!important}
+  body{background:#fff!important;padding-bottom:0!important}
+  .ho-page{background:#fff;padding:0;min-height:0}
+  .ho-sheet{box-shadow:none;border-radius:0;padding:0;width:100%;font-size:14pt}
+  .ho-ur{color:#000}
+  a{text-decoration:none}
+  .ho-help{break-inside:avoid}
+}

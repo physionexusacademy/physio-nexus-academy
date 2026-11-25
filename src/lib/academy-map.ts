@@ -67,6 +67,7 @@ export const academyWings: AcademyWing[] = [
     places: [
       { label: "RehabVerse", href: "/rehabverse", description: "Guided 3D rehab: approved programme, daily feedback, virtual physio guide", icon: "patient", keywords: "rehabverse rehab rehabilitation home exercise programme 3d exercises virtual physio guide daily feedback roman urdu physiotherapy recovery" },
       { label: "Patient Services", href: "/patient-services", description: "What we treat and how", icon: "care", keywords: "physiotherapy treatment patient" },
+      { label: "Patient Handouts", href: "/handouts", description: "Printable advice sheets in English and Roman Urdu", icon: "care", keywords: "handouts leaflets printable exercises patient advice pdf urdu back pain knee replacement falls pelvic floor" },
       { label: "Book Appointment", href: "/appointment", description: "Request a consultation", icon: "calendar", keywords: "booking consult session appointment" },
       { label: "Home Visit", href: "/home-visit", description: "Physiotherapy at your home", icon: "home", keywords: "home visit ghar" },
       { label: "Symptom Checker", href: "/symptom-checker", description: "Screen patterns and red flags", icon: "symptoms", keywords: "pain checker symptoms" },
