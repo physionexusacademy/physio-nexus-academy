@@ -224,7 +224,7 @@ assert.ok(METRICS.length === 11 && new Set(METRICS.map((m) => m.id)).size === 11
   assert.ok(/fullLoad: true/.test(hub) && /<a href=\{tool\.href\}/.test(hub), "the hub's posture card must be a plain link (a full page load), not a Next.js Link");
   assert.match(page, /useEffect\(\(\) => \{ reloadIfPolicyBlocksCamera\(\); \}, \[\]\)/, "the posture screen must load itself as its own document when an in-app link left it with the previous page's camera policy");
   assert.match(page, /opened\.problem === "policy" && reloadIfPolicyBlocksCamera\(\)/, "a camera refused by policy must trigger the one-time reload before any error is shown");
-  const permission = fs.readFileSync("src/lib/formcheck/browser/permission.ts", "utf8");
+  const permission = fs.readFileSync("src/lib/formcheck/browser/policy-reload.ts", "utf8");
   assert.ok(/30_000/.test(permission) && /sessionStorage/.test(permission) && /catch \{\s*return false;/.test(permission), "the reload must be limited (no reload loops, none without storage to remember it)");
 }
 

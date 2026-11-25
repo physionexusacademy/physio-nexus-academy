@@ -7,7 +7,8 @@ import { CAMERA_NOTE, GENERAL_LIMITS, STOP_IF_PAINFUL, healthTip, specFor, type 
 import type { SoftwareRecord } from "@/lib/formcheck/version";
 import type { SessionSummary } from "@/lib/formcheck";
 import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
-import { cameraPermission, policyAllowsCamera, reloadIfPolicyBlocksCamera, watchCameraPermission, type CameraPermission } from "@/lib/formcheck/browser/permission";
+import { reloadIfPolicyBlocksCamera } from "@/lib/formcheck/browser/policy-reload";
+import { cameraPermission, policyAllowsCamera, watchCameraPermission, type CameraPermission } from "@/lib/formcheck/browser/permission";
 import { useVoice } from "@/lib/speech/preference";
 import { T, useRvLang } from "../useLang";
 import { AlignmentOverlay } from "./AlignmentOverlay";

@@ -7,7 +7,7 @@ import { useLang } from "@/lib/lang";
 import { assessSetup, type SetupIssue } from "@/lib/formcheck/quality";
 import { SETUP_MESSAGES } from "@/lib/formcheck/messages";
 import { openCamera, closeCamera, type CameraProblem } from "@/lib/formcheck/browser/camera";
-import { reloadIfPolicyBlocksCamera } from "@/lib/formcheck/browser/permission";
+import { reloadIfPolicyBlocksCamera } from "@/lib/formcheck/browser/policy-reload";
 import { PhoneLevel, type Tilt } from "@/lib/formcheck/browser/level";
 import { platform } from "@/lib/formcheck/browser/permission";
 import { GUIDE_STEPS } from "@/components/rehabverse/formcheck/CameraPermissionGuide";
