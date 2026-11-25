@@ -2349,6 +2349,192 @@
    "Judge red flags as a cluster with the whole picture, and say your reasoning aloud to the patient."
   ],
   "keywords": "Think Like an Expert — Hypotheses, Red Flags and Thinking Errors clinical-reasoning-thinking-errors Clinical Reasoning Work in loops: listen, name two or three possibilities, ask and test to separate them, then pause and check what does not fit. Know your thinking traps: anchoring, premature closure, confirmation bias and availability; guard against each with a rival idea and \"what would prove me wrong?\" Judge red flags as a cluster with the whole picture, and say your reasoning aloud to the patient. What is anchoring? What is confirmation bias? What question guards against premature closure? How should red flags be judged?",
+  "next": {
+   "slug": "pelvic-floor-pregnancy-postnatal",
+   "title": "The Pelvic Floor — Leaks, Pregnancy and Life After Childbirth",
+   "href": "/learn/pelvic-floor-pregnancy-postnatal"
+  }
+ },
+ {
+  "href": "/learn/pelvic-floor-pregnancy-postnatal",
+  "slug": "pelvic-floor-pregnancy-postnatal",
+  "title": "The Pelvic Floor — Leaks, Pregnancy and Life After Childbirth",
+  "hook": {
+   "en": "Leaking urine after a cough or a jump is common but not normal, and many women never ask for help. Learn what the pelvic floor does, how to train it properly and when to refer.",
+   "ur": "Khansi ya chhalang par peshab ka nikalna aam hai magar normal nahi, aur bohat si khawateen madad nahi maangtin. Seekhein ke pelvic floor kya karta hai, ise sahi tareeqe se kaise train karein aur kab refer karein."
+  },
+  "area": "Women's Health",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain the pelvic floor in plain words, teach a correct contraction with a gradual programme, adapt it for pregnancy and the weeks after birth, and recognise signs that need a doctor.",
+   "ur": "End tak aap pelvic floor saada alfaz mein samjhayenge, sahi contraction aur darje war programme sikhayenge, ise hamal aur paidaish ke baad ke haftay ke liye adjust karenge, aur woh nishaniyan pehchanenge jin ke liye doctor chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "The pelvic floor supports the pelvic organs and keeps the openings closed; stress leaking is common and responds well to training.",
+   "Teach a correct contraction (lift and let go, no breath holding), build a programme over at least three months and add the knack before coughing.",
+   "Return to impact gradually after birth, when there is no leaking, heaviness or pain; refer for bleeding, bulge, fever or calf pain."
+  ],
+  "keywords": "The Pelvic Floor — Leaks, Pregnancy and Life After Childbirth pelvic-floor-pregnancy-postnatal Women's Health The pelvic floor supports the pelvic organs and keeps the openings closed; stress leaking is common and responds well to training. Teach a correct contraction (lift and let go, no breath holding), build a programme over at least three months and add the knack before coughing. Return to impact gradually after birth, when there is no leaking, heaviness or pain; refer for bleeding, bulge, fever or calf pain. What is stress urinary incontinence? What are the two halves of a good pelvic floor contraction? What is \"the knack\"? How long should a programme run before judging it?",
+  "next": {
+   "slug": "pelvic-girdle-pain-pregnancy",
+   "title": "Back and Pelvic Pain in Pregnancy — Examine, Reassure and Support",
+   "href": "/learn/pelvic-girdle-pain-pregnancy"
+  }
+ },
+ {
+  "href": "/learn/pelvic-girdle-pain-pregnancy",
+  "slug": "pelvic-girdle-pain-pregnancy",
+  "title": "Back and Pelvic Pain in Pregnancy — Examine, Reassure and Support",
+  "hook": {
+   "en": "Almost half of pregnant women have back or pelvic pain, and many are told \"it's normal, wait for the baby\". Learn to tell the types apart, examine safely and offer real help.",
+   "ur": "Takreeban aadhi hamila khawateen ko kamar ya pelvic dard hota hai, aur bohat si ko kaha jata hai \"yeh normal hai, bachay ka intezaar karein\". Qismein alag karna, mehfooz examination aur asli madad dena seekhein."
+  },
+  "area": "Women's Health",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll separate pelvic girdle pain from lumbar pain, use the posterior pelvic pain provocation (thigh thrust) test and the active straight leg raise, and plan support, exercise and advice that are safe in pregnancy.",
+   "ur": "End tak aap pelvic girdle pain ko lumbar dard se alag karenge, posterior pelvic pain provocation (thigh thrust) test aur active straight leg raise istemal karenge, aur hamal mein mehfooz support, exercise aur mashware ka plan banayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Pelvic girdle pain sits between the pelvis and buttock and worsens with turning in bed, stairs and single-leg standing; lumbar pain is higher in the back.",
+   "Use the thigh thrust test, active straight leg raise and ligament palpation, and screen for nerve involvement and pregnancy red flags first.",
+   "Treat with explanation, balanced loading, a pelvic belt worn low and gentle exercise; most pain settles after birth."
+  ],
+  "keywords": "Back and Pelvic Pain in Pregnancy — Examine, Reassure and Support pelvic-girdle-pain-pregnancy Women's Health Pelvic girdle pain sits between the pelvis and buttock and worsens with turning in bed, stairs and single-leg standing; lumbar pain is higher in the back. Use the thigh thrust test, active straight leg raise and ligament palpation, and screen for nerve involvement and pregnancy red flags first. Treat with explanation, balanced loading, a pelvic belt worn low and gentle exercise; most pain settles after birth. Where is pelvic girdle pain felt? Name a test for pelvic girdle pain. Where is a pelvic belt worn? What is the usual course of pelvic girdle pain?",
+  "next": {
+   "slug": "falls-prevention-older-adults",
+   "title": "Preventing Falls in Older Adults — Screen, Strengthen, Balance",
+   "href": "/learn/falls-prevention-older-adults"
+  }
+ },
+ {
+  "href": "/learn/falls-prevention-older-adults",
+  "slug": "falls-prevention-older-adults",
+  "title": "Preventing Falls in Older Adults — Screen, Strengthen, Balance",
+  "hook": {
+   "en": "One in three older adults falls each year, and a fall can end independence. Exercise is the best-proven way to prevent falls. Learn to screen, to choose the right exercise and to build it into daily life.",
+   "ur": "Har saal teen mein se ek buzurg girta hai, aur ek girna khud mukhtari khatam kar sakta hai. Exercise girne se bachao ka sab se behtar sabit shuda tareeqa hai. Screen karna, sahi exercise chunna aur isay rozmarra zindagi mein shamil karna seekhein."
+  },
+  "area": "Geriatrics",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll screen for fall risk, use the timed up and go and the 30-second chair stand, and plan a progressive balance and strength programme such as the Otago exercises, with a safe home set-up.",
+   "ur": "End tak aap girne ke khatre ki screening karenge, timed up and go aur 30-second chair stand istemal karenge, aur Otago jaise darje war balance aur strength programme ka plan mehfooz ghar ke setup ke saath banayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Screen with two questions (a fall in the past year, feeling unsteady), then test function with the timed up and go and the 30-second chair stand.",
+   "Progressive balance and leg-strength exercise, at least three times a week, reduces falls by about a quarter; it works when taught, checked and followed up.",
+   "Make the home safer, review medicines and vision, and refer urgently for head injury, fracture or unexplained fainting."
+  ],
+  "keywords": "Preventing Falls in Older Adults — Screen, Strengthen, Balance falls-prevention-older-adults Geriatrics Screen with two questions (a fall in the past year, feeling unsteady), then test function with the timed up and go and the 30-second chair stand. Progressive balance and leg-strength exercise, at least three times a week, reduces falls by about a quarter; it works when taught, checked and followed up. Make the home safer, review medicines and vision, and refer urgently for head injury, fracture or unexplained fainting. What two questions screen for fall risk? What is the Otago programme? How often should fall-prevention exercise be done? Name two home changes that reduce falls.",
+  "next": {
+   "slug": "osteoporosis-exercise-bone-health",
+   "title": "Osteoporosis — Exercising Safely to Protect Bones",
+   "href": "/learn/osteoporosis-exercise-bone-health"
+  }
+ },
+ {
+  "href": "/learn/osteoporosis-exercise-bone-health",
+  "slug": "osteoporosis-exercise-bone-health",
+  "title": "Osteoporosis — Exercising Safely to Protect Bones",
+  "hook": {
+   "en": "Bones respond to load, even in older age. Learn which exercises build and protect bone, which movements to avoid after a spinal fracture and how to keep a person with osteoporosis strong and confident.",
+   "ur": "Haddiyan load par react karti hain, buzurgi mein bhi. Seekhein ke kaun si exercises haddi banati aur bachati hain, spine fracture ke baad kin harkaton se bachna hai aur osteoporosis ke mareez ko mazboot aur pur-aitemad kaise rakhna hai."
+  },
+  "area": "Geriatrics",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll explain osteoporosis simply, screen for spinal fracture, and prescribe weight-bearing, resistance and balance exercise while avoiding loaded forward bending and twisting.",
+   "ur": "End tak aap osteoporosis saada alfaz mein samjhayenge, spine fracture ki screening karenge, aur wazan uthane wali, resistance aur balance exercise dein ge jabke loaded aage jhukne aur ghoomne se bachayenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Osteoporosis weakens bone so small forces can break it; exercise strengthens bone with load and prevents the falls that cause fractures.",
+   "Prescribe weight-bearing, progressive resistance and balance exercise; teach a hip hinge and avoid loaded forward bending and twisting.",
+   "Screen for vertebral fracture with new sudden back pain; do not tell patients to stop exercising, as fear and inactivity are the real danger."
+  ],
+  "keywords": "Osteoporosis — Exercising Safely to Protect Bones osteoporosis-exercise-bone-health Geriatrics Osteoporosis weakens bone so small forces can break it; exercise strengthens bone with load and prevents the falls that cause fractures. Prescribe weight-bearing, progressive resistance and balance exercise; teach a hip hinge and avoid loaded forward bending and twisting. Screen for vertebral fracture with new sudden back pain; do not tell patients to stop exercising, as fear and inactivity are the real danger. Why do bones respond to exercise? Which movement is avoided after a vertebral fracture? Name the three jobs of osteoporosis exercise. What is the safe way to bend and lift?",
+  "next": {
+   "slug": "total-knee-replacement-rehab",
+   "title": "After a Total Knee Replacement — Early Movement, Strength and Safety",
+   "href": "/learn/total-knee-replacement-rehab"
+  }
+ },
+ {
+  "href": "/learn/total-knee-replacement-rehab",
+  "slug": "total-knee-replacement-rehab",
+  "title": "After a Total Knee Replacement — Early Movement, Strength and Safety",
+  "hook": {
+   "en": "A knee replacement removes the pain, but the muscles and movement must be rebuilt. Learn the stages of rehab, the goals that matter and the warning signs you must never miss.",
+   "ur": "Knee replacement dard khatam karti hai, magar muscles aur harkat dobara banani parti hain. Rehab ke marahil, ahem maqasid aur woh warning signs seekhein jo kabhi miss nahi karne."
+  },
+  "area": "Post-operative Rehab",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 13,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll plan rehab from day one to the return to full activity, set range and strength goals, manage swelling and pain, and recognise infection, a clot or a stiff knee that needs the surgeon.",
+   "ur": "End tak aap pehle din se poori activity tak rehab ka plan banayenge, range aur taaqat ke maqasid tay karenge, sujan aur dard sambhalenge, aur infection, clot ya akhre hue knee ko pehchanenge jis ke liye surgeon chahiye."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Start rehab on day zero or one: control swelling, regain full extension and 90 degrees of bend by about two weeks, and wake up the quadriceps.",
+   "Build strength over at least three months with sit-to-stand, step-ups, bridging and cycling, and review at six and twelve weeks.",
+   "Know the warning signs: a hot red knee with fever, a hot tender calf and chest pain or breathlessness all need urgent medical help."
+  ],
+  "keywords": "After a Total Knee Replacement — Early Movement, Strength and Safety total-knee-replacement-rehab Post-operative Rehab Start rehab on day zero or one: control swelling, regain full extension and 90 degrees of bend by about two weeks, and wake up the quadriceps. Build strength over at least three months with sit-to-stand, step-ups, bridging and cycling, and review at six and twelve weeks. Know the warning signs: a hot red knee with fever, a hot tender calf and chest pain or breathlessness all need urgent medical help. What are the early range goals after a knee replacement? Which muscle is most important to rebuild? Name two signs of infection. Why is early stiffness a problem?",
+  "next": {
+   "slug": "total-hip-replacement-rehab",
+   "title": "After a Total Hip Replacement — Precautions, Walking and Strength",
+   "href": "/learn/total-hip-replacement-rehab"
+  }
+ },
+ {
+  "href": "/learn/total-hip-replacement-rehab",
+  "slug": "total-hip-replacement-rehab",
+  "title": "After a Total Hip Replacement — Precautions, Walking and Strength",
+  "hook": {
+   "en": "Most people walk the day after a hip replacement, but the right advice on movement, precautions and strength decides how well and how safely they recover.",
+   "ur": "Zyada tar log hip replacement ke agle din chalte hain, magar harkat, ehtiyat aur taaqat par sahi mashwara tay karta hai ke woh kitna achha aur mehfooz theek hote hain."
+  },
+  "area": "Post-operative Rehab",
+  "level": "Clinical",
+  "bestFor": "3rd year onwards",
+  "minutes": 12,
+  "flashcardCount": 4,
+  "kind": "concept",
+  "goal": {
+   "en": "By the end, you'll mobilise a patient safely after a hip replacement, explain the surgeon's precautions and why they differ, plan strength and walking progression, and recognise a dislocation, infection or clot.",
+   "ur": "End tak aap hip replacement ke baad mareez ko mehfooz tareeqe se harkat dilayenge, surgeon ki ehtiyatein aur unka farq samjhayenge, taaqat aur chalne ki progression ka plan banayenge, aur dislocation, infection ya clot pehchanenge."
+  },
+  "checks": 3,
+  "summaryEn": [
+   "Mobilise early, follow the surgeon's written precautions and explain why they exist; precautions differ with the surgical approach.",
+   "Strengthen the hip with gluteal sets, bridging, standing abduction, sit-to-stand, step-ups and walking, progressing aids from frame to stick to none.",
+   "Know the emergencies: dislocation, infection, a clot and chest pain or breathlessness need urgent medical help."
+  ],
+  "keywords": "After a Total Hip Replacement — Precautions, Walking and Strength total-hip-replacement-rehab Post-operative Rehab Mobilise early, follow the surgeon's written precautions and explain why they exist; precautions differ with the surgical approach. Strengthen the hip with gluteal sets, bridging, standing abduction, sit-to-stand, step-ups and walking, progressing aids from frame to stick to none. Know the emergencies: dislocation, infection, a clot and chest pain or breathlessness need urgent medical help. Who decides the hip precautions? Name three posterior-approach precautions. What is a sign of dislocation? What should you do for a hot, swollen, tender calf?",
   "next": null
  },
  {
