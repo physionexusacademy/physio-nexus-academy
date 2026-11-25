@@ -48,6 +48,7 @@ export const PLACE_UR: Record<string, { label?: string; description: string }> =
   "/appointment": { label: "Appointment book karein", description: "Consultation ki request karein" },
   "/home-visit": { label: "Ghar par visit", description: "Aap ke ghar par physiotherapy" },
   "/symptom-checker": { description: "Patterns aur red flags screen karein" },
+  "/health-calculators/clinical": { description: "Dil ki dharkan ke zones, one-rep max, waist-hip ratio aur score ki tabdeeli ki jaanch" },
   "/health-calculators/bmi": { description: "Umar ke mutabiq notes ke saath fori BMI" },
   "/locations/karachi": { description: "Home visits aur workshops" },
   "/locations/hyderabad": { description: "Home visits aur workshops" },
