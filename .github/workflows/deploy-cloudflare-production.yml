@@ -60,6 +60,8 @@ jobs:
 
       - name: Validate clinical calculators
         run: npm run validate:calculators
+      - name: Validate patient handouts
+        run: npm run validate:handouts
       - name: Validate Conditions & Treatment Guide (fresh data, complete guides, redirects, no retired links)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:conditions
