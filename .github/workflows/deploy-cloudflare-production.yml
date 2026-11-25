@@ -58,6 +58,8 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: node --experimental-strip-types scripts/validate-msk-stories.mjs
 
+      - name: Validate the posture screen (hand-worked measurements, agreement statistics, consent wording, nothing stored or sent)
+        run: npm run validate:posture
       - name: Validate clinical calculators
         run: npm run validate:calculators
       - name: Validate patient handouts
