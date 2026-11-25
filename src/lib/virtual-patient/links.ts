@@ -3,7 +3,7 @@
  * from cases.ts so server pages can link to cases without bundling the case data
  * (validate:virtual-patient checks every id here exists).
  */
-export const VP_CASE_COUNT = 22;
+export const VP_CASE_COUNT = 25;
 
 export type VpCaseLink = { id: string; title: string; why: string };
 
@@ -29,12 +29,15 @@ const C = {
   dvt: { id: "dvt-post-op", title: "Swollen calf after knee surgery", why: "calf girth, Wells criteria and when to stop" },
   elbow: { id: "lateral-elbow", title: "Carpenter with elbow pain", why: "contractile testing, Cozen's test and tendon loading" },
   heel: { id: "plantar-heel-pain", title: "First-step heel pain", why: "medial heel palpation, windlass test and calf length" },
+  tkr: { id: "tkr-stiff-knee", title: "Stiff knee after replacement", why: "range goals, extension lag, swelling and the calf check" },
+  copd: { id: "copd-exacerbation", title: "More breathless than usual", why: "vital signs, oxygen saturation and when not to exercise" },
+  hipfx: { id: "hip-fracture-fall", title: "Fall with a painful groin", why: "shortened, turned-out leg and stopping the examination" },
   hip: { id: "hip-oa", title: "Groin pain and stiff hip", why: "the hip capsular pattern and FABER" },
 } satisfies Record<string, VpCaseLink>;
 
 export const SKILL_CASES: Record<string, VpCaseLink[]> = {
   "manual-muscle-testing": [C.cuff, C.radial, C.hip, C.l5],
-  goniometry: [C.frozen, C.hip, C.oa],
+  goniometry: [C.frozen, C.hip, C.oa, C.tkr],
   "special-tests": [C.cuff, C.acl, C.ankle, C.cts, C.achilles, C.elbow, C.heel, C.hip, C.ulnar],
   dermatomes: [C.l5, C.c6, C.diabetic, C.cauda],
   myotomes: [C.l5, C.c6, C.radial, C.fibular],
@@ -42,10 +45,10 @@ export const SKILL_CASES: Record<string, VpCaseLink[]> = {
   "peripheral-nerves": [C.cts, C.ulnar, C.radial, C.fibular],
   "tone-coordination": [C.stroke, C.myelopathy, C.gbs],
   "muscle-length": [{ ...C.l5, why: "telling a tight hamstring from nerve tension in the SLR" }, { ...C.heel, why: "calf length and dorsiflexion in heel pain" }],
-  "vital-signs": [C.gbs, C.dvt, C.oa, C.stroke],
+  "vital-signs": [C.gbs, C.dvt, C.oa, C.stroke, C.copd, C.hipfx],
   posture: [C.stroke, C.stenosis, C.frozen],
   "balance-function": [C.diabetic, C.myelopathy, C.stroke],
-  "limb-measurements": [C.dvt, C.acl, C.oa],
+  "limb-measurements": [C.dvt, C.acl, C.oa, C.tkr, C.hipfx],
   palpation: [C.ankle, C.elbow, C.heel, C.achilles],
 };
 
