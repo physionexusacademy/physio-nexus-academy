@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock3, Hand, Route } from "lucide-react";
+import { Activity, ArrowRight, Atom, Baby, Bandage, Brain, CheckCircle2, Clock3, Dumbbell, FlaskConical, Flower2, GraduationCap, Hand, PersonStanding, Route, Stethoscope, Wind, Zap } from "lucide-react";
+import { teacherCategories } from "@/lib/teacher/categories";
 import type { TeacherLessonCard, TeacherPath } from "@/lib/teacher/types";
 import { pathCompletion } from "@/lib/teacher/progress";
 import { cn } from "@/lib/utils";
@@ -20,12 +21,34 @@ const areaTone: Record<string, string> = {
   "Exercise Prescription": "bg-lime-100 text-lime-800",
   Electrotherapy: "bg-orange-100 text-orange-800",
   Cardiorespiratory: "bg-cyan-100 text-cyan-800",
+  "Women's Health": "bg-pink-100 text-pink-800",
+  Geriatrics: "bg-amber-100 text-amber-800",
+  "Sports & Return to Play": "bg-emerald-100 text-emerald-800",
+  "Post-operative Rehab": "bg-rose-100 text-rose-800",
+  "Research & Evidence": "bg-violet-100 text-violet-800",
+  "Exam & Career": "bg-sky-100 text-sky-800",
   "Skills · Neuro Exam": "bg-fuchsia-100 text-fuchsia-800",
   "Skills · Measurement": "bg-sky-100 text-sky-800",
   "Skills · Posture & Palpation": "bg-amber-100 text-amber-800",
   "Skills · Vitals & Monitoring": "bg-cyan-100 text-cyan-800",
   "Skills · Balance & Function": "bg-emerald-100 text-emerald-800",
 };
+
+const categoryIcons = {
+  atom: Atom,
+  brain: Brain,
+  stethoscope: Stethoscope,
+  activity: Activity,
+  wind: Wind,
+  baby: Baby,
+  flower: Flower2,
+  person: PersonStanding,
+  dumbbell: Dumbbell,
+  bandage: Bandage,
+  zap: Zap,
+  cap: GraduationCap,
+  flask: FlaskConical,
+} as const;
 
 const manualGroups: { area: TeacherLessonCard["area"]; title: string; blurb: string }[] = [
   { area: "Manual Therapy · Joint", title: "Joint mobilization & manipulation", blurb: "Maitland, Kaltenborn, Mulligan, traction, neurodynamics and more." },
@@ -44,10 +67,21 @@ export function TeacherCatalog({
 }) {
   const snapshot = useTeacherSnapshot();
   const lang = snapshot?.lang ?? "en";
+  const [categoryId, setCategoryId] = useState("all");
   const [area, setArea] = useState("All");
-  const areas = ["All", ...new Set(conceptLessons.map((lesson) => lesson.area))];
-  const shownLessons = area === "All" ? conceptLessons : conceptLessons.filter((lesson) => lesson.area === area);
   const progress = snapshot?.progress;
+  // Only shelves that hold lessons are shown; a lesson whose area has no shelf still appears under "Everything".
+  const shelves = teacherCategories
+    .map((category) => ({ category, lessons: conceptLessons.filter((lesson) => category.areas.includes(lesson.area)) }))
+    .filter((shelf) => shelf.lessons.length > 0);
+  const openShelf = shelves.find((shelf) => shelf.category.id === categoryId);
+  const poolLessons = openShelf ? openShelf.lessons : conceptLessons;
+  const areas = openShelf && openShelf.category.areas.length > 1 ? ["All", ...openShelf.category.areas.filter((name) => openShelf.lessons.some((lesson) => lesson.area === name))] : [];
+  const shownLessons = area === "All" ? poolLessons : poolLessons.filter((lesson) => lesson.area === area);
+  const chooseCategory = (id: string) => {
+    setCategoryId(id);
+    setArea("All");
+  };
   const manualDone = manualLessons.filter((lesson) => progress?.lessons[lesson.slug]).length;
 
   return (
@@ -100,13 +134,39 @@ export function TeacherCatalog({
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
           The topics students struggle with most — taught as a conversation, with analogies, interactive visuals and checks after every idea.
         </p>
-        <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1" data-horizontal-scroll role="group" aria-label="Filter lessons by area">
-          {areas.map((name) => (
-            <button key={name} type="button" onClick={() => setArea(name)} aria-pressed={area === name} className={cn("flex-none rounded-full border px-3 py-1.5 text-xs font-bold transition", area === name ? "border-transparent bg-[#0a1f3d] text-white" : "border-slate-300 bg-white text-slate-600 hover:border-teal-400")}>
-              {name === "All" ? `All (${conceptLessons.length})` : name}
-            </button>
-          ))}
+        <div className="pna-shelves mt-5" role="group" aria-label="Choose a subject">
+          <button type="button" onClick={() => chooseCategory("all")} aria-pressed={categoryId === "all"} className="pna-shelf" data-active={categoryId === "all"} style={{ "--g1": "#2ee6d6", "--g2": "#8f7cff" } as CSSProperties}>
+            <span className="pna-shelf-icon"><Route className="h-5 w-5" aria-hidden="true" /></span>
+            <span className="pna-shelf-title">Everything</span>
+            <span className="pna-shelf-sub">{conceptLessons.length} lessons</span>
+          </button>
+          {shelves.map(({ category, lessons }) => {
+            const Icon = categoryIcons[category.icon];
+            const done = lessons.filter((lesson) => progress?.lessons[lesson.slug]).length;
+            return (
+              <button key={category.id} type="button" onClick={() => chooseCategory(category.id)} aria-pressed={categoryId === category.id} className="pna-shelf" data-active={categoryId === category.id} style={{ "--g1": category.glow[0], "--g2": category.glow[1] } as CSSProperties}>
+                <span className="pna-shelf-icon"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span className="pna-shelf-title">{category.title}</span>
+                <span className="pna-shelf-sub">{lessons.length} {lessons.length === 1 ? "lesson" : "lessons"}{done ? ` · ${done} done` : ""}</span>
+                <span className="pna-shelf-bar" aria-hidden="true"><span style={{ width: `${(done / lessons.length) * 100}%` }} /></span>
+              </button>
+            );
+          })}
         </div>
+        {openShelf ? (
+          <p className="mt-4 text-sm font-semibold text-slate-600" aria-live="polite">
+            {pick({ en: openShelf.category.tagline, ur: openShelf.category.taglineUr }, lang)}
+          </p>
+        ) : null}
+        {areas.length ? (
+          <div className="mt-3 flex gap-1.5 overflow-x-auto pb-1" data-horizontal-scroll role="group" aria-label="Filter lessons by topic">
+            {areas.map((name) => (
+              <button key={name} type="button" onClick={() => setArea(name)} aria-pressed={area === name} className={cn("flex-none rounded-full border px-3 py-1.5 text-xs font-bold transition", area === name ? "border-transparent bg-[#0a1f3d] text-white" : "border-slate-300 bg-white text-slate-600 hover:border-teal-400")}>
+                {name === "All" ? `All (${poolLessons.length})` : name}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {shownLessons.map((lesson) => {
             const done = Boolean(progress?.lessons[lesson.slug]);
