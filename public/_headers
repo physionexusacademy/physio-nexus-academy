@@ -37,3 +37,24 @@
 # Form Check (camera): the pose library's wasm and the pinned model files. Each is checked against src/lib/formcheck/assets.lock.json at deploy; they change only with a new lock.
 /formcheck/*
   Cache-Control: public,max-age=604800,stale-while-revalidate=86400
+
+# Lesson, skill, condition and manual-therapy data: regenerated on every deploy. Kept five minutes in the browser (a second visit
+# opens instantly) and served stale for a day while the browser checks for a new copy, so a new deploy still shows up quickly.
+/teacher-data/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+
+/skills-data/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+
+/conditions-data/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+
+/manual-therapy-data/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+
+/virtual-patient/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+
+# The teacher's pictures: replaced under a new name, so a week is safe.
+/teacher/*
+  Cache-Control: public,max-age=604800,stale-while-revalidate=86400
