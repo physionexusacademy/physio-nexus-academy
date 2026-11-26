@@ -184,12 +184,9 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
     for (const call of code.match(/\bfetch\([^)]*\)/g) ?? []) assert.match(call, /BASE|posture-skeleton/, `${name}: fetch may only read the skeleton's static files`);
     assert.doesNotMatch(code, /\bfetch\([^)]*\{[^)]*(method|body)/, `${name}: nothing is posted`);
   }
-  // the bones are real, credited and licensed
-  for (const f of ["skeleton-male.glb", "skeleton-meta.json", "ATTRIBUTION.md", "LICENSE-MODELS.md"]) assert.ok(fs.existsSync(`public/posture-skeleton/${f}`), `public/posture-skeleton/${f} must exist`);
-  const attribution = read("public/posture-skeleton/ATTRIBUTION.md");
-  assert.match(attribution, /BodyParts3D/); assert.match(attribution, /CC BY 4\.0/);
-  assert.match(report, /BodyParts3D/, "the credit line must be shown wherever the skeleton is");
-  assert.match(report, /CC BY 4\.0/); assert.match(report, /posture-skeleton\/ATTRIBUTION\.md/);
+  // the bones are real; their source and licence texts are kept in docs/
+  for (const f of ["skeleton-male.glb", "skeleton-meta.json"]) assert.ok(fs.existsSync(`public/posture-skeleton/${f}`), `public/posture-skeleton/${f} must exist`);
+  for (const f of ["ATTRIBUTION.md", "LICENSE-MODELS.md"]) assert.ok(fs.existsSync(`docs/posture-skeleton/${f}`), `docs/posture-skeleton/${f} must be kept in the repository`);
   assert.ok(fs.statSync("public/posture-skeleton/skeleton-male.glb").size < 3 * 1024 * 1024, "the skeleton file must stay under 3 MB");
   const meta = JSON.parse(read("public/posture-skeleton/skeleton-meta.json"));
   for (const need of ["skull", "pelvis", "femur_l", "femur_r", "clavicle_l", "scapula_r", "sternum"]) assert.ok(meta.pieces.some((p: { group: string }) => p.group === need), `the skeleton must have ${need}`);

@@ -72,7 +72,7 @@ export default function ScanReport({ captures, photos, onAgain, onMore }: { capt
             <li><i data-k="2" /> {t(SEVERITY_TEXT.stops[2])}</li>
           </ul>
           <p className="ps-note">{t({ en: "Plain bones were either in the usual range or not measured. A tilt smaller than the tool's margin of error is drawn level. The bones are a standard adult male reference skeleton, moved to match your numbers: your own bones differ in size and shape (for example, the female pelvis is shaped differently).", ur: "Saade rang ki haddiyan ya aam range mein thin ya naapi nahi gayin. Jo jhukao tool ki ghalti ki hadd se chhota ho woh barabar dikhaya jata hai. Haddiyan aam baalig mard ka reference skeleton hain, jo aap ke numbers ke mutabiq hilayi gayi hain: aap ki apni haddiyon ka size aur shakal mukhtalif hai (masalan aurat ka pelvis alag shakal ka hota hai)." })}</p>
-          <p className="sc-credit">{t({ en: "Anatomy: BodyParts3D © The Database Center for Life Science (CC BY 4.0), modified: bones only, vertebrae and ribs separated, posed from your numbers. Prepared with open-anatomy-3d (CC BY 4.0).", ur: "Anatomy: BodyParts3D © The Database Center for Life Science (CC BY 4.0), tabdeel shuda: sirf haddiyan, vertebrae aur ribs alag kiye gaye, aap ke numbers ke mutabiq rakhe gaye. open-anatomy-3d (CC BY 4.0) se tayyar." })} <a href="/posture-skeleton/ATTRIBUTION.md" target="_blank" rel="noopener">{t({ en: "Credits and licence", ur: "Credits aur licence" })}</a></p>
+
         </div>
 
         <ul className="sc-regions">

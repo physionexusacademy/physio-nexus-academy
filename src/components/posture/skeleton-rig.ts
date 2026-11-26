@@ -1,7 +1,7 @@
 /**
  * The 3D skeleton of the Full Posture Scan, built from real bone models and posed from the measured points.
  *
- * The bones are the BodyParts3D adult male reference skeleton (The Database Center for Life Science, CC BY 4.0; see /posture-skeleton/ATTRIBUTION.md), prepared once
+ * The bones are the BodyParts3D adult male reference skeleton (source and licence texts are kept in docs/posture-skeleton/), prepared once
  * by scripts/posture-skeleton/build.mjs: every vertebra piece and every rib is its own piece, so the spine can curve and the thorax can follow it.
  *
  * It is NOT a scan of the person. It is a standard skeleton, moved through the points the phone could measure (head, shoulders, hips, knees): a lean or a sideways shift
