@@ -24,12 +24,12 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | S17 | Critical appraisal in 10 minutes, and starting your first research project (links to the Research track R5, R34 to R36) | Research & Evidence | 9 | done |
 | S18 | Paediatric orthopaedics: DDH, Perthes and SCFE (the limping child), clubfoot (Ponseti), Duchenne and Gowers, torticollis [PK][!] | Paediatrics | 9 | done |
 | S19 | Pelvic floor in men and women, plus diastasis recti and prolapse: what exercise helps [!] | Pelvic Health | 9 | done |
-| R1 | Why evidence-based practice: evidence + experience + patient values, and where each fails | Research & Evidence | 10 | todo |
-| R2 | Why treatments seem to work when they may not: natural history, regression to the mean, placebo and context, confounding | Research & Evidence | 10 | todo |
-| R3 | From a clinical question to PICO in 5 minutes (why, when, how) | Research & Evidence | 10 | todo |
-| R4 | Finding evidence fast: PubMed and MeSH, PEDro, Cochrane, Boolean search, a 15-minute search routine | Research & Evidence | 10 | todo |
-| R5 | Reading a paper efficiently, and spotting spin and hype | Research & Evidence | 10 | todo |
-| R6 | The hierarchy of evidence, and where it misleads | Research & Evidence | 10 | todo |
+| R1 | Why evidence-based practice: evidence + experience + patient values, and where each fails | Research & Evidence | 10 | done |
+| R2 | Why treatments seem to work when they may not: natural history, regression to the mean, placebo and context, confounding | Research & Evidence | 10 | done |
+| R3 | From a clinical question to PICO in 5 minutes (why, when, how) | Research & Evidence | 10 | done |
+| R4 | Finding evidence fast: PubMed and MeSH, PEDro, Cochrane, Boolean search, a 15-minute search routine | Research & Evidence | 10 | done |
+| R5 | Reading a paper efficiently, and spotting spin and hype | Research & Evidence | 10 | done |
+| R6 | The hierarchy of evidence, and where it misleads | Research & Evidence | 10 | done |
 | R7 | Which design answers which question: a decision map | Research & Evidence | 10 | todo |
 | R8 | Randomised trials for therapists: randomisation, concealment, blinding problems in physio, intention-to-treat, pragmatic vs explanatory | Research & Evidence | 10 | todo |
 | R9 | Cohort, case-control and cross-sectional studies | Research & Evidence | 10 | todo |
