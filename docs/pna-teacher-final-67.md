@@ -46,17 +46,17 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R20 | Registries and routine outcome data | Research & Evidence | 11 | done |
 | R21 | Implementation science: why good evidence does not reach patients | Research & Evidence | 11 | done |
 | R22 | Effect sizes, confidence intervals and p-values: what they do and do not mean | Research & Evidence | 11 | done |
-| R23 | Absolute vs relative risk, NNT and NNH | Research & Evidence | 12 | todo |
-| R24 | Sample size and power: intuition first, calculation second | Research & Evidence | 12 | todo |
-| R25 | Choosing a statistical test (t-test, Mann-Whitney, ANOVA, chi-square, correlation, regression), with Jamovi, SPSS or R | Research & Evidence | 12 | todo |
-| R26 | Regression basics, confounders and adjustment | Research & Evidence | 12 | todo |
-| R27 | Missing data, drop-outs and bias | Research & Evidence | 12 | todo |
-| R28 | Subgroups, multiple testing and p-hacking | Research & Evidence | 12 | todo |
-| R29 | Bayesian thinking for clinicians | Research & Evidence | 12 | todo |
-| R30 | Meta-analysis: forest plots, heterogeneity, publication bias | Research & Evidence | 12 | todo |
-| R31 | Systematic and scoping reviews: PRISMA, risk of bias (RoB 2, ROBINS-I), GRADE | Research & Evidence | 12 | todo |
-| R32 | Interpreting patient-reported outcomes: floor and ceiling effects, MCID by anchor vs distribution | Research & Evidence | 12 | todo |
-| R33 | Honest graphs: data visualisation for therapists | Research & Evidence | 12 | todo |
+| R23 | Absolute vs relative risk, NNT and NNH | Research & Evidence | 12 | done |
+| R24 | Sample size and power: intuition first, calculation second | Research & Evidence | 12 | done |
+| R25 | Choosing a statistical test (t-test, Mann-Whitney, ANOVA, chi-square, correlation, regression), with Jamovi, SPSS or R | Research & Evidence | 12 | done |
+| R26 | Regression basics, confounders and adjustment | Research & Evidence | 12 | done |
+| R27 | Missing data, drop-outs and bias | Research & Evidence | 12 | done |
+| R28 | Subgroups, multiple testing and p-hacking | Research & Evidence | 12 | done |
+| R29 | Bayesian thinking for clinicians | Research & Evidence | 12 | done |
+| R30 | Meta-analysis: forest plots, heterogeneity, publication bias | Research & Evidence | 12 | done |
+| R31 | Systematic and scoping reviews: PRISMA, risk of bias (RoB 2, ROBINS-I), GRADE | Research & Evidence | 12 | done |
+| R32 | Interpreting patient-reported outcomes: floor and ceiling effects, MCID by anchor vs distribution | Research & Evidence | 12 | done |
+| R33 | Honest graphs: data visualisation for therapists | Research & Evidence | 12 | done |
 | R34 | Choosing a research question that matters (FINER) | Research & Evidence | 13 | todo |
 | R35 | Writing a research proposal: aims, hypothesis, methods, timeline, budget | Research & Evidence | 13 | todo |
 | R36 | Research ethics: Helsinki principles, informed consent, vulnerable groups, data protection, submitting to an ethics committee | Research & Evidence | 13 | todo |
