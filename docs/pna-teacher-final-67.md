@@ -76,10 +76,10 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R50 | Becoming a clinician-researcher: a 12-month plan (small audit, case report, pilot study, publication) | Research & Evidence | 14 | done |
 | R51 | "What the evidence says" myth-busting: posture and pain, core stability, ergonomics, stretching, foam rolling, "alignment" | Research & Evidence | 14 | done |
 | R52 | Judging a physio claim on social media or an advert: 7 red flags | Research & Evidence | 14 | done |
-| G31 | Dry needling: mechanisms, evidence, safety [!] | Treatments & Evidence | 15 | todo |
-| G32 | Taping and kinesiology tape | Treatments & Evidence | 15 | todo |
-| G33 | Shockwave, laser, TECAR, PEMF | Treatments & Evidence | 15 | todo |
-| G34 | Cupping, IASTM, myofascial release: a claims audit | Treatments & Evidence | 15 | todo |
-| G35 | Traction: cervical and lumbar evidence | Treatments & Evidence | 15 | todo |
+| G31 | Dry needling: mechanisms, evidence, safety [!] | Treatments & Evidence | 15 | done |
+| G32 | Taping and kinesiology tape | Treatments & Evidence | 15 | done |
+| G33 | Shockwave, laser, TECAR, PEMF | Treatments & Evidence | 15 | done |
+| G34 | Cupping, IASTM, myofascial release: a claims audit | Treatments & Evidence | 15 | done |
+| G35 | Traction: cervical and lumbar evidence | Treatments & Evidence | 15 | done |
 
 Total: 10 + 52 + 5 = 67 lessons.
