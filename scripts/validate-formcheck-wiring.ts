@@ -17,7 +17,7 @@ const config = read("next.config.js");
 ok(!/camera=\(\*\)|camera=\*/.test(config), "the camera must never be allowed for every origin");
 ok(/camera=\(self\), microphone=\(\)/.test(config), "next.config.js: /rehabverse/me needs camera=(self), microphone=()");
 ok((config.match(/camera=\(self\)/g) ?? []).length === 2, "next.config.js: camera=(self) must appear exactly twice (the patient pages and the posture screen only)");
-ok(/source: '\/health-calculators\/posture',\s*headers: \[\{ key: 'Permissions-Policy', value: 'camera=\(self\), microphone=\(\)' \}\]/.test(config), "next.config.js: the posture screen (and only that page of the calculators) may use its own camera");
+ok(/source: '\/health-calculators\/posture\/:path\*',\s*headers: \[\{ key: 'Permissions-Policy', value: 'camera=\(self\), microphone=\(\)' \}\]/.test(config), "next.config.js: the posture screen and its scan page (and only the posture pages of the calculators) may use their own camera");
 ok(/source: '\/rehabverse\/me\/:path\*'/.test(config), "next.config.js: the camera header must be scoped to /rehabverse/me/:path*");
 ok(/source: '\/\(\(\?!rehabverse\/me\(\?:\/\|\$\)\|health-calculators\/posture\(\?:\/\|\$\)\)\.\*\)'/.test(config), "next.config.js: every other path must keep camera=()");
 ok(!/microphone=\((?!\))/.test(config), "the microphone must stay off");

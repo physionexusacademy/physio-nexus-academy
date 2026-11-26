@@ -60,6 +60,8 @@ jobs:
 
       - name: Validate the posture screen (hand-worked measurements, agreement statistics, consent wording, nothing stored or sent)
         run: npm run validate:posture
+      - name: Validate the full posture scan (four views, hand-worked maths, skeleton files, honest limits, nothing sent, camera policy)
+        run: npm run validate:posture-scan
       - name: Validate clinical calculators
         run: npm run validate:calculators
       - name: Validate patient handouts
