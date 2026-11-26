@@ -30,10 +30,10 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R4 | Finding evidence fast: PubMed and MeSH, PEDro, Cochrane, Boolean search, a 15-minute search routine | Research & Evidence | 10 | done |
 | R5 | Reading a paper efficiently, and spotting spin and hype | Research & Evidence | 10 | done |
 | R6 | The hierarchy of evidence, and where it misleads | Research & Evidence | 10 | done |
-| R7 | Which design answers which question: a decision map | Research & Evidence | 10 | todo |
-| R8 | Randomised trials for therapists: randomisation, concealment, blinding problems in physio, intention-to-treat, pragmatic vs explanatory | Research & Evidence | 10 | todo |
-| R9 | Cohort, case-control and cross-sectional studies | Research & Evidence | 10 | todo |
-| R10 | Case reports and case series (CARE): writing one properly | Research & Evidence | 10 | todo |
+| R7 | Which design answers which question: a decision map | Research & Evidence | 10 | done |
+| R8 | Randomised trials for therapists: randomisation, concealment, blinding problems in physio, intention-to-treat, pragmatic vs explanatory | Research & Evidence | 10 | done |
+| R9 | Cohort, case-control and cross-sectional studies | Research & Evidence | 10 | done |
+| R10 | Case reports and case series (CARE): writing one properly | Research & Evidence | 10 | done |
 | R11 | Single-case experimental designs and N-of-1 trials in your own clinic | Research & Evidence | 10 | todo |
 | R12 | Qualitative research: interviews, focus groups, thematic analysis, rigour | Research & Evidence | 11 | todo |
 | R13 | Mixed-methods research | Research & Evidence | 11 | todo |
