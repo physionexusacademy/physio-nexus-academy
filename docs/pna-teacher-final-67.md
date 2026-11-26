@@ -68,14 +68,14 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R42 | Choosing a journal, predatory journals, peer review, answering reviewers | Research & Evidence | 13 | done |
 | R43 | Posters and conference talks | Research & Evidence | 13 | done |
 | R44 | Thesis and supervisor management | Research & Evidence | 13 | done |
-| R45 | Research integrity, authorship and misconduct | Research & Evidence | 14 | todo |
-| R46 | Clinical practice guidelines: how they are made, AGREE II, using them well | Research & Evidence | 14 | todo |
-| R47 | Research in low-resource settings and community-based participatory research [PK] | Research & Evidence | 14 | todo |
-| R48 | Health economics for therapists: cost-effectiveness basics | Research & Evidence | 14 | todo |
-| R49 | AI in research: literature tools, risks, verifying every claim | Research & Evidence | 14 | todo |
-| R50 | Becoming a clinician-researcher: a 12-month plan (small audit, case report, pilot study, publication) | Research & Evidence | 14 | todo |
-| R51 | "What the evidence says" myth-busting: posture and pain, core stability, ergonomics, stretching, foam rolling, "alignment" | Research & Evidence | 14 | todo |
-| R52 | Judging a physio claim on social media or an advert: 7 red flags | Research & Evidence | 14 | todo |
+| R45 | Research integrity, authorship and misconduct | Research & Evidence | 14 | done |
+| R46 | Clinical practice guidelines: how they are made, AGREE II, using them well | Research & Evidence | 14 | done |
+| R47 | Research in low-resource settings and community-based participatory research [PK] | Research & Evidence | 14 | done |
+| R48 | Health economics for therapists: cost-effectiveness basics | Research & Evidence | 14 | done |
+| R49 | AI in research: literature tools, risks, verifying every claim | Research & Evidence | 14 | done |
+| R50 | Becoming a clinician-researcher: a 12-month plan (small audit, case report, pilot study, publication) | Research & Evidence | 14 | done |
+| R51 | "What the evidence says" myth-busting: posture and pain, core stability, ergonomics, stretching, foam rolling, "alignment" | Research & Evidence | 14 | done |
+| R52 | Judging a physio claim on social media or an advert: 7 red flags | Research & Evidence | 14 | done |
 | G31 | Dry needling: mechanisms, evidence, safety [!] | Treatments & Evidence | 15 | todo |
 | G32 | Taping and kinesiology tape | Treatments & Evidence | 15 | todo |
 | G33 | Shockwave, laser, TECAR, PEMF | Treatments & Evidence | 15 | todo |
