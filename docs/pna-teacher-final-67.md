@@ -34,18 +34,18 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R8 | Randomised trials for therapists: randomisation, concealment, blinding problems in physio, intention-to-treat, pragmatic vs explanatory | Research & Evidence | 10 | done |
 | R9 | Cohort, case-control and cross-sectional studies | Research & Evidence | 10 | done |
 | R10 | Case reports and case series (CARE): writing one properly | Research & Evidence | 10 | done |
-| R11 | Single-case experimental designs and N-of-1 trials in your own clinic | Research & Evidence | 10 | todo |
-| R12 | Qualitative research: interviews, focus groups, thematic analysis, rigour | Research & Evidence | 11 | todo |
-| R13 | Mixed-methods research | Research & Evidence | 11 | todo |
-| R14 | Surveys and questionnaires: design, sampling, response bias | Research & Evidence | 11 | todo |
-| R15 | Delphi and consensus methods | Research & Evidence | 11 | todo |
-| R16 | Diagnostic accuracy studies (STARD): sensitivity, specificity, likelihood ratios, spectrum bias | Research & Evidence | 11 | todo |
-| R17 | Prognostic studies and prediction models | Research & Evidence | 11 | todo |
-| R18 | Measurement properties: reliability, validity, responsiveness (COSMIN basics), ICC, kappa, SEM, MDC vs MCID | Research & Evidence | 11 | todo |
-| R19 | Clinical audit, service evaluation and quality improvement (PDSA cycles) | Research & Evidence | 11 | todo |
-| R20 | Registries and routine outcome data | Research & Evidence | 11 | todo |
-| R21 | Implementation science: why good evidence does not reach patients | Research & Evidence | 11 | todo |
-| R22 | Effect sizes, confidence intervals and p-values: what they do and do not mean | Research & Evidence | 11 | todo |
+| R11 | Single-case experimental designs and N-of-1 trials in your own clinic | Research & Evidence | 10 | done |
+| R12 | Qualitative research: interviews, focus groups, thematic analysis, rigour | Research & Evidence | 11 | done |
+| R13 | Mixed-methods research | Research & Evidence | 11 | done |
+| R14 | Surveys and questionnaires: design, sampling, response bias | Research & Evidence | 11 | done |
+| R15 | Delphi and consensus methods | Research & Evidence | 11 | done |
+| R16 | Diagnostic accuracy studies (STARD): sensitivity, specificity, likelihood ratios, spectrum bias | Research & Evidence | 11 | done |
+| R17 | Prognostic studies and prediction models | Research & Evidence | 11 | done |
+| R18 | Measurement properties: reliability, validity, responsiveness (COSMIN basics), ICC, kappa, SEM, MDC vs MCID | Research & Evidence | 11 | done |
+| R19 | Clinical audit, service evaluation and quality improvement (PDSA cycles) | Research & Evidence | 11 | done |
+| R20 | Registries and routine outcome data | Research & Evidence | 11 | done |
+| R21 | Implementation science: why good evidence does not reach patients | Research & Evidence | 11 | done |
+| R22 | Effect sizes, confidence intervals and p-values: what they do and do not mean | Research & Evidence | 11 | done |
 | R23 | Absolute vs relative risk, NNT and NNH | Research & Evidence | 12 | todo |
 | R24 | Sample size and power: intuition first, calculation second | Research & Evidence | 12 | todo |
 | R25 | Choosing a statistical test (t-test, Mann-Whitney, ANOVA, chi-square, correlation, regression), with Jamovi, SPSS or R | Research & Evidence | 12 | todo |
