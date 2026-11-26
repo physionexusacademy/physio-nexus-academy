@@ -145,7 +145,8 @@ export function bendNotes(capture: ScanCapture): BendNote[] {
   const knee = get("bendKnee");
   if (knee) notes.push(knee.value < 165 ? "bent_knees" : "straight");
   const reach = get("reach");
-  if (reach) notes.push(reach.value >= -reach.plusMinus ? "reaches_ankle" : "stops_short");
+  // reach: 0 is the height of the ankle, 100 the height of the hip, below 0 below the ankle: hands at or below the ankle (within the margin of error) have reached it
+  if (reach) notes.push(reach.value <= reach.plusMinus ? "reaches_ankle" : "stops_short");
   return notes;
 }
 

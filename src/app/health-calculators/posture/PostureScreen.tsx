@@ -126,7 +126,7 @@ export default function PostureScreen() {
   }, []);
 
   const startCamera = async () => {
-    setProblem(null); setLoading(true); setStage("camera"); setCapture(null); issuesKey.current = ""; setIssues(["no_person"]);
+    setProblem(null); setLoading(true); setStage("camera"); setCapture(null); issuesKey.current = "no_person"; setIssues(["no_person"]);
     // an iPhone asks about its motion sensor only from a tap: start it first
     const lv = new PhoneLevel();
     level.current = lv;

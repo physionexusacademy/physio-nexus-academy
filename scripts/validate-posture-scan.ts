@@ -76,6 +76,12 @@ const bend = (shoulder: [number, number], finger: [number, number] = [600, 1000]
     assert.deepEqual(bendNotes(cap), ["straight", "reaches_ankle"]);
     assert.equal(cap.side, "left");
   }
+  // fingertips at the height of the knee (about 50 percent of the leg above the ankle) have NOT reached the ankle; at 20 percent they have not either; at the ankle they have
+  const handsAt = (y: number) => Array.from({ length: MIN_FRAMES }, () => bend([585, 470], [600, y]));
+  for (const [y, expected] of [[850, "stops_short"], [1000, "stops_short"], [1100, "reaches_ankle"], [1150, "reaches_ankle"]] as const) {
+    const c = summariseScan(handsAt(y), "bend");
+    assert.ok(c.ok && bendNotes(c).includes(expected), `hands at y ${y} must be "${expected}", got ${c.ok ? bendNotes(c).join(",") : "unreadable"}`);
+  }
   const few = summariseScan(frames.slice(0, MIN_FRAMES - 1), "bend");
   assert.deepEqual(few, { ok: false, reason: "too_few_frames", frames: MIN_FRAMES - 1 });
   const empty = Array.from({ length: MIN_FRAMES }, () => ({ t: 0, w: W, h: H, lm: [] }));
@@ -149,7 +155,7 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
   const screen = read("src/app/health-calculators/posture/scan/ScanScreen.tsx");
   const report = read("src/app/health-calculators/posture/scan/ScanReport.tsx");
   const viewer = read("src/components/posture/SkeletonViewer.tsx");
-  const build = read("src/components/posture/skeleton-build.ts");
+  const build = read("src/components/posture/skeleton-rig.ts");
   const serverPage = read("src/app/health-calculators/posture/scan/page.tsx");
   const loader = read("src/app/health-calculators/posture/scan/ScanLoader.tsx");
   const config = read("next.config.js");
@@ -172,9 +178,23 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
   assert.match(screen, /const stop = useCallback\(\(\) => \{[^}]*closeCamera\(video\.current, stream\.current\)/, "stop() must turn the camera off");
   assert.match(screen, /useEffect\(\(\) => stop, \[stop\]\)/, "the camera must be stopped when the page is left");
   assert.match(screen, /stop\(\);\s*setStage\("viewdone"\)/, "the camera must be stopped as soon as the capture ends");
-  for (const [name, code] of [["ScanScreen", screen], ["ScanReport", report], ["SkeletonViewer", viewer], ["skeleton-build", build]] as const) {
-    assert.doesNotMatch(code, /\bfetch\(|XMLHttpRequest|sendBeacon|WebSocket|MediaRecorder|captureStream|indexedDB/, `${name}: nothing is sent or recorded`);
+  for (const [name, code] of [["ScanScreen", screen], ["ScanReport", report], ["SkeletonViewer", viewer], ["skeleton-rig", build]] as const) {
+    assert.doesNotMatch(code, /XMLHttpRequest|sendBeacon|WebSocket|MediaRecorder|captureStream|indexedDB/, `${name}: nothing is sent or recorded`);
+    // the only network read is the skeleton's own static files, under /posture-skeleton/
+    for (const call of code.match(/\bfetch\([^)]*\)/g) ?? []) assert.match(call, /BASE|posture-skeleton/, `${name}: fetch may only read the skeleton's static files`);
+    assert.doesNotMatch(code, /\bfetch\([^)]*\{[^)]*(method|body)/, `${name}: nothing is posted`);
   }
+  // the bones are real, credited and licensed
+  for (const f of ["skeleton-male.glb", "skeleton-meta.json", "ATTRIBUTION.md", "LICENSE-MODELS.md"]) assert.ok(fs.existsSync(`public/posture-skeleton/${f}`), `public/posture-skeleton/${f} must exist`);
+  const attribution = read("public/posture-skeleton/ATTRIBUTION.md");
+  assert.match(attribution, /BodyParts3D/); assert.match(attribution, /CC BY 4\.0/);
+  assert.match(report, /BodyParts3D/, "the credit line must be shown wherever the skeleton is");
+  assert.match(report, /CC BY 4\.0/); assert.match(report, /posture-skeleton\/ATTRIBUTION\.md/);
+  assert.ok(fs.statSync("public/posture-skeleton/skeleton-male.glb").size < 3 * 1024 * 1024, "the skeleton file must stay under 3 MB");
+  const meta = JSON.parse(read("public/posture-skeleton/skeleton-meta.json"));
+  for (const need of ["skull", "pelvis", "femur_l", "femur_r", "clavicle_l", "scapula_r", "sternum"]) assert.ok(meta.pieces.some((p: { group: string }) => p.group === need), `the skeleton must have ${need}`);
+  assert.ok(meta.pieces.filter((p: { name: string }) => /^spine_/.test(p.name)).length >= 30 && meta.pieces.filter((p: { name: string }) => /^ribs_l_/.test(p.name)).length === 12, "the spine and the 12 ribs must be separate pieces");
+  for (const j of ["hip_l", "knee_l", "ankle_l", "shoulder_l", "hip_r", "knee_r", "ankle_r", "shoulder_r"]) assert.ok(Array.isArray(meta.joints[j]), `joint ${j}`);
   assert.doesNotMatch(report, /\.src\b[^;]*localStorage|localStorage[^;]*photos|photos[^;]*localStorage/, "pictures must never be written to storage");
   assert.match(report, /toSaved\(summary\)/, "only the numbers are saved");
   assert.doesNotMatch(screen, /localStorage|sessionStorage/, "the capture screen stores nothing");
@@ -182,7 +202,7 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
   assert.match(screen, /opened\.problem === "policy" && reloadIfPolicyBlocksCamera\(\)/);
 
   // the heavy code (camera, pose library, three.js) stays out of the Worker
-  assert.doesNotMatch(serverPage, /ScanScreen|ScanReport|SkeletonViewer|skeleton-build|from "three"/, "the server page must not import the scan, the report or the 3D code");
+  assert.doesNotMatch(serverPage, /ScanScreen|ScanReport|SkeletonViewer|skeleton-rig|from "three"/, "the server page must not import the scan, the report or the 3D code");
   assert.match(loader, /dynamic\(\(\) => import\("\.\/ScanScreen"\), \{\s*ssr: false/, "the scan must load in the browser only");
   assert.match(report, /dynamic\(\(\) => import\("@\/components\/posture\/SkeletonViewer"\), \{ ssr: false/, "the 3D viewer must load in the browser only");
 
@@ -194,7 +214,7 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
 
   // the viewer pauses when hidden or off screen, frees its memory, and respects calm motion
   assert.match(viewer, /IntersectionObserver/); assert.match(viewer, /document\.hidden/); assert.match(viewer, /renderer\.dispose\(\)/); assert.match(viewer, /motionReduced\(\)/);
-  assert.match(build, /disposeSkeleton/);
+  assert.match(build, /const dispose = /); assert.match(viewer, /rig\.dispose\(\)|s\.rig\.dispose\(\)/);
 }
 
 console.log("Posture scan checks passed: back view (labels not trusted), forward bend, capture rules, combining four views, severity per region, skeleton pose limits, scan comparison, numbers-only saving, and the pages (honest limits, nothing sent, camera stopped, heavy code kept out of the Worker, camera policy).");

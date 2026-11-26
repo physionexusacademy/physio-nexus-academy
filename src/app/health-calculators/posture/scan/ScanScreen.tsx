@@ -170,7 +170,7 @@ export default function ScanScreen() {
   }, []);
 
   const startCamera = async () => {
-    setProblem(null); setLoading(true); setStage("camera"); issuesKey.current = ""; setIssues(["no_person"]);
+    setProblem(null); setLoading(true); setStage("camera"); issuesKey.current = "no_person"; setIssues(["no_person"]);
     const lv = new PhoneLevel();
     level.current = lv;
     void lv.start((tl) => setTilt(tl)).then(setLevelOn);

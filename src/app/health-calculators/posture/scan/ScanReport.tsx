@@ -37,6 +37,8 @@ export default function ScanReport({ captures, photos, onAgain, onMore }: { capt
     spin: t({ en: "Turn slowly", ur: "Aahista ghumayein" }), stop: t({ en: "Stop turning", ur: "Ghumana rokein" }),
     noGl: t({ en: "Your browser cannot show the 3D skeleton. Your numbers below are still complete.", ur: "Aap ka browser 3D skeleton nahi dikha sakta. Neeche aap ke numbers phir bhi mukammal hain." }),
     hint: t({ en: "An illustrative 3D skeleton. Drag to turn it, or use the arrow keys.", ur: "Tasveeri 3D skeleton. Ghumane ke liye drag karein, ya arrow keys istemal karein." }),
+    loading: t({ en: "Loading the skeleton (1.3 MB, read on your device)…", ur: "Skeleton load ho raha hai (1.3 MB, aap ke device par)…" }),
+    loadFailed: t({ en: "The skeleton could not be loaded (check your connection). Your numbers below are still complete.", ur: "Skeleton load nahi ho saka (apna connection dekhein). Neeche aap ke numbers phir bhi mukammal hain." }),
   };
 
   const metricIds = (Object.keys(summary) as (keyof typeof summary)[]).filter((k): k is PostureMetricId => k in METRIC_TEXT && !!summary[k as PostureMetricId]);
@@ -69,7 +71,8 @@ export default function ScanReport({ captures, photos, onAgain, onMore }: { capt
             <li><i data-k="1" /> {t(SEVERITY_TEXT.stops[1])}</li>
             <li><i data-k="2" /> {t(SEVERITY_TEXT.stops[2])}</li>
           </ul>
-          <p className="ps-note">{t({ en: "Plain bones were either in the usual range or not measured. A tilt smaller than the tool's margin of error is drawn level.", ur: "Saade rang ki haddiyan ya aam range mein thin ya naapi nahi gayin. Jo jhukao tool ki ghalti ki hadd se chhota ho woh barabar dikhaya jata hai." })}</p>
+          <p className="ps-note">{t({ en: "Plain bones were either in the usual range or not measured. A tilt smaller than the tool's margin of error is drawn level. The bones are a standard adult male reference skeleton, moved to match your numbers: your own bones differ in size and shape (for example, the female pelvis is shaped differently).", ur: "Saade rang ki haddiyan ya aam range mein thin ya naapi nahi gayin. Jo jhukao tool ki ghalti ki hadd se chhota ho woh barabar dikhaya jata hai. Haddiyan aam baalig mard ka reference skeleton hain, jo aap ke numbers ke mutabiq hilayi gayi hain: aap ki apni haddiyon ka size aur shakal mukhtalif hai (masalan aurat ka pelvis alag shakal ka hota hai)." })}</p>
+          <p className="sc-credit">{t({ en: "Anatomy: BodyParts3D © The Database Center for Life Science (CC BY 4.0), modified: bones only, vertebrae and ribs separated, posed from your numbers. Prepared with open-anatomy-3d (CC BY 4.0).", ur: "Anatomy: BodyParts3D © The Database Center for Life Science (CC BY 4.0), tabdeel shuda: sirf haddiyan, vertebrae aur ribs alag kiye gaye, aap ke numbers ke mutabiq rakhe gaye. open-anatomy-3d (CC BY 4.0) se tayyar." })} <a href="/posture-skeleton/ATTRIBUTION.md" target="_blank" rel="noopener">{t({ en: "Credits and licence", ur: "Credits aur licence" })}</a></p>
         </div>
 
         <ul className="sc-regions">
@@ -104,7 +107,7 @@ export default function ScanReport({ captures, photos, onAgain, onMore }: { capt
         </div>
       )}
 
-      <h3>{t({ en: "Your numbers", ur: "Aap ke numbers" })}</h3>
+      {metricIds.length > 0 && <h3>{t({ en: "Your numbers", ur: "Aap ke numbers" })}</h3>}
       <ul className="ps-results">
         {metricIds.map((id) => {
           const c = summary[id]!;

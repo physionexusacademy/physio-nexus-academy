@@ -64,3 +64,7 @@
   .sc-region,.sc-factors li,.sc-changes li{break-inside:avoid}
 }
 @media (prefers-reduced-motion:reduce){.sv-host{cursor:default}}
+
+.sv-loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:16px;text-align:center;color:#b9d3df;font-weight:700}
+.sc-credit{font-size:12px;line-height:1.5;color:#9db9c7;margin:8px 4px 0}
+.sc-credit a{color:#7ff0e4;text-decoration:underline}
