@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ScanLine } from "lucide-react";
 import { Ur } from "@/components/Ur";
 import PostureLoader from "./PostureLoader";
@@ -39,6 +40,7 @@ export default function Page() {
           <h1><Ur en="Check your posture with your phone" ur="Apne phone se apni posture check karein" /></h1>
           <p><Ur en="A free screen for students and the public. It reads your posture from one phone picture, on your own device, and shows every number with its margin of error. Nothing is recorded, uploaded or saved." ur="Students aur awam ke liye free screen. Yeh aap ke apne device par ek phone ki tasveer se posture parhta hai, aur har number ghalti ki hadd ke saath dikhata hai. Kuch record, upload ya save nahi hota." /></p>
         </header>
+        <p className="ps-scanlink"><Link href="/health-calculators/posture/scan"><Ur en="Want all four sides on a 3D skeleton? Try the full posture scan." ur="Chaaron taraf ka 3D skeleton par dekhna hai? Mukammal posture scan try karein." /></Link></p>
         <PostureLoader />
       </div>
     </>

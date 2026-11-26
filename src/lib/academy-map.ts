@@ -73,6 +73,7 @@ export const academyWings: AcademyWing[] = [
       { label: "Symptom Checker", href: "/symptom-checker", description: "Screen patterns and red flags", icon: "symptoms", keywords: "pain checker symptoms" },
       { label: "Clinical Calculators", href: "/health-calculators/clinical", description: "Heart rate zones, one-rep max, waist-hip ratio, outcome change", icon: "calculator", keywords: "calculator karvonen heart rate zones one rep max 1rm waist hip ratio bmr calories minimal important change" },
       { label: "Posture Screen", href: "/health-calculators/posture", description: "Check posture with your phone camera, with margins of error", icon: "symptoms", keywords: "posture check forward head shoulder level hip level knee alignment trunk lean camera screen" },
+      { label: "Full Posture Scan", href: "/health-calculators/posture/scan", description: "Front, side, back and forward bend with your phone, on an illustrative 3D skeleton", icon: "symptoms", keywords: "posture scan 3d skeleton four views front side back forward bend camera screen" },
       { label: "BMI Calculator", href: "/health-calculators/bmi", description: "Quick BMI with age-aware notes", icon: "calculator", keywords: "bmi health calculator weight" },
       { label: "Karachi", href: "/locations/karachi", description: "Home visits & workshops", icon: "pin", keywords: "karachi location" },
       { label: "Hyderabad", href: "/locations/hyderabad", description: "Home visits & workshops", icon: "pin", keywords: "hyderabad location" },

@@ -128,7 +128,7 @@ const nextConfig = {
       },
       // The posture screen (public) uses the camera on the person's own device, the same way: 'self' only, the microphone stays off.
       {
-        source: '/health-calculators/posture',
+        source: '/health-calculators/posture/:path*',
         headers: [{ key: 'Permissions-Policy', value: 'camera=(self), microphone=()' }],
       },
     ];

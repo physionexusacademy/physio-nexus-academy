@@ -24,6 +24,14 @@ const tools = [
     fullLoad: true,
   },
   {
+    href: "/health-calculators/posture/scan",
+    icon: ScanLine,
+    title: "Full posture scan (3D)",
+    text: "Four phone views (front, side, back and a forward bend) shown on an illustrative 3D skeleton, each number with its margin of error. Read on your device; nothing is uploaded.",
+    tag: "Uses your camera",
+    fullLoad: true,
+  },
+  {
     href: "/health-calculators/clinical",
     icon: HeartPulse,
     title: "Clinical calculators",

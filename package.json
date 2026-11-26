@@ -39,6 +39,7 @@
     "build:virtual-patient": "node scripts/build-virtual-patient.mjs",
     "build:conditions-data": "node --experimental-strip-types scripts/build-conditions-data.ts",
     "validate:posture": "node --experimental-strip-types scripts/validate-posture.ts",
+    "validate:posture-scan": "node --experimental-strip-types scripts/validate-posture-scan.ts",
     "validate:calculators": "node --experimental-strip-types scripts/validate-calculators.ts",
     "validate:handouts": "node --experimental-strip-types scripts/validate-handouts.ts",
     "validate:conditions": "node --experimental-strip-types scripts/validate-conditions.ts",

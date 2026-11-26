@@ -42,6 +42,7 @@ const routes = [
   "/health-calculators/bmi",
   "/health-calculators/clinical",
   "/health-calculators/posture",
+  "/health-calculators/posture/scan",
   "/handouts",
   "/appointment",
   "/home-visit",
