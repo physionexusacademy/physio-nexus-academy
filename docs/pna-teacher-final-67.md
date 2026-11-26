@@ -57,14 +57,14 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R31 | Systematic and scoping reviews: PRISMA, risk of bias (RoB 2, ROBINS-I), GRADE | Research & Evidence | 12 | done |
 | R32 | Interpreting patient-reported outcomes: floor and ceiling effects, MCID by anchor vs distribution | Research & Evidence | 12 | done |
 | R33 | Honest graphs: data visualisation for therapists | Research & Evidence | 12 | done |
-| R34 | Choosing a research question that matters (FINER) | Research & Evidence | 13 | todo |
-| R35 | Writing a research proposal: aims, hypothesis, methods, timeline, budget | Research & Evidence | 13 | todo |
-| R36 | Research ethics: Helsinki principles, informed consent, vulnerable groups, data protection, submitting to an ethics committee | Research & Evidence | 13 | todo |
-| R37 | Trial registration, pre-registration and open science | Research & Evidence | 13 | todo |
-| R38 | Data management: spreadsheets, coding, cleaning, backup | Research & Evidence | 13 | todo |
-| R39 | The reporting-guidelines map: CONSORT, STROBE, PRISMA, CARE, STARD, SRQR or COREQ | Research & Evidence | 13 | todo |
-| R40 | Describing interventions so others can repeat them (TIDieR) | Research & Evidence | 13 | todo |
-| R41 | Writing IMRaD: from abstract to discussion | Research & Evidence | 13 | todo |
+| R34 | Choosing a research question that matters (FINER) | Research & Evidence | 13 | done |
+| R35 | Writing a research proposal: aims, hypothesis, methods, timeline, budget | Research & Evidence | 13 | done |
+| R36 | Research ethics: Helsinki principles, informed consent, vulnerable groups, data protection, submitting to an ethics committee | Research & Evidence | 13 | done |
+| R37 | Trial registration, pre-registration and open science | Research & Evidence | 13 | done |
+| R38 | Data management: spreadsheets, coding, cleaning, backup | Research & Evidence | 13 | done |
+| R39 | The reporting-guidelines map: CONSORT, STROBE, PRISMA, CARE, STARD, SRQR or COREQ | Research & Evidence | 13 | done |
+| R40 | Describing interventions so others can repeat them (TIDieR) | Research & Evidence | 13 | done |
+| R41 | Writing IMRaD: from abstract to discussion | Research & Evidence | 13 | done |
 | R42 | Choosing a journal, predatory journals, peer review, answering reviewers | Research & Evidence | 13 | todo |
 | R43 | Posters and conference talks | Research & Evidence | 13 | todo |
 | R44 | Thesis and supervisor management | Research & Evidence | 13 | todo |
