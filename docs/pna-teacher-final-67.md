@@ -65,9 +65,9 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 | R39 | The reporting-guidelines map: CONSORT, STROBE, PRISMA, CARE, STARD, SRQR or COREQ | Research & Evidence | 13 | done |
 | R40 | Describing interventions so others can repeat them (TIDieR) | Research & Evidence | 13 | done |
 | R41 | Writing IMRaD: from abstract to discussion | Research & Evidence | 13 | done |
-| R42 | Choosing a journal, predatory journals, peer review, answering reviewers | Research & Evidence | 13 | todo |
-| R43 | Posters and conference talks | Research & Evidence | 13 | todo |
-| R44 | Thesis and supervisor management | Research & Evidence | 13 | todo |
+| R42 | Choosing a journal, predatory journals, peer review, answering reviewers | Research & Evidence | 13 | done |
+| R43 | Posters and conference talks | Research & Evidence | 13 | done |
+| R44 | Thesis and supervisor management | Research & Evidence | 13 | done |
 | R45 | Research integrity, authorship and misconduct | Research & Evidence | 14 | todo |
 | R46 | Clinical practice guidelines: how they are made, AGREE II, using them well | Research & Evidence | 14 | todo |
 | R47 | Research in low-resource settings and community-based participatory research [PK] | Research & Evidence | 14 | todo |
