@@ -14,16 +14,16 @@ Nothing here is pushed or deployed. Work is local only (GitHub Actions is blocke
 
 | ID | Working title | Area (shelf) | Batch | Status |
 |---|---|---|---|---|
-| S1 | Scary things that look like MSK pain: serious pathology masquerading (cancer, infection, fracture, vascular, cardiac, visceral) [!] | Clinical Reasoning | 9 | todo |
-| S2 | Differential duels: shoulder vs neck, hip vs lumbar spine vs SIJ, knee pain referred from hip or spine, chest wall vs cardiac | Clinical Reasoning | 9 | todo |
-| S3 | Rules every physio should know: Canadian C-spine, NEXUS, Wells (DVT and PE), Ottawa (done), and when each rule fails [!] | Clinical Reasoning | 9 | todo |
-| S4 | Medicines that change your rehab plan: anticoagulants, beta-blockers, steroid injections, statins, diabetes medicines, painkillers [!] | Medicines & Safety | 9 | todo |
-| S5 | Clinic emergencies drill: BLS, anaphylaxis, hypoglycaemia, syncope, seizure, choking [!] | Emergency Care | 9 | todo |
-| S8 | Physiotherapy and daily prayer (salah): safe positions with knee, hip or back pain and after surgery [PK][!] | Culture & Context | 9 | todo |
-| S12 | Strength training for patients: progressive overload, RPE, reps in reserve, isometrics, how to progress safely | Exercise Prescription | 9 | todo |
-| S17 | Critical appraisal in 10 minutes, and starting your first research project (links to the Research track R5, R34 to R36) | Research & Evidence | 9 | todo |
-| S18 | Paediatric orthopaedics: DDH, Perthes and SCFE (the limping child), clubfoot (Ponseti), Duchenne and Gowers, torticollis [PK][!] | Paediatrics | 9 | todo |
-| S19 | Pelvic floor in men and women, plus diastasis recti and prolapse: what exercise helps [!] | Pelvic Health | 9 | todo |
+| S1 | Scary things that look like MSK pain: serious pathology masquerading (cancer, infection, fracture, vascular, cardiac, visceral) [!] | Clinical Reasoning | 9 | done |
+| S2 | Differential duels: shoulder vs neck, hip vs lumbar spine vs SIJ, knee pain referred from hip or spine, chest wall vs cardiac | Clinical Reasoning | 9 | done |
+| S3 | Rules every physio should know: Canadian C-spine, NEXUS, Wells (DVT and PE), Ottawa (done), and when each rule fails [!] | Clinical Reasoning | 9 | done |
+| S4 | Medicines that change your rehab plan: anticoagulants, beta-blockers, steroid injections, statins, diabetes medicines, painkillers [!] | Medicines & Safety | 9 | done |
+| S5 | Clinic emergencies drill: BLS, anaphylaxis, hypoglycaemia, syncope, seizure, choking [!] | Emergency Care | 9 | done |
+| S8 | Physiotherapy and daily prayer (salah): safe positions with knee, hip or back pain and after surgery [PK][!] | Culture & Context | 9 | done |
+| S12 | Strength training for patients: progressive overload, RPE, reps in reserve, isometrics, how to progress safely | Exercise Prescription | 9 | done |
+| S17 | Critical appraisal in 10 minutes, and starting your first research project (links to the Research track R5, R34 to R36) | Research & Evidence | 9 | done |
+| S18 | Paediatric orthopaedics: DDH, Perthes and SCFE (the limping child), clubfoot (Ponseti), Duchenne and Gowers, torticollis [PK][!] | Paediatrics | 9 | done |
+| S19 | Pelvic floor in men and women, plus diastasis recti and prolapse: what exercise helps [!] | Pelvic Health | 9 | done |
 | R1 | Why evidence-based practice: evidence + experience + patient values, and where each fails | Research & Evidence | 10 | todo |
 | R2 | Why treatments seem to work when they may not: natural history, regression to the mean, placebo and context, confounding | Research & Evidence | 10 | todo |
 | R3 | From a clinical question to PICO in 5 minutes (why, when, how) | Research & Evidence | 10 | todo |
