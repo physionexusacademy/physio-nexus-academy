@@ -111,10 +111,45 @@ function chapter(place) {
   const modalityNotes = textOf(S.K ?? []);
   /* H and L: the decision pathway and management pathway (education and referral lines). */
   const pathway = [...textOf(S.H ?? []), ...textOf(S.L ?? [])];
+  /* F: differential diagnosis (conditions to tell apart). */
+  const differentials = rowsOf(S.F ?? [], (h) => h[0] === "condition").map(({ cells }) => ({ name: cells[0], key: cells[1], next: cells[3] ?? "" })).filter((r) => r.name);
   /* N: the case. */
   const N = S.N ?? [];
   const caseText = textOf(N.filter((b) => b.t === "p" || b.t === "callout"));
   const qa = N.filter((b) => b.t === "ol").flatMap((b) => b.items.map(plain));
+  const caseAll = caseText.join(" ");
+  const working = (/Working diagnosis:\s*([^.]*(?:\.[0-9][^.]*)*)\./i.exec(caseAll)?.[1] ?? "").trim();
+  const plan = (/Plan:\s*(.*?)(?=$)/i.exec(caseAll)?.[1] ?? "").replace(/\s*(Questions and answers).*$/i, "").trim();
+  const firstLeft = caseAll.search(/\bleft\b/i);
+  const firstRight = caseAll.search(/\bright\b/i);
+  const side = firstLeft >= 0 && (firstRight < 0 || firstLeft < firstRight) ? "left" : "right";
+  const age = Number(/(\d{1,3})-year-old/.exec(caseAll)?.[1] ?? 0) || null;
+  const female = /\b(woman|female|she|her|girl|mother|lady)\b/i.test(caseAll);
+  /* Each test's result in this case, from the case text: positive or negative when the case says so; otherwise not recorded. */
+  const lower = caseAll.toLowerCase();
+  const STOP = new Set(["test", "tests", "sign", "with", "from", "the", "and", "for", "screen", "manoeuvre", "maneuver", "measure", "assessment"]);
+  const keysOf = (name) => {
+    const n = name.toLowerCase();
+    const abbr = [...n.matchAll(/\(([a-z0-9-]{2,8})\)/g)].map((m) => [m[1]]);
+    const words = n.replace(/\(.*?\)/g, " ").replace(/[^a-z0-9' -]/g, " ").split(/[\s-]+/).filter((w) => w.length > 3 && !STOP.has(w));
+    return [...abbr, words.slice(0, 2), words.slice(0, 1)].filter((k) => k.length && k.join("").length >= 3);
+  };
+  const POS = /\bpositive\b|reproduc|provok|increases (it|the|her|his)|is painful|painful|limited|reduced|weak|apprehension|clunk|gap/;
+  const NEG = /\bnegative\b|\bnormal\b|no pain|does not|did not|full and pain-free|intact/;
+  for (const t of tests) {
+    let result = "not-recorded";
+    search: for (const keys of keysOf(t.name)) {
+      for (const sentence of lower.split(/(?<=[.;])\s+/)) {
+        const at = keys.every((w) => new RegExp(`\\b${w.replace(/[^a-z0-9]/g, "")}`).test(sentence)) ? sentence.indexOf(keys[0]) : -1;
+        if (at < 0) continue;
+        const near = sentence.slice(Math.max(0, at - 50), at + 90);
+        if (NEG.test(near) && !/\bpositive\b/.test(near)) result = "negative";
+        else if (POS.test(near)) result = "positive";
+        if (result !== "not-recorded") break search;
+      }
+    }
+    t.result = result;
+  }
   return {
     v: 1,
     slug: place.slug,
@@ -123,6 +158,12 @@ function chapter(place) {
     ch: place.file,
     lead: plain(d.lead ?? ""),
     case: caseText,
+    working,
+    plan,
+    side,
+    age,
+    female,
+    differentials,
     qa,
     tests,
     redFlags,
