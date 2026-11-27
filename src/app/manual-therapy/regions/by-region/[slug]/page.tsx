@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { isTechniqueSpecificRegionalApplication } from "@/lib/manual-therapy-regions";
 import { loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
+import { conditionsLinkingTo } from "@/lib/related";
+import { UsedInConditions } from "@/components/related/RelatedPanel";
 
 async function regionIndex() {
   const index = await loadRegionIndex();
@@ -82,6 +84,7 @@ export default async function RegionOverviewsPage({ params }: PageProps) {
       ) : (
         <p className="mt-8 text-sm text-slate-600">No general overviews remain for this region. Browse the authored guides instead.</p>
       )}
+      <UsedInConditions className="mt-8" links={conditionsLinkingTo(`/manual-therapy/regions/by-region/${slug}`, 16)} title={`Conditions in the ${region} region`} />
     </div>
   );
 }

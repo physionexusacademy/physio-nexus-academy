@@ -31,6 +31,8 @@ import {
 } from "@/lib/manual-therapy-3d-assets";
 import { RegionalAttentionReset } from "@/components/manual-therapy/AttentionReset";
 import { RegionalLearningLab } from "@/components/manual-therapy/RegionalLearningLab";
+import { conditionsLinkingTo } from "@/lib/related";
+import { UsedInConditions } from "@/components/related/RelatedPanel";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -427,6 +429,7 @@ export default async function RegionalManualDetailPage({ params }: PageProps) {
           Browse other regions
         </a>
       </div>
+      <UsedInConditions className="mt-8" links={conditionsLinkingTo(`/manual-therapy/regions/${item.slug}`)} title="Conditions this technique is used for" />
     </div>
   );
 }

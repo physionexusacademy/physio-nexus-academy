@@ -6,6 +6,8 @@ import { SkillLab } from "@/components/skills/SkillLab";
 import { ArrowRight, PersonStanding } from "lucide-react";
 import { getSkillEntry, skillIndex } from "@/lib/skills/catalog";
 import { SKILL_CASES, vpCaseHref } from "@/lib/virtual-patient/links";
+import { conditionsLinkingTo } from "@/lib/related";
+import { UsedInConditions } from "@/components/related/RelatedPanel";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -78,6 +80,9 @@ export default async function SkillPage({ params }: PageProps) {
           </div>
         </section>
       ) : null}
+      <div className="container-content pb-8">
+        <UsedInConditions links={conditionsLinkingTo(`/skills/${skill.slug}`)} title="Conditions where you use this skill" />
+      </div>
       <section className="container-content pb-16" aria-labelledby="skill-contents">
         <details className="rounded-3xl border border-slate-200 bg-white p-5">
           <summary id="skill-contents" className="cursor-pointer text-base font-bold text-navy-800">

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { fitDescription } from "@/lib/seo/text";
 import { handoutBySlug, handouts } from "@/lib/handouts";
 import { HandoutSheet } from "../HandoutSheet";
+import { conditionsLinkingTo } from "@/lib/related";
+import { UsedInConditions } from "@/components/related/RelatedPanel";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -33,5 +35,12 @@ export default async function HandoutPage({ params }: PageProps) {
   const { slug } = await params;
   const handout = handoutBySlug(slug);
   if (!handout) notFound();
-  return <HandoutSheet handout={handout} />;
+  return (
+    <>
+      <HandoutSheet handout={handout} />
+      <div className="container-content pb-12" data-print-hide>
+        <UsedInConditions links={conditionsLinkingTo(`/handouts/${handout.slug}`)} title="Read the full condition guide" />
+      </div>
+    </>
+  );
 }
