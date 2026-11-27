@@ -5,6 +5,7 @@ import "./globals.css";
 import "./nexus.css";
 import "./motion.css";
 import "./easy-touch.css";
+import "./dark-zone.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -340,7 +341,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PublicChrome>
           <Header atlasPublished={atlasPublished} />
         </PublicChrome>
-        <main id="main-content" className="flex-1">
+        <main id="main-content" className="nx-dz flex-1">
           {children}
         </main>
         <PublicChrome>
