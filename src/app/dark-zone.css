@@ -1,5 +1,6 @@
 /* ==========================================================================
-   PNA DARK ZONE — professional dark look for Manual Therapy, Conditions &
+   PNA DARK ZONE — white page with dark raised 3D cards (2026-11: the page background is white;
+   only the cards, and what sits inside them, keep the dark professional look). Originally: professional dark look for Manual Therapy, Conditions &
    Treatment and MSK Special Tests (each section's layout.tsx wraps its pages
    in <div class="nx-dz">).
    Depth comes from layers, not neon: a slate-navy base, slightly lighter
@@ -13,7 +14,7 @@
 @import "./dark-zone.sections.generated.css";
 
 @media screen {
-  body:has(.nx-dz) { background: #0b1220; }
+  body:has(.nx-dz) { background: #ffffff; }
   body:has(.nx-dz) #main-content::before { display: none; }
 
   .nx-dz {
@@ -31,35 +32,11 @@
     --dz-elev-hi: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.5), inset 0 -18px 30px -18px rgba(0, 0, 0, 0.55), 0 9px 0 -1px #0a1222, 0 10px 0 -1px rgba(45, 212, 191, 0.25), 0 36px 54px -18px rgba(0, 0, 0, 0.95);
     position: relative;
     isolation: isolate;
-    color: var(--dz-body);
-    color-scheme: dark;
     min-height: 100%;
     overflow-x: clip;
-    background:
-      radial-gradient(1000px 480px at 15% -8%, rgba(45, 212, 191, 0.07), transparent 70%),
-      radial-gradient(900px 480px at 92% -4%, rgba(56, 189, 248, 0.05), transparent 70%),
-      var(--dz-base);
+    background: #ffffff;
   }
 
-  /* a floor grid receding into the distance at the top of the page */
-  .nx-dz::before {
-    content: "";
-    position: absolute;
-    left: -50%;
-    right: -50%;
-    top: 120px;
-    height: 900px;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-      linear-gradient(rgba(94, 234, 212, 0.09) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(94, 234, 212, 0.09) 1px, transparent 1px);
-    background-size: 64px 64px;
-    transform: perspective(700px) rotateX(62deg);
-    transform-origin: 50% 0;
-    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 75%);
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 75%);
-  }
 
   /* keycap depth: buttons, badges and the A–N strip sit on a visible edge and press down */
   .nx-dz :is(.bg-teal-700, .bg-teal-600):is(.rounded-xl, .rounded-lg, .rounded-full),
@@ -84,12 +61,6 @@
   .nx-dz .pna-editorial-filter[aria-pressed="true"] { background: linear-gradient(180deg, #14b8a6, #0f766e); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 0 #0b4f4a; }
 
   .nx-dz ::selection { background: rgba(45, 212, 191, 0.3); color: #fff; }
-
-  /* type */
-  .nx-dz :is(h1, h2, h3, h4)[class]:not([class*="text-red"]):not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-white"]),
-  .nx-dz :is(h1, h2, h3, h4):not([class]) { color: var(--dz-head); }
-  .nx-dz a:not([class]) { color: var(--dz-accent-text); text-underline-offset: 3px; }
-  .nx-dz strong, .nx-dz b { color: inherit; }
 
   /* ---------- raised surfaces ---------- */
   .nx-dz :is(.bg-white, .bg-white\/70, .bg-white\/80, .bg-white\/85, .bg-white\/90, .bg-white\/95):is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-\[1\.75rem\]),
@@ -124,53 +95,16 @@
   .nx-dz a:is(.rounded-xl, .rounded-2xl, .rounded-3xl).border:focus-visible,
   .nx-dz .pna-editorial-card:focus-visible { outline: 2px solid var(--dz-accent); outline-offset: 3px; }
 
-  /* card titles: white; teal only when hovered */
-  .nx-dz a.group strong { color: var(--dz-head); }
-  .nx-dz a.group:hover strong { color: var(--dz-accent-text); }
-
-  /* labels: quiet, readable pills */
-  .nx-dz .rounded-full.bg-teal-50 { background: rgba(45, 212, 191, 0.12); color: var(--dz-accent-text); }
-  .nx-dz .rounded-full.bg-slate-100 { background: rgba(148, 163, 184, 0.14); color: var(--dz-body); }
-
   /* Conditions A–N strip: sections in the chapter are filled, missing ones are outlined and faint */
   .nx-dz .bg-slate-100.text-slate-300 { background: transparent; color: rgba(148, 163, 184, 0.4); box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.16); }
 
   /* tables */
-  .nx-dz table { color: var(--dz-body); }
-  .nx-dz th { color: var(--dz-head); }
-  .nx-dz td, .nx-dz th { border-color: var(--dz-line); }
   .nx-dz .bg-table thead { background: #1e2b42; }
   .nx-dz .bg-table tbody tr:nth-child(odd) { background: transparent; }
   .nx-dz .bg-table tbody tr:nth-child(even) { background: rgba(148, 163, 184, 0.05); }
   .nx-dz .bg-table td[data-label]:not([data-label=""])::before { color: var(--dz-accent-text); }
 
-  /* form controls */
-  .nx-dz input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-  .nx-dz select,
-  .nx-dz textarea {
-    color: var(--dz-head);
-    background-color: #0f1828;
-    border-color: rgba(148, 163, 184, 0.24);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
-  }
-  .nx-dz input::placeholder, .nx-dz textarea::placeholder { color: #7c8aa0; }
-  .nx-dz input:focus, .nx-dz select:focus, .nx-dz textarea:focus { border-color: var(--dz-accent); box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18); }
-  .nx-dz option { background: #131d30; color: var(--dz-head); }
-  .nx-dz input[type="checkbox"], .nx-dz input[type="radio"], .nx-dz input[type="range"] { accent-color: var(--dz-accent); }
-
-  .nx-dz summary { color: var(--dz-head); }
-  .nx-dz hr { border-color: var(--dz-line); }
-
-  /* MSK Special Tests: arbitrary light colours */
-  .nx-dz .bg-\[\#f8fbfc\], .nx-dz .bg-\[\#f0f9f7\] { background-color: rgba(45, 212, 191, 0.06); }
-  .nx-dz .bg-\[\#fffaf0\] { background-color: rgba(251, 191, 36, 0.07); }
-  .nx-dz .to-\[\#eaf8f5\] { --tw-gradient-to: rgba(45, 212, 191, 0.06) var(--tw-gradient-to-position); }
-  .nx-dz .text-\[\#153a4a\], .nx-dz .text-\[\#102e40\], .nx-dz .text-\[\#133f52\] { color: var(--dz-head); }
-  .nx-dz .text-\[\#0c625e\] { color: var(--dz-accent-text); }
-  .nx-dz .border-\[\#dce9e8\], .nx-dz .border-\[\#cfe8e5\], .nx-dz .border-\[\#cde9e6\] { border-color: rgba(45, 212, 191, 0.22); }
-
   /* ---------- Manual Therapy encyclopedia (.pna-editorial) ---------- */
-  .nx-dz .pna-editorial { --editorial-ink: var(--dz-head); color: var(--dz-head); }
   .nx-dz .pna-editorial-intro-item, .nx-dz .pna-editorial-toolbar, .nx-dz .pna-editorial-bottom a, .nx-dz .pna-editorial-bottom aside { color: var(--dz-body); }
   .nx-dz .pna-editorial-intro-item strong, .nx-dz .pna-editorial-bottom h2 { color: var(--dz-head); }
   .nx-dz .pna-editorial-bottom p { color: var(--dz-mute); }
@@ -180,9 +114,6 @@
   .nx-dz .pna-editorial-search:focus-within { border-color: var(--dz-accent); box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18); }
   .nx-dz .pna-editorial-filter { background: linear-gradient(180deg, #223252, #182640); border-color: var(--dz-line); color: var(--dz-body); }
   .nx-dz .pna-editorial-filter:hover { border-color: var(--dz-line-hi); color: var(--dz-head); }
-  .nx-dz .pna-editorial-family-symbol { background: rgba(45, 212, 191, 0.1); border-color: rgba(45, 212, 191, 0.28); }
-  .nx-dz .pna-editorial-family-title { color: var(--dz-head); }
-  .nx-dz .pna-editorial-family-count { color: var(--dz-mute); }
   .nx-dz .pna-editorial-card-art { opacity: 0.5; }
   .nx-dz .pna-editorial-card-art:after { background: linear-gradient(90deg, #152034 0%, rgba(21, 32, 52, 0.55) 45%, rgba(21, 32, 52, 0.1) 100%); }
   .nx-dz .pna-editorial-card-number { color: var(--dz-mute); }
@@ -195,9 +126,6 @@
   /* ---------- Manual Therapy demo lab / technique pages ---------- */
   .nx-dz .dl-tab { background: #18243a; border-color: var(--dz-line); color: var(--dz-body); }
   .nx-dz .dl-tab:hover { border-color: var(--dz-line-hi); }
-  .nx-dz .dl-hint { color: var(--dz-mute); }
-  .nx-dz .cl-kicker { color: var(--dz-accent-text); }
-  .nx-dz .cl-title { color: var(--dz-head); }
 }
 
 @media (prefers-reduced-motion: reduce) {
