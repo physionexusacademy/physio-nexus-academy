@@ -1,146 +1,205 @@
 /* ==========================================================================
-   PNA DARK ZONE — the dark futuristic look for Manual Therapy, Conditions &
-   Treatment and MSK Special Tests. Wrapped by each section's layout.tsx in
-   <div class="nx-dz">. Light Tailwind utilities are restyled in
-   dark-zone.generated.css; this file holds the background, glow, inputs and
-   the sections' own classes. Screen only: print stays black on white.
+   PNA DARK ZONE — professional dark look for Manual Therapy, Conditions &
+   Treatment and MSK Special Tests (each section's layout.tsx wraps its pages
+   in <div class="nx-dz">).
+   Depth comes from layers, not neon: a slate-navy base, slightly lighter
+   raised surfaces with a thin top light and a soft shadow, one teal accent,
+   and colour only where it carries meaning (red flags, warnings).
+   Text contrast: headings ~16:1, body ~11:1, secondary ~6:1 on the surfaces.
+   Light Tailwind utilities are restyled in dark-zone.generated.css.
+   Screen only: print stays black on white.
    ========================================================================== */
 @import "./dark-zone.generated.css";
 
 @media screen {
-  body:has(.nx-dz) { background: var(--nx-space); }
+  body:has(.nx-dz) { background: #0b1220; }
   body:has(.nx-dz) #main-content::before { display: none; }
 
   .nx-dz {
+    --dz-base: #0b1220;
+    --dz-surface: radial-gradient(120% 60% at 22% 0%, rgba(255, 255, 255, 0.07), transparent 60%), linear-gradient(180deg, #223252 0%, #182640 45%, #121c31 100%);
+    --dz-surface-hi: radial-gradient(120% 60% at 22% 0%, rgba(255, 255, 255, 0.1), transparent 60%), linear-gradient(180deg, #27395d 0%, #1b2a46 45%, #142037 100%);
+    --dz-line: rgba(148, 163, 184, 0.16);
+    --dz-line-hi: rgba(45, 212, 191, 0.5);
+    --dz-head: #f1f5f9;
+    --dz-body: #cbd5e1;
+    --dz-mute: #94a3b8;
+    --dz-accent: #2dd4bf;
+    --dz-accent-text: #5eead4;
+    --dz-elev: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 0 rgba(0, 0, 0, 0.5), inset 0 -18px 30px -18px rgba(0, 0, 0, 0.55), 0 5px 0 -1px #0a1222, 0 6px 0 -1px rgba(148, 163, 184, 0.12), 0 22px 36px -14px rgba(0, 0, 0, 0.85);
+    --dz-elev-hi: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.5), inset 0 -18px 30px -18px rgba(0, 0, 0, 0.55), 0 9px 0 -1px #0a1222, 0 10px 0 -1px rgba(45, 212, 191, 0.25), 0 36px 54px -18px rgba(0, 0, 0, 0.95);
     position: relative;
     isolation: isolate;
-    color: #dbe9f7;
+    color: var(--dz-body);
     color-scheme: dark;
     min-height: 100%;
+    overflow-x: clip;
     background:
-      radial-gradient(900px 520px at 8% 0%, rgba(46, 230, 214, 0.13), transparent 70%),
-      radial-gradient(820px 520px at 96% 12%, rgba(143, 124, 255, 0.14), transparent 70%),
-      radial-gradient(1000px 700px at 50% 100%, rgba(60, 200, 255, 0.07), transparent 70%),
-      linear-gradient(180deg, #030a17 0%, #061529 45%, #040d1d 100%);
+      radial-gradient(1000px 480px at 15% -8%, rgba(45, 212, 191, 0.07), transparent 70%),
+      radial-gradient(900px 480px at 92% -4%, rgba(56, 189, 248, 0.05), transparent 70%),
+      var(--dz-base);
   }
-  /* faint blueprint grid that fades out towards the bottom */
+
+  /* a floor grid receding into the distance at the top of the page */
   .nx-dz::before {
     content: "";
     position: absolute;
-    inset: 0;
+    left: -50%;
+    right: -50%;
+    top: 120px;
+    height: 900px;
     z-index: -1;
     pointer-events: none;
     background-image:
-      linear-gradient(rgba(120, 200, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(120, 200, 255, 0.05) 1px, transparent 1px);
-    background-size: 44px 44px;
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 40%, transparent 85%);
-    mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 40%, transparent 85%);
+      linear-gradient(rgba(94, 234, 212, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(94, 234, 212, 0.09) 1px, transparent 1px);
+    background-size: 64px 64px;
+    transform: perspective(700px) rotateX(62deg);
+    transform-origin: 50% 0;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 75%);
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 75%);
   }
-  .nx-dz ::selection { background: rgba(46, 230, 214, 0.35); color: #fff; }
 
-  /* headings and links */
-  .nx-dz h1, .nx-dz h2, .nx-dz h3, .nx-dz h4 { color: #f3f9ff; }
-  .nx-dz a:not([class]) { color: #7ff3e8; }
+  /* keycap depth: buttons, badges and the A–N strip sit on a visible edge and press down */
+  .nx-dz :is(.bg-teal-700, .bg-teal-600):is(.rounded-xl, .rounded-lg, .rounded-full),
+  .nx-dz .pna-editorial-card-cta {
+    background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 0 #0b4f4a, 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .nx-dz :is(.bg-teal-700, .bg-teal-600):is(.rounded-xl, .rounded-full):active { transform: translateY(3px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 0 #0b4f4a; }
+  .nx-dz .rounded-2xl.bg-navy-900.shadow-inner {
+    background: linear-gradient(180deg, #2a3d61, #17233a);
+    color: #5eead4;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 3px 0 #0a1222, 0 8px 14px -6px rgba(0, 0, 0, 0.8);
+  }
+  .nx-dz .bg-navy-800.text-teal-200 {
+    background: linear-gradient(180deg, #2dd4bf, #0f9488);
+    color: #042f2c;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 2px 0 #0b4f4a;
+  }
+  .nx-dz .rounded-full:is(.bg-teal-50, .bg-slate-100) { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 0 rgba(0, 0, 0, 0.45); }
+  .nx-dz .pna-editorial-filter, .nx-dz .dl-tab { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 3px 0 #0a1222; }
+  .nx-dz .pna-editorial-filter[aria-pressed="true"] { background: linear-gradient(180deg, #14b8a6, #0f766e); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 0 #0b4f4a; }
+
+  .nx-dz ::selection { background: rgba(45, 212, 191, 0.3); color: #fff; }
+
+  /* type */
+  .nx-dz :is(h1, h2, h3, h4)[class]:not([class*="text-red"]):not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-white"]),
+  .nx-dz :is(h1, h2, h3, h4):not([class]) { color: var(--dz-head); }
+  .nx-dz a:not([class]) { color: var(--dz-accent-text); text-underline-offset: 3px; }
   .nx-dz strong, .nx-dz b { color: inherit; }
 
-  /* glass cards: a top light edge and a powered-on glow on hover */
-  .nx-dz .rounded-2xl.border,
-  .nx-dz .rounded-3xl.border,
-  .nx-dz .rounded-xl.border {
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 44px -30px rgba(0, 0, 0, 0.9);
+  /* ---------- raised surfaces ---------- */
+  .nx-dz :is(.bg-white, .bg-white\/70, .bg-white\/80, .bg-white\/85, .bg-white\/90, .bg-white\/95):is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-\[1\.75rem\]),
+  .nx-dz .pna-editorial-card,
+  .nx-dz .pna-editorial-intro-item,
+  .nx-dz .pna-editorial-toolbar,
+  .nx-dz .pna-editorial-bottom a,
+  .nx-dz .pna-editorial-bottom aside {
+    background: var(--dz-surface);
+    border-color: var(--dz-line);
+    box-shadow: var(--dz-elev);
   }
-  .nx-dz a.rounded-2xl.border:hover,
-  .nx-dz a.rounded-3xl.border:hover,
-  .nx-dz a.rounded-xl.border:hover,
-  .nx-dz button.rounded-2xl.border:hover {
-    border-color: rgba(46, 230, 214, 0.55);
-    box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.25), 0 20px 50px -24px rgba(46, 230, 214, 0.45);
+  /* coloured panels (red flags, notes, tips) keep their meaning colour, with the same elevation */
+  .nx-dz :is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-\[1\.75rem\]).border:not(.bg-white) { box-shadow: var(--dz-elev); }
+
+  /* clickable surfaces lift a little */
+  .nx-dz :is(a, button):is(.rounded-xl, .rounded-2xl, .rounded-3xl).border,
+  .nx-dz .pna-editorial-card,
+  .nx-dz .pna-editorial-bottom a {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   }
-  .nx-dz .shadow-sm, .nx-dz .shadow-md, .nx-dz .shadow-lg, .nx-dz .shadow-xl { --tw-shadow-color: rgba(0, 0, 0, 0.6); }
+  @media (hover: hover) {
+    .nx-dz a:is(.rounded-xl, .rounded-2xl, .rounded-3xl).border:hover,
+    .nx-dz .pna-editorial-card:hover,
+    .nx-dz .pna-editorial-bottom a:hover {
+      transform: perspective(1200px) rotateX(3deg) translateY(-5px);
+      background: var(--dz-surface-hi);
+      border-color: var(--dz-line-hi);
+      box-shadow: var(--dz-elev-hi);
+    }
+  }
+  .nx-dz a:is(.rounded-xl, .rounded-2xl, .rounded-3xl).border:focus-visible,
+  .nx-dz .pna-editorial-card:focus-visible { outline: 2px solid var(--dz-accent); outline-offset: 3px; }
+
+  /* card titles: white; teal only when hovered */
+  .nx-dz a.group strong { color: var(--dz-head); }
+  .nx-dz a.group:hover strong { color: var(--dz-accent-text); }
+
+  /* labels: quiet, readable pills */
+  .nx-dz .rounded-full.bg-teal-50 { background: rgba(45, 212, 191, 0.12); color: var(--dz-accent-text); }
+  .nx-dz .rounded-full.bg-slate-100 { background: rgba(148, 163, 184, 0.14); color: var(--dz-body); }
+
+  /* Conditions A–N strip: sections in the chapter are filled, missing ones are outlined and faint */
+  .nx-dz .bg-slate-100.text-slate-300 { background: transparent; color: rgba(148, 163, 184, 0.4); box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.16); }
 
   /* tables */
-  .nx-dz table { color: #d3e4f5; }
-  .nx-dz thead, .nx-dz th { color: #eef7ff; }
-  .nx-dz td, .nx-dz th { border-color: rgba(150, 205, 255, 0.14); }
-  .nx-dz .bg-table td[data-label]:not([data-label=""])::before { color: #7ff3e8; }
+  .nx-dz table { color: var(--dz-body); }
+  .nx-dz th { color: var(--dz-head); }
+  .nx-dz td, .nx-dz th { border-color: var(--dz-line); }
+  .nx-dz .bg-table thead { background: #1e2b42; }
+  .nx-dz .bg-table tbody tr:nth-child(odd) { background: transparent; }
+  .nx-dz .bg-table tbody tr:nth-child(even) { background: rgba(148, 163, 184, 0.05); }
+  .nx-dz .bg-table td[data-label]:not([data-label=""])::before { color: var(--dz-accent-text); }
 
   /* form controls */
   .nx-dz input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
   .nx-dz select,
   .nx-dz textarea {
-    color: #eef7ff;
-    background-color: rgba(8, 22, 44, 0.85);
-    border-color: rgba(150, 205, 255, 0.22);
+    color: var(--dz-head);
+    background-color: #0f1828;
+    border-color: rgba(148, 163, 184, 0.24);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
   }
-  .nx-dz input::placeholder, .nx-dz textarea::placeholder { color: #7f98b4; }
-  .nx-dz input:focus, .nx-dz select:focus, .nx-dz textarea:focus { border-color: #2ee6d6; box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.2); }
-  .nx-dz option { background: #0a1f3d; color: #eef7ff; }
-  .nx-dz input[type="checkbox"], .nx-dz input[type="radio"], .nx-dz input[type="range"] { accent-color: #2ee6d6; }
+  .nx-dz input::placeholder, .nx-dz textarea::placeholder { color: #7c8aa0; }
+  .nx-dz input:focus, .nx-dz select:focus, .nx-dz textarea:focus { border-color: var(--dz-accent); box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18); }
+  .nx-dz option { background: #131d30; color: var(--dz-head); }
+  .nx-dz input[type="checkbox"], .nx-dz input[type="radio"], .nx-dz input[type="range"] { accent-color: var(--dz-accent); }
 
-  /* details / summary */
-  .nx-dz summary { color: #eef7ff; }
-  .nx-dz hr { border-color: rgba(150, 205, 255, 0.14); }
+  .nx-dz summary { color: var(--dz-head); }
+  .nx-dz hr { border-color: var(--dz-line); }
 
   /* MSK Special Tests: arbitrary light colours */
-  .nx-dz .bg-\[\#f8fbfc\], .nx-dz .bg-\[\#f0f9f7\] { background-color: rgba(46, 230, 214, 0.06); }
-  .nx-dz .bg-\[\#fffaf0\] { background-color: rgba(255, 198, 92, 0.08); }
-  .nx-dz .to-\[\#eaf8f5\] { --tw-gradient-to: rgba(46, 230, 214, 0.08) var(--tw-gradient-to-position); }
-  .nx-dz .text-\[\#153a4a\], .nx-dz .text-\[\#102e40\], .nx-dz .text-\[\#133f52\] { color: #eef7ff; }
-  .nx-dz .text-\[\#0c625e\] { color: #7ff3e8; }
-  .nx-dz .border-\[\#dce9e8\], .nx-dz .border-\[\#cfe8e5\], .nx-dz .border-\[\#cde9e6\] { border-color: rgba(46, 230, 214, 0.25); }
+  .nx-dz .bg-\[\#f8fbfc\], .nx-dz .bg-\[\#f0f9f7\] { background-color: rgba(45, 212, 191, 0.06); }
+  .nx-dz .bg-\[\#fffaf0\] { background-color: rgba(251, 191, 36, 0.07); }
+  .nx-dz .to-\[\#eaf8f5\] { --tw-gradient-to: rgba(45, 212, 191, 0.06) var(--tw-gradient-to-position); }
+  .nx-dz .text-\[\#153a4a\], .nx-dz .text-\[\#102e40\], .nx-dz .text-\[\#133f52\] { color: var(--dz-head); }
+  .nx-dz .text-\[\#0c625e\] { color: var(--dz-accent-text); }
+  .nx-dz .border-\[\#dce9e8\], .nx-dz .border-\[\#cfe8e5\], .nx-dz .border-\[\#cde9e6\] { border-color: rgba(45, 212, 191, 0.22); }
 
   /* ---------- Manual Therapy encyclopedia (.pna-editorial) ---------- */
-  .nx-dz .pna-editorial { --editorial-ink: #eaf6ff; color: #eaf6ff; }
-  .nx-dz .pna-editorial-intro-item,
-  .nx-dz .pna-editorial-toolbar,
-  .nx-dz .pna-editorial-bottom a,
-  .nx-dz .pna-editorial-bottom aside,
-  .nx-dz .pna-editorial-no-results {
-    border-color: rgba(150, 205, 255, 0.16);
-    background: linear-gradient(150deg, rgba(20, 44, 80, 0.75), rgba(9, 22, 44, 0.85));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 40px -28px rgba(0, 0, 0, 0.9);
-    color: #bcd0e6;
-  }
-  .nx-dz .pna-editorial-intro-item strong, .nx-dz .pna-editorial-bottom h2 { color: #f3f9ff; }
-  .nx-dz .pna-editorial-bottom p { color: #a9bfd6; }
-  .nx-dz .pna-editorial-bottom a:hover { border-color: rgba(46, 230, 214, 0.5); }
-  .nx-dz .pna-editorial-search { background: rgba(4, 14, 30, 0.8); border-color: rgba(150, 205, 255, 0.2); }
-  .nx-dz .pna-editorial-search input { color: #eef7ff; background: transparent; border: 0; box-shadow: none; }
-  .nx-dz .pna-editorial-search:focus-within { border-color: #2ee6d6; box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.18); }
-  .nx-dz .pna-editorial-filter { background: rgba(255, 255, 255, 0.05); border-color: rgba(150, 205, 255, 0.2); color: #cfe0f2; }
-  .nx-dz .pna-editorial-filter:hover { background: rgba(46, 230, 214, 0.12); border-color: rgba(46, 230, 214, 0.5); }
-  .nx-dz .pna-editorial-filter[aria-pressed="true"] { color: #04101f; background: var(--nx-grad); border-color: transparent; }
-  .nx-dz .pna-editorial-family-symbol { background: linear-gradient(155deg, rgba(46, 230, 214, 0.18), rgba(143, 124, 255, 0.2)); border-color: rgba(46, 230, 214, 0.35); }
-  .nx-dz .pna-editorial-family-title { color: #f3f9ff; }
-  .nx-dz .pna-editorial-family-count { color: #8fb0d0; }
-  .nx-dz .pna-editorial-card {
-    background: linear-gradient(120deg, rgba(14, 34, 66, 0.95) 0%, rgba(9, 24, 48, 0.95) 55%, rgba(18, 30, 70, 0.95) 100%);
-    border-color: rgba(150, 205, 255, 0.16);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 22px 50px -30px rgba(0, 0, 0, 0.95);
-  }
-  .nx-dz .pna-editorial-card:hover, .nx-dz .pna-editorial-card:focus-visible {
-    border-color: rgba(46, 230, 214, 0.55);
-    box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.25), 0 26px 60px -26px rgba(46, 230, 214, 0.4);
-  }
-  .nx-dz .pna-editorial-card:focus-visible { outline-color: #2ee6d6; }
-  .nx-dz .pna-editorial-card-art { opacity: 0.6; mix-blend-mode: screen; }
-  .nx-dz .pna-editorial-card-art:after { background: linear-gradient(90deg, rgba(9, 24, 48, 0.95), rgba(9, 24, 48, 0.2)); }
-  .nx-dz .pna-editorial-card-number { color: #8fb0d0; }
-  .nx-dz .pna-editorial-level { background: rgba(143, 124, 255, 0.18); color: #d6ccff; }
-  .nx-dz .pna-editorial-card-title { color: #f3f9ff; }
-  .nx-dz .pna-editorial-card-hook { color: #b4c9df; }
-  .nx-dz .pna-editorial-evidence { background: rgba(255, 198, 92, 0.12); color: #ffd98a; }
-  .nx-dz .pna-editorial-illustration-note { color: #8fb0d0; }
+  .nx-dz .pna-editorial { --editorial-ink: var(--dz-head); color: var(--dz-head); }
+  .nx-dz .pna-editorial-intro-item, .nx-dz .pna-editorial-toolbar, .nx-dz .pna-editorial-bottom a, .nx-dz .pna-editorial-bottom aside { color: var(--dz-body); }
+  .nx-dz .pna-editorial-intro-item strong, .nx-dz .pna-editorial-bottom h2 { color: var(--dz-head); }
+  .nx-dz .pna-editorial-bottom p { color: var(--dz-mute); }
+  .nx-dz .pna-editorial-no-results { border-color: var(--dz-line); background: #131d30; color: var(--dz-body); }
+  .nx-dz .pna-editorial-search { background: #0f1828; border-color: rgba(148, 163, 184, 0.24); }
+  .nx-dz .pna-editorial-search input { color: var(--dz-head); background: transparent; border: 0; box-shadow: none; }
+  .nx-dz .pna-editorial-search:focus-within { border-color: var(--dz-accent); box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18); }
+  .nx-dz .pna-editorial-filter { background: linear-gradient(180deg, #223252, #182640); border-color: var(--dz-line); color: var(--dz-body); }
+  .nx-dz .pna-editorial-filter:hover { border-color: var(--dz-line-hi); color: var(--dz-head); }
+  .nx-dz .pna-editorial-family-symbol { background: rgba(45, 212, 191, 0.1); border-color: rgba(45, 212, 191, 0.28); }
+  .nx-dz .pna-editorial-family-title { color: var(--dz-head); }
+  .nx-dz .pna-editorial-family-count { color: var(--dz-mute); }
+  .nx-dz .pna-editorial-card-art { opacity: 0.5; }
+  .nx-dz .pna-editorial-card-art:after { background: linear-gradient(90deg, #152034 0%, rgba(21, 32, 52, 0.55) 45%, rgba(21, 32, 52, 0.1) 100%); }
+  .nx-dz .pna-editorial-card-number { color: var(--dz-mute); }
+  .nx-dz .pna-editorial-level { background: rgba(148, 163, 184, 0.14); color: var(--dz-body); }
+  .nx-dz .pna-editorial-card-title { color: var(--dz-head); }
+  .nx-dz .pna-editorial-card-hook { color: var(--dz-body); }
+  .nx-dz .pna-editorial-evidence { background: rgba(251, 191, 36, 0.1); color: #fcd34d; }
+  .nx-dz .pna-editorial-illustration-note { color: var(--dz-mute); }
 
   /* ---------- Manual Therapy demo lab / technique pages ---------- */
-  .nx-dz .dl-tab { background: rgba(255, 255, 255, 0.05); border-color: rgba(150, 205, 255, 0.22); color: #cfe0f2; }
-  .nx-dz .dl-tab:hover { border-color: #2ee6d6; }
-  .nx-dz .dl-hint { color: #a9bfd6; }
-  .nx-dz .cl-kicker { color: #7ff3e8; }
-  .nx-dz .cl-title { color: #f3f9ff; }
+  .nx-dz .dl-tab { background: #18243a; border-color: var(--dz-line); color: var(--dz-body); }
+  .nx-dz .dl-tab:hover { border-color: var(--dz-line-hi); }
+  .nx-dz .dl-hint { color: var(--dz-mute); }
+  .nx-dz .cl-kicker { color: var(--dz-accent-text); }
+  .nx-dz .cl-title { color: var(--dz-head); }
 }
 
-@media screen and (prefers-reduced-transparency: reduce) {
-  .nx-dz .bg-white { background-color: #0b1b34; }
+@media (prefers-reduced-motion: reduce) {
+  .nx-dz a.border, .nx-dz .pna-editorial-card { transition: none; }
+  .nx-dz a.border:hover, .nx-dz .pna-editorial-card:hover { transform: none !important; }
 }
