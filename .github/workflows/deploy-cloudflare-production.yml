@@ -349,6 +349,12 @@ jobs:
             echo "::warning::SUPABASE_SERVICE_ROLE_KEY is not configured; reminder e-mails will be skipped."
           fi
 
+          # Members-only mode: the deploy's own live checks pass the gate with this token, derived from the server key (scripts/ci-members-pass.sh), so no extra secret is needed.
+          members_pass="$(bash scripts/ci-members-pass.sh)"
+          if [ -n "$members_pass" ]; then
+            printf '%s' "$members_pass" | npx wrangler secret put MEMBERS_CI_TOKEN
+          fi
+
           # The chats call Claude from inside the Worker, so the key must exist in the Worker runtime, never in the build or the browser.
           if [ -n "${ANTHROPIC_API_KEY}" ]; then
             printf '%s' "$ANTHROPIC_API_KEY" | npx wrangler secret put ANTHROPIC_API_KEY
@@ -483,6 +489,21 @@ jobs:
             printf '%s' "$result" | jq -c '{success, errors}' 2>/dev/null || true
             manual "The Cloudflare token could not switch Encrypted Client Hello ${DESIRED_ECH}."
           fi
+
+      - name: Prepare the members-only pass for the live checks (does nothing while the website is open to everyone)
+        if: steps.auth.outputs.ready == 'true'
+        shell: bash
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          token="$(bash scripts/ci-members-pass.sh)"
+          if [ -z "$token" ]; then echo "::warning::No server key: the live checks will fail while members-only mode is on."; exit 0; fi
+          echo "::add-mask::$token"
+          echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/pna-curl"
+          printf 'cookie = "pna_ci=%s"\n' "$token" > "$RUNNER_TEMP/pna-curl/.curlrc"
+          echo "CURL_HOME=$RUNNER_TEMP/pna-curl" >> "$GITHUB_ENV"
 
       - name: Smoke test production
         if: steps.auth.outputs.ready == 'true'
@@ -655,6 +676,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Prepare the members-only pass (does nothing while the website is open to everyone)
+        shell: bash
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          token="$(bash scripts/ci-members-pass.sh)"
+          if [ -n "$token" ]; then echo "::add-mask::$token"; echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"; fi
       - name: Check every hub page and a sample of each section on production
         run: node scripts/verify-seo-production.mjs
 
@@ -676,6 +704,13 @@ jobs:
         run: |
           npm install --prefix "$PNA_BROWSER_QA_DIR" --no-package-lock playwright@1.56.1
           "$PNA_BROWSER_QA_DIR/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Prepare the members-only pass (does nothing while the website is open to everyone)
+        shell: bash
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          token="$(bash scripts/ci-members-pass.sh)"
+          if [ -n "$token" ]; then echo "::add-mask::$token"; echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"; fi
       - name: Cut the connection in a real browser and check what the visitor sees
         run: NODE_PATH="$PNA_BROWSER_QA_DIR/node_modules" node scripts/verify-offline-production.cjs https://physionexusacademy.com
 
@@ -697,6 +732,13 @@ jobs:
         run: |
           npm install --prefix "$PNA_BROWSER_QA_DIR" --no-package-lock playwright@1.56.1
           "$PNA_BROWSER_QA_DIR/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Prepare the members-only pass (does nothing while the website is open to everyone)
+        shell: bash
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          token="$(bash scripts/ci-members-pass.sh)"
+          if [ -n "$token" ]; then echo "::add-mask::$token"; echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"; fi
       - name: Verify supplied images and production at five viewport widths
         run: node scripts/verify-pathway-production.mjs
       - name: Save live screenshots and verification report

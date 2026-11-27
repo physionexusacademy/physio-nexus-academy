@@ -17,12 +17,18 @@ export type GateEnv = {
   NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
   /** "1" forces members-only on whatever the database says (an emergency switch in the Worker's variables). */
   MEMBERS_ONLY?: string;
-  /** Optional: a request carrying this value in `x-pna-ci` passes (the deploy's own checks of the live site). */
+  /**
+   * Optional: a request carrying this value passes (the deploy's own checks of the live site), in the `x-pna-ci` header or the `pna_ci` cookie. The cookie is
+   * what the browser checks use, because a cookie only goes to this site while a header would be sent to every site a page loads from. The deploy sets it
+   * (scripts/ci-members-pass.sh: derived from the server key, so there is no extra secret to keep).
+   */
   MEMBERS_CI_TOKEN?: string;
 };
 export type GateIo = { fetch?: typeof fetch; now?: () => number };
 
 const MODE_TTL_MS = 30_000;
+/** The deploy checks' pass as a cookie (see MEMBERS_CI_TOKEN). */
+export const CI_COOKIE = "pna_ci";
 const DEFAULT_SUPABASE = "https://oabckudgmzbbbbhkeolk.supabase.co";
 let known: { value: boolean; at: number } | null = null;
 
@@ -55,7 +61,7 @@ export async function gateRequest(request: Request, env: GateEnv, io: GateIo = {
   const url = new URL(request.url);
   if (isPublicPath(url.pathname)) return null;
   if (!(await membersOnly(env, io))) return null;
-  if (env.MEMBERS_CI_TOKEN && request.headers.get("x-pna-ci") === env.MEMBERS_CI_TOKEN) return null;
+  if (env.MEMBERS_CI_TOKEN && (request.headers.get("x-pna-ci") === env.MEMBERS_CI_TOKEN || readCookie(request.headers.get("cookie"), CI_COOKIE) === env.MEMBERS_CI_TOKEN)) return null;
 
   const secret = env.SUPABASE_SERVICE_ROLE_KEY ?? "";
   const nowSeconds = Math.floor((io.now ?? Date.now)() / 1000);

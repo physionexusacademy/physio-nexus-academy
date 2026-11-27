@@ -79,7 +79,7 @@ export const chapterMap: ChapterPlace[] = [
   { file: "v09c03", kind: "condition", slug: "spinal-cord-injury-rehabilitation", area: "neuro", type: "neuro", aka: "SCI paraplegia tetraplegia quadriplegia" },
   { file: "v09c04", kind: "condition", slug: "parkinsons-disease", area: "neuro", type: "neuro", aka: "Parkinson's tremor freezing of gait" },
   { file: "v09c05", kind: "condition", slug: "multiple-sclerosis", area: "neuro", type: "neuro", aka: "MS demyelination fatigue" },
-  { file: "v09c06", kind: "condition", slug: "guillain-barre-syndrome", area: "neuro", type: "neuro", was: ["diabetic-peripheral-neuropathy"], aka: "GBS peripheral neuropathy diabetic neuropathy numb feet ascending weakness" },
+  { file: "v09c06", kind: "condition", slug: "guillain-barre-syndrome", area: "neuro", type: "neuro", aka: "GBS acute inflammatory polyneuropathy ascending weakness" },
   { file: "v09c07", kind: "condition", slug: "vestibular-bppv", area: "neuro", type: "neuro", aka: "BPPV vertigo dizziness vestibular hypofunction chakkar" },
   // Volume 10 — Cardiopulmonary Physiotherapy
   { file: "v10c01", kind: "foundation", slug: "cardiopulmonary-assessment-and-exercise-monitoring" },
@@ -114,15 +114,18 @@ export const chapterMap: ChapterPlace[] = [
 
 /** Guides that were on the site but are not in the book (owner's decision, 27 Nov 2026): their addresses go to the guide list, or to the chapter that covers them. */
 export const retired: Record<string, string> = {
-  "temporomandibular-disorder": "/conditions",
+  // nearest page on the site for each (owner's choice, 27 Nov 2026); rheumatoid arthritis has no close page, so it goes to the guide list
+  "temporomandibular-disorder": "/manual-therapy/regions/by-region/tmj-and-craniofacial",
   "rotator-cuff-full-thickness-tear": "/conditions/rotator-cuff-tendinopathy",
-  "ankylosing-spondylitis-rehabilitation": "/conditions",
+  "ankylosing-spondylitis-rehabilitation": "/conditions/thoracic-spine-pain",
   "achilles-tendon-rupture": "/conditions/achilles-tendinopathy",
-  "posterior-tibial-tendon-dysfunction": "/conditions",
-  "fibromyalgia": "/conditions",
-  "post-mastectomy-rehabilitation": "/conditions",
+  "posterior-tibial-tendon-dysfunction": "/learn/tendinopathy-load-management",
+  "fibromyalgia": "/learn/pain-science-basics",
+  "post-mastectomy-rehabilitation": "/manual-therapy/regions/mld-upper-limb",
   "rheumatoid-arthritis": "/conditions",
-  "lymphoedema": "/conditions",
-  "lower-limb-amputation-rehabilitation": "/conditions",
-  "bells-palsy": "/conditions",
+  "lymphoedema": "/manual-therapy/manual-lymphatic-drainage",
+  "lower-limb-amputation-rehabilitation": "/learn/gait-cycle",
+  "bells-palsy": "/learn/umn-vs-lmn",
+  // not the same disease as Guillain-Barré syndrome (which used to list it): the lesson on localising a nerve problem fits better
+  "diabetic-peripheral-neuropathy": "/learn/radiculopathy-myelopathy-neuropathy",
 };
