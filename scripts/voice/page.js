@@ -77,8 +77,8 @@ async function espeak(text) {
   }
   esp.set_voice("hi", "hi");
   const r = esp.synthesize_ipa(text);
-  // eSpeak separates sounds with "_" and writes nasal vowels as one character; Kokoro wants plain IPA with combining marks
-  return (r.ipa || "").replace(/_/g, "").replace(/\s*\n+\s*/g, " ").normalize("NFD").replace(/ɦ/g, "h").replace(/ɭ/g, "l").replace(/ɲ/g, "n").trim();
+  // eSpeak separates sounds with "_", writes nasal vowels as one character and can put a syllable dot inside a word ("ʌr.səʈʰ"); Kokoro wants plain IPA
+  return (r.ipa || "").replace(/_/g, "").replace(/\s*\n+\s*/g, " ").normalize("NFD").replace(/ɦ/g, "h").replace(/ɭ/g, "l").replace(/ɲ/g, "n").replace(/(?<=\p{L})\.(?=\p{L})/gu, "").trim();
 }
 
 /** The sounds of one clause (keeps punctuation: it shapes the intonation). */
