@@ -13,6 +13,8 @@ import { AiConversations } from "./AiConversations";
 import { FormCheckSets } from "./FormCheckSets";
 import type { AdminFormCheckSet } from "@/lib/rehabverse/api";
 import { HistoryBrief } from "./HistoryBrief";
+import { HistoryReview } from "./HistoryReview";
+import { EngagementPanel } from "./EngagementPanel";
 import { ProgrammeBuilder } from "./ProgrammeBuilder";
 import { OutcomesPanel } from "./OutcomesPanel";
 import { ResearchConsent } from "./ResearchConsent";
@@ -177,6 +179,7 @@ export function AdminPatientRecord({ data, outcomes = null, formcheck = null, st
       {latest ? (
         <Section id="brief" title="History brief" aside={<span className="rv-chip rv-chip-navy">for the first visit</span>}>
           <HistoryBrief patient={patient} assessment={latest} conversation={intakeChat} />
+          <HistoryReview patientId={patient.id} assessmentId={latest.id} aiOrganised={!!intakeChat} />
         </Section>
       ) : null}
 
@@ -192,6 +195,12 @@ export function AdminPatientRecord({ data, outcomes = null, formcheck = null, st
       {outcomes && ["cleared_for_programme", "programme_created", "in_review", "submitted"].includes(latest?.status ?? "") ? (
         <Section id="outcomes" title="Outcome measures" aside={outcomes.plan ? <span className="rv-chip rv-chip-navy">{outcomes.plan.items.length} followed</span> : <span className="rv-chip">not set</span>}>
           <OutcomesPanel patientId={patient.id} outcomes={outcomes} regions={latest?.regions ?? []} preferredLanguage={patient.preferred_language} />
+        </Section>
+      ) : null}
+
+      {programmes.length ? (
+        <Section id="engagement" title="Activity record" aside={<span className="rv-chip">same for every patient</span>}>
+          <EngagementPanel patientId={patient.id} />
         </Section>
       ) : null}
 

@@ -300,10 +300,37 @@ export async function submitOutcomeAction(input: { instrument: string; timepoint
       console.error("REHAB_OUTCOME", error.message);
       return { ok: false, error: "failed" };
     }
-    return { ok: true, saved: Boolean((data as { saved?: boolean } | null)?.saved) };
+    const saved = Boolean((data as { saved?: boolean } | null)?.saved);
+    if (saved) await logEngagement("outcome_sent");
+    return { ok: true, saved };
   } catch (e) {
     return fail(e);
   }
+}
+
+/* ─────────────────────────────── engagement (research: the same record in both arms) ─────────────────────────────── */
+
+const ENGAGEMENT_EVENTS = ["day_opened", "exercise_opened", "exercise_done", "day_left", "feedback_sent", "outcome_sent"] as const;
+type EngagementEvent = (typeof ENGAGEMENT_EVENTS)[number];
+
+/** Never throws and never blocks the patient: a missing table (before the migration) or a network error only skips the record. */
+async function logEngagement(event: EngagementEvent, sessionId?: string | null, exercise?: string | null, seconds?: number | null) {
+  try {
+    await rpc("rehab_log_engagement", {
+      p_event: event,
+      p_session_id: sessionId && /^[0-9a-f-]{36}$/i.test(sessionId) ? sessionId : null,
+      p_exercise: exercise && /^[a-z0-9_-]{1,80}$/.test(exercise) ? exercise : null,
+      p_seconds: typeof seconds === "number" && Number.isFinite(seconds) ? Math.max(0, Math.min(7200, Math.round(seconds))) : null,
+    });
+  } catch {
+    /* the record is for research; the patient's day goes on */
+  }
+}
+
+/** Called by the day page for every patient, whatever their arm: the code path is the same with the AI switch on or off. */
+export async function logEngagementAction(event: string, sessionId?: string | null, exercise?: string | null, seconds?: number | null): Promise<void> {
+  if (!(ENGAGEMENT_EVENTS as readonly string[]).includes(event) || event === "feedback_sent" || event === "outcome_sent") return;
+  await logEngagement(event as EngagementEvent, sessionId, exercise, seconds);
 }
 
 /* ─────────────────────────────── daily feedback ─────────────────────────────── */
@@ -325,6 +352,7 @@ export async function submitFeedbackAction(sessionId: string, input: FeedbackInp
   try {
     const r = await rpc<{ status: string; flag_level?: string; auto_released?: boolean; duplicate: boolean }>("rehab_submit_feedback", { p_session_id: sessionId, p_payload: input });
     if (!r.duplicate) {
+      await logEngagement("feedback_sent", sessionId);
       const concerning = !!r.flag_level && r.flag_level !== "none";
       await alertClinic(
         concerning ? "RehabVerse: patient reported a safety symptom — urgent" : "RehabVerse: daily feedback received",

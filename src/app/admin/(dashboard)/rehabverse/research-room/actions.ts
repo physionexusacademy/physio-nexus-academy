@@ -85,3 +85,19 @@ export async function screenOutAction(patientId: string, outcome: "excluded" | "
 export async function overrideAiAction(patientId: string, aiOn: boolean, reason: string): Promise<Result> {
   try { await rpc("rehab_admin_study_override_ai", { p_patient_id: patientId, p_ai_on: aiOn, p_reason: reason }); return { ok: true }; } catch (e) { return fail(e); }
 }
+
+/* ---------- phase 2: the blinded outcome assessor ---------- */
+export type StudyAssessor = { user_id: string; email: string; active: boolean; added_at: string };
+
+export async function assessorsAction(): Promise<Result<{ assessors: StudyAssessor[] }>> {
+  try { return { ok: true, assessors: await rpc<StudyAssessor[]>("rehab_admin_study_assessors") }; } catch (e) { return fail(e); }
+}
+
+export async function setAssessorAction(email: string, active: boolean): Promise<Result> {
+  try {
+    await rpc("rehab_admin_study_set_assessor", { p_email: String(email ?? "").trim().slice(0, 200), p_active: !!active });
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof RehabError ? e.message.replace(/^rehab:\s*/, "") : "failed" };
+  }
+}

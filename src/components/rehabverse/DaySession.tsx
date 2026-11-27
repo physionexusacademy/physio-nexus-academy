@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronRight, Clock, Lock, Play, Send, ShieldAlert, Sparkles, Stethoscope } from "lucide-react";
-import { submitFeedbackAction, submitFollowupAction } from "@/app/rehabverse/actions";
+import { logEngagementAction, submitFeedbackAction, submitFollowupAction } from "@/app/rehabverse/actions";
 import { closeCheckinChatAction } from "@/app/rehabverse/ai-actions";
 import { checkinPending } from "@/lib/rehabverse/ai/checkin-shared";
 import type { FollowupPoint, SessionDetail, SessionExercise } from "@/lib/rehabverse/api-types";
@@ -84,7 +84,7 @@ function Urgent({ level }: { level: string }) {
 
 /* ───────────────────────── feedback form ───────────────────────── */
 
-function FeedbackForm({ data, exercises }: { data: SessionDetail; exercises: SessionExercise[] }) {
+function FeedbackForm({ data, exercises, secondsOn }: { data: SessionDetail; exercises: SessionExercise[]; secondsOn: (exerciseId: string) => number }) {
   const [lang] = useRvLang();
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -122,6 +122,8 @@ function FeedbackForm({ data, exercises }: { data: SessionDetail; exercises: Ses
         exercises: exercises.map((e) => ({ session_exercise_id: e.id, done: !!done[e.id], sets_done: done[e.id] ? e.sets ?? undefined : undefined, reps_done: done[e.id] ? e.reps ?? undefined : undefined })),
       });
       if (!r.ok) return setError(r.code ?? "failed");
+      // research record, the same for every patient: each exercise ticked as done, with the time its guide was on screen
+      if (!r.duplicate) for (const e of exercises) if (done[e.id]) void logEngagementAction("exercise_done", data.session.id, e.exercise_id, secondsOn(e.exercise_id));
       setResult({ status: r.status, flagLevel: r.flagLevel, autoReleased: r.autoReleased });
       router.refresh();
     });
@@ -265,6 +267,50 @@ function Checkin({ sessionId, point, ai }: { sessionId: string; point: FollowupP
 /* ───────────────────────── page ───────────────────────── */
 
 /** `ai`: the AI assistants (exercise coach, check-in assistant) are offered because the admin switched AI on for this patient; the server checks again on every message. */
+/**
+ * Research record of the day, the same for every patient whatever their arm (the AI switch is not read here): the day opened, each exercise opened,
+ * and the time the page was on screen (sent as "day_left" each time the page is hidden). Returns the seconds each exercise's guide was on screen.
+ */
+function useDayEngagement(sessionId: string, open: boolean, exerciseId: string | undefined) {
+  const perExercise = useRef<Record<string, number>>({});
+  const current = useRef<{ id: string | undefined; since: number | null }>({ id: undefined, since: null });
+  const pageSince = useRef<number | null>(null);
+  const flush = () => {
+    const now = performance.now();
+    const c = current.current;
+    if (c.id && c.since !== null) perExercise.current[c.id] = (perExercise.current[c.id] ?? 0) + (now - c.since) / 1000;
+    c.since = document.visibilityState === "visible" ? now : null;
+  };
+  useEffect(() => {
+    if (!open) return;
+    void logEngagementAction("day_opened", sessionId);
+    pageSince.current = document.visibilityState === "visible" ? performance.now() : null;
+    const onVisibility = () => {
+      flush();
+      if (document.visibilityState === "hidden" && pageSince.current !== null) {
+        const seconds = (performance.now() - pageSince.current) / 1000;
+        pageSince.current = null;
+        if (seconds >= 1) void logEngagementAction("day_left", sessionId, null, seconds);
+      } else if (document.visibilityState === "visible") pageSince.current = performance.now();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      onVisibility();
+      if (pageSince.current !== null) { const seconds = (performance.now() - pageSince.current) / 1000; pageSince.current = null; if (seconds >= 1) void logEngagementAction("day_left", sessionId, null, seconds); }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, sessionId]);
+  useEffect(() => {
+    if (!open || !exerciseId) return;
+    flush();
+    current.current = { id: exerciseId, since: document.visibilityState === "visible" ? performance.now() : null };
+    void logEngagementAction("exercise_opened", sessionId, exerciseId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, exerciseId, sessionId]);
+  return (id: string) => { flush(); return Math.round(perExercise.current[id] ?? 0); };
+}
+
 export function DaySession({ data, ai = false, preferredLanguage }: { data: SessionDetail; ai?: boolean; preferredLanguage?: "en" | "ru" }) {
   const [lang] = useRvLang();
   useDefaultLanguage(preferredLanguage);
@@ -275,6 +321,7 @@ export function DaySession({ data, ai = false, preferredLanguage }: { data: Sess
   const exercise = exercises[selected];
   const def = exercise ? defs?.get(exercise.exercise_id) : undefined;
   const side = exercise?.side === "left" ? "left" : exercise?.side === "right" ? "right" : undefined;
+  const secondsOn = useDayEngagement(session.id, access === "open", exercise?.exercise_id);
 
   useEffect(() => {
     let cancelled = false;
@@ -374,7 +421,7 @@ export function DaySession({ data, ai = false, preferredLanguage }: { data: Sess
                 <section className="rv-glass p-5" aria-labelledby="fb">
                   <h2 id="fb" className="font-heading text-lg font-bold text-navy-800"><T en="After your session: feedback" ru="Session ke baad: feedback" /></h2>
                   <p className="mb-4 mt-1 flex items-start gap-2 text-[13px] leading-5 text-slate-600"><span className="min-w-0 flex-1">{GUIDE.feedback[0].say[lang]}</span><ListenLine text={GUIDE.feedback[0].say[lang]} lang={lang as Lang} /></p>
-                  <FeedbackForm data={data} exercises={exercises} />
+                  <FeedbackForm data={data} exercises={exercises} secondsOn={secondsOn} />
                 </section>
               ) : null}
 
