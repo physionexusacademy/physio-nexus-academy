@@ -189,6 +189,8 @@ for (const place of chapterMap) {
   const file = path.join(chapterDir, `${place.file}.json`);
   if (!fs.existsSync(file)) throw new Error(`content/book/map.ts: ${place.file} has no chapter file`);
   const chapter = read(file) as BookChapter;
+  // Rows the PDF split at a page bottom (kept in content/ only so the word check can count them) never reach the site.
+  for (const sec of chapter.sections) for (const b of sec.blocks) if (b.t === "table") delete b.clipped;
   const helpFile = path.join(helpDir, `${place.slug}.json`);
   const help = fs.existsSync(helpFile) ? (read(helpFile) as BookHelp) : null;
   if (help && help.chapter !== place.file) throw new Error(`${path.relative(root, helpFile)} is for ${help.chapter}, not ${place.file}`);

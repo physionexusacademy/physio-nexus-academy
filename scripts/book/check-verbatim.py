@@ -59,7 +59,7 @@ def json_words(rec):
                 for _ in range(b.get("repeats", 0)):
                     for cell in b["rows"][0]:
                         out += words(cell)
-                for r in b["rows"]:
+                for r in b["rows"] + b.get("clipped", []):
                     for c in r:
                         out += words(c)
             elif t == "callout":

@@ -205,7 +205,7 @@ def page_items(page):
             if any(row):
                 out_rows.append(row)
         if out_rows:
-            items.append({"k": "table", "y": top, "y1": bottom, "rows": out_rows, "header": head})
+            items.append({"k": "table", "y": top, "y1": bottom, "rows": out_rows, "header": head, "clipped": bottom > 786})
     items.extend(ln for li, ln in enumerate(lines) if li not in used)
     items.sort(key=lambda i: (round(i["y"]), i.get("x", 0)))
     return items
@@ -311,6 +311,15 @@ def fix_title(t: str) -> str:
     return t
 
 
+def subseq(short: str, long: str) -> bool:
+    it = iter(long)
+    return all(ch in it for ch in short)
+
+
+def letters(row) -> str:
+    return re.sub(r"[^A-Za-z]", "", plain(" ".join(row)))
+
+
 def group(raw):
     """Turn the stream of lines and tables into blocks: p, ul, ol, h (subhead), callout, flow, table."""
     blocks = []
@@ -319,6 +328,13 @@ def group(raw):
         last = blocks[-1] if blocks else None
         if it["k"] == "table":
             rows = it["rows"]
+            # A row the PDF split at the page bottom shows only the top of its letters there ("S ddl b bldd ...") and is printed again in full
+            # at the top of the next page: drop the clipped copy.
+            if last and last["t"] == "table" and prev is not None and prev["k"] == "table" and prev.get("clipped") and len(last["rows"]) > 1:
+                first = rows[1] if it["header"] and len(rows) > 1 else rows[0]
+                cut = letters(last["rows"][-1])
+                if cut and subseq(cut, letters(first)) and len(cut) < len(letters(first)):
+                    last.setdefault("clipped", []).append(last["rows"].pop())
             # a table that continues on the next page (or below a header-only piece): same column count, nothing in between
             if last and last["t"] == "table" and prev is not None and prev["k"] == "table" and len(rows[0]) == len(last["rows"][0]):
                 if it["header"] and rows[0] == last["rows"][0]:

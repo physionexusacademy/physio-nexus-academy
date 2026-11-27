@@ -58,7 +58,7 @@ function RefBadge({ text }: { text: string }) {
   const detail = text.replace(/^\[|\]$/g, "");
   return (
     <span
-      className="bg-ref mx-0.5 inline-flex translate-y-[-1px] items-center gap-0.5 rounded-full border border-amber-300/80 bg-amber-50 px-1.5 py-px align-middle text-[10px] font-bold uppercase tracking-wide text-amber-800"
+      className="bg-ref mx-0.5 inline-flex translate-y-[-1px] items-center gap-0.5 rounded-full border border-amber-300/80 bg-amber-50 px-1.5 py-px align-middle text-[11px] font-bold uppercase tracking-wide text-amber-800"
       title={`${detail}: the book marks this claim for a source check before it is treated as established.`}
       aria-label={`${detail}`}
     >
@@ -605,7 +605,7 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
               { k: "Red flags", v: flagCount },
             ].map((x) => (
               <div key={x.k} className="rounded-2xl bg-white/10 px-3 py-2.5 ring-1 ring-white/15 backdrop-blur">
-                <dt className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-200/90">{x.k}</dt>
+                <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-teal-200/90">{x.k}</dt>
                 <dd className="font-mono text-2xl font-bold text-white">{x.v}</dd>
               </div>
             ))}
@@ -663,7 +663,7 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
         {/* DESKTOP RAIL */}
         <nav aria-label="Sections of this chapter" className="bg-noprint hidden lg:block">
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-3xl border border-slate-200 bg-white/80 p-2 shadow-sm backdrop-blur">
-            <p className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">In this chapter</p>
+            <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">In this chapter</p>
             <ul className="space-y-0.5">
               {nav.map((n) => {
                 const Icon = SECTION_ICON[n.key] ?? ClipboardCheck;
@@ -694,7 +694,7 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
                 <header className="mb-4 flex items-center gap-3">
                   <span className={`grid h-11 w-11 flex-none place-items-center rounded-2xl font-mono text-sm font-bold shadow-inner ${red ? "bg-red-600 text-white" : "bg-navy-900 text-teal-300"}`}>{letter || <Icon className="h-5 w-5" aria-hidden="true" />}</span>
                   <div className="min-w-0">
-                    {letter ? <p className={`text-[10px] font-bold uppercase tracking-[0.18em] ${red ? "text-red-600" : "text-teal-700"}`}>Section {letter}</p> : null}
+                    {letter ? <p className={`text-[11px] font-bold uppercase tracking-[0.18em] ${red ? "text-red-600" : "text-teal-700"}`}>Section {letter}</p> : null}
                     <h2 id={`h-${s.key}`} className={`text-xl font-bold leading-tight sm:text-2xl ${red ? "text-red-900" : "text-navy-900"}`}>{name}</h2>
                   </div>
                 </header>

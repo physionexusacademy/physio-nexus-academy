@@ -47,7 +47,7 @@ function chapterWords(c: BookChapter): string[] {
       else if (b.t === "ol") b.items.forEach((it, i) => out.push(`${b.start + i}.`, ...words(it)));
       else if (b.t === "table") {
         for (let r = 0; r < (b.repeats ?? 0); r++) b.rows[0].forEach((cell) => out.push(...words(cell)));
-        b.rows.forEach((row) => row.forEach((cell) => out.push(...words(cell))));
+        [...b.rows, ...(b.clipped ?? [])].forEach((row) => row.forEach((cell) => out.push(...words(cell))));
       } else if (b.t === "callout") { out.push(...words(b.label)); b.body.forEach((x) => out.push(...words(x))); }
       else if (b.t === "flow") b.steps.forEach((x) => out.push(...words(x)));
     }
@@ -124,6 +124,8 @@ for (const f of helps) {
     assert.ok(!/[؀-ۿ]/.test(text), `content/book/help/${f}: section "${k}" must be Roman Urdu (Latin letters), not Urdu script`);
   }
 }
+
+for (const place of chapterMap) assert.ok(helps.includes(`${place.slug}.json`), `${place.slug}: no Roman Urdu help (content/book/help/${place.slug}.json)`);
 
 // 5. Every old address still lands somewhere: a guide, or a redirect (renamed or retired guides).
 const redirects = json<{ source: string; destination: string }[]>("src/lib/conditions/generated/redirects.json");

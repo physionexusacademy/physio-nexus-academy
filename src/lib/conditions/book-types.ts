@@ -7,7 +7,7 @@ export type BookBlock =
   | { t: "h"; text: string }
   | { t: "ul"; items: string[] }
   | { t: "ol"; start: number; items: string[] }
-  | { t: "table"; head: boolean; rows: string[][]; repeats?: number }
+  | { t: "table"; head: boolean; rows: string[][]; repeats?: number; clipped?: string[][] }
   | { t: "callout"; kind: "teacher" | "trap" | "memory" | "stop" | "case" | "why" | "note"; label: string; body: string[] }
   | { t: "flow"; steps: string[] };
 

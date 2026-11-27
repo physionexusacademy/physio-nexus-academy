@@ -33,7 +33,7 @@ export const WING_UR: Record<AcademyWing["id"], { label: string; tagline: string
 export const PLACE_UR: Record<string, { label?: string; description: string }> = {
   "/learn": { description: "Mushkil concepts, step by step, checks ke saath" },
   "/manual-therapy": { description: "35 techniques: haath, dosage, safety" },
-  "/conditions": { description: "63 conditions, 3 levels, stage-wise rehab plans" },
+  "/conditions": { description: "68 conditions aur 16 foundation chapters, kitab se, A se N tak" },
   "/msk-special-tests": { description: "Kaise karein aur result kaise parhein" },
   "/clinical-visual-atlas": { description: "Anatomy aur pathology ke visuals" },
   "/resources": { label: "Books aur Resources", description: "Books, PDFs aur study material" },
