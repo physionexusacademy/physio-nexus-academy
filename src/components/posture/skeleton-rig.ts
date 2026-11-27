@@ -1,8 +1,9 @@
 /**
- * The 3D skeleton of the Full Posture Scan, built from real bone models and posed from the measured points.
+ * The 3D skeleton of the Full Posture Scan: PNA's own anatomical bone models, posed from the measured points.
  *
- * The bones are the BodyParts3D adult male reference skeleton (source and licence texts are kept in docs/posture-skeleton/), prepared once
- * by scripts/posture-skeleton/build.mjs: every vertebra piece and every rib is its own piece, so the spine can curve and the thorax can follow it.
+ * The bones are modelled bone by bone from adult male reference proportions by scripts/posture-skeleton/own/ (build_parts.py, then assemble.mjs): every vertebra and
+ * every rib is its own piece, so the spine can curve and the thorax can follow it. Each vertex carries a baked ambient-occlusion shade (COLOR_0) so holes and
+ * creases (the orbits, the foramina, the joint surfaces) read as such.
  *
  * It is NOT a scan of the person. It is a standard skeleton, moved through the points the phone could measure (head, shoulders, hips, knees): a lean or a sideways shift
  * is carried along the spine, the head is moved forward on the neck, the shoulder girdle and pelvis are tilted, the knees are bent or moved in or out. Every angle comes from
@@ -16,16 +17,18 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
 import type { Region, Severity, SkeletonPose } from "@/lib/posture/scan";
 
 export type Severities = Record<Region, Severity | null>;
-type Meta = { pieces: { name: string; group: string; centroid: [number, number, number]; tris: number }[]; joints: Record<string, [number, number, number]> };
+type Meta = { pieces: { name: string; group: string; material?: string; centroid: [number, number, number]; tris: number }[]; joints: Record<string, [number, number, number]> };
 
 const BASE = "/posture-skeleton";
 const DEG = Math.PI / 180;
 const BONE = 0xe6dac0;
+const CARTILAGE = 0xc9d6d8;
+const TOOTH = 0xf4efe2;
 const AMBER = 0xf2b134;
 const CORAL = 0xe9553f;
 const smooth = (t: number) => { const x = Math.max(0, Math.min(1, t)); return x * x * (3 - 2 * x); };
 
-type Piece = { pivot: THREE.Group; group: string; name: string; rest: THREE.Vector3 };
+type Piece = { pivot: THREE.Group; group: string; name: string; rest: THREE.Vector3; base: number };
 
 export type SkeletonRig = {
   root: THREE.Group;
@@ -56,7 +59,7 @@ export async function loadSkeleton(url = `${BASE}/skeleton-male.glb`): Promise<S
   const material = (c: number, tinted: boolean) => {
     const key = c * 2 + (tinted ? 1 : 0);
     let m = mats.get(key);
-    if (!m) { m = new THREE.MeshStandardMaterial({ color: c, roughness: 0.58, metalness: 0, emissive: tinted ? c : 0x000000, emissiveIntensity: tinted ? 0.22 : 0 }); mats.set(key, m); }
+    if (!m) { m = new THREE.MeshStandardMaterial({ color: c, roughness: 0.58, metalness: 0, vertexColors: true, emissive: tinted ? c : 0x000000, emissiveIntensity: tinted ? 0.22 : 0 }); mats.set(key, m); }
     return m;
   };
   for (const mesh of nodes) {
@@ -68,13 +71,14 @@ export async function loadSkeleton(url = `${BASE}/skeleton-male.glb`): Promise<S
     world.premultiply(new THREE.Matrix4().makeTranslation(-rest.x, -rest.y, -rest.z));
     mesh.removeFromParent();
     world.decompose(mesh.position, mesh.quaternion, mesh.scale);
-    (mesh as THREE.Mesh).material = material(BONE, false);
+    const base = info.material === "cartilage" ? CARTILAGE : info.material === "tooth" ? TOOTH : BONE;
+    (mesh as THREE.Mesh).material = material(base, false);
     (mesh as THREE.Mesh).geometry.computeBoundingSphere();
     const pivot = new THREE.Group();
     pivot.position.copy(rest);
     pivot.add(mesh);
     root.add(pivot);
-    const piece: Piece = { pivot, group: info.group, name, rest: rest.clone() };
+    const piece: Piece = { pivot, group: info.group, name, rest: rest.clone(), base };
     pieces.push(piece);
     byName.set(name, piece);
   }
@@ -129,8 +133,7 @@ export async function loadSkeleton(url = `${BASE}/skeleton-male.glb`): Promise<S
     for (const piece of pieces) {
       const g = piece.group, c = piece.rest;
       if (SPINE_PIECES.test(piece.name) || /^ribs_/.test(g)) {
-        // each vertebra piece and each rib follows the spine at its own height; the lowest lumbar piece (a part of the sacrum) goes with the pelvis
-        if (piece.name === "spine_lumbar_00") { const pelvisC = new THREE.Vector3(0, 0.93, -0.035); const e = rotAbout(c, new THREE.Quaternion(), pelvisC, new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, hipRoll))); place(piece, e.p, e.q); continue; }
+        // each vertebra and each rib (with its costal cartilage) follows the spine at its own height
         const { p, q } = carry(c, c.y);
         place(piece, p, q);
         continue;
@@ -195,12 +198,12 @@ export async function loadSkeleton(url = `${BASE}/skeleton-male.glb`): Promise<S
     const tint = (s: Severity | null) => (s === 2 ? CORAL : s === 1 ? AMBER : null);
     const paint = (piece: Piece, s: Severity | null) => {
       const c = tint(s);
-      piece.pivot.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).material = c === null ? material(BONE, false) : material(c, true); });
+      piece.pivot.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).material = c === null ? material(piece.base, false) : material(c, true); });
     };
     for (const piece of pieces) {
       if (/^spine_cervical_/.test(piece.name)) paint(piece, sev.neck);
-      else if (/^spine_(thoracic|lumbar)_/.test(piece.name) && piece.name !== "spine_lumbar_00") paint(piece, sev.trunk);
-      else if (piece.group === "pelvis" || piece.name === "spine_lumbar_00") paint(piece, sev.pelvis);
+      else if (/^spine_(thoracic|lumbar)_/.test(piece.name)) paint(piece, sev.trunk);
+      else if (piece.group === "pelvis") paint(piece, sev.pelvis);
       else if (/^(clavicle|scapula)_/.test(piece.group)) paint(piece, sev.shoulders);
       else if (piece.group === "patella_l") paint(piece, sev.leftKnee);
       else if (piece.group === "patella_r") paint(piece, sev.rightKnee);

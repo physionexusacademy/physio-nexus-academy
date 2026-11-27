@@ -63,6 +63,8 @@ if only in ("", "lower"):
         f, lo, hi = fn()
         V, F = sdf_to_mesh(f, lo, hi, step=step, target=tgt)
         both(name, group, V, F)
+    for side in ("l", "r"):
+        manifest["pieces"][f"pelvis_hip_{side}"]["group"] = "pelvis"   # both hip bones move and tint with the pelvis as one ring
     for fn, name, step, tgt in [(lower.sacrum, "pelvis_sacrum", 0.0007, 12000), (lower.coccyx, "pelvis_coccyx", 0.0006, 2000)]:
         f, lo, hi = fn()
         V, F = sdf_to_mesh(f, lo, hi, step=step, target=tgt)

@@ -184,13 +184,24 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
     for (const call of code.match(/\bfetch\([^)]*\)/g) ?? []) assert.match(call, /BASE|posture-skeleton/, `${name}: fetch may only read the skeleton's static files`);
     assert.doesNotMatch(code, /\bfetch\([^)]*\{[^)]*(method|body)/, `${name}: nothing is posted`);
   }
-  // the bones are real; their source and licence texts are kept in docs/
+  // the bones are PNA's own model, rebuilt from the scripts in the repository
   for (const f of ["skeleton-male.glb", "skeleton-meta.json"]) assert.ok(fs.existsSync(`public/posture-skeleton/${f}`), `public/posture-skeleton/${f} must exist`);
-  for (const f of ["ATTRIBUTION.md", "LICENSE-MODELS.md"]) assert.ok(fs.existsSync(`docs/posture-skeleton/${f}`), `docs/posture-skeleton/${f} must be kept in the repository`);
+  for (const f of ["build_parts.py", "assemble.mjs", "sdf.py", "mesh.py", "spine.py", "thorax.py", "upper.py", "lower.py", "skull.py"]) assert.ok(fs.existsSync(`scripts/posture-skeleton/own/${f}`), `scripts/posture-skeleton/own/${f} must be kept`);
   assert.ok(fs.statSync("public/posture-skeleton/skeleton-male.glb").size < 3 * 1024 * 1024, "the skeleton file must stay under 3 MB");
   const meta = JSON.parse(read("public/posture-skeleton/skeleton-meta.json"));
-  for (const need of ["skull", "pelvis", "femur_l", "femur_r", "clavicle_l", "scapula_r", "sternum"]) assert.ok(meta.pieces.some((p: { group: string }) => p.group === need), `the skeleton must have ${need}`);
-  assert.ok(meta.pieces.filter((p: { name: string }) => /^spine_/.test(p.name)).length >= 30 && meta.pieces.filter((p: { name: string }) => /^ribs_l_/.test(p.name)).length === 12, "the spine and the 12 ribs must be separate pieces");
+  assert.match(meta.source, /PNA's own/, "the skeleton must be PNA's own model");
+  for (const need of ["skull", "mandible", "teeth", "pelvis", "femur_l", "femur_r", "patella_l", "lower_leg_r", "foot_l", "clavicle_l", "scapula_r", "humerus_l", "forearm_r", "hand_l", "sternum"]) assert.ok(meta.pieces.some((p: { group: string }) => p.group === need), `the skeleton must have ${need}`);
+  const count = (re: RegExp) => meta.pieces.filter((p: { name: string }) => re.test(p.name)).length;
+  assert.deepEqual([count(/^spine_cervical_/), count(/^spine_thoracic_/), count(/^spine_lumbar_/)], [7, 12, 5], "7 cervical, 12 thoracic and 5 lumbar vertebrae, each its own piece");
+  assert.ok(count(/^ribs_l_/) === 12 && count(/^ribs_r_/) === 12, "12 ribs a side, each its own piece");
+  assert.ok(count(/^costal_l_/) === 10 && count(/^costal_r_/) === 10, "costal cartilage for ribs 1 to 10 (11 and 12 float)");
+  for (const p of meta.pieces as { name: string; centroid: number[] }[]) assert.ok(p.centroid.every(Number.isFinite) && p.centroid[1] > -0.01 && p.centroid[1] < 1.8, `${p.name} sits inside the body's height`);
+  // left and right are mirror images
+  for (const p of meta.pieces as { name: string; centroid: number[] }[]) {
+    const m = /_l(_\d+)?$/.exec(p.name); if (!m) continue;
+    const twin = (meta.pieces as { name: string; centroid: number[] }[]).find((q) => q.name === p.name.replace(/_l(_\d+)?$/, `_r${m[1] ?? ""}`));
+    assert.ok(twin && Math.abs(twin.centroid[0] + p.centroid[0]) < 1e-4 && Math.abs(twin.centroid[1] - p.centroid[1]) < 1e-4, `${p.name} has a mirrored right twin`);
+  }
   for (const j of ["hip_l", "knee_l", "ankle_l", "shoulder_l", "hip_r", "knee_r", "ankle_r", "shoulder_r"]) assert.ok(Array.isArray(meta.joints[j]), `joint ${j}`);
   assert.doesNotMatch(report, /\.src\b[^;]*localStorage|localStorage[^;]*photos|photos[^;]*localStorage/, "pictures must never be written to storage");
   assert.match(report, /toSaved\(summary\)/, "only the numbers are saved");

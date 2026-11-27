@@ -111,10 +111,12 @@ def coccyx():
 
 def femur():
     head = sphere(HJ, 0.0236)
-    neck = capsule(HJ, (0.128, 0.874, -0.028), 0.0155, 0.0170)
+    # neck: rises ~45 degrees toward the head, so the neck-shaft angle is ~128 degrees (normal 125-135), and points ~11 degrees forward (anteversion)
+    neck = smooth_union(capsule(HJ, (0.121, 0.864, -0.028), 0.0150, 0.0165), capsule((0.115, 0.870, -0.027), (0.128, 0.856, -0.029), 0.0170, 0.0175), k=0.006)
     gt = ellipsoid((0.139, 0.884, -0.031), (0.0125, 0.0215, 0.0175))
     lt = capsule((0.116, 0.848, -0.032), (0.106, 0.842, -0.044), 0.0085, 0.0055)
-    intertroch = capsule((0.140, 0.874, -0.046), (0.110, 0.846, -0.042), 0.0050)
+    intertroch = capsule((0.140, 0.874, -0.046), (0.112, 0.844, -0.042), 0.0050)       # intertrochanteric crest (behind)
+    interline = capsule((0.134, 0.872, -0.016), (0.113, 0.846, -0.016), 0.0030)       # intertrochanteric line (in front)
     shaft = chain([(0.127, 0.850, -0.026), (0.118, 0.760, -0.017), (0.105, 0.660, -0.011), (0.094, 0.570, -0.014), (0.086, 0.515, -0.020)],
                   [0.0160, 0.0137, 0.0128, 0.0135, 0.0170], k=0.006)
     aspera = chain([(0.121, 0.790, -0.033), (0.108, 0.680, -0.026), (0.097, 0.590, -0.028)], [0.0032, 0.0040, 0.0030], k=0.004)
@@ -125,7 +127,7 @@ def femur():
     latc = ellipsoid((0.103, 0.481, -0.031), (0.0130, 0.0200, 0.0275))
     mede = sphere((0.049, 0.491, -0.025), 0.0080)
     late = sphere((0.116, 0.493, -0.026), 0.0068)
-    shape = smooth_union(head, neck, gt, lt, intertroch, shaft, aspera, metaph, medc, latc, mede, late, k=0.006)
+    shape = smooth_union(head, neck, gt, lt, intertroch, interline, shaft, aspera, metaph, medc, latc, mede, late, k=0.006)
     groove = capsule((0.083, 0.520, 0.012), (0.083, 0.468, 0.004), 0.0090)
     notch = box((0.083, 0.463, -0.040), (0.0090, 0.0160, 0.0200), r=0.004)
     fovea = sphere(HJ + np.array([-0.020, -0.008, 0.002]), 0.0040)

@@ -126,11 +126,11 @@ def hand():
     bones = []
     # carpals: proximal row (scaphoid, lunate, triquetrum, pisiform) and distal row (trapezium, trapezoid, capitate, hamate with its hook)
     for c, r in [((0.262, 0.846, 0.016), (0.0072, 0.0050, 0.0060)), ((0.249, 0.847, 0.012), (0.0060, 0.0055, 0.0065)),
-                 ((0.236, 0.845, 0.010), (0.0055, 0.0050, 0.0055)), ((0.233, 0.844, 0.019), (0.0040, 0.0040, 0.0040)),
+                 ((0.236, 0.845, 0.012), (0.0055, 0.0050, 0.0055)), ((0.233, 0.844, 0.021), (0.0040, 0.0040, 0.0040)),
                  ((0.267, 0.828, 0.022), (0.0055, 0.0060, 0.0050)), ((0.257, 0.828, 0.016), (0.0045, 0.0055, 0.0050)),
-                 ((0.246, 0.827, 0.012), (0.0060, 0.0085, 0.0065)), ((0.234, 0.828, 0.011), (0.0055, 0.0075, 0.0060)),
-                 ((0.234, 0.827, 0.020), (0.0025, 0.0040, 0.0030))]:
-        bones.append(ellipsoid(c, tuple(x * 1.32 for x in r) if r[0] > 0.003 else r))   # packed together into the compact carpal block
+                 ((0.246, 0.827, 0.012), (0.0060, 0.0085, 0.0065)), ((0.234, 0.828, 0.014), (0.0055, 0.0075, 0.0060)),
+                 ((0.233, 0.828, 0.024), (0.0025, 0.0040, 0.0030))]:   # ... hamate hook: the carpus arches, hollow on the palm side (carpal tunnel)
+        bones.append(ellipsoid(c, tuple(x * 1.55 for x in r) if r[0] > 0.003 else r))   # packed together into the compact carpal block
     # metacarpals and phalanges: (base, head) points with radii; fingers hang straight down, the palm faces forward
     fingers = {
         "index": [(0.257, 0.817, 0.016), (0.263, 0.753, 0.020), (0.265, 0.712, 0.020), (0.266, 0.687, 0.019), (0.266, 0.669, 0.018)],

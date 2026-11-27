@@ -15,10 +15,20 @@ Route: `/health-calculators/posture/scan`. Four short phone captures (front, sid
 - `src/components/posture/skeleton-rig.ts` and `SkeletonViewer.tsx`: load and pose the bones with three.js.
 - `next.config.js`: the camera policy covers `/health-calculators/posture/:path*`.
 
-## The bones (licence: read this before deploying)
-`public/posture-skeleton/skeleton-male.glb` (1.3 MB) and `skeleton-meta.json` are built by `scripts/posture-skeleton/build.mjs` from `models/anatomy-male.glb` of the npm package `open-anatomy-3d` 0.1.0. That model adapts **BodyParts3D 4.0** (The Database Center for Life Science), which the package states is **CC BY 4.0** (the package also notes that the 2013 OBJ headers still carry the older "CC BY-SA 2.1 Japan" notice). The package could not be checked against the original source from the build machine (the DBCLS site was not reachable), so **confirm the licence terms before the first deploy**. Owner decision (26 Nov 2026): no credit or licence text is shown on the website. The source and licence texts are kept in `docs/posture-skeleton/` (not served). CC BY 4.0 asks for credit; leaving it out is the owner's decision and risk.
+## The bones
+`public/posture-skeleton/skeleton-male.glb` and `skeleton-meta.json` are **PNA's own model**: no third-party mesh is used, so there is no outside licence or credit. Every bone is modelled from adult male reference anatomy (about 1.75 m tall) as a signed distance field and meshed. The script is `scripts/posture-skeleton/own/`:
+- `spine.py`: C1 to L5, each vertebra on its own. The body, pedicles, laminae, spinous and transverse processes, facets and foramina change level by level. C1 has the atlas ring, C2 has the dens and C2–C6 have bifid spines.
+- `thorax.py`: 12 ribs a side and the costal cartilages of ribs 1–10 (11 and 12 float), and the sternum (manubrium, body, xiphoid).
+- `upper.py`: clavicle, scapula (blade, spine, acromion, coracoid, glenoid), humerus, ulna, radius and the hand (carpals, metacarpals, phalanges).
+- `lower.py`: hip bones (ilium, ischium, pubis, acetabulum, obturator foramen), sacrum and coccyx, femur, patella, tibia, fibula and the foot (tarsals, metatarsals, phalanges, sesamoids).
+- `skull.py`: cranium (orbits, nasal aperture, zygomatic arches, mastoids, condyles, foramen magnum), mandible and 32 teeth.
+- `mesh.py` meshes each field (marching cubes), smooths and reduces it, and bakes ambient occlusion from the field into the vertex colours.
 
-To rebuild: `npm pack open-anatomy-3d`, unpack it in a scratch folder, then `node scripts/posture-skeleton/build.mjs <anatomy-male.glb> public/posture-skeleton <catalog.json>` (needs @gltf-transform/* and meshoptimizer; set `GLTF_TOOLS` to a folder that has them).
+To rebuild (Python 3 with numpy, scipy, scikit-image and fast-simplification; Node with @gltf-transform/* and meshoptimizer, folder set by `GLTF_TOOLS`):
+```
+python3 scripts/posture-skeleton/own/build_parts.py /tmp/parts
+node scripts/posture-skeleton/own/assemble.mjs /tmp/parts public/posture-skeleton
+```
 
 ## Known limits
 - Back and forward-bend views are the least tested: the pose model was checked on a bent-forward photo (shoulders, hips and ears read well; the far leg is partly hidden) but not on a back view. The page says when a measure could not be read.

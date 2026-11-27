@@ -16,14 +16,14 @@ import { createRequire } from "node:module";
 const tools = createRequire(path.join(process.env.GLTF_TOOLS ?? "/home/user/physio-nexus-academy/realistic-human-model", "package.json"));
 const { Document, NodeIO } = tools("@gltf-transform/core");
 const { EXTMeshoptCompression, KHRMeshQuantization } = tools("@gltf-transform/extensions");
-const { quantize, meshopt, weld } = tools("@gltf-transform/functions");
-const { MeshoptDecoder, MeshoptEncoder } = tools("meshoptimizer");
+const { quantize, meshopt, weld, simplify } = tools("@gltf-transform/functions");
+const { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } = tools("meshoptimizer");
 
 const [partsDir, outDir] = process.argv.slice(2);
 if (!partsDir || !outDir) { console.error("usage: assemble.mjs <parts-dir> <out-dir>"); process.exit(1); }
 const manifest = JSON.parse(fs.readFileSync(path.join(partsDir, "manifest.json"), "utf8"));
 
-await MeshoptDecoder.ready; await MeshoptEncoder.ready;
+await MeshoptDecoder.ready; await MeshoptEncoder.ready; await MeshoptSimplifier.ready;
 const io = new NodeIO().registerExtensions([EXTMeshoptCompression, KHRMeshQuantization]).registerDependencies({ "meshopt.decoder": MeshoptDecoder, "meshopt.encoder": MeshoptEncoder });
 const doc = new Document();
 const buffer = doc.createBuffer();
@@ -73,9 +73,14 @@ for (const name of names) {
   total += I.length / 3;
 }
 
-await doc.transform(weld(), quantize({ quantizePosition: 14, quantizeNormal: 10, quantizeColor: 8 }), meshopt({ encoder: MeshoptEncoder, level: "medium" }));
+// a light simplification (error under ~0.15 mm on a 10 cm piece) keeps every shape but drops flat-area triangles, so the file stays small for phones
+const RATIO = +(process.env.SKELETON_RATIO ?? 0.62);
+await doc.transform(weld(), simplify({ simplifier: MeshoptSimplifier, ratio: RATIO, error: 0.0015 }), quantize({ quantizePosition: 12, quantizeNormal: 8, quantizeColor: 8 }), meshopt({ encoder: MeshoptEncoder, level: "high" }));
+let simplified = 0; for (const m of doc.getRoot().listMeshes()) simplified += m.listPrimitives()[0].getIndices().getCount() / 3;
 fs.mkdirSync(outDir, { recursive: true });
 await io.write(path.join(outDir, "skeleton-male.glb"), doc);
 fs.writeFileSync(path.join(outDir, "skeleton-meta.json"), JSON.stringify(meta));
 const size = fs.statSync(path.join(outDir, "skeleton-male.glb")).size;
-console.log(`pieces: ${meta.pieces.length}, triangles: ${total}, skeleton-male.glb: ${(size / 1024).toFixed(0)} KiB, joints: ${Object.keys(meta.joints).length}`);
+for (const p of meta.pieces) { const m = doc.getRoot().listMeshes().find((x) => x.getName() === p.name); if (m) p.tris = m.listPrimitives()[0].getIndices().getCount() / 3; }
+fs.writeFileSync(path.join(outDir, "skeleton-meta.json"), JSON.stringify(meta));
+console.log(`pieces: ${meta.pieces.length}, triangles: ${total} -> ${simplified}, skeleton-male.glb: ${(size / 1024).toFixed(0)} KiB, joints: ${Object.keys(meta.joints).length}`);
