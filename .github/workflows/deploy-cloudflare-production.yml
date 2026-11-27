@@ -240,6 +240,9 @@ jobs:
       - name: Validate Research Room phase 2 (the same activity record in both arms, a blinded assessor who never sees the arm, history reviews)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:research-phase2-db
+      - name: Validate Research Room phase 3 (safety reports and deadlines, protocol deviations, a monitor that never shows outcome scores by group)
+        if: steps.auth.outputs.ready == 'true'
+        run: npm run validate:research-phase3-db
 
       - name: Validate members-only access (signed approval cookie, which pages stay open, the Worker gate runs before any cache, the approval panel is staff only)
         if: steps.auth.outputs.ready == 'true'

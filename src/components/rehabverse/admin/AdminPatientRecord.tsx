@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ClipboardCheck, FileClock, ShieldAlert } from "lucide-react";
 import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
@@ -8,6 +8,9 @@ import type { AdminAssessment, AdminOutcomes, AdminPatient, StoredSnapshot } fro
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
 import { StudyArmCard } from "@/components/rehabverse/research-room/StudyArmCard";
+import { SafetyReportForm } from "@/components/rehabverse/research-room/SafetyReportForm";
+import { DeviationForm } from "@/components/rehabverse/research-room/DeviationForm";
+import { safetyReportsAction, type SafetyReport } from "@/app/admin/(dashboard)/rehabverse/research-room/actions";
 import type { StudyPatient } from "@/lib/research-room";
 import { AiConversations } from "./AiConversations";
 import { FormCheckSets } from "./FormCheckSets";
@@ -103,6 +106,10 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
   const [description, setDescription] = useState("");
   const [action, setAction] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  // trial safety assessments (Research Room phase 3); null while loading or before the tables exist
+  const [safety, setSafety] = useState<SafetyReport[] | null>(null);
+  const loadSafety = useCallback(() => { safetyReportsAction(patient.patient.id).then((r) => setSafety(r.ok ? r.reports : null)); }, [patient.patient.id]);
+  useEffect(() => { loadSafety(); }, [loadSafety]);
   return (
     <div className="space-y-3">
       <ul className="space-y-2">
@@ -111,6 +118,7 @@ function AdverseEvents({ patient }: { patient: AdminPatient }) {
             <p className="flex flex-wrap items-center gap-2"><span className={"rv-chip " + (e.severity === "severe" ? "rv-chip-rose" : e.severity === "moderate" ? "rv-chip-amber" : "")}>{e.severity}</span><span className="rv-chip">{e.status}</span><span className="text-slate-500">{e.source} · {dt(e.created_at)}</span></p>
             <p className="mt-1 text-slate-800">{e.description}</p>
             {e.action_taken ? <p className="text-slate-600">Action: {e.action_taken}</p> : null}
+            {safety ? <SafetyReportForm eventId={e.id} eventDate={e.created_at} reports={safety} onSaved={loadSafety} /> : null}
             {e.status !== "closed" ? (
               <div className="mt-1.5 flex gap-2">
                 {e.status === "open" ? <button type="button" className="rv-pill" disabled={pending} onClick={() => start(async () => { await updateAdverseEventAction(e.id, "reviewed", ""); router.refresh(); })}>Mark reviewed</button> : null}
@@ -166,6 +174,7 @@ export function AdminPatientRecord({ data, outcomes = null, formcheck = null, st
           </div>
         </div>
         {study?.enrolled ? <StudyArmCard patientId={patient.id} study={study} aiNow={patient.ai_assist === "on" ? "on" : "off"} /> : <AiAssistSwitch patientId={patient.id} value={patient.ai_assist ?? "off"} />}
+        {study?.enrolled ? <DeviationForm patientId={patient.id} /> : null}
         {patient.research_consent === undefined ? null : ( // the column exists only once the board/research migration is applied
           <div className="mt-3 border-t border-slate-100 pt-3">
             <ResearchConsent key={String(patient.research_consent)} patientId={patient.id} consent={patient.research_consent} at={patient.research_consent_at ?? null} note={patient.research_consent_note ?? null} />

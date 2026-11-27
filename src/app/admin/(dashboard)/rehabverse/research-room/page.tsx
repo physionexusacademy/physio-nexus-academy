@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FlaskConical, ShieldAlert } from "lucide-react";
 import { getStudyLog, getStudyOverview, getStudyQueue } from "@/lib/rehabverse/api";
 import { AssessorPanel } from "@/components/rehabverse/research-room/AssessorPanel";
+import { MonitorPanel } from "@/components/rehabverse/research-room/MonitorPanel";
 import { EnrolPanel } from "@/components/rehabverse/research-room/EnrolPanel";
 import { FlowPanel } from "@/components/rehabverse/research-room/FlowPanel";
 import { SequencePanel } from "@/components/rehabverse/research-room/SequencePanel";
@@ -47,6 +48,7 @@ export default async function ResearchRoom() {
       {study ? <SequencePanel key={`l-${study.sequence_source}-${overview.list?.length}`} overview={overview} /> : null}
       {recruiting && queue && study?.consent_version ? <EnrolPanel waiting={queue.waiting} config={study.config} consentVersion={study.consent_version} /> : null}
       {study ? <FlowPanel overview={overview} log={log} /> : null}
+      {study ? <MonitorPanel /> : null}
       {study ? <AssessorPanel /> : null}
     </div>
   );
