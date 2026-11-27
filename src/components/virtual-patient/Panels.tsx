@@ -182,7 +182,7 @@ export function DiagnosePanel({ onSubmit }: { onSubmit: (answers: { diagnosis: n
   );
 }
 
-export function ResultPanel({ result, caseData, minutes, onRetry, onNext }: { result: SessionResult; caseData: VirtualCase; minutes: number; onRetry: () => void; onNext: () => void }) {
+export function ResultPanel({ result, caseData, minutes, onRetry, onNext, onTreat }: { result: SessionResult; caseData: VirtualCase; minutes: number; onRetry: () => void; onNext: () => void; onTreat?: () => void }) {
   return (
     <div>
       <div className={"rounded-3xl p-5 text-white " + (result.passed ? "bg-[#06402f]" : "bg-[#0a1f3d]")}>
@@ -219,6 +219,11 @@ export function ResultPanel({ result, caseData, minutes, onRetry, onNext }: { re
           <p className="text-sm font-bold text-navy-800">Take-home points</p>
           <ul className="mt-1 list-disc space-y-1 pl-5 text-[13px] leading-5 text-slate-700">{caseData.teaching.map((t) => <li key={t}>{t}</li>)}</ul>
         </div>
+      ) : null}
+      {onTreat ? (
+        <button type="button" onClick={onTreat} className="nx-btn nx-btn-primary mt-4 w-full" data-pna-vp-treat-start>
+          <Stethoscope className="h-4 w-4" aria-hidden="true" /> Now treat {caseData.patient.name.split(" ")[0]} in the PNA clinic <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </button>
       ) : null}
       <div className="mt-4 flex flex-wrap gap-2">
         <button type="button" onClick={onRetry} className="nx-btn nx-btn-light"><RotateCcw className="h-4 w-4" aria-hidden="true" /> Try again</button>

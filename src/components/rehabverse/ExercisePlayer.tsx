@@ -76,7 +76,7 @@ function focusPoint(room: ExamRoom, spec: string | undefined, side: Side): THREE
   return one(spec);
 }
 
-type Rig = {
+export type Rig = {
   segments: Segment[];
   /** What the body rests on, for the pose quality gate (see lib/rehabverse/pose-check.ts). */
   info: { supportY: number; surface: "plinth" | "mat" | "floor"; resting: boolean; plant?: "both" | "tested" | "other"; position: Motion["position"]; stepTop?: number; rest: RestLimb[] };
@@ -89,7 +89,7 @@ type Rig = {
 };
 
 /** Builds the 3D set for one exercise: position, props, ground/anchor solver and camera framing. */
-function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boolean): Rig {
+export function buildRig(room: ExamRoom, exercise: ExerciseDef, side: Side, faulty: boolean): Rig {
   const motion: Motion = exercise.motion;
   const moves = faulty && motion.mistake ? motion.mistake.moves : motion.moves;
   // Lying: every limb the exercise does not use rests on what is under it (see lib/rehabverse/resting.ts).
