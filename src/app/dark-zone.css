@@ -18,10 +18,10 @@
     color-scheme: dark;
     min-height: 100%;
     background:
-      radial-gradient(900px 520px at 8% 0%, rgba(46, 230, 214, 0.13), transparent 70%),
-      radial-gradient(820px 520px at 96% 12%, rgba(143, 124, 255, 0.14), transparent 70%),
-      radial-gradient(1000px 700px at 50% 100%, rgba(60, 200, 255, 0.07), transparent 70%),
-      linear-gradient(180deg, #030a17 0%, #061529 45%, #040d1d 100%);
+      radial-gradient(900px 560px at 6% -4%, rgba(0, 229, 255, 0.16), transparent 70%),
+      radial-gradient(820px 560px at 98% 8%, rgba(255, 64, 200, 0.14), transparent 70%),
+      radial-gradient(1100px 760px at 50% 108%, rgba(124, 92, 255, 0.2), transparent 70%),
+      linear-gradient(180deg, #07041a 0%, #0d0a30 45%, #060318 100%);
   }
   /* faint blueprint grid that fades out towards the bottom */
   .nx-dz::before {
@@ -31,8 +31,8 @@
     z-index: -1;
     pointer-events: none;
     background-image:
-      linear-gradient(rgba(120, 200, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(120, 200, 255, 0.05) 1px, transparent 1px);
+      linear-gradient(rgba(150, 140, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(150, 140, 255, 0.06) 1px, transparent 1px);
     background-size: 44px 44px;
     -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 40%, transparent 85%);
     mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 40%, transparent 85%);
@@ -44,20 +44,88 @@
   .nx-dz a:not([class]) { color: #7ff3e8; }
   .nx-dz strong, .nx-dz b { color: inherit; }
 
-  /* glass cards: a top light edge and a powered-on glow on hover */
-  .nx-dz .rounded-2xl.border,
-  .nx-dz .rounded-3xl.border,
-  .nx-dz .rounded-xl.border {
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 44px -30px rgba(0, 0, 0, 0.9);
-  }
-  .nx-dz a.rounded-2xl.border:hover,
-  .nx-dz a.rounded-3xl.border:hover,
-  .nx-dz a.rounded-xl.border:hover,
-  .nx-dz button.rounded-2xl.border:hover {
-    border-color: rgba(46, 230, 214, 0.55);
-    box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.25), 0 20px 50px -24px rgba(46, 230, 214, 0.45);
-  }
   .nx-dz .shadow-sm, .nx-dz .shadow-md, .nx-dz .shadow-lg, .nx-dz .shadow-xl { --tw-shadow-color: rgba(0, 0, 0, 0.6); }
+
+  /* ---------- 3D layer: raised glass slabs, neon edges, depth shadows ---------- */
+  .nx-dz {
+    --dz-slab: radial-gradient(130% 70% at 18% 0%, rgba(255, 255, 255, 0.11), transparent 55%),
+      linear-gradient(162deg, rgba(76, 66, 190, 0.5) 0%, rgba(34, 28, 100, 0.78) 40%, rgba(13, 10, 42, 0.95) 100%);
+    --dz-edge: linear-gradient(140deg, rgba(0, 229, 255, 0.8), rgba(124, 92, 255, 0.45) 48%, rgba(255, 64, 200, 0.7));
+    --dz-depth: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -14px 26px -14px rgba(0, 0, 0, 0.7),
+      0 1px 0 rgba(0, 229, 255, 0.12), 0 26px 44px -20px rgba(0, 0, 0, 0.9), 0 10px 34px -14px rgba(124, 92, 255, 0.4);
+    --dz-depth-hi: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -14px 26px -14px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(0, 229, 255, 0.25), 0 34px 60px -22px rgba(0, 0, 0, 0.95), 0 16px 48px -12px rgba(0, 229, 255, 0.45);
+  }
+  /* white surfaces become raised slabs with a neon gradient edge */
+  .nx-dz :is(.bg-white, .bg-white\/70, .bg-white\/80, .bg-white\/85, .bg-white\/90, .bg-white\/95):is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-\[1\.75rem\]),
+  .nx-dz .pna-editorial-card,
+  .nx-dz .pna-editorial-intro-item,
+  .nx-dz .pna-editorial-toolbar,
+  .nx-dz .pna-editorial-bottom a,
+  .nx-dz .pna-editorial-bottom aside {
+    border: 1px solid transparent;
+    border-color: transparent;
+    background: var(--dz-slab) padding-box, var(--dz-edge) border-box;
+    box-shadow: var(--dz-depth);
+  }
+  /* coloured panels (red flags, notes, tips) keep their colour but get the same depth */
+  .nx-dz :is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-\[1\.75rem\]).border:not(.bg-white) {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -10px 22px -12px rgba(0, 0, 0, 0.55), 0 18px 36px -20px rgba(0, 0, 0, 0.85);
+  }
+  /* clickable slabs lift and tilt towards the reader */
+  .nx-dz :is(a, button):is(.rounded-xl, .rounded-2xl, .rounded-3xl).border,
+  .nx-dz .pna-editorial-card {
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease;
+    transform-style: preserve-3d;
+  }
+  @media (hover: hover) {
+    .nx-dz a:is(.rounded-xl, .rounded-2xl, .rounded-3xl).border:hover,
+    .nx-dz .pna-editorial-card:hover {
+      transform: perspective(1000px) rotateX(4deg) translateY(-6px) scale(1.01);
+      box-shadow: var(--dz-depth-hi);
+      border-color: transparent;
+    }
+  }
+  .nx-dz a:is(.bg-white, .bg-white\/80, .bg-white\/90, .bg-white\/95):is(.rounded-xl, .rounded-2xl, .rounded-3xl).border:is(:hover, :focus-visible) {
+    border-color: transparent;
+    background: radial-gradient(130% 70% at 18% 0%, rgba(255, 255, 255, 0.16), transparent 55%),
+      linear-gradient(162deg, rgba(86, 76, 210, 0.58) 0%, rgba(40, 32, 116, 0.82) 40%, rgba(15, 12, 48, 0.95) 100%) padding-box,
+      linear-gradient(140deg, #22e6ff, #7c5cff 48%, #ff40c8) border-box;
+  }
+  .nx-dz a:is(.rounded-xl, .rounded-2xl, .rounded-3xl).border:active { transform: translateY(1px) scale(0.995); }
+
+  /* card titles: bright white with a soft neon glow */
+  .nx-dz a.group strong, .nx-dz .pna-editorial-card-title {
+    color: #ffffff;
+    text-shadow: 0 0 22px rgba(0, 229, 255, 0.28);
+  }
+  .nx-dz :is(h1, h2, h3)[class]:not([class*="text-red"]):not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-white"]) { color: #ffffff; }
+
+  /* small labels become raised pills */
+  .nx-dz .rounded-full:is([class*="bg-teal-50"], [class*="bg-cyan-50"], [class*="bg-violet-50"], [class*="bg-indigo-50"], [class*="bg-amber-50"], [class*="bg-emerald-50"], [class*="bg-rose-50"], [class*="bg-red-50"], .bg-slate-100, .bg-teal-100, .bg-amber-100, .bg-violet-100) {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -2px 4px rgba(0, 0, 0, 0.35), 0 3px 8px -3px rgba(0, 0, 0, 0.7);
+  }
+  .nx-dz .rounded-full.bg-teal-50 { background: linear-gradient(180deg, rgba(0, 229, 255, 0.24), rgba(0, 150, 200, 0.14)); color: #8ff6ff; }
+  .nx-dz .rounded-full.bg-slate-100 { background: linear-gradient(180deg, rgba(190, 170, 255, 0.22), rgba(124, 92, 255, 0.12)); color: #e2dcff; }
+
+  /* Conditions A–N strip: sections in the chapter glow, missing ones fade */
+  .nx-dz .bg-navy-800.text-teal-200 {
+    background: linear-gradient(180deg, #3ff0ff, #7c5cff);
+    color: #07041a;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 6px -1px rgba(0, 229, 255, 0.55);
+  }
+  .nx-dz .bg-slate-100.text-slate-300 { background: rgba(255, 255, 255, 0.04); color: rgba(200, 200, 255, 0.28); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5); }
+
+  /* encyclopedia toolbar filters and the buttons get a pressed-key look */
+  .nx-dz .pna-editorial-filter, .nx-dz .dl-tab {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 10px -4px rgba(0, 0, 0, 0.8);
+  }
+  .nx-dz .pna-editorial-filter[aria-pressed="true"] { background: linear-gradient(120deg, #22e6ff, #7c5cff 55%, #ff40c8); color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
+
+  /* tables: clean rows on the slab, a soft violet stripe and a glowing head */
+  .nx-dz .bg-table tbody tr:nth-child(odd) { background: transparent; }
+  .nx-dz .bg-table tbody tr:nth-child(even) { background: rgba(124, 92, 255, 0.1); }
+  .nx-dz .bg-table thead tr { background: linear-gradient(90deg, rgba(0, 229, 255, 0.16), rgba(124, 92, 255, 0.16)); }
 
   /* tables */
   .nx-dz table { color: #d3e4f5; }
@@ -92,40 +160,21 @@
 
   /* ---------- Manual Therapy encyclopedia (.pna-editorial) ---------- */
   .nx-dz .pna-editorial { --editorial-ink: #eaf6ff; color: #eaf6ff; }
-  .nx-dz .pna-editorial-intro-item,
-  .nx-dz .pna-editorial-toolbar,
-  .nx-dz .pna-editorial-bottom a,
-  .nx-dz .pna-editorial-bottom aside,
-  .nx-dz .pna-editorial-no-results {
-    border-color: rgba(150, 205, 255, 0.16);
-    background: linear-gradient(150deg, rgba(20, 44, 80, 0.75), rgba(9, 22, 44, 0.85));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 40px -28px rgba(0, 0, 0, 0.9);
-    color: #bcd0e6;
-  }
+  .nx-dz .pna-editorial-intro-item, .nx-dz .pna-editorial-toolbar, .nx-dz .pna-editorial-bottom a, .nx-dz .pna-editorial-bottom aside { color: #d5d8f4; }
+  .nx-dz .pna-editorial-no-results { border-color: rgba(170, 160, 255, 0.3); background: rgba(26, 22, 74, 0.7); color: #d5d8f4; }
   .nx-dz .pna-editorial-intro-item strong, .nx-dz .pna-editorial-bottom h2 { color: #f3f9ff; }
   .nx-dz .pna-editorial-bottom p { color: #a9bfd6; }
-  .nx-dz .pna-editorial-bottom a:hover { border-color: rgba(46, 230, 214, 0.5); }
   .nx-dz .pna-editorial-search { background: rgba(4, 14, 30, 0.8); border-color: rgba(150, 205, 255, 0.2); }
   .nx-dz .pna-editorial-search input { color: #eef7ff; background: transparent; border: 0; box-shadow: none; }
   .nx-dz .pna-editorial-search:focus-within { border-color: #2ee6d6; box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.18); }
   .nx-dz .pna-editorial-filter { background: rgba(255, 255, 255, 0.05); border-color: rgba(150, 205, 255, 0.2); color: #cfe0f2; }
   .nx-dz .pna-editorial-filter:hover { background: rgba(46, 230, 214, 0.12); border-color: rgba(46, 230, 214, 0.5); }
-  .nx-dz .pna-editorial-filter[aria-pressed="true"] { color: #04101f; background: var(--nx-grad); border-color: transparent; }
   .nx-dz .pna-editorial-family-symbol { background: linear-gradient(155deg, rgba(46, 230, 214, 0.18), rgba(143, 124, 255, 0.2)); border-color: rgba(46, 230, 214, 0.35); }
   .nx-dz .pna-editorial-family-title { color: #f3f9ff; }
   .nx-dz .pna-editorial-family-count { color: #8fb0d0; }
-  .nx-dz .pna-editorial-card {
-    background: linear-gradient(120deg, rgba(14, 34, 66, 0.95) 0%, rgba(9, 24, 48, 0.95) 55%, rgba(18, 30, 70, 0.95) 100%);
-    border-color: rgba(150, 205, 255, 0.16);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 22px 50px -30px rgba(0, 0, 0, 0.95);
-  }
-  .nx-dz .pna-editorial-card:hover, .nx-dz .pna-editorial-card:focus-visible {
-    border-color: rgba(46, 230, 214, 0.55);
-    box-shadow: 0 0 0 1px rgba(46, 230, 214, 0.25), 0 26px 60px -26px rgba(46, 230, 214, 0.4);
-  }
   .nx-dz .pna-editorial-card:focus-visible { outline-color: #2ee6d6; }
   .nx-dz .pna-editorial-card-art { opacity: 0.6; mix-blend-mode: screen; }
-  .nx-dz .pna-editorial-card-art:after { background: linear-gradient(90deg, rgba(9, 24, 48, 0.95), rgba(9, 24, 48, 0.2)); }
+  .nx-dz .pna-editorial-card-art:after { background: linear-gradient(90deg, rgba(20, 16, 60, 0.92), rgba(20, 16, 60, 0.15)); }
   .nx-dz .pna-editorial-card-number { color: #8fb0d0; }
   .nx-dz .pna-editorial-level { background: rgba(143, 124, 255, 0.18); color: #d6ccff; }
   .nx-dz .pna-editorial-card-title { color: #f3f9ff; }
@@ -139,6 +188,11 @@
   .nx-dz .dl-hint { color: #a9bfd6; }
   .nx-dz .cl-kicker { color: #7ff3e8; }
   .nx-dz .cl-title { color: #f3f9ff; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-dz a.border, .nx-dz .pna-editorial-card { transition: none; }
+  .nx-dz a.border:hover, .nx-dz .pna-editorial-card:hover { transform: none !important; }
 }
 
 @media screen and (prefers-reduced-transparency: reduce) {
