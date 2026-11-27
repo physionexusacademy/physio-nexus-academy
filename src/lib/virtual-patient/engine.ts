@@ -538,6 +538,29 @@ export class ExamRoom {
     this.scene.add(plinth);
   }
 
+  private clinic: THREE.Object3D | null = null;
+  /**
+   * Dresses the room as the PNA clinic (sign with the real logo, equipment, exercise corner): lib/virtual-patient/clinic.ts, loaded
+   * on demand so the Skills Lab and RehabVerse viewers that share this room stay light. `false` hides it again.
+   */
+  async setClinic(on: boolean) {
+    if (!on) {
+      if (this.clinic) this.clinic.visible = false;
+      this.invalidate();
+      return;
+    }
+    if (!this.clinic) {
+      const { buildClinic } = await import("./clinic");
+      if (this.disposed) return;
+      this.clinic = buildClinic();
+      this.scene.add(this.clinic);
+    }
+    this.clinic.visible = true;
+    this.invalidate();
+    // the wall sign arrives a moment later
+    window.setTimeout(() => this.invalidate(), 800);
+  }
+
   async load(url: string, onProgress?: (fraction: number) => void) {
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     const gltf = await loader.loadAsync(url, (event) => {

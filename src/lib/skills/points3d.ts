@@ -18,6 +18,7 @@
  */
 import * as THREE from "three";
 import { KEY_POINTS } from "../virtual-patient/points";
+import { TREAT_POINTS } from "../virtual-patient/treat-points";
 import type { ExamRoom, Side } from "../virtual-patient/engine";
 
 export const otherSide = (side: Side): Side => (side === "left" ? "right" : "left");
@@ -37,7 +38,7 @@ function keyPoint(room: ExamRoom, id: string, side: Side): THREE.Vector3 {
   const key = `${id}|${side}`;
   let anchor = cache.get(key);
   if (anchor === undefined) {
-    const found = KEY_POINTS.find((k) => k.id === id);
+    const found = KEY_POINTS.find((k) => k.id === id) ?? TREAT_POINTS.find((k) => k.id === id);
     const pick = found ? room.probeSkin(found.probe, side) : null;
     anchor = pick ? room.skinAnchor(pick) : null;
     cache.set(key, anchor);

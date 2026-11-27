@@ -11,6 +11,9 @@ import { ExamContext, type ExamApi, type ExamMode, type Lang, type OverlayState 
 import { Overlays, SpeechBubble } from "./Overlays";
 import { TOOLS, ToolPanel, type PickHandler, type ToolId } from "./ExamTools";
 import { CasePicker, DiagnosePanel, HistoryPanel, ResultPanel } from "./Panels";
+import { TreatPanel, type TreatResult } from "./TreatPanel";
+import { PLANS } from "@/lib/virtual-patient/treatments";
+import { CASE_BOOK, loadBookChapter, setupFromBook, setupFromPlan, type TreatSetup } from "@/lib/virtual-patient/treat-setup";
 
 const POSITIONS: { id: PatientPosition; label: string; icon: typeof BedDouble }[] = [
   { id: "standing", label: "Standing", icon: PersonStanding },
@@ -20,7 +23,7 @@ const POSITIONS: { id: PatientPosition; label: string; icon: typeof BedDouble }[
   { id: "sidelying", label: "Side-lying", icon: BedDouble },
 ];
 const OSCE_MINUTES = 12;
-type Stage = "pick" | "exam" | "decide" | "result";
+type Stage = "pick" | "exam" | "decide" | "result" | "treat" | "treated";
 type Tab = "patient" | "examine" | "findings";
 
 /** Recorded findings only (tests performed without a recorded result aren't listed). */
@@ -59,6 +62,10 @@ export function VirtualPatientApp() {
   const [startedAt, setStartedAt] = useState(0);
   const [now, setNow] = useState(0);
   const [result, setResult] = useState<SessionResult | null>(null);
+  const [treatResult, setTreatResult] = useState<TreatResult | null>(null);
+  const [treatSetup, setTreatSetup] = useState<TreatSetup | null>(null);
+  const [caption, setCaption] = useState<{ text: string | null; timer: string | null }>({ text: null, timer: null });
+  const onCaption = useCallback((text: string | null, timer?: string | null) => setCaption((c) => (c.text === text && c.timer === (timer ?? null) ? c : { text, timer: timer ?? null })), []);
   const pickRef = useRef<PickHandler>(null);
   /** The toolbar over the 3D view: the camera frames the patient below it. */
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -83,7 +90,11 @@ export function VirtualPatientApp() {
     if (process.env.NODE_ENV !== "production") (window as unknown as { __pnaExamRoom?: ExamRoom }).__pnaExamRoom = exam;
     exam
       .load("/virtual-patient/patient.glb", setProgress)
-      .then(() => setReady(true))
+      .then(() => {
+        // PNA's own clinic around the plinth (sign, equipment, exercise corner)
+        void exam.setClinic(true);
+        setReady(true);
+      })
       .catch(() => setFailed("The patient model could not be loaded. Check your connection and refresh the page."));
     return () => {
       exam.dispose();
@@ -113,6 +124,7 @@ export function VirtualPatientApp() {
     setMode(m);
     setEvents([]);
     setResult(null);
+    setTreatResult(null);
     setOverlay({});
     setIdentify(null);
     setTab("patient");
@@ -191,6 +203,37 @@ export function VirtualPatientApp() {
     setStage("result");
   };
 
+  const startTreatment = async () => {
+    if (!room || !caseData) return;
+    room.clearMarkers();
+    room.clearTape();
+    setOverlay({});
+    // Treatment comes from the book chapter of this condition (word for word); emergencies stay "stop and refer".
+    const plan = PLANS[caseData.id];
+    const emergency = plan?.best.includes("refer") ?? false;
+    const slug = CASE_BOOK[caseData.id];
+    let setup: TreatSetup | null = null;
+    if (slug && !emergency) {
+      try {
+        setup = setupFromBook(await loadBookChapter(slug), caseData.start, plan?.side);
+      } catch {
+        setup = null;
+      }
+    }
+    setTreatSetup(setup ?? setupFromPlan(caseData.id, caseData.start));
+    setStage("treat");
+  };
+  const finishTreatment = (r: TreatResult) => {
+    setTreatResult(r);
+    setCaption({ text: null, timer: null });
+    if (room && caseData) {
+      room.setCasePosture(caseData.findings.posture);
+      room.setPosition(caseData.start);
+      room.frameCamera();
+    }
+    setStage("treated");
+  };
+
   const findings = events.map(describe).filter(Boolean) as string[];
   const practice = caseData?.id === "practice";
 
@@ -209,6 +252,12 @@ export function VirtualPatientApp() {
           />
           {room && ready ? <Overlays room={room} state={overlay} /> : null}
           {room && ready ? <SpeechBubble room={room} text={speech} /> : null}
+          {stage === "treat" && (caption.text || caption.timer) ? (
+            <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-end gap-2" aria-live="polite">
+              {caption.text ? <p className="min-w-0 flex-1 rounded-2xl bg-[#0a1f3d]/92 px-4 py-2.5 text-[13px] leading-5 text-white shadow-lg"><span className="mr-1.5 font-extrabold text-[#2ee6d6]">PNA Teacher:</span>{caption.text}</p> : <span className="flex-1" />}
+              {caption.timer ? <span className="flex-none rounded-2xl bg-[#2ee6d6] px-3 py-2 text-sm font-extrabold text-[#04263a] shadow-lg">⏱ {caption.timer}</span> : null}
+            </div>
+          ) : null}
           {!ready && !failed ? (
             <div className="absolute inset-0 grid place-items-center bg-[#0a1f3d]/85 text-white">
               <div className="w-64 text-center">
@@ -318,7 +367,22 @@ export function VirtualPatientApp() {
                 ) : null}
                 {stage === "decide" ? <DiagnosePanel onSubmit={submit} /> : null}
                 {stage === "result" && result ? (
-                  <ResultPanel result={result} caseData={caseData} minutes={elapsedMin} onRetry={() => start(caseData, mode)} onNext={() => setStage("pick")} />
+                  <ResultPanel result={result} caseData={caseData} minutes={elapsedMin} onRetry={() => start(caseData, mode)} onNext={() => setStage("pick")} onTreat={PLANS[caseData.id] || CASE_BOOK[caseData.id] ? () => void startTreatment() : undefined} />
+                ) : null}
+                {stage === "treat" && room ? <TreatPanel room={room} caseData={caseData} setup={treatSetup} lang={lang} onCaption={onCaption} onFinish={finishTreatment} /> : null}
+                {stage === "treated" && treatResult ? (
+                  <div data-pna-vp-treat-result={treatResult.total}>
+                    <div className={"rounded-3xl p-5 text-white " + (treatResult.passed ? "bg-[#06402f]" : "bg-[#0a1f3d]")}>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/70">Treatment score</p>
+                      <p className="mt-1 text-4xl font-extrabold">{treatResult.total}%</p>
+                      <p className="mt-1 text-sm text-white/80">{treatResult.passed ? "Safe, well-chosen treatment — section complete." : "Review the feedback and treat again."}</p>
+                    </div>
+                    <ul className="mt-3 space-y-1 text-[13px] leading-5 text-slate-700">{treatResult.detail.map((d) => <li key={d}>{d}</li>)}</ul>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button type="button" onClick={() => void startTreatment()} className="nx-btn nx-btn-light">Treat again</button>
+                      <button type="button" onClick={() => setStage("pick")} className="nx-btn nx-btn-primary">Next patient</button>
+                    </div>
+                  </div>
                 ) : null}
               </div>
               {stage === "exam" ? (
