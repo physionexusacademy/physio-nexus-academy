@@ -546,6 +546,10 @@ jobs:
               fi
 
               echo "Smoke test attempt $attempt failed for $url"
+              # Say what came back (status, where it ended, whether it was the members sign-in page) so a gate problem is visible in the log.
+              curl -sS -o /dev/null --max-time 20 -w "  first response: %{http_code} -> %{redirect_url}\n" "$url?deploy=${GITHUB_SHA}" || true
+              if [ -s "$html" ]; then grep -o '<title>[^<]*</title>' "$html" | head -1 | sed 's/^/  page: /' || true; fi
+              if [ -n "${CURL_HOME:-}" ] && [ -f "$CURL_HOME/.curlrc" ]; then echo "  members pass: configured"; else echo "  members pass: NOT configured"; fi
               # Gradually back off after transient Worker 503s without masking persistent failure.
               sleep "$((attempt * 3 + 2))"
             done
