@@ -43,7 +43,7 @@ rule(["white", "slate-50"].map((s) => cls("via-" + s)), "--tw-gradient-to: rgba(
 // ---- tinted colours
 for (const [name, [r, g, b, light]] of Object.entries(tints)) {
   const a = (x) => `rgba(${r}, ${g}, ${b}, ${x})`;
-  rule(["50", ...["/30", "/40", "/50", "/60", "/70", "/75", "/80"].map((o) => "50" + o)].flatMap((s) => V(`bg-${name}-${s}`)), `background-color: ${a(0.08)};`);
+  rule(["50", ...["/30", "/40", "/50", "/60", "/70", "/75", "/80", "/85", "/90", "/95"].map((o) => "50" + o)].flatMap((s) => V(`bg-${name}-${s}`)), `background-color: ${a(0.08)};`);
   rule(["100", "200"].flatMap((s) => V(`bg-${name}-${s}`)), `background-color: ${a(0.14)};`);
   rule(["600", "700", "800", "900", "950", "900/60", "900/80"].flatMap((s) => V(`text-${name}-${s}`)), `color: ${light};`);
   rule(["100", "200", "200/40", "200/80", "300", "300/30", "300/40", "300/80", "400"].flatMap((s) => V(`border-${name}-${s}`)), `border-color: ${a(0.3)};`);
@@ -72,6 +72,18 @@ for (const [name, [, , , light]] of Object.entries(tints)) if (used.has(`group-h
     else if (kind === "from" && L > 0.55) out.push(`${sel} { --tw-gradient-from: #1a263c var(--tw-gradient-from-position); --tw-gradient-to: rgba(26, 38, 60, 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }`);
     else if (kind === "to" && L > 0.55) out.push(`${sel} { --tw-gradient-to: ${sat(rgb) > 0.06 ? tint(0.08) : "#121b2d"} var(--tw-gradient-to-position); }`);
     else if (kind === "via" && L > 0.55) out.push(`${sel} { --tw-gradient-stops: var(--tw-gradient-from), #162135 var(--tw-gradient-via-position), var(--tw-gradient-to); }`);
+  }
+}
+
+// ---- arbitrary gradient backgrounds (bg-[linear-gradient(...)]) made only of light colours: dropped so the dark zone shows
+{
+  const cssEsc = (c) => c.replace(/[^a-zA-Z0-9_-]/g, (ch) => "\\" + ch);
+  const list = execSync("grep -rhoE 'bg-\\[(linear|radial)-gradient[^] \"]*\\]' src --include=*.tsx --include=*.ts || true", { maxBuffer: 1 << 26 }).toString().split("\n").filter(Boolean);
+  const hex = (h) => { h = h.replace("#", ""); if (h.length === 3) h = [...h].map((c) => c + c).join(""); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); };
+  const lum = ([r, g, b]) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+  for (const c of [...new Set(list)]) {
+    const cols = c.match(/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-fA-F])/g) || [];
+    if (cols.length && cols.every((h) => lum(hex(h)) > 0.55)) out.push(`${Z} .${cssEsc(c)} { background-image: none; }`);
   }
 }
 

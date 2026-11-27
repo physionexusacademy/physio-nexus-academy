@@ -59,15 +59,18 @@ const out = [];
 for (const file of files) {
   const root = postcss.parse(readFileSync(file, "utf8"), { from: file });
   const rules = [];
+  const vars = {};
+  root.walkDecls((d) => { if (d.prop.startsWith("--") && !vars[d.prop]) vars[d.prop] = d.value.trim(); });
+  const resolve = (v) => v.replace(/var\((--[\w-]+)(?:,[^)]*)?\)/g, (m, n) => vars[n] ?? m);
   root.walkRules((rule) => {
     if (rule.parent?.type === "atrule" && /keyframes/i.test(rule.parent.name)) return;
     for (let a = rule.parent; a; a = a.parent) if (a.type === "atrule" && a.name === "media" && /print/.test(a.params)) return;
     const sels = rule.selectors.filter((s) => !/^(:root|html|body|\*)/.test(s.trim()) && !s.includes("nx-dz") && !s.includes("::-webkit"));
     if (!sels.length) return;
-    const decls = {}; rule.walkDecls((d) => { decls[d.prop] = d; });
+    const decls = {}; rule.walkDecls((d) => { decls[d.prop] = d.clone({ value: resolve(d.value) }); });
     const bgDecl = decls["background"] || decls["background-color"];
     const bgVal = bgDecl?.value ?? "";
-    const keepText = bgVal && brightSaturated(bgVal);
+    const keepText = bgVal && (brightSaturated(bgVal) || /var\(/.test(bgVal));
     const nd = [];
     const imp = (d) => (d.important ? " !important" : "");
     let surface = false;

@@ -228,7 +228,8 @@
 .nx-dz .bg-amber-50\/60,
 .nx-dz .bg-amber-50\/70,
 .nx-dz .bg-amber-50\/75,
-.nx-dz .bg-amber-50\/80 { background-color: rgba(251, 191, 36, 0.08); }
+.nx-dz .bg-amber-50\/80,
+.nx-dz .bg-amber-50\/90 { background-color: rgba(251, 191, 36, 0.08); }
 .nx-dz .bg-amber-100,
 .nx-dz .hover\:bg-amber-100:hover,
 .nx-dz .bg-amber-200,
@@ -308,4 +309,5 @@
 .nx-dz .border-\[\#c5e8df\] { border-color: rgba(148, 163, 184, 0.2); }
 .nx-dz .text-\[\#193e50\] { color: #f1f5f9; }
 .nx-dz .from-\[\#f0f9f7\] { --tw-gradient-from: #1a263c var(--tw-gradient-from-position); --tw-gradient-to: rgba(26, 38, 60, 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.nx-dz .bg-\[linear-gradient\(180deg\,\#f7fbfc_0\%\,\#ffffff_42\%\,\#f8fbfc_100\%\)\] { background-image: none; }
 }
