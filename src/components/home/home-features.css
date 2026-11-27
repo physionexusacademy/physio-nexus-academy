@@ -131,13 +131,31 @@ body .hdc { contain-intrinsic-size: auto 620px; }
 }
 
 /* A slim strip under the feature cards: the free calculators. One link, plain markup. */
-.hf-tools { margin-top: 22px; display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 22px; border: 1px solid rgba(46, 230, 214, 0.35); background: radial-gradient(120% 140% at 0% 0%, rgba(46, 230, 214, 0.16), transparent 55%), linear-gradient(150deg, #0b2447, #061529); color: #fff; text-decoration: none; transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
-.hf-tools-ico { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 16px; color: #04122a; background: linear-gradient(135deg, #2ee6d6, #8f7cff); box-shadow: 0 0 24px -6px #2ee6d6; }
+/* Health and clinical calculators: a raised instrument console with a glowing keycap, a live-looking readout and quick keys. */
+.hf-tools { position: relative; margin-top: 22px; display: grid; gap: 14px; padding: 18px; border-radius: 24px; border: 1px solid rgba(46, 230, 214, 0.32); background: radial-gradient(90% 140% at 0% 0%, rgba(46, 230, 214, 0.16), transparent 55%), radial-gradient(70% 120% at 100% 100%, rgba(99, 102, 241, 0.14), transparent 60%), linear-gradient(160deg, #13233d, #0a1528); color: #fff; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 5px 0 -1px #060d1a, 0 28px 56px -30px rgba(46, 230, 214, 0.45); }
+.hf-tools::before { content: ""; position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(46, 230, 214, 0.8), transparent); }
+.hf-tools-main { position: relative; display: flex; align-items: center; gap: 18px; color: inherit; text-decoration: none; border-radius: 16px; }
+.hf-tools-ico { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 18px; color: #04122a; background: linear-gradient(145deg, #7ff3e4, #2ee6d6 45%, #14b8a6); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45), inset 0 -3px 0 rgba(4, 18, 42, 0.25), 0 5px 0 -1px #0b5f57, 0 0 28px rgba(46, 230, 214, 0.45); }
+.hf-tools-ring { position: absolute; inset: -7px; border-radius: 22px; border: 1px dashed rgba(46, 230, 214, 0.55); animation: hfToolsSpin 14s linear infinite; }
+@keyframes hfToolsSpin { to { transform: rotate(360deg); } }
 .hf-tools-body { display: grid; gap: 4px; min-width: 0; flex: 1; }
-.hf-tools-body strong { font-size: 1.1rem; font-weight: 800; }
-.hf-tools-body > span { font-size: 0.9rem; line-height: 1.5; color: rgba(255, 255, 255, 0.78); }
-.hf-tools .hx-go { flex: none; color: #7ff3e4; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
-.hf-tools:focus-visible { outline: 3px solid #2ee6d6; outline-offset: 3px; }
-@media (hover: hover) and (pointer: fine) { .hf-tools:hover { transform: translateY(-3px); border-color: #2ee6d6; box-shadow: 0 26px 52px -32px #2ee6d6; } }
-@media (max-width: 720px) { .hf-tools { flex-wrap: wrap; } .hf-tools .hx-go { width: 100%; } }
-@media (prefers-reduced-motion: reduce) { .hf-tools { transition: none; } }
+.hf-tools-tag { justify-self: start; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #7ff3e4; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(46, 230, 214, 0.4); background: rgba(46, 230, 214, 0.08); }
+.hf-tools-body strong { font-size: 1.15rem; font-weight: 800; color: #f8fafc; }
+.hf-tools-body > span:last-child { font-size: 0.88rem; line-height: 1.5; color: #b6c3d6; }
+.hf-tools-lcd { flex: none; display: grid; gap: 3px; width: 112px; padding: 9px 12px; border-radius: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: linear-gradient(180deg, #04101f, #071a2e); border: 1px solid rgba(46, 230, 214, 0.35); box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 18px -6px rgba(46, 230, 214, 0.6); }
+.hf-lcd-k { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #5eead4; opacity: 0.8; }
+.hf-lcd-v { font-size: 1.45rem; font-weight: 700; line-height: 1.1; color: #a7fff4; text-shadow: 0 0 10px rgba(46, 230, 214, 0.8); }
+.hf-lcd-bar { height: 4px; border-radius: 4px; background: linear-gradient(90deg, #38bdf8, #22c55e 40%, #facc15 70%, #f97316); position: relative; }
+.hf-lcd-bar i { position: absolute; top: -3px; left: 38%; width: 2px; height: 10px; border-radius: 2px; background: #a7fff4; box-shadow: 0 0 6px #fff; }
+.hf-tools .hx-go { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 12px; font-weight: 800; color: #04122a; background: linear-gradient(180deg, #7ff3e4, #2ee6d6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 0 -1px #0b5f57; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hf-tools-keys { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.hf-tools-keys a { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 12px; border-radius: 12px; font-size: 0.86rem; font-weight: 700; color: #e2e8f0; text-decoration: none; background: linear-gradient(180deg, #1b2b47, #142239); border: 1px solid rgba(148, 163, 184, 0.18); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 3px 0 -1px #060d1a; transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; }
+.hf-tools-keys a svg { color: #2ee6d6; }
+.hf-tools-main:focus-visible, .hf-tools-keys a:focus-visible { outline: 3px solid #2ee6d6; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .hf-tools-main:hover .hx-go { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 0 -1px #0b5f57, 0 12px 24px -10px rgba(46, 230, 214, 0.7); }
+  .hf-tools-keys a:hover { transform: translateY(-2px); color: #fff; border-color: rgba(46, 230, 214, 0.6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 5px 0 -1px #0b5f57, 0 12px 22px -14px rgba(46, 230, 214, 0.8); }
+}
+@media (max-width: 900px) { .hf-tools-lcd { display: none; } }
+@media (max-width: 720px) { .hf-tools-main { flex-wrap: wrap; } .hf-tools .hx-go { width: 100%; justify-content: center; } .hf-tools-keys { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .hf-tools-ring { animation: none; } .hf-tools .hx-go, .hf-tools-keys a { transition: none; } }
