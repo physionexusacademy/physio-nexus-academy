@@ -18,7 +18,9 @@ export type TeacherCategoryId =
   | "postop"
   | "electro"
   | "imaging"
-  | "career";
+  | "career"
+  | "safety"
+  | "culture";
 
 export type TeacherCategory = {
   id: TeacherCategoryId;
@@ -90,12 +92,12 @@ export const teacherCategories: TeacherCategory[] = [
   },
   {
     id: "womens",
-    title: "Women's Health",
-    tagline: "Pregnancy, the pelvic floor and life after childbirth.",
-    taglineUr: "Hamal, pelvic floor aur bachay ki paidaish ke baad ki zindagi.",
+    title: "Women's & Pelvic Health",
+    tagline: "Pregnancy, the pelvic floor in women and men, and life after childbirth.",
+    taglineUr: "Hamal, aurat aur mard ka pelvic floor, aur bachay ki paidaish ke baad ki zindagi.",
     icon: "flower",
     glow: ["#f472b6", "#a78bfa"],
-    areas: ["Women's Health"],
+    areas: ["Women's Health", "Pelvic Health"],
   },
   {
     id: "geriatrics",
@@ -131,7 +133,7 @@ export const teacherCategories: TeacherCategory[] = [
     taglineUr: "TENS, ultrasound, garmi aur sardi: kab madad karte hain aur kab nahi.",
     icon: "zap",
     glow: ["#fbbf24", "#fb923c"],
-    areas: ["Electrotherapy"],
+    areas: ["Electrotherapy", "Treatments & Evidence"],
   },
   {
     id: "imaging",
@@ -150,6 +152,24 @@ export const teacherCategories: TeacherCategory[] = [
     icon: "cap",
     glow: ["#60a5fa", "#8f7cff"],
     areas: ["Exam & Career"],
+  },
+  {
+    id: "safety",
+    title: "Medicines, Safety & Emergencies",
+    tagline: "What medicines do to rehab, and what to do when a patient is suddenly unwell.",
+    taglineUr: "Dawaiyan rehab par kya asar daalti hain, aur mareez achanak bigre to kya karein.",
+    icon: "activity",
+    glow: ["#f87171", "#fbbf24"],
+    areas: ["Medicines & Safety", "Emergency Care"],
+  },
+  {
+    id: "culture",
+    title: "Pakistan & Culture",
+    tagline: "Care that fits daily life here: prayer, fasting, family and heat.",
+    taglineUr: "Aisi care jo yahan ki rozmarra zindagi se milti hai: namaaz, roza, khandaan aur garmi.",
+    icon: "person",
+    glow: ["#2ee6d6", "#a3e635"],
+    areas: ["Culture & Context"],
   },
 ];
 

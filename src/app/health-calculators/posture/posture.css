@@ -68,3 +68,6 @@
   .ps-result{break-inside:avoid}
 }
 @media (prefers-reduced-motion:reduce){.ps-btn{transition:none}}
+
+.ps-scanlink{width:min(860px,calc(100% - 28px));margin:18px auto 0;text-align:center;font-weight:800}
+.ps-scanlink a{color:#087f80;text-decoration:underline}

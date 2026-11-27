@@ -62,3 +62,7 @@
 # The teacher's pictures: replaced under a new name, so a week is safe.
 /teacher/*
   Cache-Control: public,max-age=604800,stale-while-revalidate=86400
+
+# Full Posture Scan: the bones of the 3D skeleton. The files change only when the skeleton is rebuilt, so they are revalidated weekly.
+/posture-skeleton/*
+  Cache-Control: public,max-age=604800,stale-while-revalidate=86400

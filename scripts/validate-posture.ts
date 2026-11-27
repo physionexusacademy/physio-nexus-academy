@@ -217,7 +217,7 @@ assert.ok(METRICS.length === 11 && new Set(METRICS.map((m) => m.id)).size === 11
   assert.doesNotMatch(serverPage, /from "\.\/PostureScreen"/, "the server page must not import the posture screen: the camera code and the pose library must stay out of the Worker (it has a size limit)");
   assert.match(loader, /dynamic\(\(\) => import\("\.\/PostureScreen"\), \{\s*ssr: false/, "the posture screen must load in the browser only (ssr: false)");
   const config = fs.readFileSync("next.config.js", "utf8");
-  assert.ok(/source: '\/health-calculators\/posture',\s*headers: \[\{ key: 'Permissions-Policy', value: 'camera=\(self\), microphone=\(\)' \}\]/.test(config), "the posture page must be allowed its own camera");
+  assert.ok(/source: '\/health-calculators\/posture(?:\/:path\*)?',\s*headers: \[\{ key: 'Permissions-Policy', value: 'camera=\(self\), microphone=\(\)' \}\]/.test(config), "the posture page must be allowed its own camera");
   const hub = fs.readFileSync("src/app/health-calculators/page.tsx", "utf8");
   assert.ok(hub.includes("/health-calculators/posture"), "the calculators hub must link to the posture screen");
   // A Next.js link keeps the Permissions-Policy of the page it came from (camera=()): the posture page then refuses the camera ("tell the clinic").
