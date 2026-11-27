@@ -43,7 +43,7 @@ await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 // members-only mode: every context carries the deploy's pass (does nothing when PNA_CI_TOKEN is not set)
 const { addCiCookie } = createRequire(import.meta.url)("./ci-members-pass.cjs");
-const newContext = async (options) => { const context = await newContext(options); await addCiCookie(context, origin); return context; };
+const newContext = async (options) => { const context = await browser.newContext(options); await addCiCookie(context, origin); return context; };
 
 try {
   // Verify the custom Install PNA App button actually invokes the browser's

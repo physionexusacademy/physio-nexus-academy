@@ -114,6 +114,9 @@ eq(await gateRequest(req("/learn", { headers: { cookie: "pna_ci=" } }), { ...env
   const helper = read("scripts/ci-members-pass.cjs");
   ok(/physionexusacademy\.com/.test(helper) && /addCookies/.test(helper) && !/extraHTTPHeaders/.test(helper), "browser checks carry the pass as a cookie for this site only (never a header sent everywhere)");
   for (const f of ["scripts/verify-seo-production.mjs", "scripts/verify-offline-production.cjs", "scripts/verify-pathway-production.mjs"]) ok(read(f).includes("ci-members-pass.cjs"), `${f} uses the pass`);
+  // the wrapper must open the context with Playwright itself, not call itself (a deploy once failed with "Maximum call stack size exceeded")
+  const wrapper = read("scripts/verify-pathway-production.mjs").match(/const newContext = async \(options\) => \{([^}]*)\}/);
+  ok(Boolean(wrapper) && /browser\.newContext\(options\)/.test(wrapper![1]) && !/[^.]newContext\(/.test(wrapper![1]), "the pathway check's context wrapper calls browser.newContext, never itself");
 }
 resetGateMemory();
 ok((await gateRequest(req("/learn"), { ...env, MEMBERS_ONLY: "1" }, io(false)))?.status === 303, "MEMBERS_ONLY=1 forces the gate on whatever the database says");
