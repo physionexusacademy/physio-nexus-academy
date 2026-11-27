@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import postcss from "postcss";
 
-const SKIP = /dark-zone|motion\.css$|easy-touch\.css$/;
+const SKIP = /dark-zone|light-zone|motion\.css$|easy-touch\.css$/;
 const files = execSync("find src -name '*.css'").toString().split("\n").filter((f) => f && !SKIP.test(f)).sort();
 
 const NAMED = { white: [255, 255, 255, 1], black: [0, 0, 0, 1], transparent: [0, 0, 0, 0] };

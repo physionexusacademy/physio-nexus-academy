@@ -5,6 +5,7 @@ import "./globals.css";
 import "./nexus.css";
 import "./motion.css";
 import "./dark-zone.css";
+import "./light-zone.css";
 import "./easy-touch.css";
 import { Header } from "@/components/Header";
 import { ZoneMain } from "@/components/ZoneMain";
@@ -17,6 +18,7 @@ import { PerfGovernor } from "@/components/PerfGovernor";
 import { NavProgress } from "@/components/NavProgress";
 import { FX_INIT_SCRIPT } from "@/lib/perf-mode";
 import { MOTION_INIT_SCRIPT } from "@/lib/motion";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { MotionGovernor } from "@/components/MotionGovernor";
 import { PhysioNexusAILauncher } from "@/components/PhysioNexusAILauncher";
 import { siteConfig } from "@/lib/site-config";
@@ -317,12 +319,14 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`overflow-x-clip ${display.variable}`} data-fx="full" data-motion="full" suppressHydrationWarning>
+    <html lang="en" className={`overflow-x-clip ${display.variable}`} data-fx="full" data-motion="full" data-theme="dark" suppressHydrationWarning>
       <body className="flex min-h-screen w-full max-w-full flex-col overflow-x-clip pb-16 lg:pb-0">
         {/* Before first paint: the saved effects mode (lib/perf-mode.ts), so a slow device never sees the heavy version first. */}
         <script dangerouslySetInnerHTML={{ __html: FX_INIT_SCRIPT }} />
         {/* Before first paint: the visitor's motion choice (lib/motion.ts). Animations play unless the visitor asked for calm. */}
         <script dangerouslySetInnerHTML={{ __html: MOTION_INIT_SCRIPT }} />
+        {/* Before first paint: the visitor's dark / light choice (lib/theme.ts). Dark unless they chose light. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

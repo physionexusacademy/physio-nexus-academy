@@ -8,6 +8,7 @@ import { visibleWings, wingForPath, type AcademyWing } from "@/lib/academy-map";
 import { useLang } from "@/lib/lang";
 import { localizeWing, shellText } from "@/lib/shell-ur";
 import { SiteLangSwitch } from "@/components/nexus/SiteLangSwitch";
+import { ThemeSwitch } from "@/components/nexus/ThemeSwitch";
 import { getUnifiedProgress } from "@/lib/unified-progress";
 import { hasStudentSession, SESSION_EVENT } from "@/lib/student/outbox";
 import { InstallApp } from "@/components/InstallApp";
@@ -196,6 +197,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
 
         <div className="nx-bar-actions">
           <SiteLangSwitch />
+          <ThemeSwitch />
           <button type="button" className="nx-search-btn" onClick={() => setSearchOpen(true)} aria-label={t("searchAria")} aria-haspopup="dialog">
             <Search className="h-4 w-4" aria-hidden="true" />
             <span className="nx-search-label">{t("searchAcademy")}</span>
@@ -267,6 +269,7 @@ export function Header({ atlasPublished = true }: { atlasPublished?: boolean }) 
           </button>
 
           <div className="mt-3"><SiteLangSwitch variant="drawer" /></div>
+          <div className="mt-3"><ThemeSwitch variant="drawer" /></div>
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--nx-line)] bg-white/5 px-4 py-3">
             <a href="https://thecpdregister.com" target="_blank" rel="noopener noreferrer" className="min-w-0" tabIndex={open ? 0 : -1}>
