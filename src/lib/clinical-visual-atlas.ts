@@ -79,11 +79,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${shoulderBase}/normal-shoulder-anatomy`,
     thumbnailPath: `${shoulderBase}/normal-shoulder-anatomy`,
     assetReady: true,
-    conditionSlugs: [
-      "rotator-cuff-tendinopathy",
-      "rotator-cuff-full-thickness-tear",
-      "anterior-shoulder-instability",
-    ],
+    conditionSlugs: ["rotator-cuff-tendinopathy","glenohumeral-instability"],
     relatedLinks: [
       { label: "Rotator cuff tendinopathy guide", href: "/conditions/rotator-cuff-tendinopathy" },
       { label: "Rotator cuff-related shoulder pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
@@ -105,10 +101,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${shoulderBase}/rotator-cuff-anatomy`,
     thumbnailPath: `${shoulderBase}/rotator-cuff-anatomy`,
     assetReady: true,
-    conditionSlugs: [
-      "rotator-cuff-tendinopathy",
-      "rotator-cuff-full-thickness-tear",
-    ],
+    conditionSlugs: ["rotator-cuff-tendinopathy"],
     relatedLinks: [
       { label: "Rotator cuff tendinopathy guide", href: "/conditions/rotator-cuff-tendinopathy" },
       { label: "Rotator cuff-related shoulder pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
@@ -130,7 +123,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${shoulderBase}/supraspinatus-full-thickness-tear`,
     thumbnailPath: `${shoulderBase}/supraspinatus-full-thickness-tear`,
     assetReady: true,
-    conditionSlugs: ["rotator-cuff-full-thickness-tear"],
+    conditionSlugs: ["rotator-cuff-tendinopathy"],
     relatedLinks: [
       { label: "Rotator cuff-related shoulder pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
     ],
@@ -172,7 +165,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${shoulderBase}/anterior-shoulder-instability`,
     thumbnailPath: `${shoulderBase}/anterior-shoulder-instability`,
     assetReady: true,
-    conditionSlugs: ["anterior-shoulder-instability"],
+    conditionSlugs: ["glenohumeral-instability"],
     relatedLinks: [
       { label: "Glenohumeral Instability guide", href: "/conditions/glenohumeral-instability" },
     ],
@@ -233,7 +226,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     imagePath: `${ankleFootBase}/achilles-tendon-rupture`,
     thumbnailPath: `${ankleFootBase}/achilles-tendon-rupture`,
     assetReady: true,
-    conditionSlugs: ["achilles-tendon-rupture"],
+    conditionSlugs: ["achilles-tendinopathy"],
     relatedLinks: [{ label: "Achilles Tendinopathy guide", href: "/conditions/achilles-tendinopathy" }],
   },
   {
@@ -618,7 +611,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     learningPoints: ["The shoulder complex has four joints: glenohumeral, acromioclavicular, sternoclavicular and the scapulothoracic articulation.", "The rotator cuff (supraspinatus, infraspinatus, teres minor, subscapularis) centres the humeral head in the shallow glenoid during movement.", "In elevation the arm and scapula move together, roughly 2:1 glenohumeral to scapular movement over the full range.", "Use the picture to locate structures you palpate and test; diagnosis still rests on history, movement and special-test clusters."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Shoulder_anatomy.svg/960px-Shoulder_anatomy.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
-    assetReady: true, conditionSlugs: ["adhesive-capsulitis","acromioclavicular-joint-injury","long-head-biceps-tendinopathy"],
+    assetReady: true, conditionSlugs: ["adhesive-capsulitis","acromioclavicular-joint-injury","biceps-related-shoulder-pain"],
     relatedLinks: [{ label: "Adhesive Capsulitis", href: "/conditions/adhesive-capsulitis" }, { label: "AC Joint Injury", href: "/conditions/acromioclavicular-joint-injury" }, { label: "Biceps-related Shoulder Pain", href: "/conditions/biceps-related-shoulder-pain" }],
   },
   {
@@ -645,7 +638,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     learningPoints: ["The hip is a deep ball-and-socket joint; the acetabular labrum deepens the socket and seals the joint.", "The adductors attach to the pubis; the gluteus medius and minimus attach to the greater trochanter, where lateral hip pain often arises.", "Pain from the hip joint itself is usually felt in the groin, while lateral or buttock pain points to other sources.", "Always consider the lumbar spine, abdomen and pelvic organs when groin pain does not behave like a joint problem."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Hip_and_groin_pain.svg/960px-Hip_and_groin_pain.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
-    assetReady: true, conditionSlugs: ["greater-trochanteric-pain-syndrome","gluteal-tendinopathy","adductor-related-groin-pain"],
+    assetReady: true, conditionSlugs: ["gluteal-tendinopathy","groin-pain-in-athletes"],
     relatedLinks: [{ label: "Gluteal Tendinopathy", href: "/conditions/gluteal-tendinopathy" }, { label: "Groin Pain in Athletes", href: "/conditions/groin-pain-in-athletes" }],
   },
   {
@@ -654,7 +647,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     learningPoints: ["The knee has tibiofemoral and patellofemoral joints; the menisci spread load and deepen the flat tibial surface.", "The ACL stops the tibia moving forward on the femur and the PCL stops it moving back; the MCL and LCL resist valgus and varus stress.", "The quadriceps, through the patellar tendon, controls knee extension and the patella's path in the trochlear groove.", "Ligament and meniscus tests are interpreted together with the injury story and swelling, not from anatomy alone."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Knee_injuries.svg/960px-Knee_injuries.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
-    assetReady: true, conditionSlugs: ["patellofemoral-pain","patellar-tendinopathy","pcl-injury","mcl-injury"],
+    assetReady: true, conditionSlugs: ["patellofemoral-pain","patellar-tendinopathy","knee-collateral-and-pcl-injuries"],
     relatedLinks: [{ label: "Patellofemoral Pain", href: "/conditions/patellofemoral-pain" }, { label: "Patellar Tendinopathy", href: "/conditions/patellar-tendinopathy" }, { label: "Knee Collateral and PCL Injuries", href: "/conditions/knee-collateral-and-pcl-injuries" }],
   },
   {
@@ -663,7 +656,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     learningPoints: ["The plantar fascia runs from the medial calcaneal tubercle to the toes and tightens as the toes extend (the windlass mechanism).", "The medial longitudinal arch is supported by bone shape, the plantar fascia, spring ligament and tibialis posterior.", "Heel pain worst with the first steps in the morning is typical of plantar heel pain.", "Check for numbness, night pain or a stress-fracture story, which the picture cannot show."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Plantar_fascia.svg/960px-Plantar_fascia.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
-    assetReady: true, conditionSlugs: ["plantar-heel-pain","posterior-tibial-tendon-dysfunction"],
+    assetReady: true, conditionSlugs: ["plantar-heel-pain"],
     relatedLinks: [{ label: "Plantar Heel Pain", href: "/conditions/plantar-heel-pain" }],
   },
   {

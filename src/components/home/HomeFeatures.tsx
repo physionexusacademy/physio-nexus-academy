@@ -1,4 +1,4 @@
-import { ArrowRight, Calculator, ClipboardCheck, GraduationCap, Hand, Languages, Play, Ruler, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
+import { Activity, ArrowRight, Calculator, ClipboardCheck, GraduationCap, Hand, HeartPulse, Languages, Play, Ruler, ScanLine, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
 import { lessonCounts } from "@/lib/teacher/counts";
 import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { Ur } from "@/components/Ur";
@@ -198,14 +198,29 @@ export function HomeFeaturesMore() {
             </a>
           </li>
         </ul>
-        <a href="/health-calculators" className="hf-tools" aria-label="Health and clinical calculators">
-          <span className="hf-tools-ico"><Calculator className="h-6 w-6" aria-hidden="true" /></span>
-          <span className="hf-tools-body">
-            <strong><Ur en="Health and clinical calculators" ur="Health aur clinical calculators" /></strong>
-            <span><Ur en="Heart rate zones, one-rep max, waist-hip ratio, daily energy, BMI, and a check of whether a score change really matters. Free, and worked out in your browser." ur="Heart rate zones, one-rep max, waist-hip ratio, daily energy, BMI, aur yeh jaanch ke score ki tabdeeli waqai ahem hai. Free, aur aap ke browser mein hisaab hota hai." /></span>
-          </span>
-          <span className="hx-go"><Ur en="Open the calculators" ur="Calculators kholein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
-        </a>
+        <div className="hf-tools nx-grid" data-pna-home-tools="calculators-v2">
+          <a href="/health-calculators" className="hf-tools-main" aria-label="Health and clinical calculators">
+            <span className="hf-tools-ico" aria-hidden="true"><span className="hf-tools-ring" /><Calculator className="h-6 w-6" /></span>
+            <span className="hf-tools-body">
+              <span className="hf-tools-tag"><Ur en="Free tools" ur="Free tools" /></span>
+              <strong><Ur en="Health and clinical calculators" ur="Health aur clinical calculators" /></strong>
+              <span><Ur en="Heart rate zones, one-rep max, waist-hip ratio, daily energy, BMI, and a check of whether a score change really matters. Free, and worked out in your browser." ur="Heart rate zones, one-rep max, waist-hip ratio, daily energy, BMI, aur yeh jaanch ke score ki tabdeeli waqai ahem hai. Free, aur aap ke browser mein hisaab hota hai." /></span>
+            </span>
+            <span className="hf-tools-lcd" aria-hidden="true">
+              <span className="hf-lcd-k">BMI</span>
+              <span className="hf-lcd-v">22.4</span>
+              <span className="hf-lcd-bar"><i /></span>
+              <span className="hf-lcd-k">Example</span>
+            </span>
+            <span className="hx-go"><Ur en="Open the calculators" ur="Calculators kholein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+          </a>
+          <ul className="hf-tools-keys">
+            <li><a href="/health-calculators/bmi"><Ruler className="h-4 w-4" aria-hidden="true" /> BMI</a></li>
+            <li><a href="/health-calculators/clinical"><Activity className="h-4 w-4" aria-hidden="true" /> <Ur en="Clinical scores" ur="Clinical scores" /></a></li>
+            <li><a href="/health-calculators/posture"><ScanLine className="h-4 w-4" aria-hidden="true" /> <Ur en="Posture check" ur="Posture check" /></a></li>
+            <li><a href="/health-calculators"><HeartPulse className="h-4 w-4" aria-hidden="true" /> <Ur en="Heart rate zones" ur="Heart rate zones" /></a></li>
+          </ul>
+        </div>
         <p className="hf-foot">
           <Languages className="h-4 w-4" aria-hidden="true" /> Everything is in English and Roman Urdu.
           <a href="/manual-therapy"><Hand className="h-4 w-4" aria-hidden="true" /> Manual therapy techniques</a>

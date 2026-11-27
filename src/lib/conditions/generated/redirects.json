@@ -28,10 +28,6 @@
   "destination": "/conditions/knee-collateral-and-pcl-injuries"
  },
  {
-  "source": "/conditions/diabetic-peripheral-neuropathy",
-  "destination": "/conditions/guillain-barre-syndrome"
- },
- {
   "source": "/conditions/post-cabg-rehabilitation",
   "destination": "/conditions/cardiac-rehabilitation"
  },
@@ -45,7 +41,7 @@
  },
  {
   "source": "/conditions/temporomandibular-disorder",
-  "destination": "/conditions"
+  "destination": "/manual-therapy/regions/by-region/tmj-and-craniofacial"
  },
  {
   "source": "/conditions/rotator-cuff-full-thickness-tear",
@@ -53,7 +49,7 @@
  },
  {
   "source": "/conditions/ankylosing-spondylitis-rehabilitation",
-  "destination": "/conditions"
+  "destination": "/conditions/thoracic-spine-pain"
  },
  {
   "source": "/conditions/achilles-tendon-rupture",
@@ -61,15 +57,15 @@
  },
  {
   "source": "/conditions/posterior-tibial-tendon-dysfunction",
-  "destination": "/conditions"
+  "destination": "/learn/tendinopathy-load-management"
  },
  {
   "source": "/conditions/fibromyalgia",
-  "destination": "/conditions"
+  "destination": "/learn/pain-science-basics"
  },
  {
   "source": "/conditions/post-mastectomy-rehabilitation",
-  "destination": "/conditions"
+  "destination": "/manual-therapy/regions/mld-upper-limb"
  },
  {
   "source": "/conditions/rheumatoid-arthritis",
@@ -77,14 +73,18 @@
  },
  {
   "source": "/conditions/lymphoedema",
-  "destination": "/conditions"
+  "destination": "/manual-therapy/manual-lymphatic-drainage"
  },
  {
   "source": "/conditions/lower-limb-amputation-rehabilitation",
-  "destination": "/conditions"
+  "destination": "/learn/gait-cycle"
  },
  {
   "source": "/conditions/bells-palsy",
-  "destination": "/conditions"
+  "destination": "/learn/umn-vs-lmn"
+ },
+ {
+  "source": "/conditions/diabetic-peripheral-neuropathy",
+  "destination": "/learn/radiculopathy-myelopathy-neuropathy"
  }
 ]

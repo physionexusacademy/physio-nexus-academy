@@ -134,7 +134,19 @@ const lands = (slug: string) => slugs.includes(slug) || redirected.has(slug);
 const legacyPlanNames: Record<string, string> = { "nonspecific-low-back-pain": "non-specific-low-back-pain", "rotator-cuff-related-shoulder-pain": "rotator-cuff-tendinopathy", "lateral-elbow-tendinopathy": "lateral-epicondylalgia" };
 for (const old of mskConditionIndex.map((c) => c.slug)) assert.ok(lands(old), `old /msk-injuries/${old} would 404`);
 for (const plan of treatmentPlans.map((p) => p.slug)) assert.ok(lands(legacyPlanNames[plan] ?? plan), `old /treatment-plans/${plan} would 404`);
+// A retired guide may also go to the nearest page elsewhere on the site: a PNA Teacher lesson or a manual therapy guide that exists.
+const lessonHrefs = new Set(json<{ href: string }[]>("public/teacher-data/index.json").map((l) => l.href.split("#")[0]));
+const mtIndex = json<{ regions: string[]; items: { slug: string }[] }>("public/manual-therapy-data/regions/index.json");
+const regionSlug = (r: string) => r.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const otherPage = (href: string) =>
+  lessonHrefs.has(href) ||
+  mtIndex.items.some((i) => href === `/manual-therapy/regions/${i.slug}`) ||
+  mtIndex.regions.some((r) => href === `/manual-therapy/regions/by-region/${regionSlug(r)}`);
 for (const r of redirects) {
+  if (!r.destination.startsWith("/conditions")) {
+    assert.ok(otherPage(r.destination), `${r.source} redirects to ${r.destination}, which is not a page on the site`);
+    continue;
+  }
   const dest = r.destination.replace(/^\/conditions\/?/, "");
   assert.ok(dest === "" || slugs.includes(dest), `${r.source} redirects to ${r.destination}, which is not a guide`);
 }
