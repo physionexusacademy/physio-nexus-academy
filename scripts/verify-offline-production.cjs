@@ -12,6 +12,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { chromium } = require("playwright");
+const { addCiCookie } = require("./ci-members-pass.cjs");
 
 const BASE = (process.argv[2] || process.env.PNA_BASE || "https://physionexusacademy.com").replace(/\/$/, "");
 // a sandbox that reaches the internet through a proxy passes it here (CI does not need it)
@@ -40,6 +41,7 @@ const listCaches = (p, prefix) =>
     ignoreHTTPSErrors: Boolean(UPSTREAM_PROXY),
     ...(UPSTREAM_PROXY ? { proxy: { server: UPSTREAM_PROXY } } : {}),
   });
+  await addCiCookie(ctx, BASE); // members-only mode: the deploy's pass (does nothing when PNA_CI_TOKEN is not set)
   let page = ctx.pages()[0] || (await ctx.newPage());
   await page.goto(`${BASE}/learn`, { waitUntil: "load", timeout: 60000 });
   const registered = await page.evaluate(async () => {
