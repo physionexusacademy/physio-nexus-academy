@@ -48,4 +48,12 @@ You need Node 22, Python 3 with numpy, `ffmpeg` with libmp3lame, Playwright's Ch
    MP3 packs, `clips.json` and `packs.json`). Delete the old `*.mp3` files of packs that changed (their names carry a content hash).
 5. `npm run validate:speech`, then commit `public/voice/george/`.
 
+### Changing one or two sentences (patch packs)
+
+Re-reading a whole pack re-encodes every clip in it. When only a few sentences change, read just those and add them as a patch pack named
+`<group>~1` (`~2` for the next one): pack a sentences file that holds only the new keys, copy the MP3 into `public/voice/george/`, append its stem
+to `clips.json` `packs` and its name to `packs.json`, point the new keys at it and delete the keys no group lists any more. `warmPack` loads a
+pack's patch packs with it. The model can also run in Node with kokoro-js and a local model folder (the 2026-11 site-tour fix used the
+int8 Kokoro v1.0 ONNX from the kokoro-onnx project, its inputs renamed to `input_ids` / `waveform`, and the npm package's `bm_george` / `hm_psi` voices).
+
 Credit and licence: `public/voice/george/README.txt` (shown next to the voice button in the 3D demonstrations).
