@@ -3,7 +3,7 @@ import { BookOpenCheck, Brain, Hand, Lightbulb, MessagesSquare, Repeat2 } from "
 import { loadLessonIndex } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
 import { TeacherHome } from "@/components/teacher/TeacherHome";
-import { TeacherCatalog } from "@/components/teacher/TeacherCatalog";
+import { Classroom } from "@/components/teacher/Classroom";
 import { TeacherAvatar } from "@/components/teacher/ui";
 
 const url = "https://physionexusacademy.com/learn";
@@ -77,7 +77,6 @@ const principles = [
 export default async function LearnPage() {
   const lessonIndex = await loadLessonIndex();
   const conceptLessonMetas = lessonIndex.filter((lesson) => lesson.kind === "concept");
-  const manualLessonMetas = lessonIndex.filter((lesson) => lesson.kind === "manual");
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -140,7 +139,7 @@ export default async function LearnPage() {
         </section>
 
         <div className="mx-auto mt-14 max-w-6xl">
-          <TeacherCatalog conceptLessons={conceptLessonMetas} manualLessons={manualLessonMetas} paths={teacherPaths} />
+          <Classroom lessons={lessonIndex.map(({ slug, title, hook, area, level, bestFor, minutes, flashcardCount, href }) => ({ slug, title, hook, area, level, bestFor, minutes, flashcardCount, href }))} />
         </div>
 
         <nav className="mx-auto mt-12 max-w-6xl rounded-3xl bg-navy-800 p-6 text-white sm:p-8" aria-label="Keep learning across PNA">

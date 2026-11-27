@@ -10,6 +10,7 @@ import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
 import { loadConceptLessons } from "@/lib/teacher/lesson-index";
 import { teacherPaths } from "@/lib/teacher/paths";
+import { subjects } from "@/lib/teacher/subjects";
 import { skillIndex } from "@/lib/skills/catalog";
 import { handouts } from "@/lib/handouts";
 
@@ -180,6 +181,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const teacherRoutes: MetadataRoute.Sitemap = [
     ...conceptLessonMetas.map((lesson) => ({
       url: `${base}/learn/${encodeURIComponent(lesson.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
+    ...subjects.map((subject) => ({
+      url: `${base}/learn/subjects/${subject.id}`,
       changeFrequency: "monthly" as const,
       priority: 0.9,
     })),
