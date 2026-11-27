@@ -1,0 +1,90 @@
+[
+ {
+  "source": "/conditions/pregnancy-related-pelvic-girdle-pain",
+  "destination": "/conditions/pelvic-girdle-pain"
+ },
+ {
+  "source": "/conditions/anterior-shoulder-instability",
+  "destination": "/conditions/glenohumeral-instability"
+ },
+ {
+  "source": "/conditions/long-head-biceps-tendinopathy",
+  "destination": "/conditions/biceps-related-shoulder-pain"
+ },
+ {
+  "source": "/conditions/greater-trochanteric-pain-syndrome",
+  "destination": "/conditions/gluteal-tendinopathy"
+ },
+ {
+  "source": "/conditions/adductor-related-groin-pain",
+  "destination": "/conditions/groin-pain-in-athletes"
+ },
+ {
+  "source": "/conditions/mcl-injury",
+  "destination": "/conditions/knee-collateral-and-pcl-injuries"
+ },
+ {
+  "source": "/conditions/pcl-injury",
+  "destination": "/conditions/knee-collateral-and-pcl-injuries"
+ },
+ {
+  "source": "/conditions/diabetic-peripheral-neuropathy",
+  "destination": "/conditions/guillain-barre-syndrome"
+ },
+ {
+  "source": "/conditions/post-cabg-rehabilitation",
+  "destination": "/conditions/cardiac-rehabilitation"
+ },
+ {
+  "source": "/conditions/total-knee-replacement-rehabilitation",
+  "destination": "/conditions/knee-and-hip-arthroplasty-rehabilitation"
+ },
+ {
+  "source": "/conditions/total-hip-replacement-rehabilitation",
+  "destination": "/conditions/knee-and-hip-arthroplasty-rehabilitation"
+ },
+ {
+  "source": "/conditions/temporomandibular-disorder",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/rotator-cuff-full-thickness-tear",
+  "destination": "/conditions/rotator-cuff-tendinopathy"
+ },
+ {
+  "source": "/conditions/ankylosing-spondylitis-rehabilitation",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/achilles-tendon-rupture",
+  "destination": "/conditions/achilles-tendinopathy"
+ },
+ {
+  "source": "/conditions/posterior-tibial-tendon-dysfunction",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/fibromyalgia",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/post-mastectomy-rehabilitation",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/rheumatoid-arthritis",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/lymphoedema",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/lower-limb-amputation-rehabilitation",
+  "destination": "/conditions"
+ },
+ {
+  "source": "/conditions/bells-palsy",
+  "destination": "/conditions"
+ }
+]

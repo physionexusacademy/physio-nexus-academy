@@ -7,6 +7,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { ConditionDetail } from "@/lib/conditions/types";
 import { ConditionGuide } from "../ConditionGuide";
+import { BookGuide } from "../BookGuide";
+import { typeLabel } from "@/lib/conditions/taxonomy";
+import { REGION_COUNTS, REGION_PLAIN, libraryHref, regionForBodyArea } from "@/lib/rehabverse/area-map";
 import { relatedForCondition } from "@/lib/related";
 import { RelatedPanel } from "@/components/related/RelatedPanel";
 
@@ -37,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const item = getCondition(slug);
   if (!item) return {};
-  const title = `${fitTitle(`${item.name} — Assessment & Rehab Plan`, 54)}`;
+  const title = `${fitTitle(`${item.name} — Assessment & Treatment`, 54)}`;
   return {
     title: { absolute: `${title} | PNA` },
     description: fitDescription(item.summary, "Assessment, treatment plan and rehab stages from the PNA Conditions & Treatment Guide."),
@@ -79,9 +82,55 @@ export default async function ConditionPage({ params }: PageProps) {
       },
     ],
   };
+  const ld = <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />;
+  if (detail?.book) {
+    const region = regionForBodyArea(item.area);
+    return (
+      <div className="container-content section-padding">
+        {ld}
+        <nav aria-label="Breadcrumb" className="mb-4 text-sm font-semibold text-slate-600">
+          <a href="/conditions" className="text-teal-800 hover:underline">← All conditions</a>
+        </nav>
+        <BookGuide
+          chapter={detail.book}
+          help={detail.help ?? null}
+          chips={[{ label: areaLabel(item.area), href: `/conditions?area=${item.area}` }, { label: typeLabel(item.type) }]}
+          glance={{ summary: detail.summary, redFlags: detail.quick.redFlags, firstSteps: detail.quick.firstSteps }}
+          backHref="/conditions"
+          backLabel="All conditions"
+          footer={
+            <div key="condition-footer" className="space-y-5 pt-2">
+              {related.length ? (
+                <div>
+                  <h2 className="text-lg font-bold text-navy-800">Related conditions</h2>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {related.map((r) => (
+                      <li key={r.slug}><a href={`/conditions/${r.slug}`} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-navy-800 hover:border-teal-400 hover:bg-teal-50">{r.name} →</a></li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              <div className="flex flex-wrap gap-2 text-sm font-bold">
+                <a href="/conditions/foundations" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Clinical Foundations</a>
+                <a href="/symptom-checker" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Symptom checker</a>
+                <a href="/msk-special-tests" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Special tests library</a>
+                <a href="/manual-therapy" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-700 hover:border-teal-300">Manual therapy</a>
+                {region ? <a href={libraryHref(region, "condition")} className="rounded-xl border border-teal-300 bg-teal-50 px-4 py-2.5 text-teal-900 hover:border-teal-500">Watch {REGION_PLAIN[region].toLowerCase()} exercises in 3D ({REGION_COUNTS[region]})</a> : null}
+                <a href="/rehabverse" className="rounded-xl bg-teal-700 px-4 py-2.5 text-white hover:bg-teal-800">Guided 3D home rehab</a>
+              </div>
+              {detail.links.length ? (
+                <p className="text-sm text-slate-600">See it in the atlas: {detail.links.map((l, i) => (<span key={l.href}>{i ? " · " : ""}<a className="font-bold text-teal-800 underline" href={l.href}>{l.label}</a></span>))}</p>
+              ) : null}
+              {links ? <RelatedPanel related={links} name={item.name} /> : null}
+            </div>
+          }
+        />
+      </div>
+    );
+  }
   return (
     <div className="container-content section-padding">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      {ld}
       <nav aria-label="Breadcrumb" className="mb-4 text-sm font-semibold text-slate-600">
         <a href="/conditions" className="text-teal-800 hover:underline">← All conditions</a>
       </nav>
