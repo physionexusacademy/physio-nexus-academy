@@ -168,8 +168,9 @@ export function warmParts(parts: Part[]) {
 export async function warmPack(name: string) {
   const c = audio();
   const index = await loadClips();
-  const stem = index?.packs.find((pack) => pack.startsWith(name + "."));
-  if (c && stem) void decodePack(stem, c).catch(() => undefined);
+  // the pack itself and its patch packs ("<name>~1.<hash>": sentences re-recorded later without re-encoding the whole pack)
+  const stems = index?.packs.filter((pack) => pack.startsWith(name + ".") || pack.startsWith(name + "~")) ?? [];
+  if (c) for (const stem of stems) void decodePack(stem, c).catch(() => undefined);
 }
 
 /* ---------------- playing ---------------- */
