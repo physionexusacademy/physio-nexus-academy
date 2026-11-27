@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import "../dark-zone.css";
 import { JsonLd, breadcrumbList, orgRef, siteUrl } from "@/lib/seo/jsonld";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -13,10 +14,10 @@ export default function Layout({ children }: { children: ReactNode }) {
     publisher: orgRef,
   };
   return (
-    <>
+    <div className="nx-dz">
       <JsonLd data={data} />
       <JsonLd data={breadcrumbList([{ name: 'MSK Special Tests', path: "/msk-special-tests" }])} />
       {children}
-    </>
+    </div>
   );
 }
