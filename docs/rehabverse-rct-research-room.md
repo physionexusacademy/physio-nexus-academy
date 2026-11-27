@@ -115,3 +115,36 @@ Known limits of phase 1: the allocation list should come from an independent sta
 * One deliberate difference: statement 9 reads "than usual"; the official copy has the typo "then usual".
 * Scoring is the number of statements ticked, 0 to 24, as the official note says; the official note also allows tick boxes and online or telephone use.
 * The Roman Urdu is a help only, not a validated translation: for the primary outcome the English wording is the one that counts. Check the custodians' current permission statement on rmdq.org before publishing.
+
+## 8. Phase 2 (built, 27 Nov 2026): symmetric measurement, blinded assessor, history review
+
+The database migration `20261204120000_rehab_research_phase2.sql` is **not applied to production until the owner approves it**. Until then the app runs exactly as before: the
+new records are skipped silently and the new panels stay hidden.
+
+* **The same activity record in both arms.** The server stores what every patient does, through one code path that never reads the AI switch:
+  * day opened;
+  * each exercise opened;
+  * each exercise ticked as done in the daily feedback, with the time its guide was on screen;
+  * time on the day page;
+  * feedback sent;
+  * questionnaire sent.
+
+  The patient record shows the summary as "Activity record (same for every patient)". The table is append-only and cannot be read through the API. A failed record never blocks the patient.
+* **Blinded outcome assessor.** In the Research Room the clinic names an assessor by e-mail. The assessor must not be a clinic admin or a patient; the database refuses both, and an assessor who later becomes an admin loses access.
+  * The assessor signs in at **/rehabverse/assessor**. They see participants under a code (P001, P002, …) in order of enrolment, with name, phone, language, outcome plan, what is due and what is already recorded.
+  * The functions they call never return the arm, the AI switch, the stratum or the allocation list.
+  * Questionnaires they collect (by phone or in person) are scored by the server and stored with `collected_by = 'assessor'`. A follow-up PSFS asks about the same activities written at the start.
+* **History review (AI accuracy and workload).** Under the history brief, the physiotherapist presses "Review finished".
+  * **Every patient:** the time from opening the record is stored as a workload outcome.
+  * **AI-organised history only:** they also count what the AI left out, got wrong and invented.
+
+  The database decides whether the history was organised by the AI, and refuses counts otherwise. A history is reviewed once, and a review cannot be changed.
+
+Tests:
+* `npm run validate:research-phase2-db`: 59 checks on the real migrations, Postgres 17. Three safeguards were broken on purpose, and each break was caught: arm leaked to the assessor, admin acting as assessor, AI counts on a standard history.
+* `npm run validate:research-room`: now also checks that the patient-side record never reads the AI switch, and that the assessor page never touches the arm.
+
+Still pending for the trial:
+* **Phase 3:** serious adverse event forms, a monitoring dashboard, protocol-deviation reporting.
+* **Phase 4:** an intention-to-treat analysis export.
+* **Owner's decisions:** ethics approval, registration, sample size, and an independent statistician's allocation list.

@@ -166,4 +166,31 @@ eq(reasonLabel("pain_below_minimum"), "Baseline pain below the minimum", "fixed 
   ok(/rehab_admin_study_/.test(api) && (api.match(/rehab_admin_study_/g) ?? []).length >= 4, "api: the reading functions are staff-only database functions");
 }
 
+/* ---------- phase 2: symmetric measurement, blinded assessor, history review ---------- */
+{
+  const day = read("src/components/rehabverse/DaySession.tsx");
+  const hook = day.slice(day.indexOf("function useDayEngagement"), day.indexOf("export function DaySession("));
+  ok(hook.length > 300 && !/\bai\b/.test(hook), "engagement: the day-page record never reads the AI switch, so both arms are logged by the same code");
+  ok(/useDayEngagement\(session\.id, access === "open"/.test(day), "engagement: every open day is recorded, whatever the arm");
+  ok(/logEngagementAction\("exercise_done", data\.session\.id, e\.exercise_id, secondsOn\(e\.exercise_id\)\)/.test(day), "engagement: exercises ticked in the daily feedback are recorded with their time on screen");
+  const pa = read("src/app/rehabverse/actions.ts");
+  ok(/await logEngagement\("feedback_sent", sessionId\)/.test(pa) && /await logEngagement\("outcome_sent"\)/.test(pa), "engagement: feedback and questionnaires are recorded by the server");
+  ok(/catch \{\s*\/\* the record is for research/.test(pa), "engagement: a failed record never blocks the patient");
+  const assessor = read("src/components/rehabverse/research-room/AssessorRoom.tsx") + read("src/app/rehabverse/assessor-actions.ts");
+  ok(!/\barm\b|ai_assist|no_ai|stratum|rehab_admin_/.test(assessor.replace(/\/\*\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "")), "assessor: the page and its actions never touch the arm, the AI switch or staff functions");
+  ok(/p_collected_by: "assessor"/.test(assessor) && /rehab_assessor_plan/.test(assessor), "assessor: records are checked against the participant's plan and saved as collected by the assessor");
+  ok(/robots: \{ index: false/.test(read("src/app/rehabverse/assessor/page.tsx")), "assessor: the page is not indexed");
+  const mig2 = read("supabase/migrations/20261204120000_rehab_research_phase2.sql");
+  const queueFn = mig2.slice(mig2.indexOf("function public.rehab_assessor_queue"), mig2.indexOf("function public.rehab_assessor_plan"));
+  ok(queueFn.length > 300 && !/\.arm\b|ai_assist|stratum|sequence/.test(queueFn), "database: the assessor's list is built without the arm, the AI switch or the list");
+  const requireAssessor = mig2.slice(mig2.indexOf("function public.rehab__require_assessor"), mig2.indexOf("function public.rehab_assessor_queue"));
+  ok(/admin cannot be the blinded assessor/.test(mig2) && /role in \('owner', 'admin'\)/.test(requireAssessor) && /raise exception 'rehab: not authorised'/.test(requireAssessor), "database: an admin can never act as the assessor");
+  const review = read("src/components/rehabverse/admin/HistoryReview.tsx");
+  ok(/performance\.now\(\) - opened\.current/.test(review) && /aiOrganised \? \{ seconds, \.\.\.counts, note \} : \{ seconds, note \}/.test(review), "history review: the time is recorded for every patient, the AI counts only for an AI history");
+  ok(/via_ai := exists \(select 1 from public\.rehab_ai_conversations/.test(mig2), "database: whether a history was organised by the AI is decided by the database");
+  const record = read("src/components/rehabverse/admin/AdminPatientRecord.tsx");
+  ok(/<HistoryReview patientId=\{patient\.id\}/.test(record) && /<EngagementPanel patientId=\{patient\.id\} \/>/.test(record), "patient record: shows the review form and the activity record");
+  ok(/<AssessorPanel \/>/.test(read("src/app/admin/(dashboard)/rehabverse/research-room/page.tsx")), "research room: the assessor can be named");
+}
+
 console.log(`Research Room: ${checks} checks passed (allocation lists, pain bands, study rules, flow numbers, safeguards wired).`);

@@ -230,3 +230,28 @@ export async function setResearchConsentAction(patientId: string, consent: boole
     return { ok: true, consent: r.research_consent };
   } catch (e) { return fail(e); }
 }
+
+/* ─────────────── research phase 2: history review (both arms) and engagement (the same record for every patient) ─────────────── */
+export type HistoryReviewRow = { assessment_id: string; ai_organised: boolean; review_seconds: number; omissions: number | null; errors: number | null; invented: number | null; note: string | null; created_at: string };
+export type EngagementSummary = { active_days: number; days_opened: number; exercises_done: number; minutes: number; feedback_sent: number; outcomes_sent: number; last_at: string | null };
+
+export async function historyReviewsAction(patientId: string): Promise<Result<{ reviews: HistoryReviewRow[] }>> {
+  try { return { ok: true, reviews: await rpc<HistoryReviewRow[]>("rehab_admin_history_reviews", { p_patient_id: patientId }) }; } catch (e) { return fail(e); }
+}
+
+export async function saveHistoryReviewAction(assessmentId: string, input: { seconds: number; omissions?: number | null; errors?: number | null; invented?: number | null; note?: string }): Promise<Result<{ ai_organised: boolean }>> {
+  try {
+    const count = (n: number | null | undefined) => (typeof n === "number" && Number.isFinite(n) ? Math.max(0, Math.min(50, Math.round(n))) : null);
+    const r = await rpc<{ ai_organised: boolean }>("rehab_admin_history_review", {
+      p_assessment_id: assessmentId, p_seconds: Math.max(1, Math.min(7200, Math.round(input.seconds))),
+      p_omissions: count(input.omissions), p_errors: count(input.errors), p_invented: count(input.invented), p_note: String(input.note ?? "").slice(0, 1000) || null,
+    });
+    return { ok: true, ai_organised: r.ai_organised };
+  } catch (e) {
+    return { ok: false, error: e instanceof RehabError ? e.message.replace(/^rehab:\s*/, "") : "failed" };
+  }
+}
+
+export async function engagementAction(patientId: string): Promise<Result<{ summary: EngagementSummary }>> {
+  try { return { ok: true, summary: await rpc<EngagementSummary>("rehab_admin_engagement", { p_patient_id: patientId }) }; } catch (e) { return fail(e); }
+}
