@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
 import { getAllCitySlugs, getCityBySlug } from "@/lib/locations";
+import { CityExtras } from "@/components/locations/CityExtras";
 
 const siteUrl = "https://physionexusacademy.com";
 
@@ -148,7 +149,7 @@ export default async function CityLocationPage({
             "@type": "ListItem",
             position: 2,
             name: "Locations",
-            item: `${siteUrl}/home-visit`,
+            item: `${siteUrl}/locations`,
           },
           {
             "@type": "ListItem",
@@ -289,6 +290,8 @@ export default async function CityLocationPage({
           </a>
         </div>
       </section>
+
+      <CityExtras city={city} />
 
       <div className="mt-10 rounded-2xl border border-[#25D366]/30 bg-[#25D366]/5 p-5 text-center sm:p-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-[#128C7E]">

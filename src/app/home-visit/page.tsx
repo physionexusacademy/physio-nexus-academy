@@ -258,7 +258,8 @@ export default function HomeVisitPage() {
             </p>
             <p className="mt-3 text-sm leading-6 text-navy-600">
               Common request cities include: Karachi, Hyderabad, Lahore, Islamabad, Rawalpindi,
-              Faisalabad, Multan, Peshawar, Quetta, Sukkur, Larkana, Nawabshah, Mirpurkhas and many more.
+              Faisalabad, Multan, Peshawar, Quetta, Sukkur, Larkana, Nawabshah, Mirpurkhas and many more.{" "}
+              <a href="/locations" className="font-semibold text-teal-600 hover:underline">See every city and how a visit works there</a>.
             </p>
             <p className="mt-3 text-sm font-medium text-navy-700">
               Not sure about your area? Message us on WhatsApp — we will tell you honestly whether

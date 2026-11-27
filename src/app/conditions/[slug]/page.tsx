@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { conditionCatalog, conditionUrl, getCondition } from "@/lib/conditions/catalog";
 import { areaLabel } from "@/lib/conditions/taxonomy";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import type { ConditionDetail } from "@/lib/conditions/types";
 import { ConditionGuide } from "../ConditionGuide";
 import { relatedForCondition } from "@/lib/related";
 import { RelatedPanel } from "@/components/related/RelatedPanel";
@@ -12,6 +15,19 @@ export const dynamicParams = false;
 export const revalidate = false;
 
 type PageProps = { params: Promise<{ slug: string }> };
+
+/**
+ * The guide text, read from public/conditions-data at build time so it is part of the prebuilt HTML (the pages are served from static assets).
+ * The data is not imported, so it stays out of the Cloudflare worker; if the file cannot be read (e.g. a render inside the worker), the guide
+ * falls back to loading it in the browser.
+ */
+async function readDetail(slug: string): Promise<ConditionDetail | null> {
+  try {
+    return JSON.parse(await readFile(path.join(process.cwd(), "public", "conditions-data", `${slug}.json`), "utf8")) as ConditionDetail;
+  } catch {
+    return null;
+  }
+}
 
 export function generateStaticParams() {
   return conditionCatalog.map((c) => ({ slug: c.slug }));
@@ -39,6 +55,7 @@ export default async function ConditionPage({ params }: PageProps) {
     .slice(0, 4)
     .map((c) => ({ slug: c.slug, name: c.name, area: areaLabel(c.area) }));
   const links = relatedForCondition(item.slug);
+  const detail = await readDetail(item.slug);
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -68,7 +85,7 @@ export default async function ConditionPage({ params }: PageProps) {
       <nav aria-label="Breadcrumb" className="mb-4 text-sm font-semibold text-slate-600">
         <a href="/conditions" className="text-teal-800 hover:underline">← All conditions</a>
       </nav>
-      <ConditionGuide item={item} related={related} />
+      <ConditionGuide item={item} related={related} initialDetail={detail} />
       {links ? <RelatedPanel related={links} name={item.name} /> : null}
     </div>
   );

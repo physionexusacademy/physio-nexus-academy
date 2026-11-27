@@ -18,9 +18,13 @@ const SECTIONS = [
 
 type Related = { slug: string; name: string; area: string };
 
-export function ConditionGuide({ item, related }: { item: CatalogItem; related: Related[] }) {
+/**
+ * initialDetail: the guide text read at build time (conditions/[slug]/page.tsx), so the whole guide is in the page's HTML for readers without
+ * JavaScript and for search engines. When it is missing the guide loads its static JSON in the browser, as before.
+ */
+export function ConditionGuide({ item, related, initialDetail = null }: { item: CatalogItem; related: Related[]; initialDetail?: ConditionDetail | null }) {
   const exerciseRegion = regionForBodyArea(item.area);
-  const [detail, setDetail] = useState<ConditionDetail | null>(null);
+  const [detail, setDetail] = useState<ConditionDetail | null>(initialDetail);
   const [failed, setFailed] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +35,9 @@ export function ConditionGuide({ item, related }: { item: CatalogItem; related: 
       .then(setDetail)
       .catch(() => setFailed(true));
   }, [item.slug]);
-  useEffect(load, [load]);
+  useEffect(() => {
+    if (!initialDetail) load();
+  }, [load, initialDetail]);
 
   // A link such as /conditions/<slug>#expert lands on that part once the guide has loaded.
   useEffect(() => {

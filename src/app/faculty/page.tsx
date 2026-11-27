@@ -3,6 +3,7 @@ import { HubJsonLd } from "@/lib/seo/hub";
 import Image from "next/image";
 import { ArrowRight, GraduationCap, UserRound } from "lucide-react";
 import { facultyMembers } from "@/lib/faculty";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Faculty — Physiotherapy Educators",
@@ -83,6 +84,31 @@ function FacultyPageBody() {
             </a>
           ))}
         </div>
+
+        <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-navy-500">
+          PNA was founded by <a href="/founder" className="font-semibold text-teal-700 hover:underline">{siteConfig.founder.name}</a>, who leads the academy&apos;s teaching and clinical content.
+        </p>
+
+        <section className="mx-auto mt-12 max-w-5xl" aria-labelledby="faculty-how">
+          <h2 id="faculty-how" className="text-center text-2xl font-bold text-navy-800">How the faculty teach</h2>
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Hands-on workshops", "Practical sessions on clinical skills and evidence-informed techniques; dates and venues are on the workshops page.", "/workshops"],
+              ["Lessons you can repeat", "PNA Teacher lessons with a 3D teacher, quick checks and flashcards, in English and Roman Urdu.", "/learn"],
+              ["Exam skills, step by step", "The Skills Lab for goniometry, muscle testing, special tests, neuro exam and OSCE stations.", "/skills"],
+              ["Real reasoning", "A 3D Virtual Patient to examine and diagnose, with an OSCE-style score.", "/virtual-patient"],
+              ["Evidence first", "Condition guides that follow current guidelines and list their sources.", "/conditions"],
+              ["Research support", "A research track on study design, statistics and appraisal, for theses and projects.", "/research"],
+            ].map(([title, text, href]) => (
+              <li key={href}>
+                <a href={href} className="flex h-full flex-col rounded-2xl border border-grey-200 bg-white p-5 hover:border-teal-300">
+                  <span className="font-bold text-navy-800">{title}</span>
+                  <span className="mt-1.5 text-sm leading-6 text-navy-500">{text}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </div>
   );

@@ -71,12 +71,8 @@ export const academyWings: AcademyWing[] = [
       { label: "Book Appointment", href: "/appointment", description: "Request a consultation", icon: "calendar", keywords: "booking consult session appointment" },
       { label: "Home Visit", href: "/home-visit", description: "Physiotherapy at your home", icon: "home", keywords: "home visit ghar" },
       { label: "Symptom Checker", href: "/symptom-checker", description: "Screen patterns and red flags", icon: "symptoms", keywords: "pain checker symptoms" },
-      { label: "Clinical Calculators", href: "/health-calculators/clinical", description: "Heart rate zones, one-rep max, waist-hip ratio, outcome change", icon: "calculator", keywords: "calculator karvonen heart rate zones one rep max 1rm waist hip ratio bmr calories minimal important change" },
-      { label: "Posture Screen", href: "/health-calculators/posture", description: "Check posture with your phone camera, with margins of error", icon: "symptoms", keywords: "posture check forward head shoulder level hip level knee alignment trunk lean camera screen" },
-      { label: "Full Posture Scan", href: "/health-calculators/posture/scan", description: "Front, side, back and forward bend with your phone, on an illustrative 3D skeleton", icon: "symptoms", keywords: "posture scan 3d skeleton four views front side back forward bend camera screen" },
-      { label: "BMI Calculator", href: "/health-calculators/bmi", description: "Quick BMI with age-aware notes", icon: "calculator", keywords: "bmi health calculator weight" },
-      { label: "Karachi", href: "/locations/karachi", description: "Home visits & workshops", icon: "pin", keywords: "karachi location" },
-      { label: "Hyderabad", href: "/locations/hyderabad", description: "Home visits & workshops", icon: "pin", keywords: "hyderabad location" },
+      { label: "Health & Posture Tools", href: "/health-calculators", description: "Posture screen and 3D scan, BMI and clinical calculators", icon: "calculator", keywords: "calculator posture screen scan skeleton camera bmi heart rate zones one rep max waist hip ratio karvonen outcome change" },
+      { label: "Home-Visit Cities", href: "/locations", description: "34 cities across Pakistan", icon: "pin", keywords: "location city cities karachi hyderabad lahore islamabad rawalpindi peshawar quetta sukkur larkana nawabshah multan faisalabad home visit near me" },
     ],
   },
   {
@@ -89,14 +85,27 @@ export const academyWings: AcademyWing[] = [
       { label: "Training Archive", href: "/training", description: "Past workshops & internships", icon: "archive", keywords: "past training internship" },
       { label: "Research Support", href: "/research", description: "Methods, writing and evidence", icon: "research", keywords: "research thesis" },
       { label: "Faculty", href: "/faculty", description: "Meet our clinical educators", icon: "people", keywords: "teachers trainers" },
-      { label: "Founder", href: "/founder", description: "Dr. Sajjad Raza PT", icon: "founder", keywords: "dr sajjad raza founder" },
       { label: "About PNA", href: "/about", description: "Mission and approach", icon: "info", keywords: "about mission" },
       { label: "Verify Certificate", href: "/verify", description: "Check a PNA certificate", icon: "certificate", keywords: "verify certificate" },
-      { label: "Reviews", href: "/reviews", description: "Rate your PNA experience", icon: "star", keywords: "feedback review rating" },
       { label: "FAQ", href: "/faq", description: "Common questions answered", icon: "faq", keywords: "questions help" },
       { label: "Contact", href: "/contact", description: "WhatsApp, email and address", icon: "contact", keywords: "contact phone whatsapp email address" },
     ],
   },
+];
+
+/**
+ * Places kept out of the menu to keep it short (they are one click away on a hub page) but still found by search and the command palette.
+ * wing: the menu wing that lights up when one of these pages is open.
+ */
+export const searchOnlyPlaces: { wing: AcademyWing["id"]; place: AcademyPlace }[] = [
+  { wing: "clinic", place: { label: "Clinical Calculators", href: "/health-calculators/clinical", description: "Heart rate zones, one-rep max, waist-hip ratio, outcome change", icon: "calculator", keywords: "calculator karvonen heart rate zones one rep max 1rm waist hip ratio bmr calories minimal important change" } },
+  { wing: "clinic", place: { label: "Posture Screen", href: "/health-calculators/posture", description: "Check posture with your phone camera, with margins of error", icon: "symptoms", keywords: "posture check forward head shoulder level hip level knee alignment trunk lean camera screen" } },
+  { wing: "clinic", place: { label: "Full Posture Scan", href: "/health-calculators/posture/scan", description: "Front, side, back and forward bend with your phone, on an illustrative 3D skeleton", icon: "symptoms", keywords: "posture scan 3d skeleton four views front side back forward bend camera screen" } },
+  { wing: "clinic", place: { label: "BMI Calculator", href: "/health-calculators/bmi", description: "Quick BMI with age-aware notes", icon: "calculator", keywords: "bmi health calculator weight" } },
+  { wing: "clinic", place: { label: "Karachi", href: "/locations/karachi", description: "Home visits & workshops", icon: "pin", keywords: "karachi location" } },
+  { wing: "clinic", place: { label: "Hyderabad", href: "/locations/hyderabad", description: "Home visits & workshops", icon: "pin", keywords: "hyderabad location" } },
+  { wing: "academy", place: { label: "Founder", href: "/founder", description: "Dr. Sajjad Raza PT", icon: "founder", keywords: "dr sajjad raza founder" } },
+  { wing: "academy", place: { label: "Reviews", href: "/reviews", description: "Rate your PNA experience", icon: "star", keywords: "feedback review rating" } },
 ];
 
 /** Popular lessons surfaced in search before the learner types anything specific. */
@@ -137,12 +146,11 @@ export function visibleWings(atlasPublished: boolean): AcademyWing[] {
 export function wingForPath(pathname: string): AcademyWing["id"] | null {
   if (!pathname || pathname === "/") return null;
   let best: { id: AcademyWing["id"]; length: number } | null = null;
-  for (const wing of academyWings) {
-    for (const place of wing.places) {
-      const base = place.href.replace(/\/bmi$/, "");
-      if ((pathname === base || pathname.startsWith(base + "/")) && (!best || base.length > best.length)) {
-        best = { id: wing.id, length: base.length };
-      }
+  const entries = [...academyWings.flatMap((wing) => wing.places.map((place) => ({ id: wing.id, place }))), ...searchOnlyPlaces.map(({ wing, place }) => ({ id: wing, place }))];
+  for (const { id, place } of entries) {
+    const base = place.href.replace(/\/bmi$/, "");
+    if ((pathname === base || pathname.startsWith(base + "/")) && (!best || base.length > best.length)) {
+      best = { id, length: base.length };
     }
   }
   return best?.id ?? null;
@@ -161,6 +169,7 @@ export function searchAcademy(query: string, atlasPublished = true, limit = 8, e
     ...visibleWings(atlasPublished).flatMap((wing) => wing.places.map((place) => ({ ...place, wing: wing.label }))),
     ...popularLessons.map((place) => ({ ...place, wing: "Lesson" })),
     ...skillPlaces.map((place) => ({ ...place, wing: "Skills Lab" })),
+    ...searchOnlyPlaces.map(({ wing, place }) => ({ ...place, wing: academyWings.find((w) => w.id === wing)?.label ?? "" })),
   ];
   if (!words.length) return [];
   return all

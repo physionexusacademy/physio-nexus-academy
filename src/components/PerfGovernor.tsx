@@ -93,10 +93,19 @@ export function PerfGovernor() {
       { rootMargin: "160px 0px" },
     );
     const watch = () => document.querySelectorAll("main section, main > div > div[class*='lobby'], footer").forEach((node) => io.observe(node));
-    watch();
-    // client-rendered sections appear a moment after hydration
-    const later = window.setTimeout(watch, 2500);
+    // Start only once the page has loaded and the browser is idle: marking a server-rendered section before React has hydrated it makes the
+    // attribute differ from the server HTML (a hydration mismatch). Client-rendered sections that appear later are picked up a moment after.
+    let idle = 0;
+    const start = () => {
+      idle = typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(watch, { timeout: 1500 }) : window.setTimeout(watch, 300);
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    const later = window.setTimeout(watch, 4000);
     return () => {
+      window.removeEventListener("load", start);
+      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idle);
+      window.clearTimeout(idle);
       window.clearTimeout(later);
       io.disconnect();
       document.querySelectorAll("[data-offscreen]").forEach((node) => node.removeAttribute("data-offscreen"));

@@ -39,6 +39,9 @@ export function Footer() {
               <p className="flex items-start gap-2.5 text-[#c4d6e8]">
                 <MapPin className="mt-0.5 h-4 w-4 flex-none text-[var(--nx-aqua)]" aria-hidden="true" /> {siteConfig.contact.address}
               </p>
+              <a href="/locations" className="flex items-center gap-2.5">
+                <MapPin className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /> Home-visit cities
+              </a>
               <a href={siteConfig.contact.social.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5">
                 <Instagram className="h-4 w-4 text-[var(--nx-aqua)]" aria-hidden="true" /> @physionexusacademy
               </a>

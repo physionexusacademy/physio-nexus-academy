@@ -124,8 +124,34 @@ export default function ContactPage() {
             <a href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
               Hyderabad
             </a>
+            , or{" "}
+            <a href="/locations" className="font-semibold text-teal-600 hover:underline">
+              see all cities we cover
+            </a>
             .
           </p>
+
+          <section className="mt-6" aria-labelledby="contact-routes">
+            <h2 id="contact-routes" className="text-lg font-bold text-navy-800">The fastest route for your question</h2>
+            <ul className="mt-3 divide-y divide-grey-100 rounded-xl border border-grey-200 bg-white text-sm">
+              {[
+                ["A physiotherapist at home", "/home-visit", "Home visit form: city, area, preferred time and the main problem."],
+                ["An appointment", "/appointment", "Appointment request: the team confirms a time with you."],
+                ["Exercise guidance from home", "/rehabverse", "RehabVerse: a physiotherapist-approved programme with a 3D guide."],
+                ["Not sure what the problem is", "/symptom-checker", "Symptom checker: which guide fits, and when to see a doctor first."],
+                ["Workshops and registration", "/workshops", "Dates, venues and how to register."],
+                ["Checking a certificate", "/verify", "Enter the Certificate ID printed on it."],
+                ["Research or thesis help", "/research", "What the team can help with, and how to ask."],
+                ["Something else", "/faq", "Read the FAQ first; many answers are already there."],
+              ].map(([label, href, note]) => (
+                <li key={href} className="p-3">
+                  <a href={href} className="font-semibold text-teal-700 hover:underline">{label}</a>
+                  <span className="block text-navy-500">{note}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-xs text-navy-500">For chest pain, sudden weakness, a fall with severe pain or loss of bladder or bowel control, go to the nearest emergency department. PNA is not an emergency service.</p>
+          </section>
 
           <div className="mt-6 rounded-xl border border-grey-200 bg-grey-50 p-4">
             <p className="text-sm font-semibold text-navy-800">Already attended a PNA workshop or used our service?</p>
@@ -140,6 +166,9 @@ export default function ContactPage() {
             >
               <Star className="h-4 w-4" />
               Leave a Google review
+            </a>
+            <a href="/reviews" className="mt-2 ml-4 inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700">
+              Read and write PNA reviews
             </a>
           </div>
         </div>
