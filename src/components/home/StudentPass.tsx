@@ -8,7 +8,7 @@ import { getDeck, getDueCardIds, getTeacherProfile, getTeacherProgress, TEACHER_
 import { getDueReviews } from "@/lib/clinical-review-queue";
 import { SKILLS_EVENT, dueSkillCards, getSkillsDeck, getSkillsProgress, passedSkillCount } from "@/lib/skills/progress";
 import { getVpProgress, VP_EVENT } from "@/lib/virtual-patient/session";
-import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
+import { VP_TOTAL_PATIENTS as VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 
 const levels = [
   { name: "New Student", min: 0 },

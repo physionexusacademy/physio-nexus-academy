@@ -6,10 +6,16 @@ import { CASES, CONSENT_ANSWER, DEFAULT_ANSWER, PRACTICE_CASE, type VirtualCase 
 import { HISTORY, type HistoryId } from "@/lib/virtual-patient/exam";
 import { getVpProgress, VP_EVENT, type SessionResult, type VpProgress } from "@/lib/virtual-patient/session";
 import { useExam, type ExamMode, type Lang } from "./ExamContext";
+import { loadBookIndex, type BookIndex } from "@/lib/virtual-patient/treat-setup";
 
 /* ---------------- Case picker ---------------- */
 
-export function CasePicker({ onStart, suggested }: { onStart: (c: VirtualCase, mode: ExamMode) => void; suggested?: string | null }) {
+export function CasePicker({ onStart, suggested, onStartBook }: { onStart: (c: VirtualCase, mode: ExamMode) => void; suggested?: string | null; onStartBook?: (slug: string) => void }) {
+  const [book, setBook] = useState<BookIndex["patients"]>([]);
+  const [bookArea, setBookArea] = useState("all");
+  useEffect(() => {
+    void loadBookIndex().then((i) => setBook(i.patients)).catch(() => setBook([]));
+  }, []);
   const [mode, setMode] = useState<ExamMode>("guided");
   const [progress, setProgress] = useState<VpProgress>({ cases: {} });
   useEffect(() => {
@@ -73,6 +79,30 @@ export function CasePicker({ onStart, suggested }: { onStart: (c: VirtualCase, m
           );
         })}
       </ul>
+      {onStartBook && book.length ? (
+        <section className="mt-8" data-pna-vp-book-list={book.length}>
+          <p className="nx-kicker"><Stethoscope className="h-3.5 w-3.5" aria-hidden="true" /> From the book · Conditions &amp; Treatment</p>
+          <h3 className="nx-title mt-2 text-xl text-white">{book.length} patients from the book's chapters</h3>
+          <p className="mt-1 text-sm text-[#a9bfd6]">The case, special tests, diagnosis and treatment come word for word from each chapter.</p>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {["all", ...Array.from(new Set(book.map((b) => b.area)))].map((a) => (
+              <button key={a} type="button" onClick={() => setBookArea(a)} aria-pressed={bookArea === a} className={"rounded-full px-3 py-1 text-xs font-bold capitalize " + (bookArea === a ? "bg-[#2ee6d6] text-[#04263a]" : "bg-white/10 text-white")}>{a === "all" ? "All areas" : a.replace(/-/g, " ")}</button>
+            ))}
+          </div>
+          <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {book.filter((b) => bookArea === "all" || b.area === bookArea).map((b) => (
+              <li key={b.slug}>
+                <button type="button" onClick={() => onStartBook(b.slug)} className="flex h-full w-full flex-col rounded-2xl bg-white p-4 text-left shadow-[0_20px_50px_-35px_rgba(0,0,0,0.8)] transition hover:-translate-y-0.5">
+                  <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-extrabold text-amber-900 self-start">Book · {b.ch.toUpperCase()}</span>
+                  <strong className="mt-2 text-[15px] text-navy-800">{b.title}</strong>
+                  <span className="mt-1 flex-1 text-[13px] leading-5 text-slate-700">{b.case.replace(/^Case:\s*/, "").slice(0, 170)}{b.case.length > 170 ? "…" : ""}</span>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-700">{b.tests} special tests · see patient <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }

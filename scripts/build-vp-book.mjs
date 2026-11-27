@@ -80,7 +80,7 @@ function exercisesIn(text) {
 }
 
 const rowsOf = (blocks, test) => blocks.filter((b) => b.t === "table" && test(b.rows[0].map((c) => clean(c).toLowerCase()))).flatMap((b) => b.rows.slice(1).map((r) => ({ head: b.rows[0].map(clean), cells: r.map(plain) })));
-const textOf = (blocks) => blocks.flatMap((b) => (b.t === "p" || b.t === "callout" ? [plain(b.text ?? b.items?.join(" "))] : b.t === "ul" || b.t === "ol" ? b.items.map(plain) : [])).filter(Boolean);
+const textOf = (blocks) => blocks.flatMap((b) => (b.t === "p" ? [plain(b.text)] : b.t === "callout" ? (Array.isArray(b.body) ? b.body.map(plain) : [plain(b.text ?? b.body ?? "")]) : b.t === "ul" || b.t === "ol" ? b.items.map(plain) : [])).filter(Boolean);
 
 function chapter(place) {
   const d = JSON.parse(fs.readFileSync(path.join(CH, `${place.file}.json`), "utf8"));
@@ -105,7 +105,7 @@ function chapter(place) {
   /* J: exercise prescription rows and principles. */
   const exercise = rowsOf(S.J ?? [], () => true).map(({ head, cells }) => Object.fromEntries(head.map((h, k) => [h, cells[k]])));
   const exerciseNotes = textOf(S.J ?? []);
-  const exercises3d = exercisesIn(exercise.map((r) => Object.values(r).join(" ")).join(" | "));
+  const exercises3d = exercisesIn([...exercise.map((r) => Object.values(r).join(" ")), ...exerciseNotes].join(" | "));
   /* K: modalities with the book's "Indicated?" verdict. */
   const modalities = rowsOf(S.K ?? [], (h) => h[0] === "modality").map(({ cells }) => ({ name: cells[0], indicated: cells[1], comment: cells[2], anim: animFor(cells[0]) }));
   const modalityNotes = textOf(S.K ?? []);
@@ -117,9 +117,25 @@ function chapter(place) {
   const N = S.N ?? [];
   const caseText = textOf(N.filter((b) => b.t === "p" || b.t === "callout"));
   const qa = N.filter((b) => b.t === "ol").flatMap((b) => b.items.map(plain));
+  // A chapter with questions only: its first vignette question is the case.
+  if (!caseText.length) {
+    const vignette = qa.find((q) => /\d+-year-old/.test(q));
+    if (vignette) caseText.push(vignette.replace(/\?\s.*$/, "?").replace(/ What do you suspect\?$/, ""));
+  }
+  // No case at all: the chapter's own presentation (Section B) stands in, labelled as such.
+  if (!caseText.length) {
+    const presentation = textOf(S.B ?? []).slice(0, 2).join(" ");
+    if (presentation) caseText.push(`Presentation (from the chapter): ${presentation}`);
+    else {
+      const rows = rowsOf(S.B ?? [], () => true).slice(0, 4).map(({ cells }) => cells.filter(Boolean).join(": "));
+      const intro = rows.length ? rows.join(". ") : plain(d.lead ?? "") || textOf(S.A ?? []).slice(0, 2).join(" ");
+      if (intro) caseText.push(`Presentation (from the chapter): ${intro}`);
+    }
+  }
   const caseAll = caseText.join(" ");
-  const working = (/Working diagnosis:\s*([^.]*(?:\.[0-9][^.]*)*)\./i.exec(caseAll)?.[1] ?? "").trim();
-  const plan = (/Plan:\s*(.*?)(?=$)/i.exec(caseAll)?.[1] ?? "").replace(/\s*(Questions and answers).*$/i, "").trim();
+  const workingRaw = (/Working diagnosis:\s*([^.]*(?:\.[0-9][^.]*)*)\./i.exec(caseAll)?.[1] ?? "").trim();
+  const plan = ((/Plan:\s*(.*?)(?=$)/i.exec(caseAll)?.[1] ?? "").replace(/\s*(Questions and answers).*$/i, "").trim()) || (manualNotes.find((n) => /preferred starting choice/i.test(n)) ?? "").replace(/^Preferred starting choice:\s*/i, "") || (textOf(S.L ?? [])[0] ?? "");
+  const working = workingRaw || plain(d.title);
   const firstLeft = caseAll.search(/\bleft\b/i);
   const firstRight = caseAll.search(/\bright\b/i);
   const side = firstLeft >= 0 && (firstRight < 0 || firstLeft < firstRight) ? "left" : "right";
@@ -187,6 +203,14 @@ for (const place of places) {
 }
 files.set("index.json", JSON.stringify({ v: 1, count: index.length, patients: index }));
 
+const declared = Number(/VP_BOOK_COUNT = (\d+)/.exec(fs.readFileSync(path.join(root, "src/lib/virtual-patient/links.ts"), "utf8"))?.[1]);
+if (declared !== index.length) {
+  console.error(`VP_BOOK_COUNT in src/lib/virtual-patient/links.ts is ${declared}, but the book has ${index.length} condition chapters.`);
+  process.exit(1);
+}
+for (const p of index) {
+  if (!p.case) { console.error(`${p.slug}: no clinical case (Section N)`); process.exit(1); }
+}
 if (check) {
   const stale = [...files].filter(([name, body]) => !fs.existsSync(path.join(OUT, name)) || fs.readFileSync(path.join(OUT, name), "utf8") !== body);
   if (stale.length) {

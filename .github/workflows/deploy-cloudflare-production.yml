@@ -116,6 +116,9 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:skills
 
+      - name: Validate Virtual Patient book patients (fresh data from the Conditions & Treatment chapters, every chapter has a case)
+        run: node scripts/build-vp-book.mjs --check
+
       - name: Validate Virtual Patient cases, anatomy mapping, scoring and model
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:virtual-patient

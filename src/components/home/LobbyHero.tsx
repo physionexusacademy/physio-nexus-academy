@@ -2,7 +2,7 @@ import { Fragment, type CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { lessonCounts } from "@/lib/teacher/counts";
 import { conditionCatalog } from "@/lib/conditions/catalog";
-import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
+import { VP_TOTAL_PATIENTS as VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { LobbySearch } from "./LobbySearch";
 import { HeroSlideshow, type HeroSlide } from "./HeroSlideshow";
 import { sceneConditions, sceneDaily, sceneLeagues, sceneManual, sceneRehab, sceneSkills, sceneSymptom, sceneTeacher, sceneVirtual } from "./hero-scenes";

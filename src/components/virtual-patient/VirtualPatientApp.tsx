@@ -12,8 +12,9 @@ import { Overlays, SpeechBubble } from "./Overlays";
 import { TOOLS, ToolPanel, type PickHandler, type ToolId } from "./ExamTools";
 import { CasePicker, DiagnosePanel, HistoryPanel, ResultPanel } from "./Panels";
 import { TreatPanel, type TreatResult } from "./TreatPanel";
+import { BookCasePanel } from "./BookCasePanel";
 import { PLANS } from "@/lib/virtual-patient/treatments";
-import { CASE_BOOK, loadBookChapter, setupFromBook, setupFromPlan, type TreatSetup } from "@/lib/virtual-patient/treat-setup";
+import { CASE_BOOK, loadBookChapter, setupFromBook, setupFromPlan, type BookChapter, type TreatSetup } from "@/lib/virtual-patient/treat-setup";
 
 const POSITIONS: { id: PatientPosition; label: string; icon: typeof BedDouble }[] = [
   { id: "standing", label: "Standing", icon: PersonStanding },
@@ -23,7 +24,7 @@ const POSITIONS: { id: PatientPosition; label: string; icon: typeof BedDouble }[
   { id: "sidelying", label: "Side-lying", icon: BedDouble },
 ];
 const OSCE_MINUTES = 12;
-type Stage = "pick" | "exam" | "decide" | "result" | "treat" | "treated";
+type Stage = "pick" | "exam" | "decide" | "result" | "treat" | "treated" | "book";
 type Tab = "patient" | "examine" | "findings";
 
 /** Recorded findings only (tests performed without a recorded result aren't listed). */
@@ -64,6 +65,7 @@ export function VirtualPatientApp() {
   const [result, setResult] = useState<SessionResult | null>(null);
   const [treatResult, setTreatResult] = useState<TreatResult | null>(null);
   const [treatSetup, setTreatSetup] = useState<TreatSetup | null>(null);
+  const [bookCh, setBookCh] = useState<BookChapter | null>(null);
   const [caption, setCaption] = useState<{ text: string | null; timer: string | null }>({ text: null, timer: null });
   const onCaption = useCallback((text: string | null, timer?: string | null) => setCaption((c) => (c.text === text && c.timer === (timer ?? null) ? c : { text, timer: timer ?? null })), []);
   const pickRef = useRef<PickHandler>(null);
@@ -203,6 +205,36 @@ export function VirtualPatientApp() {
     setStage("result");
   };
 
+  /** A patient from the book: the chapter's case, tests, diagnosis and plan (BookCasePanel), then its treatment. */
+  const startBook = async (slug: string) => {
+    if (!room) return;
+    const book = await loadBookChapter(slug);
+    const FEMALE = ["Ayesha Khan", "Sana Malik", "Fatima Raza", "Hina Shah", "Maryam Ali", "Nida Hussain", "Zainab Qureshi", "Rabia Iqbal"];
+    const MALE = ["Ahmed Khan", "Usman Ali", "Hamza Raza", "Bilal Shah", "Faisal Malik", "Omar Qureshi", "Saad Iqbal", "Kashif Hussain"];
+    let h = 0;
+    for (const ch of slug) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const name = (book.female ? FEMALE : MALE)[h % 8];
+    const pseudo = {
+      id: `book:${slug}`, diagnosis: book.working, patient: { name, age: book.age ?? 40, job: book.title }, referral: book.case[0] ?? "", level: "Intermediate", area: book.area,
+      start: "standing", history: {}, findings: {}, key: { history: [], exam: [] }, teaching: book.qa,
+      questions: { diagnosis: { options: [book.working], answer: 0, why: "" }, plan: { options: [book.plan], answer: 0, why: "" } },
+    } as unknown as VirtualCase;
+    setBookCh(book);
+    setCaseData(pseudo);
+    setEvents([]);
+    setResult(null);
+    setTreatResult(null);
+    setOverlay({});
+    room.clearMarkers();
+    room.clearTape();
+    room.setCasePosture(undefined);
+    room.setPosition("standing");
+    setPosition("standing");
+    setStartedAt(Date.now());
+    setNow(Date.now());
+    setStage("book");
+  };
+
   const startTreatment = async () => {
     if (!room || !caseData) return;
     room.clearMarkers();
@@ -211,7 +243,7 @@ export function VirtualPatientApp() {
     // Treatment comes from the book chapter of this condition (word for word); emergencies stay "stop and refer".
     const plan = PLANS[caseData.id];
     const emergency = plan?.best.includes("refer") ?? false;
-    const slug = CASE_BOOK[caseData.id];
+    const slug = bookCh && caseData.id === `book:${bookCh.slug}` ? bookCh.slug : CASE_BOOK[caseData.id];
     let setup: TreatSetup | null = null;
     if (slug && !emergency) {
       try {
@@ -369,6 +401,7 @@ export function VirtualPatientApp() {
                 {stage === "result" && result ? (
                   <ResultPanel result={result} caseData={caseData} minutes={elapsedMin} onRetry={() => start(caseData, mode)} onNext={() => setStage("pick")} onTreat={PLANS[caseData.id] || CASE_BOOK[caseData.id] ? () => void startTreatment() : undefined} />
                 ) : null}
+                {stage === "book" && room && bookCh ? <BookCasePanel room={room} book={bookCh} name={caseData.patient.name} onTreat={() => void startTreatment()} onNext={() => setStage("pick")} /> : null}
                 {stage === "treat" && room ? <TreatPanel room={room} caseData={caseData} setup={treatSetup} lang={lang} onCaption={onCaption} onFinish={finishTreatment} /> : null}
                 {stage === "treated" && treatResult ? (
                   <div data-pna-vp-treat-result={treatResult.total}>
@@ -400,7 +433,7 @@ export function VirtualPatientApp() {
       </div>
       {stage === "pick" && ready ? (
         <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0a1f3d]/95">
-          <CasePicker onStart={start} suggested={suggested} />
+          <CasePicker onStart={start} suggested={suggested} onStartBook={(slug) => void startBook(slug)} />
         </div>
       ) : null}
     </div>

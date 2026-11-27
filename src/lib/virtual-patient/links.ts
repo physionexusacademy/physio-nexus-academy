@@ -4,6 +4,9 @@
  * (validate:virtual-patient checks every id here exists).
  */
 export const VP_CASE_COUNT = 25;
+/** Patients built from the book chapters (public/virtual-patient/book, scripts/build-vp-book.mjs). */
+export const VP_BOOK_COUNT = 68;
+export const VP_TOTAL_PATIENTS = VP_CASE_COUNT + VP_BOOK_COUNT;
 
 export type VpCaseLink = { id: string; title: string; why: string };
 
