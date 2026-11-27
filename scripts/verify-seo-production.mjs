@@ -6,6 +6,8 @@
  * a missing title / description / single H1, duplicate titles, no structured data. Length problems are reported as warnings.
  * Checks every hub and feature page plus a sample of each content section, and the sitemap, robots.txt, favicon and llms.txt.
  */
+import { createRequire } from "node:module";
+const { ciHeaders } = createRequire(import.meta.url)("./ci-members-pass.cjs");
 const BASE = (process.env.SEO_BASE ?? "https://physionexusacademy.com").replace(/\/$/, "");
 const PUBLIC = "https://physionexusacademy.com";
 
@@ -23,7 +25,8 @@ const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").rep
 async function get(path) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const response = await fetch(`${BASE}${path}${path.includes("?") ? "&" : "?"}seo=${Date.now()}`, { redirect: "follow", signal: AbortSignal.timeout(30000) });
+      const url = `${BASE}${path}${path.includes("?") ? "&" : "?"}seo=${Date.now()}`;
+      const response = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(30000), headers: ciHeaders(url) });
       return { status: response.status, type: response.headers.get("content-type") ?? "", text: await response.text() };
     } catch (error) {
       if (attempt === 3) return { status: 0, type: "", text: String(error) };

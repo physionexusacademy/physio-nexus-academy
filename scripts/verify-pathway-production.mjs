@@ -41,12 +41,15 @@ async function openMobileMenu(page) {
 
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch();
+// members-only mode: every context carries the deploy's pass (does nothing when PNA_CI_TOKEN is not set)
+const { addCiCookie } = createRequire(import.meta.url)("./ci-members-pass.cjs");
+const newContext = async (options) => { const context = await newContext(options); await addCiCookie(context, origin); return context; };
 
 try {
   // Verify the custom Install PNA App button actually invokes the browser's
   // native install prompt when Chromium exposes beforeinstallprompt.
   {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const context = await newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-install-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
     await openMobileMenu(page);
@@ -71,7 +74,7 @@ try {
 
   // Verify the supported fallback for browsers that do not expose the prompt.
   {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const context = await newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(`${origin}/?pwa-fallback-qa=${process.env.GITHUB_SHA}`, { waitUntil: "domcontentloaded" });
     await openMobileMenu(page);
@@ -86,7 +89,7 @@ try {
 
   // iOS cannot be programmatically installed by a website; verify Safari steps.
   {
-    const context = await browser.newContext({
+    const context = await newContext({
       viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true,
       userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
     });
@@ -105,7 +108,7 @@ try {
     await context.close();
   }
 
-  const request = await browser.newContext();
+  const request = await newContext();
   for (const photo of photos) {
     const asset = `/images/pathway-backgrounds/${photo}.webp`;
     const response = await request.request.get(origin + asset);
@@ -121,7 +124,7 @@ try {
   await request.close();
 
   for (const width of [360, 390, 430, 768, 1440]) {
-    const context = await browser.newContext({ viewport: { width, height: 1000 },
+    const context = await newContext({ viewport: { width, height: 1000 },
       deviceScaleFactor: 1, reducedMotion: "reduce", isMobile: width < 500, hasTouch: width < 500 });
     const page = await context.newPage();
     const errors = [];

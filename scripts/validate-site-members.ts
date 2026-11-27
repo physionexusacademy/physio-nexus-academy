@@ -86,6 +86,35 @@ eq(await gateRequest(req("/learn"), { ...env, MEMBERS_CI_TOKEN: "ci-secret" }, i
 eq(await gateRequest(req("/learn", { headers: { "x-pna-ci": "ci-secret" } }), { ...env, MEMBERS_CI_TOKEN: "ci-secret" }, io(true)), null, "with the right CI token the deploy's own checks pass");
 eq(await gateRequest(req("/learn", { headers: { "x-pna-ci": "wrong" } }), { ...env, MEMBERS_CI_TOKEN: "ci-secret" }, io(true)) !== null, true, "with a wrong CI token they do not");
 eq(await gateRequest(req("/learn", { headers: { "x-pna-ci": "" } }), { ...env, MEMBERS_CI_TOKEN: "" }, io(true)) !== null, true, "an empty CI token never matches an empty header");
+// the browser checks carry the pass as a cookie, which only goes to this site
+eq(await gateRequest(req("/learn", { headers: { cookie: "a=1; pna_ci=ci-secret" } }), { ...env, MEMBERS_CI_TOKEN: "ci-secret" }, io(true)), null, "the CI pass also works as the pna_ci cookie");
+eq(await gateRequest(req("/learn", { headers: { cookie: "pna_ci=wrong" } }), { ...env, MEMBERS_CI_TOKEN: "ci-secret" }, io(true)) !== null, true, "a wrong pna_ci cookie is gated");
+eq(await gateRequest(req("/learn", { headers: { cookie: "pna_ci=" } }), { ...env, MEMBERS_CI_TOKEN: "" }, io(true)) !== null, true, "an empty pna_ci cookie never matches an unset token");
+{
+  // the token the workflow stores in the Worker and the one each live check works out are the same value (bash + openssl), and it is not the key itself
+  const { execFileSync } = await import("node:child_process");
+  const derive = (key: string) => execFileSync("bash", ["scripts/ci-members-pass.sh"], { env: { ...process.env, SUPABASE_SERVICE_ROLE_KEY: key }, encoding: "utf8" });
+  const a1 = derive("server-key-one"), a2 = derive("server-key-one"), b1 = derive("server-key-two");
+  ok(/^[A-Za-z0-9_-]{43}$/.test(a1) && a1 === a2, "the CI pass is a stable 256-bit base64url token");
+  ok(a1 !== b1 && !a1.includes("server-key"), "a different server key gives a different pass, and the pass does not reveal the key");
+  eq(derive(""), "", "without a server key there is no pass");
+  const { createHmac } = await import("node:crypto");
+  eq(a1, createHmac("sha256", "server-key-one").update("pna-members-ci:v1").digest("base64url"), "the pass is HMAC-SHA256 of a fixed label with the server key");
+  const wf = read(".github/workflows/deploy-cloudflare-production.yml");
+  ok(/ci-members-pass\.sh\)"\s*\n\s*if \[ -n "\$members_pass" \]; then\s*\n\s*printf '%s' "\$members_pass" \| npx wrangler secret put MEMBERS_CI_TOKEN/.test(wf), "the deploy stores the pass in the Worker as MEMBERS_CI_TOKEN");
+  ok((wf.match(/::add-mask::\$token/g) ?? []).length >= 4, "every job that works out the pass masks it in the log");
+  ok(wf.indexOf("Prepare the members-only pass for the live checks") < wf.indexOf("- name: Smoke test production"), "the smoke test runs with the pass");
+  for (const job of ["seo-live:", "offline-live:", "pathway-images:"]) {
+    const start = wf.indexOf(`\n  ${job}\n`);
+    const rest = wf.slice(start + job.length + 4);
+    const next = rest.search(/\n  [a-z][a-z-]*:\n/);
+    const part = next < 0 ? rest : rest.slice(0, next);
+    ok(part.includes("ci-members-pass.sh"), `${job} the live check job works out the pass`);
+  }
+  const helper = read("scripts/ci-members-pass.cjs");
+  ok(/physionexusacademy\.com/.test(helper) && /addCookies/.test(helper) && !/extraHTTPHeaders/.test(helper), "browser checks carry the pass as a cookie for this site only (never a header sent everywhere)");
+  for (const f of ["scripts/verify-seo-production.mjs", "scripts/verify-offline-production.cjs", "scripts/verify-pathway-production.mjs"]) ok(read(f).includes("ci-members-pass.cjs"), `${f} uses the pass`);
+}
 resetGateMemory();
 ok((await gateRequest(req("/learn"), { ...env, MEMBERS_ONLY: "1" }, io(false)))?.status === 303, "MEMBERS_ONLY=1 forces the gate on whatever the database says");
 {
