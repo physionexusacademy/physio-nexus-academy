@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BellRing, Lock, ShieldCheck, Stethoscope, TrendingUp, UserCheck, UserPlus, Video } from "lucide-react";
+import { ArrowRight, BellRing, Box, LogIn, Lock, MessageCircle, ShieldCheck, Stethoscope, TrendingUp, UserCheck, UserPlus, Video } from "lucide-react";
+import { whatsappLink } from "@/lib/site-config";
 import { GuideOnDemand } from "@/components/rehabverse/GuideOnDemand";
 import { EnglishNote } from "@/components/rehabverse/EnglishNote";
 import { T } from "@/components/rehabverse/useLang";
@@ -21,6 +22,21 @@ const SAFE = [
   { icon: BellRing, en: "If you report a concerning symptom, your programme pauses and your physiotherapist is alerted.", ru: "Agar aap koi pareshan-kun alamat batate hain to programme ruk jata hai aur physiotherapist ko alert chala jata hai." },
 ];
 
+
+/** The four things a visitor can do here: each says who it is for, what happens and how long it takes. */
+const CHOICES = [
+  { href: "/rehabverse/register", icon: UserPlus, tone: "start", en: ["I am a new patient", "Start my rehab", "Make an account, answer a few questions about your pain. A physiotherapist then makes your exercise plan."], ru: ["Main naya mareez hoon", "Apni rehab shuru karein", "Account banayein, apne dard ke baare mein kuch sawalon ke jawab dein. Phir physiotherapist aap ka exercise plan banate hain."], tag: ["About 6 minutes", "Lagbhag 6 minute"] },
+  { href: "/rehabverse/login", icon: LogIn, tone: "me", en: ["I already have an account", "Open my programme", "Sign in to see today's exercises, give feedback and check your progress."], ru: ["Mera account pehle se hai", "Mera programme kholein", "Sign in karein aur aaj ki exercises, feedback aur apni progress dekhein."], tag: ["Email + password", "Email + password"] },
+  { href: "/rehabverse/library", icon: Box, tone: "lib", en: ["Just looking", "See the exercises in 3D", "Watch how each exercise is done by the 3D guide. No account needed."], ru: ["Sirf dekhna hai", "Exercises 3D mein dekhein", "3D guide se dekhein har exercise kaise ki jati hai. Account ki zaroorat nahi."], tag: ["Free · no sign-up", "Free · sign-up nahi"] },
+  { href: whatsappLink("Assalam-o-alaikum, I have a question about RehabVerse."), icon: MessageCircle, tone: "talk", external: true, en: ["I have a question", "Ask us on WhatsApp", "Not sure if this is right for you? Message the clinic and a person will reply."], ru: ["Mera sawal hai", "WhatsApp par poochein", "Pata nahi ye aap ke liye theek hai ya nahi? Clinic ko message karein, ek insaan jawab dega."], tag: ["Usually same day", "Aam tor par usi din"] },
+] as const;
+
+const JUMP = [
+  { id: "choose", en: "What can I do?", ru: "Main kya kar sakta hoon?" },
+  { id: "how", en: "How it works", ru: "Ye kaise chalta hai" },
+  { id: "safe", en: "Safety", ru: "Safety" },
+  { id: "faq", en: "Questions", ru: "Sawal" },
+];
 
 const FAQ = [
   { en: ["Do I need an account?", "To get your own programme, yes — it keeps your answers and progress private and lets your physiotherapist reach you. Browsing the 3D exercise library needs no account."], ru: ["Kya account zaroori hai?", "Apna programme lene ke liye haan — ye aap ke jawabat aur progress ko private rakhta hai aur physiotherapist aap tak pohanch sakte hain. 3D exercise library dekhne ke liye account zaroori nahi."] },
@@ -69,19 +85,14 @@ export default function RehabVerseHome() {
             />
           </p>
           <EnglishNote />
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link href="/rehabverse/register" className="rv-btn rv-btn-primary">
-              <UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="Create your account" ru="Apna account banayein" /> <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link href="/rehabverse/login" className="rv-btn rv-btn-ghost"><T en="Sign in" ru="Sign in" /></Link>
-            <Link href="/rehabverse/library" className="inline-flex min-h-[44px] items-center text-[14px] font-bold text-teal-700 underline-offset-2 hover:underline"><T en="Browse the 3D exercise library" ru="3D exercise library dekhein" /></Link>
-          </div>
-          <div className="rv-note mt-5 max-w-xl rounded-2xl border border-teal-200/70 bg-white/70 p-3.5 text-[13px] leading-5 text-slate-700" aria-label="Getting started">
-            <b className="rv-note-b text-navy-800"><T en="New here? It takes three steps:" ru="Naye hain? Sirf teen qadam:" /></b>{" "}
-            <T en="① Create an account (1 minute) → ② answer a few questions (5 minutes) → ③ your physiotherapist builds and approves your programme." ru="① Account banayein (1 minute) → ② kuch sawalon ke jawab dein (5 minute) → ③ aap ke physiotherapist aap ka programme banate aur approve karte hain." />
-          </div>
-          <ul className="mt-6 flex flex-wrap gap-2">
-            {[["English + Roman Urdu", "English + Roman Urdu"], ["Phone friendly", "Phone par aasaan"], ["Physiotherapist approved", "Physiotherapist approved"], ["Private", "Private"]].map(([en, ru]) => (
+          <nav className="rv-jump mt-6" aria-label="On this page">
+            <span className="rv-jump-label"><T en="On this page" ru="Is page par" /></span>
+            {JUMP.map((j, i) => (
+              <a key={j.id} href={`#${j.id}`}><b>{i + 1}</b> <T en={j.en} ru={j.ru} /></a>
+            ))}
+          </nav>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {[["English + Roman Urdu", "English + Roman Urdu"], ["Works on any phone", "Har phone par chalta hai"], ["Plan made by a physiotherapist", "Plan physiotherapist banate hain"], ["Private", "Private"]].map(([en, ru]) => (
               <li key={en} className="rv-chip rv-chip-teal"><T en={en} ru={ru} /></li>
             ))}
           </ul>
@@ -89,9 +100,28 @@ export default function RehabVerseHome() {
         <GuideOnDemand beats={GUIDE.welcome} className="rv-fade-up" />
       </section>
 
-      <section className="mt-16" aria-labelledby="how">
-        <p className="rv-h"><T en="How it works" ru="Ye kaise chalta hai" /></p>
-        <h2 id="how" className="mt-1 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Five simple steps" ru="Paanch aasaan qadam" /></h2>
+      <section id="choose" className="mt-12 scroll-mt-28" aria-labelledby="choose-h">
+        <p className="rv-h"><span className="rv-num">1</span> <T en="Start here" ru="Yahan se shuru karein" /></p>
+        <h2 id="choose-h" className="mt-1 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="What would you like to do?" ru="Aap kya karna chahte hain?" /></h2>
+        <p className="mt-2 max-w-2xl text-[15px] leading-7 text-slate-600"><T en="Pick the box that matches you. Each one says what happens next." ru="Jo box aap par theek baithta hai use chunein. Har box batata hai ke aage kya hoga." /></p>
+        <ul className="rv-choices mt-5">
+          {CHOICES.map((c) => (
+            <li key={c.href}>
+              <a href={c.href} className="rv-choice" data-tone={c.tone} {...("external" in c ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+                <span className="rv-choice-ico"><c.icon aria-hidden="true" /></span>
+                <span className="rv-choice-who"><T en={c.en[0]} ru={c.ru[0]} /></span>
+                <b className="rv-choice-title"><T en={c.en[1]} ru={c.ru[1]} /></b>
+                <span className="rv-choice-what"><T en={c.en[2]} ru={c.ru[2]} /></span>
+                <span className="rv-choice-foot"><span className="rv-choice-tag"><T en={c.tag[0]} ru={c.tag[1]} /></span><span className="rv-choice-go"><T en="Go" ru="Chalein" /> <ArrowRight aria-hidden="true" /></span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="how-s" className="mt-16 scroll-mt-28" aria-labelledby="how">
+        <p className="rv-h"><span className="rv-num">2</span> <T en="How it works" ru="Ye kaise chalta hai" /></p>
+        <h2 id="how" className="mt-1 scroll-mt-32 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Five simple steps" ru="Paanch aasaan qadam" /></h2>
         <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {STEPS.map((s, i) => (
             <li key={i} className="rv-glass p-4">
@@ -106,8 +136,8 @@ export default function RehabVerseHome() {
 
       <section className="mt-14 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start" aria-labelledby="safe">
         <div>
-          <p className="rv-h"><T en="Safe by design" ru="Safety pehle" /></p>
-          <h2 id="safe" className="mt-1 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Built so that you stay in safe hands." ru="Is tarah banaya gaya hai ke aap mehfooz rahein." /></h2>
+          <p className="rv-h"><span className="rv-num">3</span> <T en="Safe by design" ru="Safety pehle" /></p>
+          <h2 id="safe" className="mt-1 scroll-mt-32 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Built so that you stay in safe hands." ru="Is tarah banaya gaya hai ke aap mehfooz rahein." /></h2>
           <p className="mt-3 text-[15px] leading-7 text-slate-600">
             <T
               en="RehabVerse supports your physiotherapy. It does not replace an in-person assessment and it is not for emergencies."
@@ -127,8 +157,8 @@ export default function RehabVerseHome() {
 
 
       <section className="mt-14" aria-labelledby="faq">
-        <p className="rv-h"><T en="Questions" ru="Aam sawal" /></p>
-        <h2 id="faq" className="mt-1 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Before you start" ru="Shuru karne se pehle" /></h2>
+        <p className="rv-h"><span className="rv-num">4</span> <T en="Questions" ru="Aam sawal" /></p>
+        <h2 id="faq" className="mt-1 scroll-mt-32 font-heading text-2xl font-bold text-navy-800 sm:text-3xl"><T en="Before you start" ru="Shuru karne se pehle" /></h2>
         <div className="mt-5 grid gap-2.5 lg:grid-cols-2">
           {FAQ.map((f) => (
             <details key={f.en[0]} className="rv-glass group p-4">
@@ -143,8 +173,8 @@ export default function RehabVerseHome() {
         <h2 id="ready" className="font-heading text-2xl font-extrabold !text-white sm:text-3xl"><T en="Ready to start your guided rehab?" ru="Apni guided rehab shuru karne ke liye tayyar?" /></h2>
         <p className="mt-2 max-w-2xl text-[15px] leading-7 text-white/85"><T en="Create your account, answer a few questions, and your physiotherapist takes it from there." ru="Account banayein, kuch sawalon ke jawab dein, baaqi kaam aap ke physiotherapist sambhal lete hain." /></p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/rehabverse/register" className="rv-btn !bg-white !text-[#0a1f3d]"><UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="Create your account" ru="Apna account banayein" /></Link>
-          <Link href="/rehabverse/login" className="rv-btn !border !border-white/50 !text-white"><T en="Sign in" ru="Sign in" /></Link>
+          <Link href="/rehabverse/register" className="rv-btn !bg-white !text-[#0a1f3d]"><UserPlus className="h-4 w-4" aria-hidden="true" /> <T en="I am new: start my rehab" ru="Main naya hoon: rehab shuru karein" /></Link>
+          <Link href="/rehabverse/login" className="rv-btn !border !border-white/50 !text-white"><LogIn className="h-4 w-4" aria-hidden="true" /> <T en="I already have an account" ru="Mera account pehle se hai" /></Link>
         </div>
       </section>
 

@@ -527,6 +527,17 @@
 .nx-dz .rv-lhero a.rv-btn-ghost { border-color: rgba(148, 163, 184, 0.2); }
 .nx-dz .rv-lhero [role="note"],
 .nx-dz .rv-lhero .rv-note { border-color: rgba(148, 163, 184, 0.2); }
+.nx-dz .rv-jump-label { color: #cbd5e1; }
+.nx-dz .rv-jump a { border: 1px solid rgba(207, 220, 232, 0.35); background: #152034; color: #f1f5f9; box-shadow: var(--dz-elev); }
+.nx-dz .rv-jump a b { background: #152034; color: rgb(80, 240, 232); box-shadow: var(--dz-elev); }
+.nx-dz .rv-choice { border: 2px solid rgba(148, 163, 184, 0.2); background: #152034; color: #f1f5f9; box-shadow: var(--dz-elev); }
+.nx-dz .rv-choice-ico { background: #152034; color: rgb(80, 240, 232); box-shadow: var(--dz-elev); }
+.nx-dz .rv-choice-who { color: rgb(80, 240, 232); }
+.nx-dz .rv-choice-title { color: #f1f5f9; }
+.nx-dz .rv-choice-what { color: #cbd5e1; }
+.nx-dz .rv-choice-tag { background: #152034; color: #cbd5e1; box-shadow: var(--dz-elev); }
+.nx-dz .rv-nav .rv-nav-signin { border: 1px solid rgba(148, 163, 184, 0.2); }
+.nx-dz .rv-lhero .rv-jump a { border-color: rgba(148, 163, 184, 0.2); }
 
 /* src/components/admin/admin.css */
 .nx-dz .ad-logo { background: #152034; box-shadow: var(--dz-elev); }
