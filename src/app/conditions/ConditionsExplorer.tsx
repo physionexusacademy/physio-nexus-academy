@@ -11,9 +11,15 @@ export type ExplorerItem = {
   type: TypeId;
   summary: string;
   stages: number;
-  kind: "injury" | "plan" | "both";
+  kind: "book" | "injury" | "plan" | "both";
   aka: string;
+  vol: number;
+  ch: number;
+  letters: string;
+  tests: number;
 };
+
+const LETTERS = "ABCDEFGHIJKLMN".split("");
 
 export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
   const [query, setQuery] = useState("");
@@ -116,8 +122,13 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
                   </span>
                   <strong className="mt-2 text-base font-bold leading-snug text-navy-800 group-hover:text-teal-800">{item.name}</strong>
                   <span className="mt-1.5 line-clamp-3 text-sm leading-6 text-slate-600">{item.summary}</span>
+                  <span className="mt-3 flex gap-[3px]" aria-hidden="true" title="Sections of the chapter (A to N)">
+                    {LETTERS.map((l) => (
+                      <span key={l} className={"grid h-4 flex-1 place-items-center rounded-[4px] font-mono text-[8px] font-bold " + (item.letters.includes(l) ? "bg-navy-800 text-teal-200" : "bg-slate-100 text-slate-300")}>{l}</span>
+                    ))}
+                  </span>
                   <span className="mt-auto flex items-center justify-between gap-2 pt-3 text-xs font-bold text-teal-800">
-                    <span>{item.stages}-stage plan</span>
+                    <span className="text-slate-500">Vol {item.vol} · Ch {item.ch}{item.tests ? ` · ${item.tests} special test${item.tests > 1 ? "s" : ""}` : ""}</span>
                     <span className="inline-flex items-center gap-1">Open <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
                   </span>
                 </a>
@@ -128,7 +139,7 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
       </section>
 
       <p className="mt-10 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-sm leading-7 text-amber-950">
-        <strong>Education notice:</strong> these guides support learning and clinical reasoning. They do not replace an in-person assessment. If someone has red-flag symptoms (listed on every page), they need medical care first.
+        <strong>Clinical Education Disclaimer:</strong> this book teaches clinical reasoning. It does not replace supervised clinical training, local protocols, or a medical diagnosis. A working diagnosis made by a physiotherapist is not a confirmed medical diagnosis. If someone has red-flag findings, they need medical care first.
       </p>
     </div>
   );

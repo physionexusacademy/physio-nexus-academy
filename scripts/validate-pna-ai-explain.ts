@@ -29,7 +29,7 @@ for (const file of fs.readdirSync(lessonDir)) {
   }
   lessons++;
 }
-for (const file of fs.readdirSync(conditionDir)) {
+for (const file of fs.readdirSync(conditionDir).filter((f) => f.endsWith(".json"))) {
   const condition = JSON.parse(fs.readFileSync(path.join(conditionDir, file), "utf8")) as ConditionJson;
   for (const lang of ["en", "ur"] as const) {
     for (const simple of [false, true]) {

@@ -1,0 +1,15 @@
+{
+ "v": 1,
+ "chapter": "v01c04",
+ "sections": {
+  "4-1-why-no-single-test-is-perfect": "Har test kabhi bimari ko miss karta hai (false negative) aur kabhi ghalat positive aata hai (false positive). Is liye koi test perfect nahi.",
+  "4-2-the-four-key-words-with-a-simple-exa": "Sensitivity, specificity, SnNout aur SpPin ko 100 patients ki misaal se samjhein.",
+  "4-3-likelihood-ratios-the-most-useful-nu": "Likelihood ratio batata hai ke test ka nateeja bimari ke imkaan ko kitna badalta hai. Yeh sab se kaam ka number hai.",
+  "4-4-pre-test-probability-why-context-cha": "Test ka matlab history par depend karta hai. Jab history pehle hi kisi bimari ki taraf ishara kare to positive test zyada qeemti hota hai.",
+  "4-5-test-clusters-and-clinical-predictio": "Tests ko milana (cluster) aam taur par accuracy barhata hai, jaise '4 mein se 3 positive'.",
+  "4-6-symptom-reproduction-versus-a-diagno": "Dard wapas aana sirf sensitivity batata hai; diagnostic positive ka matlab test ki asal kasauti poori hona hai.",
+  "4-7-imaging-what-physiotherapists-must-k": "X-ray haddi ke liye, MRI disc, nerves aur cartilage ke liye. Imaging ki tabdeeliyan bina dard wale logon mein bhi hoti hain.",
+  "4-8-questions-with-answers": "Sawaal hal karein. High sensitivity wala test negative ho to bimari ka imkaan kam ho jata hai.",
+  "now-you-should-be-able-to": "Yeh checklist hai. Har point khud kar sakein to tick karein."
+ }
+}

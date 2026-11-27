@@ -261,3 +261,43 @@
 .rv-lhero .rv-btn-primary { background: linear-gradient(120deg, #2ee6d6, #3cc8ff); color: #04202a; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), 0 16px 38px -12px rgba(46, 230, 214, 0.85); }
 .rv-quick > section { grid-column: 1 / -1; }
 .rv-quick .rv-ai-card { min-height: 64px; }
+
+/* ───────────── "What would you like to do?" — clear choices for every patient (2026-11) ─────────────
+   Each choice says who it is for, what it does and how long it takes; big targets, plain words, one colour per action. */
+.rv-num { display: inline-grid; place-items: center; width: 1.45rem; height: 1.45rem; margin-right: 0.35rem; border-radius: 999px; background: #0a1f3d; color: #fff; font-size: 0.72rem; letter-spacing: 0; vertical-align: middle; }
+.rv-jump { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rv-jump-label { font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #476077; margin-right: 2px; }
+.rv-jump a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 6px 14px 6px 7px; border-radius: 999px; border: 1px solid #cfdce8; background: #fff; color: #0a1f3d; font-size: 14px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 0 #dbe5ee; transition: transform 0.15s, border-color 0.15s; }
+.rv-jump a b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; background: #e6f6f4; color: #0a6f6a; font-size: 13px; }
+.rv-jump a:hover { border-color: #0db3aa; transform: translateY(-1px); }
+.rv-choices { list-style: none; margin-left: 0; margin-right: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.rv-choice {
+  --c: #0db3aa; --c-soft: #e6f8f6; --c-ink: #0a6f6a;
+  position: relative; display: flex; flex-direction: column; height: 100%; padding: 18px 18px 16px; border-radius: 20px;
+  border: 2px solid #dbe5ee; border-top: 6px solid var(--c); background: #fff; color: #0a1f3d; text-decoration: none;
+  box-shadow: 0 4px 0 #dfe7ef, 0 18px 34px -26px rgba(10, 31, 61, 0.55);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s, border-color 0.18s;
+}
+.rv-choice[data-tone="me"] { --c: #0a1f3d; --c-soft: #e9eef5; --c-ink: #0a1f3d; }
+.rv-choice[data-tone="lib"] { --c: #6d5bd0; --c-soft: #efecfb; --c-ink: #4b3aa8; }
+.rv-choice[data-tone="talk"] { --c: #1fa855; --c-soft: #e7f7ed; --c-ink: #137a3c; }
+.rv-choice:hover { transform: translateY(-3px); border-color: var(--c); box-shadow: 0 7px 0 #dfe7ef, 0 24px 40px -24px rgba(10, 31, 61, 0.6); }
+.rv-choice:active { transform: translateY(2px); box-shadow: 0 1px 0 #dfe7ef; }
+.rv-choice:focus-visible { outline: 3px solid var(--c); outline-offset: 3px; }
+.rv-choice-ico { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--c-soft); color: var(--c-ink); }
+.rv-choice-ico svg { width: 26px; height: 26px; }
+.rv-choice-who { margin-top: 12px; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-ink); }
+.rv-choice-title { margin-top: 2px; font-size: 1.25rem; line-height: 1.25; font-weight: 800; color: #0a1f3d; }
+.rv-choice-what { margin-top: 6px; flex: 1; font-size: 15px; line-height: 1.55; color: #3d5266; }
+.rv-choice-foot { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rv-choice-tag { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border-radius: 999px; background: #f2f6fa; color: #476077; font-size: 13px; font-weight: 700; }
+.rv-choice-go { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 6px 14px; border-radius: 999px; background: var(--c); color: #fff; font-size: 14px; font-weight: 800; }
+.rv-choice-go svg { width: 16px; height: 16px; transition: transform 0.18s; }
+.rv-choice:hover .rv-choice-go svg { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .rv-choice, .rv-choice-go svg, .rv-jump a { transition: none; } .rv-choice:hover { transform: none; } }
+.rv-nav .rv-nav-signin { color: #eaf6ff; border: 1px solid rgba(255, 255, 255, 0.4); background: rgba(255, 255, 255, 0.06); }
+.rv-nav .rv-nav-signin:hover { border-color: #2ee6d6; background: rgba(255, 255, 255, 0.12); }
+.rv-lhero .rv-jump-label { color: #9fdfe6; }
+.rv-lhero .rv-jump a { color: #fff; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.32); box-shadow: none; }
+.rv-lhero .rv-jump a:hover { border-color: #2ee6d6; background: rgba(255, 255, 255, 0.14); }
+.rv-lhero .rv-jump a b { background: #0db3aa; color: #fff; }

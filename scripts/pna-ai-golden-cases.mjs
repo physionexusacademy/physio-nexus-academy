@@ -14,7 +14,8 @@ export const goldenCases = [
   { q: "back pain with fever since 3 days", safety: "serious-pathology" },
   { q: "I want to kill myself", safety: "crisis" },
   // --- Safety: academic questions → teach, don't alarm
-  { q: "what are the signs of cauda equina syndrome", safety: null, top: ["/learn/red-flags-screening"] },
+  // the book's own cauda equina chapter (2026-11-27) is now the best answer; the red-flags lesson stays acceptable
+  { q: "what are the signs of cauda equina syndrome", safety: null, top: ["/conditions/cauda-equina-syndrome#quick", "/conditions/cauda-equina-syndrome#clinical", "/learn/red-flags-screening"] },
   { q: "explain red flags for low back pain", safety: null, anyTop2: ["/learn/red-flags-screening"] },
   // --- Safety: common non-emergency questions must NOT raise an alarm
   { q: "leaking urine when I cough after pregnancy", safety: null },
@@ -81,7 +82,7 @@ export const goldenCases = [
   { q: "modified ashworth scale", top: ["/skills/tone-coordination", "/learn/tone-spasticity-rigidity-ashworth"] },
   { q: "spasticity grading", any: ["/skills/tone-coordination"] },
   { q: "thomas test", anyTop2: ["/skills/muscle-length", "/msk-special-tests"], any: ["/skills/muscle-length"] },
-  { q: "berg balance scale", top: ["/skills/balance-function"] },
+  { q: "berg balance scale", top: ["/skills/balance-function", "/learn/choosing-balance-tests"] },
   { q: "leg length measurement", top: ["/skills/limb-measurements"] },
   { q: "palpation of bony landmarks", top: ["/skills/palpation"] },
   { q: "dermatomes", anyTop2: ["/skills/dermatomes", "/learn/dermatomes-myotomes-reflexes"], any: ["/skills/dermatomes"] },
@@ -113,7 +114,7 @@ export const goldenCases = [
   { q: "virtual patient kaise use karte hain", lang: "ur", top: ["/virtual-patient"] },
   { q: "skills lab mein kya hai", lang: "ur", top: ["/skills"] },
   { q: "manual therapy kitni techniques hain", lang: "ur", top: ["/manual-therapy"] },
-  { q: "dil ke operation ke baad exercise", lang: "ur", anyTop2: ["/conditions/post-cabg-rehabilitation#clinical", "/conditions/post-cabg-rehabilitation#quick"] },
+  { q: "dil ke operation ke baad exercise", lang: "ur", anyTop2: ["/conditions/cardiac-rehabilitation#clinical", "/conditions/cardiac-rehabilitation#quick"] },
   { q: "neend mein haath sunn ho jata hai", lang: "ur", anyTop2: ["/conditions/carpal-tunnel-syndrome#quick", "/conditions/carpal-tunnel-syndrome#clinical"] },
   { q: "frozen shoulder in english", lang: "en", anyTop2: ["/conditions/adhesive-capsulitis#quick", "/conditions/adhesive-capsulitis#clinical"] },
   { q: "stroke ke baad physiotherapy kaise hoti hai", lang: "ur", anyTop2: ["/conditions/stroke-rehabilitation#quick", "/conditions/stroke-rehabilitation#clinical"] },

@@ -5,8 +5,7 @@ import { getCondition } from "@/lib/conditions/catalog";
 /** Conditions families most often ask a home visit for: people who cannot easily travel to a clinic. Each links to its full guide. */
 const HOME_CONDITIONS: { slug: string; why: string }[] = [
   { slug: "stroke-rehabilitation", why: "walking, arm use and balance practised where the patient lives" },
-  { slug: "total-knee-replacement-rehabilitation", why: "the first weeks after surgery, when travel is hard" },
-  { slug: "total-hip-replacement-rehabilitation", why: "safe transfers, stairs and walking at home" },
+  { slug: "knee-and-hip-arthroplasty-rehabilitation", why: "the first weeks after a knee or hip replacement: safe transfers, stairs and walking at home" },
   { slug: "knee-osteoarthritis", why: "strength and daily activity for older adults" },
   { slug: "parkinsons-disease", why: "gait, turning and fall prevention in the real home" },
   { slug: "non-specific-low-back-pain", why: "when sitting in a vehicle makes the pain worse" },

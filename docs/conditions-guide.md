@@ -1,38 +1,52 @@
 # Conditions & Treatment Guide (`/conditions`)
 
-One section replaces three: the MSK Injury Hub (`/msk-injuries`), Treatment Plans (`/treatment-plans`) and the Knowledge Hub
-articles (`/knowledge-hub`). The Clinical Challenge Arena (`/clinical-arena`) was retired in the same change.
-Old addresses permanently redirect (see `next.config.js`).
+Since 27 Nov 2026 the guide is the owner's book, **The Complete Physiotherapy Clinical Mastery** (Dr. Sajjad Raza PT), shown word for
+word. Older addresses (`/msk-injuries`, `/treatment-plans`, `/knowledge-hub`) still redirect here.
 
 ## What the visitor gets
 
-* **Two ways to browse** — where it is (10 body areas / systems) and what kind of problem it is (10 types); search also
-  understands everyday names ("sciatica", "tennis elbow", "frozen shoulder"; see `src/lib/conditions/aliases.ts`).
-* **Three depths**, remembered on the device and carried in the link (`#quick`, `#clinical`, `#expert`):
-  * **Quick guide** — what it can feel like, when to get medical help first, what helps first, self-care.
-  * **Clinical plan** — a stage planner ("which stage fits right now?": tick the exit criteria, the plan tells you when to
-    move on and shows doses), assessment, key tests, differentials, outcome measures, return criteria.
-  * **Expert detail** — reasoning, mechanism, classification, investigations, manual therapy, modalities, dosing,
-    progression rules, mistakes, pearls, education, escalation, step-by-step test technique, evidence, and a case story.
-* 48 conditions: 36 from the MSK library + 12 plan-only conditions (neuro, heart/lung, long-term pain, after surgery).
-  Conditions that existed in both libraries are merged into one guide.
+* **68 condition guides** (`/conditions/<slug>`), browsed by body area and kind of problem, with search that also knows everyday names.
+* **16 Clinical Foundations chapters** (`/conditions/foundations/<slug>`): reasoning, history, examination, test accuracy, outcome measures,
+  cardiopulmonary assessment, tissue healing, return to sport, and the treatment methods of Volume 13.
+* Each chapter keeps the book's order (A to N) and is laid out to be easy to use: an at-a-glance strip (what it is, must not miss, start with),
+  an A–N rail (side rail on a computer, chips on a phone), test cards, a red-flag panel with urgency, a yes/no decision pathway, flowcharts,
+  exercise cards with progress and regress rules, reassessment traffic lights, a case card with the reasoning folded, answers to reveal, a
+  checklist saved on the device, and a print view.
+* **The book's words are never changed.** Bold runs are kept; `[Ref – to verify]` shows as a small "ref" badge; "Figure X (needed)"
+  placeholders are hidden (owner's decisions).
+* **Roman Urdu help** under each section is PNA's own plain explanation, labelled as such, and opens by itself when the site is in Roman Urdu.
 
-## Why it is small
+## Where the content lives
 
-The Cloudflare worker has a 3 MiB (gzip) limit. The worker now contains only a 32 KiB catalogue
-(`src/lib/conditions/generated/catalog.json`: names, summaries, first warning signs). Everything else is static JSON in
-`public/conditions-data/<slug>.json`, fetched by the browser and **not counted** against the limit.
+| Path | What |
+| --- | --- |
+| `content/book/chapters/vXXcYY.json` | One chapter, extracted from the PDF (do not edit by hand) |
+| `content/book/fingerprints.json` | Word fingerprint of every chapter, made from the PDF |
+| `content/book/map.ts` | Where each chapter lives: slug, body area, type, older addresses (`was`), search names; retired guides |
+| `content/book/help/<slug>.json` | Roman Urdu help per section (PNA's words) |
+| `public/conditions-data/*.json` | Built guides (static files, not in the Worker) |
+| `src/lib/conditions/generated/` | Small catalogue, foundations list, search words, redirects |
 
-## Editing content
-
-The source of truth is unchanged: `src/lib/msk-injury-hub.ts` (+ `msk-expanded-conditions.ts`, `msk-clinical-stories.ts`),
-`src/lib/treatment-plans.ts` and `src/lib/treatment-plan-guides.ts`. Then regenerate and validate:
+## Updating from a new edition of the book
 
 ```
+python3 -I scripts/book/extract-book.py <book.pdf> /tmp/bookjson        # PyMuPDF; reads text, fonts, table borders, boxes
+python3 -I scripts/book/check-verbatim.py <book.pdf> /tmp/bookjson       # must say: 0 chapter(s) differ
+# copy /tmp/bookjson/v*.json (compact) to content/book/chapters/ and fingerprints.json to content/book/
 npm run build:conditions-data
-npm run validate:conditions   # also runs in CI before every deploy
+npm run build:related-data
+npm run validate:conditions
 ```
 
-Where a condition lives (area/type) is set in `src/lib/conditions/taxonomy.ts`; a new condition must be placed there.
-Stage mapping: injury conditions use their rehab phases (a stage's "ready when" = the previous stage's exit criteria);
-plan-only conditions are turned into three stages (start / treat / progress and self-manage).
+The extractor drops page furniture, the PDF's doubled text layer, volume divider pages, the index, and rows that the PDF split at a page bottom
+(their full copy is on the next page; the clipped copy is kept in `content/` only so the word check can count it).
+
+`validate:conditions` (in CI before every deploy) fails if the built data is stale, if any chapter's words differ from the fingerprints, if a
+chapter is not placed or has no Roman Urdu help, if help is for the wrong chapter or not in Roman letters, if a figure placeholder leaks, if an
+old address would 404, or if a page links to a retired guide.
+
+## Known gaps in the book (reported to the owner)
+
+* 574 `[Ref – to verify]` marks and no verified reference list yet; 62 figures still to be drawn.
+* 41 of the 68 condition chapters have every section A to N; the others mostly lack L (management pathway), F (differentials) or K (modalities).
+* About 32 condition chapters have no clinical case (Section N has questions only).

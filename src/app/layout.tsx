@@ -4,8 +4,10 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "./nexus.css";
 import "./motion.css";
+import "./dark-zone.css";
 import "./easy-touch.css";
 import { Header } from "@/components/Header";
+import { ZoneMain } from "@/components/ZoneMain";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { MobilePortalNav } from "@/components/MobilePortalNav";
@@ -340,9 +342,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PublicChrome>
           <Header atlasPublished={atlasPublished} />
         </PublicChrome>
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
+        <ZoneMain>{children}</ZoneMain>
         <PublicChrome>
           <Footer />
           <WhatsAppButton />

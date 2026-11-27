@@ -5,6 +5,7 @@ import { manualTherapyTechniques } from "@/lib/all-manual-therapy";
 import { worldManualApproaches } from "@/lib/manual-therapy-world";
 import { loadRegionIndex } from "@/lib/manual-therapy-chapter-loader";
 import { conditionCatalog } from "@/lib/conditions/catalog";
+import foundations from "@/lib/conditions/generated/foundations.json";
 import { atlasPublished, clinicalVisualAtlas } from "@/lib/clinical-visual-atlas";
 import { facultyMembers } from "@/lib/faculty";
 import { getAllCitySlugs } from "@/lib/locations";
@@ -152,6 +153,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.84,
   }));
 
+  const foundationRoutes: MetadataRoute.Sitemap = [
+    { url: `${base}/conditions/foundations`, changeFrequency: "monthly" as const, priority: 0.8 },
+    ...(foundations as { slug: string }[]).map((f) => ({ url: `${base}/conditions/foundations/${encodeURIComponent(f.slug)}`, changeFrequency: "monthly" as const, priority: 0.78 })),
+  ];
+
   const handoutRoutes: MetadataRoute.Sitemap = handouts.map((item) => ({
     url: `${base}/handouts/${encodeURIComponent(item.slug)}`,
     changeFrequency: "monthly" as const,
@@ -208,6 +214,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...workshopRoutes,
     ...trainingRoutes,
     ...conditionRoutes,
+    ...foundationRoutes,
     ...handoutRoutes,
     ...manualTherapyRoutes,
     ...regionalManualRoutes,
