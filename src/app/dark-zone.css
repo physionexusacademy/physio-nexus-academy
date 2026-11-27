@@ -10,6 +10,7 @@
    Screen only: print stays black on white.
    ========================================================================== */
 @import "./dark-zone.generated.css";
+@import "./dark-zone.sections.generated.css";
 
 @media screen {
   body:has(.nx-dz) { background: #0b1220; }

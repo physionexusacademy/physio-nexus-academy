@@ -22,15 +22,15 @@ const V = (base, list = variants) => list.map(([p, ps]) => cls(p + base, ps));
 
 // ---- surfaces
 rule(ops.flatMap((o) => V("bg-white" + o)), "background-color: #152034;");
-rule(["bg-white/70", "bg-white/25"].flatMap(() => []).concat(V("bg-slate-50"), ...["/40", "/50", "/60", "/70"].map((o) => V("bg-slate-50" + o)), V("bg-grey-50")), "background-color: rgba(255, 255, 255, 0.04);");
-rule([...V("bg-slate-100"), ...V("bg-slate-200")], "background-color: rgba(255, 255, 255, 0.07);");
+rule(["bg-white/70", "bg-white/25"].flatMap(() => []).concat(V("bg-slate-50"), ...["/40", "/50", "/60", "/70"].map((o) => V("bg-slate-50" + o)), V("bg-grey-50"), V("bg-gray-50"), V("bg-navy-50"), V("bg-neutral-50")), "background-color: rgba(255, 255, 255, 0.04);");
+rule(["slate-100", "slate-200", "grey-100", "grey-200", "gray-100", "gray-200", "navy-100", "neutral-100"].flatMap((s) => V("bg-" + s)), "background-color: rgba(255, 255, 255, 0.07);");
 rule([...V("bg-slate-300"), ...V("bg-slate-400")], "background-color: rgba(150, 190, 230, 0.3);");
 // ---- text (neutral)
-rule(["slate-950", "slate-900", "slate-800", "navy-950", "navy-900", "navy-800", "gray-900", "gray-800", "grey-900"].flatMap((s) => V("text-" + s)), "color: #f1f5f9;");
-rule(["slate-700", "slate-600", "navy-700", "navy-600", "gray-700", "gray-600"].flatMap((s) => V("text-" + s)), "color: #cbd5e1;");
-rule(["slate-500", "slate-400", "gray-500"].flatMap((s) => V("text-" + s)), "color: #94a3b8;");
+rule(["slate-950", "slate-900", "slate-800", "navy-950", "navy-900", "navy-800", "gray-900", "gray-800", "grey-900", "grey-800", "neutral-900", "neutral-800", "black"].flatMap((s) => V("text-" + s)), "color: #f1f5f9;");
+rule(["slate-700", "slate-600", "navy-700", "navy-600", "navy-500", "gray-700", "gray-600", "grey-700", "grey-600", "neutral-700", "neutral-600"].flatMap((s) => V("text-" + s)), "color: #cbd5e1;");
+rule(["slate-500", "slate-400", "navy-400", "gray-500", "gray-400", "grey-500", "grey-400", "neutral-500"].flatMap((s) => V("text-" + s)), "color: #94a3b8;");
 // ---- borders (neutral)
-rule(["slate-100", "slate-200", "slate-200/80", "slate-300", "grey-200", "gray-200", "navy-200", "navy-300", "white"].flatMap((s) => V("border-" + s)), "border-color: rgba(148, 163, 184, 0.16);");
+rule(["slate-100", "slate-200", "slate-200/80", "slate-300", "grey-100", "grey-200", "grey-300", "gray-100", "gray-200", "gray-300", "navy-100", "navy-200", "navy-300", "neutral-200", "white"].flatMap((s) => V("border-" + s)), "border-color: rgba(148, 163, 184, 0.16);");
 rule(["slate-100", "slate-200"].flatMap((s) => V("ring-" + s)), "--tw-ring-color: rgba(148, 163, 184, 0.16);");
 rule(["slate-100", "slate-200", "slate-300"].map((s) => cls("fill-" + s)), "fill: rgba(255, 255, 255, 0.07);");
 rule(["slate-200", "slate-300", "slate-400"].map((s) => cls("stroke-" + s)), "stroke: rgba(148, 163, 184, 0.35);");
