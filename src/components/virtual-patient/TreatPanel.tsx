@@ -10,7 +10,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, Dumbbell, Flame, Hand, Loader2, MessageCircle, Play, ShieldAlert, Siren, SkipForward, Snowflake, Square, Volume2, VolumeX, Zap } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import type { VirtualCase } from "@/lib/virtual-patient/cases";
-import { AREAS, PLANS, exerciseCoach, exerciseVerdict, exercisesNeeded, offeredTreatments, scoreTreatment, treatmentComplete, treatmentShow, verdict, type Bi, type TreatScore, type Treatment, type TreatShow } from "@/lib/virtual-patient/treatments";
+import { AREAS, exerciseCoach, type Bi, type TreatScore, type TreatShow } from "@/lib/virtual-patient/treatments";
+import { exercisesNeededFor, scoreSetup, setupComplete, type TreatOption, type TreatSetup } from "@/lib/virtual-patient/treat-setup";
 import type { ExerciseDef, Region } from "@/lib/rehabverse/types";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
 import type { PnaTeacher } from "@/lib/avatar/teacher";
@@ -20,11 +21,12 @@ import { unlockAudio } from "@/lib/speech/voices";
 import { useVoice } from "@/lib/speech/preference";
 import type { Lang } from "./ExamContext";
 
+const REGION_OF_AREA: Record<string, string> = { lumbar: "Lumbar spine", thoracic: "Cervical spine", cervical: "Cervical spine", shoulder: "Shoulder", "elbow-lateral": "Elbow & hand", "elbow-medial": "Elbow & hand", wrist: "Wrist & hand", "forearm-dorsal": "Wrist & hand", hip: "Hip", thigh: "Knee", knee: "Knee", "fibular-head": "Ankle", shin: "Ankle", calf: "Ankle", achilles: "Ankle", ankle: "Ankle", heel: "Ankle" };
 const REGIONS_FOR: Record<string, Region[]> = {
   "Lumbar spine": ["lumbar"], "Cervical spine": ["cervical", "thoracic"], Shoulder: ["shoulder"], Knee: ["knee"], Hip: ["hip"], Ankle: ["ankle_foot"],
   "Wrist and hand": ["elbow_hand"], "Wrist & hand": ["elbow_hand"], "Elbow & hand": ["elbow_hand"], "Lower limb nerves": ["ankle_foot", "knee"], Neurology: ["knee", "ankle_foot"], Chest: [],
 };
-const GROUPS: { id: Treatment["group"]; label: string; icon: typeof Hand }[] = [
+const GROUPS: { id: TreatOption["group"]; label: string; icon: typeof Hand }[] = [
   { id: "manual", label: "Manual therapy", icon: Hand },
   { id: "electro", label: "Electrotherapy", icon: Zap },
   { id: "thermal", label: "Heat and cold", icon: Flame },
@@ -33,8 +35,8 @@ const GROUPS: { id: Treatment["group"]; label: string; icon: typeof Hand }[] = [
 ];
 const VERDICT: Record<string, { text: string; cls: string }> = {
   best: { text: "Right for this patient", cls: "bg-emerald-50 text-emerald-800 border-emerald-200" },
-  ok: { text: "Reasonable addition", cls: "bg-sky-50 text-sky-800 border-sky-200" },
-  unneeded: { text: "Not indicated here", cls: "bg-amber-50 text-amber-800 border-amber-200" },
+  ok: { text: "An option (book: optional)", cls: "bg-sky-50 text-sky-800 border-sky-200" },
+  unneeded: { text: "Book: not routinely recommended", cls: "bg-amber-50 text-amber-800 border-amber-200" },
   avoid: { text: "Unsafe — stopped", cls: "bg-rose-50 text-rose-800 border-rose-200" },
 };
 
@@ -44,8 +46,8 @@ export type TreatResult = TreatScore & { done: string[]; exercises: string[]; re
 const pick = (b: Bi, lang: Lang) => (lang === "ur" ? b.ur : b.en);
 const fromRv = (b: { en: string; ru: string }): Bi => ({ en: b.en, ur: b.ru });
 
-export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room: ExamRoom; caseData: VirtualCase; lang: Lang; onCaption: (text: string | null, timer?: string | null) => void; onFinish: (result: TreatResult) => void }) {
-  const plan = PLANS[caseData.id];
+export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }: { room: ExamRoom; caseData: { id: string; area: string; start: VirtualCase["start"]; patient: { name: string } }; setup: TreatSetup | null; lang: Lang; onCaption: (text: string | null, timer?: string | null) => void; onFinish: (result: TreatResult) => void }) {
+  const plan = setup;
   const { voice, setVoice } = useVoice();
   const [teacherReady, setTeacherReady] = useState(false);
   const [teacherFailed, setTeacherFailed] = useState(false);
@@ -67,7 +69,7 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
   const voiceRef = useRef(voice);
   voiceRef.current = voice;
 
-  const offered = useMemo(() => (plan ? offeredTreatments(caseData.area, plan) : []), [caseData.area, plan]);
+  const offered = useMemo(() => plan?.options ?? [], [plan]);
 
   /* The PNA Teacher walks into the clinic once, and the exercise list loads. */
   useEffect(() => {
@@ -87,11 +89,11 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
     })();
     if (plan) {
       void import("@/lib/rehabverse/library").then(async ({ loadRegion }) => {
-        const regions = REGIONS_FOR[caseData.area] ?? [];
+        const regions = REGIONS_FOR[caseData.area] ?? REGIONS_FOR[REGION_OF_AREA[plan.area] ?? ""] ?? [];
         const lists = await Promise.all(regions.map((r) => loadRegion(r).catch(() => [] as ExerciseDef[])));
         const all = new Map<string, ExerciseDef>();
         lists.flat().forEach((e) => all.set(e.id, e));
-        const wanted = [...plan.exercises, ...Object.keys(plan.avoidExercises ?? {})];
+        const wanted = [...plan.exercises, ...Object.keys(plan.avoidExercises)];
         if (wanted.some((id) => !all.has(id))) {
           const { loadExercises } = await import("@/lib/rehabverse/library");
           (await loadExercises(wanted)).forEach((e, id) => all.set(id, e));
@@ -197,7 +199,7 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
   }, [room, plan, onCaption, stopCurrent]);
 
   /** The teacher explains why he will not do it (an unsafe choice). */
-  const refuse = useCallback((t: Treatment, why: Bi) => {
+  const refuse = useCallback((t: { id: string; name: Bi }, why: Bi) => {
     setRefused((list) => (list.includes(t.id) ? list : [...list, t.id]));
     setNote({ tone: "stop", text: `${t.name.en}: ${pick(why, langRef.current)}` });
     if (!docRef.current || !plan) return;
@@ -210,12 +212,12 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
     }, () => undefined);
   }, [play, plan, room]);
 
-  const perform = useCallback((t: Treatment) => {
+  const perform = useCallback((t: TreatOption) => {
     if (!plan || running) return;
     unlockAudio();
-    const v = verdict(plan, t.id);
-    if (v === "avoid") return refuse(t, plan.avoid![t.id]);
-    const built = treatmentShow(t.id, plan, caseData.start);
+    const v = t.verdict;
+    if (v === "avoid") return refuse(t, t.note ?? { en: "Not safe for this patient.", ur: "Is patient ke liye safe nahi." });
+    const built = plan.show(t.id);
     if (!built) return;
     setNote(null);
     setRunning({ id: t.id, title: t.name.en, kind: "treat" });
@@ -228,11 +230,10 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
   const performExercise = useCallback((e: ExerciseDef) => {
     if (!plan || running) return;
     unlockAudio();
-    const v = exerciseVerdict(plan, e.id);
+    const v = plan.avoidExercises[e.id] ? "avoid" : plan.exercises.includes(e.id) ? "best" : "unneeded";
     const name = fromRv(e.name);
     if (v === "avoid") {
-      const why = plan.avoidExercises![e.id];
-      return refuse({ id: e.id, group: "manual", name, what: name, dose: name }, why);
+      return refuse({ id: e.id, name }, plan.avoidExercises[e.id]);
     }
     setNote(null);
     setRunning({ id: e.id, title: e.name.en, kind: "exercise" });
@@ -247,19 +248,19 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
     return <p className="text-sm text-slate-600">There is no treatment stage for this patient.</p>;
   }
 
-  const complete = treatmentComplete(plan, done, exDone);
-  const need = exercisesNeeded(plan);
+  const complete = setupComplete(plan, done, exDone);
+  const need = exercisesNeededFor(plan);
   const exHit = exDone.filter((id) => plan.exercises.includes(id)).length;
   const finish = () => {
     stopCurrent();
-    const score = scoreTreatment(plan, done, exDone, refused);
+    const score = scoreSetup(plan, done, exDone, refused);
     onFinish({ ...score, done, exercises: exDone, refused });
   };
 
-  const card = (t: Treatment) => {
+  const card = (t: TreatOption) => {
     const did = done.includes(t.id);
     const stopped = refused.includes(t.id);
-    const v = verdict(plan, t.id);
+    const v = t.verdict;
     const shown = did || stopped ? VERDICT[stopped ? "avoid" : v] : null;
     const isRunning = running?.id === t.id;
     return (
@@ -268,7 +269,8 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
           <div className="min-w-0 flex-1">
             <p className="text-[13px] font-bold text-navy-800">{pick(t.name, lang)}</p>
             <p className="mt-0.5 text-xs leading-5 text-slate-600">{pick(t.what, lang)}</p>
-            <p className="mt-1 text-[11px] font-semibold text-slate-500">Dose: {pick(t.dose, lang)}</p>
+            {t.dose.en ? <p className="mt-1 text-[11px] font-semibold text-slate-500">{plan.source === "book" ? "" : "Dose: "}{pick(t.dose, lang)}</p> : null}
+            {t.stop?.en ? <p className="mt-0.5 text-[11px] text-slate-500">Stop or modify if: {t.stop.en}</p> : null}
             {shown ? <span className={"mt-1.5 inline-block rounded-full border px-2 py-0.5 text-[11px] font-bold " + shown.cls}>{shown.text}</span> : null}
           </div>
           <button type="button" onClick={() => perform(t)} disabled={!teacherReady || Boolean(running)} className="inline-flex flex-none items-center gap-1 rounded-xl bg-[#0a1f3d] px-2.5 py-1.5 text-xs font-bold text-white disabled:opacity-40" aria-label={`Perform ${t.name.en}`}>
@@ -288,12 +290,14 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
           <span className={"inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold " + (complete ? "bg-emerald-400 text-[#04263a]" : "bg-white/10")}>
             {complete ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : null}
-            {complete ? "Section complete" : `Treatments ${plan.best.filter((id) => done.includes(id)).length}/${plan.best.length} · Exercises ${Math.min(exHit, need)}/${need}`}
+            {complete ? "Section complete" : `Treatments ${plan.options.filter((o) => o.verdict === "best" && done.includes(o.id)).length}/${plan.options.filter((o) => o.verdict === "best").length} · Exercises ${Math.min(exHit, need)}/${need}`}
           </span>
           <button type="button" onClick={() => setVoice(!voice)} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 font-bold" aria-pressed={voice}>
             {voice ? <Volume2 className="h-3.5 w-3.5" aria-hidden="true" /> : <VolumeX className="h-3.5 w-3.5" aria-hidden="true" />} Voice
           </button>
         </div>
+        {plan.source === "book" ? <p className="mt-2 rounded-xl bg-white/10 px-2.5 py-1.5 text-xs text-[#cdeef0]">Options, doses and verdicts from the book chapter <a href={`/conditions/${plan.bookSlug}`} className="font-bold underline" target="_blank" rel="noreferrer">{plan.bookTitle}</a> (Conditions &amp; Treatment).</p> : null}
+        {plan.notes.map((n) => <p key={n} className="mt-1.5 text-xs leading-5 text-[#a9bfd6]">{n}</p>)}
         {!teacherReady && !teacherFailed ? <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-[#a9bfd6]"><Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> The PNA Teacher is coming into the clinic…</p> : null}
         {teacherFailed ? <p className="mt-2 text-xs text-rose-200">The 3D therapist could not be loaded on this device. You can still choose treatments and see the feedback.</p> : null}
       </div>
@@ -332,7 +336,7 @@ export function TreatPanel({ room, caseData, lang, onCaption, onFinish }: { room
             {exercises.map((e) => {
               const did = exDone.includes(e.id);
               const stopped = refused.includes(e.id);
-              const v = exerciseVerdict(plan, e.id);
+              const v = plan.avoidExercises[e.id] ? "avoid" : plan.exercises.includes(e.id) ? "best" : "unneeded";
               const shown = did || stopped ? VERDICT[stopped ? "avoid" : v === "best" ? "best" : "unneeded"] : null;
               return (
                 <li key={e.id} className={"flex items-start gap-2 rounded-2xl border p-3 " + (running?.id === e.id ? "border-teal-500 bg-teal-50" : "border-slate-200")}>

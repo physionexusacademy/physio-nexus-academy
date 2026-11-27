@@ -13,6 +13,7 @@ import { TOOLS, ToolPanel, type PickHandler, type ToolId } from "./ExamTools";
 import { CasePicker, DiagnosePanel, HistoryPanel, ResultPanel } from "./Panels";
 import { TreatPanel, type TreatResult } from "./TreatPanel";
 import { PLANS } from "@/lib/virtual-patient/treatments";
+import { CASE_BOOK, loadBookChapter, setupFromBook, setupFromPlan, type TreatSetup } from "@/lib/virtual-patient/treat-setup";
 
 const POSITIONS: { id: PatientPosition; label: string; icon: typeof BedDouble }[] = [
   { id: "standing", label: "Standing", icon: PersonStanding },
@@ -62,6 +63,7 @@ export function VirtualPatientApp() {
   const [now, setNow] = useState(0);
   const [result, setResult] = useState<SessionResult | null>(null);
   const [treatResult, setTreatResult] = useState<TreatResult | null>(null);
+  const [treatSetup, setTreatSetup] = useState<TreatSetup | null>(null);
   const [caption, setCaption] = useState<{ text: string | null; timer: string | null }>({ text: null, timer: null });
   const onCaption = useCallback((text: string | null, timer?: string | null) => setCaption((c) => (c.text === text && c.timer === (timer ?? null) ? c : { text, timer: timer ?? null })), []);
   const pickRef = useRef<PickHandler>(null);
@@ -201,11 +203,24 @@ export function VirtualPatientApp() {
     setStage("result");
   };
 
-  const startTreatment = () => {
+  const startTreatment = async () => {
     if (!room || !caseData) return;
     room.clearMarkers();
     room.clearTape();
     setOverlay({});
+    // Treatment comes from the book chapter of this condition (word for word); emergencies stay "stop and refer".
+    const plan = PLANS[caseData.id];
+    const emergency = plan?.best.includes("refer") ?? false;
+    const slug = CASE_BOOK[caseData.id];
+    let setup: TreatSetup | null = null;
+    if (slug && !emergency) {
+      try {
+        setup = setupFromBook(await loadBookChapter(slug), caseData.start, plan?.side);
+      } catch {
+        setup = null;
+      }
+    }
+    setTreatSetup(setup ?? setupFromPlan(caseData.id, caseData.start));
     setStage("treat");
   };
   const finishTreatment = (r: TreatResult) => {
@@ -352,9 +367,9 @@ export function VirtualPatientApp() {
                 ) : null}
                 {stage === "decide" ? <DiagnosePanel onSubmit={submit} /> : null}
                 {stage === "result" && result ? (
-                  <ResultPanel result={result} caseData={caseData} minutes={elapsedMin} onRetry={() => start(caseData, mode)} onNext={() => setStage("pick")} onTreat={PLANS[caseData.id] ? startTreatment : undefined} />
+                  <ResultPanel result={result} caseData={caseData} minutes={elapsedMin} onRetry={() => start(caseData, mode)} onNext={() => setStage("pick")} onTreat={PLANS[caseData.id] || CASE_BOOK[caseData.id] ? () => void startTreatment() : undefined} />
                 ) : null}
-                {stage === "treat" && room ? <TreatPanel room={room} caseData={caseData} lang={lang} onCaption={onCaption} onFinish={finishTreatment} /> : null}
+                {stage === "treat" && room ? <TreatPanel room={room} caseData={caseData} setup={treatSetup} lang={lang} onCaption={onCaption} onFinish={finishTreatment} /> : null}
                 {stage === "treated" && treatResult ? (
                   <div data-pna-vp-treat-result={treatResult.total}>
                     <div className={"rounded-3xl p-5 text-white " + (treatResult.passed ? "bg-[#06402f]" : "bg-[#0a1f3d]")}>
@@ -364,7 +379,7 @@ export function VirtualPatientApp() {
                     </div>
                     <ul className="mt-3 space-y-1 text-[13px] leading-5 text-slate-700">{treatResult.detail.map((d) => <li key={d}>{d}</li>)}</ul>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      <button type="button" onClick={startTreatment} className="nx-btn nx-btn-light">Treat again</button>
+                      <button type="button" onClick={() => void startTreatment()} className="nx-btn nx-btn-light">Treat again</button>
                       <button type="button" onClick={() => setStage("pick")} className="nx-btn nx-btn-primary">Next patient</button>
                     </div>
                   </div>

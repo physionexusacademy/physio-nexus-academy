@@ -398,9 +398,9 @@ const line = (b: Bi): Line => ({ en: b.en, ur: b.ur, src: "vp-treatment" });
 /** The steps, and which props are on the patient during each step. */
 export type TreatShow = { choreo: BuiltChoreo; props: (PropKind | null)[]; timer: (string | null)[] };
 
-type StepIn = Partial<Omit<BuiltStep, "say">> & { say: Bi[]; prop?: PropKind | null; timer?: string };
+export type StepIn = Partial<Omit<BuiltStep, "say">> & { say: Bi[]; prop?: PropKind | null; timer?: string };
 
-function show(t: Treatment, area: TreatArea, side: Side, position: PatientPosition, patient: Pose, steps: StepIn[]): TreatShow {
+export function show(t: Treatment, area: TreatArea, side: Side, position: PatientPosition, patient: Pose, steps: StepIn[]): TreatShow {
   // Contact and glide directions are written for the tested side (x = its outside); the stage reads them in the patient's frame (x = his left).
   const sx = (v: V3): V3 => [side === "left" ? v[0] : -v[0], v[1], v[2]];
   const built: BuiltStep[] = steps.map(({ say, prop: _p, timer: _t, ...rest }) => {
@@ -427,17 +427,17 @@ function show(t: Treatment, area: TreatArea, side: Side, position: PatientPositi
   };
 }
 
-const P = (id: string) => `key:tx-${id}`;
+export const P = (id: string) => `key:tx-${id}`;
 /** A finger direction at right angles to the palm. */
-function fingersFor(palm: V3, along: V3): V3 {
+export function fingersFor(palm: V3, along: V3): V3 {
   const d = palm[0] * along[0] + palm[1] * along[1] + palm[2] * along[2];
   const f: V3 = [along[0] - palm[0] * d, along[1] - palm[1] * d, along[2] - palm[2] * d];
   return Math.hypot(...f) > 0.2 ? f : [1, 0, 0];
 }
 
-const consent = (area: AreaInfo) => B(`I'll treat your ${area.name.en} now. Tell me at once if anything feels wrong. Is that all right?`, `Ab main aap ke ${area.name.ur} ka treatment karunga. Kuch ajeeb lage to fauran batayein. Theek hai?`);
+export const consent = (area: AreaInfo) => B(`I'll treat your ${area.name.en} now. Tell me at once if anything feels wrong. Is that all right?`, `Ab main aap ke ${area.name.ur} ka treatment karunga. Kuch ajeeb lage to fauran batayein. Theek hai?`);
 
-function modalityShow(t: Treatment, plan: TreatPlan): TreatShow {
+export function modalityShow(t: Treatment, plan: TreatPlan): TreatShow {
   const area = AREAS[plan.area];
   const side = plan.side;
   const pos = area.position;
@@ -498,7 +498,7 @@ function nmesPose(area: TreatArea, side: Side): Pose {
 }
 
 /** Manual techniques: geometry per technique (DRAFT until the supervising physiotherapist reviews it, like the other demonstrations). */
-function manualShow(t: Treatment, plan: TreatPlan): TreatShow {
+export function manualShow(t: Treatment, plan: TreatPlan): TreatShow {
   const side = plan.side;
   const say = (en: string, ur: string) => [B(en, ur)];
   const intro = (en: string, ur: string, at: string, d = 0.6): StepIn => ({ chip: "Explain", stand: { side: "tested", at, distance: d, face: "patient" }, gesture: "open", look: "patient", say: [B(en, ur), consent(AREAS[t.area ?? plan.area])] });
@@ -597,7 +597,7 @@ function manualShow(t: Treatment, plan: TreatPlan): TreatShow {
   }
 }
 
-function talkShow(t: Treatment, plan: TreatPlan, start: PatientPosition): TreatShow {
+export function talkShow(t: Treatment, plan: TreatPlan, start: PatientPosition): TreatShow {
   const pos: PatientPosition = start === "standing" ? "sitting" : start;
   const lines = plan.advice;
   return show(t, plan.area, plan.side, pos, {}, [
