@@ -48,6 +48,8 @@ export const PLACE_UR: Record<string, { label?: string; description: string }> =
   "/appointment": { label: "Appointment book karein", description: "Consultation ki request karein" },
   "/home-visit": { label: "Ghar par visit", description: "Aap ke ghar par physiotherapy" },
   "/symptom-checker": { description: "Patterns aur red flags screen karein" },
+  "/health-calculators": { label: "Sehat aur posture tools", description: "Posture screen aur 3D scan, BMI aur clinical calculators" },
+  "/locations": { label: "Home visit ke shehar", description: "Pakistan ke 34 shehar" },
   "/health-calculators/clinical": { description: "Dil ki dharkan ke zones, one-rep max, waist-hip ratio aur score ki tabdeeli ki jaanch" },
   "/handouts": { description: "Chhapne ke qabil mareezon ki hidayat ki sheets, English aur Roman Urdu mein" },
   "/health-calculators/posture": { description: "Phone camera se posture ki jaanch, ghalti ki hadd ke saath" },

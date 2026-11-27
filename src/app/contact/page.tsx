@@ -167,6 +167,9 @@ export default function ContactPage() {
               <Star className="h-4 w-4" />
               Leave a Google review
             </a>
+            <a href="/reviews" className="mt-2 ml-4 inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700">
+              Read and write PNA reviews
+            </a>
           </div>
         </div>
 

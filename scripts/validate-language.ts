@@ -7,7 +7,7 @@ import path from "node:path";
  * Roman Urdu text, the shell's own words have both languages, and every Skills Lab concept has a Roman Urdu explanation (it is the main text
  * when the visitor chooses Roman Urdu).
  */
-const { academyWings, skillPlaces, popularLessons } = await import("../src/lib/academy-map.ts");
+const { academyWings, skillPlaces, popularLessons, searchOnlyPlaces } = await import("../src/lib/academy-map.ts");
 const { WING_UR, PLACE_UR, SHELL_TEXT, localizePlace, localizeWing } = await import("../src/lib/shell-ur.ts");
 
 /** descriptions that are a name, the same in both languages */
@@ -22,7 +22,7 @@ for (const wing of academyWings) {
     else if (entry.description === place.description && !NAME_ONLY.has(place.href)) problems.push(`place ${place.href}: the "Roman Urdu" description is the English one`);
   }
 }
-for (const href of Object.keys(PLACE_UR)) if (!academyWings.some((wing) => wing.places.some((place) => place.href === href))) problems.push(`PLACE_UR has ${href}, which is not on the campus map`);
+for (const href of Object.keys(PLACE_UR)) if (!academyWings.some((wing) => wing.places.some((place) => place.href === href)) && !searchOnlyPlaces.some(({ place }) => place.href === href)) problems.push(`PLACE_UR has ${href}, which is not on the campus map`);
 for (const [key, value] of Object.entries(SHELL_TEXT)) if (!value.en || !value.ur) problems.push(`shell text ${key}: missing a language`);
 
 // the helpers leave English alone and translate Roman Urdu
