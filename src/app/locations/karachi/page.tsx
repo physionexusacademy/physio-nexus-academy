@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { MapPin, Stethoscope, GraduationCap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site-config";
+import { getCityBySlug } from "@/lib/locations";
+import { CityExtras } from "@/components/locations/CityExtras";
 
 const siteUrl = "https://physionexusacademy.com";
 const pageUrl = `${siteUrl}/locations/karachi`;
@@ -149,6 +151,7 @@ export default function KarachiLocationPage() {
           Contact PNA in Karachi <ArrowRight className="h-4 w-4" />
         </a>
       </section>
+      <CityExtras city={getCityBySlug("karachi")!} />
     </div>
   );
 }

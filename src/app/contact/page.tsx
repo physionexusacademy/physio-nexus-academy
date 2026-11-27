@@ -124,6 +124,10 @@ export default function ContactPage() {
             <a href="/locations/hyderabad" className="font-semibold text-teal-600 hover:underline">
               Hyderabad
             </a>
+            , or{" "}
+            <a href="/locations" className="font-semibold text-teal-600 hover:underline">
+              see all cities we cover
+            </a>
             .
           </p>
 
