@@ -6,6 +6,8 @@ import { ArrowLeft, Clock3, GraduationCap, Layers, Target } from "lucide-react";
 import { getLessonMeta, loadConceptLessons } from "@/lib/teacher/lesson-index";
 import { LessonPlayer } from "@/components/teacher/LessonPlayer";
 import { ConceptLab } from "@/components/teacher/ConceptLab";
+import { conditionsLinkingTo } from "@/lib/related";
+import { UsedInConditions } from "@/components/related/RelatedPanel";
 
 const siteUrl = "https://physionexusacademy.com";
 
@@ -88,6 +90,9 @@ export default async function TeacherLessonPage({ params }: { params: Promise<{ 
 
       <div className="mt-6">
         <LessonPlayer meta={lesson} />
+      </div>
+      <div className="mx-auto mt-8 max-w-3xl">
+        <UsedInConditions links={conditionsLinkingTo(lesson.href)} title="Use this lesson with these conditions" />
       </div>
     </div>
   );

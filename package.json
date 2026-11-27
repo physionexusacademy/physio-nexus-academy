@@ -38,6 +38,8 @@
     "validate:virtual-patient": "node scripts/validate-virtual-patient.mjs",
     "build:virtual-patient": "node scripts/build-virtual-patient.mjs",
     "build:conditions-data": "node --experimental-strip-types scripts/build-conditions-data.ts",
+    "build:related-data": "node --experimental-strip-types scripts/build-related-data.ts",
+    "validate:related": "node --experimental-strip-types scripts/build-related-data.ts --check",
     "validate:posture": "node --experimental-strip-types scripts/validate-posture.ts",
     "validate:posture-scan": "node --experimental-strip-types scripts/validate-posture-scan.ts",
     "validate:calculators": "node --experimental-strip-types scripts/validate-calculators.ts",

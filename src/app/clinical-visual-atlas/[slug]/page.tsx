@@ -18,6 +18,8 @@ import {
   clinicalVisualAtlas,
   getAtlasEntry,
 } from "@/lib/clinical-visual-atlas";
+import { conditionsLinkingTo } from "@/lib/related";
+import { UsedInConditions } from "@/components/related/RelatedPanel";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -171,6 +173,7 @@ export default async function ClinicalVisualDetailPage({ params }: PageProps) {
           </p>
         </div>
       </section>
+      <UsedInConditions className="mt-7" links={conditionsLinkingTo(`/clinical-visual-atlas/${item.slug}`)} title="Condition guides that use this image" />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { conditionCatalog, conditionUrl, getCondition } from "@/lib/conditions/catalog";
 import { areaLabel } from "@/lib/conditions/taxonomy";
 import { ConditionGuide } from "../ConditionGuide";
+import { relatedForCondition } from "@/lib/related";
+import { RelatedPanel } from "@/components/related/RelatedPanel";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -36,6 +38,7 @@ export default async function ConditionPage({ params }: PageProps) {
     .filter((c) => c.slug !== item.slug && c.area === item.area)
     .slice(0, 4)
     .map((c) => ({ slug: c.slug, name: c.name, area: areaLabel(c.area) }));
+  const links = relatedForCondition(item.slug);
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -66,6 +69,7 @@ export default async function ConditionPage({ params }: PageProps) {
         <a href="/conditions" className="text-teal-800 hover:underline">← All conditions</a>
       </nav>
       <ConditionGuide item={item} related={related} />
+      {links ? <RelatedPanel related={links} name={item.name} /> : null}
     </div>
   );
 }
