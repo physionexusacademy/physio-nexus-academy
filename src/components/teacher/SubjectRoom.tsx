@@ -2,7 +2,7 @@
 
 import { useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronDown, Clock, PlayCircle, Route } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, ChevronDown, Clock, PlayCircle, Route } from "lucide-react";
 import type { TeacherLessonCard, TeacherPath } from "@/lib/teacher/types";
 import { subjectById, unitsOf, type SubjectId } from "@/lib/teacher/subjects";
 import { pathCompletion } from "@/lib/teacher/progress";
@@ -76,7 +76,10 @@ export function SubjectRoom({ subjectId, lessons, paths }: { subjectId: SubjectI
                             <span className="pna-topic-title">{lesson.title}</span>
                             <span className="pna-topic-hook">{pick(lesson.hook, lang)}</span>
                           </span>
-                          <span className="pna-topic-time"><Clock className="h-3.5 w-3.5" aria-hidden="true" />{lesson.minutes}′</span>
+                          <span className="pna-topic-side">
+                            <span className="pna-topic-time"><Clock className="h-3.5 w-3.5" aria-hidden="true" />{lesson.minutes}′</span>
+                            <span className="pna-topic-go">{isDone ? t(lang, "Review", "Dobara") : t(lang, "Start", "Shuru")} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+                          </span>
                         </Link>
                       </li>
                     );
