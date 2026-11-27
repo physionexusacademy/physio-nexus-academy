@@ -101,3 +101,51 @@ export async function setAssessorAction(email: string, active: boolean): Promise
     return { ok: false, error: e instanceof RehabError ? e.message.replace(/^rehab:\s*/, "") : "failed" };
   }
 }
+
+/* ---------- phase 3: safety reports, protocol deviations, monitoring ---------- */
+const message = (e: unknown) => (e instanceof RehabError ? e.message.replace(/^rehab:\s*/, "") : "failed");
+
+export type SafetyReport = {
+  id: string; adverse_event_id: string; version: number; serious: boolean; criteria: string[]; relatedness: string; expectedness: string; outcome: string;
+  onset_date: string; aware_at: string; report_due_at: string | null; ethics_reported_at: string | null; ethics_ref: string | null; note: string | null; created_at: string;
+};
+export type SafetyInput = {
+  criteria: string[]; relatedness: string; expectedness: string; outcome: string; onset_date: string; aware_at: string;
+  ethics_reported_at?: string; ethics_ref?: string; note?: string;
+};
+
+export async function safetyReportsAction(patientId: string): Promise<Result<{ reports: SafetyReport[] }>> {
+  try { return { ok: true, reports: await rpc<SafetyReport[]>("rehab_admin_safety_reports", { p_patient_id: patientId }) }; } catch (e) { return fail(e); }
+}
+
+export async function saveSafetyReportAction(adverseEventId: string, input: SafetyInput): Promise<Result<{ version: number; report_due_at: string | null }>> {
+  try {
+    const r = await rpc<{ version: number; report_due_at: string | null }>("rehab_admin_safety_report", { p_adverse_event_id: adverseEventId, p_payload: input });
+    return { ok: true, version: r.version, report_due_at: r.report_due_at };
+  } catch (e) { return { ok: false, error: message(e) }; }
+}
+
+export async function logDeviationAction(patientId: string, kind: string, description: string, occurredOn: string): Promise<Result> {
+  try {
+    await rpc("rehab_admin_study_log_deviation", { p_patient_id: patientId, p_kind: kind, p_description: String(description ?? "").slice(0, 1000), p_occurred_on: occurredOn });
+    return { ok: true };
+  } catch (e) { return { ok: false, error: message(e) }; }
+}
+
+export type StudyMonitor = {
+  study: null | { code: string; status: string; primary: string; primary_timepoint: string; target_per_arm: number };
+  recruitment?: { allocated: number; by_arm: { ai: number; no_ai: number }; first_at: string | null; last_at: string | null; by_month: { month: string; n: number }[] };
+  followup?: { timepoint: string; ai_due: number; ai_done: number; no_ai_due: number; no_ai_done: number }[];
+  lost_primary?: { ai: number; no_ai: number };
+  discontinued?: { ai: number; no_ai: number };
+  balance?: { arm: "ai" | "no_ai"; n: number; age_mean: number | null; age_sd: number | null; nprs_mean: number | null; nprs_sd: number | null; female: number; male: number; strata: Record<string, number> | null }[];
+  deviations?: { ai_override: number; other: Record<string, number> };
+  safety?: {
+    adverse_events: { ai: number; no_ai: number }; serious: { ai: number; no_ai: number }; serious_related: number; not_assessed: number; overdue: number; due_soon: number;
+    review_threshold: number; review_needed: boolean;
+  };
+};
+
+export async function monitorAction(): Promise<Result<{ monitor: StudyMonitor }>> {
+  try { return { ok: true, monitor: await rpc<StudyMonitor>("rehab_admin_study_monitor") }; } catch (e) { return fail(e); }
+}

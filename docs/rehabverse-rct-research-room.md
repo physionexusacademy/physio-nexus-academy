@@ -144,7 +144,42 @@ Tests:
 * `npm run validate:research-phase2-db`: 59 checks on the real migrations, Postgres 17. Three safeguards were broken on purpose, and each break was caught: arm leaked to the assessor, admin acting as assessor, AI counts on a standard history.
 * `npm run validate:research-room`: now also checks that the patient-side record never reads the AI switch, and that the assessor page never touches the arm.
 
+Phase 2 was applied to production with the owner's approval on 27 Nov 2026 (PR #274).
+
+## 9. Phase 3 (built, 27 Nov 2026): safety reporting, protocol deviations, trial monitor
+
+Migration `20261205120000_rehab_research_phase3.sql`. It is not applied to production until the owner approves it; until then the new panels stay hidden.
+
+* **Trial safety assessment of every adverse event** (patient record → Adverse events → "Assess for the trial"). The assessment records:
+  * whether the event is serious, and the criterion (death, life-threatening, hospital admission, lasting disability, other important event);
+  * relatedness to the intervention (unrelated → definite);
+  * whether it was expected, and its outcome;
+  * the onset date and when the team first became aware;
+  * when it was reported to the ethics committee.
+
+  Each save is a new version, and nothing is edited. The **deadline** for reporting to the ethics committee is worked out by the database:
+  * **7 days** from first awareness for a fatal or life-threatening event that is unexpected and at least possibly related;
+  * **15 days** for any other serious event.
+
+  A follow-up cannot move the awareness time later. The first serious, possibly related event sends an urgent notice to the clinic.
+* **Safety review alarm.** When the number of serious, at least possibly related events reaches the study rule `safety_review_after` (default 1), the monitor asks for a safety review with the monitoring committee before more people are enrolled.
+* **Protocol deviations** for participants (patient record, under the study card): wrong eligibility, an outcome outside its window, a missed or extra contact, assessor unblinded, other. AI overrides were already recorded in phase 1. Deviations cannot be changed.
+* **Trial monitor** (Research Room) shows:
+  * recruitment against the target, by arm and by month;
+  * how much of the primary outcome has been collected at each time point, by arm;
+  * the number missing the primary outcome two weeks after its window;
+  * discontinued programmes;
+  * baseline balance (age, pain, sex, pain bands);
+  * deviations by kind;
+  * adverse and serious events by arm;
+  * events still waiting for an assessment, and ethics reports due soon or overdue.
+
+  **Outcome scores are never shown by group**; they belong to the final analysis.
+
+Tests:
+* `npm run validate:research-phase3-db`: 46 checks on the real migrations. The awareness clock and the 7-day rule were each broken on purpose, and each break was caught.
+* `npm run validate:research-room`: now 120 checks.
+
 Still pending for the trial:
-* **Phase 3:** serious adverse event forms, a monitoring dashboard, protocol-deviation reporting.
-* **Phase 4:** an intention-to-treat analysis export.
-* **Owner's decisions:** ethics approval, registration, sample size, and an independent statistician's allocation list.
+* **Phase 4:** an intention-to-treat analysis export and a data lock.
+* **Owner's decisions:** ethics approval, registration, sample size, the independent statistician's allocation list, and who sits on the monitoring committee.

@@ -193,4 +193,19 @@ eq(reasonLabel("pain_below_minimum"), "Baseline pain below the minimum", "fixed 
   ok(/<AssessorPanel \/>/.test(read("src/app/admin/(dashboard)/rehabverse/research-room/page.tsx")), "research room: the assessor can be named");
 }
 
+/* ---------- phase 3: safety reports, deviations, monitor ---------- */
+{
+  const mig3 = read("supabase/migrations/20261205120000_rehab_research_phase3.sql");
+  const monitorFn = mig3.slice(mig3.indexOf("function public.rehab_admin_study_monitor"), mig3.indexOf("revoke all on function public.rehab__safety_due"));
+  ok(monitorFn.length > 1000 && !/r\.score|r\.answers|\bscore\b/.test(monitorFn), "monitor: built without any outcome score (completeness only)");
+  ok(/interval '7 days'/.test(mig3) && /interval '15 days'/.test(mig3) && /if found and aware > prev\.aware_at then aware := prev\.aware_at/.test(mig3), "safety: 7 or 15 day deadlines, counted from the first awareness");
+  ok(/safety_review_after/.test(mig3) && /'safety_review', 'urgent'/.test(mig3), "safety: the review threshold comes from the study rules and a serious related event alerts the clinic");
+  const monitorUi = read("src/components/rehabverse/research-room/MonitorPanel.tsx");
+  ok(!/\.score\b|answers/.test(monitorUi) && /Outcome scores are never shown by group/.test(monitorUi), "monitor screen: no outcome scores by group");
+  ok(/review_needed/.test(monitorUi) && /overdue/.test(monitorUi), "monitor screen: shows the safety alarm and overdue reports");
+  const record = read("src/components/rehabverse/admin/AdminPatientRecord.tsx");
+  ok(/<SafetyReportForm eventId=\{e\.id\}/.test(record) && /study\?\.enrolled \? <DeviationForm/.test(record), "patient record: each adverse event can be assessed for the trial; participants can have deviations recorded");
+  ok(/<MonitorPanel \/>/.test(read("src/app/admin/(dashboard)/rehabverse/research-room/page.tsx")), "research room: shows the monitor");
+}
+
 console.log(`Research Room: ${checks} checks passed (allocation lists, pain bands, study rules, flow numbers, safeguards wired).`);
