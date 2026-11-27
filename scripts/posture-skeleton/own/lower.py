@@ -12,6 +12,7 @@ a sharp anterior border, medial malleolus. Fibula: thin, lateral and behind, its
 the medial. Foot: talus, calcaneus, navicular, cuboid, three cuneiforms, five metatarsals, fourteen phalanges, with a longitudinal arch.
 """
 import numpy as np
+from digits import ray
 from sdf import (sphere, ellipsoid, capsule, chain, box, plate, polygon2d_sdf, smooth_union, subtract, union, intersect, halfspace, ellcyl, rot_x, rot_y, rot_z)
 
 HJ = np.array([0.090, 0.895, -0.020])     # hip joint centre
@@ -162,8 +163,15 @@ def fibula():
 
 def foot():
     b = []
-    talus = smooth_union(ellipsoid((0.087, 0.058, -0.028), (0.0155, 0.0130, 0.0200)), ellipsoid((0.085, 0.052, -0.004), (0.0110, 0.0095, 0.0100)),
-                         sphere((0.083, 0.049, 0.011), 0.0105), k=0.004)
+    # talus: the trochlea on top (a pulley, rounded front to back, a little wider in front) under the tibia, a blocky body, the neck turning
+    # forward and inward, the rounded head that sits in the navicular, and the posterior process behind
+    troch = intersect(ellcyl((0.087, 0.051, -0.027), 0.0200, 0.0200, 0.0140, rot=rot_z(90), r=0.003), halfspace((0.0, -1.0, 0.0), -0.050))
+    talus = smooth_union(troch,
+                         box((0.087, 0.050, -0.026), (0.0135, 0.0090, 0.0160), r=0.0055),            # body
+                         capsule((0.0855, 0.049, -0.008), (0.0830, 0.0475, 0.006), 0.0082),           # neck
+                         ellipsoid((0.0820, 0.0470, 0.0130), (0.0118, 0.0098, 0.0090)),               # head
+                         sphere((0.0895, 0.0445, -0.0445), 0.0045),                                   # posterior process
+                         k=0.004)
     b.append(talus)
     # calcaneus: the largest tarsal, a long box-like bone (~8 cm) whose front end rises ~20 degrees (calcaneal pitch) to meet the cuboid
     calc = smooth_union(box((0.093, 0.028, -0.036), (0.0135, 0.0150, 0.0380), rot=rot_x(20), r=0.0080),
@@ -174,8 +182,11 @@ def foot():
                         k=0.007)
     calc = subtract(calc, ellipsoid((0.088, 0.054, -0.035), (0.0150, 0.0110, 0.0190)), k=0.002)  # the facets the talus sits in
     b.append(calc)
-    b.append(ellipsoid((0.077, 0.048, 0.029), (0.0165, 0.0130, 0.0095)))      # navicular
-    b.append(box((0.105, 0.029, 0.019), (0.0110, 0.0110, 0.0125), rot=rot_x(15), r=0.0065))   # cuboid
+    # navicular: boat-shaped, cupped behind for the head of the talus, convex in front for the three cuneiforms, its tuberosity on the inner side
+    navic = smooth_union(box((0.078, 0.047, 0.0295), (0.0150, 0.0105, 0.0078), rot=rot_y(-18), r=0.0048),
+                         sphere((0.0635, 0.040, 0.0275), 0.0050), k=0.003)
+    b.append(subtract(navic, sphere((0.083, 0.049, 0.0135), 0.0110), k=0.001))
+    b.append(box((0.105, 0.029, 0.019), (0.0110, 0.0110, 0.0125), rot=rot_x(15), r=0.0078))   # cuboid
     for c, r in (((0.068, 0.040, 0.046), (0.0090, 0.0140, 0.0115)), ((0.080, 0.046, 0.044), (0.0075, 0.0110, 0.0095)), ((0.092, 0.042, 0.044), (0.0078, 0.0110, 0.0098))):
         b.append(box(c, r, r=0.0045))   # wedge-like cuneiforms forming the transverse arch   # medial, intermediate and lateral cuneiforms
     rays = {  # base of metatarsal -> head -> phalanges; the toes curve slightly down to the floor
@@ -188,12 +199,8 @@ def foot():
     rad = {1: [0.0095, 0.0100, 0.0075, 0.0062], 2: [0.0058, 0.0060, 0.0044, 0.0037, 0.0032], 3: [0.0056, 0.0057, 0.0042, 0.0035, 0.0030],
            4: [0.0055, 0.0055, 0.0040, 0.0033, 0.0029], 5: [0.0062, 0.0055, 0.0038, 0.0031, 0.0027]}
     for k, pts in rays.items():
-        r = rad[k]
-        for i in range(len(pts) - 1):
-            a, c = np.array(pts[i]), np.array(pts[i + 1])
-            d = c - a; d /= np.linalg.norm(d)
-            a2, c2 = a + d * 0.0010, c - d * 0.0010
-            b.append(smooth_union(capsule(a2, c2, r[i] * 0.84, r[i + 1] * 0.76), sphere(c2 - d * r[i + 1] * 0.6, r[i + 1] * 0.98), sphere(a2 + d * r[i] * 0.6, r[i] * 0.98), k=0.0045))
+        # metatarsal, then the phalanges (the big toe has two, the others three); the sole faces down
+        b += ray(pts, [x * 1.08 for x in rad[k]], (0.0, -1.0, 0.0))
     b.append(sphere((0.120, 0.025, 0.033), 0.0060))  # tuberosity of the 5th metatarsal
     for x in (0.0545, 0.0615):
         b.append(sphere((x, 0.009, 0.112), 0.0042))   # sesamoid bones under the big toe joint

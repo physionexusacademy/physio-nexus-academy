@@ -22,6 +22,7 @@ Route: `/health-calculators/posture/scan`. Four short phone captures (front, sid
 - `upper.py`: clavicle, scapula (blade, spine, acromion, coracoid, glenoid), humerus, ulna, radius and the hand (carpals, metacarpals, phalanges).
 - `lower.py`: hip bones (ilium, ischium, pubis, acetabulum, obturator foramen), sacrum and coccyx, femur, patella, tibia, fibula and the foot (tarsals, metatarsals, phalanges, sesamoids).
 - `skull.py`: cranium (orbits, nasal aperture, zygomatic arches, mastoids, condyles, foramen magnum), mandible and 32 teeth.
+- `digits.py` builds the metacarpals, metatarsals and phalanges (blocky base, slim waisted shaft, knuckle or pulley head, spade tuft).
 - `mesh.py` meshes each field (marching cubes), smooths and reduces it, and bakes ambient occlusion from the field into the vertex colours.
 
 To rebuild (Python 3 with numpy, scipy, scikit-image and fast-simplification; Node with @gltf-transform/* and meshoptimizer, folder set by `GLTF_TOOLS`):

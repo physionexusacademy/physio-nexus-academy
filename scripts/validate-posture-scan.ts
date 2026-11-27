@@ -186,7 +186,7 @@ const make = (view: "front" | "back" | "side", results: { id: string; value: num
   }
   // the bones are PNA's own model, rebuilt from the scripts in the repository
   for (const f of ["skeleton-male.glb", "skeleton-meta.json"]) assert.ok(fs.existsSync(`public/posture-skeleton/${f}`), `public/posture-skeleton/${f} must exist`);
-  for (const f of ["build_parts.py", "assemble.mjs", "sdf.py", "mesh.py", "spine.py", "thorax.py", "upper.py", "lower.py", "skull.py"]) assert.ok(fs.existsSync(`scripts/posture-skeleton/own/${f}`), `scripts/posture-skeleton/own/${f} must be kept`);
+  for (const f of ["build_parts.py", "assemble.mjs", "sdf.py", "mesh.py", "spine.py", "thorax.py", "upper.py", "lower.py", "skull.py", "digits.py"]) assert.ok(fs.existsSync(`scripts/posture-skeleton/own/${f}`), `scripts/posture-skeleton/own/${f} must be kept`);
   assert.ok(fs.statSync("public/posture-skeleton/skeleton-male.glb").size < 3 * 1024 * 1024, "the skeleton file must stay under 3 MB");
   const meta = JSON.parse(read("public/posture-skeleton/skeleton-meta.json"));
   assert.match(meta.source, /PNA's own/, "the skeleton must be PNA's own model");

@@ -10,6 +10,7 @@ process and a small head with styloid at the wrist; radius lateral with a disc-s
 end and styloid. Hand: 8 carpals in two rows, 5 metacarpals, 14 phalanges; the thumb turned forward.
 """
 import numpy as np
+from digits import ray
 from sdf import (sphere, ellipsoid, capsule, chain, box, plate, smooth_union, subtract, union, ellcyl, rot_z, rot_x, rot_y)
 from mesh import tube
 
@@ -124,34 +125,34 @@ def radius():
 
 def hand():
     bones = []
-    # carpals: proximal row (scaphoid, lunate, triquetrum, pisiform) and distal row (trapezium, trapezoid, capitate, hamate with its hook)
-    for c, r in [((0.262, 0.846, 0.016), (0.0072, 0.0050, 0.0060)), ((0.249, 0.847, 0.012), (0.0060, 0.0055, 0.0065)),
-                 ((0.236, 0.845, 0.012), (0.0055, 0.0050, 0.0055)), ((0.233, 0.844, 0.021), (0.0040, 0.0040, 0.0040)),
-                 ((0.267, 0.828, 0.022), (0.0055, 0.0060, 0.0050)), ((0.257, 0.828, 0.016), (0.0045, 0.0055, 0.0050)),
-                 ((0.246, 0.827, 0.012), (0.0060, 0.0085, 0.0065)), ((0.234, 0.828, 0.014), (0.0055, 0.0075, 0.0060)),
-                 ((0.233, 0.828, 0.024), (0.0025, 0.0040, 0.0030))]:   # ... hamate hook: the carpus arches, hollow on the palm side (carpal tunnel)
-        bones.append(ellipsoid(c, tuple(x * 1.55 for x in r) if r[0] > 0.003 else r))   # packed together into the compact carpal block
+    # carpals: eight faceted, blocky bones packed into two rows (~3 cm from the radius to the metacarpals), arched so the palm side is hollow (carpal tunnel)
+    R = lambda deg_z=0.0, deg_y=0.0: rot_z(deg_z) @ rot_y(deg_y)
+    carpals = [  # centre, half sizes, rotation
+        ((0.2605, 0.8510, 0.0160), (0.0080, 0.0056, 0.0062), R(-25)),        # scaphoid: the long, oblique bone on the thumb side
+        ((0.2475, 0.8515, 0.0130), (0.0062, 0.0060, 0.0072), R()),           # lunate: crescent, deeper than it is wide
+        ((0.2360, 0.8495, 0.0130), (0.0055, 0.0054, 0.0058), R(15)),         # triquetrum: pyramidal
+        ((0.2665, 0.8350, 0.0205), (0.0062, 0.0066, 0.0060), R(0, 30)),      # trapezium: saddle for the thumb, turned toward the palm
+        ((0.2575, 0.8350, 0.0150), (0.0048, 0.0062, 0.0058), R()),           # trapezoid: small, wedge-like
+        ((0.2480, 0.8365, 0.0130), (0.0058, 0.0090, 0.0068), R()),           # capitate: the largest, its head rising into the proximal row
+        ((0.2370, 0.8350, 0.0135), (0.0060, 0.0072, 0.0065), R(-8)),         # hamate
+    ]
+    for c, h, rot in carpals:
+        bones.append(box(c, h, rot=rot, r=0.62 * min(h)))
+    bones.append(ellipsoid((0.2345, 0.8480, 0.0215), (0.0040, 0.0045, 0.0038)))   # pisiform: a pea on the palm side of the triquetrum
+    bones.append(ellipsoid((0.2355, 0.8320, 0.0215), (0.0025, 0.0045, 0.0032)))   # hook of the hamate
+    bones.append(ellipsoid((0.2650, 0.8540, 0.0225), (0.0035, 0.0040, 0.0035)))   # scaphoid tubercle
     # metacarpals and phalanges: (base, head) points with radii; fingers hang straight down, the palm faces forward
     fingers = {
-        "index": [(0.257, 0.817, 0.016), (0.263, 0.753, 0.020), (0.265, 0.712, 0.020), (0.266, 0.687, 0.019), (0.266, 0.669, 0.018)],
-        "middle": [(0.247, 0.816, 0.013), (0.249, 0.75, 0.019), (0.250, 0.704, 0.019), (0.250, 0.676, 0.018), (0.250, 0.656, 0.017)],
-        "ring": [(0.237, 0.816, 0.012), (0.236, 0.755, 0.018), (0.235, 0.712, 0.018), (0.234, 0.686, 0.017), (0.234, 0.667, 0.016)],
-        "little": [(0.229, 0.818, 0.012), (0.224, 0.765, 0.017), (0.221, 0.732, 0.017), (0.220, 0.712, 0.016), (0.219, 0.697, 0.015)],
-        "thumb": [(0.268, 0.821, 0.026), (0.282, 0.788, 0.042), (0.291, 0.76, 0.052), (0.296, 0.736, 0.057)],
+        "index": [(0.257, 0.8270, 0.016), (0.263, 0.7630, 0.020), (0.265, 0.7220, 0.020), (0.266, 0.6970, 0.019), (0.266, 0.6790, 0.018)],
+        "middle": [(0.247, 0.8260, 0.013), (0.249, 0.7600, 0.019), (0.250, 0.7140, 0.019), (0.250, 0.6860, 0.018), (0.250, 0.6660, 0.017)],
+        "ring": [(0.237, 0.8260, 0.012), (0.236, 0.7650, 0.018), (0.235, 0.7220, 0.018), (0.234, 0.6960, 0.017), (0.234, 0.6770, 0.016)],
+        "little": [(0.229, 0.8280, 0.012), (0.224, 0.7750, 0.017), (0.221, 0.7420, 0.017), (0.220, 0.7220, 0.016), (0.219, 0.7070, 0.015)],
+        "thumb": [(0.268, 0.8310, 0.026), (0.282, 0.7980, 0.042), (0.291, 0.7700, 0.052), (0.296, 0.7460, 0.057)],
     }
     rad = {"index": [0.0042, 0.0050, 0.0040, 0.0034, 0.0028], "middle": [0.0044, 0.0052, 0.0042, 0.0035, 0.0029],
            "ring": [0.0040, 0.0047, 0.0038, 0.0032, 0.0026], "little": [0.0037, 0.0043, 0.0034, 0.0029, 0.0024], "thumb": [0.0050, 0.0055, 0.0042, 0.0032]}
     for name, pts in fingers.items():
-        r = rad[name]
-        for i in range(len(pts) - 1):
-            a, b = np.array(pts[i]), np.array(pts[i + 1])
-            d = (b - a); n = np.linalg.norm(d); d /= n
-            gap = 0.0012
-            a2, b2 = a + d * gap, b - d * gap
-            shaft = capsule(a2, b2, r[i] * 0.92, r[i + 1] * 0.82)
-            head = ellipsoid(b2 - d * r[i + 1] * 0.6, (r[i + 1] * 1.05, r[i + 1] * 0.95, r[i + 1] * 0.92))  # the knuckle at the end of each bone
-            base = sphere(a2 + d * r[i] * 0.7, r[i] * 1.0)
-            bones.append(smooth_union(shaft, head, base, k=0.004))
-        tip = np.array(pts[-1])
-        bones.append(ellipsoid(tip + np.array([0, -0.002, 0]), (r[-1] * 1.15, r[-1] * 0.9, r[-1] * 0.8)))  # the tuft of the last phalanx
+        # the palm faces forward; the thumb is turned about 80 degrees, so its pad faces the fingers
+        palmar = (-0.75, 0.0, 0.66) if name == "thumb" else (0.0, 0.0, 1.0)
+        bones += ray(pts, [x * 1.08 for x in rad[name]], palmar)
     return union(*bones), np.array([0.205, 0.64, -0.01]), np.array([0.31, 0.86, 0.07])
