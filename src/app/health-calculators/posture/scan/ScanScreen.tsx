@@ -21,7 +21,14 @@ import ScanReport from "./ScanReport";
 type Stage = "intro" | "setup" | "camera" | "countdown" | "capturing" | "viewdone" | "report";
 type Who = "self" | "helper";
 const CAPTURE_MS = 3500;
-const CAPTURE_MAX_MS = 9000;
+const CAPTURE_MAX_MS = 12000;
+/** A problem must last this long before the button is turned off, and a clear view this long before it is turned on: one blurred frame no longer flickers it. */
+const ISSUE_HOLD_MS = 900;
+const CLEAR_HOLD_MS = 350;
+/** Phone tilt for this scan. Roll (turned sideways) moves every left-right tilt by the same angle, so it stays tight; pitch (leaning back or forward) barely changes them. */
+const ROLL_LIMIT_DEG = 4;
+const PITCH_LIMIT_DEG = 12;
+const levelEnough = (t: Tilt) => t.roll <= ROLL_LIMIT_DEG && t.pitch <= PITCH_LIMIT_DEG;
 const NEED: Record<Exclude<ScanView, "bend">, string[]> = {
   front: ["leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"],
   side: ["near:ear", "near:shoulder", "near:hip", "near:knee", "near:ankle"],
@@ -116,6 +123,7 @@ export default function ScanScreen() {
   const frames = useRef<Frame[]>([]);
   const lastLm = useRef<Landmark[] | null>(null);
   const issuesKey = useRef("");
+  const pending = useRef<{ key: string; since: number }>({ key: "", since: 0 });
   const timers = useRef<number[]>([]);
 
   useEffect(() => { viewRef.current = view; }, [view]);
@@ -159,12 +167,17 @@ export default function ScanScreen() {
       let list: SetupIssue[];
       let ok: boolean;
       if (cur === "bend") { list = bendIssues(landmarks); ok = list.length === 0; }
-      else { const r = assessSetup(frame, { need: [...NEED[cur]] as never, view: cur === "side" ? "side" : "front", size: [0.55, 0.97], minVisibility: 0.6 }); list = r.issues; ok = r.ok; }
+      else { const r = assessSetup(frame, { need: [...NEED[cur]] as never, view: cur === "side" ? "side" : "front", size: [0.45, 0.97], minVisibility: 0.6 }); list = r.issues; ok = r.ok; }
+      // what is shown (and whether the button works) changes only once the new state has lasted a moment
       const key = list.join(",");
-      if (key !== issuesKey.current) { issuesKey.current = key; setIssues(list); }
+      const now = performance.now();
+      if (key !== pending.current.key) pending.current = { key, since: now };
+      const hold = key === "" ? CLEAR_HOLD_MS : issuesKey.current === "no_person" ? 0 : ISSUE_HOLD_MS;
+      if (key !== issuesKey.current && now - pending.current.since >= hold) { issuesKey.current = key; setIssues(list); }
       lastLm.current = landmarks;
       draw(landmarks, frame.w, frame.h);
-      if (collecting.current && ok) frames.current.push(frame);
+      // while the picture is taken, a frame counts when the body parts the numbers need are seen (a moment off centre or a flicker of light does not matter)
+      if (collecting.current && (ok || (list.length > 0 && !list.includes("no_person") && !list.includes("body_not_visible")))) frames.current.push(frame);
     }
     raf.current = requestAnimationFrame(loop);
   }, []);
@@ -227,7 +240,7 @@ export default function ScanScreen() {
     timers.current.push(window.setTimeout(tick, 1000));
   };
 
-  const levelBlocks = levelOn && tilt !== null && !tilt.level;
+  const levelBlocks = levelOn && tilt !== null && !levelEnough(tilt);
   const ready = issues.length === 0 && !loading && !levelBlocks;
   const doneViews = SCAN_VIEWS.filter((v) => captures[v]?.ok);
   const nextView = SCAN_VIEWS.find((v) => v !== view && !captures[v]?.ok && SCAN_VIEWS.indexOf(v) > SCAN_VIEWS.indexOf(view)) ?? SCAN_VIEWS.find((v) => !captures[v]?.ok && v !== view);
@@ -299,7 +312,7 @@ export default function ScanScreen() {
               {loading ? <p>{t({ en: "Starting the camera and loading the pose model…", ur: "Camera shuru ho raha hai aur pose model load ho raha hai…" })}</p> : (
                 <>
                   <p className="ps-note"><strong>{t(VIEW_TEXT[view].name)}</strong></p>
-                  {levelOn && tilt && <p className="ps-level" data-ok={tilt.level}>{t({ en: "Phone level", ur: "Phone ki sateh" })}: {tilt.pitch.toFixed(1)}° / {tilt.roll.toFixed(1)}° {tilt.level ? <CheckCircle2 aria-hidden="true" /> : t({ en: "Hold the phone upright and level", ur: "Phone ko seedha aur barabar rakhein" })}</p>}
+                  {levelOn && tilt && <p className="ps-level" data-ok={levelEnough(tilt)}>{t({ en: "Phone level", ur: "Phone ki sateh" })}: {tilt.pitch.toFixed(1)}° / {tilt.roll.toFixed(1)}° {levelEnough(tilt) ? <CheckCircle2 aria-hidden="true" /> : t({ en: "Hold the phone upright and level", ur: "Phone ko seedha aur barabar rakhein" })}</p>}
                   {!levelOn && <p className="ps-note">{t({ en: "This phone cannot report its tilt. Make sure it is upright and not leaning, or the angles will be off.", ur: "Yeh phone apna jhukao nahi bata sakta. Yaqeeni banayein ke woh seedha hai, jhuka hua nahi, warna angles ghalat honge." })}</p>}
                   {view === "bend" && <p className="ps-note">{t({ en: "Stand sideways. When the count reaches the last few seconds you will be told to bend: bend slowly with straight knees and hold.", ur: "Side mein khare hon. Jab ginti aakhri chand seconds par aaye to jhukne ko kaha jayega: aahista seedhay ghutnon ke saath jhukein aur ruke rahein." })}</p>}
                   {issues.length > 0 ? <ul className="ps-issues">{issues.map((i) => (<li key={i}>{lang === "ur" ? SETUP_MESSAGES[i].ru : SETUP_MESSAGES[i].en}</li>))}</ul> : <p className="ps-ok"><CheckCircle2 aria-hidden="true" /> {t({ en: "I can see you. Get ready.", ur: "Main aap ko dekh sakta hoon. Taiyar ho jayein." })}</p>}
