@@ -597,7 +597,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "neck-anatomy-reference", title: "Neck Anatomy Reference", shortTitle: "Neck Anatomy",
     region: "Head & Neck", category: "Anatomy", summary: "Neck anatomy illustration for regional orientation. Not a depiction of whiplash or a specific cervical lesion.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The cervical spine has seven vertebrae: C1 (atlas) and C2 (axis) give about half of neck rotation, while C3–C7 share flexion, extension and side-bending.", "Eight cervical nerve roots leave the neck; each exits above the vertebra of the same number (C6 above C6), and C8 exits between C7 and T1.", "Upper trapezius, levator scapulae and the deep neck flexors are the muscles most often assessed in neck pain.", "An illustration orients the region; it does not show where a patient's pain comes from, so link it to history and examination."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Neck_Anatomy.svg/960px-Neck_Anatomy.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["mechanical-neck-pain","whiplash-associated-disorder"],
@@ -606,7 +606,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "lumbar-spine-reference", title: "Healthy Spine Reference", shortTitle: "Spine Anatomy",
     region: "Spine", category: "Anatomy", summary: "Healthy spine illustration for basic vertebral and disc orientation; it does not depict a patient's pain generator.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The spine has 7 cervical, 12 thoracic, 5 lumbar, 5 fused sacral and 3–5 coccygeal segments, with lordotic curves in the neck and low back.", "Each intervertebral disc has a fibrous outer annulus and a gel-like nucleus; most disc herniations occur at L4–5 and L5–S1.", "Lumbar nerve roots leave below the vertebra of the same number: a posterolateral L4–5 disc usually affects the L5 root.", "Normal-looking anatomy and age-related changes are common in people without pain, so imaging and pictures never replace the clinical picture."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Healthy_spine.svg/960px-Healthy_spine.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["non-specific-low-back-pain","lumbar-radiculopathy","thoracic-spine-pain"],
@@ -615,7 +615,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "shoulder-anatomy-reference", title: "Shoulder Anatomy Reference", shortTitle: "Shoulder Anatomy",
     region: "Shoulder", category: "Anatomy", summary: "Shoulder illustration for orientation of the joint and surrounding structures.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The shoulder complex has four joints: glenohumeral, acromioclavicular, sternoclavicular and the scapulothoracic articulation.", "The rotator cuff (supraspinatus, infraspinatus, teres minor, subscapularis) centres the humeral head in the shallow glenoid during movement.", "In elevation the arm and scapula move together, roughly 2:1 glenohumeral to scapular movement over the full range.", "Use the picture to locate structures you palpate and test; diagnosis still rests on history, movement and special-test clusters."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Shoulder_anatomy.svg/960px-Shoulder_anatomy.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["adhesive-capsulitis","acromioclavicular-joint-injury","long-head-biceps-tendinopathy"],
@@ -624,7 +624,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "elbow-anatomy-reference", title: "Elbow Anatomy Reference", shortTitle: "Elbow Anatomy",
     region: "Elbow & Forearm", category: "Anatomy", summary: "Regional elbow anatomy illustration; it is not a specific medial epicondylalgia lesion image.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The elbow has three articulations: humeroulnar and humeroradial (flexion and extension) and the proximal radioulnar joint (pronation and supination).", "Wrist and finger extensors arise from the lateral epicondyle; flexors and pronator teres from the medial epicondyle.", "The ulnar nerve passes behind the medial epicondyle in the cubital tunnel, where it is easily irritated.", "Match each structure to what you find on palpation and resisted testing rather than to the image alone."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Medial_epicondylitis.svg/960px-Medial_epicondylitis.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["medial-epicondylalgia"],
@@ -633,7 +633,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "wrist-hand-reference", title: "Wrist and Hand Reference", shortTitle: "Wrist / Hand",
     region: "Wrist & Hand", category: "Anatomy", summary: "Regional wrist illustration for orientation; it does not depict trigger finger or a specific tendon lesion.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["Eight carpal bones sit in two rows; the scaphoid is the most often fractured and can have a poor blood supply to its proximal pole.", "The carpal tunnel carries the median nerve with nine flexor tendons under the flexor retinaculum.", "The first dorsal compartment holds abductor pollicis longus and extensor pollicis brevis, the tendons involved in De Quervain's tenosynovitis.", "Sensory mapping (median, ulnar, radial) on examination tells you more than any regional picture."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Wrist_pain.svg/960px-Wrist_pain.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["de-quervain-tenosynovitis","trigger-finger"],
@@ -642,7 +642,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "hip-groin-reference", title: "Hip and Groin Reference", shortTitle: "Hip / Groin",
     region: "Hip & Groin", category: "Anatomy", summary: "Hip and groin illustration for regional orientation and surface anatomy.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The hip is a deep ball-and-socket joint; the acetabular labrum deepens the socket and seals the joint.", "The adductors attach to the pubis; the gluteus medius and minimus attach to the greater trochanter, where lateral hip pain often arises.", "Pain from the hip joint itself is usually felt in the groin, while lateral or buttock pain points to other sources.", "Always consider the lumbar spine, abdomen and pelvic organs when groin pain does not behave like a joint problem."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Hip_and_groin_pain.svg/960px-Hip_and_groin_pain.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["greater-trochanteric-pain-syndrome","gluteal-tendinopathy","adductor-related-groin-pain"],
@@ -651,7 +651,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "knee-anatomy-reference", title: "Knee Anatomy Reference", shortTitle: "Knee Anatomy",
     region: "Knee", category: "Anatomy", summary: "Knee anatomy and ligament overview for orientation; not a standalone diagnostic image.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The knee has tibiofemoral and patellofemoral joints; the menisci spread load and deepen the flat tibial surface.", "The ACL stops the tibia moving forward on the femur and the PCL stops it moving back; the MCL and LCL resist valgus and varus stress.", "The quadriceps, through the patellar tendon, controls knee extension and the patella's path in the trochlear groove.", "Ligament and meniscus tests are interpreted together with the injury story and swelling, not from anatomy alone."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Knee_injuries.svg/960px-Knee_injuries.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["patellofemoral-pain","patellar-tendinopathy","pcl-injury","mcl-injury"],
@@ -660,7 +660,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "plantar-foot-reference", title: "Plantar Foot Reference", shortTitle: "Plantar Fascia",
     region: "Ankle & Foot", category: "Anatomy", summary: "Plantar fascia illustration for heel-region anatomical orientation.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The plantar fascia runs from the medial calcaneal tubercle to the toes and tightens as the toes extend (the windlass mechanism).", "The medial longitudinal arch is supported by bone shape, the plantar fascia, spring ligament and tibialis posterior.", "Heel pain worst with the first steps in the morning is typical of plantar heel pain.", "Check for numbness, night pain or a stress-fracture story, which the picture cannot show."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Plantar_fascia.svg/960px-Plantar_fascia.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["plantar-heel-pain","posterior-tibial-tendon-dysfunction"],
@@ -669,7 +669,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "achilles-reference", title: "Achilles Tendon Reference", shortTitle: "Achilles Tendon",
     region: "Ankle & Foot", category: "Anatomy", summary: "Achilles tendon region illustration; not a definitive depiction of tendinopathy severity.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The Achilles tendon joins gastrocnemius and soleus to the calcaneus and is the thickest, strongest tendon in the body.", "Mid-portion tendinopathy affects the tendon 2–6 cm above its insertion; insertional pain sits at the heel bone itself.", "A sudden 'kick' at the back of the heel with a positive Thompson (calf squeeze) test suggests rupture and needs urgent assessment.", "Tendon pain is managed by load, so use the anatomy to explain loading, not to predict symptoms."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Achilles_tendonitis.svg/960px-Achilles_tendonitis.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["achilles-tendinopathy"],
@@ -678,7 +678,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
   {
     slug: "shin-reference", title: "Shin Region Reference", shortTitle: "Shin Region",
     region: "Ankle & Foot", category: "Anatomy", summary: "Shin pain illustration used for regional orientation, not as proof of bone stress injury.",
-    learningPoints: ["Use this illustration to orient the region and nearby structures.", "Do not infer a specific diagnosis or tissue lesion from this regional reference alone.", "Correlate anatomy with the patient's history and examination."],
+    learningPoints: ["The tibia carries most of the body's weight; the fibula mainly gives muscle attachment and ankle stability.", "Medial shin pain along the lower tibial border is common in runners; focal bone tenderness or night pain raises concern for a stress injury.", "The anterior, lateral and posterior compartments hold the muscles of the leg; pain with exercise that settles at rest can point to compartment problems.", "A regional illustration cannot separate shin splints, stress fracture and compartment syndrome; history, palpation and loading tests do."],
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Shin_splints.svg/960px-Shin_splints.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["tibial-stress-injury"],
