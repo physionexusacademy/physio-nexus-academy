@@ -83,7 +83,11 @@ export function VirtualPatientApp() {
     if (process.env.NODE_ENV !== "production") (window as unknown as { __pnaExamRoom?: ExamRoom }).__pnaExamRoom = exam;
     exam
       .load("/virtual-patient/patient.glb", setProgress)
-      .then(() => setReady(true))
+      .then(() => {
+        // PNA's own clinic around the plinth (sign, equipment, exercise corner)
+        void exam.setClinic(true);
+        setReady(true);
+      })
       .catch(() => setFailed("The patient model could not be loaded. Check your connection and refresh the page."));
     return () => {
       exam.dispose();
