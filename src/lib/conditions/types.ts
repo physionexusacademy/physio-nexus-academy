@@ -1,5 +1,6 @@
 import type { AreaId, TypeId } from "./taxonomy";
 import type { MSKStory } from "../msk-clinical-stories";
+import type { BookChapter, BookHelp } from "./book-types";
 
 export type Evidence = "Strong" | "Moderate" | "Mixed";
 
@@ -12,8 +13,8 @@ export type CatalogItem = {
   evidence: Evidence | "";
   /** One or two sentences. */
   summary: string;
-  /** "plan" = built from a treatment plan, "injury" = from the clinical library, "both" = merged. */
-  kind: "injury" | "plan" | "both";
+  /** "book" = a chapter of The Complete Physiotherapy Clinical Mastery (every guide since 27 Nov 2026). */
+  kind: "book" | "injury" | "plan" | "both";
   /** How many stages the plan has (for the card). */
   stages: number;
   /** First quick-guide lines, so the page has real text before the browser loads the rest. */
@@ -21,7 +22,15 @@ export type CatalogItem = {
   firstSteps: string[];
   /** Everyday names, abbreviations and old names (search only). */
   aka: string;
+  /** The book's volume and chapter, the lettered sections it has (e.g. "ABCDEFGHIJKLMN") and how many special tests it describes. */
+  vol: number;
+  ch: number;
+  letters: string;
+  tests: number;
 };
+
+/** A Clinical Foundations chapter (reasoning, assessment, treatment methods): /conditions/foundations/<slug>. */
+export type FoundationItem = { slug: string; title: string; vol: number; ch: number; lead: string };
 
 export type Stage = {
   label: string;
@@ -64,4 +73,10 @@ export type ConditionDetail = {
   };
   links: { label: string; href: string }[];
   related: string[];
+  /** The whole chapter, word for word (the page shows this). */
+  book?: BookChapter;
+  /** Roman Urdu help written for the site, per section. */
+  help?: BookHelp;
 };
+
+export type FoundationDetail = FoundationItem & { v: 1; book: BookChapter; help?: BookHelp };

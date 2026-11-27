@@ -86,7 +86,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     relatedLinks: [
       { label: "Rotator cuff tendinopathy guide", href: "/conditions/rotator-cuff-tendinopathy" },
-      { label: "Full-thickness rotator cuff tear guide", href: "/conditions/rotator-cuff-full-thickness-tear" },
+      { label: "Rotator cuff-related shoulder pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
     ],
   },
   {
@@ -111,7 +111,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     ],
     relatedLinks: [
       { label: "Rotator cuff tendinopathy guide", href: "/conditions/rotator-cuff-tendinopathy" },
-      { label: "Full-thickness rotator cuff tear guide", href: "/conditions/rotator-cuff-full-thickness-tear" },
+      { label: "Rotator cuff-related shoulder pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
     ],
   },
   {
@@ -132,7 +132,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["rotator-cuff-full-thickness-tear"],
     relatedLinks: [
-      { label: "Full-thickness rotator cuff tear guide", href: "/conditions/rotator-cuff-full-thickness-tear" },
+      { label: "Rotator cuff-related shoulder pain guide", href: "/conditions/rotator-cuff-tendinopathy" },
     ],
   },
   {
@@ -174,7 +174,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     assetReady: true,
     conditionSlugs: ["anterior-shoulder-instability"],
     relatedLinks: [
-      { label: "Anterior Shoulder Instability guide", href: "/conditions/anterior-shoulder-instability" },
+      { label: "Glenohumeral Instability guide", href: "/conditions/glenohumeral-instability" },
     ],
   },
   {
@@ -234,7 +234,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     thumbnailPath: `${ankleFootBase}/achilles-tendon-rupture`,
     assetReady: true,
     conditionSlugs: ["achilles-tendon-rupture"],
-    relatedLinks: [{ label: "Achilles Tendon Rupture guide", href: "/conditions/achilles-tendon-rupture" }],
+    relatedLinks: [{ label: "Achilles Tendinopathy guide", href: "/conditions/achilles-tendinopathy" }],
   },
   {
     slug: "hamstring-strain",
@@ -619,7 +619,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Shoulder_anatomy.svg/960px-Shoulder_anatomy.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["adhesive-capsulitis","acromioclavicular-joint-injury","long-head-biceps-tendinopathy"],
-    relatedLinks: [{ label: "Adhesive Capsulitis", href: "/conditions/adhesive-capsulitis" }, { label: "AC Joint Injury", href: "/conditions/acromioclavicular-joint-injury" }, { label: "Long-Head Biceps Tendinopathy", href: "/conditions/long-head-biceps-tendinopathy" }],
+    relatedLinks: [{ label: "Adhesive Capsulitis", href: "/conditions/adhesive-capsulitis" }, { label: "AC Joint Injury", href: "/conditions/acromioclavicular-joint-injury" }, { label: "Biceps-related Shoulder Pain", href: "/conditions/biceps-related-shoulder-pain" }],
   },
   {
     slug: "elbow-anatomy-reference", title: "Elbow Anatomy Reference", shortTitle: "Elbow Anatomy",
@@ -646,7 +646,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Hip_and_groin_pain.svg/960px-Hip_and_groin_pain.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["greater-trochanteric-pain-syndrome","gluteal-tendinopathy","adductor-related-groin-pain"],
-    relatedLinks: [{ label: "Greater Trochanteric Pain Syndrome", href: "/conditions/greater-trochanteric-pain-syndrome" }, { label: "Gluteal Tendinopathy", href: "/conditions/gluteal-tendinopathy" }, { label: "Adductor-Related Groin Pain", href: "/conditions/adductor-related-groin-pain" }],
+    relatedLinks: [{ label: "Gluteal Tendinopathy", href: "/conditions/gluteal-tendinopathy" }, { label: "Groin Pain in Athletes", href: "/conditions/groin-pain-in-athletes" }],
   },
   {
     slug: "knee-anatomy-reference", title: "Knee Anatomy Reference", shortTitle: "Knee Anatomy",
@@ -655,7 +655,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Knee_injuries.svg/960px-Knee_injuries.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["patellofemoral-pain","patellar-tendinopathy","pcl-injury","mcl-injury"],
-    relatedLinks: [{ label: "Patellofemoral Pain", href: "/conditions/patellofemoral-pain" }, { label: "Patellar Tendinopathy", href: "/conditions/patellar-tendinopathy" }, { label: "PCL Injury", href: "/conditions/pcl-injury" }, { label: "MCL Injury", href: "/conditions/mcl-injury" }],
+    relatedLinks: [{ label: "Patellofemoral Pain", href: "/conditions/patellofemoral-pain" }, { label: "Patellar Tendinopathy", href: "/conditions/patellar-tendinopathy" }, { label: "Knee Collateral and PCL Injuries", href: "/conditions/knee-collateral-and-pcl-injuries" }],
   },
   {
     slug: "plantar-foot-reference", title: "Plantar Foot Reference", shortTitle: "Plantar Fascia",
@@ -664,7 +664,7 @@ export const clinicalVisualAtlas: ClinicalVisualEntry[] = [
     externalImageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Plantar_fascia.svg/960px-Plantar_fascia.svg.png",
     imageAttribution: { source: "Injurymap", sourceUrl: "https://www.injurymap.com/free-human-anatomy-illustrations", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/" },
     assetReady: true, conditionSlugs: ["plantar-heel-pain","posterior-tibial-tendon-dysfunction"],
-    relatedLinks: [{ label: "Plantar Heel Pain", href: "/conditions/plantar-heel-pain" }, { label: "Posterior Tibial Tendon Dysfunction", href: "/conditions/posterior-tibial-tendon-dysfunction" }],
+    relatedLinks: [{ label: "Plantar Heel Pain", href: "/conditions/plantar-heel-pain" }],
   },
   {
     slug: "achilles-reference", title: "Achilles Tendon Reference", shortTitle: "Achilles Tendon",

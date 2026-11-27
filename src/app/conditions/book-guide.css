@@ -1,0 +1,30 @@
+/* Book chapter pages (/conditions/<slug>, /conditions/foundations/<slug>) */
+
+/* A table is a real table on wide screens; on a phone each row becomes a labelled card (one copy of the text, CSS only). */
+@media (max-width: 639px) {
+  .bg-table table,
+  .bg-table tbody,
+  .bg-table tr,
+  .bg-table td { display: block; width: 100%; }
+  .bg-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .bg-table tr { padding: 0.75rem 1rem; }
+  .bg-table td { padding: 0.2rem 0; }
+  .bg-table td[data-label]:not([data-label=""])::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+}
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media print {
+  .bg-noprint { display: none !important; }
+  .book-guide section { break-inside: avoid-page; box-shadow: none !important; }
+  .book-guide details > p { display: block !important; }
+}

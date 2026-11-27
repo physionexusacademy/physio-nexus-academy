@@ -217,9 +217,9 @@ export const painScienceBasics: TeacherLesson = {
       note: { en: "Pain science inside a full rehab plan.", ur: "Poore rehab plan ke andar pain science." },
     },
     {
-      title: "Fibromyalgia — treatment plan",
-      href: "/conditions/fibromyalgia#clinical",
-      note: { en: "Where sensitivity and pacing matter most.", ur: "Jahan sensitivity aur pacing sab se ahem hain." },
+      title: "Whiplash-Associated Disorders — prognosis and sensitivity",
+      href: "/conditions/whiplash-associated-disorder#H",
+      note: { en: "Where widespread sensitivity changes the plan.", ur: "Jahan phaili hui sensitivity plan badal deti hai." },
     },
   ],
   sources: [

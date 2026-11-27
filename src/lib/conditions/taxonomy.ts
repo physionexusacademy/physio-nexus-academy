@@ -10,16 +10,16 @@ export type TypeId = "injury" | "tear" | "overuse" | "joint" | "spine" | "nerve"
 export type DepthId = "quick" | "clinical" | "expert";
 
 export const areas: { id: AreaId; label: string; hint: string }[] = [
-  { id: "neck", label: "Neck & jaw", hint: "Neck pain, whiplash, arm-radiating neck pain, jaw" },
+  { id: "neck", label: "Neck & head", hint: "Neck pain, whiplash, nerve root pain, myelopathy, neck headache, thoracic outlet" },
   { id: "shoulder", label: "Shoulder", hint: "Rotator cuff, stiff shoulder, instability, AC joint" },
   { id: "arm", label: "Elbow, wrist & hand", hint: "Tennis/golfer's elbow, carpal tunnel, thumb and finger tendons" },
-  { id: "back", label: "Back & spine", hint: "Low back, sciatica, mid-back, inflammatory back pain" },
+  { id: "back", label: "Back, chest wall & pelvis", hint: "Low back, sciatica, stenosis, cauda equina, mid-back, ribs, pelvic girdle" },
   { id: "hip", label: "Hip & thigh", hint: "Hip arthritis, groin, side-of-hip pain, hamstring" },
   { id: "knee", label: "Knee", hint: "ACL, meniscus, kneecap pain, arthritis, ligaments" },
   { id: "foot", label: "Leg, ankle & foot", hint: "Sprains, Achilles, heel pain, shin pain, flat foot" },
-  { id: "neuro", label: "Nerves, brain & balance", hint: "Stroke, Parkinson's, spinal cord injury, cerebral palsy, dizziness" },
-  { id: "chest", label: "Heart & lungs", hint: "COPD, after heart surgery" },
-  { id: "whole", label: "Whole body & long-term pain", hint: "Fibromyalgia, after breast surgery" },
+  { id: "neuro", label: "Nerves, brain, balance & children", hint: "Stroke, Parkinson's, MS, spinal cord injury, cerebral palsy, motor delay, dizziness" },
+  { id: "chest", label: "Heart & lungs", hint: "COPD, asthma, pneumonia, after surgery, cardiac rehab, heart failure" },
+  { id: "whole", label: "Bones, falls & older adults", hint: "Osteoporosis, falls and frailty" },
 ];
 
 export const types: { id: TypeId; label: string; hint: string }[] = [
@@ -32,7 +32,7 @@ export const types: { id: TypeId; label: string; hint: string }[] = [
   { id: "postop", label: "After surgery", hint: "Structured rehab after an operation" },
   { id: "neuro", label: "Neurological & balance", hint: "Stroke, Parkinson's, spinal cord, cerebral palsy, BPPV" },
   { id: "chest", label: "Heart & lung", hint: "Breathing and cardiac rehabilitation" },
-  { id: "longterm", label: "Long-term & inflammatory", hint: "Fibromyalgia, ankylosing spondylitis" },
+  { id: "longterm", label: "Bone health & frailty", hint: "Osteoporosis, falls and frailty" },
 ];
 
 export const depths: { id: DepthId; label: string; time: string; for: string; gives: string }[] = [
@@ -43,77 +43,3 @@ export const depths: { id: DepthId; label: string; time: string; for: string; gi
 
 export const areaLabel = (id: string) => areas.find((a) => a.id === id)?.label ?? id;
 export const typeLabel = (id: string) => types.find((t) => t.id === id)?.label ?? id;
-
-/** Condition → [area, type]. The builder fails if a condition is missing here. */
-export const placement: Record<string, [AreaId, TypeId]> = {
-  "mechanical-neck-pain": ["neck", "spine"],
-  "whiplash-associated-disorder": ["neck", "spine"],
-  "cervical-radiculopathy": ["neck", "nerve"],
-  "temporomandibular-disorder": ["neck", "joint"],
-  "rotator-cuff-tendinopathy": ["shoulder", "overuse"],
-  "rotator-cuff-full-thickness-tear": ["shoulder", "tear"],
-  "anterior-shoulder-instability": ["shoulder", "injury"],
-  "adhesive-capsulitis": ["shoulder", "joint"],
-  "acromioclavicular-joint-injury": ["shoulder", "injury"],
-  "long-head-biceps-tendinopathy": ["shoulder", "overuse"],
-  "lateral-epicondylalgia": ["arm", "overuse"],
-  "medial-epicondylalgia": ["arm", "overuse"],
-  "carpal-tunnel-syndrome": ["arm", "nerve"],
-  "de-quervain-tenosynovitis": ["arm", "overuse"],
-  "trigger-finger": ["arm", "overuse"],
-  "non-specific-low-back-pain": ["back", "spine"],
-  "lumbar-radiculopathy": ["back", "nerve"],
-  "thoracic-spine-pain": ["back", "spine"],
-  "ankylosing-spondylitis-rehabilitation": ["back", "longterm"],
-  "hamstring-strain": ["hip", "tear"],
-  "femoroacetabular-impingement-syndrome": ["hip", "joint"],
-  "hip-osteoarthritis": ["hip", "joint"],
-  "greater-trochanteric-pain-syndrome": ["hip", "overuse"],
-  "gluteal-tendinopathy": ["hip", "overuse"],
-  "adductor-related-groin-pain": ["hip", "tear"],
-  "acl-injury": ["knee", "injury"],
-  "acl-reconstruction-rehabilitation": ["knee", "postop"],
-  "meniscal-injury": ["knee", "injury"],
-  "knee-osteoarthritis": ["knee", "joint"],
-  "patellofemoral-pain": ["knee", "overuse"],
-  "patellar-tendinopathy": ["knee", "overuse"],
-  "pcl-injury": ["knee", "injury"],
-  "mcl-injury": ["knee", "injury"],
-  "lateral-ankle-sprain": ["foot", "injury"],
-  "achilles-tendon-rupture": ["foot", "tear"],
-  "achilles-tendinopathy": ["foot", "overuse"],
-  "plantar-heel-pain": ["foot", "overuse"],
-  "posterior-tibial-tendon-dysfunction": ["foot", "overuse"],
-  "tibial-stress-injury": ["foot", "overuse"],
-  "stroke-rehabilitation": ["neuro", "neuro"],
-  "parkinsons-disease": ["neuro", "neuro"],
-  "spinal-cord-injury-rehabilitation": ["neuro", "neuro"],
-  "cerebral-palsy": ["neuro", "neuro"],
-  "vestibular-bppv": ["neuro", "neuro"],
-  "copd-pulmonary-rehabilitation": ["chest", "chest"],
-  "post-cabg-rehabilitation": ["chest", "postop"],
-  "fibromyalgia": ["whole", "longterm"],
-  "post-mastectomy-rehabilitation": ["whole", "postop"],
-  "total-knee-replacement-rehabilitation": ["knee", "postop"],
-  "total-hip-replacement-rehabilitation": ["hip", "postop"],
-  "rotator-cuff-repair-rehabilitation": ["shoulder", "postop"],
-  "lumbar-spinal-stenosis": ["back", "spine"],
-  "lumbar-spondylolisthesis": ["back", "spine"],
-  "pregnancy-related-pelvic-girdle-pain": ["back", "spine"],
-  "osteoporosis": ["whole", "longterm"],
-  "rheumatoid-arthritis": ["whole", "longterm"],
-  "lymphoedema": ["whole", "longterm"],
-  "lower-limb-amputation-rehabilitation": ["foot", "postop"],
-  "guillain-barre-syndrome": ["neuro", "neuro"],
-  "multiple-sclerosis": ["neuro", "neuro"],
-  "traumatic-brain-injury": ["neuro", "neuro"],
-  "bells-palsy": ["neuro", "neuro"],
-  "diabetic-peripheral-neuropathy": ["neuro", "neuro"],
-};
-
-/** Old addresses that changed name when the two libraries were merged. */
-export const renamedSlugs: Record<string, string> = {
-  "nonspecific-low-back-pain": "non-specific-low-back-pain",
-  "rotator-cuff-related-shoulder-pain": "rotator-cuff-tendinopathy",
-  "lateral-elbow-tendinopathy": "lateral-epicondylalgia",
-};

@@ -3,13 +3,16 @@ import { NexusHero } from "@/components/nexus/NexusHero";
 import { conditionCatalog } from "@/lib/conditions/catalog";
 import { areas } from "@/lib/conditions/taxonomy";
 import { ConditionsExplorer, type ExplorerItem } from "./ConditionsExplorer";
+import foundations from "@/lib/conditions/generated/foundations.json";
+import type { FoundationItem } from "@/lib/conditions/types";
+import { BOOK } from "@/lib/conditions/book-types";
 
 export const dynamic = "force-static";
 export const revalidate = false;
 
 const url = "https://physionexusacademy.com/conditions";
-const title = "Conditions & Treatment Guide — Rehab Plans";
-const description = "Find physiotherapy conditions by body area. Each guide gives a plain summary, a stage-by-stage rehab plan with doses and red flags, and expert detail.";
+const title = "Conditions & Treatment Guide — Assessment to Treatment";
+const description = "68 physiotherapy conditions from The Complete Physiotherapy Clinical Mastery by Dr. Sajjad Raza PT: questions, examination, special tests, red flags, decision pathway, treatment and a case for each.";
 
 export const metadata: Metadata = {
   title,
@@ -22,7 +25,8 @@ export const metadata: Metadata = {
 };
 
 export default function ConditionsPage() {
-  const items: ExplorerItem[] = conditionCatalog.map(({ slug, name, area, type, summary, stages, kind, aka }) => ({ slug, name, area, type, summary, stages, kind, aka }));
+  const items: ExplorerItem[] = conditionCatalog.map(({ slug, name, area, type, summary, stages, kind, aka, vol, ch, letters, tests }) => ({ slug, name, area, type, summary, stages, kind, aka, vol, ch, letters, tests }));
+  const shelf = foundations as FoundationItem[];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -41,8 +45,8 @@ export default function ConditionsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <NexusHero
         kicker="Learn wing · Conditions & Treatment Guide"
-        title={<>Understand it. <span className="nx-gradient-text">Plan the rehab.</span></>}
-        lead="One place for injuries, long-term conditions and rehabilitation. Pick how deep you want to go, find the condition, and follow a stage-by-stage plan that tells you what to do, how much, and when to move on."
+        title={<>From the story <span className="nx-gradient-text">to the treatment.</span></>}
+        lead={`Every guide is a chapter of ${BOOK.title} by ${BOOK.author}, in the same order each time: understand it, recognise it, ask, examine, test, rule out, act on red flags, decide, treat, reassess and practise on a case.`}
         crumbs={[{ label: "Learn", href: "/learn" }, { label: "Conditions & Treatment" }]}
         actions={
           <>
@@ -53,10 +57,28 @@ export default function ConditionsPage() {
         stats={[
           { value: conditionCatalog.length, label: "conditions" },
           { value: areas.length, label: "body areas & systems" },
-          { value: 3, label: "parts in every guide" },
+          { value: shelf.length, label: "foundation chapters" },
         ]}
       />
       <ConditionsExplorer items={items} />
+      <section aria-labelledby="cg-foundations" className="container-content pb-16">
+        <div className="rounded-[2rem] bg-[radial-gradient(120%_120%_at_0%_0%,#0f766e_0%,#0b2545_50%,#06142b_100%)] p-6 text-white shadow-xl sm:p-9">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">Read these first</p>
+          <h2 id="cg-foundations" className="mt-1 text-2xl font-bold text-white sm:text-3xl">Clinical Foundations</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-7 text-teal-50/90">The reasoning method every guide uses, history taking, examination planning, test accuracy, outcome measures, and the treatment methods: manual therapy concepts, exercise prescription and modalities.</p>
+          <ul className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {shelf.map((f) => (
+              <li key={f.slug}>
+                <a href={`/conditions/foundations/${f.slug}`} className="group flex h-full flex-col rounded-2xl bg-white/10 p-4 ring-1 ring-white/15 backdrop-blur transition hover:bg-white/15 hover:ring-teal-300/60">
+                  <span className="font-mono text-[11px] font-bold text-teal-200">Vol {f.vol} · Ch {f.ch}</span>
+                  <strong className="mt-1 text-sm font-bold leading-snug text-white group-hover:text-teal-100">{f.title}</strong>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="/conditions/foundations" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-teal-300 px-4 py-2.5 text-sm font-bold text-navy-950 hover:bg-teal-200">Open the Foundations shelf →</a>
+        </div>
+      </section>
     </>
   );
 }
