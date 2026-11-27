@@ -1,6 +1,6 @@
 import { Activity, ArrowRight, Calculator, ClipboardCheck, GraduationCap, Hand, HeartPulse, Languages, Play, Ruler, ScanLine, ShieldCheck, Sparkles, Stethoscope, UserPlus } from "lucide-react";
 import { lessonCounts } from "@/lib/teacher/counts";
-import { VP_CASE_COUNT } from "@/lib/virtual-patient/links";
+import { VP_TOTAL_PATIENTS as VP_CASE_COUNT } from "@/lib/virtual-patient/links";
 import { Ur } from "@/components/Ur";
 import "./home-features.css";
 import "./home-flagships.css";
