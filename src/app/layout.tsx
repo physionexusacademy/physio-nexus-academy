@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "./nexus.css";
 import "./motion.css";
-import "./dark-zone.css";
+import "./dark-zone.scoped.generated.css";
 import "./light-zone.css";
 import "./easy-touch.css";
 import { Header } from "@/components/Header";
