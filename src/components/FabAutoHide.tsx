@@ -23,6 +23,8 @@ export function FabAutoHide() {
         const dy = y - last;
         last = y;
         if (!narrow.matches) return show();
+        // a jump (a link to a section, a "back to top", a scripted scroll) is not reading: the buttons stay
+        if (Math.abs(dy) > window.innerHeight * 0.6) return show();
         if (dy > 6 && y > 160) root.setAttribute("data-fab-hidden", "");
         else if (dy < -6) show();
         window.clearTimeout(timer);
