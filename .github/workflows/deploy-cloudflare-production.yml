@@ -265,6 +265,10 @@ jobs:
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:edge-cache
 
+      - name: Validate the dark / light switch (the dark 3D zone is limited to dark mode in the source CSS itself)
+        if: steps.auth.outputs.ready == 'true'
+        run: node scripts/build-dark-zone-scoped.mjs --check
+
       - name: Validate the language switch (every menu place and Skills Lab concept has Roman Urdu)
         if: steps.auth.outputs.ready == 'true'
         run: npm run validate:language
