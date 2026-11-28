@@ -41,6 +41,19 @@ export function CasePicker({ onStart, suggested, onStartBook }: { onStart: (c: V
           ))}
         </div>
       </div>
+      {onStartBook ? (
+        <div className="mt-5 rounded-2xl border border-amber-300/50 bg-gradient-to-r from-amber-400/15 via-[#2ee6d6]/10 to-transparent p-4 text-white" data-pna-vp-treat-banner>
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-amber-300">New · Treat your patient in the PNA clinic</p>
+          <p className="mt-1 text-sm leading-6">Examine the patient, make your diagnosis, then the <strong>PNA Teacher</strong> performs the treatment you choose: manual therapy, TENS / IFT / ultrasound, hot pack, ice pack and the patient's exercises, all from the book.</p>
+          <p className="mt-1 text-xs text-[#a9bfd6]">Patient examine karein, diagnosis karein, phir PNA Teacher aap ka chuna hua treatment clinic mein kar ke dikhata hai.</p>
+          <ol className="mt-3 grid gap-2 text-xs sm:grid-cols-3">
+            {["Choose a patient", "Examine and diagnose", "Treat with the PNA Teacher"].map((t, i) => (
+              <li key={t} className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2 font-bold"><span className="grid h-5 w-5 flex-none place-items-center rounded-full bg-amber-300 text-[11px] text-[#04263a]">{i + 1}</span>{t}</li>
+            ))}
+          </ol>
+          <a href="#vp-book-list" className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-amber-300 px-4 py-2 text-sm font-extrabold text-[#04263a]">See the book patients <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+        </div>
+      ) : null}
       {pick ? (
         <div className="mt-5 rounded-2xl border border-[#2ee6d6]/60 bg-[#2ee6d6]/10 p-4 text-white" data-pna-vp-suggested={pick.id}>
           <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#2ee6d6]">Your patient from the Skills Lab</p>
@@ -80,10 +93,10 @@ export function CasePicker({ onStart, suggested, onStartBook }: { onStart: (c: V
         })}
       </ul>
       {onStartBook && book.length ? (
-        <section className="mt-8" data-pna-vp-book-list={book.length}>
+        <section id="vp-book-list" className="mt-8 scroll-mt-24" data-pna-vp-book-list={book.length}>
           <p className="nx-kicker"><Stethoscope className="h-3.5 w-3.5" aria-hidden="true" /> From the book · Conditions &amp; Treatment</p>
           <h3 className="nx-title mt-2 text-xl text-white">{book.length} patients from the book's chapters</h3>
-          <p className="mt-1 text-sm text-[#a9bfd6]">The case, special tests, diagnosis and treatment come word for word from each chapter.</p>
+          <p className="mt-1 text-sm text-[#a9bfd6]">The case, special tests, diagnosis and treatment come word for word from each chapter. After your diagnosis, treat the patient with the PNA Teacher in the PNA clinic.</p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {["all", ...Array.from(new Set(book.map((b) => b.area)))].map((a) => (
               <button key={a} type="button" onClick={() => setBookArea(a)} aria-pressed={bookArea === a} className={"rounded-full px-3 py-1 text-xs font-bold capitalize " + (bookArea === a ? "bg-[#2ee6d6] text-[#04263a]" : "bg-white/10 text-white")}>{a === "all" ? "All areas" : a.replace(/-/g, " ")}</button>
@@ -96,7 +109,7 @@ export function CasePicker({ onStart, suggested, onStartBook }: { onStart: (c: V
                   <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-extrabold text-amber-900 self-start">Book · {b.ch.toUpperCase()}</span>
                   <strong className="mt-2 text-[15px] text-navy-800">{b.title}</strong>
                   <span className="mt-1 flex-1 text-[13px] leading-5 text-slate-700">{b.case.replace(/^Case:\s*/, "").slice(0, 170)}{b.case.length > 170 ? "…" : ""}</span>
-                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-700">{b.tests} special tests · see patient <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-700">{b.tests} special tests · examine and treat <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
                 </button>
               </li>
             ))}
