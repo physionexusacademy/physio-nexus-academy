@@ -90,7 +90,8 @@ try {
     await page.locator("ul button", { has: page.locator("strong", { hasText: new RegExp(`^${first.name.en.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`) }) }).first().click({ timeout: 30000 });
     await page.waitForFunction((id) => window.__rvPlayer && window.__rvPlayer.state().id === id && window.__rvPlayer.state().ready, first.id, { timeout: 120000 });
     const before = await page.evaluate(() => window.__rvPlayer.state().activations);
-    const toggle = page.locator("[role=group][aria-label=Language]").first();
+    // the site-wide switch in the header (the library no longer has its own)
+    const toggle = page.locator('[role=group][aria-label="Language / Zubaan"]').first();
     for (const name of ["English", "Roman Urdu", "English"]) {
       await toggle.getByRole("button", { name, exact: true }).click();
       await page.waitForTimeout(500);

@@ -5,7 +5,7 @@
  */
 import type { Region } from "./types";
 
-export const REGION_COUNTS: Record<Region, number> = { cervical: 11, thoracic: 11, lumbar: 17, shoulder: 14, elbow_hand: 13, hip: 25, knee: 13, ankle_foot: 14 };
+export const REGION_COUNTS: Record<Region, number> = { cervical: 11, thoracic: 15, lumbar: 19, shoulder: 16, elbow_hand: 13, hip: 31, knee: 15, ankle_foot: 16 };
 
 /** Plain words for each region, for a button or a heading ("Neck exercises"). */
 export const REGION_PLAIN: Record<Region, string> = {

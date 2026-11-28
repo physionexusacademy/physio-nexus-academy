@@ -13,8 +13,9 @@ import { hipExercises } from "./hip.ts";
 import { kneeExercises } from "./knee.ts";
 import { ankleFootExercises } from "./ankle-foot.ts";
 import { moreExercises } from "./more.ts";
+import { groupExercises } from "./groups.ts";
 
-const plus = (region: Region, list: ExerciseDef[]) => [...list, ...(moreExercises[region] ?? [])];
+const plus = (region: Region, list: ExerciseDef[]) => [...list, ...(moreExercises[region] ?? []), ...(groupExercises[region] ?? [])];
 
 export const SOURCE: Record<Region, ExerciseDef[]> = {
   cervical: plus("cervical", cervicalExercises),
