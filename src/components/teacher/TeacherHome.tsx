@@ -77,7 +77,7 @@ export function TeacherHome({ lessons, paths }: { lessons: TeacherLessonCard[]; 
   if (!snapshot) {
     return (
       // (as tall as the welcome conversation that replaces it, so the catalogue below does not jump when it arrives)
-      <div className="min-h-[30rem] rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm sm:min-h-[21.5rem]" aria-busy="true">
+      <div className="min-h-[38rem] rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm sm:min-h-[28.5rem]" aria-busy="true">
         Preparing your teacher…
       </div>
     );
