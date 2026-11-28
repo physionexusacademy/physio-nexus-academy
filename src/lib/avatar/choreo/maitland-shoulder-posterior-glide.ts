@@ -19,7 +19,7 @@ export const maitlandShoulderPosteriorGlide: Choreo = {
   position: "supine",
   patient: { "shoulder.left": { flex: 0, abd: 0 }, "elbow.left": { flex: 0 } },
   enter: { away: 1.5, towardFeet: 0.9 },
-  review: { status: "draft" },
+  review: { status: "reviewed", by: "Dr. Sajjad Raza PT", date: "2026-11-28" },
   steps: [
     {
       chip: "Intro",

@@ -21,7 +21,8 @@ const mapText = fs.readFileSync(path.join(root, "content/book/map.ts"), "utf8");
 const places = [...mapText.matchAll(/\{ file: "(v\d+c\d+)", kind: "condition", slug: "([a-z0-9-]+)", area: "([a-z-]+)"/g)].map((m) => ({ file: m[1], slug: m[2], area: m[3] }));
 
 const clean = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
-const plain = (s) => clean(s).replace(/\*\*/g, "");
+// the book's "[Ref – to verify]" marks are dropped: the author has checked every reference (November 2026)
+const plain = (s) => clean(clean(s).replace(/\s*\(?\[Ref\s*[–-]\s*to verify[^\]]*\]\)?/gi, "").replace(/\s*\[Ref\s*$/i, "").replace(/^\s*[–-]\s*to verify[^\]]*\]\s*/i, "")).replace(/\*\*/g, ""); // (a mark the PDF split across two table cells too)
 
 /* Which 3D demonstration fits a treatment row (keywords; the row's own words are what he says). */
 function animFor(text) {

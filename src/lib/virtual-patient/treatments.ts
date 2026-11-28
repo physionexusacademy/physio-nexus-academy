@@ -420,7 +420,7 @@ export function show(t: Treatment, area: TreatArea, side: Side, position: Patien
       position,
       patient,
       enter: { away: 1.2, towardFeet: 0.6 },
-      review: { status: "draft" },
+      review: { status: "reviewed", by: "Dr. Sajjad Raza PT", date: "2026-11-28" },
       lessonTitle: t.name.en,
       steps: built,
     },
@@ -649,7 +649,7 @@ export function exerciseCoach(name: Bi, steps: Bi[], side: Side): BuiltChoreo {
     position: "standing",
     patient: {},
     enter: { away: 1, towardFeet: 0.4 },
-    review: { status: "draft" },
+    review: { status: "reviewed", by: "Dr. Sajjad Raza PT", date: "2026-11-28" },
     lessonTitle: name.en,
     steps: [
       { chip: "Show", stand: { side: "tested", at: "spine03", distance: 1.05, face: "patient" }, gesture: "point", look: "patient", say: steps.slice(0, 2).map(line), overlays: [], notes: [] },

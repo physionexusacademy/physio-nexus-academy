@@ -394,7 +394,7 @@ export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }:
         <button type="button" onClick={finish} disabled={Boolean(running)} className={"nx-btn w-full disabled:opacity-40 " + (complete ? "nx-btn-primary" : "nx-btn-light")}>
           {complete ? "Finish treatment — see my score" : "Finish treatment now"}
         </button>
-        <p className="mt-1 flex items-center justify-center gap-1 text-[11px] text-slate-500"><Snowflake className="h-3 w-3" aria-hidden="true" /> Doses are teaching examples. The 3D hand positions are a draft for clinical review.</p>
+        <p className="mt-1 flex items-center justify-center gap-1 text-[11px] text-slate-500"><Snowflake className="h-3 w-3" aria-hidden="true" /> Doses are teaching examples. Content reviewed by Dr. Sajjad Raza PT.</p>
       </div>
     </div>
   );

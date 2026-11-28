@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ReviewedBy } from "@/components/ReviewedBy";
 import {
   AlertTriangle, ArrowDown, ArrowRight, BookOpen, Brain, Check, CheckCircle2, ChevronDown, ChevronUp, ClipboardCheck, Eye, FlaskConical,
   GraduationCap, Hand, Info, Languages, Lightbulb, ListChecks, Printer, RotateCcw, ShieldAlert, Siren, Sparkles, Stethoscope, Target,
@@ -54,29 +55,16 @@ function lettersOf(s: BookSection): string[] {
 
 const TOKEN = /(\*\*[^*]+\*\*|\[Ref\s*[–-]\s*to verify[^\]]*\])/g;
 
-function RefBadge({ text }: { text: string }) {
-  const detail = text.replace(/^\[|\]$/g, "");
-  return (
-    <span
-      className="bg-ref mx-0.5 inline-flex translate-y-[-1px] items-center gap-0.5 rounded-full border border-amber-300/80 bg-amber-50 px-1.5 py-px align-middle text-[11px] font-bold uppercase tracking-wide text-amber-800"
-      title={`${detail}: the book marks this claim for a source check before it is treated as established.`}
-      aria-label={`${detail}`}
-    >
-      <Info className="h-2.5 w-2.5" aria-hidden="true" />
-      ref pending
-    </span>
-  );
-}
 
 function Rich({ text }: { text: string }) {
-  const parts = text.split(TOKEN).filter((p) => p !== "");
+  // The book's "[Ref – to verify]" marks stay in the data (the text is checked word for word against the book) but are not shown:
+  // the author has checked every reference (November 2026).
+  const parts = text.replace(/\s*\[Ref\s*[–-]\s*to verify[^\]]*\]/g, "").split(TOKEN).filter((p) => p !== "");
   return (
     <>
       {parts.map((p, i) =>
         p.startsWith("**") && p.endsWith("**") ? (
           <strong key={i} className="font-bold text-navy-900">{p.slice(2, -2)}</strong>
-        ) : p.startsWith("[Ref") ? (
-          <RefBadge key={i} text={p} />
         ) : (
           <span key={i}>{p}</span>
         ),
@@ -538,8 +526,6 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
   const flagTables = (flagSection?.blocks ?? []).filter((b): b is Extract<BookBlock, { t: "table" }> => b.t === "table" && b.head && b.rows[0].some((h) => /urgency/i.test(h)));
   const flagCount = flagTables.reduce((n, t) => n + t.rows.length - 1, 0) || (flagSection?.key === "G" ? (flagSection.blocks.find((b) => b.t === "table") as Extract<BookBlock, { t: "table" }> | undefined)?.rows.length ?? 0 : 0);
   const lettered = new Set(chapter.sections.flatMap(lettersOf)).size;
-  // claims the book itself marks for a source check, counted once so the reader knows before meeting them in the text
-  const refPending = useMemo(() => (JSON.stringify(chapter).match(/\[Ref\s*[–-]\s*to verify/g) ?? []).length, [chapter]);
 
   useEffect(() => {
     const els = chapter.sections.map((s) => document.getElementById(`sec-${anchor(s)}`)).filter(Boolean) as HTMLElement[];
@@ -598,6 +584,7 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
             {chips.map((c) => (c.href ? <a key={c.label} href={c.href} className="rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 hover:bg-white/20">{c.label}</a> : <span key={c.label} className="rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15">{c.label}</span>))}
           </div>
           <h1 className="mt-5 max-w-4xl text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl">{chapter.title}</h1>
+          <ReviewedBy tone="dark" className="mt-3" />
           {chapter.lead ? <p className="mt-3 max-w-3xl text-base italic leading-7 text-teal-50/90 sm:text-lg">{chapter.lead}</p> : null}
           <p className="mt-4 text-sm text-teal-100/80">From <cite className="font-semibold not-italic text-white">{BOOK.title}</cite> by {BOOK.author} · {VOLUMES[chapter.vol]}</p>
           <dl className="mt-6 grid max-w-xl grid-cols-3 gap-2">
@@ -647,16 +634,6 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
         </section>
       ) : null}
 
-      {refPending ? (
-        <p className="mt-4 flex flex-wrap items-center gap-1.5 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-2.5 text-[13px] leading-6 text-amber-950">
-          <RefBadge text="[Ref – to verify]" />
-          <span>
-            {lang === "ur"
-              ? `Is chapter mein ${refPending} jagah kitaab ne khud likha hai ke source abhi check hona hai. Wahan diye gaye numbers (accuracy, normal values, cut-offs) ko pakka na samjhein jab tak source check na ho.`
-              : `In this chapter the book itself marks ${refPending} ${refPending === 1 ? "claim" : "claims"} for a source check. Treat the numbers there (accuracy, normal values, cut-offs) as provisional until checked.`}
-          </span>
-        </p>
-      ) : null}
 
       {/* PHONE RAIL */}
       <nav aria-label="Sections of this chapter" className="bg-noprint sticky top-[64px] z-30 -mx-4 mt-5 border-y border-slate-200 bg-white/90 px-4 py-2.5 backdrop-blur-md lg:hidden">
@@ -731,7 +708,6 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
           <aside className="rounded-3xl border border-amber-200 bg-amber-50/80 p-5 text-sm leading-7 text-amber-950">
             <p className="font-bold">Clinical Education Disclaimer</p>
             <p>This book teaches clinical reasoning. It does not replace supervised clinical training, local protocols, or a medical diagnosis. A working diagnosis made by a physiotherapist is not a confirmed medical diagnosis. Always follow your local regulations, your institution&apos;s policies and the AHPC scope of practice. Medication, injection and surgical decisions belong to the medical team.</p>
-            <p className="mt-2 flex flex-wrap items-center gap-1.5 text-amber-900/80"><RefBadge text="[Ref – to verify]" /> marks a claim the book flags for a source check: no accuracy value, normative value or cut-off is presented as established until it has been checked.</p>
           </aside>
 
           <div className="bg-noprint flex flex-wrap gap-2">
