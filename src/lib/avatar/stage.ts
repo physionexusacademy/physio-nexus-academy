@@ -174,6 +174,21 @@ export class TeachingStage {
     const p = resolvePoint(this.room, stand.at, side(this.choreo));
     const out = p.clone().addScaledVector(this.lateral(stand.side), stand.distance);
     out.y = 0;
+    // A person never stands inside the plinth: a spot that falls on it (e.g. beside a patient sitting on its edge) moves out to the nearest side.
+    const plinth = this.room.scene.getObjectByName("plinth");
+    if (plinth?.visible) {
+      const box = new THREE.Box3().setFromObject(plinth);
+      const m = 0.3;
+      if (out.x > box.min.x - m && out.x < box.max.x + m && out.z > box.min.z - m && out.z < box.max.z + m) {
+        const gaps = [out.x - (box.min.x - m), box.max.x + m - out.x, out.z - (box.min.z - m), box.max.z + m - out.z];
+        // a patient sitting on the plinth's edge is treated from that edge (beside him), not by reaching across the plinth
+        const i = this.room.getPosition() === "sitting" ? 1 : gaps.indexOf(Math.min(...gaps));
+        if (i === 0) out.x = box.min.x - m;
+        else if (i === 1) out.x = box.max.x + m;
+        else if (i === 2) out.z = box.min.z - m;
+        else out.z = box.max.z + m;
+      }
+    }
     return out;
   }
 

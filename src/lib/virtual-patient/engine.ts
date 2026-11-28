@@ -1099,6 +1099,56 @@ export class ExamRoom {
     this.frameCamera(animate);
   }
 
+  /**
+   * Moves the patient into a new position the way a person does it: the body lifts a little, turns and settles onto the plinth while the
+   * limbs ease into the new posture, instead of jumping there. Ends exactly where setPosition + setPose(replace) would.
+   */
+  transitionTo(position: PatientPosition, pose: Pose = {}, duration = 1700): Promise<void> {
+    const root = this.patientRoot;
+    const fromPos = root.position.clone();
+    const fromQ = root.quaternion.clone();
+    const fromPose = structuredClone(this.pose);
+    const moving = position !== this.position;
+    this.setCasePosture(undefined);
+    this.setPosition(position, true);
+    this.setPose(pose, { animate: false, replace: true });
+    const toPos = root.position.clone();
+    const toQ = root.quaternion.clone();
+    const toPose = structuredClone(this.pose);
+    const span = moving ? duration : 900;
+    // start again from where he was, then move
+    root.position.copy(fromPos);
+    root.quaternion.copy(fromQ);
+    this.pose = fromPose;
+    this.applyPose();
+    this.from = structuredClone(fromPose);
+    this.target = toPose;
+    this.tween = { start: performance.now(), duration: span };
+    const start = performance.now();
+    return new Promise<void>((resolve) => {
+      const step = (now: number) => {
+        if (this.disposed) return resolve();
+        const t = Math.max(0, Math.min(1, (now - start) / span));
+        const e = t * t * t * (t * (6 * t - 15) + 10);
+        root.position.lerpVectors(fromPos, toPos, e);
+        if (moving) root.position.y += Math.sin(Math.PI * t) * 0.12;
+        root.quaternion.slerpQuaternions(fromQ, toQ, e);
+        root.updateMatrixWorld(true);
+        this.boundsDirty = true;
+        this.invalidate();
+        if (t < 1) requestAnimationFrame(step);
+        else {
+          root.position.copy(toPos);
+          root.quaternion.copy(toQ);
+          root.updateMatrixWorld(true);
+          this.invalidate();
+          resolve();
+        }
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
   /** Lowers the patient so his lowest point rests on the plinth (or the floor when standing). */
   placeOnSupport() {
     const root = this.patientRoot;

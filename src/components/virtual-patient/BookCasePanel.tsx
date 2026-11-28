@@ -52,7 +52,7 @@ export function BookCasePanel({ room, book, name, onTreat, onNext }: { room: Exa
 
   const perform = (t: BookTest) => {
     const pos = positionOf(t);
-    if (pos && pos !== room.getPosition()) room.setPosition(pos);
+    if (pos && pos !== room.getPosition()) void room.transitionTo(pos);
     setOpen(t.name);
     setDone((d) => (d.includes(t.name) ? d : [...d, t.name]));
   };

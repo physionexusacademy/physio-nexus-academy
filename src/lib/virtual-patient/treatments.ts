@@ -36,21 +36,23 @@ export type AreaInfo = {
 
 const k = (joint: string, side: Side) => `${joint}.${side}` as keyof Pose;
 const armOut = (s: Side): Pose => ({ [k("shoulder", s)]: { abd: 25 }, [k("elbow", s)]: { flex: 10 } } as Pose);
+/** Supine with a small towel roll under the knee (relaxed, slightly bent), as for heat, ice or electrotherapy around the knee. */
+const kneeRoll = (s: Side): Pose => ({ [k("hip", s)]: { flex: 10 }, [k("knee", s)]: { flex: 20 }, [k("ankle", s)]: { flex: -8 } } as Pose);
 
 export const AREAS: Record<TreatArea, AreaInfo> = {
   lumbar: { name: B("lower back", "lower back (kamar)"), position: "prone", at: "spine05", palm: [0, 0, 1], along: [0, 1, 0] },
   thoracic: { name: B("upper back", "upper back"), position: "prone", at: "spine02", palm: [0, 0, 1], along: [0, 1, 0] },
-  cervical: { name: B("back of the neck", "gardan ka pichla hissa"), position: "prone", at: "neck01", palm: [0, 0, 1], along: [0, 1, 0] },
+  cervical: { name: B("back of the neck", "gardan ka pichla hissa"), position: "sitting", at: "neck01", palm: [0, 0, 1], along: [0, 1, 0] },
   shoulder: { name: B("shoulder", "shoulder (kandha)"), position: "supine", pose: armOut, at: "upperarm01", palm: [-1, 0, 0], along: [0, 1, 0] },
   "elbow-lateral": { name: B("outer elbow", "elbow ki bahar wali side"), position: "supine", pose: armOut, at: "lowerarm01", palm: [-1, 0, 0], along: [0, -1, 0] },
   "elbow-medial": { name: B("inner elbow", "elbow ki andar wali side"), position: "supine", pose: (s) => ({ [k("shoulder", s)]: { abd: 40, rot: -30 }, [k("elbow", s)]: { flex: 20 } } as Pose), at: "lowerarm01", palm: [1, 0, 0], along: [0, -1, 0] },
   wrist: { name: B("front of the wrist", "kalai ka agla hissa"), position: "supine", pose: armOut, at: "wrist", palm: [0, 0, -1], along: [0, -1, 0] },
   "forearm-dorsal": { name: B("back of the forearm", "forearm ka pichla hissa"), position: "supine", pose: armOut, at: "lowerarm02", palm: [-1, 0, 0.4], along: [0, -1, 0] },
   hip: { name: B("outer hip", "hip ki bahar wali side"), position: "sidelying", at: "upperleg01", palm: [-1, 0, 0], along: [0, 1, 0] },
-  thigh: { name: B("front of the thigh", "thigh ka agla hissa"), position: "supine", at: "upperleg02", palm: [0, 0, -1], along: [0, 1, 0] },
-  knee: { name: B("knee", "ghutna"), position: "supine", at: "lowerleg01", palm: [0, 0, -1], along: [0, 1, 0] },
+  thigh: { name: B("front of the thigh", "thigh ka agla hissa"), position: "supine", pose: kneeRoll, at: "upperleg02", palm: [0, 0, -1], along: [0, 1, 0] },
+  knee: { name: B("knee", "ghutna"), position: "supine", pose: kneeRoll, at: "lowerleg01", palm: [0, 0, -1], along: [0, 1, 0] },
   "fibular-head": { name: B("outer side below the knee", "ghutne ke neeche bahar wali side"), position: "supine", at: "lowerleg01", palm: [-1, 0, 0], along: [0, 1, 0] },
-  shin: { name: B("front of the shin", "pindli ka agla hissa"), position: "supine", at: "lowerleg02", palm: [0, 0, -1], along: [0, 1, 0] },
+  shin: { name: B("front of the shin", "pindli ka agla hissa"), position: "supine", pose: kneeRoll, at: "lowerleg02", palm: [0, 0, -1], along: [0, 1, 0] },
   calf: { name: B("calf", "pindli"), position: "prone", at: "lowerleg01", palm: [0, 0, 1], along: [0, 1, 0] },
   achilles: { name: B("Achilles tendon", "Achilles tendon"), position: "prone", at: "foot", palm: [0, 0, 1], along: [0, 1, 0] },
   ankle: { name: B("outer ankle", "takhne ki bahar wali side"), position: "supine", at: "foot", palm: [-1, 0, -0.5], along: [0, 1, 0] },
@@ -427,6 +429,27 @@ export function show(t: Treatment, area: TreatArea, side: Side, position: Patien
   };
 }
 
+/** What the therapist asks before a treatment, so the patient moves into position as in a real clinic. */
+export function positionCue(position: PatientPosition, side: Side, area?: TreatArea): Bi {
+  const other = side === "left" ? B("right", "right") : B("left", "left");
+  switch (position) {
+    case "prone":
+      return area === "calf" || area === "achilles" || area === "heel"
+        ? B("Please lie face down on the plinth, your feet just over the end and your arms by your sides.", "Plinth par ulta (pait ke bal) let jayein, paon kinare se zara bahar aur baazu side par.")
+        : B("Please lie face down on the plinth with a pillow under your tummy, arms relaxed by your sides.", "Plinth par ulta (pait ke bal) let jayein, pait ke neeche takiya, baazu araam se side par.");
+    case "supine":
+      return area === "knee" || area === "thigh" || area === "shin"
+        ? B("Please lie on your back, head on the pillow; a small towel roll goes under your knee.", "Peeth ke bal let jayein, sar takiye par; ghutne ke neeche chhota towel roll.")
+        : B("Please lie on your back with your head on the pillow and relax.", "Peeth ke bal let jayein, sar takiye par, aur dheele ho jayein.");
+    case "sidelying":
+      return B(`Please lie on your ${other.en} side, knees slightly bent, a pillow between them.`, `Apni ${other.ur} side par let jayein, ghutne zara mure hue, beech mein takiya.`);
+    case "sitting":
+      return B("Please sit on the edge of the plinth, back upright and feet resting.", "Plinth ke kinare par baith jayein, kamar seedhi aur paon araam se.");
+    default:
+      return B("Please stand up and face me.", "Khare ho jayein aur meri taraf munh karein.");
+  }
+}
+
 export const P = (id: string) => `key:tx-${id}`;
 /** A finger direction at right angles to the palm. */
 export function fingersFor(palm: V3, along: V3): V3 {
@@ -581,9 +604,9 @@ export function manualShow(t: Treatment, plan: TreatPlan): TreatShow {
         reassess("foot"),
       ]);
     case "hip-distraction":
-      return show(t, "hip", side, "supine", { [k("hip", side)]: { flex: 15, abd: 15 } } as Pose, [
+      return show(t, "hip", side, "supine", { [k("hip", side)]: { flex: 30, abd: 30 } } as Pose, [
         intro("A gentle pull along your leg eases the pressure in the hip joint.", "Taang ki lambai mein halki khinchai hip joint ka pressure kam karti hai.", "foot", 0.6),
-        { chip: "Distraction", stand: { side: "tested", at: "foot", distance: 0.45, face: "patient" }, contacts: [{ hand: "R", at: "foot{0,0.05,0.045}", palm: [0, 0, -1], fingers: [-1, 0, 0], shape: "cupped" }, { hand: "L", at: "foot{0,0.05,-0.045}", palm: [0, 0, 1], fingers: [-1, 0, 0], shape: "cupped" }], move: { kind: "glide", dir: [0, -1, 0], amplitudeMm: 9, hz: 0.5 }, lean: 10, look: "hands", timer: "4 × 45 s", holdSec: 2, say: say("Hands above the ankle, the hip slightly bent and out to the side; I lean back to pull along the leg, grade three, in slow waves.", "Haath takhne ke upar, hip zara mori aur side mein; main peeche jhuk kar taang ki lambai mein khinchta hoon, grade teen, aahista lehron mein.") },
+        { chip: "Distraction", stand: { side: "tested", at: "foot", distance: 0.45, face: "patient" }, contacts: [{ hand: "R", at: "foot{0,0.05,0.045}", palm: [0, 0, -1], fingers: [-1, 0, 0], shape: "cupped" }, { hand: "L", at: "foot{0,0.05,-0.045}", palm: [0, 0, 1], fingers: [-1, 0, 0], shape: "cupped" }], move: { kind: "glide", dir: [0, -1, 0], amplitudeMm: 9, hz: 0.5 }, lean: 10, look: "hands", timer: "4 × 45 s", holdSec: 2, say: say("Hands above the ankle, the hip in its loose-packed position (about 30 degrees bent and 30 out to the side); I lean back to pull along the leg, grade three, in slow waves.", "Haath takhne ke upar, hip loose-packed position mein (taqreeban 30 degree mori aur 30 side mein); main peeche jhuk kar taang ki lambai mein khinchta hoon, grade teen, aahista lehron mein.") },
         reassess("upperleg01"),
       ]);
     case "plantar-release":

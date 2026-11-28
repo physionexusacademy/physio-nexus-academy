@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, Dumbbell, Flame, Hand, Loader2, MessageCircle, Play, ShieldAlert, Siren, SkipForward, Snowflake, Square, Volume2, VolumeX, Zap } from "lucide-react";
 import type { ExamRoom, Side } from "@/lib/virtual-patient/engine";
 import type { VirtualCase } from "@/lib/virtual-patient/cases";
-import { AREAS, exerciseCoach, type Bi, type TreatScore, type TreatShow } from "@/lib/virtual-patient/treatments";
+import { AREAS, exerciseCoach, positionCue, type Bi, type TreatScore, type TreatShow } from "@/lib/virtual-patient/treatments";
 import { exercisesNeededFor, scoreSetup, setupComplete, type TreatOption, type TreatSetup } from "@/lib/virtual-patient/treat-setup";
 import type { ExerciseDef, Region } from "@/lib/rehabverse/types";
 import type { StageView, TeachingStage } from "@/lib/avatar/stage";
@@ -168,6 +168,19 @@ export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }:
     const { TeachingStage } = await import("@/lib/avatar/stage");
     const side = built.choreo.side as Side;
     if (built.choreo.position === "sidelying") room.downSide = side === "left" ? "right" : "left";
+    // As in a real clinic: the therapist asks, and the patient moves into the treatment position (smoothly, not a jump).
+    const target = built.choreo.position;
+    if (target !== room.getPosition() || Object.keys(built.choreo.patient ?? {}).length) {
+      const cue = positionCue(target, side, plan?.area);
+      onCaption(langRef.current === "ur" ? cue.ur : cue.en);
+      setStep({ chip: "Position", index: 0, total: built.choreo.steps.length + 1 });
+      if (voiceRef.current) void doc.speaker.speak(langRef.current === "ur" ? cue.ur : cue.en, { lang: langRef.current, voice: true }).catch(() => undefined);
+      const plinth = room.scene.getObjectByName("plinth");
+      if (plinth) plinth.visible = true;
+      await room.transitionTo(target, built.choreo.patient ?? {});
+      await new Promise((r) => window.setTimeout(r, 350));
+      if (docRef.current !== doc) return;
+    }
     let lastStep = -1;
     const area = plan ? AREAS[plan.area] : null;
     const stage = new TeachingStage(room, doc, built.choreo, { lang: langRef.current, voice: voiceRef.current, speed: 1, light: false }, (view: StageView) => {
