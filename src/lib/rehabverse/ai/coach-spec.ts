@@ -176,9 +176,12 @@ export function detectIntent(text: string, ctx?: CoachContext): Intent | null {
   let t = norm(text);
   // an exercise's own name must not be read as a question about something else ("Core brace" is not about a brace)
   if (ctx) {
-    for (const ex of ctx.exercises) for (const name of [ex.name.en, ex.name.ru]) { const n = norm(name); if (n.length >= 3) t = t.split(n).join(" x "); }
+    // longest first, so a short name inside a longer one ("pursed lip breathing" in "honth sikor kar saans pursed lip breathing") does not break it
+    const full = ctx.exercises.flatMap((ex) => [norm(ex.name.en), norm(ex.name.ru)]).filter((n) => n.length >= 3).sort((a, b) => b.length - a.length);
+    for (const n of full) t = t.split(n).join(" x ");
     // ...and a partly typed name ("band row")
-    const words = new Set(ctx.exercises.flatMap((ex) => norm(`${ex.name.en} ${ex.name.ru}`).split(" ")).filter((w) => w.length >= 4));
+    // (words that ask something themselves stay: "saans" in "Pait se saans" is still a question about breathing)
+    const words = new Set(ctx.exercises.flatMap((ex) => norm(`${ex.name.en} ${ex.name.ru}`).split(" ")).filter((w) => w.length >= 4 && !BREATH.test(w)));
     t = t.split(" ").map((w) => (words.has(w) ? "x" : w)).join(" ");
   }
   if (!t) return null;

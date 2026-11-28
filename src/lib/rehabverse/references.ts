@@ -6,6 +6,26 @@
 export type Reference = { key: string; text: string };
 
 export const REFERENCES: Record<string, Reference> = {
+  spruit2013: {
+    key: "spruit2013",
+    text: "Spruit MA, et al. An official American Thoracic Society/European Respiratory Society statement: key concepts and advances in pulmonary rehabilitation. Am J Respir Crit Care Med. 2013;188(8):e13–e64.",
+  },
+  dumoulin2018: {
+    key: "dumoulin2018",
+    text: "Dumoulin C, Cacciari LP, Hay-Smith EJC. Pelvic floor muscle training versus no treatment, or inactive control treatments, for urinary incontinence in women. Cochrane Database Syst Rev. 2018;10:CD005654.",
+  },
+  sherrington2019: {
+    key: "sherrington2019",
+    text: "Sherrington C, et al. Exercise for preventing falls in older people living in the community. Cochrane Database Syst Rev. 2019;1:CD012424.",
+  },
+  french2016: {
+    key: "french2016",
+    text: "French B, et al. Repetitive task training for improving functional ability after stroke. Cochrane Database Syst Rev. 2016;11:CD006073.",
+  },
+  veerbeek2014: {
+    key: "veerbeek2014",
+    text: "Veerbeek JM, et al. What is the evidence for physical therapy poststroke? A systematic review and meta-analysis. PLoS One. 2014;9(2):e87987.",
+  },
   blanpied2017: {
     key: "blanpied2017",
     text: "Blanpied PR, et al. Neck Pain: Revision 2017. Clinical Practice Guidelines. J Orthop Sports Phys Ther. 2017;47(7):A1–A83.",

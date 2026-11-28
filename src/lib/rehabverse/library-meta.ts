@@ -46,6 +46,9 @@ export const GOALS: { id: string; label: Bi; re: RegExp }[] = [
   { id: "nerve", label: { en: "Nerve pain", ru: "Nas ka dard" }, re: /sciatica|radicul|nerve|neural|tunnel/i },
   { id: "posture", label: { en: "Desk work and posture", ru: "Desk ka kaam aur posture" }, re: /posture|desk|sitting|computer|forward head|screen/i },
   { id: "balance", label: { en: "Balance and falls", ru: "Balance aur girna" }, re: /balance|fall|stability|proprioce|unsteady|older adult/i },
+  { id: "breathing", label: { en: "Breathing", ru: "Saans" }, re: /breathless|COPD|asthma|pulmonary|chest expansion|breathing pattern/i },
+  { id: "pelvic", label: { en: "Pelvic floor and bladder", ru: "Pelvic floor aur peshab ka control" }, re: /pelvic floor|incontinence|bladder|postnatal|childbirth|prostate/i },
+  { id: "neuro", label: { en: "Stroke and Parkinson's", ru: "Falij (stroke) aur Parkinson's" }, re: /stroke|parkinson|neurolog|multiple sclerosis/i },
 ];
 
 export function goalsOf(e: ExerciseDef): string[] {
