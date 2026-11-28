@@ -6,9 +6,9 @@ import { handouts } from "@/lib/handouts";
 const url = "https://physionexusacademy.com/handouts";
 
 export const metadata: Metadata = {
-  title: "Printable Patient Handouts | English and Roman Urdu | PNA",
+  title: "Printable Patient Handouts | English and Roman Urdu",
   description:
-    "Free printable patient handouts in English and Roman Urdu from Physio Nexus Academy: back pain, knee arthritis, knee and hip replacement, falls, pelvic floor, carpal tunnel, ankle sprain and neck pain.",
+    "Free printable patient handouts in English and Roman Urdu: back pain, knee arthritis, joint replacement, falls, pelvic floor, carpal tunnel, ankle and neck.",
   alternates: { canonical: url },
   openGraph: { title: "Printable Patient Handouts | Physio Nexus Academy", description: "Simple exercise and advice sheets in English and Roman Urdu, ready to print.", url, siteName: "Physio Nexus Academy", type: "website" },
   robots: { index: true, follow: true },

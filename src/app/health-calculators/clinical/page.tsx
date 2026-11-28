@@ -4,9 +4,9 @@ import ClinicalCalculators from "./ClinicalCalculators";
 const url = "https://physionexusacademy.com/health-calculators/clinical";
 
 export const metadata: Metadata = {
-  title: "Clinical Calculators | Heart Rate Zones, One-Rep Max, Waist-Hip Ratio",
+  title: "Clinical Calculators: Heart Rate Zones, 1RM, Waist-Hip",
   description:
-    "Free clinical calculators from Physio Nexus Academy: heart rate training zones, waist-hip ratio, one-rep max, daily energy and an outcome-change check against the minimal important change. Calculated in your browser.",
+    "Free clinical calculators: heart rate zones, waist-hip ratio, one-rep max, daily energy and outcome change against the MCID. Worked out in your browser.",
   keywords: ["heart rate zones calculator", "Karvonen calculator", "one rep max calculator", "waist hip ratio calculator", "minimal important change calculator", "physiotherapy calculators", "Physio Nexus Academy"],
   alternates: { canonical: url },
   openGraph: {

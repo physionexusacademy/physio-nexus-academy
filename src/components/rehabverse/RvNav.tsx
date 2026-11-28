@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Activity, BookOpen, Home, UserRound } from "lucide-react";
-import { LangToggle, T } from "./useLang";
+import { T } from "./useLang";
 
 const LINKS = [
   { href: "/rehabverse", icon: Home, en: "Home", ru: "Home" },
@@ -32,7 +32,7 @@ export function RvNav() {
         <span className="ml-auto flex items-center gap-1.5">
           <Link href="/rehabverse/login" prefetch={false} className="rv-nav-signin inline-flex min-h-[40px] items-center whitespace-nowrap rounded-full px-3 py-1.5 text-[14px] font-bold"><T en="Sign in" ru="Sign in" /></Link>
           <Link href="/rehabverse/register" prefetch={false} className="inline-flex min-h-[40px] items-center whitespace-nowrap rounded-full bg-teal-600 px-3.5 py-1.5 text-[14px] font-extrabold text-white shadow-sm hover:bg-teal-700"><T en="New patient" ru="Naya mareez" /></Link>
-          <LangToggle />
+          {/* (the language follows the one EN / UR switch in the site header, shown on every RehabVerse page) */}
         </span>
       </div>
     </nav>

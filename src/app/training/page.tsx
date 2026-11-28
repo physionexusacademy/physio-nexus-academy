@@ -125,6 +125,8 @@ export default async function TrainingArchivePage() {
                         alt={item.imageAlt}
                         width={item.imageWidth}
                         height={item.imageHeight}
+                        // small originals (220-500 px, 6-15 KB): served as they are; the resizer failed on them (500)
+                        unoptimized
                         className="h-auto max-h-[320px] w-auto max-w-full rounded-lg object-contain"
                       />
                     </div>

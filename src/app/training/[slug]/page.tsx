@@ -102,6 +102,8 @@ export default async function TrainingRecordPage({
             alt={item.imageAlt}
             width={item.imageWidth}
             height={item.imageHeight}
+            // small originals (220-500 px, 6-15 KB): served as they are; the resizer failed on them (500)
+            unoptimized
             className="mx-auto h-auto w-full max-w-[320px] rounded-xl object-contain"
             priority
           />

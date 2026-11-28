@@ -8,9 +8,9 @@ import "./scan.css";
 const url = "https://physionexusacademy.com/health-calculators/posture/scan";
 
 export const metadata: Metadata = {
-  title: "Full Posture Scan | Front, Side, Back and Forward Bend With Your Phone | PNA",
+  title: "Full Posture Scan With Your Phone | 4 Views + 3D",
   description:
-    "A free four-view posture scan from Physio Nexus Academy: front, side, back and forward bend with your phone, shown on an illustrative 3D skeleton. Every number has its margin of error. Read on your own device; nothing is uploaded.",
+    "Free four-view posture scan with your phone (front, side, back, forward bend) on a 3D skeleton, every number with its margin of error. Nothing is uploaded.",
   keywords: ["posture scan", "3D posture", "posture assessment app", "forward head posture", "shoulder level", "physiotherapy posture screen", "Physio Nexus Academy"],
   alternates: { canonical: url },
   openGraph: { title: "Full Posture Scan | Physio Nexus Academy", description: "Four phone views turned into angles and an illustrative 3D skeleton, with every number shown with its margin of error. Nothing leaves your device.", url, siteName: "Physio Nexus Academy", type: "website", images: [{ url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg", width: 1200, height: 630, alt: "PNA full posture scan" }] },

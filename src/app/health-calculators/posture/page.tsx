@@ -8,9 +8,9 @@ import "./posture.css";
 const url = "https://physionexusacademy.com/health-calculators/posture";
 
 export const metadata: Metadata = {
-  title: "Posture Screen | Free Posture Check With Your Phone | PNA",
+  title: "Posture Screen | Free Posture Check With Your Phone",
   description:
-    "A free posture screen from Physio Nexus Academy: stand in front of your phone and see head position, trunk lean, shoulder and hip level and knee alignment, each with its margin of error. Read on your own device; nothing is stored.",
+    "Free posture screen with your phone: head position, trunk lean, shoulder, hip and knee alignment, each with its margin of error. Nothing leaves your device.",
   keywords: ["posture check", "posture assessment app", "forward head posture", "shoulder level", "physiotherapy posture screen", "Physio Nexus Academy"],
   alternates: { canonical: url },
   openGraph: { title: "Posture Screen | Physio Nexus Academy", description: "Check your posture with your phone, with every number shown with its margin of error. Nothing leaves your device.", url, siteName: "Physio Nexus Academy", type: "website", images: [{ url: "https://physionexusacademy.com/images/founder-dr-sajjad.jpg", width: 1200, height: 630, alt: "PNA posture screen" }] },

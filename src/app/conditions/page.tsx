@@ -12,7 +12,7 @@ export const revalidate = false;
 
 const url = "https://physionexusacademy.com/conditions";
 const title = "Conditions & Treatment Guide — Assessment to Treatment";
-const description = "68 physiotherapy conditions from The Complete Physiotherapy Clinical Mastery by Dr. Sajjad Raza PT: questions, examination, special tests, red flags, decision pathway, treatment and a case for each.";
+const description = "68 physiotherapy conditions from Dr. Sajjad Raza's book: history, examination, special tests, red flags, decision pathway, treatment and a case for each.";
 
 export const metadata: Metadata = {
   title,
