@@ -352,7 +352,7 @@ jobs:
             echo "::warning::SUPABASE_SERVICE_ROLE_KEY is not configured; reminder e-mails will be skipped."
           fi
 
-          # Members-only mode: the deploy's own live checks pass the gate with this token, derived from the server key (scripts/ci-members-pass.sh), so no extra secret is needed.
+          # Members-only mode: the deploy's own live checks pass the gate with this token, derived from the Cloudflare deploy token (scripts/ci-members-pass.sh), so no extra secret is needed.
           members_pass="$(bash scripts/ci-members-pass.sh)"
           if [ -n "$members_pass" ]; then
             printf '%s' "$members_pass" | npx wrangler secret put MEMBERS_CI_TOKEN
@@ -498,10 +498,11 @@ jobs:
         shell: bash
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           set -euo pipefail
           token="$(bash scripts/ci-members-pass.sh)"
-          if [ -z "$token" ]; then echo "::warning::No server key: the live checks will fail while members-only mode is on."; exit 0; fi
+          if [ -z "$token" ]; then echo "::warning::No deploy token: the live checks will fail while members-only mode is on."; exit 0; fi
           echo "::add-mask::$token"
           echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"
           mkdir -p "$RUNNER_TEMP/pna-curl"
@@ -687,6 +688,7 @@ jobs:
         shell: bash
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           token="$(bash scripts/ci-members-pass.sh)"
           if [ -n "$token" ]; then echo "::add-mask::$token"; echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"; fi
@@ -715,6 +717,7 @@ jobs:
         shell: bash
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           token="$(bash scripts/ci-members-pass.sh)"
           if [ -n "$token" ]; then echo "::add-mask::$token"; echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"; fi
@@ -743,6 +746,7 @@ jobs:
         shell: bash
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           token="$(bash scripts/ci-members-pass.sh)"
           if [ -n "$token" ]; then echo "::add-mask::$token"; echo "PNA_CI_TOKEN=$token" >> "$GITHUB_ENV"; fi
