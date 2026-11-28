@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Medical Disclaimer",
+  title: "Medical Disclaimer for Educational Content",
   description: "Medical disclaimer for Physio Nexus Academy educational content, appointments and home-visit requests.",
   alternates: {
     canonical: "https://physionexusacademy.com/legal/disclaimer",

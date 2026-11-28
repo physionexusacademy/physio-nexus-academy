@@ -7,7 +7,7 @@ const url = "https://physionexusacademy.com/health-calculators";
 export const metadata: Metadata = {
   title: "Health and Clinical Calculators | Physio Nexus Academy",
   description:
-    "Free calculators from Physio Nexus Academy: an age-aware BMI calculator, and clinical calculators for heart rate zones, waist-hip ratio, one-rep max, daily energy and outcome change. Worked out in your browser.",
+    "Free BMI, heart rate zone, waist-hip ratio, one-rep max, daily energy and outcome-change calculators from Physio Nexus Academy, in your browser.",
   alternates: { canonical: url },
   openGraph: { title: "Health and Clinical Calculators | Physio Nexus Academy", description: "BMI, heart rate zones, waist-hip ratio, one-rep max, daily energy, outcome change and a posture screen.", url, siteName: "Physio Nexus Academy", type: "website" },
   robots: { index: true, follow: true },

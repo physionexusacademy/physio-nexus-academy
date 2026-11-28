@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Privacy Policy: How Your Information Is Used",
   description: "How Physio Nexus Academy handles information submitted through forms, registrations, student accounts and weekly clinical quizzes.",
   alternates: {
     canonical: "https://physionexusacademy.com/legal/privacy",

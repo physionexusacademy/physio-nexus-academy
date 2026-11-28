@@ -122,10 +122,14 @@ export function ConditionsExplorer({ items }: { items: ExplorerItem[] }) {
                   </span>
                   <strong className="mt-2 text-base font-bold leading-snug text-navy-800 group-hover:text-teal-800">{item.name}</strong>
                   <span className="mt-1.5 line-clamp-3 text-sm leading-6 text-slate-600">{item.summary}</span>
-                  <span className="mt-3 flex gap-[3px]" aria-hidden="true" title="Sections of the chapter (A to N)">
-                    {LETTERS.map((l) => (
-                      <span key={l} className={"grid h-4 flex-1 place-items-center rounded-[4px] font-mono text-[8px] font-bold " + (item.letters.includes(l) ? "bg-navy-800 text-teal-200" : "bg-slate-100 text-slate-300")}>{l}</span>
-                    ))}
+                  {/* sections of the chapter (A to N): a slim bar, with a readable count instead of 8 px letters */}
+                  <span className="mt-3 flex items-center gap-2" title="Sections of the chapter (A to N)">
+                    <span className="flex flex-1 gap-[3px]" aria-hidden="true">
+                      {LETTERS.map((l) => (
+                        <span key={l} className={"h-1.5 flex-1 rounded-full " + (item.letters.includes(l) ? "bg-teal-500" : "bg-slate-200")} />
+                      ))}
+                    </span>
+                    <span className="flex-none text-[11px] font-bold text-slate-500">{LETTERS.filter((l) => item.letters.includes(l)).length}/{LETTERS.length} sections</span>
                   </span>
                   <span className="mt-auto flex items-center justify-between gap-2 pt-3 text-xs font-bold text-teal-800">
                     <span className="text-slate-500">Vol {item.vol} · Ch {item.ch}{item.tests ? ` · ${item.tests} special test${item.tests > 1 ? "s" : ""}` : ""}</span>

@@ -21,6 +21,7 @@ import { MOTION_INIT_SCRIPT } from "@/lib/motion";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { MotionGovernor } from "@/components/MotionGovernor";
 import { PhysioNexusAILauncher } from "@/components/PhysioNexusAILauncher";
+import { FabAutoHide } from "@/components/FabAutoHide";
 import { siteConfig } from "@/lib/site-config";
 import { atlasPublished } from "@/lib/clinical-visual-atlas";
 
@@ -225,7 +226,7 @@ export const metadata: Metadata = {
     template: "%s | PNA",
   },
   description:
-    "Physio Nexus Academy offers evidence-based physiotherapy education, MSK & manual therapy resources, a 3D virtual patient, daily challenges, hands-on workshops and patient physiotherapy services across Pakistan. Founded by Dr. Sajjad Raza PT.",
+    "Evidence-based physiotherapy learning in Pakistan: PNA Teacher lessons, manual therapy, a 3D virtual patient, daily challenges, workshops and patient care.",
   keywords: [
     "Physio Nexus Academy",
     "physiotherapy education Pakistan",
@@ -351,6 +352,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <WhatsAppButton />
           <PhysioNexusAILauncher />
+          <FabAutoHide />
           <MobilePortalNav />
         </PublicChrome>
         {/* Instant page opens: the browser fetches a page as soon as its link is touched or

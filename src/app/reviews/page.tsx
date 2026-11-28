@@ -4,7 +4,7 @@ import { ReviewForm } from "./ReviewForm";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Reviews & Feedback",
+  title: "Reviews & Feedback from Students and Patients",
   description:
     "Rate Physio Nexus Academy, send private feedback to the PNA team, or leave an honest Google review.",
   alternates: {

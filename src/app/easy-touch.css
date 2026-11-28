@@ -71,3 +71,23 @@ body .lgx-fine, body .gm-fine, body .rvx-fine, body .hdc-kicker, body .hbk-kicke
 @media (max-width: 379px) {
   .nx-bar .nx-brand-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+
+/* Floating help buttons (PNA AI, WhatsApp) slide aside while a phone or tablet reader scrolls down (FabAutoHide), so they never cover the text. */
+.pna-fab { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease; }
+@media (max-width: 1023px) {
+  html[data-fab-hidden] .pna-fab { transform: translateX(calc(100% + 1.5rem)); opacity: 0; pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) { .pna-fab { transition: opacity 0.2s ease; } }
+
+/* Phones: the page heroes (NexusHero) are shorter, so the page's own content (search, lists, tools) starts on the first screen. Same look, less height:
+   a tighter top and bottom, the long introduction clamped to three lines, the numbers on one compact row, and no breadcrumb (the menu and the back gesture cover it). */
+@media (max-width: 639px) {
+  .nx-hero .nx-hero-inner { padding-top: 1.25rem; padding-bottom: 1.5rem; }
+  .nx-hero .nx-crumbs { display: none; }
+  .nx-hero .nx-title { margin-top: 0.6rem; font-size: 1.85rem; }
+  .nx-hero .nx-lead { margin-top: 0.6rem; font-size: 0.95rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .nx-hero dl { margin-top: 1rem; flex-wrap: nowrap; gap: 0.4rem; }
+  .nx-hero dl > div { flex: 1 1 0; min-width: 0; padding: 0.5rem 0.6rem; }
+  .nx-hero .nx-stat strong { font-size: 1.3rem; line-height: 1.1; }
+  .nx-hero .nx-stat span { font-size: 0.72rem; line-height: 1.2; }
+}
