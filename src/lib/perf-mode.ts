@@ -7,7 +7,10 @@
 export type Fx = "full" | "lite";
 export type FxChoice = { mode: Fx; how: "auto" | "user"; at: number };
 
-export const FX_KEY = "pna-fx-v1";
+/** v2: earlier automatic "lite" decisions (v1) are dropped, because computers were switched to lite by a busy page load and stayed blurred; a
+ * visitor's own v1 choice is still honoured (FX_INIT_SCRIPT). */
+export const FX_KEY = "pna-fx-v2";
+export const FX_KEY_OLD = "pna-fx-v1";
 export const FX_EVENT = "pna-fx-change";
 /** An automatic "lite" is re-checked after this long (devices and browsers change). */
 export const FX_AUTO_TTL_MS = 30 * 24 * 3600 * 1000;
@@ -16,7 +19,7 @@ export const FX_AUTO_TTL_MS = 30 * 24 * 3600 * 1000;
  * Runs in <head> before first paint. Order: ?fx= in the link, then the stored choice, then obvious hints (data saver, 2 GB of memory
  * or fewer, 2 cores or fewer). Anything else stays "full" until PerfGovernor has watched the real frame rate.
  */
-export const FX_INIT_SCRIPT = `(function(){try{var d=document.documentElement,n=navigator,m=null,q=/[?&]fx=(lite|full)\\b/.exec(location.search);if(q){m=q[1];try{localStorage.setItem("${FX_KEY}",JSON.stringify({mode:m,how:"user",at:Date.now()}))}catch(e){}}else{var s=localStorage.getItem("${FX_KEY}");if(s){var c=JSON.parse(s);if(c&&(c.how==="user"||Date.now()-c.at<${FX_AUTO_TTL_MS}))m=c.mode}}if(!m){var k=n.connection||{};if(k.saveData||(n.deviceMemory&&n.deviceMemory<=2)||(n.hardwareConcurrency&&n.hardwareConcurrency<=2))m="lite"}d.setAttribute("data-fx",m==="lite"?"lite":"full")}catch(e){}})();`;
+export const FX_INIT_SCRIPT = `(function(){try{var d=document.documentElement,n=navigator,m=null,q=/[?&]fx=(lite|full)\\b/.exec(location.search);if(q){m=q[1];try{localStorage.setItem("${FX_KEY}",JSON.stringify({mode:m,how:"user",at:Date.now()}))}catch(e){}}else{var s=localStorage.getItem("${FX_KEY}");if(s){var c=JSON.parse(s);if(c&&(c.how==="user"||Date.now()-c.at<${FX_AUTO_TTL_MS}))m=c.mode}else{var o=localStorage.getItem("${FX_KEY_OLD}");if(o){var u=JSON.parse(o);if(u&&u.how==="user")m=u.mode}}}if(!m){var k=n.connection||{};if(k.saveData||(n.deviceMemory&&n.deviceMemory<=2)||(n.hardwareConcurrency&&n.hardwareConcurrency<=2))m="lite"}d.setAttribute("data-fx",m==="lite"?"lite":"full")}catch(e){}})();`;
 
 export function readFxChoice(): FxChoice | null {
   try {

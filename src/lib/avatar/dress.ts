@@ -522,7 +522,7 @@ function beardField(body: BodyData) {
   return field;
 }
 
-function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Texture | null) {
+function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Texture | null, light = false) {
   const body = figure.body;
   const field = beardField(body);
   const strands = figure.own(strandTexture(LOOK.beard));
@@ -531,7 +531,8 @@ function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Text
   if (skinMap) strands.repeat.set(46, 46);
   // A short, soft beard: dense at the chin and jaw, thinning out towards the cheeks like real stubble. A hard-edged solid shape looked like a mask,
   // and pure black looked dirty, so the colour is a dark brown.
-  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : LOOK.beard, map: skinMap ?? undefined, roughness: 0.8, metalness: 0, specularIntensity: 0.1, bumpMap: strands, bumpScale: 1.2 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.038, noiseCells: cellsFor(body, 0.0013), jitter: 0.8 });
+  // Under the strands, only the soft shade of dense hair roots on the skin (a smooth edge, no blotches): the strands themselves carry the beard.
+  const material = shellMaterial(new THREE.MeshPhysicalMaterial({ color: skinMap ? "#e2dcd8" : "#5e4434", map: skinMap ?? undefined, roughness: 0.85, metalness: 0, specularIntensity: 0.05, bumpMap: strands, bumpScale: 0.4 }) as unknown as THREE.MeshStandardMaterial, { soft: 0.05, noiseCells: cellsFor(body, 0.0016), jitter: 0.25 });
   const mesh = makeShell(body, material, {
     keep: field.map((f) => (f > -0.012 ? 1 : 0)) as unknown as Float32Array,
     attributes: { field },
@@ -543,6 +544,133 @@ function dressBeard(figure: Figure, parts: THREE.Object3D[], skinMap: THREE.Text
     parts.push(mesh);
     figure.own(material);
   }
+  beardStrands(figure, parts, field, light);
+}
+
+/**
+ * Real beard hair: thousands of short, thin strands grown out of the beard region of the skin, each one a tapered ribbon that leans down and
+ * forward like groomed facial hair, dark at the root and a shade lighter at the tip. Every strand follows the bones of the skin it grows from
+ * (jaw, lips), so the beard moves when he speaks. Built in the browser from the body itself: nothing is downloaded.
+ * Density is about a hundred strands per square centimetre at the jaw and chin, thinning to the edges (cheeks, neck, moustache line).
+ */
+function beardStrands(figure: Figure, parts: THREE.Object3D[], field: Float32Array, light: boolean) {
+  const body = figure.body;
+  const src = body.mesh.geometry;
+  const index = src.getIndex();
+  if (!index) return;
+  const position = src.getAttribute("position");
+  const normal = src.getAttribute("normal");
+  const skinIndex = src.getAttribute("skinIndex");
+  const skinWeight = src.getAttribute("skinWeight");
+  const scale = body.scale;
+  // strands per square metre (light mode keeps a third of them)
+  const density = (light ? 0.34 : 1) * 1.35e6;
+  const roots: { p: THREE.Vector3; n: THREE.Vector3; v: number; f: number; y: number }[] = [];
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+  const ba = new THREE.Vector3(), ca = new THREE.Vector3();
+  let seed = 1234567;
+  const rand = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  for (let t = 0; t < index.count; t += 3) {
+    const i0 = index.getX(t), i1 = index.getX(t + 1), i2 = index.getX(t + 2);
+    const f0 = field[i0], f1 = field[i1], f2 = field[i2];
+    if (Math.max(f0, f1, f2) < -0.002) continue;
+    a.set(body.bind[i0 * 3], body.bind[i0 * 3 + 1], body.bind[i0 * 3 + 2]);
+    b.set(body.bind[i1 * 3], body.bind[i1 * 3 + 1], body.bind[i1 * 3 + 2]);
+    c.set(body.bind[i2 * 3], body.bind[i2 * 3 + 1], body.bind[i2 * 3 + 2]);
+    const area = ba.subVectors(b, a).cross(ca.subVectors(c, a)).length() / 2;
+    // the moustache and chin are the fullest parts of a groomed beard
+    const yMid = (a.y + b.y + c.y) / 3;
+    const boost = yMid > 1.562 && yMid < 1.585 ? 1.45 : yMid < 1.53 ? 1.2 : 1;
+    let count = area * density * boost;
+    const whole = Math.floor(count);
+    count = whole + (rand() < count - whole ? 1 : 0);
+    for (let k = 0; k < count; k++) {
+      let u = rand(), v = rand();
+      if (u + v > 1) { u = 1 - u; v = 1 - v; }
+      const w = 1 - u - v;
+      const f = w * f0 + u * f1 + v * f2;
+      // fewer strands towards the edge of the beard: a soft, natural border instead of a cut-out shape
+      if (rand() > smooth(-0.002, 0.012, f)) continue;
+      const vert = w >= u && w >= v ? i0 : u >= v ? i1 : i2;
+      const p = new THREE.Vector3().fromBufferAttribute(position, i0).multiplyScalar(w)
+        .addScaledVector(new THREE.Vector3().fromBufferAttribute(position, i1), u)
+        .addScaledVector(new THREE.Vector3().fromBufferAttribute(position, i2), v);
+      const n = new THREE.Vector3().fromBufferAttribute(normal, i0).multiplyScalar(w)
+        .addScaledVector(new THREE.Vector3().fromBufferAttribute(normal, i1), u)
+        .addScaledVector(new THREE.Vector3().fromBufferAttribute(normal, i2), v).normalize();
+      const y = w * body.bind[i0 * 3 + 1] + u * body.bind[i1 * 3 + 1] + v * body.bind[i2 * 3 + 1];
+      roots.push({ p, n, v: vert, f, y });
+    }
+  }
+  if (!roots.length) return;
+  // Each strand: a root, a bend point and a tip; two quads (four triangles), tapered.
+  const per = 6;
+  const pos = new Float32Array(roots.length * per * 3);
+  const nor = new Float32Array(roots.length * per * 3);
+  const col = new Float32Array(roots.length * per * 3);
+  const sIdx = new Uint16Array(roots.length * per * 4);
+  const sWt = new Float32Array(roots.length * per * 4);
+  const idx: number[] = [];
+  const down = new THREE.Vector3(0, -1, 0);
+  const dir = new THREE.Vector3(), side = new THREE.Vector3(), mid = new THREE.Vector3(), tip = new THREE.Vector3(), bend = new THREE.Vector3();
+  const rootCol = new THREE.Color("#0e0907"), tipCol = new THREE.Color("#3b2a1f"), cc = new THREE.Color();
+  roots.forEach((r, s) => {
+    // moustache and the top of the cheeks: shorter; jaw and chin: a little longer (a short, groomed beard)
+    const moustache = r.y > 1.565;
+    const len = ((moustache ? 0.0032 : 0.0048) + rand() * (moustache ? 0.0024 : 0.0042)) * (0.75 + 0.25 * smooth(-0.002, 0.02, r.f));
+    const width = 0.00011 + rand() * 0.00006;
+    // lean: out of the skin and down with gravity (the moustache lies flatter), a little random twist
+    dir.copy(r.n).multiplyScalar(moustache ? 0.38 : 0.55).addScaledVector(down, moustache ? 0.92 : 0.8);
+    dir.x += (rand() - 0.5) * 0.35;
+    dir.z += (rand() - 0.5) * 0.2;
+    dir.normalize();
+    bend.copy(down).multiplyScalar(0.25 + rand() * 0.2).addScaledVector(r.n, -0.05);
+    mid.copy(r.p).addScaledVector(dir, (len * 0.5) / scale);
+    tip.copy(mid).addScaledVector(dir.clone().add(bend).normalize(), (len * 0.5) / scale);
+    side.crossVectors(dir, r.n).normalize();
+    if (side.lengthSq() < 1e-6) side.set(1, 0, 0);
+    const lift = r.n.clone().multiplyScalar(0.00018 / scale);
+    const at = [r.p.clone().add(lift), mid, tip];
+    const widths = [width, width * 0.7, width * 0.12];
+    const shade = 0.8 + rand() * 0.4;
+    for (let j = 0; j < 3; j++) {
+      for (let e = 0; e < 2; e++) {
+        const k = s * per + j * 2 + e;
+        const q = at[j].clone().addScaledVector(side, ((e ? 1 : -1) * widths[j]) / 2 / scale);
+        pos.set([q.x, q.y, q.z], k * 3);
+        nor.set([r.n.x, r.n.y, r.n.z], k * 3);
+        cc.copy(rootCol).lerp(tipCol, j / 2).multiplyScalar(shade);
+        col.set([cc.r, cc.g, cc.b], k * 3);
+        for (let wv = 0; wv < 4; wv++) {
+          sIdx[k * 4 + wv] = skinIndex.getComponent(r.v, wv);
+          sWt[k * 4 + wv] = skinWeight.getComponent(r.v, wv);
+        }
+      }
+    }
+    const o = s * per;
+    idx.push(o, o + 1, o + 2, o + 1, o + 3, o + 2, o + 2, o + 3, o + 4, o + 3, o + 5, o + 4);
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("normal", new THREE.BufferAttribute(nor, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  geo.setAttribute("skinIndex", new THREE.BufferAttribute(sIdx, 4));
+  geo.setAttribute("skinWeight", new THREE.BufferAttribute(sWt, 4));
+  geo.setIndex(roots.length * per > 65535 ? new THREE.Uint32BufferAttribute(idx, 1) : new THREE.Uint16BufferAttribute(idx, 1));
+  // hair: a soft sheen along the strands, never plastic-shiny
+  const material = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.62, metalness: 0, sheen: 0.35, sheenRoughness: 0.5, sheenColor: new THREE.Color("#4e3628"), side: THREE.DoubleSide });
+  const mesh = new THREE.SkinnedMesh(geo, material);
+  mesh.bind(body.mesh.skeleton, body.mesh.bindMatrix);
+  mesh.position.copy(body.mesh.position);
+  mesh.quaternion.copy(body.mesh.quaternion);
+  mesh.scale.copy(body.mesh.scale);
+  mesh.frustumCulled = false;
+  mesh.castShadow = false;
+  mesh.name = "beard-strands";
+  figure.mesh.parent?.add(mesh);
+  parts.push(mesh);
+  figure.own(material);
+  figure.own(geo);
 }
 
 /* ---------------- eyebrows ---------------- */
@@ -700,7 +828,7 @@ export async function dressTeacher(figure: Figure, options: DressOptions = {}): 
   recolourSkin(figure, null, bumpPhoto, Boolean(options.light));
   const { shirt } = dressScrubs(figure, parts);
   dressHair(figure, parts, null);
-  dressBeard(figure, parts, null);
+  dressBeard(figure, parts, null, Boolean(options.light));
   dressShoes(figure, parts);
   dressWatch(figure, parts);
   warmEyes(figure);

@@ -20,6 +20,8 @@ export const CLEAN_SECONDS_BEFORE_TRIAL = 4;
 export class ResolutionGovernor {
   level: number;
   cap: number;
+  /** Lowest level this device may use (a computer never drops below its own screen density, which looks blurred). */
+  floor: number;
   /** First level that failed a trial in this visit (levels from here up are not tried again). */
   lockedFrom = Infinity;
   trial: { from: number; until: number } | null = null;
@@ -31,9 +33,10 @@ export class ResolutionGovernor {
   /** Set when a level has proved itself (two clean seconds): the caller may remember it. */
   provenLevel: number | null = null;
 
-  constructor(start: number, cap: number) {
+  constructor(start: number, cap: number, floor = 0) {
     this.cap = cap;
-    this.level = Math.max(0, Math.min(cap, start));
+    this.floor = Math.max(0, Math.min(cap, floor));
+    this.level = Math.max(this.floor, Math.min(cap, start));
   }
 
   /** The first moments after a load or a change carry the browser's one-off work, not the cost of the picture: they are not judged. */
@@ -49,7 +52,7 @@ export class ResolutionGovernor {
 
   /** The caller has moved to `level`: restart the judging from there. */
   applied(level: number, now: number) {
-    this.level = Math.max(0, Math.min(this.cap, level));
+    this.level = Math.max(this.floor, Math.min(this.cap, level));
     this.slowSeconds = 0;
     this.cleanSeconds = 0;
     this.winMs = 0;
@@ -76,14 +79,14 @@ export class ResolutionGovernor {
         this.trial = null;
         return { level: trial.from, trial: false };
       }
-      return this.level > 0 ? { level: Math.max(0, this.level - 2), trial: false } : "last-resort";
+      return this.level > this.floor ? { level: Math.max(this.floor, this.level - 2), trial: false } : "last-resort";
     }
     if (avg > SLOW_MS) {
       this.cleanSeconds = 0;
       this.slowSeconds += 1;
       if (this.slowSeconds >= 2) {
         this.slowSeconds = 0;
-        if (this.level > 0) return { level: this.level - 1, trial: false };
+        if (this.level > this.floor) return { level: this.level - 1, trial: false };
       }
       return null;
     }
