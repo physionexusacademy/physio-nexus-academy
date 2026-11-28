@@ -46,6 +46,9 @@ export function PerfGovernor() {
   useEffect(() => {
     const choice = readFxChoice();
     if (choice?.how === "user" || currentFx() === "lite") return;
+    // A computer (mouse or trackpad, 4+ cores) is never switched to lite automatically: a busy page load looked "slow" and left the 3D blurred.
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    if (window.matchMedia?.("(pointer: fine)").matches && (nav.hardwareConcurrency ?? 8) >= 4 && (nav.deviceMemory ?? 8) >= 4) return;
     let cancelled = false;
     let strikes = 0;
     let windows = 0;

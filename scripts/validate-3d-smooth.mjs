@@ -33,7 +33,8 @@ ok(/RATIOS\[this\.governor\.level\] >= 0\.9/.test(engine), "engine: only a level
 ok(/warm\(\) \{/.test(engine) && /compileAsync/.test(engine) && /initTexture/.test(engine) && /this\.warm\(\);/.test(engine), "engine: shaders (off the main thread) and textures are prepared when the patient has loaded");
 ok(/t \* t \* t \* \(t \* \(6 \* t - 15\) \+ 10\)/.test(engine.slice(engine.indexOf("private stepTween("))), "engine: moves between poses ease with no jump in speed or acceleration (smootherstep)");
 ok(/Math\.max\(0, Math\.min\(1, \(now - this\.tween!\.start\)/.test(engine), "engine: a move never runs backwards on its first frame");
-ok(/idleLast > 40/.test(engine), "engine: the idle breathing is drawn about 25 times a second, not 11");
+ok(/idleLast > this\.idleStep\(\)/.test(engine) && /\? 40 : 14;/.test(engine), "engine: the idle breathing is drawn at the screen's frame rate (25 fps only in lite mode on a phone)");
+ok(/floor = computer \?/.test(engine) && /this\.floor/.test(quality), "engine: a computer never draws below its own screen density (no blurred, stretched picture)");
 
 // --- nothing blurs a live canvas from above
 for (const file of [

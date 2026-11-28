@@ -367,12 +367,25 @@ export class ExamRoom {
   /** Highest resolution level this device may use: its own pixel density (at least 1.5 so a 1x screen is drawn smoothly), at most 2; 1 in light mode. */
   private ceilingIndex(lite: boolean) {
     const device = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
+    // (lite never caps a computer below its own density)
+    if (lite && ExamRoom.isComputer()) return this.levelFor(Math.min(2, Math.max(1, device)));
     return this.levelFor(lite ? 1 : Math.min(2, Math.max(device, 1.5)));
+  }
+  /** A desktop or laptop: a fine pointer (mouse or trackpad) and at least four cores. */
+  static isComputer() {
+    if (typeof window === "undefined") return false;
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    return Boolean(window.matchMedia?.("(pointer: fine)").matches) && (nav.hardwareConcurrency ?? 8) >= 4;
   }
   private levelFor(ratio: number) {
     let index = 0;
     RATIOS.forEach((r, i) => { if (r <= ratio + 0.001) index = i; });
     return index;
+  }
+
+  /** Idle life (breathing, small sway) runs at the screen's frame rate, like a video; only lite mode on a phone keeps the old 25 fps. */
+  private idleStep() {
+    return typeof document !== "undefined" && document.documentElement.getAttribute("data-fx") === "lite" && !ExamRoom.isComputer() ? 40 : 14;
   }
 
   private idleAllowed(): boolean {
@@ -432,7 +445,13 @@ export class ExamRoom {
     // Start where this device ended last time (what held up), or at its own density up to 1.5; light mode never goes above 1.
     const cap = this.ceilingIndex(document.documentElement.getAttribute("data-fx") === "lite");
     const learned = ExamRoom.learnedRatio();
-    this.governor = new ResolutionGovernor(Math.min(cap, this.levelFor(learned ?? Math.min(window.devicePixelRatio || 1, 1.5))), cap);
+    // A computer draws at its own screen density or sharper (125/150 % Windows scaling included) and never drops below it: below it the picture is
+    // stretched and looks blurred. It starts there, so it does not step up and down in visible jumps; a phone keeps the adaptive start.
+    const device = window.devicePixelRatio || 1;
+    const computer = ExamRoom.isComputer();
+    const floor = computer ? this.levelFor(Math.min(2, Math.max(1, device))) : 0;
+    const start = computer ? this.levelFor(Math.min(2, Math.max(device, 1.25))) : this.levelFor(learned ?? Math.min(device, 1.5));
+    this.governor = new ResolutionGovernor(Math.min(cap, Math.max(floor, start)), cap, Math.min(cap, floor));
     this.renderer.setPixelRatio(RATIOS[this.governor.level]);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -681,7 +700,7 @@ export class ExamRoom {
     this.frame = requestAnimationFrame(this.loop);
     const controlsMoved = this.controls.update();
     if (this.tween) this.stepTween(now);
-    else if (this.idleOn && this.inView && !this.needsRender && now - this.idleLast > 40 && typeof document !== "undefined" && document.visibilityState === "visible") this.tickIdle(now);
+    else if (this.idleOn && this.inView && !this.needsRender && now - this.idleLast > this.idleStep() && typeof document !== "undefined" && document.visibilityState === "visible") this.tickIdle(now);
     // Nothing is drawn while the stage is scrolled out of view (for more than a moment, so scrolling back never shows an old frame).
     const hidden = !this.inView && now - this.outAt > 300;
     const gap = now - this.lastTick;
