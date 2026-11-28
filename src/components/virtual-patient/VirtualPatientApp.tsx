@@ -48,6 +48,10 @@ export function VirtualPatientApp() {
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
+  /** The 3D room is built only once wanted (browser idle after the page is usable, or the student reaches for it), so the page never waits for 3D. */
+  const [want3d, setWant3d] = useState(false);
+  /** A patient chosen before the room was ready: opened as soon as it is. */
+  const [pending, setPending] = useState<{ kind: "case"; c: VirtualCase; m: ExamMode } | { kind: "book"; slug: string } | null>(null);
   const [position, setPosition] = useState<PatientPosition>("standing");
 
   const [stage, setStage] = useState<Stage>("pick");
@@ -78,10 +82,25 @@ export function VirtualPatientApp() {
   }, []);
   const speechTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  /* Build the room when the browser is idle after the page is usable (the waiting room works without it). */
+  useEffect(() => {
+    if (want3d) return;
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (id: number) => void };
+    let idle = 0;
+    const timer = window.setTimeout(() => {
+      if (w.requestIdleCallback) idle = w.requestIdleCallback(() => setWant3d(true), { timeout: 4000 });
+      else setWant3d(true);
+    }, 1200);
+    return () => {
+      window.clearTimeout(timer);
+      if (idle) w.cancelIdleCallback?.(idle);
+    };
+  }, [want3d]);
+
   /* 3D room */
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount) return;
+    if (!mount || !want3d) return;
     if (!webglAvailable()) {
       setFailed("This device or browser can't show 3D graphics. Try Chrome or Edge on a recent phone or computer.");
       return;
@@ -102,7 +121,7 @@ export function VirtualPatientApp() {
       exam.dispose();
       setRoom(null);
     };
-  }, []);
+  }, [want3d]);
 
   useEffect(() => {
     if (stage !== "exam" && stage !== "decide") return;
@@ -121,7 +140,11 @@ export function VirtualPatientApp() {
   }, []);
 
   const start = (c: VirtualCase, m: ExamMode) => {
-    if (!room) return;
+    if (!room || !ready) {
+      setPending({ kind: "case", c, m });
+      setWant3d(true);
+      return;
+    }
     setCaseData(c);
     setMode(m);
     setEvents([]);
@@ -207,7 +230,11 @@ export function VirtualPatientApp() {
 
   /** A patient from the book: the chapter's case, tests, diagnosis and plan (BookCasePanel), then its treatment. */
   const startBook = async (slug: string) => {
-    if (!room) return;
+    if (!room || !ready) {
+      setPending({ kind: "book", slug });
+      setWant3d(true);
+      return;
+    }
     const book = await loadBookChapter(slug);
     const FEMALE = ["Ayesha Khan", "Sana Malik", "Fatima Raza", "Hina Shah", "Maryam Ali", "Nida Hussain", "Zainab Qureshi", "Rabia Iqbal"];
     const MALE = ["Ahmed Khan", "Usman Ali", "Hamza Raza", "Bilal Shah", "Faisal Malik", "Omar Qureshi", "Saad Iqbal", "Kashif Hussain"];
@@ -234,6 +261,15 @@ export function VirtualPatientApp() {
     setNow(Date.now());
     setStage("book");
   };
+
+  useEffect(() => {
+    if (!ready || !room || !pending) return;
+    const next = pending;
+    setPending(null);
+    if (next.kind === "case") start(next.c, next.m);
+    else void startBook(next.slug);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, room, pending]);
 
   const startTreatment = async () => {
     if (!room || !caseData) return;
@@ -270,7 +306,7 @@ export function VirtualPatientApp() {
   const practice = caseData?.id === "practice";
 
   return (
-    <div className="vp-shell relative overflow-hidden rounded-[28px] border border-[#1d3a5f] bg-[#0a1f3d] shadow-[0_40px_90px_-50px_rgba(5,20,45,0.9)]">
+    <div onPointerEnter={() => setWant3d(true)} onFocusCapture={() => setWant3d(true)} className="vp-shell relative overflow-hidden rounded-[28px] border border-[#1d3a5f] bg-[#0a1f3d] shadow-[0_40px_90px_-50px_rgba(5,20,45,0.9)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_400px]">
         {/* 3D exam room */}
         <div className="relative h-[56vh] min-h-[380px] lg:h-[78vh]">
@@ -290,10 +326,10 @@ export function VirtualPatientApp() {
               {caption.timer ? <span className="flex-none rounded-2xl bg-[#2ee6d6] px-3 py-2 text-sm font-extrabold text-[#04263a] shadow-lg">⏱ {caption.timer}</span> : null}
             </div>
           ) : null}
-          {!ready && !failed ? (
+          {!ready && !failed && (stage !== "pick" || pending) ? (
             <div className="absolute inset-0 grid place-items-center bg-[#0a1f3d]/85 text-white">
               <div className="w-64 text-center">
-                <p className="text-sm font-semibold">Bringing the patient in…</p>
+                <p className="text-sm font-semibold">{pending ? "Bringing your patient in…" : "Bringing the patient in…"}</p>
                 <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
                   <div className="h-full rounded-full bg-gradient-to-r from-[#2ee6d6] to-[#3cc8ff]" style={{ width: `${Math.max(8, progress * 100)}%` }} />
                 </div>
@@ -431,7 +467,7 @@ export function VirtualPatientApp() {
           )}
         </aside>
       </div>
-      {stage === "pick" && ready ? (
+      {stage === "pick" && !pending ? (
         <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0a1f3d]/95">
           <CasePicker onStart={start} suggested={suggested} onStartBook={(slug) => void startBook(slug)} />
         </div>
