@@ -9,15 +9,17 @@ import { T, useRvLang } from "./useLang";
 
 const ERRORS: Record<string, { en: string; ru: string }> = {
   bad_email: { en: "That email address does not look right. Please check it.", ru: "Ye email address durust nahi lag raha. Dobara check karein." },
-  weak_password: { en: "Use a password of at least 10 characters.", ru: "Kam az kam 10 characters ka password rakhein." },
+  weak_password: { en: "Use a password of at least 8 characters.", ru: "Kam az kam 8 characters ka password rakhein." },
   bad_name: { en: "Please enter your full name.", ru: "Apna poora naam likhein." },
   bad_phone: { en: "Please enter a phone number the clinic can call or WhatsApp (at least 10 digits).", ru: "Aisa phone number likhein jis par clinic call ya WhatsApp kar sake (kam az kam 10 digits)." },
   bad_age: { en: "Please enter your age in years.", ru: "Apni umar saalon mein likhein." },
-  under_18: { en: "RehabVerse is for adults (18+). Please ask a parent or guardian to book a clinic visit instead.", ru: "RehabVerse bartaaloon (18+) ke liye hai. Meherbani karke parent ya guardian se clinic visit book karwayein." },
+  under_18: { en: "For a child under 18, a parent or guardian fills in this form.", ru: "18 saal se kam bachche ke liye parent ya guardian ye form bharein." },
+  guardian_required: { en: "Under 18: please write the parent's or guardian's name.", ru: "18 se kam umar: parent ya guardian ka naam likhein." },
+  phone_taken: { en: "This phone number already has an account. Use “Sign in” with the number and your password.", ru: "Is phone number ka account pehle se hai. Number aur password se “Sign in” karein." },
   consent_required: { en: "Please tick the agreement box to continue.", ru: "Aage barhne ke liye agreement wale box par tick karein." },
   email_taken: { en: "This email already has an account. Use “Sign in” — or “Forgot password” if you do not remember it.", ru: "Is email ka account pehle se hai. “Sign in” karein — ya password yaad na ho to “Forgot password” dabayein." },
   signup_failed: { en: "We could not create your account. Please try again in a minute.", ru: "Account nahi ban saka. Ek minute baad dobara koshish karein." },
-  bad_login: { en: "Email or password is not correct. Check both, or use “Forgot password”.", ru: "Email ya password durust nahi. Dono check karein, ya “Forgot password” istemal karein." },
+  bad_login: { en: "Phone/email or password is not correct. Check both, or use “Forgot password”.", ru: "Phone/email ya password durust nahi. Dono check karein, ya “Forgot password” istemal karein." },
   email_not_confirmed: { en: "Your email is not confirmed yet. Open the confirmation email we sent, or ask for a new one below.", ru: "Aap ka email abhi confirm nahi hua. Humari bheji hui confirmation email kholein, ya neeche se nayi mangwayein." },
   rate_limited: { en: "Too many attempts. Please wait a few minutes and try again.", ru: "Bohat zyada koshishein. Kuch minute intezar karke dobara koshish karein." },
   link_expired: { en: "This link has expired or was already used. Please ask for a new one.", ru: "Ye link expire ho gaya ya pehle istemal ho chuka. Nayi link mangwayein." },
@@ -42,7 +44,7 @@ function useAuth() {
 
 function strength(password: string, email: string) {
   const checks = {
-    length: password.length >= 10,
+    length: password.length >= 8,
     mix: /[a-z]/i.test(password) && (/\d/.test(password) || /[^a-z0-9]/i.test(password)),
     notEmail: !email || !password || !password.toLowerCase().includes(email.split("@")[0].toLowerCase().slice(0, 5)) || email.split("@")[0].length < 3,
   };
@@ -67,7 +69,7 @@ function PasswordField({ id, name = "password", label, value, onChange, autoComp
         <div id={`${id}-rules`} className="mt-2" aria-live="polite">
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, score * 25)}%`, background: colour }} /></div>
           <ul className="mt-1.5 grid gap-0.5 text-[12px]">
-            {([["length", { en: "At least 10 characters", ru: "Kam az kam 10 characters" }], ["mix", { en: "Letters plus a number or symbol", ru: "Huroof ke saath number ya symbol" }]] as const).map(([k, label]) => (
+            {([["length", { en: "At least 8 characters", ru: "Kam az kam 8 characters" }], ["mix", { en: "Letters plus a number or symbol", ru: "Huroof ke saath number ya symbol" }]] as const).map(([k, label]) => (
               <li key={k} className={checks[k] && value ? "font-semibold text-teal-700" : "text-slate-500"}><CheckCircle2 className="mr-1 inline h-3.5 w-3.5 align-[-2px]" aria-hidden="true" />{label.en}<span className="sr-only"> / {label.ru}</span></li>
             ))}
           </ul>
@@ -80,7 +82,7 @@ function PasswordField({ id, name = "password", label, value, onChange, autoComp
 /* ───────────────────────── guidance + tabs ───────────────────────── */
 
 const STEPS = [
-  { icon: UserPlus, en: ["Request your account", "Your name, age, phone and email — about one minute. The clinic approves every new account (no confirmation email)."], ru: ["Account ki request karein", "Naam, umar, phone aur email — lagbhag ek minute. Clinic har naya account khud approve karta hai (email confirm karne ki zaroorat nahi)."] },
+  { icon: UserPlus, en: ["Request your account", "Your name, age and phone number (email is optional) — about one minute. The clinic approves every new account, usually within 24 hours."], ru: ["Account ki request karein", "Naam, umar aur phone number (email zaroori nahi) — lagbhag ek minute. Clinic har naya account khud approve karta hai, aam taur par 24 ghante ke andar."] },
   { icon: ClipboardList, en: ["Tell us what hurts", "A few simple questions and safety checks (about 5 minutes)."], ru: ["Takleef bataein", "Kuch aasaan sawal aur safety checks (lagbhag 5 minute)."] },
   { icon: Stethoscope, en: ["Your physiotherapist builds your plan", "A real physiotherapist reviews your answers and approves your programme."], ru: ["Physiotherapist aap ka plan banate hain", "Ek real physiotherapist aap ke jawabat dekh kar programme approve karte hain."] },
   { icon: Video, en: ["Follow it day by day", "3D demos for every exercise. Give feedback and the next day opens safely."], ru: ["Din ba din follow karein", "Har exercise ka 3D demo. Feedback dein aur agla din safely khulta hai."] },
@@ -153,8 +155,8 @@ function LoginForm({ notice }: { notice?: string }) {
       </div>
       <Notice code={notice} />
       <div>
-        <label className="rv-label" htmlFor="email"><T en="Email" ru="Email" /></label>
-        <input id="email" name="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rv-input" />
+        <label className="rv-label" htmlFor="email"><T en="Phone number or email" ru="Phone number ya email" /></label>
+        <input id="email" name="email" type="text" inputMode="email" required autoComplete="username" placeholder="03xx xxxxxxx" value={email} onChange={(e) => setEmail(e.target.value)} className="rv-input" />
       </div>
       <PasswordField id="password" label={<T en="Password" ru="Password" />} value={password} onChange={setPassword} autoComplete="current-password" />
       {message ? <p className="rv-error" role="alert">{message}</p> : null}
@@ -184,6 +186,8 @@ function RegisterForm() {
   const { lang, router, pending, start, setError, message } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [age, setAge] = useState("");
+  const minor = age !== "" && Number(age) > 0 && Number(age) < 18;
   return (
     <form
       className="space-y-4"
@@ -203,7 +207,7 @@ function RegisterForm() {
       <div>
         <p className="rv-h"><T en="Step 1 of 4" ru="Qadam 1 / 4" /></p>
         <h1 className="mt-1 font-heading text-2xl font-bold text-navy-800"><T en="Request your RehabVerse account" ru="Apne RehabVerse account ki request karein" /></h1>
-        <p className="mt-1 text-sm text-slate-600"><T en="The clinic checks every new account (by phone or WhatsApp) and approves it. Then: a short assessment, and your physiotherapist builds your programme." ru="Clinic har naya account (phone ya WhatsApp par) check kar ke approve karta hai. Phir: chhota sa assessment, aur aap ke physiotherapist aap ka programme banate hain." /></p>
+        <p className="mt-1 text-sm text-slate-600"><T en="The clinic checks every new account (by phone or WhatsApp) and approves it, usually within 24 hours. Then: a short assessment, and your physiotherapist builds your programme." ru="Clinic har naya account (phone ya WhatsApp par) check kar ke approve karta hai, aam taur par 24 ghante mein. Phir: chhota sa assessment, aur aap ke physiotherapist aap ka programme banate hain." /></p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
@@ -211,9 +215,22 @@ function RegisterForm() {
           <input id="full_name" name="full_name" required minLength={2} maxLength={100} autoComplete="name" className="rv-input" />
         </div>
         <div>
-          <label className="rv-label" htmlFor="age_years"><T en="Age (18 or older)" ru="Umar (18 ya zyada)" /></label>
-          <input id="age_years" name="age_years" type="number" inputMode="numeric" min={18} max={120} required className="rv-input" />
+          <label className="rv-label" htmlFor="age_years"><T en="Age (years)" ru="Umar (saal)" /></label>
+          <input id="age_years" name="age_years" type="number" inputMode="numeric" min={1} max={110} required value={age} onChange={(e) => setAge(e.target.value)} className="rv-input" />
+          {minor ? <p className="rv-hint"><T en="Under 18: a parent or guardian fills in this form and gives the consent." ru="18 se kam: parent ya guardian ye form bharte hain aur ijazat dete hain." /></p> : null}
         </div>
+        {minor ? (
+          <>
+            <div>
+              <label className="rv-label" htmlFor="guardian_name"><T en="Parent / guardian name" ru="Parent / guardian ka naam" /></label>
+              <input id="guardian_name" name="guardian_name" required minLength={2} maxLength={100} className="rv-input" />
+            </div>
+            <div>
+              <label className="rv-label" htmlFor="guardian_relation"><T en="Relation (optional)" ru="Rishta (zaroori nahi)" /></label>
+              <input id="guardian_relation" name="guardian_relation" maxLength={40} placeholder={lang === "ru" ? "Ammi, Abbu…" : "Mother, father…"} className="rv-input" />
+            </div>
+          </>
+        ) : null}
         <div>
           <label className="rv-label" htmlFor="sex"><T en="Sex (optional)" ru="Jins (zaroori nahi)" /></label>
           <select id="sex" name="sex" className="rv-input" defaultValue="">
@@ -227,19 +244,19 @@ function RegisterForm() {
         <div>
           <label className="rv-label" htmlFor="phone"><T en="Phone / WhatsApp number" ru="Phone / WhatsApp number" /></label>
           <input id="phone" name="phone" type="tel" inputMode="tel" required minLength={10} maxLength={30} autoComplete="tel" placeholder="03xx xxxxxxx" className="rv-input" />
-          <p className="rv-hint"><T en="The clinic uses it to check your request." ru="Clinic isse aap ki request check karta hai." /></p>
+          <p className="rv-hint"><T en="You sign in with this number. The clinic also uses it to check your request." ru="Isi number se sign in hoga. Clinic isi se aap ki request check karta hai." /></p>
         </div>
         <div>
           <label className="rv-label" htmlFor="city"><T en="City (optional)" ru="Shehar (zaroori nahi)" /></label>
           <input id="city" name="city" maxLength={80} autoComplete="address-level2" className="rv-input" />
         </div>
         <div className="sm:col-span-2">
-          <label className="rv-label" htmlFor="email"><T en="Email" ru="Email" /></label>
-          <input id="email" name="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rv-input" />
-          <p className="rv-hint"><T en="You will use it to sign in. We may send programme updates (never your health details). No confirmation link is needed." ru="Isi se sign in hoga. Hum programme ke updates bhej sakte hain (aap ki sehat ki tafseel kabhi nahi). Confirmation link ki zaroorat nahi." /></p>
+          <label className="rv-label" htmlFor="email"><T en="Email (optional)" ru="Email (zaroori nahi)" /></label>
+          <input id="email" name="email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rv-input" />
+          <p className="rv-hint"><T en="Optional. With an email you can also sign in with it and reset a forgotten password yourself. Without one, the clinic resets it for you on WhatsApp." ru="Zaroori nahi. Email ho to us se bhi sign in kar sakte hain aur password bhoolne par khud reset kar sakte hain. Email na ho to clinic WhatsApp par reset kar dega." /></p>
         </div>
         <div className="sm:col-span-2">
-          <PasswordField id="password" label={<T en="Create a password" ru="Password banayein" />} value={password} onChange={setPassword} autoComplete="new-password" showRules email={email} minLength={10} />
+          <PasswordField id="password" label={<T en="Create a password" ru="Password banayein" />} value={password} onChange={setPassword} autoComplete="new-password" showRules email={email} minLength={8} />
         </div>
       </div>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
@@ -247,8 +264,8 @@ function RegisterForm() {
         <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-teal-600" />
         <span>
           <T
-            en="I am 18 or older. I understand RehabVerse supports physiotherapy but is not an emergency service or a replacement for an in-person assessment, and that the 3D guide is not a clinician. I agree that my answers and progress are stored securely and reviewed by my physiotherapist at Physio Nexus Academy, and that I may receive email updates about my programme."
-            ru="Meri umar 18 saal ya zyada hai. Main samajhta/samajhti hoon ke RehabVerse physiotherapy ka saath deta hai lekin emergency service ya in-person assessment ka badal nahi, aur 3D guide clinician nahi. Main manta/manti hoon ke mere jawabat aur progress mehfooz store hote hain aur Physio Nexus Academy ke mere physiotherapist unhein dekhte hain, aur mujhe apne programme ke baare mein email updates mil sakte hain."
+            en="I am 18 or older, or I am the parent or guardian filling this in for a child. I understand RehabVerse supports physiotherapy but is not an emergency service or a replacement for an in-person assessment, and that the 3D guide is not a clinician. I agree that my answers and progress are stored securely and reviewed by my physiotherapist at Physio Nexus Academy, and that I may receive updates about my programme."
+            ru="Meri umar 18 saal ya zyada hai, ya main bachche ka parent/guardian hoon aur uski taraf se ye bhar raha/rahi hoon. Main samajhta/samajhti hoon ke RehabVerse physiotherapy ka saath deta hai lekin emergency service ya in-person assessment ka badal nahi, aur 3D guide clinician nahi. Main manta/manti hoon ke mere jawabat aur progress mehfooz store hote hain aur Physio Nexus Academy ke mere physiotherapist unhein dekhte hain, aur mujhe apne programme ke baare mein updates mil sakte hain."
           />{" "}
           <Link href="/legal/privacy" className="font-bold text-teal-700 underline" target="_blank"><T en="Privacy policy" ru="Privacy policy" /></Link>
         </span>
@@ -292,6 +309,7 @@ export function ForgotForm() {
           <div>
             <h1 className="font-heading text-2xl font-bold text-navy-800"><KeyRound className="mr-2 inline h-6 w-6 text-teal-600" aria-hidden="true" /><T en="Forgot your password?" ru="Password bhool gaye?" /></h1>
             <p className="mt-1 text-sm text-slate-600"><T en="Enter your email and we will send you a link to set a new one." ru="Apna email likhein, hum naya password set karne ki link bhej denge." /></p>
+            <p className="mt-2 rounded-xl bg-teal-50 px-3 py-2 text-[13px] text-slate-700"><T en="Signed up with a phone number only? Message the clinic on WhatsApp (0348 900 9028, or the green button) and we will give you a new temporary password." ru="Sirf phone number se account banaya tha? Clinic ko WhatsApp karein (hara button) — hum aap ko naya temporary password de denge." /></p>
           </div>
           <div>
             <label className="rv-label" htmlFor="email"><T en="Email" ru="Email" /></label>
@@ -332,7 +350,7 @@ export function ResetForm() {
         <h1 className="font-heading text-2xl font-bold text-navy-800"><T en="Choose a new password" ru="Naya password chunein" /></h1>
         <p className="mt-1 text-sm text-slate-600"><T en="You are signed in through the email link. Pick a password you do not use elsewhere." ru="Aap email link se sign in hain. Aisa password chunein jo kahin aur istemal na hota ho." /></p>
       </div>
-      <PasswordField id="password" label={<T en="New password" ru="Naya password" />} value={password} onChange={setPassword} autoComplete="new-password" showRules minLength={10} />
+      <PasswordField id="password" label={<T en="New password" ru="Naya password" />} value={password} onChange={setPassword} autoComplete="new-password" showRules minLength={8} />
       <div>
         <label className="rv-label" htmlFor="again"><T en="Type it again" ru="Dobara likhein" /></label>
         <input id="again" type="password" required autoComplete="new-password" value={again} onChange={(e) => setAgain(e.target.value)} className="rv-input" aria-invalid={mismatch} />

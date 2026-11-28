@@ -1,6 +1,6 @@
 "use server";
 
-import { RehabError, getAdminOutcomes, isStaff, rpc } from "@/lib/rehabverse/api";
+import { RehabError, currentUser, getAdminOutcomes, isStaff, rpc } from "@/lib/rehabverse/api";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkPlanItems, timepointsFor } from "@/lib/outcomes/plan";
 import { instrumentFor } from "@/lib/outcomes/instruments";
@@ -141,6 +141,25 @@ export async function decideRegistrationAction(patientId: string, decision: "app
     });
     return { ok: true, status: r.status, phone: r.phone, fullName: r.full_name, language: r.preferred_language };
   } catch (e) { return fail(e); }
+}
+
+/**
+ * A temporary password for a patient who cannot reset it by e-mail (a phone-only account, or a forgotten e-mail address).
+ * The clinician reads it to the patient on the phone or sends it on WhatsApp; the patient changes it after signing in.
+ */
+export async function resetPatientPasswordAction(patientId: string): Promise<Result<{ password: string; signIn: string }>> {
+  if (!(await isStaff())) return { ok: false, error: "not_authorised" };
+  const admin = createAdminClient();
+  const { data: row } = await admin.from("rehab_patients").select("user_id, phone, email").eq("id", patientId).maybeSingle();
+  if (!row?.user_id) return { ok: false, error: "not_found" };
+  const alphabet = "abcdefghjkmnpqrstuvwxyz23456789";
+  const bytes = crypto.getRandomValues(new Uint8Array(10));
+  const password = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+  const { error } = await admin.auth.admin.updateUserById(row.user_id as string, { password });
+  if (error) return { ok: false, error: "failed" };
+  const me = await currentUser();
+  await admin.from("rehab_audit_log").insert({ actor_id: me?.id ?? null, actor_role: "admin", action: "patient.password_reset_by_clinic", entity: "patient", entity_id: patientId, patient_id: patientId, details: {} });
+  return { ok: true, password, signIn: (row.email as string | null) || (row.phone as string | null) || "" };
 }
 
 /* ─────────────────────────────── outcome measures ─────────────────────────────── */

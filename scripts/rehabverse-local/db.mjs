@@ -58,6 +58,8 @@ export async function createDb({ dataDir } = {}) {
   if (!hasPhase2) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261204120000_rehab_research_phase2.sql"), "utf8"));
   const hasPhase3 = await db.query("select to_regclass('public.rehab_safety_reports') as t").then((r) => r.rows[0].t);
   if (!hasPhase3) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261205120000_rehab_research_phase3.sql"), "utf8"));
+  const hasGuardian = await db.query("select 1 from information_schema.columns where table_schema = 'public' and table_name = 'rehab_patients' and column_name = 'guardian_name'").then((r) => r.rows.length > 0);
+  if (!hasGuardian) await db.exec(fs.readFileSync(path.join(root, "supabase/migrations/20261206120000_rehab_phone_and_guardian.sql"), "utf8"));
   return db;
 }
 

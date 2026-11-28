@@ -2,11 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import { Clock, Package, Search, X } from "lucide-react";
 import { loadAllExercises } from "@/lib/rehabverse/library";
-import { CATEGORY_LABEL, LEVELS, REGIONS, REGION_LABEL, type ExerciseDef, type Region } from "@/lib/rehabverse/types";
+import { CATEGORY_LABEL, LEVELS, LEVEL_LABEL, REGIONS, REGION_LABEL, type ExerciseDef, type Region } from "@/lib/rehabverse/types";
+import { GOALS, POSITION_LABEL, goalsOf, minutesOf, needsKit, positionOf, type Position } from "@/lib/rehabverse/library-meta";
 import { ExerciseDetails } from "./ExerciseDetails";
-import { LangToggle, useRvLang } from "./useLang";
+import { useRvLang } from "./useLang";
 
 const ExercisePlayer = dynamic(() => import("./ExercisePlayer"), {
   ssr: false,
@@ -15,10 +16,13 @@ const ExercisePlayer = dynamic(() => import("./ExercisePlayer"), {
 
 /** The public 3D exercise library: browse by region, watch the physio guide perform each exercise. */
 export function LibraryBrowser({ initialId, initialRegion }: { initialId?: string; initialRegion?: Region }) {
-  const [lang, setLang] = useRvLang("en");
+  const [lang] = useRvLang("en");
   const [all, setAll] = useState<ExerciseDef[] | null>(null);
   const [region, setRegion] = useState<Region | "all">(initialRegion ?? "all");
   const [query, setQuery] = useState("");
+  const [goal, setGoal] = useState<string | null>(null);
+  const [position, setPosition] = useState<Position | null>(null);
+  const [homeOnly, setHomeOnly] = useState(false);
   const [selected, setSelected] = useState<string | null>(initialId ?? null);
   const [webgl, setWebgl] = useState(true);
 
@@ -30,9 +34,12 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
     const q = query.trim().toLowerCase();
     return (all ?? [])
       .filter((e) => (region === "all" || e.regions.includes(region)))
-      .filter((e) => !q || `${e.name.en} ${e.name.ru} ${e.summary.en} ${e.targets}`.toLowerCase().includes(q))
+      .filter((e) => !q || `${e.name.en} ${e.name.ru} ${e.summary.en} ${e.targets} ${(e.indications ?? []).join(" ")}`.toLowerCase().includes(q))
+      .filter((e) => !goal || goalsOf(e).includes(goal))
+      .filter((e) => !position || positionOf(e) === position)
+      .filter((e) => !homeOnly || !needsKit(e))
       .sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level) || a.name.en.localeCompare(b.name.en));
-  }, [all, region, query]);
+  }, [all, region, query, goal, position, homeOnly]);
 
   const current = all?.find((e) => e.id === selected) ?? null;
   const t = (v: { en: string; ru: string }) => (lang === "ru" ? v.ru : v.en);
@@ -48,7 +55,25 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
             </button>
           ))}
         </div>
-        <LangToggle lang={lang} onChange={setLang} />
+      </div>
+      {/* What it is for, how it is done, what it needs: patients choose the way they think about their problem */}
+      <div className="space-y-2">
+        <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible [&>*]:shrink-0" role="group" aria-label={lang === "ru" ? "Kis ke liye" : "What it is for"}>
+          <span className="mr-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">{lang === "ru" ? "Kis ke liye" : "For"}</span>
+          {GOALS.map((g) => (
+            <button key={g.id} type="button" onClick={() => setGoal(goal === g.id ? null : g.id)} aria-pressed={goal === g.id} className={"rv-pill " + (goal === g.id ? "rv-pill-on" : "")}>{t(g.label)}</button>
+          ))}
+        </div>
+        <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible [&>*]:shrink-0" role="group" aria-label={lang === "ru" ? "Position" : "Position"}>
+          <span className="mr-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">{lang === "ru" ? "Kaise" : "How"}</span>
+          {(Object.keys(POSITION_LABEL) as Position[]).map((p) => (
+            <button key={p} type="button" onClick={() => setPosition(position === p ? null : p)} aria-pressed={position === p} className={"rv-pill " + (position === p ? "rv-pill-on" : "")}>{t(POSITION_LABEL[p])}</button>
+          ))}
+          <button type="button" onClick={() => setHomeOnly(!homeOnly)} aria-pressed={homeOnly} className={"rv-pill " + (homeOnly ? "rv-pill-on" : "")}>{lang === "ru" ? "Ghar ki cheezon se (koi khaas saman nahi)" : "No special equipment"}</button>
+          {goal || position || homeOnly || region !== "all" || query ? (
+            <button type="button" onClick={() => { setGoal(null); setPosition(null); setHomeOnly(false); setRegion("all"); setQuery(""); }} className="ml-1 text-xs font-bold text-teal-700 underline">{lang === "ru" ? "Sab filters hatayein" : "Clear all"}</button>
+          ) : null}
+        </div>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <label className="flex flex-1 items-center gap-2 rounded-2xl border border-slate-300 bg-white px-3">
@@ -69,7 +94,12 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
                     <span className="rv-chip rv-chip-teal">{t(REGION_LABEL[e.regions[0]]).replace(/ \(.*\)/, "")}</span>
                   </span>
                   <strong className="mt-1.5 block text-[15px] leading-5 text-navy-800">{t(e.name)}</strong>
-                  <span className="mt-0.5 block text-[13px] leading-5 text-slate-500">{t(CATEGORY_LABEL[e.category])}</span>
+                  <span className="mt-0.5 block text-[13px] leading-5 text-slate-500">{t(CATEGORY_LABEL[e.category])} · {t(LEVEL_LABEL[e.level])}</span>
+                  <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold text-slate-600">
+                    <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5 text-teal-600" aria-hidden="true" /> ~{minutesOf(e)} min</span>
+                    <span>{t(POSITION_LABEL[positionOf(e)])}</span>
+                    <span className="inline-flex items-center gap-1"><Package className="h-3.5 w-3.5 text-teal-600" aria-hidden="true" /> {needsKit(e) ? String(e.equipment).split(/[;,(]/)[0].trim() : lang === "ru" ? "Koi khaas saman nahi" : "No special equipment"}</span>
+                  </span>
                 </button>
               </li>
             ))}

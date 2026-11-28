@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ClipboardCheck, FileClock, ShieldAlert } from "lucide-react";
-import { logAdverseEventAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
+import { logAdverseEventAction, resetPatientPasswordAction, setAssessmentStatusAction, updateAdverseEventAction } from "@/app/admin/(dashboard)/rehabverse/actions";
 import type { AdminAssessment, AdminOutcomes, AdminPatient, StoredSnapshot } from "@/lib/rehabverse/api-types";
 import { INTAKE_DURATION, INTAKE_REGIONS, INTAKE_SYMPTOMS, flagLabel } from "@/lib/rehabverse/intake";
 import { AiAssistSwitch } from "./AiAssistSwitch";
@@ -166,7 +166,9 @@ export function AdminPatientRecord({ data, outcomes = null, formcheck = null, st
             <p className="rv-h">{patient.reference_code}</p>
             <h1 className="font-heading text-2xl font-bold text-navy-800">{patient.full_name}</h1>
             <p className="mt-1 text-[13.5px] text-slate-600">{patient.age_years} years{patient.sex ? ` · ${patient.sex.replace(/_/g, " ")}` : ""}{patient.city ? ` · ${patient.city}` : ""} · prefers {patient.preferred_language === "ru" ? "Roman Urdu" : "English"}</p>
-            <p className="text-[13px] text-slate-500">{patient.email}{patient.phone ? ` · ${patient.phone}` : ""} · joined {dt(patient.created_at)}</p>
+            <p className="text-[13px] text-slate-500">{patient.email ?? "phone sign-in"}{patient.phone ? ` · ${patient.phone}` : ""} · joined {dt(patient.created_at)}</p>
+            {patient.guardian_name ? <p className="text-[13px] font-bold text-amber-700">Under 18 · guardian: {patient.guardian_name}{patient.guardian_relation ? ` (${patient.guardian_relation})` : ""}</p> : null}
+            <TempPassword patientId={patient.id} />
           </div>
           <div className="flex flex-wrap gap-1.5">
             {shown ? <span className="rv-chip rv-chip-navy">programme: {shown.programme.status}</span> : <span className="rv-chip">no programme</span>}
@@ -258,6 +260,28 @@ export function AdminPatientRecord({ data, outcomes = null, formcheck = null, st
         </ol>
         <p className="mt-2 text-[11.5px] text-slate-500">The audit trail is append-only: entries cannot be edited or deleted.</p>
       </Section>
+    </div>
+  );
+}
+
+/** For a patient who cannot reset the password by e-mail: make a temporary one and tell them on the phone or WhatsApp. */
+function TempPassword({ patientId }: { patientId: string }) {
+  const [pending, start] = useTransition();
+  const [out, setOut] = useState<{ password: string; signIn: string } | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  return (
+    <div className="mt-1 text-[12.5px]">
+      {out ? (
+        <p className="rounded-xl border border-teal-200 bg-teal-50 px-3 py-2 text-slate-700">
+          Temporary password: <code className="select-all font-bold text-navy-800">{out.password}</code> — sign in with {out.signIn || "their phone number"}. Ask them to change it after signing in.
+        </p>
+      ) : (
+        <button type="button" className="font-bold text-teal-700 underline-offset-2 hover:underline disabled:opacity-60" disabled={pending}
+          onClick={() => { if (!window.confirm("Make a new temporary password for this patient? Their old password stops working.")) return; setErr(null); start(async () => { const r = await resetPatientPasswordAction(patientId); if (r.ok) setOut({ password: r.password, signIn: r.signIn }); else setErr(r.error); }); }}>
+          {pending ? "Making…" : "Forgot password? Make a temporary one"}
+        </button>
+      )}
+      {err ? <span className="ml-2 text-red-700">Could not reset ({err}).</span> : null}
     </div>
   );
 }

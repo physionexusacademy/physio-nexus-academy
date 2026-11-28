@@ -42,7 +42,7 @@ export function AccountRequests({ pending, recent, studyRecruiting = false }: { 
         <span className="flex items-center gap-2"><UserCheck className="h-4 w-4 text-teal-600" aria-hidden="true" /> Account requests</span>
         <span className={"rv-chip " + (pending.length ? "rv-chip-teal" : "")}>{pending.length}</span>
       </h2>
-      <p className="mt-1 text-[12.5px] text-slate-500">New accounts cannot do anything until you approve them. No confirmation email is sent: check the person by phone or WhatsApp, then approve.</p>
+      <p className="mt-1 text-[12.5px] text-slate-500">New accounts cannot do anything until you approve them. No confirmation email is sent: check the person by phone or WhatsApp, then approve. Patients are told to expect an answer within 24 hours.</p>
       {error ? <p className="rv-error mt-2" role="alert">Could not save the decision ({error}).</p> : null}
 
       {approved.length ? (
@@ -66,8 +66,9 @@ export function AccountRequests({ pending, recent, studyRecruiting = false }: { 
                 <b className="block text-navy-800">{p.full_name} <span className="font-normal text-slate-500">· {p.reference_code}</span></b>
                 <span className="block text-[12.5px] text-slate-600">
                   {p.age_years} y{p.sex ? ` · ${p.sex}` : ""}{p.city ? ` · ${p.city}` : ""} · {p.preferred_language === "ru" ? "Roman Urdu" : "English"} · {dt(p.created_at)}
+                  {p.guardian_name ? <span className="block font-bold text-amber-700">Under 18 · guardian: {p.guardian_name}{p.guardian_relation ? ` (${p.guardian_relation})` : ""}</span> : null}
                 </span>
-                <span className="block text-[12.5px] text-slate-600">{p.phone ?? "no phone"}{p.email ? ` · ${p.email}` : ""}</span>
+                <span className="block text-[12.5px] text-slate-600">{p.phone ?? "no phone"}{p.email ? ` · ${p.email}` : " · phone sign-in (no email)"}</span>
               </div>
               {digits(p.phone) ? (
                 <span className="flex shrink-0 gap-1.5">
