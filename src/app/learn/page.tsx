@@ -77,6 +77,8 @@ const principles = [
 export default async function LearnPage() {
   const lessonIndex = await loadLessonIndex();
   const conceptLessonMetas = lessonIndex.filter((lesson) => lesson.kind === "concept");
+  // The browser gets only what the cards show (one list, shared by both components): the full index (goals, summaries, keywords) stays on the server.
+  const cards = lessonIndex.map(({ slug, title, hook, area, level, bestFor, minutes, flashcardCount, href }) => ({ slug, title, hook, area, level, bestFor, minutes, flashcardCount, href }));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -135,11 +137,11 @@ export default async function LearnPage() {
         </header>
 
         <section className="mx-auto mt-8 max-w-3xl" aria-label="Your personal teacher">
-          <TeacherHome lessons={lessonIndex} paths={teacherPaths} />
+          <TeacherHome lessons={cards} paths={teacherPaths} />
         </section>
 
         <div className="mx-auto mt-14 max-w-6xl">
-          <Classroom lessons={lessonIndex.map(({ slug, title, hook, area, level, bestFor, minutes, flashcardCount, href }) => ({ slug, title, hook, area, level, bestFor, minutes, flashcardCount, href }))} />
+          <Classroom lessons={cards} />
         </div>
 
         <nav className="mx-auto mt-12 max-w-6xl rounded-3xl bg-navy-800 p-6 text-white sm:p-8" aria-label="Keep learning across PNA">
