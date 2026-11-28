@@ -215,7 +215,7 @@ const URDU_SCRIPT_WORDS: Record<string, string> = {
   "فزیوتھراپی": "physiotherapy", "فزیو": "physio", "فزیوتھراپسٹ": "physiotherapist", "ڈاکٹر": "doctor", "مریض": "mareez", "اپائنٹمنٹ": "appointment", "ملاقات": "appointment", "بکنگ": "booking",
   "گھر": "ghar", "ہوم": "home", "ویزٹ": "visit", "ویب": "website", "سائٹ": "website", "ویب سائٹ": "website", "کتاب": "book", "کتابیں": "books", "کتابوں": "books", "ورکشاپ": "workshop", "ورکشاپس": "workshops",
   "ٹریننگ": "training", "سرٹیفکیٹ": "certificate", "امتحان": "imtihan", "ویوا": "viva", "کوئز": "quiz", "چیلنج": "challenge", "ڈیلی": "daily", "ورچوئل": "virtual", "پیشنٹ": "patient", "سکلز": "skills", "لیب": "lab",
-  "مینوئل": "manual", "تھراپی": "therapy", "ٹیچر": "teacher", "لیسن": "lesson", "سبق": "lesson", "فلیش": "flash", "کارڈز": "cards", "ریہاب": "rehab", "ریہب": "rehab", "ایکسرسائز": "exercise", "ٹریٹمنٹ": "treatment",
+  "مینوئل": "manual", "تھراپی": "therapy", "ٹیچر": "teacher", "لیسن": "lesson", "سبق": "lesson", "فلیش": "flash", "کارڈز": "cards", "ریہاب": "rehab", "ریہب": "rehab", "ورس": "verse", "ریہابورس": "rehabverse", "ایکسرسائز": "exercise", "ٹریٹمنٹ": "treatment",
   "پین": "pain", "بیک": "back", "نیک": "neck", "شولڈر": "shoulder", "نی": "knee", "اینکل": "ankle", "ہپ": "hip", "ایلبو": "elbow", "رسٹ": "wrist",
   "سٹروک": "stroke", "پارکنسن": "parkinson", "سرجری": "surgery", "آپریشن": "operation", "حمل": "hamal", "شوگر": "sugar", "ذیابیطس": "sugar", "موٹاپا": "motapa",
   "ٹینس": "tennis", "فروزن": "frozen", "سائیٹیکا": "sciatica", "سلپ": "slipped", "ڈسک": "disc", "آرتھرائٹس": "arthritis", "گٹھیا": "arthritis", "کنفرم": "confirm",
