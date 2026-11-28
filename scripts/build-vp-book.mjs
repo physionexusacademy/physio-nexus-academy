@@ -44,12 +44,18 @@ function animFor(text) {
 
 /* RehabVerse 3D exercises named in the exercise prescription. Order: as the book lists them. */
 const EX = [
-  [/chin tuck with head lift|head lift/, "chin-tuck-head-lift"], [/chin tuck|retraction/, "chin-tuck"], [/craniocervical|deep neck flexor|nod/, "supine-nod"],
-  [/scapular (retraction|setting|squeeze)|shoulder blade squeeze|scapular squeeze/, "shoulder-blade-squeeze"], [/row/, "seated-band-row"],
+  [/diaphragmatic breathing|breathing control|abdominal breathing|tummy breathing/, "diaphragmatic-breathing"], [/pursed[- ]lip/, "pursed-lip-breathing"],
+  [/thoracic expansion|deep breathing exercise|chest expansion/, "thoracic-expansion-arm-raise"],
+  [/pelvic floor (muscle )?(training|exercise|contraction)|kegel|pfmt/, "pelvic-floor-lying"],
+  [/(?<!quadruped )weight[- ]shift/, "standing-weight-shift"], [/functional reach test|functional reach\b(?!ing)|forward reach(ing)? in standing/, "functional-reach"],
+  [/seated marching|marching in sitting/, "seated-marching"], [/reach(ing)? across|reaching tasks in sitting|trunk control in sitting|sitting balance/, "seated-reach-across"],
+  [/forward lean|nose over toes|trunk forward lean/, "sit-forward-lean"],
+  [/chin tuck with head lift|head lift/, "chin-tuck-head-lift"], [/chin tuck|retraction/, "chin-tuck"], [/craniocervical|deep neck flexor|\bnod(s|ding)?\b/, "supine-nod"],
+  [/scapular (retraction|setting|squeeze)|shoulder blade squeeze|scapular squeeze/, "shoulder-blade-squeeze"], [/\brows?\b|\browing\b/, "seated-band-row"],
   [/neck rotation|cervical rotation/, "neck-rotation"], [/neck side bend|side flexion of the neck|lateral flexion/, "neck-side-bend"],
   [/upper trapezius stretch/, "upper-trapezius-stretch"], [/levator/, "levator-scapulae-stretch"], [/scalene/, "scalene-stretch"],
   [/pendulum|codman/, "codman-pendulum"], [/wand|assisted (shoulder )?flexion|stick/, "wand-flexion"], [/wall angel|wall slide/, "wall-angel"],
-  [/side-?lying external rotation/, "sidelying-external-rotation"], [/external rotation/, "band-external-rotation"], [/internal rotation/, "band-internal-rotation"],
+  [/side-?lying external rotation/, "sidelying-external-rotation"], [/(band(ed)?|resisted|isometric|cable) external( and internal)? rotation|external rotation (strength\w*|with (a )?band|exercise|at 0)/, "band-external-rotation"], [/(band(ed)?|resisted|isometric|cable) (external and )?internal rotation|internal rotation (strength\w*|with (a )?band|exercise)/, "band-internal-rotation"],
   [/scaption|full can/, "scaption-full-can"], [/cross-body|cross body|posterior capsule stretch|sleeper/, "cross-body-shoulder-stretch"], [/lateral raise|abduction raise/, "lateral-raise"], [/front raise/, "front-raise"],
   [/eccentric wrist extension|wrist extensor (loading|strength)|isometric wrist extension/, "eccentric-wrist-extension"], [/eccentric wrist flexion|wrist flexor (loading|strength)/, "eccentric-wrist-flexion"],
   [/wrist flexor stretch/, "wrist-flexor-stretch"], [/wrist extensor stretch/, "wrist-extensor-stretch"], [/tendon glid/, "tendon-glides"], [/grip/, "grip-squeeze"],
@@ -58,23 +64,31 @@ const EX = [
   [/clam/, "clamshell"], [/side-?lying hip abduction/, "sidelying-hip-abduction"], [/prone hip extension/, "prone-hip-extension"], [/standing hip abduction|hip abduction/, "standing-hip-abduction"],
   [/standing hip extension/, "standing-hip-extension"], [/hip hinge|deadlift/, "hip-hinge"], [/figure-?4|piriformis/, "figure-4-stretch"], [/hip flexor stretch/, "hip-flexor-stretch-edge"],
   [/adductor (squeeze|ball)/, "adductor-ball-squeeze"], [/hamstring stretch/, "supine-hamstring-stretch"], [/single-leg bridge/, "single-leg-bridge"], [/bridge/, "glute-bridge"],
-  [/dead bug/, "dead-bug"], [/bird-?dog/, "bird-dog"], [/plank/, "front-plank"], [/knee[- ]to[- ]chest/, "knee-to-chest"], [/knee rock|lumbar rotation|trunk rotation/, "knee-rock"],
+  [/dead bug/, "dead-bug"], [/bird-?dog/, "bird-dog"], [/plank/, "front-plank"], [/knee[- ]to[- ]chest/, "knee-to-chest"], [/knee rock|lumbar rotation/, "knee-rock"],
   [/curl-?up/, "mcgill-curl-up"], [/supine marching|marching lying/, "supine-marching"], [/prone on elbows|press-?up|extension in lying|mckenzie/, "prone-on-elbows"],
-  [/cat-?camel|cat and camel/, "cat-camel"], [/open book/, "open-book"], [/thoracic rotation/, "seated-thoracic-rotation"], [/thoracic extension/, "thoracic-extension-chair"],
+  [/cat-?camel|cat and camel/, "cat-camel"], [/open book/, "open-book"], [/thoracic rotation|trunk rotation/, "seated-thoracic-rotation"], [/thoracic extension/, "thoracic-extension-chair"],
   [/quad(riceps)? set/, "quad-set"], [/heel slide/, "heel-slide"], [/straight[- ]leg raise|slr/, "straight-leg-raise"], [/short[- ]arc/, "short-arc-quad"],
   [/seated knee extension|knee extension in sitting/, "seated-knee-extension"], [/wall squat|wall sit/, "wall-squat"], [/mini[- ]squat|squat/, "mini-squat"],
   [/terminal knee extension/, "terminal-knee-extension"], [/prone hamstring curl/, "prone-hamstring-curl"], [/hamstring curl/, "standing-hamstring-curl"], [/step-?up/, "step-up"],
   [/sit[- ]to[- ]stand|chair rise/, "sit-to-stand"], [/ankle pump|\bpumps\b/, "ankle-pumps"], [/ankle (circle|alphabet)|alphabet/, "ankle-circles"], [/calf stretch|gastrocnemius stretch|soleus stretch/, "supine-calf-stretch"],
-  [/single[- ]leg (calf|heel) raise/, "single-heel-raise"], [/eccentric heel drop|heel drop|alfredson/, "eccentric-heel-drop"], [/(calf|heel) raise/, "double-heel-raise"], [/toe raise/, "toe-raise"],
+  [/single[- ]leg (calf|heel) raise/, "single-heel-raise"], [/eccentric heel drop|alfredson/, "eccentric-heel-drop"], [/(calf|heel) raises?(?! insert)/, "double-heel-raise"], [/toe raise/, "toe-raise"],
   [/towel (scrunch|curl)|toe curl|short foot/, "towel-scrunch"], [/eversion/, "ankle-eversion-band"], [/inversion/, "ankle-inversion-band"], [/single[- ]leg (stand|stance|balance)|balance/, "single-leg-stance"],
-  [/reach/, "single-leg-reach"], [/tandem/, "tandem-stance"], [/marching/, "marching"], [/side bend/, "standing-side-bend"],
+  [/single[- ]leg (reach|deadlift)|reach on one leg|reach drills|star excursion|y-balance/, "single-leg-reach"], [/tandem/, "tandem-stance"], [/marching/, "marching"], [/side bend/, "standing-side-bend"],
 ];
 function exercisesIn(text) {
   const t = ` ${text.toLowerCase()} `;
   const hits = [];
   for (const [re, id] of EX) {
-    const m = re.exec(t);
-    if (m && !hits.some((h) => h.id === id)) hits.push({ id, at: m.index });
+    const g = new RegExp(re.source, "g");
+    for (const m of t.matchAll(g)) {
+      // a movement named as something to avoid ("avoid ... internal rotation", "no squatting") is a precaution, not an exercise
+      const before = t.slice(Math.max(0, m.index - 60), m.index);
+      if (/\b(avoid|avoiding|no|not|never|without|contraindicat\w*|precautions?)\b[^.;|]*$/.test(before)) continue;
+      const after = t.slice(m.index + m[0].length, m.index + m[0].length + 30);
+      if (/^[^.;|]*\b(degrees?|test)\b/.test(after) || /\bdegrees?\s*$/.test(before)) continue;
+      if (!hits.some((h) => h.id === id)) hits.push({ id, at: m.index });
+      break;
+    }
   }
   return hits.sort((a, b) => a.at - b.at).map((h) => h.id);
 }
@@ -105,7 +119,11 @@ function chapter(place) {
   /* J: exercise prescription rows and principles. */
   const exercise = rowsOf(S.J ?? [], () => true).map(({ head, cells }) => Object.fromEntries(head.map((h, k) => [h, cells[k]])));
   const exerciseNotes = textOf(S.J ?? []);
-  const exercises3d = exercisesIn([...exercise.map((r) => Object.values(r).join(" ")), ...exerciseNotes].join(" | "));
+  // Some chapters write the exercise prescription inside I ("I to J. Exercise prescription", "I to K. Treatment"): read I there too.
+  const iTitle = d.sections.find((s) => s.key === "I")?.title ?? "";
+  const iHoldsExercise = !S.J && /\bto [JK]\b|exercise/i.test(iTitle);
+  const iText = iHoldsExercise ? [...rowsOf(S.I ?? [], () => true).map(({ cells }) => cells.join(" ")), ...manualNotes] : [];
+  const exercises3d = exercisesIn([...exercise.map((r) => Object.values(r).join(" ")), ...exerciseNotes, ...iText].join(" | "));
   /* K: modalities with the book's "Indicated?" verdict. */
   const modalities = rowsOf(S.K ?? [], (h) => h[0] === "modality").map(({ cells }) => ({ name: cells[0], indicated: cells[1], comment: cells[2], anim: animFor(cells[0]) }));
   const modalityNotes = textOf(S.K ?? []);

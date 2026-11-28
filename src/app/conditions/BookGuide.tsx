@@ -63,7 +63,7 @@ function RefBadge({ text }: { text: string }) {
       aria-label={`${detail}`}
     >
       <Info className="h-2.5 w-2.5" aria-hidden="true" />
-      ref
+      ref pending
     </span>
   );
 }
@@ -538,6 +538,8 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
   const flagTables = (flagSection?.blocks ?? []).filter((b): b is Extract<BookBlock, { t: "table" }> => b.t === "table" && b.head && b.rows[0].some((h) => /urgency/i.test(h)));
   const flagCount = flagTables.reduce((n, t) => n + t.rows.length - 1, 0) || (flagSection?.key === "G" ? (flagSection.blocks.find((b) => b.t === "table") as Extract<BookBlock, { t: "table" }> | undefined)?.rows.length ?? 0 : 0);
   const lettered = new Set(chapter.sections.flatMap(lettersOf)).size;
+  // claims the book itself marks for a source check, counted once so the reader knows before meeting them in the text
+  const refPending = useMemo(() => (JSON.stringify(chapter).match(/\[Ref\s*[–-]\s*to verify/g) ?? []).length, [chapter]);
 
   useEffect(() => {
     const els = chapter.sections.map((s) => document.getElementById(`sec-${anchor(s)}`)).filter(Boolean) as HTMLElement[];
@@ -643,6 +645,17 @@ export function BookGuide({ chapter, help, chips = [], glance, backHref, backLab
             </div>
           ) : null}
         </section>
+      ) : null}
+
+      {refPending ? (
+        <p className="mt-4 flex flex-wrap items-center gap-1.5 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-2.5 text-[13px] leading-6 text-amber-950">
+          <RefBadge text="[Ref – to verify]" />
+          <span>
+            {lang === "ur"
+              ? `Is chapter mein ${refPending} jagah kitaab ne khud likha hai ke source abhi check hona hai. Wahan diye gaye numbers (accuracy, normal values, cut-offs) ko pakka na samjhein jab tak source check na ho.`
+              : `In this chapter the book itself marks ${refPending} ${refPending === 1 ? "claim" : "claims"} for a source check. Treat the numbers there (accuracy, normal values, cut-offs) as provisional until checked.`}
+          </span>
+        </p>
       ) : null}
 
       {/* PHONE RAIL */}
