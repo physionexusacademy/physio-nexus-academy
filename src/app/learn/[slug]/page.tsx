@@ -1,4 +1,5 @@
 import { fitDescription, fitTitle } from "@/lib/seo/text";
+import { ReviewedBy } from "@/components/ReviewedBy";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -68,6 +69,7 @@ export default async function TeacherLessonPage({ params }: { params: Promise<{ 
         <header className="mt-4">
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-teal-700">{lesson.area}</p>
           <h1 className="mt-1.5 text-3xl font-bold leading-tight text-navy-800 sm:text-4xl">{lesson.title}</h1>
+          <ReviewedBy className="mt-2" />
           <p className="mt-3 text-base leading-7 text-slate-600 sm:text-lg">{lesson.hook.en}</p>
           <ul className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-600">
             <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">

@@ -54,7 +54,7 @@ const zones=[
 ];
 const tests={
   academyLobbyStructure:home.includes("<LobbyHero")&&home.includes("<HomeNeedHelp />")&&home.includes("<HomeFeaturesTop />")&&home.includes("<HomeFeaturesMore />")&&home.includes("<StudentPass />")&&home.includes('<PremiumPathwayBrowser showAtlas={atlasPublished} />'),
-  lobbyOrder:(()=>{const at=(needle)=>home.indexOf(needle);const flagship=at('data-pna-home-flagship="daily-clinical-challenge-v2"');const order=[at("<LobbyHero"),at("<HomeNeedHelp />"),at("<GuideMe />"),at("<HomeBodyMap"),at("<HomeFeaturesTop />"),flagship,at("<HomeFeaturesMore />"),at("<HomeBooks />"),at("<StudentPass />"),at("<PremiumPathwayBrowser")];return order.every((position,index)=>position>=0&&(index===0||position>order[index-1]));})(),
+  lobbyOrder:(()=>{const at=(needle)=>home.indexOf(needle);const flagship=at('data-pna-home-flagship="daily-clinical-challenge-v2"');const order=[at("<LobbyHero"),at("<PremiumPathwayBrowser"),at("<HomeNeedHelp />"),at("<GuideMe />"),at("<HomeBodyMap"),at("<HomeFeaturesTop />"),flagship,at("<HomeFeaturesMore />"),at("<HomeBooks />"),at("<StudentPass />")];/* the owner's choice: "I'm a student / physiotherapist / I need physiotherapy" comes straight after the hero */return order.every((position,index)=>position>=0&&(index===0||position>order[index-1]));})(),
   noDuplicatedFeatureWall:!home.includes("portalActions.map")&&!home.includes("portalGroups.map")&&!home.includes("pna-home-zones"),
   allOriginalPathsPreserved:mandatoryPaths.every(url=>hrefs.includes(url)),
   retiredWeeklyQuizGone:!hrefs.includes("/clinical-quiz")&&!home.includes("/clinical-quiz"),

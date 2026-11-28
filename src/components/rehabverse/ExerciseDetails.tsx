@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, BookOpen, ChevronDown, Wind } from "lucide-react";
+import { ReviewedBy } from "@/components/ReviewedBy";
 import { CATEGORY_LABEL, REGION_LABEL, type Dosage, type ExerciseDef } from "@/lib/rehabverse/types";
 import { REFERENCES } from "@/lib/rehabverse/references";
 import type { Lang } from "./ExercisePlayer";
@@ -53,6 +54,7 @@ export function ExerciseDetails({ exercise, lang, clinical = false, dose, compac
           </div>
           <h3 className="mt-2 font-heading text-xl font-bold text-navy-800">{t(lang, exercise.name)}</h3>
           <p className="mt-1 text-[15px] leading-7 text-slate-700">{t(lang, exercise.summary)}</p>
+          <ReviewedBy className="mt-2" />
         </div>
       )}
 

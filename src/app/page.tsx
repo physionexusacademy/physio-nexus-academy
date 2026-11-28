@@ -133,6 +133,9 @@ export default function HomePage() {
       />
       <LobbyHero atlasPublished={atlasPublished} />
 
+      {/* "I'm a student / physiotherapist / I need physiotherapy": the first choice a new visitor makes, straight after the hero */}
+      <PremiumPathwayBrowser showAtlas={atlasPublished} />
+
       <HomeNeedHelp />
 
       <GuideMe />
@@ -179,8 +182,6 @@ export default function HomePage() {
       <HomeBooks />
 
       <StudentPass />
-
-      <PremiumPathwayBrowser showAtlas={atlasPublished} />
 
       <HomeFounder />
 

@@ -180,8 +180,8 @@ export default function RehabVerseHome() {
 
       <p className="mt-12 max-w-3xl text-xs leading-5 text-slate-500">
         <T
-          en="PNA RehabVerse is an educational and supportive tool under the supervision of a physiotherapist at Physio Nexus Academy. The virtual guide is a 3D character, not a clinician. Exercise content is reviewed by the supervising physiotherapist."
-          ru="PNA RehabVerse physiotherapist ki nigrani mein Physio Nexus Academy ka ek taleemi aur madadgar tool hai. Virtual guide ek 3D character hai, clinician nahi. Exercise ka content supervising physiotherapist review karte hain."
+          en="PNA RehabVerse is an educational and supportive tool under the supervision of a physiotherapist at Physio Nexus Academy. The virtual guide is a 3D character, not a clinician. Exercise content is reviewed by Dr. Sajjad Raza PT."
+          ru="PNA RehabVerse physiotherapist ki nigrani mein Physio Nexus Academy ka ek taleemi aur madadgar tool hai. Virtual guide ek 3D character hai, clinician nahi. Exercise ka content Dr. Sajjad Raza PT ne review kiya hai."
         />
       </p>
     </div>
