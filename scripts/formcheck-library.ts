@@ -16,12 +16,19 @@ export type LibraryExercise = {
 
 export const MOVE_THRESHOLD_DEG = 5;
 
+/**
+ * Neck and back exercises that have no camera form check, because what they train cannot be seen by a camera: breathing control and the
+ * pelvic floor squeeze (the 3D model only shows the breath that goes with them).
+ */
+export const NO_CAMERA_CHECK = new Set(["diaphragmatic-breathing", "pursed-lip-breathing", "thoracic-expansion-arm-raise", "pelvic-floor-lying", "pelvic-floor-sitting"]);
+
 export function loadLibrary(root = process.cwd()): LibraryExercise[] {
   const out: LibraryExercise[] = [];
   for (const region of ["cervical", "thoracic", "lumbar"] as const) {
     const raw = JSON.parse(fs.readFileSync(path.join(root, "public/rehabverse-data", `${region}.json`), "utf8"));
     const list: any[] = Array.isArray(raw) ? raw : raw.exercises ?? Object.values(raw);
     for (const e of list) {
+      if (NO_CAMERA_CHECK.has(e.id)) continue;
       const motion = e.motion ?? {};
       const start: Record<string, Record<string, number>> = motion.start ?? {};
       const moving: Record<string, Set<string>> = {};

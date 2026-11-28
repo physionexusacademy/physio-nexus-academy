@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { Clock, Package, Search, X } from "lucide-react";
 import { loadAllExercises } from "@/lib/rehabverse/library";
-import { CATEGORY_LABEL, LEVELS, LEVEL_LABEL, REGIONS, REGION_LABEL, type ExerciseDef, type Region } from "@/lib/rehabverse/types";
+import { CATEGORY_LABEL, LEVELS, REGIONS, REGION_LABEL, type ExerciseDef, type Region } from "@/lib/rehabverse/types";
 import { GOALS, POSITION_LABEL, goalsOf, minutesOf, needsKit, positionOf, type Position } from "@/lib/rehabverse/library-meta";
 import { ExerciseDetails } from "./ExerciseDetails";
 import { useRvLang } from "./useLang";
@@ -94,7 +94,7 @@ export function LibraryBrowser({ initialId, initialRegion }: { initialId?: strin
                     <span className="rv-chip rv-chip-teal">{t(REGION_LABEL[e.regions[0]]).replace(/ \(.*\)/, "")}</span>
                   </span>
                   <strong className="mt-1.5 block text-[15px] leading-5 text-navy-800">{t(e.name)}</strong>
-                  <span className="mt-0.5 block text-[13px] leading-5 text-slate-500">{t(CATEGORY_LABEL[e.category])} · {t(LEVEL_LABEL[e.level])}</span>
+                  <span className="mt-0.5 block text-[13px] leading-5 text-slate-500">{t(CATEGORY_LABEL[e.category])}</span>
                   <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold text-slate-600">
                     <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5 text-teal-600" aria-hidden="true" /> ~{minutesOf(e)} min</span>
                     <span>{t(POSITION_LABEL[positionOf(e)])}</span>
