@@ -97,7 +97,7 @@ export default function VirtualPatientPage() {
       <NexusHero
         kicker="Practise wing · Virtual Patient"
         title={<>Your patient is <span className="nx-gradient-text">waiting.</span></>}
-        lead="A realistic 3D patient you can examine like a real one — history, positioning, goniometry, MMT, reflexes, sensation, palpation and special tests — then diagnose and get an OSCE-style score."
+        lead="A realistic 3D patient you can examine like a real one — history, positioning, goniometry, MMT, reflexes, sensation, palpation and special tests — then diagnose, get an OSCE-style score and treat the patient with the PNA Teacher in the PNA clinic."
         crumbs={[{ label: "Practise", href: "/daily-challenge" }, { label: "Virtual Patient" }]}
       />
       <section className="container-content pb-16 pt-8" aria-label="Exam room" data-pna-virtual-patient>

@@ -69,6 +69,7 @@ export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }:
   const voiceRef = useRef(voice);
   voiceRef.current = voice;
 
+  const standByRef = useRef<() => Promise<void>>(async () => {});
   const offered = useMemo(() => plan?.options ?? [], [plan]);
 
   /* The PNA Teacher walks into the clinic once, and the exercise list loads. */
@@ -82,6 +83,7 @@ export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }:
         docRef.current = doc;
         propsRef.current = new TreatProps(room);
         setTeacherReady(true);
+        void standByRef.current();
       } catch (error) {
         console.error("[vp-treat] the PNA Teacher could not be loaded", error);
         if (!cancelled) setTeacherFailed(true);
@@ -127,6 +129,25 @@ export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }:
     stageRef.current?.setVoice(voice);
   }, [voice]);
 
+  /** Between treatments the PNA Teacher stands beside the patient, facing the student, so the clinic never looks empty. */
+  const standBy = useCallback(async () => {
+    const doc = docRef.current;
+    if (!doc || stageRef.current) return;
+    const { DoctorRig } = await import("@/lib/avatar/rig");
+    if (docRef.current !== doc || stageRef.current) return;
+    const rig = new DoctorRig(doc);
+    const p = room.patientRoot.position;
+    const x = p.x - 0.95;
+    const z = p.z + 0.45;
+    const cam = room.camera.position;
+    rig.place(x, z, Math.atan2(cam.x - x, cam.z - z));
+    rig.lookAt = cam.clone();
+    rig.update(0.016, 0);
+    room.scene.add(doc.root);
+    room.invalidate();
+  }, [room]);
+
+  standByRef.current = standBy;
   const stopCurrent = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
     stageRef.current?.dispose();
@@ -137,6 +158,7 @@ export function TreatPanel({ room, caseData, setup, lang, onCaption, onFinish }:
     onCaption(null);
     setStep(null);
     setRunning(null);
+    void standByRef.current();
   }, [onCaption]);
 
   /** Plays one choreography on the room; `exercise` drives the patient's movement while he coaches. */
