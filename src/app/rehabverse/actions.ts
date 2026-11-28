@@ -53,6 +53,18 @@ function fail(error: unknown, fallback = "failed"): { ok: false; error: string; 
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 
+/** A Pakistani mobile number in one form (92XXXXXXXXXX), or null. 0300…, +92 300…, 0092 300… and 300… all become the same number. */
+function normalPhone(raw: string): string | null {
+  let d = raw.replace(/\D/g, "");
+  if (d.startsWith("0092")) d = d.slice(2);
+  else if (d.startsWith("0")) d = "92" + d.slice(1);
+  else if (d.length === 10 && d.startsWith("3")) d = "92" + d;
+  return /^\d{11,15}$/.test(d) ? d : null;
+}
+
+/** A phone-only account signs in with an internal address that is never shown, never mailed and not stored as the patient's e-mail. */
+const phoneLogin = (digits: string) => `p${digits}@phone.physionexusacademy.com`;
+
 /* ─────────────────────────────── account ─────────────────────────────── */
 
 /**
@@ -65,8 +77,9 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ pen
   if (text(form, "website")) return { ok: false, error: "failed" }; // honeypot
   if (isPublicFormRateLimited(`rv-register:${await clientIp()}`)) return { ok: false, error: "rate_limited" };
 
-  const email = text(form, "email").toLowerCase();
+  const typedEmail = text(form, "email").toLowerCase();
   const password = String(form.get("password") ?? "");
+  const phoneDigits = normalPhone(text(form, "phone"));
   const profile = {
     full_name: text(form, "full_name"),
     age_years: Number(text(form, "age_years")),
@@ -75,12 +88,19 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ pen
     city: text(form, "city") || undefined,
     preferred_language: text(form, "preferred_language") === "en" ? "en" : "ru",
     consent: text(form, "consent") === "on",
+    guardian_name: text(form, "guardian_name") || undefined,
+    guardian_relation: text(form, "guardian_relation") || undefined,
   };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return { ok: false, error: "bad_email" };
-  if (password.length < 10) return { ok: false, error: "weak_password" };
+  // The e-mail is optional: without one the phone number is the sign-in.
+  if (typedEmail && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typedEmail) || typedEmail.length > 254)) return { ok: false, error: "bad_email" };
+  if (!phoneDigits) return { ok: false, error: "bad_phone" };
+  const email = typedEmail || phoneLogin(phoneDigits);
+  if (password.length < 8) return { ok: false, error: "weak_password" };
   if (profile.full_name.length < 2) return { ok: false, error: "bad_name" };
   if (!Number.isInteger(profile.age_years) || profile.age_years < 0 || profile.age_years > 120) return { ok: false, error: "bad_age" };
-  if (profile.age_years < 18) return { ok: false, error: "under_18" };
+  if (profile.age_years < 1) return { ok: false, error: "bad_age" };
+  if (profile.age_years < 18 && (profile.guardian_name ?? "").length < 2) return { ok: false, error: "guardian_required" };
+  if (profile.age_years >= 18) { profile.guardian_name = undefined; profile.guardian_relation = undefined; }
   if (profile.phone.replace(/\D/g, "").length < 10 || profile.phone.length > 30) return { ok: false, error: "bad_phone" };
   if (!profile.consent) return { ok: false, error: "consent_required" };
 
@@ -91,7 +111,7 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ pen
     email_confirm: true,
     user_metadata: { rehabverse_profile: profile },
   });
-  if (createError) return { ok: false, error: /registered|exists|duplicate/i.test(createError.message) ? "email_taken" : /password/i.test(createError.message) ? "weak_password" : "signup_failed" };
+  if (createError) return { ok: false, error: /registered|exists|duplicate/i.test(createError.message) ? (typedEmail ? "email_taken" : "phone_taken") : /password/i.test(createError.message) ? "weak_password" : "signup_failed" };
 
   const supabase = await createClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -105,11 +125,14 @@ export async function registerAction(form: FormData): Promise<ActionResult<{ pen
   return { ok: true, pendingApproval: true };
 }
 
-type SignedProfile = { full_name?: string; age_years?: number; sex?: string; phone?: string; city?: string; preferred_language?: string; consent?: boolean };
+type SignedProfile = { full_name?: string; age_years?: number; sex?: string; phone?: string; city?: string; preferred_language?: string; consent?: boolean; guardian_name?: string; guardian_relation?: string };
 
 export async function loginAction(form: FormData): Promise<ActionResult<{ staff: boolean; status: AccountStatus }>> {
   if (isPublicFormRateLimited(`rv-login:${await clientIp()}`)) return { ok: false, error: "rate_limited" };
-  const email = text(form, "email").toLowerCase();
+  // One box: an e-mail address, or the phone number the account was made with.
+  const id = text(form, "email").toLowerCase();
+  const digits = id.includes("@") ? null : normalPhone(id);
+  const email = id.includes("@") ? id : digits ? phoneLogin(digits) : "";
   const password = String(form.get("password") ?? "");
   if (!email || !password) return { ok: false, error: "bad_login" };
   const supabase = await createClient();
@@ -157,7 +180,7 @@ export async function resendConfirmationAction(form: FormData): Promise<ActionRe
 /** Used on the reset page, after the e-mailed link has signed the person in. */
 export async function updatePasswordAction(form: FormData): Promise<ActionResult> {
   const password = String(form.get("password") ?? "");
-  if (password.length < 10) return { ok: false, error: "weak_password" };
+  if (password.length < 8) return { ok: false, error: "weak_password" };
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   if (!data.user) return { ok: false, error: "link_expired" };

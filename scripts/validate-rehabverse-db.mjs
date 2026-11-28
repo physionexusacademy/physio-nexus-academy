@@ -78,8 +78,19 @@ const bob = await makeUser("bob@pna.test");
 const stranger = await makeUser("nobody@pna.test"); // signed in, never registered as a patient
 
 /* ----------------------------- 1. registration ----------------------------- */
-await fails(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 17, consent: true } }, /under_18/, "under-18s are routed to the clinic");
+await fails(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 17, consent: true } }, /guardian_required/, "an under-18 needs a parent or guardian on the request");
 await fails(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 30, consent: false } }, /consent/, "consent is required");
+let kidId = null;
+{
+  const kid = await makeUser("p923001112233@phone.physionexusacademy.com");
+  const kidReg = await rpc(kid, "rehab_register_patient", { p_payload: { full_name: "Ali (child)", age_years: 9, phone: "0300 1112233", guardian_name: "Sana (mother)", guardian_relation: "mother", consent: true } });
+  const row = (await sql("select guardian_name, guardian_relation, email from rehab_patients where id = $1", [kidReg.id]))[0];
+  eq([row.guardian_name, row.guardian_relation, row.email], ["Sana (mother)", "mother", null], "an under-18 is registered with the guardian, and a phone-only sign-in address is not stored as an e-mail");
+  // tidy up so the counts below stay about Alice and Bob
+  await sql("delete from rehab_notifications where patient_id = $1", [kidReg.id]).catch(() => {});
+  kidId = kidReg.id; // the audit log is append-only, so the count below leaves this entry out
+  await sql("delete from rehab_patients where id = $1", [kidReg.id]);
+}
 await fails(admin, "rehab_register_patient", { p_payload: { full_name: "Dr Test", age_years: 40, consent: true } }, /staff accounts/, "staff cannot become patients");
 const aliceReg = await rpc(alice, "rehab_register_patient", { p_payload: { full_name: "Alice Khan", age_years: 30, sex: "female", city: "Karachi", phone: "0300 1234567", consent: true, consent_version: "v1" } });
 ok(/^RV-[A-Z0-9]{6}$/.test(aliceReg.reference_code), "reference code issued");
@@ -100,7 +111,7 @@ const waiting = await rpc(admin, "rehab_admin_registrations", {});
 eq(waiting.pending.map((p) => p.id).sort(), [aliceReg.id, bobReg.id].sort(), "the admin sees both waiting requests");
 ok(waiting.pending.every((p) => p.phone && p.email === undefined || p.phone), "each request carries the phone number the clinic checks");
 eq((await sql("select count(*)::int n from rehab_notifications where audience = 'admin' and kind = 'registration'"))[0].n, 2, "the clinic is told once per new request (a repeat sign-up does not notify again)");
-ok((await sql("select count(*)::int n from rehab_audit_log where action = 'patient.registration_requested'"))[0].n === 2, "each request is in the audit log");
+ok((await sql("select count(*)::int n from rehab_audit_log where action = 'patient.registration_requested' and patient_id is distinct from $1", [kidId]))[0].n === 2, "each request is in the audit log");
 await fails(admin, "rehab_admin_decide_patient", { p_patient_id: aliceReg.id, p_decision: "maybe" }, /unknown decision/, "only approve or reject exist");
 const rejected = await rpc(admin, "rehab_admin_decide_patient", { p_patient_id: bobReg.id, p_decision: "reject", p_note: "Could not verify the phone number" });
 eq(rejected.status, "rejected", "the admin can reject a request");
